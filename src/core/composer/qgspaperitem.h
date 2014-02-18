@@ -21,7 +21,7 @@
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 
-/**Item representing a grid. This is drawn seperately to the underlying paper item since the grid needs to be
+/**Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
  * drawn above all other composer items, while the paper item is drawn below all others.*/
 class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 {
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 };
 
 /**Item representing the paper.*/
-class CORE_EXPORT QgsPaperItem: public QgsComposerItem
+class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 {
   public:
     QgsPaperItem( QgsComposition* c );
@@ -69,7 +69,10 @@ class CORE_EXPORT QgsPaperItem: public QgsComposerItem
     /**Set flags and z-value*/
     void initialize();
 
+    void calculatePageMargin();
+
     QgsPaperGrid* mPageGrid;
+    double mPageMargin;
 };
 
 #endif

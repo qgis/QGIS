@@ -179,7 +179,7 @@ void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
  *
  * Also returns 3x3 homogenous matrices which can be used to normalize and de-normalize coordinates.
  */
-void normalizeCoordinates( const std::vector<QgsPoint> coords, std::vector<QgsPoint> &normalizedCoords,
+void normalizeCoordinates( const std::vector<QgsPoint> &coords, std::vector<QgsPoint> &normalizedCoords,
                            double normalizeMatrix[9], double denormalizeMatrix[9] )
 {
   // Calculate center of gravity

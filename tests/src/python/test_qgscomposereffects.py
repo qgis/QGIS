@@ -61,13 +61,9 @@ class TestQgsComposerEffects(TestCase):
 
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_Multiply)
 
-        checker = QgsCompositionChecker()
-        myPath = os.path.join(TEST_DATA_DIR,
-                              'control_images',
-                              'expected_composereffects',
-                              'composereffect_blend.png')
-        myTestResult, myMessage = checker.testComposition('Composer effects blending',
-                                             self.mComposition, myPath)
+        checker = QgsCompositionChecker('composereffects_blend', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
+
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_SourceOver)
 
         assert myTestResult == True, myMessage
@@ -77,13 +73,9 @@ class TestQgsComposerEffects(TestCase):
 
         self.mComposerRect2.setTransparency( 50 )
 
-        checker = QgsCompositionChecker()
-        myPath = os.path.join(TEST_DATA_DIR,
-                              'control_images',
-                              'expected_composereffects',
-                              'composereffect_transparency.png')
-        myTestResult, myMessage = checker.testComposition('Composer effects transparency',
-                                             self.mComposition, myPath)
+        checker = QgsCompositionChecker('composereffects_transparency', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
+
         self.mComposerRect2.setTransparency( 100 )
 
         assert myTestResult == True, myMessage

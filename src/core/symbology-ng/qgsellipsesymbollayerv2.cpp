@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerv2.h"
+#include "qgsdxfexport.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsrendercontext.h"
@@ -25,9 +26,10 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolWidthUnit( QgsSymbolV2::MM ), mSymbolHeight( 3 ),
-    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mPen.setColor( mOutlineColor );
+  mPen.setStyle( mOutlineStyle );
   mPen.setWidth( 1.0 );
   mPen.setJoinStyle( Qt::MiterJoin );
   mBrush.setColor( mFillColor );
@@ -67,6 +69,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   if ( properties.contains( "angle" ) )
   {
     layer->setAngle( properties["angle"].toDouble() );
+  }
+  if ( properties.contains( "outline_style" ) )
+  {
+    layer->setOutlineStyle( QgsSymbolLayerV2Utils::decodePenStyle( properties["outline_style"] ) );
   }
   if ( properties.contains( "outline_width" ) )
   {
@@ -195,12 +201,12 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   if ( fillColorExpression )
   {
     QString colorString = fillColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    mBrush.setColor( QColor( colorString ) );
+    mBrush.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
   }
   if ( outlineColorExpression )
   {
     QString colorString = outlineColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    mPen.setColor( QColor( colorString ) );
+    mPen.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
   }
   if ( widthExpression || heightExpression || symbolNameExpression )
   {
@@ -261,6 +267,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
     preparePath( mSymbolName, context );
   }
   mPen.setColor( mOutlineColor );
+  mPen.setStyle( mOutlineStyle );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
   mBrush.setColor( mFillColor );
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
@@ -294,7 +301,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineWidth, mSymbolWidth );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineStyle, mOutlineWidth, mSymbolWidth );
 
   // store w/h factor in a <VendorOption>
   double widthHeightFactor = mSymbolWidth / mSymbolHeight;
@@ -308,7 +315,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   {
 
     if ( rotationExpression )
-      angleFunc = rotationExpression->dump();
+      angleFunc = rotationExpression->expression();
     else if ( !qgsDoubleNear( mAngle, 0.0 ) )
       angleFunc = QString::number( mAngle );
   }
@@ -316,7 +323,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   {
     // the symbol has an angle and the symbol layer have a rotation
     // property set
-    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( rotationExpression->dump() );
+    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( rotationExpression->expression() );
   }
   else if ( !qgsDoubleNear( mAngle, 0.0 ) )
   {
@@ -349,6 +356,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   QColor fillColor, borderColor;
   double borderWidth, size;
   double widthHeightFactor = 1.0;
+  Qt::PenStyle borderStyle;
 
   QgsStringMap vendorOptions = QgsSymbolLayerV2Utils::getVendorOptionList( graphicElem );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
@@ -362,7 +370,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     }
   }
 
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return NULL;
 
   double angle = 0.0;
@@ -379,6 +387,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );
+  m->setOutlineStyle( borderStyle );
   m->setOutlineWidth( borderWidth );
   m->setSymbolWidth( size );
   m->setSymbolHeight( size / widthHeightFactor );
@@ -395,6 +404,7 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["symbol_height"] = QString::number( mSymbolHeight );
   map["symbol_height_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolHeightUnit );
   map["angle"] = QString::number( mAngle );
+  map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle );
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["fill_color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
@@ -491,4 +501,140 @@ QgsSymbolV2::OutputUnit QgsEllipseSymbolLayerV2::outputUnit() const
     return QgsSymbolV2::Mixed;
   }
   return unit;
+}
+
+bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift ) const
+{
+  //width
+  double symbolWidth = mSymbolWidth;
+  QgsExpression* widthExpression = expression( "width" );
+  if ( widthExpression ) //1. priority: data defined setting on symbol layer level
+  {
+    symbolWidth = widthExpression->evaluate( const_cast<QgsFeature*>( f ) ).toDouble();
+  }
+  else if ( context->renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  {
+    symbolWidth = mSize;
+  }
+  if ( mSymbolWidthUnit == QgsSymbolV2::MM )
+  {
+    symbolWidth *= mmMapUnitScaleFactor;
+  }
+
+  //height
+  double symbolHeight = mSymbolHeight;
+  QgsExpression* heightExpression = expression( "height" );
+  if ( heightExpression ) //1. priority: data defined setting on symbol layer level
+  {
+    symbolHeight =  heightExpression->evaluate( const_cast<QgsFeature*>( f ) ).toDouble();
+  }
+  else if ( context->renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  {
+    symbolHeight = mSize;
+  }
+  if ( mSymbolHeightUnit == QgsSymbolV2::MM )
+  {
+    symbolHeight *= mmMapUnitScaleFactor;
+  }
+
+  //outline width
+  double outlineWidth = mOutlineWidth;
+  QgsExpression* outlineWidthExpression = expression( "outline_width" );
+  if ( outlineWidthExpression )
+  {
+    outlineWidth = outlineWidthExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+  }
+  if ( mOutlineWidthUnit == QgsSymbolV2::MM )
+  {
+    outlineWidth *= outlineWidth;
+  }
+
+  //color
+  QColor c = mFillColor;
+  QgsExpression* fillColorExpression = expression( "fill_color" );
+  if ( fillColorExpression )
+  {
+    c = QColor( fillColorExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toString() );
+  }
+  int colorIndex = e.closestColorMatch( c.rgb() );
+
+  //symbol name
+  QString symbolName =  mSymbolName;
+  QgsExpression* symbolNameExpression = expression( "symbol_name" );
+  if ( symbolNameExpression )
+  {
+    QgsExpression* symbolNameExpression = expression( "symbol_name" );
+    symbolName = symbolNameExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toString();
+  }
+
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( *context, offsetX, offsetY );
+  QPointF off( offsetX, offsetY );
+
+  //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
+  double rotation = 0.0;
+  QgsExpression* rotationExpression = expression( "rotation" );
+  if ( rotationExpression )
+  {
+    rotation = rotationExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+  }
+  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
+  {
+    rotation = mAngle;
+  }
+  rotation = -rotation; //rotation in Qt is counterclockwise
+  if ( rotation )
+    off = _rotatedOffset( off, rotation );
+
+  QTransform t;
+  t.translate( shift.x() + offsetX, shift.y() + offsetY );
+
+  if ( rotation != 0 )
+    t.rotate( rotation );
+
+  double halfWidth = symbolWidth / 2.0;
+  double halfHeight = symbolHeight / 2.0;
+
+  if ( symbolName == "circle" )
+  {
+    //soon...
+  }
+  else if ( symbolName == "rectangle" )
+  {
+    QPointF pt1( t.map( QPointF( -halfWidth, -halfHeight ) ) );
+    QPointF pt2( t.map( QPointF( halfWidth, -halfHeight ) ) );
+    QPointF pt3( t.map( QPointF( -halfWidth, halfHeight ) ) );
+    QPointF pt4( t.map( QPointF( halfWidth, halfHeight ) ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+    return true;
+  }
+  else if ( symbolName == "cross" )
+  {
+    QgsPolyline line1( 2 );
+    QPointF pt1( t.map( QPointF( -halfWidth, 0 ) ) );
+    QPointF pt2( t.map( QPointF( halfWidth, 0 ) ) );
+    line1[0] = QgsPoint( pt1.x(), pt1.y() );
+    line1[1] = QgsPoint( pt2.x(), pt2.y() );
+    e.writePolyline( line1, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
+    QgsPolyline line2( 2 );
+    QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
+    // QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
+    line2[0] = QgsPoint( pt3.x(), pt3.y() );
+    line2[1] = QgsPoint( pt3.x(), pt3.y() );
+    e.writePolyline( line2, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
+    return true;
+  }
+  else if ( symbolName == "triangle" )
+  {
+    QPointF pt1( t.map( QPointF( -halfWidth, -halfHeight ) ) );
+    QPointF pt2( t.map( QPointF( halfWidth, -halfHeight ) ) );
+    QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
+    QPointF pt4( t.map( QPointF( 0, halfHeight ) ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+    return true;
+  }
+
+  return false; //soon...
 }

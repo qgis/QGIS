@@ -40,7 +40,7 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
-  qDebug( "undo index changed %d", index );
+  QgsDebugMsg( QString( "undo index changed %1" ).arg( index ) );
   Q_UNUSED( index );
   emit layerModified();
 }
@@ -85,7 +85,7 @@ void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
   if ( mChangedAttributeValues.contains( f.id() ) )
   {
     const QgsAttributeMap &map = mChangedAttributeValues[f.id()];
-    for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
+    for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
 }
@@ -169,7 +169,7 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
 }
 
 
-bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value )
+bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
     return false;
@@ -184,7 +184,7 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
        L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin )
     return false;
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, value ) );
+  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
   return true;
 }
 
@@ -377,7 +377,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       {
         commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
         // TODO[MD]: we should not need this here
-        for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
+        for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); ++it )
         {
           mChangedAttributeValues.remove( *it );
           mChangedGeometries.remove( *it );

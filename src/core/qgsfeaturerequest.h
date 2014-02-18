@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
 #include "qgsexpression.h"
+#include "qgssimplifymethod.h"
 
 #include <QList>
 typedef QList<int> QgsAttributeList;
@@ -36,6 +37,7 @@ typedef QList<int> QgsAttributeList;
  * For efficiency, it is also possible to tell provider that some data is not required:
  * - NoGeometry flag
  * - SubsetOfAttributes flag
+ * - SimplifyMethod for geometries to fetch
  *
  * The options may be chained, e.g.:
  *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest::ExactIntersect)
@@ -71,7 +73,7 @@ class CORE_EXPORT QgsFeatureRequest
       FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
-      FilterFids        //!< Filter using feature ID's
+      FilterFids        //!< Filter using feature IDs
     };
 
     //! construct a default request: for all features get attributes and geometries
@@ -80,6 +82,8 @@ class CORE_EXPORT QgsFeatureRequest
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
+    //! construct a request with a filter expression
+    explicit QgsFeatureRequest( const QgsExpression& expr );
     //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest& rh );
 
@@ -118,6 +122,10 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
 
+    //! Set a simplification method for geometries that will be fetched
+    QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );
+    const QgsSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
+
     /**
      * Check if a feature is accepted by this requests filter
      *
@@ -141,6 +149,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsExpression* mFilterExpression;
     Flags mFlags;
     QgsAttributeList mAttrs;
+    QgsSimplifyMethod mSimplifyMethod;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

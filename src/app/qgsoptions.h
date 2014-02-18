@@ -52,6 +52,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     QString theme();
 
+    /** Sets the page with the specified widget name as the current page
+     * @note added in QGIS 2.1
+     */
+    void setCurrentPage( QString pageWidgetName );
+
   public slots:
     void on_cbxProjectDefaultNew_toggled( bool checked );
     void on_pbnProjectDefaultSetCurrent_clicked();
@@ -119,6 +124,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @note added in QGIS 1.9
      */
     void on_mCustomGroupBoxChkBx_clicked( bool chkd );
+
+    /** Slot to set whether to use custom side bar style
+      * @note added in QGIS 2.2
+      */
+    void on_mCustomSideBarSide_clicked( bool chkd );
 
     /** Slot to set whether to bold group box titles
      * @note added in QGIS 1.9
@@ -223,6 +233,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     void saveGdalDriverList();
 
+    void on_mRemoveDefaultTransformButton_clicked();
+    void on_mAddDefaultTransformButton_clicked();
+
   private:
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );
@@ -235,6 +248,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @note added in QGIS 1.9
      */
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
+
+    void saveDefaultDatumTransformations();
 
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;

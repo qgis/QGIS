@@ -8,6 +8,7 @@ class QgsVectorLayerEditUtils
 
     QgsGeometryCache* cache();
 
+
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
@@ -52,6 +53,15 @@ class QgsVectorLayerEditUtils
        @return 0 in case of success*/
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
+    /** Splits parts cut by the given line
+     *  @param splitLine line that splits the layer feature parts
+     *  @param topologicalEditing true if topological editing is enabled
+     *  @return
+     *   0 in case of success,
+     *   4 if there is a selection but no feature split
+     */
+    int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
+
     /** Splits features cut by the given line
      *  @param splitLine line that splits the layer features
      *  @param topologicalEditing true if topological editing is enabled
@@ -85,6 +95,7 @@ class QgsVectorLayerEditUtils
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
   protected:
+
     /** Little helper function that gives bounding box from a list of points.
     @return 0 in case of success */
     int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;

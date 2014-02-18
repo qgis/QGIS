@@ -1176,7 +1176,7 @@ QgsMapLayer* QgsSLDParser::mapLayerFromUserLayer( const QDomElement& userLayerEl
   return theMapLayer;
 }
 
-QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement gmlRootElement ) const
+QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement &gmlRootElement ) const
 {
   QgsDebugMsg( "Entering." );
 
@@ -1367,7 +1367,7 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
                        hLayer, 0, nElevField,
                        GDALTermProgress, NULL );
 
-  delete adfFixedLevels;
+  delete [] adfFixedLevels;
 
   OGR_DS_Destroy( hDS );
   GDALClose( hSrcDS );
@@ -1409,6 +1409,29 @@ QDomDocument QgsSLDParser::getStyle( const QString& styleName, const QString& la
 
   QDomDocument styleDoc;
   styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+  return styleDoc;
+}
+
+QDomDocument QgsSLDParser::getStyles( QStringList& layerList ) const
+{
+  QDomDocument styleDoc;
+  for ( int i = 0; i < layerList.size(); i++ )
+  {
+    QString layerName;
+    QString typeName;
+    layerName = layerList.at( i );
+    QDomElement userLayerElement = findUserLayerElement( layerName );
+    if ( userLayerElement.isNull() )
+    {
+      throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+    }
+    QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
+    for ( int j = 0; j < userStyleList.size(); j++ )
+    {
+      QDomElement userStyleElement = userStyleList.item( i ).toElement();
+      styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+    }
+  }
   return styleDoc;
 }
 
@@ -1474,9 +1497,8 @@ void QgsSLDParser::setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer
   QgsDebugMsg( "Setting opacity value: " + QString::number( opacityValue ) );
   layer->setTransparency( opacityValue );
 }
-#endif
 
-void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
+void QgsSLDParser::clearRasterSymbology( QgsRasterLayer *rl ) const
 {
   if ( rl )
   {
@@ -1487,6 +1509,7 @@ void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
     }
   }
 }
+#endif
 
 void QgsSLDParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const
 {

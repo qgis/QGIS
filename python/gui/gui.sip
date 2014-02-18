@@ -13,6 +13,7 @@
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
 %Include qgsattributeeditor.sip
+%Include qgsattributeeditorcontext.sip
 %Include qgsattributedialog.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
@@ -42,6 +43,7 @@
 %Include qgsmapcanvasitem.sip
 %Include qgsmapcanvasmap.sip
 %Include qgsmapcanvassnapper.sip
+%Include qgsmaplayeractionregistry.sip
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmaptip.sip
 %Include qgsmaptool.sip
@@ -130,7 +132,7 @@
 %Include symbology-ng/qgsstylev2exportimportdialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
 
-%Include editorwidgets/qgseditorconfigwidget.sip
-%Include editorwidgets/qgseditorwidgetfactory.sip
-%Include editorwidgets/qgseditorwidgetregistry.sip
-%Include editorwidgets/qgseditorwidgetwrapper.sip
+%Include editorwidgets/core/qgseditorconfigwidget.sip
+%Include editorwidgets/core/qgseditorwidgetfactory.sip
+%Include editorwidgets/core/qgseditorwidgetregistry.sip
+%Include editorwidgets/core/qgseditorwidgetwrapper.sip

@@ -22,7 +22,8 @@ class QgsSymbolV2
     enum OutputUnit
     {
       MM,
-      MapUnit
+      MapUnit,
+      Mixed //mixed units in symbol layers
     };
 
     enum SymbolType
@@ -77,7 +78,7 @@ class QgsSymbolV2
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
-    QColor color();
+    QColor color() const;
 
     void drawPreviewIcon( QPainter* painter, QSize size );
 
@@ -103,6 +104,9 @@ class QgsSymbolV2
     int renderHints() const;
 
     QSet<QString> usedAttributes() const;
+
+    void setLayer( const QgsVectorLayer* layer );
+    const QgsVectorLayer* layer() const;
 
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers /Transfer/ ); // can't be instantiated

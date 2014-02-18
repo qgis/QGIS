@@ -505,6 +505,18 @@ QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize s
   return pixmap;
 }
 
+double QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( QgsSymbolV2* symbol )
+{
+  double maxBleed = 0;
+  for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
+  {
+    QgsSymbolLayerV2* layer = symbol->symbolLayer( i );
+    double layerMaxBleed = layer->estimateMaxBleed();
+    maxBleed = layerMaxBleed > maxBleed ? layerMaxBleed : maxBleed;
+  }
+
+  return maxBleed;
+}
 
 QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size )
 {
@@ -1057,10 +1069,12 @@ bool QgsSymbolLayerV2Utils::hasExternalGraphic( QDomElement &element )
   {
     return true;
   }
+#if 0
   else if ( !inlineContentElem.isNull() )
   {
     return false; // not implemented yet
   }
+#endif
   else
   {
     return false;
@@ -1180,7 +1194,8 @@ bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element )
   QString name;
   QColor fillColor, borderColor;
   double size, borderWidth;
-  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+  Qt::PenStyle borderStyle;
+  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return false;
 
   if ( name != "horline" )
@@ -1357,8 +1372,10 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
               found = true;
               break;
             }
+#if 0
             else if ( !inlineContentElem.isNull() )
-              continue; // TODO: not implemeneted yet
+              continue; // TODO: not implemented yet
+#endif
             else
               continue;
           }
@@ -1520,7 +1537,7 @@ void QgsSymbolLayerV2Utils::fillToSld( QDomDocument &doc, QDomElement &element, 
   QColor borderColor = !patternName.startsWith( "brush://" ) ? color : QColor();
 
   /* Use WellKnownName tag to handle QT brush styles. */
-  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, borderColor );
+  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, borderColor, Qt::SolidLine, -1, -1 );
 }
 
 bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
@@ -1561,7 +1578,8 @@ bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &b
     QString patternName = "square";
     QColor fillColor, borderColor;
     double borderWidth, size;
-    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, borderColor, borderWidth, size ) )
+    Qt::PenStyle borderStyle;
+    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, borderColor, borderStyle, borderWidth, size ) )
       return false;
 
     brushStyle = decodeSldBrushStyle( patternName );
@@ -1907,6 +1925,13 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
     QString name, QColor color, QColor borderColor,
     double borderWidth, double size )
 {
+  wellKnownMarkerToSld( doc, element, name, color, borderColor, Qt::SolidLine, borderWidth, size );
+}
+
+void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+    QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
+    double borderWidth, double size )
+{
   QDomElement markElem = doc.createElement( "se:Mark" );
   element.appendChild( markElem );
 
@@ -1926,7 +1951,7 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
   if ( borderColor.isValid() )
   {
     QDomElement strokeElem = doc.createElement( "se:Stroke" );
-    lineToSld( doc, strokeElem, Qt::SolidLine, borderColor, borderWidth );
+    lineToSld( doc, strokeElem, borderStyle, borderColor, borderWidth );
     markElem.appendChild( strokeElem );
   }
 
@@ -1941,6 +1966,14 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
 
 bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,
     QString &name, QColor &color, QColor &borderColor,
+    double &borderWidth, double &size )
+{
+  Qt::PenStyle borderStyle;
+  return wellKnownMarkerFromSld( element, name, color, borderColor, borderStyle, borderWidth, size );
+}
+
+bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,
+    QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
     double &borderWidth, double &size )
 {
   QgsDebugMsg( "Entered." );
@@ -1970,8 +2003,7 @@ bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,
 
   // <Stroke>
   QDomElement strokeElem = markElem.firstChildElement( "Stroke" );
-  Qt::PenStyle p = Qt::SolidLine;
-  lineFromSld( strokeElem, p, borderColor, borderWidth );
+  lineFromSld( strokeElem, borderStyle, borderColor, borderWidth );
   // ignore border style, solid expected
 
   // <Size>
@@ -2259,7 +2291,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   }
   else
   {
-    function = expr->dump();
+    function = expr->expression();
   }
 
   delete expr;
@@ -2269,18 +2301,11 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
-  QString relpath = symbolPathToName( path );
-
-  // convert image path to url
-  QUrl url( relpath );
-  if ( !url.isValid() || url.scheme().isEmpty() )
-  {
-    url.setUrl( QUrl::fromLocalFile( relpath ).toString() );
-  }
-
+  // get resource url or relative path
+  QString url = symbolPathToName( path );
   QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
-  onlineResourceElem.setAttribute( "xlink:href", url.toString() );
+  onlineResourceElem.setAttribute( "xlink:href", url );
   element.appendChild( onlineResourceElem );
 
   QDomElement formatElem = doc.createElement( "se:Format" );
@@ -2913,7 +2938,7 @@ QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
 
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
-      path = path.mid( dir.size() );
+      path = path.mid( dir.size() + 1 );
       isInSvgPathes = true;
       break;
     }
@@ -2925,3 +2950,50 @@ QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
   return QgsProject::instance()->writePath( path );
 }
 
+QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
+{
+  //Calculate the centroid of points
+  double cx = 0, cy = 0;
+  double area, sum = 0;
+  for ( int i = points.count() - 1, j = 0; j < points.count(); i = j++ )
+  {
+    const QPointF& p1 = points[i];
+    const QPointF& p2 = points[j];
+    area = p1.x() * p2.y() - p1.y() * p2.x();
+    sum += area;
+    cx += ( p1.x() + p2.x() ) * area;
+    cy += ( p1.y() + p2.y() ) * area;
+  }
+  sum *= 3.0;
+  cx /= sum;
+  cy /= sum;
+
+  return QPointF( cx, cy );
+}
+
+
+QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
+{
+  if ( fieldOrExpression.isEmpty() )
+    return 0;
+
+  QgsExpression* expr = new QgsExpression( fieldOrExpression );
+  if ( !expr->hasParserError() )
+    return expr;
+
+  // now try with quoted field name
+  delete expr;
+  QgsExpression* expr2 = new QgsExpression( QgsExpression::quotedColumnRef( fieldOrExpression ) );
+  Q_ASSERT( !expr2->hasParserError() );
+  return expr2;
+}
+
+QString QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( QgsExpression* expression )
+{
+  const QgsExpression::Node* n = expression->rootNode();
+
+  if ( n && n->nodeType() == QgsExpression::ntColumnRef )
+    return static_cast<const QgsExpression::NodeColumnRef*>( n )->name();
+
+  return expression->expression();
+}

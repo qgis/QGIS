@@ -29,6 +29,7 @@
 #include <QSortFilterProxyModel>
 #include <QActionGroup>
 #include <QTextStream>
+#include <QTimer>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -464,7 +465,7 @@ void QgsPluginManager::reloadModelData()
 
   for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( ! it->value( "id" ).isEmpty() )
     {
@@ -538,7 +539,7 @@ void QgsPluginManager::reloadModelData()
     if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), "not installedZ" ) );
   }
 
-  updateTabTitle();
+  updateWindowTitle();
 
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
@@ -990,8 +991,6 @@ void QgsPluginManager::setCurrentTab( int idx )
     }
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
-    updateTabTitle();
-
     // load tab description HTML to the detail browser
     QString tabInfoHTML = "";
     QMap<QString, QString>::iterator it = mTabDescriptions.find( tabTitle );
@@ -1007,6 +1006,8 @@ void QgsPluginManager::setCurrentTab( int idx )
     buttonInstall->setEnabled( false );
     buttonUninstall->setEnabled( false );
   }
+
+  updateWindowTitle();
 }
 
 
@@ -1244,7 +1245,7 @@ bool QgsPluginManager::hasAvailablePlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "not installed" || it->value( "status" ) == "new" )
     {
@@ -1261,7 +1262,7 @@ bool QgsPluginManager::hasReinstallablePlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     // plugins marked as "installed" are available for download (otherwise they are marked "orphans")
     if ( it->value( "status" ) == "installed" )
@@ -1279,7 +1280,7 @@ bool QgsPluginManager::hasUpgradeablePlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "upgradeable" )
     {
@@ -1296,7 +1297,7 @@ bool QgsPluginManager::hasNewPlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "new" )
     {
@@ -1313,7 +1314,7 @@ bool QgsPluginManager::hasNewerPlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "newer" )
     {
@@ -1330,7 +1331,7 @@ bool QgsPluginManager::hasInvalidPlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( ! it->value( "error" ).isEmpty() )
     {
@@ -1343,10 +1344,36 @@ bool QgsPluginManager::hasInvalidPlugins( )
 
 
 
-void QgsPluginManager::updateTabTitle()
+void QgsPluginManager::updateWindowTitle( )
 {
-  lbStatusFilter->setText( QString( " %1 > %2 (%3)" ).arg( tr( "Plugins" ) )
-                           .arg( mOptionsListWidget->currentItem()->text() )
-                           .arg( mModelProxy->countWithCurrentStatus() ) );
+  QListWidgetItem *curitem = mOptListWidget->currentItem();
+  if ( curitem )
+  {
+    QString title = QString( "%1 | %2" ).arg( tr( "Plugins" ) ).arg( curitem->text() );
+    if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 1 )
+    {
+      // if it's not the Settings tab, add the plugin count
+      title += QString( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
+    }
+    setWindowTitle( title );
+  }
+  else
+  {
+    setWindowTitle( mDialogTitle );
+  }
+}
+
+void QgsPluginManager::showEvent( QShowEvent* e )
+{
+  if ( mInit )
+  {
+    updateOptionsListVerticalTabs();
+  }
+  else
+  {
+    QTimer::singleShot( 0, this, SLOT( warnAboutMissingObjects() ) );
+  }
+
+  QDialog::showEvent( e );
 }
 

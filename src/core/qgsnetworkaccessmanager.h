@@ -57,7 +57,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! destructor
     ~QgsNetworkAccessManager();
 
-#if QT_VERSION >= 0x40500
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory );
 
@@ -66,7 +65,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
-#endif
 
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QNetworkProxy &fallbackProxy() const;
@@ -99,9 +97,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
   private:
-#if QT_VERSION >= 0x40500
     QList<QNetworkProxyFactory*> mProxyFactories;
-#endif
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
 

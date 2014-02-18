@@ -255,16 +255,16 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
     }
   }
 
-  foreach ( QgsDataItem *layerItem, schemaItem->children() )
-  {
-    if ( layerItem->name() == layerProperty.tableName )
-      return; // already added
-  }
-
   if ( !schemaItem )
   {
     QgsDebugMsg( QString( "schema item for %1 not found." ).arg( layerProperty.schemaName ) );
     return;
+  }
+
+  foreach ( QgsDataItem *layerItem, schemaItem->children() )
+  {
+    if ( layerItem->name() == layerProperty.tableName )
+      return; // already added
   }
 
   QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );

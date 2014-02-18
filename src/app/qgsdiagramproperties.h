@@ -44,6 +44,8 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mEngineSettingsButton_clicked();
+    void showSizeAttributeExpressionDialog();
+    void showAddAttributeExpressionDialog();
 
   protected:
     QFont mDiagramFont;
@@ -51,6 +53,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QgsVectorLayer* mLayer;
 
   private:
+    int mAvailableAttributes;
 };
 
 #endif // QGSDIAGRAMPROPERTIES_H

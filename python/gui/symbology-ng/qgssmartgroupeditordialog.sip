@@ -43,13 +43,15 @@ class QgsSmartGroupEditorDialog : QDialog
     QString smartgroupName();
 
     //! returns the condition map
-    // QMultiMap<QString, QString> conditionMap();
+    //! @note not available in python bindings
+    // QgsSmartConditionMap conditionMap();
 
     //! returns the AND/OR condition
     QString conditionOperator();
 
     //! sets up the GUI for the given conditionmap
-    // void setConditionMap( QMultiMap<QString, QString> );
+    //! @note not available in python bindings
+    // void setConditionMap( QgsSmartConditionMap );
 
     //! sets the operator AND/OR
     void setOperator( QString );

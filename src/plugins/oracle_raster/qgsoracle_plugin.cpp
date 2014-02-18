@@ -36,9 +36,9 @@ static const QString sPluginIcon = ":/oracleplugin/oracleraster.svg";
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface ) :
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
 }
 
@@ -55,6 +55,7 @@ void QgsOraclePlugin::initGui()
 {
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleraster.svg" ), tr( "Add Oracle GeoRaster Layer..." ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Add a Oracle Spatial GeoRaster..." ) );
   // Connect the action to the run

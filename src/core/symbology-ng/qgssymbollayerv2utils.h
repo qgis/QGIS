@@ -25,6 +25,7 @@
 #include "qgssymbolv2.h"
 #include "qgis.h"
 
+class QgsExpression;
 class QgsSymbolLayerV2;
 class QgsVectorColorRampV2;
 
@@ -102,6 +103,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
+    /**Returns the maximum estimated bleed for the symbol */
+    static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
+
     static QgsSymbolV2* loadSymbol( QDomElement& element );
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
     static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
@@ -146,11 +150,19 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
 
+    /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
+    Q_DECL_DEPRECATED static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+        QString name, QColor color, QColor borderColor = QColor(),
+        double borderWidth = -1, double size = -1 );
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      QString name, QColor color, QColor borderColor = QColor(),
+                                      QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
+    /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
+    Q_DECL_DEPRECATED static bool wellKnownMarkerFromSld( QDomElement &element,
+        QString &name, QColor &color, QColor &borderColor,
+        double &borderWidth, double &size );
     static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &borderColor,
+                                        QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
                                         double &borderWidth, double &size );
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
@@ -238,11 +250,33 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( QString directory );
 
-    //! Get symbol's path from its name
+    /** Get symbol's path from its name.
+     *  If the name is not absolute path the file is searched in SVG paths specified
+     *  in settings svg/searchPathsForSVG.
+     */
     static QString symbolNameToPath( QString name );
 
     //! Get symbols's name from its path
     static QString symbolPathToName( QString path );
+
+    //! Calculate the centroid point of a QPolygonF
+    static QPointF polygonCentroid( const QPolygonF& points );
+
+    /** Return a new valid expression instance for given field or expression string.
+     * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
+     * If the string is empty, returns null pointer.
+     * This is useful when accepting input which could be either a non-quoted field name or expression.
+     * @note added in 2.2
+     */
+    static QgsExpression* fieldOrExpressionToExpression( const QString& fieldOrExpression );
+
+    /** Return a field name if the whole expression is just a name of the field .
+     *  Returns full expression string if the expression is more complex than just one field.
+     *  Using just expression->expression() method may return quoted field name, but that is not
+     *  wanted for saving (due to backward compatibility) or display in GUI.
+     * @note added in 2.2
+     */
+    static QString fieldOrExpressionFromExpression( QgsExpression* expression );
 };
 
 class QPolygonF;

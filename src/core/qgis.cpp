@@ -73,6 +73,9 @@ const CORE_EXPORT QString GEO_NONE = "NONE";
 
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 
+//! Default threshold between map coordinates and device coordinates for map2pixel simplification
+const float QGis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
+
 // description strings for units
 // Order must match enum indices
 const char* QGis::qgisUnitTypes[] =
@@ -107,6 +110,58 @@ QString QGis::toLiteral( QGis::UnitType unit )
 QString QGis::tr( QGis::UnitType unit )
 {
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
+}
+
+double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
+{
+#define DEGREE_TO_METER 111319.49079327358
+#define FEET_TO_METER 0.3048
+#define NMILE_TO_METER 1852.0
+
+  // Unify degree units
+  if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes )
+    fromUnit = QGis::Degrees;
+  if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes )
+    toUnit = QGis::Degrees;
+
+  // Calculate the conversion factor between the specified units
+  if ( fromUnit != toUnit && fromUnit != QGis::UnknownUnit && toUnit != QGis::UnknownUnit )
+  {
+    switch ( fromUnit )
+    {
+      case QGis::Meters:
+      {
+        if ( toUnit == QGis::Feet ) return 1.0 / FEET_TO_METER;
+        if ( toUnit == QGis::Degrees ) return 1.0 / DEGREE_TO_METER;
+        if ( toUnit == QGis::NauticalMiles ) return 1.0 / NMILE_TO_METER;
+        break;
+      }
+      case QGis::Feet:
+      {
+        if ( toUnit == QGis::Meters ) return FEET_TO_METER;
+        if ( toUnit == QGis::Degrees ) return FEET_TO_METER / DEGREE_TO_METER;
+        if ( toUnit == QGis::NauticalMiles ) return FEET_TO_METER / NMILE_TO_METER;
+        break;
+      }
+      case QGis::Degrees:
+      {
+        if ( toUnit == QGis::Meters ) return DEGREE_TO_METER;
+        if ( toUnit == QGis::Feet ) return DEGREE_TO_METER / FEET_TO_METER;
+        if ( toUnit == QGis::NauticalMiles ) return DEGREE_TO_METER / NMILE_TO_METER;
+        break;
+      }
+      case QGis::NauticalMiles:
+      {
+        if ( toUnit == QGis::Meters ) return NMILE_TO_METER;
+        if ( toUnit == QGis::Feet ) return NMILE_TO_METER / FEET_TO_METER;
+        if ( toUnit == QGis::Degrees ) return NMILE_TO_METER / DEGREE_TO_METER;
+        break;
+      }
+      case QGis::UnknownUnit:
+        break;
+    }
+  }
+  return 1.0;
 }
 
 void *qgsMalloc( size_t size )
@@ -176,3 +231,19 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
+QString qgsVsiPrefix( QString path )
+{
+  if ( path.startsWith( "/vsizip/", Qt::CaseInsensitive ) ||
+       path.endsWith( ".zip", Qt::CaseInsensitive ) )
+    return "/vsizip/";
+  else if ( path.startsWith( "/vsitar/", Qt::CaseInsensitive ) ||
+            path.endsWith( ".tar", Qt::CaseInsensitive ) ||
+            path.endsWith( ".tar.gz", Qt::CaseInsensitive ) ||
+            path.endsWith( ".tgz", Qt::CaseInsensitive ) )
+    return "/vsitar/";
+  else if ( path.startsWith( "/vsigzip/", Qt::CaseInsensitive ) ||
+            path.endsWith( ".gz", Qt::CaseInsensitive ) )
+    return "/vsigzip/";
+  else
+    return "";
+}

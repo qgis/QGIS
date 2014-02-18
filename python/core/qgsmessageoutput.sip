@@ -39,6 +39,7 @@ class QgsMessageOutput
     virtual void showMessage( bool blocking = true ) = 0;
 
     //! sets function that will be used to create message output
+    //! @note not available in python bindings
     // TODO: implementation where python class could be passed
     // static void setMessageOutputCreator(MESSAGE_OUTPUT_CREATOR f);
 

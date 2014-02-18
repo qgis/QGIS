@@ -87,7 +87,7 @@ bool QgsFeatureListView::setDisplayExpression( const QString expression )
   }
 }
 
-const QString& QgsFeatureListView::displayExpression() const
+const QString QgsFeatureListView::displayExpression() const
 {
   return mModel->displayExpression();
 }
@@ -95,6 +95,16 @@ const QString& QgsFeatureListView::displayExpression() const
 QString QgsFeatureListView::parserErrorString()
 {
   return mModel->parserErrorString();
+}
+
+QgsFeatureIds QgsFeatureListView::currentEditSelection()
+{
+  QgsFeatureIds selection;
+  Q_FOREACH( QModelIndex idx, mCurrentEditSelectionModel->selectedIndexes() )
+  {
+    selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+  }
+  return selection;
 }
 
 void QgsFeatureListView::mousePressEvent( QMouseEvent *event )

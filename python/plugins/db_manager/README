@@ -9,7 +9,7 @@ In this moment DB Manager supports the following DBMS backends:
 
 
 For more info about the project, see at the wiki page:
-    http://www.qgis.org/wiki/DB_Manager_plugin_GSoC_2011
+    http://qgis.org/wiki/DB_Manager_plugin_GSoC_2011
 
 or visit my GitHub repository:
     https://github.com/brushtyler/db_manager

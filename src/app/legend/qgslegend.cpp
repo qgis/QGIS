@@ -22,7 +22,6 @@
 #include "qgslegend.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
-#include "qgslegendpropertygroup.h"
 #include "qgslegendsymbologyitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -114,8 +113,11 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
 
   connect( mMapCanvas, SIGNAL( layersChanged() ),
            this, SLOT( refreshCheckStates() ) );
+#if 0
+  // too much
   connect( mMapCanvas, SIGNAL( extentsChanged() ),
            this, SLOT( updateLegendItemSymbologies() ) );
+#endif
 
   // Initialise the line indicator widget.
   mInsertionLine = new QWidget( viewport() );
@@ -179,8 +181,9 @@ void QgsLegend::showItem( QString msg, QTreeWidgetItem *item )
 
 void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
-  Q_UNUSED( current );
-  Q_UNUSED( previous );
+  if ( legendLayerForItem( current ) == legendLayerForItem( previous ) )
+    return; // do not re-emit signal when not necessary
+
   QgsMapLayer *layer = currentLayer();
 
   if ( mMapCanvas )
@@ -292,6 +295,9 @@ void QgsLegend::removeAll()
   updateMapCanvasLayerSet();
   setIconSize( mMinimumIconSize );
   mDropTarget = 0;
+  mUpdateDrawingOrder = true;
+  emit updateDrawingOrderChecked( true );
+  emit updateDrawingOrderUnchecked( false );
 }
 
 void QgsLegend::setLayersVisible( bool visible )
@@ -1209,7 +1215,12 @@ void QgsLegend::setLayerVisible( QgsMapLayer * layer, bool visible )
 
 QgsLegendLayer* QgsLegend::currentLegendLayer()
 {
-  QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( currentItem() );
+  return legendLayerForItem( currentItem() );
+}
+
+QgsLegendLayer* QgsLegend::legendLayerForItem( QTreeWidgetItem* item )
+{
+  QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( item );
 
   if ( citem )
   {
@@ -1988,8 +1999,7 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
         }
         else if ( childelem.tagName() == "propertygroup" )
         {
-          QgsLegendPropertyGroup* thePropertyGroup = new QgsLegendPropertyGroup( currentLayer, "Properties" );
-          setItemExpanded( thePropertyGroup, childelem.attribute( "open" ) == "true" );
+          // not used
         }
         else
         {
@@ -2153,7 +2163,7 @@ QgsLegendGroup* QgsLegend::findLegendGroup( const QString& name, const QString& 
 
 void QgsLegend::adjustIconSize()
 {
-  if ( mPixmapWidthValues.size() > 0 && mPixmapHeightValues.size() > 0 )
+  if ( !mPixmapWidthValues.empty() && !mPixmapHeightValues.empty() )
   {
     std::multiset<int>::const_reverse_iterator width_it = mPixmapWidthValues.rbegin();
     std::multiset<int>::const_reverse_iterator height_it = mPixmapHeightValues.rbegin();

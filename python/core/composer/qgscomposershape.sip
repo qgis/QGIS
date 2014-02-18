@@ -13,7 +13,7 @@ class QgsComposerShape: QgsComposerItem
       Triangle
     };
 
-    QgsComposerShape( QgsComposition* composition /TransferThis/);
+    QgsComposerShape( QgsComposition* composition /TransferThis/ );
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/);
     ~QgsComposerShape();
 
@@ -39,22 +39,34 @@ class QgsComposerShape: QgsComposerItem
     QgsComposerShape::Shape shapeType() const;
     void setShapeType( QgsComposerShape::Shape s );
 
-    /**Sets this items bound in scene coordinates such that 1 item size units
-     corresponds to 1 scene size unit. Also, the shape is scaled*/
-    void setSceneRect( const QRectF& rectangle );
-
     /**Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );
     /**Returns the radius for rounded rectangle corners*/
     double cornerRadius() const;
 
-  public slots:
-    /**Sets item rotation and resizes item bounds such that the shape always has the same size*/
-    virtual void setRotation( double r );
+    /**Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to
+     * enable drawing with a symbol.
+     * Note: added in version 2.1*/
+    void setShapeStyleSymbol( QgsFillSymbolV2* symbol );
+    /**Returns the QgsFillSymbolV2 used to draw the shape.
+     * Note: added in version 2.1*/
+    QgsFillSymbolV2* shapeStyleSymbol();
+
+    /**Controls whether the shape should be drawn using a QgsFillSymbolV2.
+     * Note: Added in v2.1 */
+    void setUseSymbolV2( bool useSymbolV2 );
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
     virtual void drawFrame( QPainter* p );
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
     virtual void drawBackground( QPainter* p );
+    /**reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
+     * rather than the item's pen */
+    virtual double estimatedFrameBleed() const;
+  public slots:
+    /**Should be called after the shape's symbol is changed. Redraws the shape and recalculates
+     * its selection bounds.
+     * Note: added in version 2.1*/
+    void refreshSymbol();
 };

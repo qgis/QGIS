@@ -128,7 +128,7 @@ namespace pal
   Layer *Pal::getLayer( const char *lyrName )
   {
     lyrsMutex->lock();
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
       if ( strcmp(( *it )->name, lyrName ) == 0 )
       {
         lyrsMutex->unlock();
@@ -181,7 +181,7 @@ namespace pal
     std::cout << "nbLayers:" << layers->size() << std::endl;
 #endif
 
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       if ( strcmp(( *it )->name, lyrName ) == 0 )   // if layer already known
       {
@@ -414,7 +414,7 @@ namespace pal
     lyrsMutex->lock();
     for ( i = 0; i < nbLayers; i++ )
     {
-      for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ ) // iterate on pal->layers
+      for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it ) // iterate on pal->layers
       {
         layer = *it;
         // Only select those who are active and labellable (with scale constraint) or those who are active and which must be treated as obstaclewhich must be treated as obstacle
@@ -664,7 +664,7 @@ namespace pal
     double *priorities = new double[nbLayers];
     Layer *layer;
     i = 0;
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       layer = *it;
       layersName[i] = layer->name;
@@ -835,7 +835,7 @@ namespace pal
     double *priorities = new double[nbLayers];
     Layer *layer;
     int i = 0;
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       layer = *it;
       layersName[i] = layer->name;

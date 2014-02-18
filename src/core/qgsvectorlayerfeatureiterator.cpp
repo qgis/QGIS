@@ -19,6 +19,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsgeometrysimplifier.h"
+#include "qgssimplifymethod.h"
 
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
@@ -27,15 +29,43 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
   mFields = layer->pendingFields();
   mJoinBuffer = new QgsVectorLayerJoinBuffer( *layer->mJoinBuffer );
 
+  mCanBeSimplified = layer->hasGeometryType() && layer->geometryType() != QGis::Point;
+
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
   {
-    mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
-    mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
-    mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
-    mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
-    mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
-    mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );
+    /* TODO[MD]: after merge
+    if ( request.filterType() == QgsFeatureRequest::FilterFid )
+    {
+  
+      // only copy relevant parts
+      if( L->editBuffer()->addedFeatures().contains( request.filterFid() ) )
+        mAddedFeatures.insert( request.filterFid(), L->editBuffer()->addedFeatures()[ request.filterFid() ] );
+
+      if( L->editBuffer()->changedGeometries().contains( request.filterFid() ) )
+        mChangedGeometries.insert( request.filterFid(), L->editBuffer()->changedGeometries()[ request.filterFid() ] );
+
+      if( L->editBuffer()->deletedFeatureIds().contains( request.filterFid() ) )
+        mDeletedFeatureIds.insert( request.filterFid() );
+
+      if( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
+        mChangedAttributeValues.insert( request.filterFid(), L->editBuffer()->changedAttributeValues()[ request.filterFid() ] );
+
+      if( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
+        mChangedFeaturesRequest.setFilterFids( QgsFeatureIds() << request.filterFid() );
+    }
+    else
+    {*/
+      mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
+      mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
+      mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
+      mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
+      mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
+      mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );        
+
+      // TODO[MD]: after merge
+      //mChangedFeaturesRequest.setFilterFids( L->editBuffer()->changedAttributeValues().keys().toSet() );
+    //}
   }
 }
 
@@ -54,6 +84,7 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator(QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
   : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+  , mEditGeometrySimplifier( 0 )
 {
 
   // prepare joins: may add more attributes to fetch (in order to allow join)
@@ -112,6 +143,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator(QgsVectorLayerFeatu
 
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
+  delete mEditGeometrySimplifier;
+  mEditGeometrySimplifier = NULL;
+
   close();
 }
 
@@ -255,7 +289,17 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
   f.setFields( &mSource->mFields );
 
   if ( src.geometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
     f.setGeometry( *src.geometry() );
+
+    // simplify the edited geometry using its simplifier configured
+    if ( mEditGeometrySimplifier )
+    {
+      QgsGeometry* geometry = f.geometry();
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
 
   // TODO[MD]: if subset set just some attributes
 
@@ -329,7 +373,17 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   f.setFields( &mSource->mFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
     f.setGeometry( geom );
+
+    // simplify the edited geometry using its simplifier configured
+    if ( mEditGeometrySimplifier )
+    {
+      QgsGeometry* geometry = f.geometry();
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
   if ( !subsetAttrs || ( subsetAttrs && mRequest.subsetOfAttributes().count() > 0 ) )
@@ -376,6 +430,9 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
 
   for ( QgsAttributeList::const_iterator attIt = fetchAttributes.constBegin(); attIt != fetchAttributes.constEnd(); ++attIt )
   {
+    if ( !mSource->mFields.exists( *attIt ) )
+      continue;
+
     if ( mSource->mFields.fieldOrigin( *attIt ) != QgsFields::OriginJoin )
       continue;
 
@@ -446,6 +503,40 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
   }
 }
 
+bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
+{
+  delete mEditGeometrySimplifier;
+  mEditGeometrySimplifier = NULL;
+
+  // setup simplification for edited geometries to fetch
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && mSource->mCanBeSimplified )
+  {
+    mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
+    return mEditGeometrySimplifier != NULL;
+  }
+  return false;
+}
+
+bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
+{
+  /* TODO[MD]: after merge
+  QgsVectorDataProvider* provider = L->dataProvider();
+
+  if ( provider && methodType != QgsSimplifyMethod::NoSimplification )
+  {
+    int capabilities = provider->capabilities();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+    {
+      return ( capabilities & QgsVectorDataProvider::SimplifyGeometries );
+    }
+    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      return ( capabilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
+    }
+  }*/
+  return false;
+}
 
 
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const
@@ -601,7 +692,7 @@ void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
   if ( mSource->mChangedAttributeValues.contains( f.id() ) )
   {
     const QgsAttributeMap &map = mSource->mChangedAttributeValues[f.id()];
-    for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
+    for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
 }

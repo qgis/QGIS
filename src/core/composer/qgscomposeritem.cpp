@@ -42,6 +42,10 @@
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
+#ifndef M_DEG2RAD
+#define M_DEG2RAD 0.0174532925
+#endif
+
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QObject( 0 )
     , QGraphicsRectItem( 0 )
@@ -54,7 +58,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
-    , mRotation( 0 )
+    , mItemRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
@@ -77,7 +81,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
-    , mRotation( 0 )
+    , mItemRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
@@ -86,9 +90,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
-  QTransform t;
-  t.translate( x, y );
-  setTransform( t );
+  setPos( x, y );
 }
 
 void QgsComposerItem::init( bool manageZValue )
@@ -98,6 +100,7 @@ void QgsComposerItem::init( bool manageZValue )
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidthF( 0.3 );
+  defaultPen.setJoinStyle( Qt::MiterJoin );
   setPen( defaultPen );
   //let z-Value be managed by composition
   if ( mComposition && manageZValue )
@@ -165,14 +168,14 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   }
 
   //scene rect
-  composerItemElem.setAttribute( "x", QString::number( transform().dx() ) );
-  composerItemElem.setAttribute( "y", QString::number( transform().dy() ) );
+  composerItemElem.setAttribute( "x", QString::number( pos().x() ) );
+  composerItemElem.setAttribute( "y", QString::number( pos().y() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
   composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
-  composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
+  composerItemElem.setAttribute( "itemRotation",  QString::number( mItemRotation ) );
   composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
@@ -226,7 +229,10 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //rotation
-  mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
+  if ( itemElem.attribute( "itemRotation", "0" ).toDouble() != 0 )
+  {
+    setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
+  }
 
   //uuid
   mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
@@ -313,6 +319,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     {
       QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
       framePen.setWidthF( penWidth );
+      framePen.setJoinStyle( Qt::MiterJoin );
       setPen( framePen );
     }
   }
@@ -342,6 +349,41 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
 
   return true;
+}
+
+void QgsComposerItem::setFrameEnabled( bool drawFrame )
+{
+  mFrame = drawFrame;
+  emit frameChanged();
+}
+
+void QgsComposerItem::setFrameOutlineWidth( double outlineWidth )
+{
+  QPen itemPen = pen();
+  if ( itemPen.widthF() == outlineWidth )
+  {
+    //no change
+    return;
+  }
+  itemPen.setWidthF( outlineWidth );
+  setPen( itemPen );
+  emit frameChanged();
+}
+
+double QgsComposerItem::estimatedFrameBleed() const
+{
+  if ( !hasFrame() )
+  {
+    return 0;
+  }
+
+  return pen().widthF() / 2.0;
+}
+
+QRectF QgsComposerItem::rectWithFrame() const
+{
+  double frameBleed = estimatedFrameBleed();
+  return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
 }
 
 void QgsComposerItem::beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c )
@@ -416,8 +458,7 @@ void QgsComposerItem::setPositionLock( bool lock )
 
 void QgsComposerItem::move( double dx, double dy )
 {
-  QTransform t = transform();
-  QRectF newSceneRect( t.dx() + dx, t.dy() + dy, rect().width(), rect().height() );
+  QRectF newSceneRect( pos().x() + dx, pos().y() + dy, rect().width(), rect().height() );
   setSceneRect( newSceneRect );
 }
 
@@ -428,7 +469,7 @@ void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode item
   setItemPosition( x, y, width, height, itemPoint );
 }
 
-void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint )
+void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint, bool posIncludesFrame )
 {
   double upperLeftX = x;
   double upperLeftY = y;
@@ -454,6 +495,28 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   else if ( itemPoint == LowerLeft || itemPoint == LowerMiddle || itemPoint == LowerRight )
   {
     upperLeftY -= height;
+  }
+
+  if ( posIncludesFrame )
+  {
+    //adjust position to account for frame size
+
+    if ( mItemRotation == 0 )
+    {
+      upperLeftX += estimatedFrameBleed();
+      upperLeftY += estimatedFrameBleed();
+    }
+    else
+    {
+      //adjust position for item rotation
+      QLineF lineToItemOrigin = QLineF( 0, 0, estimatedFrameBleed(), estimatedFrameBleed() );
+      lineToItemOrigin.setAngle( -45 - mItemRotation );
+      upperLeftX += lineToItemOrigin.x2();
+      upperLeftY += lineToItemOrigin.y2();
+    }
+
+    width -= 2 * estimatedFrameBleed();
+    height -= 2 * estimatedFrameBleed();
   }
 
   setSceneRect( QRectF( upperLeftX, upperLeftY, width, height ) );
@@ -482,11 +545,7 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 
   QRectF newRect( 0, 0, newWidth, newHeight );
   QGraphicsRectItem::setRect( newRect );
-
-  //set up transformation matrix for item coordinates
-  QTransform t;
-  t.translate( xTranslation, yTranslation );
-  setTransform( t );
+  setPos( xTranslation, yTranslation );
 
   emit sizeChanged();
 }
@@ -705,26 +764,127 @@ double QgsComposerItem::lockSymbolSize() const
 
 void QgsComposerItem::setRotation( double r )
 {
+  //kept for api compatibility with QGIS 2.0
+  //remove after 2.0 series
+  setItemRotation( r, true );
+}
+
+void QgsComposerItem::setItemRotation( double r, bool adjustPosition )
+{
+  if ( adjustPosition )
+  {
+    //adjustPosition set, so shift the position of the item so that rotation occurs around item center
+    //create a line from the centrepoint of the rect() to its origin, in scene coordinates
+    QLineF refLine = QLineF( mapToScene( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) ) , mapToScene( QPointF( 0 , 0 ) ) );
+    //rotate this line by the current rotation angle
+    refLine.setAngle( refLine.angle() - r + mItemRotation );
+    //get new end point of line - this is the new item position
+    QPointF rotatedReferencePoint = refLine.p2();
+    setPos( rotatedReferencePoint );
+    emit sizeChanged();
+  }
+
   if ( r > 360 )
   {
-    mRotation = (( int )r ) % 360;
+    mItemRotation = (( int )r ) % 360;
   }
   else
   {
-    mRotation = r;
+    mItemRotation = r;
   }
-  emit rotationChanged( r );
+
+  setTransformOriginPoint( 0, 0 );
+  QGraphicsItem::setRotation( mItemRotation );
+
+  emit itemRotationChanged( r );
   update();
 }
 
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
 {
-  if ( qAbs( mRotation ) <= 0.0 ) //width and height stays the same if there is no rotation
+  //kept for api compatibility with QGIS 2.0, use item rotation
+  return imageSizeConsideringRotation( width, height, mItemRotation );
+}
+
+QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
+{
+  double originalWidth = originalRect.width();
+  double originalHeight = originalRect.height();
+  double boundsWidth = boundsRect.width();
+  double boundsHeight = boundsRect.height();
+  double ratioBoundsRect = boundsWidth / boundsHeight;
+
+  //shortcut for some rotation values
+  if ( rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270 )
+  {
+    double originalRatio = originalWidth / originalHeight;
+    double rectScale = originalRatio > ratioBoundsRect ? boundsWidth / originalWidth : boundsHeight / originalHeight;
+    double rectScaledWidth = rectScale * originalWidth;
+    double rectScaledHeight = rectScale * originalHeight;
+
+    if ( rotation == 0 || rotation == 180 )
+    {
+      return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
+    }
+    else
+    {
+      return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledHeight, rectScaledWidth );
+    }
+  }
+
+  //convert angle to radians and flip
+  double angleRad = -rotation * M_DEG2RAD;
+  double cosAngle = cos( angleRad );
+  double sinAngle = sin( angleRad );
+
+  //calculate size of bounds of rotated rectangle
+  double widthBoundsRotatedRect = originalWidth * fabs( cosAngle ) + originalHeight * fabs( sinAngle );
+  double heightBoundsRotatedRect = originalHeight * fabs( cosAngle ) + originalWidth * fabs( sinAngle );
+
+  //compare ratio of rotated rect with bounds rect and calculate scaling of rotated
+  //rect to fit within bounds
+  double ratioBoundsRotatedRect = widthBoundsRotatedRect / heightBoundsRotatedRect;
+  double rectScale = ratioBoundsRotatedRect > ratioBoundsRect ? boundsWidth / widthBoundsRotatedRect : boundsHeight / heightBoundsRotatedRect;
+  double rectScaledWidth = rectScale * originalWidth;
+  double rectScaledHeight = rectScale * originalHeight;
+
+  //now calculate offset so that rotated rectangle is centered within bounds
+  //first calculate min x and y coordinates
+  double currentCornerX = 0;
+  double minX = 0;
+  currentCornerX += rectScaledWidth * cosAngle;
+  minX = minX < currentCornerX ? minX : currentCornerX;
+  currentCornerX += rectScaledHeight * sinAngle;
+  minX = minX < currentCornerX ? minX : currentCornerX;
+  currentCornerX -= rectScaledWidth * cosAngle;
+  minX = minX < currentCornerX ? minX : currentCornerX;
+
+  double currentCornerY = 0;
+  double minY = 0;
+  currentCornerY -= rectScaledWidth * sinAngle;
+  minY = minY < currentCornerY ? minY : currentCornerY;
+  currentCornerY += rectScaledHeight * cosAngle;
+  minY = minY < currentCornerY ? minY : currentCornerY;
+  currentCornerY += rectScaledWidth * sinAngle;
+  minY = minY < currentCornerY ? minY : currentCornerY;
+
+  //now calculate offset position of rotated rectangle
+  double offsetX = ratioBoundsRotatedRect > ratioBoundsRect ? 0 : ( boundsWidth - rectScale * widthBoundsRotatedRect ) / 2.0;
+  offsetX += fabs( minX );
+  double offsetY = ratioBoundsRotatedRect > ratioBoundsRect ? ( boundsHeight - rectScale * heightBoundsRotatedRect ) / 2.0 : 0;
+  offsetY += fabs( minY );
+
+  return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
+}
+
+bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation ) const
+{
+  if ( qAbs( rotation ) <= 0.0 ) //width and height stays the same if there is no rotation
   {
     return true;
   }
 
-  if ( qgsDoubleNear( qAbs( mRotation ), 90 ) || qgsDoubleNear( qAbs( mRotation ), 270 ) )
+  if ( qgsDoubleNear( qAbs( rotation ), 90 ) || qgsDoubleNear( qAbs( rotation ), 270 ) )
   {
     double tmp = width;
     width = height;
@@ -743,19 +903,19 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   double midX = width / 2.0;
   double midY = height / 2.0;
 
-  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height, rotation ) )
   {
     return false;
   }
-  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height, rotation ) )
   {
     return false;
   }
-  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height, rotation ) )
   {
     return false;
   }
-  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height, rotation ) )
   {
     return false;
   }
@@ -783,8 +943,14 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
+  //kept for api compatibility with QGIS 2.0, use item rotation
+  return cornerPointOnRotatedAndScaledRect( x, y, width, height, mItemRotation );
+}
+
+bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const
+{
   //first rotate point clockwise
-  double rotToRad = mRotation * M_PI / 180.0;
+  double rotToRad = rotation * M_PI / 180.0;
   QPointF midpoint( width / 2.0, height / 2.0 );
   double xVector = x - midpoint.x();
   double yVector = y - midpoint.y();
@@ -820,7 +986,13 @@ bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, d
 
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
 {
-  if ( mRotation == 0.0 )
+  //kept for api compatibility with QGIS 2.0, use item rotation
+  return sizeChangedByRotation( width, height, mItemRotation );
+}
+
+void QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
+{
+  if ( rotation == 0.0 )
   {
     return;
   }
@@ -828,19 +1000,19 @@ void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
   //vector to p1
   double x1 = -width / 2.0;
   double y1 = -height / 2.0;
-  rotate( mRotation, x1, y1 );
+  rotate( rotation, x1, y1 );
   //vector to p2
   double x2 = width / 2.0;
   double y2 = -height / 2.0;
-  rotate( mRotation, x2, y2 );
+  rotate( rotation, x2, y2 );
   //vector to p3
   double x3 = width / 2.0;
   double y3 = height / 2.0;
-  rotate( mRotation, x3, y3 );
+  rotate( rotation, x3, y3 );
   //vector to p4
   double x4 = -width / 2.0;
   double y4 = height / 2.0;
-  rotate( mRotation, x4, y4 );
+  rotate( rotation, x4, y4 );
 
   //double midpoint
   QPointF midpoint( width / 2.0, height / 2.0 );

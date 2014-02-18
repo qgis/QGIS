@@ -177,7 +177,6 @@ namespace pal
 
     double amin[2];
     double amax[2];
-    LabelPosition *lp;
     LabelPosition *lp2;
 
     while ( run )
@@ -190,7 +189,7 @@ namespace pal
         {
           if ( !ok[featStartId[i] + j] )
           {
-            if (( lp = labelpositions[featStartId[i] + j] )->getNumOverlaps() == 0 ) // if candidate has no overlap
+            if ( labelpositions[featStartId[i] + j]->getNumOverlaps() == 0 ) // if candidate has no overlap
             {
               run = true;
               ok[featStartId[i] + j] = true;
@@ -212,7 +211,6 @@ namespace pal
                 lp2->removeFromIndex( candidates );
               }
 
-              //lp->removeFromIndex(candidates);
               featNbLp[i] = j + 1;
               break;
             }
@@ -462,7 +460,9 @@ namespace pal
 
     SubPart *current = NULL;
 
+#if _VERBOSE_
     int subPartTotalSize = 0;
+#endif
 
     labelPositionCost = new double[all_nblp];
     nbOlap = new int[all_nblp];
@@ -479,7 +479,9 @@ namespace pal
     for ( i = 0; i < nbft; i++ )
     {
       parts[i] = subPart( r, i, isIn );
+#if _VERBOSE_
       subPartTotalSize += parts[i]->subSize;
+#endif
       ok[i] = false;
     }
     delete[] isIn;
@@ -612,7 +614,9 @@ namespace pal
     search_time = clock();
     std::cout << "   Improved solution: " << ( double )( search_time - start_time ) / ( double ) CLOCKS_PER_SEC << " (solution cost: " << sol->cost << ", nbDisplayed: " << nbActive << " (" << ( double ) nbActive / ( double ) nbft << ")" << std::endl;
 
+#if _VERBOSE_
     std::cerr << "\t" << subPartTotalSize;
+#endif
     if ( searchMethod == POPMUSIC_TABU )
       std::cerr << "\tpop_tabu\t";
     else if ( searchMethod == POPMUSIC_TABU_CHAIN )
@@ -976,8 +980,6 @@ namespace pal
     max_it = probSize * pal->tabuMaxIt;
     itwImp = probSize * pal->tabuMinIt;
     stop_it = itwImp;
-
-    max_it = probSize * pal->tabuMaxIt;
 
     cur_cost = 0.0;
     nbOverlap = 0;
@@ -1990,7 +1992,7 @@ namespace pal
     double cur_cost = 0;
     double best_cost = 0;
 
-    int nbOverlap = 0;
+    // int nbOverlap = 0;
 
     int seed;
 
@@ -2015,7 +2017,7 @@ namespace pal
     for ( i = 0; i < subSize; i++ )
     {
       cur_cost += compute_feature_cost( part, i, sol[i], &featOv );
-      nbOverlap += featOv;
+      // nbOverlap += featOv;
     }
 
     initial_cost = cur_cost;
@@ -2147,7 +2149,7 @@ namespace pal
     double cur_cost = 0;
     double best_cost = 0;
 
-    int nbOverlap = 0;
+    // int nbOverlap = 0;
 
     int seed;
 
@@ -2155,9 +2157,6 @@ namespace pal
 
     int lid;
     int fid;
-
-    int *tmpsol = new int[subSize];
-
 
     int *tabu_list = new int[subSize];
 
@@ -2183,7 +2182,7 @@ namespace pal
     for ( i = 0; i < subSize; i++ )
     {
       cur_cost += compute_feature_cost( part, i, sol[i], &featOv );
-      nbOverlap += featOv;
+      // nbOverlap += featOv;
     }
 
     initial_cost = cur_cost;
@@ -2382,7 +2381,6 @@ namespace pal
       featWrap[sub[i]] = -1;
 
     delete[] best_sol;
-    delete[] tmpsol;
     delete[] tabu_list;
 
 
@@ -2400,8 +2398,6 @@ namespace pal
 
   void Problem::check_solution()
   {
-
-    LabelPosition *lp;
     int *solution = new int[nbft];
 
     double amin[2];
@@ -2434,7 +2430,7 @@ namespace pal
 
     while ( list->size() > 0 )
     {
-      lp = list->pop_front();
+      LabelPosition *lp = list->pop_front();
       int probFeatId = lp->getProblemFeatureId();
       if ( solution[probFeatId] >= 0 )
       {
@@ -2454,6 +2450,8 @@ namespace pal
         std::cerr << "Feat " << i << " : " << solution[i] << "<-->" << sol->s[i] << std::endl;
       }
     }
+
+    delete [] solution;
   }
 
   typedef struct _nokContext

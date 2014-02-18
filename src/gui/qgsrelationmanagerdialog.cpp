@@ -118,7 +118,8 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
 
 void QgsRelationManagerDialog::on_mBtnRemoveRelation_clicked()
 {
-  mRelationsTable->removeRow( mRelationsTable->currentItem()->row() );
+  if ( mRelationsTable->currentIndex().isValid() )
+    mRelationsTable->removeRow( mRelationsTable->currentItem()->row() );
 }
 
 QList< QgsRelation > QgsRelationManagerDialog::relations()

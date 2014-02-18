@@ -8,6 +8,8 @@ class QgsHighlight : QgsMapCanvasItem
     ~QgsHighlight();
 
     void setColor( const QColor & color );
+
+    /** Set width. Ignored in feature mode. */
     void setWidth( int width );
 
   protected:

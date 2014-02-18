@@ -73,7 +73,7 @@ namespace QgsMapToolSelectUtils
   @param vlayer The vector layer layer
   @param vlayer The point to expand the rectangle around
   */
-  void expandSelectRectangle( QRect& selectRect, QgsVectorLayer* vlayer, const QPoint point );
+  void expandSelectRectangle( QRect& selectRect, QgsVectorLayer* vlayer, const QPoint &point );
 
   /**
   Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords

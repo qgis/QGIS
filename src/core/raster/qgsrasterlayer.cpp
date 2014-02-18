@@ -293,7 +293,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
+    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, theRasterViewPort->mSrcDatumTransform, theRasterViewPort->mDestDatumTransform );
   }
 
   // Drawer to pipe?
@@ -1129,6 +1129,8 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
   myRasterViewPort->mDrawnExtent = myExtent;
   myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
   myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mSrcDatumTransform = -1;
+  myRasterViewPort->mDestDatumTransform = -1;
 
   QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
 

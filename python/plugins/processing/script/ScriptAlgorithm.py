@@ -35,6 +35,7 @@ from processing.parameters.ParameterTable import ParameterTable
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
@@ -51,7 +52,6 @@ from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputFile import OutputFile
 from processing.outputs.OutputFactory import OutputFactory
 from processing.script.WrongScriptException import WrongScriptException
-
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -128,7 +128,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         if '|' in line:
             self.processDescriptionParameterLine(line)
             return
-        tokens = line.split('=')
+        tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
             self.group = tokens[0]
@@ -141,6 +141,15 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip() == 'vector':
             param = ParameterVector(tokens[0], desc,
                                     [ParameterVector.VECTOR_TYPE_ANY])
+        elif tokens[1].lower().strip() == 'vector point':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POINT])
+        elif tokens[1].lower().strip() == 'vector line':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_LINE])
+        elif tokens[1].lower().strip() == 'vector polygon':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POLYGON])
         elif tokens[1].lower().strip() == 'table':
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip() == 'multiple raster':
@@ -178,6 +187,11 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
+        elif tokens[1].lower().strip().startswith('crs'):
+            default = tokens[1].strip()[len('crs') + 1:]
+            if not default:
+                default = 'EPSG:4326'
+            param = ParameterCrs(tokens[0], desc, default)
         elif tokens[1].lower().strip().startswith('output raster'):
             out = OutputRaster()
         elif tokens[1].lower().strip().startswith('output vector'):
@@ -240,7 +254,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             out.setValue(ns[out.name])
 
     def helpFile(self):
-        helpfile = unicode(self.descriptionFile) + '.help'
+        helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
             h2h = Help2Html()
             return h2h.getHtmlFile(self, helpfile)

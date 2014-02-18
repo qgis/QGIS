@@ -248,38 +248,46 @@ void QgsOfflineEditing::synchronize()
 
 void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 {
-// attempting to perform self-initialization for a newly created DB
-  int ret;
-  char sql[1024];
-  char *errMsg = NULL;
-  int count = 0;
-  int i;
-  char **results;
-  int rows;
-  int columns;
-
-  if ( sqlite_handle == NULL )
+  // attempting to perform self-initialization for a newly created DB
+  if ( !sqlite_handle )
     return;
   // checking if this DB is really empty
-  strcpy( sql, "SELECT Count(*) from sqlite_master" );
-  ret = sqlite3_get_table( sqlite_handle, sql, &results, &rows, &columns, NULL );
+  char **results;
+  int rows, columns;
+  int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, NULL );
   if ( ret != SQLITE_OK )
     return;
-  if ( rows < 1 )
-    ;
-  else
+  int count = 0;
+  if ( rows >= 1 )
   {
-    for ( i = 1; i <= rows; i++ )
+    for ( int i = 1; i <= rows; i++ )
       count = atoi( results[( i * columns ) + 0] );
   }
+
   sqlite3_free_table( results );
 
   if ( count > 0 )
     return;
 
+  bool above41 = false;
+  ret = sqlite3_get_table( sqlite_handle, "select spatialite_version()", &results, &rows, &columns, NULL );
+  if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
+  {
+    QString version = QString::fromUtf8( results[1] );
+    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    if ( parts.size() >= 1 )
+    {
+      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
+    }
+  }
+
+  sqlite3_free_table( results );
+
   // all right, it's empty: proceding to initialize
-  strcpy( sql, "SELECT InitSpatialMetadata()" );
-  ret = sqlite3_exec( sqlite_handle, sql, NULL, NULL, &errMsg );
+  char *errMsg = 0;
+  ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", NULL, NULL, &errMsg );
+
   if ( ret != SQLITE_OK )
   {
     QString errCause = tr( "Unable to initialize SpatialMetadata:\n" );
@@ -403,7 +411,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
   {
     QString dataType = "";
     QVariant::Type type = fields[idx].type();
-    if ( type == QVariant::Int )
+    if ( type == QVariant::Int || type == QVariant::LongLong )
     {
       dataType = "INTEGER";
     }
@@ -614,6 +622,15 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   QString sql = QString( "SELECT \"fid\" FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
   QList<int> newFeatureIds = sqlQueryInts( db, sql );
 
+  // get default value for each field
+  const QgsFields& remoteFlds = remoteLayer->pendingFields();
+  QVector<QVariant> defaultValues( remoteFlds.count() );
+  for ( int i = 0; i < remoteFlds.count(); ++i )
+  {
+    if ( remoteFlds.fieldOrigin( i ) == QgsFields::OriginProvider )
+      defaultValues[i] = remoteLayer->dataProvider()->defaultValue( remoteFlds.fieldOriginIndex( i ) );
+  }
+
   // get new features from offline layer
   QgsFeatureList features;
   for ( int i = 0; i < newFeatureIds.size(); i++ )
@@ -643,6 +660,15 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
     {
       newAttrs[ attrLookup[ it ] ] = attrs[ it ];
     }
+
+    // try to use default value from the provider
+    // (important especially e.g. for postgis primary key generated from a sequence)
+    for ( int k = 0; k < newAttrs.count(); ++k )
+    {
+      if ( newAttrs[k].isNull() && !defaultValues[k].isNull() )
+        newAttrs[k] = defaultValues[k];
+    }
+
     f.setAttributes( newAttrs );
 
     remoteLayer->addFeature( f, false );
@@ -681,7 +707,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
 
-    remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value, false );
+    remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value );
 
     emit progressUpdated( i + 1 );
   }

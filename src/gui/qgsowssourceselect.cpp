@@ -68,6 +68,8 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
     mDialogButtonBox->button( QDialogButtonBox::Close )->hide();
   }
 
+  setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
+
   mAddButton = mDialogButtonBox->button( QDialogButtonBox::Apply );
   mAddButton->setText( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
@@ -237,21 +239,6 @@ void QgsOWSSourceSelect::populateConnectionList()
   mConnectionsComboBox->addItems( QgsOWSConnection::connectionList( mService ) );
 
   setConnectionListPosition();
-
-  if ( mConnectionsComboBox->count() == 0 )
-  {
-    // No connections - disable various buttons
-    mConnectButton->setEnabled( false );
-    mEditButton->setEnabled( false );
-    mDeleteButton->setEnabled( false );
-  }
-  else
-  {
-    // Connections - enable various buttons
-    mConnectButton->setEnabled( true );
-    mEditButton->setEnabled( true );
-    mDeleteButton->setEnabled( true );
-  }
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
@@ -441,7 +428,7 @@ void QgsOWSSourceSelect::populateCRS()
     // if not, use one of the available CRS
     QString defaultCRS;
     QSet<QString>::const_iterator it = mSelectedLayersCRSs.begin();
-    for ( ; it != mSelectedLayersCRSs.end(); it++ )
+    for ( ; it != mSelectedLayersCRSs.end(); ++it )
     {
       if ( it->compare( mSelectedCRS, Qt::CaseInsensitive ) == 0 )
         break;
@@ -544,6 +531,24 @@ void QgsOWSSourceSelect::setConnectionListPosition()
     else
       mConnectionsComboBox->setCurrentIndex( mConnectionsComboBox->count() - 1 );
   }
+
+  if ( mConnectionsComboBox->count() == 0 )
+  {
+    // No connections - disable various buttons
+    mConnectButton->setEnabled( false );
+    mEditButton->setEnabled( false );
+    mDeleteButton->setEnabled( false );
+    mSaveButton->setEnabled( false );
+  }
+  else
+  {
+    // Connections - enable various buttons
+    mConnectButton->setEnabled( true );
+    mEditButton->setEnabled( true );
+    mDeleteButton->setEnabled( true );
+    mSaveButton->setEnabled( true );
+  }
+
   QgsOWSConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 

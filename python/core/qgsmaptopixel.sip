@@ -48,6 +48,7 @@ class QgsMapToPixel
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform.
+       @note not available in python bindings
      */
     // void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
 

@@ -17,6 +17,7 @@ class QgsComposerTextTable: QgsComposerTable
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
   protected:
+    //! @note not available in python bindings
     // bool getFeatureAttributes( QList< QMap<int, QVariant> >& attributes );
     QMap<int, QString> getHeaderLabels() const;
 };

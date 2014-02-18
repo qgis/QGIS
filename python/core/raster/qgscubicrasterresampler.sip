@@ -6,7 +6,7 @@ class QgsCubicRasterResampler: QgsRasterResampler
   public:
     QgsCubicRasterResampler();
     ~QgsCubicRasterResampler();
+    QgsRasterResampler * clone() const /Factory/;
     void resample( const QImage& srcImage, QImage& dstImage );
     QString type() const;
-    QgsRasterResampler * clone() const /Factory/;
 };

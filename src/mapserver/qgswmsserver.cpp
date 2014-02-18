@@ -601,6 +601,24 @@ QDomDocument QgsWMSServer::getStyle()
   return mConfigParser->getStyle( styleName, layerName );
 }
 
+// GetStyles is only defined for WMS1.1.1/SLD1.0
+QDomDocument QgsWMSServer::getStyles()
+{
+  QDomDocument doc;
+  if ( !mParameterMap.contains( "LAYERS" ) )
+  {
+    throw QgsMapServiceException( "LayerNotSpecified", "Layers is mandatory for GetStyles operation" );
+  }
+
+  QStringList layersList = mParameterMap[ "LAYERS" ].split( ",", QString::SkipEmptyParts );
+  if ( layersList.size() < 1 )
+  {
+    throw QgsMapServiceException( "LayerNotSpecified", "Layers is mandatory for GetStyles operation" );
+  }
+
+  return mConfigParser->getStyles( layersList );
+}
+
 QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 {
   QStringList layersList, stylesList, layerIdList;
@@ -703,6 +721,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   return ba;
 }
 
+#if 0
 QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
 {
   int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
@@ -718,6 +737,7 @@ QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
   p.end();
   return image;
 }
+#endif
 
 QImage* QgsWMSServer::getMap()
 {
@@ -833,19 +853,15 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   }
 
   //read I,J resp. X,Y
-  QString iString, jString;
-  int i = -1;
-  int j = -1;
-
-  iString = mParameterMap.value( "I", mParameterMap.value( "X" ) );
-  i = iString.toInt( &conversionSuccess );
+  QString iString = mParameterMap.value( "I", mParameterMap.value( "X" ) );
+  int i = iString.toInt( &conversionSuccess );
   if ( !conversionSuccess )
   {
     i = -1;
   }
 
-  jString = mParameterMap.value( "J", mParameterMap.value( "Y" ) );
-  j = jString.toInt( &conversionSuccess );
+  QString jString = mParameterMap.value( "J", mParameterMap.value( "Y" ) );
+  int j = jString.toInt( &conversionSuccess );
   if ( !conversionSuccess )
   {
     j = -1;
@@ -886,9 +902,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     getFeatureInfoElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
     getFeatureInfoElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
     getFeatureInfoElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://qgis.org/gml" );
     getFeatureInfoElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" );
   }
   else
   {
@@ -1202,6 +1218,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     return 1; //paint device is needed for height, width, dpi
   }
 
+  mMapRenderer->clearLayerCoordinateTransforms();
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
 
   //map extent
@@ -1259,6 +1276,18 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     mMapRenderer->setDestinationCrs( outputCRS );
     mMapRenderer->setProjectionsEnabled( true );
     mapUnits = outputCRS.mapUnits();
+
+    //read layer coordinate transforms from project file (e.g. ct with special datum shift)
+    if ( mConfigParser )
+    {
+      QList< QPair< QString, QgsLayerCoordinateTransform > > lt = mConfigParser->layerCoordinateTransforms();
+      QList< QPair< QString, QgsLayerCoordinateTransform > >::const_iterator ltIt = lt.constBegin();
+      for ( ; ltIt != lt.constEnd(); ++ltIt )
+      {
+        QgsLayerCoordinateTransform t = ltIt->second;
+        mMapRenderer->addLayerCoordinateTransform( ltIt->first, t.srcAuthId, t.destAuthId, t.srcDatumTransform, t.destDatumTransform );
+      }
+    }
   }
   mMapRenderer->setMapUnits( mapUnits );
 
@@ -1634,9 +1663,9 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
     for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
     {
       theMapLayer = layerList.at( listIndex );
-      QgsDebugMsg( QString( "Checking layer: %1" ).arg( theMapLayer->name() ) );
       if ( theMapLayer )
       {
+        QgsDebugMsg( QString( "Checking layer: %1" ).arg( theMapLayer->name() ) );
         //test if layer is visible in requested scale
         bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
         if ( !useScaleConstraint ||
@@ -2026,7 +2055,7 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
 
 void QgsWMSServer::groupStringList( QStringList& list, const QString& groupString )
 {
-  //group contens within single quotes together
+  //group contents within single quotes together
   bool groupActive = false;
   int startGroup = -1;
   int endGroup = -1;
@@ -2061,7 +2090,7 @@ void QgsWMSServer::groupStringList( QStringList& list, const QString& groupStrin
         list[startGroup] = concatString;
         for ( int j = startGroup + 1; j <= endGroup; ++j )
         {
-          list.removeAt( j );
+          list.removeAt( startGroup + 1 );
           --i;
         }
       }
@@ -2163,7 +2192,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
   QList< QPair< QgsMapLayer*, int > > layerOpacityList;
   QStringList::const_iterator oIt = opacityList.constBegin();
   QStringList::const_iterator lIt = layerList.constBegin();
-  for ( ; oIt != opacityList.constEnd(); ++oIt, ++lIt )
+  for ( ; oIt != opacityList.constEnd() && lIt != layerList.constEnd(); ++oIt, ++lIt )
   {
     //get layer list for
     int opacity = oIt->toInt();

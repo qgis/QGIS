@@ -37,10 +37,10 @@ static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mActionConvertProject( NULL )
-    , mActionSynchronize( NULL )
-    , mOfflineEditing( NULL )
-    , mProgressDialog( NULL )
+    , mActionConvertProject( 0 )
+    , mActionSynchronize( 0 )
+    , mOfflineEditing( 0 )
+    , mProgressDialog( 0 )
 {
 }
 
@@ -51,8 +51,11 @@ QgsOfflineEditingPlugin::~QgsOfflineEditingPlugin()
 
 void QgsOfflineEditingPlugin::initGui()
 {
+  delete mActionConvertProject;
+
   // Create the action for tool
   mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to offline project" ), this );
+  mActionConvertProject->setObjectName( "mActionConvertProject" );
   // Set the what's this text
   mActionConvertProject->setWhatsThis( tr( "Create offline copies of selected layers and save as offline project" ) );
   // Connect the action to the run
@@ -63,6 +66,7 @@ void QgsOfflineEditingPlugin::initGui()
   mActionConvertProject->setEnabled( false );
 
   mActionSynchronize = new QAction( QIcon( ":/offline_editing/offline_editing_sync.png" ), tr( "Synchronize" ), this );
+  mActionSynchronize->setObjectName( "mActionSynchronize" );
   mActionSynchronize->setWhatsThis( tr( "Synchronize offline project with remote layers" ) );
   connect( mActionSynchronize, SIGNAL( triggered() ), this, SLOT( synchronize() ) );
   mQGisIface->addDatabaseToolBarIcon( mActionSynchronize );

@@ -74,16 +74,17 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       self.batchRun()
 
   def batchRun(self):
-      self.base.enableRun( False )
-      self.base.setCursor( Qt.WaitCursor )
+      self.inFiles = Utils.getRasterFiles( self.getInputFileName(), self.isRecursiveScanEnabled() )
+      if len(self.inFiles) == 0:
+        QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "No input files to process." ) )
+        return
 
-      inDir = self.getInputFileName()
-
-      self.inFiles = Utils.getRasterFiles( inDir, self.isRecursiveScanEnabled() )
       self.outFiles = []
-
       for f in self.inFiles:
         self.outFiles.append( self.getBatchOutputFileName( f ) )
+
+      self.base.enableRun( False )
+      self.base.setCursor( Qt.WaitCursor )
 
       self.errors = []
       self.batchIndex = 0

@@ -15,6 +15,7 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconnpool.h"
+#include "qgsgeometry.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -39,7 +40,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   }
 
   mCursorName = mConn->uniqueCursorName();
-
   QString whereClause;
 
   if ( request.filterType() == QgsFeatureRequest::FilterRect && !mSource->mGeometryColumn.isNull() )
@@ -153,6 +153,29 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
+bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
+{
+  // setup simplification of geometries to fetch
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
+  {
+    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      return true;
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
+    }
+  }
+  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
+}
+
+bool QgsPostgresFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
+{
+  return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
+}
 
 bool QgsPostgresFeatureIterator::rewind()
 {
@@ -161,7 +184,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
   // move cursor to first record
   mConn->PQexecNR( QString( "move absolute 0 in %1" ).arg( mCursorName ) );
-  mFeatureQueue.empty();
+  mFeatureQueue.clear();
   mFetched = 0;
 
   return true;
@@ -196,8 +219,12 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   if ( mSource->mSpatialColType == sctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
-    if ( !rect.isFinite() )
-      return "false";
+  }
+
+  if ( !rect.isFinite() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Infinite filter rectangle specified" ), QObject::tr( "PostGIS" ) );
+    return "false";
   }
 
   QString qBox;
@@ -260,9 +287,29 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   //}
 
 
+    const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+
     QString query = "SELECT ", delim = "";
 
-    if ( mFetchGeometry )
+    bool isPointLayer = QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown ? mSource->mRequestedGeomType : mSource->mDetectedGeomType ) ) == QGis::WKBPoint;
+    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !isPointLayer )
+    {
+      QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
+                                     ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
+                                         : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
+
+      double tolerance = simplifyMethod.tolerance() * 0.8; //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+
+      query += QString( "%1(%5(%2%3,%6),'%4')" )
+               .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+               .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
+               .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
+               .arg( QgsPostgresProvider::endianString() )
+               .arg( simplifyFunctionName )
+               .arg( tolerance );
+      delim = ",";
+    }
+    else if ( mFetchGeometry )
     {
       query += QString( "%1(%2%3,'%4')" )
                .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
@@ -341,46 +388,13 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       if ( returnedLength > 0 )
       {
         unsigned char *featureGeom = new unsigned char[returnedLength + 1];
-        memset( featureGeom, 0, returnedLength + 1 );
         memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
+        memset( featureGeom + returnedLength, 0, 1 );
 
         // modify 2.5D WKB types to make them compliant with OGR
         unsigned int wkbType;
         memcpy( &wkbType, featureGeom + 1, sizeof( wkbType ) );
-
-        // convert unsupported types to supported ones
-        switch ( wkbType )
-        {
-          case 15:
-            // 2D polyhedral => multipolygon
-            wkbType = 6;
-            break;
-          case 1015:
-            // 3D polyhedral => multipolygon
-            wkbType = 1006;
-            break;
-          case 17:
-            // 2D triangle => polygon
-            wkbType = 3;
-            break;
-          case 1017:
-            // 3D triangle => polygon
-            wkbType = 1003;
-            break;
-          case 16:
-            // 2D TIN => multipolygon
-            wkbType = 6;
-            break;
-          case 1016:
-            // TIN => multipolygon
-            wkbType = 1006;
-            break;
-        }
-        // convert from postgis types to qgis types
-        if ( wkbType >= 1000 )
-        {
-          wkbType = wkbType - 1000 + QGis::WKBPoint25D - 1;
-        }
+        wkbType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
         memcpy( featureGeom + 1, &wkbType, sizeof( wkbType ) );
 
         // change wkb type of inner geometries
@@ -388,43 +402,14 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
              wkbType == QGis::WKBMultiLineString25D ||
              wkbType == QGis::WKBMultiPolygon25D )
         {
-          unsigned int numGeoms = *(( int* )( featureGeom + 5 ) );
-          unsigned char* wkb = featureGeom + 9;
+          unsigned int numGeoms;
+          memcpy( &numGeoms, featureGeom + 5, sizeof( unsigned int ) );
+          unsigned char *wkb = featureGeom + 9;
           for ( unsigned int i = 0; i < numGeoms; ++i )
           {
             unsigned int localType;
             memcpy( &localType, wkb + 1, sizeof( localType ) );
-            switch ( localType )
-            {
-              case 15:
-                // 2D polyhedral => multipolygon
-                localType = 6;
-                break;
-              case 1015:
-                // 3D polyhedral => multipolygon
-                localType = 1006;
-                break;
-              case 17:
-                // 2D triangle => polygon
-                localType = 3;
-                break;
-              case 1017:
-                // 3D triangle => polygon
-                localType = 1003;
-                break;
-              case 16:
-                // 2D TIN => multipolygon
-                localType = 6;
-                break;
-              case 1016:
-                // TIN => multipolygon
-                localType = 1006;
-                break;
-            }
-            if ( localType >= 1000 )
-            {
-              localType = localType - 1000 + QGis::WKBPoint25D - 1;
-            }
+            localType = QgsPostgresConn::wkbTypeFromOgcWkbType( localType );
             memcpy( wkb + 1, &localType, sizeof( localType ) );
 
             // skip endian and type info
@@ -438,21 +423,22 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
                 break;
               case QGis::WKBMultiLineString25D:
               {
-                unsigned int nPoints = *(( int* ) wkb );
-                wkb += sizeof( nPoints );
-                wkb += sizeof( double ) * 3 * nPoints;
+                unsigned int nPoints;
+                memcpy( &nPoints, wkb, sizeof( int ) );
+                wkb += sizeof( int ) + sizeof( double ) * 3 * nPoints;
               }
               break;
               default:
               case QGis::WKBMultiPolygon25D:
               {
-                unsigned int nRings = *(( int* ) wkb );
-                wkb += sizeof( nRings );
+                unsigned int nRings;
+                memcpy( &nRings, wkb, sizeof( int ) );
+                wkb += sizeof( int );
                 for ( unsigned int j = 0; j < nRings; ++j )
                 {
-                  unsigned int nPoints = *(( int* ) wkb );
-                  wkb += sizeof( nPoints );
-                  wkb += sizeof( double ) * 3 * nPoints;
+                  unsigned int nPoints;
+                  memcpy( &nPoints, wkb, sizeof( int ) );
+                  wkb += sizeof( nPoints ) + sizeof( double ) * 3 * nPoints;
                 }
               }
               break;

@@ -207,7 +207,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QFrame" name="mPluginsFrame">
+     <widget class="QFrame" name="mOptionsFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>2</horstretch>
@@ -223,14 +223,14 @@
       <property name="lineWidth">
        <number>0</number>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <property name="spacing">
+        <number>6</number>
+       </property>
        <property name="margin">
         <number>0</number>
        </property>
-       <property name="spacing">
-        <number>-1</number>
-       </property>
-       <item row="0" column="0">
+       <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -258,25 +258,6 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLabel" name="lbStatusFilter">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Plugins</string>
-             </property>
-            </widget>
-           </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
@@ -486,19 +467,33 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLabel" name="lblSettingsTab">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Settings</string>
-             </property>
-            </widget>
-           </item>
+
+              <item>
+               <widget class="QLabel" name="labelNoPython">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+                <property name="margin">
+                 <number>20</number>
+                </property>
+                <property name="indent">
+                 <number>0</number>
+                </property>
+               </widget>
+              </item>
+
            <item>
             <widget class="QFrame" name="frameSettings">
              <property name="sizePolicy">
@@ -524,36 +519,11 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>352</width>
-                   <height>758</height>
+                   <width>574</width>
+                   <height>653</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                  <item>
-                   <widget class="QLabel" name="labelNoPython">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                    <property name="margin">
-                     <number>20</number>
-                    </property>
-                    <property name="indent">
-                     <number>0</number>
-                    </property>
-                   </widget>
-                  </item>
                   <item>
                    <widget class="QGroupBox" name="ckbCheckUpdates">
                     <property name="enabled">
@@ -971,15 +941,15 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -31,13 +31,15 @@ std::map<QString, QPixmap> mugs;
 */
 #ifdef Q_OS_MACX
 QgsAbout::QgsAbout( QWidget *parent )
-    : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+    : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
 QgsAbout::QgsAbout( QWidget *parent )
-    : QDialog( parent )  // Normal dialog in non Mac-OS
+    : QgsOptionsDialogBase( "about", parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
+  QString title = QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize );
+  initOptionsBase( true, title );
   init();
 }
 
@@ -48,8 +50,6 @@ QgsAbout::~QgsAbout()
 void QgsAbout::init()
 {
   setPluginInfo();
-
-  setWindowTitle( QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
 
   // set the 60x60 icon pixmap
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
@@ -130,8 +130,8 @@ void QgsAbout::init()
     QString donorsHTML = ""
                          + tr( "<p>For a list of individuals and institutions who have contributed "
                                "money to fund QGIS development and other project costs see "
-                               "<a href=\"http://qgis.org/en/sponsorship/donors.html\">"
-                               "http://qgis.org/en/sponsorship/donors.html</a></p>" );
+                               "<a href=\"http://qgis.org/en/site/about/sponsorship.html#list-of-donors\">"
+                               "http://qgis.org/en/site/about/sponsorship.html#list-of-donors</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );

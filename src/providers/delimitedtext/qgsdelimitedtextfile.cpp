@@ -374,7 +374,6 @@ QString QgsDelimitedTextFile::encodeChars( QString chars )
 void QgsDelimitedTextFile::setTypeCSV( QString delim, QString quote, QString escape )
 {
   resetDefinition();
-  mType = DelimTypeRegexp;
   mType = DelimTypeCSV;
   mDelimChars = decodeChars( delim );
   mQuoteChar = decodeChars( quote );

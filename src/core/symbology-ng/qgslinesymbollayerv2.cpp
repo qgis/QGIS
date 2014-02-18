@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgslinesymbollayerv2.h"
+#include "qgsdxfexport.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometrysimplifier.h"
 
 #include <QPainter>
 #include <QDomDocument>
@@ -28,7 +30,7 @@
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
     : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mOffsetUnit( QgsSymbolV2::MM ),
-    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM )
+    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM ), mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;
@@ -90,6 +92,11 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "customdash_unit" ) )
   {
     l->setCustomDashPatternUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["customdash_unit"] ) );
+  }
+
+  if ( props.contains( "draw_inside_polygon" ) )
+  {
+    l->setDrawInsidePolygon( props["draw_inside_polygon"].toInt() );
   }
 
   //data defined properties
@@ -180,6 +187,26 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 
   p->setPen( context.selected() ? mSelPen : mPen );
 
+  // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
+#if 0 // TODO[MD]: after merge
+  if ( points.size() <= 2 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( context.renderContext(), QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+  {
+    p->setRenderHint( QPainter::Antialiasing, false );
+    p->drawPolyline( points );
+    p->setRenderHint( QPainter::Antialiasing, true );
+    return;
+  }
+#endif
+
+  if ( mDrawInsidePolygon )
+  {
+    //only drawing the line on the interior of the polygon, so set clip path for painter
+    p->save();
+    QPainterPath clipPath;
+    clipPath.addPolygon( points );
+    p->setClipPath( clipPath, Qt::IntersectClip );
+  }
+
   if ( offset == 0 )
   {
     p->drawPolyline( points );
@@ -188,6 +215,12 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   {
     double scaledOffset = offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
     p->drawPolyline( ::offsetLine( points, scaledOffset ) );
+  }
+
+  if ( mDrawInsidePolygon )
+  {
+    //restore painter to reset clip path
+    p->restore();
   }
 }
 
@@ -205,6 +238,7 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
   map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
   map["customdash_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mCustomDashPatternUnit );
+  map["draw_inside_polygon"] = ( mDrawInsidePolygon ? "1" : "0" );
   saveDataDefinedProperties( map );
   return map;
 }
@@ -220,6 +254,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
   l->setPenCapStyle( mPenCapStyle );
   l->setUseCustomDashPattern( mUseCustomDashPattern );
   l->setCustomDashVector( mCustomDashVector );
+  l->setDrawInsidePolygon( mDrawInsidePolygon );
   copyDataDefinedProperties( l );
   return l;
 }
@@ -374,7 +409,55 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
 }
 
+double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
+{
+  if ( mDrawInsidePolygon )
+  {
+    //set to clip line to the interior of polygon, so we expect no bleed
+    return 0;
+  }
+  else
+  {
+    return ( mWidth / 2.0 ) + mOffset;
+  }
+}
 
+QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
+{
+  unit = mCustomDashPatternUnit;
+  return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>() ;
+}
+
+Qt::PenStyle QgsSimpleLineSymbolLayerV2::dxfPenStyle() const
+{
+  return mPenStyle;
+}
+
+double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+{
+  double width = mWidth;
+  QgsExpression* strokeWidthExpression = expression( "width" );
+  if ( strokeWidthExpression )
+  {
+    width = strokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+  }
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  {
+    width = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
+  }
+
+  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+}
+
+QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
+{
+  QgsExpression* strokeColorExpression = expression( "color" );
+  if ( strokeColorExpression )
+  {
+    return ( QgsSymbolLayerV2Utils::decodeColor( strokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
+  return mColor;
+}
 
 /////////
 
@@ -1086,3 +1169,9 @@ QgsSymbolV2::OutputUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
   }
   return unit;
 }
+
+double QgsMarkerLineSymbolLayerV2::estimateMaxBleed() const
+{
+  return ( mMarker->size() / 2.0 ) + mOffset;
+}
+

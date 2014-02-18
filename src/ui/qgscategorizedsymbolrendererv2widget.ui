@@ -116,6 +116,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="cbxInvertedColorRamp">
+       <property name="text">
+        <string>Invert</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -227,6 +234,7 @@
   <tabstop>cboCategorizedColumn</tabstop>
   <tabstop>btnChangeCategorizedSymbol</tabstop>
   <tabstop>cboCategorizedColorRamp</tabstop>
+  <tabstop>cbxInvertedColorRamp</tabstop>
   <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
   <tabstop>btnDeleteCategories</tabstop>

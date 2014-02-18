@@ -97,7 +97,7 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   }
   QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
   QMap<QString, int>::iterator it = fieldMap.begin();
-  for ( ; it != fieldMap.end(); it++ )
+  for ( ; it != fieldMap.end(); ++it )
   {
     keyComboBox->addItem( it.key(), it.value() );
     valueComboBox->addItem( it.key(), it.value() );
@@ -148,7 +148,7 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
       break; //just first entries all on button
   }
   int row = 0;
-  for ( QMap<QString, QVariant>::iterator mit = valueMap.begin(); mit != valueMap.end(); mit++, row++ )
+  for ( QMap<QString, QVariant>::iterator mit = valueMap.begin(); mit != valueMap.end(); ++mit, row++ )
   {
     previewTableWidget->insertRow( row );
     previewTableWidget->setItem( row, 0, new QTableWidgetItem( mit.value().toString() ) );

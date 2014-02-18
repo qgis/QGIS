@@ -11,15 +11,12 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    QgsRasterBlock * block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader /Transfer/ );
     QgsRasterShader* shader();
-    const QgsRasterShader* constShader() const;
-%MethodCode
-      sipRes = sipCpp->shader();
-%End
+    const QgsRasterShader* shader() const /PyName=constShader/;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

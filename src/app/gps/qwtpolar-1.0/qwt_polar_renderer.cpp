@@ -302,7 +302,7 @@ void QwtPolarRenderer::render( QwtPolarPlot *plot,
     renderLegend( painter, layout->legendRect() );
     painter->restore();
 
-    const QRectF canvasRect = layout->canvasRect();
+    const QRectF &canvasRect = layout->canvasRect();
 
     painter->save();
     painter->setClipRect( canvasRect );

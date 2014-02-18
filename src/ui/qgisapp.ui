@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -47,6 +47,7 @@
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>
+    <addaction name="mActionDxfExport"/>
     <addaction name="separator"/>
     <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
@@ -240,6 +241,7 @@
     <addaction name="mActionSimplifyFeature"/>
     <addaction name="mActionAddRing"/>
     <addaction name="mActionAddPart"/>
+    <addaction name="mActionFillRing"/>
     <addaction name="mActionDeleteRing"/>
     <addaction name="mActionDeletePart"/>
     <addaction name="mActionReshapeFeatures"/>
@@ -338,6 +340,7 @@
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
    <addaction name="mActionAddPart"/>
+   <addaction name="mActionFillRing"/>
    <addaction name="mActionDeleteRing"/>
    <addaction name="mActionDeletePart"/>
    <addaction name="mActionReshapeFeatures"/>
@@ -1094,7 +1097,7 @@
     <string>Refresh</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>F5</string>
    </property>
   </action>
   <action name="mActionTextAnnotation">
@@ -1342,6 +1345,9 @@
    <property name="text">
     <string>Query...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
   </action>
   <action name="mActionAddToOverview">
    <property name="icon">
@@ -1408,7 +1414,7 @@
     <string>Toggle Full Screen Mode</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+F</string>
+    <string>F11</string>
    </property>
   </action>
   <action name="mActionProjectProperties">
@@ -1721,7 +1727,7 @@ Ctl (Cmd) increments by 15 deg.</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset>
      <normaloff>:/images/themes/default/mActionTouch.png</normaloff>:/images/themes/default/mActionTouch.png</iconset>
    </property>
    <property name="text">
@@ -2093,7 +2099,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionNeedSupport">
    <property name="text">
-    <string>Need Support?</string>
+    <string>Need commercial support?</string>
    </property>
   </action>
   <action name="mActionOpenFieldCalc">
@@ -2134,6 +2140,26 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Paste features in clipboard into a new memory vector layer.</string>
+   </property>
+  </action>
+  <action name="mActionDxfExport">
+   <property name="text">
+    <string>DXF Export...</string>
+   </property>
+  </action>
+  <action name="mActionFillRing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFillRing.png</normaloff>:/images/themes/default/mActionFillRing.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fill Ring</string>
+   </property>
+   <property name="toolTip">
+    <string>Fill Ring</string>
    </property>
   </action>
  </widget>

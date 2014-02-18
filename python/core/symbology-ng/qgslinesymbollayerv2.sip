@@ -30,6 +30,13 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    double estimateMaxBleed() const;
+
     // new stuff
 
     Qt::PenStyle penStyle() const;
@@ -55,6 +62,16 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QVector<qreal> customDashVector() const;
     void setCustomDashVector( const QVector<qreal>& vector );
+
+    //Returns true if the line should only be drawn inside the polygon
+    bool drawInsidePolygon() const;
+    //Set to true if the line should only be drawn inside the polygon
+    void setDrawInsidePolygon( bool drawInsidePolygon );
+
+    QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 };
 
 /////////
@@ -109,6 +126,8 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     virtual void setWidth( double width );
     virtual double width() const;
 
+    double estimateMaxBleed() const;
+
     // new stuff
 
     bool rotateMarker() const;
@@ -120,6 +139,9 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     double offset() const;
     void setOffset( double offset );
 
+    Placement placement() const;
+    void setPlacement( Placement p );
+
     QgsSymbolV2::OutputUnit intervalUnit() const;
     void setIntervalUnit( QgsSymbolV2::OutputUnit unit );
 
@@ -129,12 +151,10 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    Placement placement() const;
-    void setPlacement( Placement p );
-
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
-    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    double markerAngle( const QPolygonF& points, bool isRing, int vertex );
 };

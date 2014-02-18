@@ -25,8 +25,16 @@
 #include <QMouseEvent>
 #include "qgisapp.h"
 
-QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ),
-    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 ), mSnapVertexMarker( 0 ), mForceCopy( false ), mMultiPartGeometry( false )
+QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas )
+    : QgsMapToolEdit( canvas )
+    , mRubberBand( 0 )
+    , mOriginalGeometry( 0 )
+    , mGeometryModified( false )
+    , mDistanceItem( 0 )
+    , mDistanceSpinBox( 0 )
+    , mSnapVertexMarker( 0 )
+    , mForceCopy( false )
+    , mMultiPartGeometry( false )
 {
 }
 
@@ -153,7 +161,7 @@ void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
   {
     //is rubber band left or right of original geometry
     double leftOf = 0;
-    const QgsPoint* firstPoint = mRubberBand->getPoint( 0 );
+    const QgsPoint *firstPoint = mRubberBand->getPoint( 0 );
     if ( firstPoint )
     {
       QgsPoint minDistPoint;
@@ -235,6 +243,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
   {
     return 0;
   }
+
   mMultiPartGeometry = false;
   //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
   int partVertexNr = ( sr.snappedVertexNr == -1 ? sr.beforeVertexNr : sr.snappedVertexNr );
@@ -252,7 +261,6 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       //make linestring from polygon ring and return this geometry
       return linestringFromPolygon( snappedFeature.geometry(), partVertexNr );
     }
-
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
@@ -272,7 +280,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
         geom = geom->combine( selIt->geometry() );
       }
 
-      //if multitype, return only the snaped to geometry
+      //if multitype, return only the snapped to geometry
       if ( geom->isMultipart() )
       {
         delete geom;

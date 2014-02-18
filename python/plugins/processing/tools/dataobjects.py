@@ -65,7 +65,7 @@ def getSupportedOutputTableExtensions():
 
 
 def getRasterLayers():
-    layers = interface.iface.legendInterface().layers()
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
     raster = list()
 
     for layer in layers:
@@ -76,7 +76,7 @@ def getRasterLayers():
 
 
 def getVectorLayers(shapetype=[-1]):
-    layers = interface.iface.legendInterface().layers()
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
     vector = []
     for layer in layers:
         if layer.type() == layer.VectorLayer:
@@ -96,7 +96,7 @@ def getAllLayers():
 
 
 def getTables():
-    layers = interface.iface.legendInterface().layers()
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
     tables = list()
     for layer in layers:
         if layer.type() == layer.VectorLayer:

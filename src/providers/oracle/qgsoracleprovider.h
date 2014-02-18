@@ -390,7 +390,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     void disconnectDb();
 
     static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
-    static QString quotedValue( QVariant value ) { return QgsOracleConn::quotedValue( value ); }
+    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea

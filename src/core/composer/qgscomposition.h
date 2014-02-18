@@ -55,6 +55,7 @@ class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
+class QgsFillSymbolV2;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -92,6 +93,15 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     //! @deprecated since 2.1 - use the constructor with QgsMapSettings
     Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
     explicit QgsComposition( const QgsMapSettings& mapSettings );
+
+    /**Composition atlas modes*/
+    enum AtlasMode
+    {
+      AtlasOff,     // Composition is not being controlled by an atlas
+      PreviewAtlas, // An atlas composition is being previewed in the app
+      ExportAtlas   // The composition is being exported as an atlas
+    };
+
     ~QgsComposition();
 
     /**Changes size of paper item*/
@@ -110,6 +120,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Note: added in version 1.9*/
     int numPages() const;
 
+    /**Note: added in version 2.1*/
+    void setPageStyleSymbol( QgsFillSymbolV2* symbol );
+    /**Note: added in version 2.1*/
+    QgsFillSymbolV2* pageStyleSymbol() { return mPageStyleSymbol; }
+
     /**Returns the position within a page of a point in the composition
       @note Added in QGIS 2.1
     */
@@ -125,6 +140,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     void setStatusMessage( const QString & message );
 
+    /**Refreshes the composition when composer related options change
+     *Note: added in version 2.1*/
+    void updateSettings();
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
@@ -138,7 +157,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
     bool alignmentSnap() const { return mAlignmentSnap; }
 
-    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; };
+    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; }
     bool smartGuidesEnabled() const {return mSmartGuides;}
 
     /**Removes all snap lines*/
@@ -322,14 +341,19 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      after reading all the items from xml file*/
     void sortZList();
 
+    /**Rebuilds the z order list based on current order of items in scene*/
+    void refreshZList();
+
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
     /**Returns pointer to snap lines collection*/
-    QList< QGraphicsLineItem* >* snapLines() {return &mSnapLines;};
+    QList< QGraphicsLineItem* >* snapLines() {return &mSnapLines;}
 
-    /**Returns pointer to selection handles*/
-    QgsComposerMouseHandles* selectionHandles() {return mSelectionHandles;};
+    /**Returns pointer to selection handles
+     * @note not available in python bindings
+     */
+    QgsComposerMouseHandles* selectionHandles() {return mSelectionHandles;}
 
     /**Add a custom snap line (can be horizontal or vertical)*/
     QGraphicsLineItem* addSnapLine();
@@ -386,8 +410,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**If true, prevents any mouse cursor changes by the composition or by any composer items
       Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes*/
-    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; };
-    bool preventCursorChange() { return mPreventCursorChange; };
+    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; }
+    bool preventCursorChange() { return mPreventCursorChange; }
 
     //printing
 
@@ -417,12 +441,27 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
 
+    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
+    static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
+    /**Returns a scaled position given a before and after range*/
+    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
+
+    /** Returns the current atlas mode of the composition */
+    QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
+    /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
+    bool setAtlasMode( QgsComposition::AtlasMode mode );
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
 
+    /**Updates the scene bounds of the composition
+    @note added in version 2.2*/
+    void updateBounds();
+
   protected:
     void init();
+
 
   private:
     /**Pointer to map renderer of QGIS main map*/
@@ -434,6 +473,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     double mPageHeight;
     QList< QgsPaperItem* > mPages;
     double mSpaceBetweenPages; //space in preview between pages
+
+    /**Drawing style for page*/
+    QgsFillSymbolV2* mPageStyleSymbol;
+    void createDefaultPageStyleSymbol();
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
@@ -484,17 +527,28 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** The atlas composition object. It is held by the QgsComposition */
     QgsAtlasComposition mAtlasComposition;
 
+    QgsComposition::AtlasMode mAtlasMode;
+
     QgsComposition(); //default constructor is forbidden
 
+    /**Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles*/
+    QRectF compositionBounds() const;
+
     /**Reset z-values of items based on position in z list*/
-    void updateZValues();
+    void updateZValues( bool addUndoCommands = true );
 
     /**Returns the bounding rectangle of the selected items in scene coordinates
      @return 0 in case of success*/
     int boundingRectOfSelectedItems( QRectF& bRect );
 
+    /**Loads default composer settings*/
+    void loadDefaults();
+
+    /**Loads composer settings which may change, eg grid color*/
     void loadSettings();
-    void saveSettings();
+
+    /**Calculates the item minimum position from an xml string*/
+    QPointF minPointFromXml( const QDomElement& elem ) const;
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 

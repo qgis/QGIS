@@ -236,6 +236,12 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 
 void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
 {
+  if ( !geom )
+  {
+    reset( mGeometryType );
+    return;
+  }
+
   reset( geom->type() );
   addGeometry( geom, layer );
 }

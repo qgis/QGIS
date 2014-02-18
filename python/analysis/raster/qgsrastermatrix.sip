@@ -37,6 +37,7 @@ class QgsRasterMatrix
 
     /**Takes ownership of data array*/
     QgsRasterMatrix();
+    //! @note note available in python bindings
     // QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue );
     QgsRasterMatrix( const QgsRasterMatrix& m );
     ~QgsRasterMatrix();
@@ -46,8 +47,10 @@ class QgsRasterMatrix
     double number() const;
 
     /**Returns data array (but not ownership)*/
+    //! @note not available in python bindings
     // float* data();
     /**Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
+    //! @note not available in python bindings
     // float* takeData();
 
     void setData( int cols, int rows, float* data, double nodataValue );

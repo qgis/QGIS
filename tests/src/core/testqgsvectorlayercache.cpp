@@ -145,7 +145,7 @@ void TestVectorLayerCache::testCacheOverflow()
   QgsFeature f;
 
   // Verify we get all features, even if there are too many to fit into the cache
-  QgsFeatureIterator it = mVectorLayerCache->getFeatures( QgsFeatureRequest() );
+  QgsFeatureIterator it = mVectorLayerCache->getFeatures();
 
   int i = 0;
   while ( it.nextFeature( f ) )

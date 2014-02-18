@@ -35,6 +35,10 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     /**A combination of upper/middle/lower and left/middle/right*/
     QgsComposerItem::ItemPositionMode positionMode() const;
 
+    /**Toggles display of the background group*/
+    void showBackgroundGroup( bool showGroup );
+    /**Toggles display of the frame group*/
+    void showFrameGroup( bool showGroup );
 
   public slots:
     void on_mFrameColorButton_clicked();
@@ -72,6 +76,8 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
     void on_mBlendModeCombo_currentIndexChanged( int index );
     void on_mTransparencySlider_valueChanged( int value );
+
+    void on_mItemRotationSpinBox_valueChanged( double val );
 
     void setValuesForGuiElements();
     void setValuesForGuiPositionElements();

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add Layer(s) from a Server</string>
+   <string>Add Layer(s) from a WM(T)S Server</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -24,7 +24,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
@@ -207,19 +207,6 @@
           <string>Options</string>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Layer name</string>
-            </property>
-            <property name="buddy">
-             <cstring>leLayerName</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="leLayerName"/>
-          </item>
           <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="labelCoordRefSys">
             <property name="text">
@@ -331,6 +318,11 @@
            <string>Style</string>
           </property>
          </column>
+         <column>
+          <property name="text">
+           <string>Title</string>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
@@ -369,12 +361,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Style</string>
+           <string>Title</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Title</string>
+           <string>Style</string>
           </property>
          </column>
          <column>
@@ -450,6 +442,23 @@
       </layout>
      </widget>
     </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+       <property name="buddy">
+        <cstring>leLayerName</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="leLayerName"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

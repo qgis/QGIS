@@ -72,6 +72,8 @@ class CORE_EXPORT QgsClipper
     // feature in x and y. The shapeOpen parameter determines whether
     // the function treats the points as a closed shape (polygon), or as
     // an open shape (linestring).
+    //
+    // @note not available in python bindings on android
     static void trimFeature( QVector<double>& x,
                              QVector<double>& y,
                              bool shapeOpen );
@@ -179,11 +181,11 @@ inline void QgsClipper::trimPolygon( QPolygonF& pts, const QgsRectangle& clipRec
   tmpPts.reserve( pts.size() );
 
   trimPolygonToBoundary( pts, tmpPts, clipRect, XMax, clipRect.xMaximum() );
-  pts.clear();
+  pts.resize( 0 );
   trimPolygonToBoundary( tmpPts, pts, clipRect, YMax, clipRect.yMaximum() );
-  tmpPts.clear();
+  tmpPts.resize( 0 );
   trimPolygonToBoundary( pts, tmpPts, clipRect, XMin, clipRect.xMinimum() );
-  pts.clear();
+  pts.resize( 0 );
   trimPolygonToBoundary( tmpPts, pts, clipRect, YMin, clipRect.yMinimum() );
 }
 

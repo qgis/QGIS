@@ -95,13 +95,8 @@ class TestQgsComposerMap(TestCase):
                                                      QgsComposerMap.Bottom)
         self.mComposerMap.setAnnotationFontColor(QColor(255,0,0,150))
         self.mComposerMap.setGridBlendMode(QPainter.CompositionMode_Overlay)
-        checker = QgsCompositionChecker()
-        myPath = os.path.join(TEST_DATA_DIR,
-                              'control_images',
-                              'expected_composermap',
-                              'composermap_landsat_grid.png')
-        myTestResult, myMessage = checker.testComposition('Composer map grid',
-                                             self.mComposition, myPath)
+        checker = QgsCompositionChecker('composermap_grid', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
         self.mComposerMap.setGridEnabled(False)
         self.mComposerMap.setShowGridAnnotation(False)
 
@@ -119,15 +114,8 @@ class TestQgsComposerMap(TestCase):
                                     793062.375, 3350923.125)
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
-        checker = QgsCompositionChecker()
-        myPngPath = os.path.join(TEST_DATA_DIR,
-                                 'control_images',
-                                 'expected_composermap',
-                                 'composermap_landsat_overview.png')
-        myTestResult, myMessage = checker.testComposition(
-                                  'Composer map overview',
-                                  self.mComposition,
-                                  myPngPath)
+        checker = QgsCompositionChecker('composermap_overview', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
 
@@ -144,15 +132,8 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewBlendMode(QPainter.CompositionMode_Multiply)
-        checker = QgsCompositionChecker()
-        myPngPath = os.path.join(TEST_DATA_DIR,
-                                 'control_images',
-                                 'expected_composermap',
-                                 'composermap_landsat_overview_blend.png')
-        myTestResult, myMessage = checker.testComposition(
-                                  'Composer map overview blending',
-                                  self.mComposition,
-                                  myPngPath)
+        checker = QgsCompositionChecker('composermap_overview_blending', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
 
@@ -169,15 +150,8 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewInverted(True)
-        checker = QgsCompositionChecker()
-        myPngPath = os.path.join(TEST_DATA_DIR,
-                                 'control_images',
-                                 'expected_composermap',
-                                 'composermap_landsat_overview_invert.png')
-        myTestResult, myMessage = checker.testComposition(
-                                  'Composer map overview inverted',
-                                  self.mComposition,
-                                  myPngPath)
+        checker = QgsCompositionChecker('composermap_overview_invert', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
 
@@ -195,15 +169,8 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewInverted(False)
         overviewMap.setOverviewCentered(True)
-        checker = QgsCompositionChecker()
-        myPngPath = os.path.join(TEST_DATA_DIR,
-                                 'control_images',
-                                 'expected_composermap',
-                                 'composermap_landsat_overview_center.png')
-        myTestResult, myMessage = checker.testComposition(
-                                  'Composer map overview centered',
-                                  self.mComposition,
-                                  myPngPath)
+        checker = QgsCompositionChecker('composermap_overview_center', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
 
@@ -239,20 +206,21 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.setGridEnabled(True)
         self.mComposerMap.setGridIntervalX(2000)
         self.mComposerMap.setGridIntervalY(2000)
-        checker = QgsCompositionChecker()
-        myPngPath = os.path.join(TEST_DATA_DIR,
-                                 'control_images',
-                                 'expected_composermap',
-                                 'composermap_zebra_style.png')
-        testResult, myMessage = checker.testComposition('Composer map zebra',
-                                             self.mComposition,
-                                             myPngPath)
-        assert testResult == True, myMessage
+        self.mComposerMap.setGridFrameWidth( 10 )
+        self.mComposerMap.setGridFramePenSize( 1 )
+        self.mComposerMap.setGridPenWidth( 0.5 )
+        self.mComposerMap.setGridFramePenColor( QColor( 255, 100, 0, 200 ) )
+        self.mComposerMap.setGridFrameFillColor1( QColor( 50, 90, 50, 100 ) )
+        self.mComposerMap.setGridFrameFillColor2( QColor( 200, 220, 100, 60 ) )
+
+        checker = QgsCompositionChecker('composermap_zebrastyle', self.mComposition)
+        myTestResult, myMessage = checker.testComposition()
+        assert myTestResult == True, myMessage
 
     def testWorldFileGeneration( self ):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         self.mComposerMap.setNewExtent( myRectangle )
-        self.mComposerMap.setRotation( 30.0 )
+        self.mComposerMap.setMapRotation( 30.0 )
 
         self.mComposition.setGenerateWorldFile( True )
         self.mComposition.setWorldFileMap( self.mComposerMap )

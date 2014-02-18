@@ -26,6 +26,7 @@ SET ( qgis_mapserv_SRCS
   qgssldparser.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
+  qgswcsserver.cpp
   qgsmapserviceexception.cpp
   qgsmslayercache.cpp
   qgsfilter.cpp

@@ -2,6 +2,7 @@
 #include "qgsvectorlayerrenderer.h"
 
 //#include "qgsfeatureiterator.h"
+#include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsgeometrycache.h"
 #include "qgspallabeling.h"
@@ -108,12 +109,55 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
-  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest()
-                             .setFilterRect( mContext.extent() )
-                             .setSubsetOfAttributes( mAttrNames, mFields ) );
+  QgsFeatureRequest& featureRequest = QgsFeatureRequest()
+                                      .setFilterRect( mContext.extent() )
+                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
-  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
-      && mRendererV2->usingSymbolLevels() )
+  // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
+#if 0  //TODO[MD]: after merge
+  if ( simplifyDrawingCanbeApplied( mContext, QgsVectorLayer::GeometrySimplification ) )
+  {
+    QPainter* p = rendererContext.painter();
+    double dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
+    double map2pixelTol = mSimplifyMethod.threshold() * 96.0f / dpi;
+
+    const QgsMapToPixel& mtp = rendererContext.mapToPixel();
+    map2pixelTol *= mtp.mapUnitsPerPixel();
+    const QgsCoordinateTransform* ct = rendererContext.coordinateTransform();
+
+    // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
+    if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
+    {
+      QgsPoint center = rendererContext.extent().center();
+      double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+
+      QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
+      QgsRectangle targetRect = ct->transform( sourceRect );
+
+      QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+      QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+      QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+      QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
+
+      double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
+      double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+
+      if ( targetHypothenuse != 0 )
+        map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
+    }
+
+    QgsSimplifyMethod simplifyMethod;
+    simplifyMethod.setMethodType( QgsSimplifyMethod::OptimizeForRendering );
+    simplifyMethod.setTolerance( map2pixelTol );
+    simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
+
+    featureRequest.setSimplifyMethod( simplifyMethod );
+  }
+#endif
+
+  QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
+
+  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() )
     drawRendererV2Levels( fit );
   else
     drawRendererV2( fit );
@@ -388,11 +432,40 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   mContext.labelingEngine()->addDiagramLayer( layer, &diagSettings );
 
   //add attributes needed by the diagram renderer
-  QList<int> att = layer->diagramRenderer()->diagramAttributes();
-  QList<int>::const_iterator attIt = att.constBegin();
+  QList<QString> att = layer->diagramRenderer()->diagramAttributes();
+  QList<QString>::const_iterator attIt = att.constBegin();
   for ( ; attIt != att.constEnd(); ++attIt )
   {
-    attributeNames << mFields.at( *attIt ).name();
+    QgsExpression* expression = layer->diagramRenderer()->diagram()->getExpression( *attIt, &mFields );
+    QStringList columns = expression->referencedColumns();
+    QStringList::const_iterator columnsIterator = columns.constBegin();
+    for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
+    {
+      if ( !attributeNames.contains( *columnsIterator ) )
+        attributeNames << *columnsIterator;
+    }
+  }
+
+  const QgsLinearlyInterpolatedDiagramRenderer* linearlyInterpolatedDiagramRenderer = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( layer->diagramRenderer() );
+  if ( linearlyInterpolatedDiagramRenderer != NULL )
+  {
+    if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
+    {
+      QgsExpression* expression = layer->diagramRenderer()->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &mFields );
+      QStringList columns = expression->referencedColumns();
+      QStringList::const_iterator columnsIterator = columns.constBegin();
+      for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
+      {
+        if ( !attributeNames.contains( *columnsIterator ) )
+          attributeNames << *columnsIterator;
+      }
+    }
+    else
+    {
+      QString name = mFields.at( linearlyInterpolatedDiagramRenderer->classificationAttribute() ).name();
+      if ( !attributeNames.contains( name ) )
+        attributeNames << name;
+    }
   }
 
   //and the ones needed for data defined diagram positions

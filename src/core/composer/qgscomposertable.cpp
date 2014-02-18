@@ -26,6 +26,14 @@ QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     , mGridStrokeWidth( 0.5 )
     , mGridColor( QColor( 0, 0, 0 ) )
 {
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mHeaderFont.setFamily( defaultFontString );
+    mContentFont.setFamily( defaultFontString );
+  }
 }
 
 QgsComposerTable::~QgsComposerTable()
@@ -101,6 +109,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     QPen gridPen;
     gridPen.setWidthF( mGridStrokeWidth );
     gridPen.setColor( mGridColor );
+    gridPen.setJoinStyle( Qt::MiterJoin );
     painter->setPen( gridPen );
     drawHorizontalGridLines( painter, attributeMaps.size() );
     drawVerticalGridLines( painter, maxColumnWidthMap );
@@ -217,8 +226,8 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
   }
   totalWidth += ( 2 * maxWidthMap.size() * mLineTextDistance );
   totalWidth += ( maxWidthMap.size() + 1 ) * mGridStrokeWidth;
-  QTransform t = transform();
-  QgsComposerItem::setSceneRect( QRectF( t.dx(), t.dy(), totalWidth, totalHeight ) );
+
+  QgsComposerItem::setSceneRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
 }
 
 void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )

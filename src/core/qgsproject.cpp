@@ -936,6 +936,15 @@ bool QgsProject::write()
 {
   clearError();
 
+  // Create backup file
+  if ( QFile::exists( fileName() ) )
+  {
+    QString backup = fileName() + "~";
+    if ( QFile::exists( backup ) )
+      QFile::remove( backup );
+    QFile::rename( fileName(), backup );
+  }
+
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
@@ -1322,8 +1331,7 @@ QStringList QgsProject::entryList( QString const &scope, QString const &key ) co
 } // QgsProject::entryList
 
 
-QStringList
-QgsProject::subkeyList( QString const &scope, QString const &key ) const
+QStringList QgsProject::subkeyList( QString const &scope, QString const &key ) const
 {
   QgsProperty * foundProperty = findKey_( scope, key, imp_->properties_ );
 
@@ -1357,6 +1365,13 @@ QString QgsProject::readPath( QString src ) const
     return src;
   }
 
+  // if this is a VSIFILE, remove the VSI prefix and append to final result
+  QString vsiPrefix = qgsVsiPrefix( src );
+  if ( ! vsiPrefix.isEmpty() )
+  {
+    src.remove( 0, vsiPrefix.size() );
+  }
+
   // relative path should always start with ./ or ../
   if ( !src.startsWith( "./" ) && !src.startsWith( "../" ) )
   {
@@ -1366,13 +1381,13 @@ QString QgsProject::readPath( QString src ) const
          ( src[0].isLetter() && src[1] == ':' ) )
     {
       // UNC or absolute path
-      return src;
+      return vsiPrefix + src;
     }
 #else
     if ( src[0] == '/' )
     {
       // absolute path
-      return src;
+      return vsiPrefix + src;
     }
 #endif
 
@@ -1382,17 +1397,17 @@ QString QgsProject::readPath( QString src ) const
     // from the filename.
     QString home = homePath();
     if ( home.isNull() )
-      return src;
+      return vsiPrefix + src;
 
     QFileInfo fi( home + "/" + src );
 
     if ( !fi.exists() )
     {
-      return src;
+      return vsiPrefix + src;
     }
     else
     {
-      return fi.canonicalFilePath();
+      return vsiPrefix + fi.canonicalFilePath();
     }
   }
 
@@ -1401,7 +1416,7 @@ QString QgsProject::readPath( QString src ) const
 
   if ( projPath.isEmpty() )
   {
-    return src;
+    return vsiPrefix + src;
   }
 
 #if defined(Q_OS_WIN)
@@ -1443,7 +1458,7 @@ QString QgsProject::readPath( QString src ) const
   projElems.prepend( "" );
 #endif
 
-  return projElems.join( "/" );
+  return vsiPrefix + projElems.join( "/" );
 }
 
 // return the absolute or relative path to write it to the project file
@@ -1460,6 +1475,13 @@ QString QgsProject::writePath( QString src ) const
   if ( projPath.isEmpty() )
   {
     return src;
+  }
+
+  // if this is a VSIFILE, remove the VSI prefix and append to final result
+  QString vsiPrefix = qgsVsiPrefix( src );
+  if ( ! vsiPrefix.isEmpty() )
+  {
+    srcPath.remove( 0, vsiPrefix.size() );
   }
 
 #if defined( Q_OS_WIN )
@@ -1524,7 +1546,7 @@ QString QgsProject::writePath( QString src ) const
     srcElems.insert( 0, "." );
   }
 
-  return srcElems.join( "/" );
+  return vsiPrefix + srcElems.join( "/" );
 }
 
 void QgsProject::setError( QString errorMessage )

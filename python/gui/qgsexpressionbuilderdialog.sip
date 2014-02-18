@@ -8,7 +8,7 @@ class QgsExpressionBuilderDialog : QDialog
 %End
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL );
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL, QString key = "generic" );
 
     /** The builder widget that is used by the dialog */
     QgsExpressionBuilderWidget* expressionBuilder();
@@ -30,4 +30,6 @@ class QgsExpressionBuilderDialog : QDialog
      * @param r result value (unused)
      */
     virtual void done( int r );
+
+    virtual void accept();
 };

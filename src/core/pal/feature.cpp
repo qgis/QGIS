@@ -65,6 +65,8 @@ namespace pal
       : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ),
       quadOffset( false ), offsetPos( false ), fixedRotation( false ), alwaysShow( false )
   {
+    assert( finite( lx ) && finite( ly ) );
+
     uid = new char[strlen( geom_id ) +1];
     strcpy( uid, geom_id );
   }
@@ -483,7 +485,7 @@ namespace pal
       if ( nbp == 1 )
         cost = 0.0001;
       else
-        cost =  0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
+        cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
       ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost,  this );
 
@@ -892,7 +894,6 @@ namespace pal
       {
         orientation = -orientation;
         delete slp;
-        slp = NULL;
         slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance );
       }
       else
@@ -1103,7 +1104,10 @@ namespace pal
         j++;
       }
 
-      dx = dy = min( yrm, xrm ) / 2;
+      //dx = dy = min( yrm, xrm ) / 2;
+      dx = xrm / 2.0;
+      dy = yrm / 2.0;
+
 
       int num_try = 0;
       int max_try = 10;

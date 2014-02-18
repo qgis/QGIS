@@ -105,14 +105,20 @@
         <string>Add feature</string>
        </property>
        <property name="text">
-        <string>+</string>
+        <string/>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mDeleteSelectedButton">
        <property name="toolTip">
-        <string>Delete selected features (Ctrl+D)</string>
+        <string>Delete selected features (DEL)</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -126,9 +132,6 @@
          <width>18</width>
          <height>18</height>
         </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+D</string>
        </property>
       </widget>
      </item>

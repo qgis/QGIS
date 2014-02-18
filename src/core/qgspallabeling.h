@@ -568,7 +568,8 @@ class CORE_EXPORT QgsLabelCandidate
 class CORE_EXPORT QgsLabelComponent
 {
   public:
-    QgsLabelComponent(): mText( QString() )
+    QgsLabelComponent()
+        : mText( QString() )
         , mOrigin( QgsPoint() )
         , mUseOrigin( false )
         , mRotation( 0.0 )
@@ -769,7 +770,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
     //! @note not available in python bindings
-    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
+    virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 );
 
     static void drawLabelBuffer( QgsRenderContext& context,
                                  QgsLabelComponent component,

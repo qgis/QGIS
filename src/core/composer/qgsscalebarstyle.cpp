@@ -130,5 +130,5 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
   double width =  firstLabelLeft + totalBarLength + 2 * mScaleBar->pen().widthF() + largestLabelWidth + 2 * mScaleBar->boxContentSpace();
   double height = mScaleBar->height() + mScaleBar->labelBarSpace() + 2 * mScaleBar->boxContentSpace() + mScaleBar->fontAscentMillimeters( mScaleBar->font() );
 
-  return QRectF( mScaleBar->transform().dx(), mScaleBar->transform().dy(), width, height );
+  return QRectF( mScaleBar->pos().x(), mScaleBar->pos().y(), width, height );
 }

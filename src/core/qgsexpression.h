@@ -103,7 +103,7 @@ class CORE_EXPORT QgsExpression
     const Node* rootNode() const { return mRootNode; }
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QgsFields& fields );
+    bool prepare( const QgsFields &fields );
 
     //! Get list of columns referenced by the expression
     QStringList referencedColumns();
@@ -118,6 +118,7 @@ class CORE_EXPORT QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
+    //! @note available in python bindings as evaluatePrepared
     inline QVariant evaluate( const QgsFeature& f ) { return evaluate( &f ); }
 
     //! Evaluate the feature and return the result
@@ -146,14 +147,18 @@ class CORE_EXPORT QgsExpression
     static void unsetSpecialColumn( const QString& name );
     //! Return the value of the given special column or a null QVariant if undefined
     static QVariant specialColumn( const QString& name );
+    //! Check whether a special column exists
+    //! @note added in 2.2
+    static bool hasSpecialColumn( const QString& name );
 
     void setScale( double scale ) { mScale = scale; }
 
     int scale() {return mScale; }
 
-    const QString& expression() const { return mExpression; }
+    //! Return the expression string that was given when created.
+    const QString expression() const { return dump(); }
 
-    //! Return the parsed expression as a string - useful for debugging
+    //! Return the expression string that represents this QgsExpression.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
@@ -171,8 +176,8 @@ class CORE_EXPORT QgsExpression
        Additional substitutions can be passed through the substitutionMap
        parameter
     */
-    static QString replaceExpressionText( const QString action, const QgsFeature* feat,
-                                          QgsVectorLayer* layer,
+    static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
+                                          QgsVectorLayer *layer,
                                           const QMap<QString, QVariant> *substitutionMap = 0 );
     enum UnaryOperator
     {
@@ -282,11 +287,11 @@ class CORE_EXPORT QgsExpression
         FcnEval mFnc;
     };
 
-    const static QList<Function*> &Functions();
+    static const QList<Function*> &Functions();
     static QList<Function*> gmFunctions;
 
     static QStringList gmBuiltinFunctions;
-    const static QStringList &BuiltinFunctions();
+    static const QStringList &BuiltinFunctions();
 
     static bool registerFunction( Function* function );
     static bool unregisterFunction( QString name );
@@ -338,7 +343,7 @@ class CORE_EXPORT QgsExpression
 
         // abstract virtual preparation function
         // errors are reported to the parent
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields ) = 0;
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) = 0;
 
         virtual QString dump() const = 0;
 
@@ -353,7 +358,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeList() {}
-        virtual ~NodeList() { foreach ( Node* n, mList ) delete n; }
+        virtual ~NodeList() { qDeleteAll( mList ); }
         void append( Node* node ) { mList.append( node ); }
         int count() { return mList.count(); }
         QList<Node*> list() { return mList; }
@@ -375,7 +380,7 @@ class CORE_EXPORT QgsExpression
         static const int HOUR = 60 * 60;
         static const int MINUTE = 60;
       public:
-        Interval( double seconds = 0 ): mSeconds( seconds ), mValid( true ) { }
+        Interval( double seconds = 0 ) : mSeconds( seconds ), mValid( true ) { }
         ~Interval();
         double years() { return mSeconds / YEARS;}
         double months() { return mSeconds / MONTHS; }
@@ -383,9 +388,9 @@ class CORE_EXPORT QgsExpression
         double days() { return mSeconds / DAY;}
         double hours() { return mSeconds / HOUR;}
         double minutes() { return mSeconds / MINUTE;}
+        double seconds() { return mSeconds; }
         bool isValid() { return mValid; }
         void setValid( bool valid ) { mValid = valid; }
-        double seconds() { return mSeconds; }
         bool operator==( const QgsExpression::Interval& other ) const;
         static QgsExpression::Interval invalidInterVal();
         static QgsExpression::Interval fromString( QString string );
@@ -404,7 +409,7 @@ class CORE_EXPORT QgsExpression
         Node* operand() const { return mOperand; }
 
         virtual NodeType nodeType() const { return ntUnaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
@@ -428,7 +433,7 @@ class CORE_EXPORT QgsExpression
         Node* opRight() const { return mOpRight; }
 
         virtual NodeType nodeType() const { return ntBinaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
@@ -458,7 +463,7 @@ class CORE_EXPORT QgsExpression
         NodeList* list() const { return mList; }
 
         virtual NodeType nodeType() const { return ntInOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
@@ -475,7 +480,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
-        NodeFunction( int fnIndex, NodeList* args ): mFnIndex( fnIndex ), mArgs( args ) {}
+        NodeFunction( int fnIndex, NodeList* args ) : mFnIndex( fnIndex ), mArgs( args ) {}
         //NodeFunction( QString name, NodeList* args ) : mName(name), mArgs(args) {}
         virtual ~NodeFunction() { delete mArgs; }
 
@@ -483,7 +488,7 @@ class CORE_EXPORT QgsExpression
         NodeList* args() const { return mArgs; }
 
         virtual NodeType nodeType() const { return ntFunction; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
@@ -505,7 +510,7 @@ class CORE_EXPORT QgsExpression
         QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const { return ntLiteral; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
@@ -525,7 +530,7 @@ class CORE_EXPORT QgsExpression
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const { return ntColumnRef; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
         virtual QString dump() const;
 
@@ -555,11 +560,11 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeCondition( WhenThenList* conditions, Node* elseExp = NULL ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
-        ~NodeCondition() { delete mElseExp; foreach ( WhenThen* cond, mConditions ) delete cond; }
+        ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual NodeType nodeType() const { return ntCondition; }
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
-        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -600,7 +605,6 @@ class CORE_EXPORT QgsExpression
 
     void initGeomCalculator();
 
-    QString mExpression;
     Node* mRootNode;
 
     QString mParserErrorString;
@@ -608,6 +612,7 @@ class CORE_EXPORT QgsExpression
 
     int mRowNumber;
     double mScale;
+    QString mExp;
 
     static QMap<QString, QVariant> gmSpecialColumns;
     QgsDistanceArea *mCalc;

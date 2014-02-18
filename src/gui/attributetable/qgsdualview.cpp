@@ -26,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include <QDialog>
 #include <QMenu>
@@ -37,6 +38,7 @@ QgsDualView::QgsDualView( QWidget* parent )
     , mEditorContext()
     , mMasterModel( NULL )
     , mAttributeDialog( NULL )
+    , mLayerCache( NULL )
     , mProgressDlg( NULL )
     , mFeatureSelectionManager( NULL )
 {
@@ -190,14 +192,14 @@ void QgsDualView::columnBoxInit()
 
 void QgsDualView::hideEvent( QHideEvent* event )
 {
-  saveEditChanges();
-  QStackedWidget::hideEvent( event );
+  if ( saveEditChanges() )
+    QStackedWidget::hideEvent( event );
 }
 
 void QgsDualView::focusOutEvent( QFocusEvent* event )
 {
-  saveEditChanges();
-  QStackedWidget::focusOutEvent( event );
+  if ( saveEditChanges() )
+    QStackedWidget::focusOutEvent( event );
 }
 
 void QgsDualView::setView( QgsDualView::ViewMode view )
@@ -257,23 +259,40 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& 
 
 void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
+  // Invalid feature? Strange: bail out
   if ( !feat.isValid() )
     return;
+
+  // We already show the feature in question: bail out
+  if ( mAttributeDialog && mAttributeDialog->feature()
+       && mAttributeDialog->feature()->id() == feat.id() )
+    return;
+
+  bool dontChange = false;
 
   // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
   QgsAttributeDialog* oldDialog = mAttributeDialog;
 
   if ( mAttributeDialog && mAttributeDialog->dialog() )
   {
-    saveEditChanges();
-    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+    if ( saveEditChanges() )
+      mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+    else
+      dontChange = true;
   }
 
-  mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, this, false, mEditorContext );
-  mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
-  mAttributeDialog->dialog()->setVisible( true );
+  if ( !dontChange )
+  {
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, this, false, mEditorContext );
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+    mAttributeDialog->dialog()->setVisible( true );
 
-  delete oldDialog;
+    delete oldDialog;
+  }
+  else
+  {
+    setCurrentEditSelection( QgsFeatureIds() << oldDialog->feature()->id() );
+  }
 }
 
 void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
@@ -281,11 +300,11 @@ void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
   mFeatureList->setEditSelection( fids );
 }
 
-void QgsDualView::saveEditChanges()
+bool QgsDualView::saveEditChanges()
 {
   if ( mAttributeDialog && mAttributeDialog->dialog() )
   {
-    if ( mLayerCache->layer() && mLayerCache->layer()->isEditable() )
+    if ( mAttributeDialog->editable() )
     {
       // Get the current (unedited) feature
       QgsFeature srcFeat;
@@ -294,29 +313,55 @@ void QgsDualView::saveEditChanges()
       QgsAttributes src = srcFeat.attributes();
 
       // Let the dialog write the edited widget values to it's feature
-      mAttributeDialog->accept();
-      // Get the edited feature
-      const QgsAttributes &dst = mAttributeDialog->feature()->attributes();
-
-      if ( src.count() != dst.count() )
+      QDialogButtonBox* buttonBox = mAttributeDialog->dialog()->findChild<QDialogButtonBox*>();
+      if ( buttonBox && buttonBox->button( QDialogButtonBox::Ok ) )
       {
-        // bail out
-        return;
+        QPushButton* okBtn = buttonBox->button( QDialogButtonBox::Ok );
+        okBtn->click();
+      }
+      else
+      {
+        mAttributeDialog->accept();
       }
 
-      mLayerCache->layer()->beginEditCommand( tr( "Attributes changed" ) );
-
-      for ( int i = 0; i < dst.count(); ++i )
+      if ( mAttributeDialog->dialog()->result() == QDialog::Accepted )
       {
-        if ( dst[i] != src[i] )
+        // Get the edited feature
+        const QgsAttributes &dst = mAttributeDialog->feature()->attributes();
+
+        if ( src.count() != dst.count() )
         {
-          mLayerCache->layer()->changeAttributeValue( fid, i, dst[i] );
+          // bail out
+          return false;
         }
-      }
 
-      mLayerCache->layer()->endEditCommand();
+        // avoid empty command
+        int i = 0;
+        for ( ; i < dst.count() && dst[i] == src[i]; ++i )
+          ;
+
+        if ( i == dst.count() )
+          return true;
+
+        mLayerCache->layer()->beginEditCommand( tr( "Attributes changed" ) );
+
+        for ( ; i < dst.count(); ++i )
+        {
+          if ( dst[i] == src[i] )
+            continue;
+
+          mLayerCache->layer()->changeAttributeValue( fid, i, dst[i], src[i] );
+        }
+
+        mLayerCache->layer()->endEditCommand();
+      }
+      else
+      {
+        return false;
+      }
     }
   }
+  return true;
 }
 
 void QgsDualView::previewExpressionBuilder()
@@ -382,10 +427,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 {
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
+  //add user-defined actions to context menu
   if ( mLayerCache->layer()->actions()->size() != 0 )
   {
 
-    QAction *a = menu->addAction( tr( "Run action" ) );
+    QAction *a = menu->addAction( tr( "Run layer action" ) );
     a->setEnabled( false );
 
     for ( int i = 0; i < mLayerCache->layer()->actions()->size(); i++ )
@@ -400,6 +446,22 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
     }
   }
 
+  //add actions from QgsMapLayerActionRegistry to context menu
+  QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayerCache->layer() );
+  if ( registeredActions.size() > 0 )
+  {
+    //add a seperator between user defined and standard actions
+    menu->addSeparator();
+
+    QList<QgsMapLayerAction*>::iterator actionIt;
+    for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+    {
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction(( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
+      menu->addAction(( *actionIt )->text(), a, SLOT( execute() ) );
+    }
+  }
+
+  menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
@@ -575,4 +637,13 @@ void QgsAttributeTableAction::featureForm()
   editedIds << mDualView->masterModel()->rowToId( mFieldIdx.row() );
   mDualView->setCurrentEditSelection( editedIds );
   mDualView->setView( QgsDualView::AttributeEditor );
+}
+
+/*
+ * QgsAttributeTableMapLayerAction
+ */
+
+void QgsAttributeTableMapLayerAction::execute()
+{
+  mDualView->masterModel()->executeMapLayerAction( mAction, mFieldIdx );
 }

@@ -122,6 +122,11 @@ void QgsRectangle::scale( double scaleFactor, double centerX, double centerY )
   ymax = centerY + newHeight / 2.0;
 }
 
+QgsRectangle QgsRectangle::buffer( double width )
+{
+  return QgsRectangle( xmin - width, ymin - width, xmax + width, ymax + width );
+}
+
 QgsRectangle QgsRectangle::intersect( const QgsRectangle * rect ) const
 {
   QgsRectangle intersection = QgsRectangle();

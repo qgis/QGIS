@@ -19,6 +19,9 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposeritem.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -44,6 +47,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   if ( mComposition )
   {
     mNumPagesSpinBox->setValue( mComposition->numPages() );
+
+    updatePageStyle();
 
     //read printout resolution from composition
     mResolutionSpinBox->setValue( mComposition->printResolution() );
@@ -79,30 +84,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
-
-
-    //grid pen color
-    mGridColorButton->setColor( mComposition->gridPen().color() );
-    mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-    mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-
-    mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
-    mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
-    mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
-
-    QgsComposition::GridStyle snapGridStyle = mComposition->gridStyle();
-    if ( snapGridStyle == QgsComposition::Solid )
-    {
-      mGridStyleComboBox->setCurrentIndex( 0 );
-    }
-    else if ( snapGridStyle == QgsComposition::Dots )
-    {
-      mGridStyleComboBox->setCurrentIndex( 1 );
-    }
-    else
-    {
-      mGridStyleComboBox->setCurrentIndex( 2 );
-    }
 
     mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
   }
@@ -153,7 +134,7 @@ void QgsCompositionWidget::createPaperEntries()
   ;
   mPaperSizeComboBox->addItem( tr( "Custom" ) );
 
-  for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); it++ )
+  for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); ++it )
   {
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );
@@ -262,8 +243,11 @@ void QgsCompositionWidget::adjustOrientation()
     setSize( mPaperWidthDoubleSpinBox, height );
     setSize( mPaperHeightDoubleSpinBox, width );
   }
+
   mPaperWidthDoubleSpinBox->setEnabled( lineEditsEnabled );
   mPaperHeightDoubleSpinBox->setEnabled( lineEditsEnabled );
+
+  emit pageOrientationChanged( mPaperOrientationComboBox->currentText() );
 }
 
 void QgsCompositionWidget::setSize( QDoubleSpinBox *spin, double v )
@@ -398,6 +382,36 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   }
 }
 
+void QgsCompositionWidget::on_mPageStyleButton_clicked()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  QgsVectorLayer* coverageLayer = 0;
+  // use the atlas coverage layer, if any
+  if ( mComposition->atlasComposition().enabled() )
+  {
+    coverageLayer = mComposition->atlasComposition().coverageLayer();
+  }
+  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    updatePageStyle();
+  }
+}
+
+void QgsCompositionWidget::updatePageStyle()
+{
+  if ( mComposition )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposition->pageStyleSymbol(), mPageStyleButton->iconSize() );
+    mPageStyleButton->setIcon( icon );
+  }
+}
+
 void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
 {
   mPrintAsRasterCheckBox->blockSignals( true );
@@ -520,37 +534,6 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mGridColorButton_colorChanged( const QColor &newColor )
-{
-  if ( mComposition )
-  {
-    QPen pen = mComposition->gridPen();
-    pen.setColor( newColor );
-    mComposition->setGridPen( pen );
-  }
-}
-
-void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QString& text )
-{
-  Q_UNUSED( text );
-
-  if ( mComposition )
-  {
-    if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )
-    {
-      mComposition->setGridStyle( QgsComposition::Solid );
-    }
-    else if ( mGridStyleComboBox->currentText() == tr( "Dots" ) )
-    {
-      mComposition->setGridStyle( QgsComposition::Dots );
-    }
-    else if ( mGridStyleComboBox->currentText() == tr( "Crosses" ) )
-    {
-      mComposition->setGridStyle( QgsComposition::Crosses );
-    }
-  }
-}
-
 void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
 {
   if ( mComposition )
@@ -575,13 +558,12 @@ void QgsCompositionWidget::blockSignals( bool block )
   mPaperHeightDoubleSpinBox->blockSignals( block );
   mNumPagesSpinBox->blockSignals( block );
   mPaperOrientationComboBox->blockSignals( block );
+  mPageStyleButton->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
   mPrintAsRasterCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
-  mGridColorButton->blockSignals( block );
-  mGridStyleComboBox->blockSignals( block );
   mGridToleranceSpinBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }

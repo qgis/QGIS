@@ -52,7 +52,7 @@ class TestQgsBlendModes: public QObject
     bool imageCheck( QString theType ); //as above
     QgsMapSettings mMapSettings;
     QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpPolysLayer;
+    QgsVectorLayer * mpPolysLayer;
     QgsVectorLayer * mpLinesLayer;
     QgsRasterLayer* mRasterLayer1;
     QgsRasterLayer* mRasterLayer2;
@@ -85,6 +85,11 @@ void TestQgsBlendModes::initTestCase()
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+
+  mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
@@ -93,6 +98,7 @@ void TestQgsBlendModes::initTestCase()
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), "ogr" );
+  mpLinesLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
 

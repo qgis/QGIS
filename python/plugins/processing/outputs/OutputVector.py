@@ -87,7 +87,7 @@ class OutputVector(Output):
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value('/Processing/encoding', 'System')
+            self.encoding = settings.value('/Processing/encoding', 'System', type=str)
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,
                          crs, options)

@@ -829,9 +829,12 @@ void QgsGrassMapcalc::deleteItem()
 
 void QgsGrassMapcalc::keyPressEvent( QKeyEvent * e )
 {
-  if ( e->key() == Qt::Key_Delete )
+  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
     deleteItem();
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
   }
 }
 
@@ -1476,7 +1479,7 @@ void QgsGrassMapcalc::clear()
 }
 
 /******************** CANVAS ITEMS ******************************/
-QgsGrassMapcalcItem::QgsGrassMapcalcItem(): mSelected( false )
+QgsGrassMapcalcItem::QgsGrassMapcalcItem() : mSelected( false )
 {
   QgsDebugMsg( "entered." );
 }
@@ -1497,9 +1500,12 @@ bool QgsGrassMapcalcItem::selected()
 
 /**************************** OBJECT ************************/
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
-    : QGraphicsRectItem( -1000, -1000, 50, 20, 0 ), QgsGrassMapcalcItem(),
-    mType( type ), mCenter( -1000, -1000 ), mSelectionBoxSize( 5 ),
-    mOutputConnector( 0 )
+    : QGraphicsRectItem( -1000, -1000, 50, 20, 0 )
+    , QgsGrassMapcalcItem()
+    , mType( type )
+    , mCenter( -1000, -1000 )
+    , mSelectionBoxSize( 5 )
+    , mOutputConnector( 0 )
 {
   QgsDebugMsg( "entered." );
 

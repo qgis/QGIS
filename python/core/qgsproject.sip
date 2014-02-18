@@ -1,5 +1,6 @@
 
-/** Reads and writes project states.
+/** \ingroup core
+ * Reads and writes project states.
 
 
   @note
@@ -170,16 +171,10 @@ class QgsProject : QObject
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    bool writeEntryBool( const QString & scope, const QString & key, bool value );
-%MethodCode
-      sipRes = sipCpp->writeEntry( *a0, *a1, a2 );
-%End
-
-    bool writeEntryDouble( const QString & scope, const QString & key, double value );
-%MethodCode
-      sipRes = sipCpp->writeEntry( *a0, *a1, a2 );
-%End
-
+    //! @note available in python bindings as writeEntryBool
+    bool writeEntry( const QString & scope, const QString & key, bool value ) /PyName=writeEntryBool/;
+    //! @note available in python bindings as writeEntryDouble
+    bool writeEntry( const QString & scope, const QString & key, double value ) /PyName=writeEntryDouble/;
     bool writeEntry( const QString & scope, const QString & key, int value );
     bool writeEntry( const QString & scope, const QString & key, const QString & value );
     bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
@@ -194,7 +189,7 @@ class QgsProject : QObject
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool * ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0 ) const;
 
     QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
     int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
@@ -244,40 +239,43 @@ class QgsProject : QObject
       @note added in 1.4 */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler /Transfer/ );
 
-    /**Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
+    /** Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
     QString layerIsEmbedded( const QString& id ) const;
 
-    /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
+    /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
       @note: added in version 1.8
+      @note not available in python bindings
      */
     /*
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
     */
 
-    /**Convenience function to set snap settings per layer
+    /** Convenience function to set snap settings per layer
       @note added in version 1.9*/
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
                                   bool avoidIntersection );
 
-    /**Convenience function to query snap settings of a layer
+    /** Convenience function to query snap settings of a layer
       @note added in version 1.9*/
     bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
                                bool& avoidIntersection /Out/ ) const;
 
-    /**Convenience function to set topological editing
+    /** Convenience function to set topological editing
         @note added in version 1.9*/
     void setTopologicalEditing( bool enabled );
 
-    /**Convenience function to query topological editing status
-        @note added in version 1.9*/
+    /** Convenience function to query topological editing status
+      @note added in version 1.9*/
     bool topologicalEditing() const;
 
     /** Return project's home path
-        @return home path of project (or QString::null if not set)
-        @note added in version 2.0 */
+      @return home path of project (or QString::null if not set)
+      @note added in version 2.0 */
     QString homePath() const;
+
+    QgsRelationManager* relationManager() const;
 
   protected:
 
@@ -290,6 +288,7 @@ class QgsProject : QObject
     void clearError();
 
     //Creates layer and adds it to maplayer registry
+    //! @note not available in python bindings
     // bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:

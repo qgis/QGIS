@@ -398,22 +398,26 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
     }
 
     vlayer->beginEditCommand( tr( "Pinned label" ) + QString( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX, true );
-    writeFailed = !vlayer->changeAttributeValue( fid, yCol, labelY, true );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
+    if ( !vlayer->changeAttributeValue( fid, yCol, labelY ) )
+      writeFailed = true;
     if ( hasRCol && !preserveRot )
     {
-      writeFailed = !vlayer->changeAttributeValue( fid, rCol, labelR, true );
+      if ( !vlayer->changeAttributeValue( fid, rCol, labelR ) )
+        writeFailed = true;
     }
     vlayer->endEditCommand();
   }
   else
   {
     vlayer->beginEditCommand( tr( "Unpinned label" ) + QString( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ), true );
-    writeFailed = !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ), true );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
+      writeFailed = true;
     if ( hasRCol && !preserveRot )
     {
-      writeFailed = !vlayer->changeAttributeValue( fid, rCol, QVariant( QString::null ), true );
+      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant( QString::null ) ) )
+        writeFailed = true;
     }
     vlayer->endEditCommand();
   }

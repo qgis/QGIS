@@ -105,7 +105,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void extentsChangedQGisCanvas();
 
     // canvas info
-    void showMouseCoords( const QgsPoint pt );
+    void showMouseCoords( const QgsPoint &pt );
     void updateMouseCoordinatePrecision();
 
     // Histogram stretch

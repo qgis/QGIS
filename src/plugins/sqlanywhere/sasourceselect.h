@@ -199,6 +199,7 @@ class SaGeomColTypeThread : public QThread
 {
     Q_OBJECT
   public:
+    SaGeomColTypeThread() {}
 
     void setConnInfo( QString s, bool estMeta, bool otherSchemas );
     void addGeometryColumn( QString schema, QString table, QString column, QString geomtype, QString sridstr, QString lineinterp );
@@ -217,7 +218,6 @@ class SaGeomColTypeThread : public QThread
 
   public slots:
     void stop();
-
 
   private:
     QString mConnInfo;

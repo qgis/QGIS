@@ -288,19 +288,9 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
     double key = item->data( 0, StopOffsetRole ).toDouble();
     // allow for floating-point values
     double val = key * 100;
-#if QT_VERSION >= 0x40500
     val = QInputDialog::getDouble( this, tr( "Offset of the stop" ),
                                    tr( "Please enter offset in percents (%) of the new stop" ),
                                    val, 0, 100, 2, &ok );
-#else
-    QString res = QInputDialog::getText( this, tr( "Offset of the stop" ),
-                                         tr( "Please enter offset in percents (%) of the new stop" ),
-                                         QLineEdit::Normal, QString::number( val ), &ok );
-    if ( ok )
-      val = res.toDouble( &ok );
-    if ( ok )
-      ok = val >= 0 && val <= 100;
-#endif
     if ( !ok )
       return;
 
@@ -330,19 +320,9 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 
   bool ok;
   double val = 50.0;
-#if QT_VERSION >= 0x40500
   val = QInputDialog::getDouble( this, tr( "Offset of the stop" ),
                                  tr( "Please enter offset in percents (%) of the new stop" ),
                                  val, 0, 100, 2, &ok );
-#else
-  QString res = QInputDialog::getText( this, tr( "Offset of the stop" ),
-                                       tr( "Please enter offset in percents (%) of the new stop" ),
-                                       QLineEdit::Normal, QString::number( val ), &ok );
-  if ( ok )
-    val = res.toDouble( &ok );
-  if ( ok )
-    ok = val >= 0 && val <= 100;
-#endif
   if ( !ok )
     return;
   activateWindow();

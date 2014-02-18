@@ -985,7 +985,7 @@ class TableConstraint(TableSubItemObject):
 	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique, "x" : TypeExclusion }
 
 	onAction = { "a" : "NO ACTION", "r" : "RESTRICT", "c" : "CASCADE", "n" : "SET NULL", "d" : "SET DEFAULT" }
-	matchTypes = { "u" : "UNSPECIFIED", "f" : "FULL", "p" : "PARTIAL" }
+	matchTypes = { "u" : "UNSPECIFIED", "f" : "FULL", "p" : "PARTIAL", "s" : "SIMPLE" }
 
 	def __init__(self, table):
 		TableSubItemObject.__init__(self, table)

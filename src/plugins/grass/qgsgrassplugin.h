@@ -80,7 +80,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! Set Region Pen
     void setRegionPen( QPen & );
     //! Get an icon from the active theme if possible
-    static QIcon getThemeIcon( const QString theName );
+    static QIcon getThemeIcon( const QString &theName );
 
   public slots:
     //! init the gui

@@ -28,6 +28,7 @@
 class QgsAttributeDialog;
 class QgsFeatureRequest;
 class QSignalMapper;
+class QgsMapLayerAction;
 
 /**
  * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
@@ -156,8 +157,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * @brief saveEditChanges
+     *
+     * @return true if the saving was ok. false is possible due to connected
+     *         validation logic.
      */
-    void saveEditChanges();
+    bool saveEditChanges();
 
     /**
      * Update the shown feature if an attribute changed
@@ -271,6 +275,24 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
   private:
     QgsDualView* mDualView;
     int mAction;
+    QModelIndex mFieldIdx;
+};
+
+class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
+{
+    Q_OBJECT
+
+  public:
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx ) :
+        QAction( name, dualView ), mDualView( dualView ), mAction( action ), mFieldIdx( fieldIdx )
+    {}
+
+  public slots:
+    void execute();
+
+  private:
+    QgsDualView* mDualView;
+    QgsMapLayerAction* mAction;
     QModelIndex mFieldIdx;
 };
 

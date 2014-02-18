@@ -100,6 +100,10 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
+    /**Returns true if the rendering optimization (geometry simplification) can be executed*/
+    bool useRenderingOptimization() const { return mUseRenderingOptimization; }
+    void setUseRenderingOptimization( bool enabled ) { mUseRenderingOptimization = enabled; }
+
   private:
 
     /**Painter for rendering operations*/
@@ -138,6 +142,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Color used for features that are marked as selected */
     QColor mSelectionColor;
+
+    /**True if the rendering optimization (geometry simplification) can be executed*/
+    bool mUseRenderingOptimization;
 };
 
 #endif

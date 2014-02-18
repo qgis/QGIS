@@ -60,6 +60,9 @@ void QgsCredentialDialog::requestCredentials( QString realm, QString *username, 
   labelMessage->setText( message );
   labelMessage->setHidden( message.isEmpty() );
 
+  if ( !leUsername->text().isEmpty() )
+    lePassword->setFocus();
+
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
   QgsDebugMsg( "exec()" );

@@ -1,10 +1,10 @@
-##[Example scripts]=group
-##points=vector
+##Point pattern analysis=group
+##Layer=vector
 ##showplots
 library("maptools")
 library("spatstat")
-ppp=as(as(points, "SpatialPoints"),"ppp")
+ppp=as(as(Layer, "SpatialPoints"),"ppp")
 qc=quadratcount(ppp)
-plot(points)
+plot(Layer)
 plot(qc, add=TRUE)
 >quadrat.test(ppp);

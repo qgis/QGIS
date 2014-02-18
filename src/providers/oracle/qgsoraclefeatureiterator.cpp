@@ -48,6 +48,9 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
   switch ( request.filterType() )
   {
+    case QgsFeatureRequest::FilterExpression:
+      break;
+
     case QgsFeatureRequest::FilterRect:
       if ( !mSource->mGeometryColumn.isNull() )
       {
@@ -186,7 +189,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
           {
             const QgsField &fld = mSource->mFields[idx];
 
-            QVariant v = QgsVectorDataProvider::convertValue( fld.type(), mQry.value( col ).toString() );
+            QVariant v = mQry.value( col );
+            if ( v.type() != fld.type() )
+              v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
             primaryKeyVals << v;
 
             if ( mAttributeList.contains( idx ) )
@@ -220,7 +225,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
       const QgsField &fld = mSource->mFields[idx];
 
-      QVariant v = QgsVectorDataProvider::convertValue( fld.type(), mQry.value( col ).toString() );
+      QVariant v = mQry.value( col );
+      if ( v.type() != fld.type() )
+        v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
       feature.setAttribute( idx, v );
 
       col++;

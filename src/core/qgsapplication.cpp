@@ -263,7 +263,7 @@ void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
   }
 }
 
-void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefaultPaths )
+void QgsApplication::setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths )
 {
   ABISYM( mPrefixPath ) = thePrefixPath;
 #if defined(_MSC_VER)
@@ -281,12 +281,12 @@ void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefault
   ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
 }
 
-void QgsApplication::setPluginPath( const QString thePluginPath )
+void QgsApplication::setPluginPath( const QString &thePluginPath )
 {
   ABISYM( mPluginPath ) = thePluginPath;
 }
 
-void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
+void QgsApplication::setPkgDataPath( const QString &thePkgDataPath )
 {
   ABISYM( mPkgDataPath ) = thePkgDataPath;
   QString mySvgPath = thePkgDataPath + ( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
@@ -338,7 +338,7 @@ QString QgsApplication::iconPath( QString iconFile )
   return defaultThemePath() + iconFile;
 }
 
-QIcon QgsApplication::getThemeIcon( const QString theName )
+QIcon QgsApplication::getThemeIcon( const QString &theName )
 {
   QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
   QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
@@ -359,7 +359,7 @@ QIcon QgsApplication::getThemeIcon( const QString theName )
 }
 
 // TODO: add some caching mechanism ?
-QPixmap QgsApplication::getThemePixmap( const QString theName )
+QPixmap QgsApplication::getThemePixmap( const QString &theName )
 {
   QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
   QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
@@ -378,7 +378,7 @@ QPixmap QgsApplication::getThemePixmap( const QString theName )
 /*!
   Set the theme path to the specified theme.
 */
-void QgsApplication::setThemeName( const QString theThemeName )
+void QgsApplication::setThemeName( const QString &theThemeName )
 {
   QString myPath = ":/images/themes/" + theThemeName + "/";
   //check it exists and if not roll back to default theme

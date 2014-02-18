@@ -72,6 +72,8 @@ class QgsWMSServer
     QImage* getMap();
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
+    /**Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
+    QDomDocument getStyles();
 
     /**Returns printed page as binary
       @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
@@ -168,7 +170,9 @@ class QgsWMSServer
     void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& layerTitleSpace,
                            double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight, QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
 
+#if 0
     QImage* printCompositionToImage( QgsComposition* c ) const;
+#endif
 
     /**Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        @return a map with the original filters ( layer id / filter string )*/

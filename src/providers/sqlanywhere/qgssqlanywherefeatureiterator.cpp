@@ -158,8 +158,8 @@ bool QgsSqlAnywhereFeatureIterator::nextFeature( QgsFeature& feature, SqlAnyStat
       if ( !ok ) break;
       QgsDebugMsgLevel( QString( "retrieved geometry column" ), 3 );
       geomBuf = new unsigned char[ *geom.length + 1 ];
-      memset( geomBuf, '\0', *geom.length );
       memcpy( geomBuf, geom.buffer, *geom.length );
+      memset( geomBuf + *geom.length, 0, 1 );
       feature.setGeometryAndOwnership( geomBuf, *geom.length + 1 );
     }
     else

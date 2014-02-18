@@ -91,7 +91,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @see QgsExpression
      */
-    const QString& displayExpression() const;
+    const QString displayExpression() const;
 
     /**
      * Returns a detailed message about errors while parsing a QgsExpression.
@@ -99,6 +99,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @return A message containg information about the parser error.
      */
     QString parserErrorString();
+
+    /**
+     * Get the currentEditSelection
+     *
+     * @return A list of edited feature ids
+     */
+    QgsFeatureIds currentEditSelection();
 
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );

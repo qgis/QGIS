@@ -85,7 +85,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
+      if (  mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
         hasFeature = true;
     }
     else
@@ -94,14 +94,14 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( hasFeature )
       break;
 
-    mFeatureIdListIterator++;
+    ++mFeatureIdListIterator;
   }
 
   // copy feature
   if ( hasFeature )
   {
     feature = mSource->mFeatures[*mFeatureIdListIterator];
-    mFeatureIdListIterator++;
+    ++mFeatureIdListIterator;
   }
   else
     close();
@@ -130,13 +130,13 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
+        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
           hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->geometry()->boundingBox().intersects( mRequest.filterRect() ) )
+        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->boundingBox().intersects( mRequest.filterRect() ) )
           hasFeature = true;
       }
     }
@@ -144,14 +144,14 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
     if ( hasFeature )
       break;
 
-    mSelectIterator++;
+    ++mSelectIterator;
   }
 
   // copy feature
   if ( hasFeature )
   {
     feature = mSelectIterator.value();
-    mSelectIterator++;
+    ++mSelectIterator;
     feature.setValid( true );
     feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
   }

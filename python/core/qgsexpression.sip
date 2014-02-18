@@ -31,6 +31,11 @@ class QgsExpression
     QVariant evaluate( const QgsFeature* f = NULL );
 
     //! Evaluate the feature and return the result
+    //! @note prepare() should be called before calling this method
+    //! @note available in python bindings as evaluatePrepared
+    QVariant evaluate( const QgsFeature& f ) /PyName=evaluatePrepared/;
+
+    //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
 
@@ -52,21 +57,27 @@ class QgsExpression
     static void unsetSpecialColumn( const QString& name );
     //! Return the value of the given special column or a null QVariant if undefined
     static QVariant specialColumn( const QString& name );
+    //! Check whether a special column exists
+    //! @note added in 2.2
+    static bool hasSpecialColumn( const QString& name );
 
     void setScale( double scale );
 
     int scale();
 
-    //! Return the parsed expression as a string - useful for debugging
+    //! Return the expression string that was given when created.
+    const QString expression() const;
+
+    //! Return the expression string that represents this QgsExpression.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea* geomCalculator();
+    QgsDistanceArea *geomCalculator();
 
-  //! Sets the geometry calculator used in evaluation of expressions,
-  // instead of the default.
-  void setGeomCalculator( QgsDistanceArea& calc );
+    //! Sets the geometry calculator used in evaluation of expressions,
+    // instead of the default.
+    void setGeomCalculator( const QgsDistanceArea &calc );
 
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature
@@ -75,11 +86,9 @@ class QgsExpression
        Additional substitutions can be passed through the substitutionMap
        parameter
     */
-    static QString replaceExpressionText( QString action, const QgsFeature *feat,
-                                          QgsVectorLayer* layer,
+    static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
+                                          QgsVectorLayer *layer,
                                           const QMap<QString, QVariant> *substitutionMap = 0 );
-    //
-
     enum UnaryOperator
     {
       uoNot,
@@ -121,6 +130,9 @@ class QgsExpression
     // static const char* BinaryOperatorText[];
     // static const char* UnaryOperatorText[];
 
+    /**
+      * A abstract base class for defining QgsExpression functions.
+      */
     class Function
     {
       public:
@@ -136,13 +148,18 @@ class QgsExpression
         /** The help text for the function. */
         QString helptext();
 
-        virtual QVariant func(const QVariantList& values, const QgsFeature* f, QgsExpression* parent) = 0;
+        virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
     };
 
-    static const QList<QgsExpression::Function *> &Functions();
 
-    static bool registerFunction(Function* function);
-    static bool unregisterFunction(QString name);
+    static const QList<QgsExpression::Function *> &Functions();
+    // static QList<Function*> gmFunctions;
+
+    // static QStringList gmBuiltinFunctions;
+    static const QStringList &BuiltinFunctions();
+
+    static bool registerFunction( Function* function );
+    static bool unregisterFunction( QString name );
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
@@ -205,36 +222,39 @@ class QgsExpression
       public:
         NodeList();
         ~NodeList();
-        void append( QgsExpression::Node* node );
+        void append( QgsExpression::Node* node /Transfer/ );
         int count();
         QList<QgsExpression::Node*> list();
 
         virtual QString dump() const;
+
+//      protected:
+//        QList<QgsExpression::Node*> mList;
     };
 
     class Interval
     {
-    public:
-      Interval(int seconds);
-      ~Interval();
-      int years();
-      int weeks();
-      int days();
-      int hours();
-      int minutes();
-      int seconds();
-      bool isValid();
-      void setValid(bool valid);
-      bool operator==(const QgsExpression::Interval& other) const;
-      static QgsExpression::Interval invalidInterVal();
-      static QgsExpression::Interval fromString(QString string);
+      public:
+        Interval( int seconds = 0 );
+        ~Interval();
+        double years();
+        double months();
+        double weeks();
+        double days();
+        double hours();
+        double minutes();
+        double seconds();
+        bool isValid();
+        void setValid( bool valid );
+        bool operator==( const QgsExpression::Interval& other ) const;
+        static QgsExpression::Interval invalidInterVal();
+        static QgsExpression::Interval fromString( QString string );
     };
-
 
     class NodeUnaryOperator : QgsExpression::Node
     {
       public:
-        NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node* operand );
+        NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node* operand /Transfer/ );
         ~NodeUnaryOperator();
 
         QgsExpression::UnaryOperator op() const;
@@ -253,7 +273,7 @@ class QgsExpression
     class NodeBinaryOperator : QgsExpression::Node
     {
       public:
-        NodeBinaryOperator( QgsExpression::BinaryOperator op, QgsExpression::Node* opLeft, QgsExpression::Node* opRight );
+        NodeBinaryOperator( QgsExpression::BinaryOperator op, QgsExpression::Node* opLeft /Transfer/, QgsExpression::Node* opRight /Transfer/ );
         ~NodeBinaryOperator();
 
         QgsExpression::BinaryOperator op() const;
@@ -273,7 +293,7 @@ class QgsExpression
     class NodeInOperator : QgsExpression::Node
     {
       public:
-        NodeInOperator( QgsExpression::Node* node, QgsExpression::NodeList* list, bool notin = false );
+        NodeInOperator( QgsExpression::Node* node /Transfer/, QgsExpression::NodeList* list /Transfer/, bool notin = false );
         ~NodeInOperator();
 
         QgsExpression::Node* node() const;
@@ -293,7 +313,7 @@ class QgsExpression
     class NodeFunction : QgsExpression::Node
     {
       public:
-        NodeFunction( int fnIndex, QgsExpression::NodeList* args );
+        NodeFunction( int fnIndex, QgsExpression::NodeList* args /Transfer/ );
         //NodeFunction( QString name, QgsExpression::NodeList* args );
         ~NodeFunction();
 
@@ -341,25 +361,25 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
+
         virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class WhenThen
     {
       public:
-        WhenThen( QgsExpression::Node* whenExp, QgsExpression::Node* thenExp );
+        WhenThen( QgsExpression::Node* whenExp /Transfer/, QgsExpression::Node* thenExp /Transfer/ );
         ~WhenThen();
 
         //protected:
         QgsExpression::Node* mWhenExp;
         QgsExpression::Node* mThenExp;
     };
-    typedef QList<QgsExpression::WhenThen*> WhenThenList;
 
     class NodeCondition : QgsExpression::Node
     {
       public:
-        NodeCondition( QgsExpression::WhenThenList* conditions, QgsExpression::Node* elseExp = NULL );
+        NodeCondition( QList<QgsExpression::WhenThen*> *conditions, QgsExpression::Node* elseExp = 0 );
         ~NodeCondition();
 
         virtual QgsExpression::NodeType nodeType() const;
@@ -391,6 +411,9 @@ class QgsExpression
 
     /** entry function for the visitor pattern */
     void acceptVisitor( QgsExpression::Visitor& v ) const;
+
+    static QString helptext( QString name );
+    static QString group( QString group );
 
   protected:
     void initGeomCalculator();

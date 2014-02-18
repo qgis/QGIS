@@ -45,9 +45,9 @@ static const QString sPluginIcon = ":/compass.svn";
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsCompassPlugin::QgsCompassPlugin( QgisInterface * themQGisIface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( themQGisIface )
+QgsCompassPlugin::QgsCompassPlugin( QgisInterface *themQGisIface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( themQGisIface )
 {
   /** Initialize the plugin */
   mDock = NULL;
@@ -100,9 +100,11 @@ void QgsCompassPlugin::initGui()
 
   // Create the action for tool
   mActionRunCompass = new QAction( QIcon(), tr( "Show compass" ), this );
+  mActionRunCompass->setObjectName( "mActionRunCompass" );
   connect( mActionRunCompass, SIGNAL( triggered() ), this, SLOT( run() ) );
 
   mActionAboutCompass = new QAction( QIcon(), tr( "&About" ), this );
+  mActionAboutCompass->setObjectName( "mActionAboutCompass" );
   connect( mActionAboutCompass, SIGNAL( triggered() ), this, SLOT( about() ) );
 
   setCurrentTheme( "" );

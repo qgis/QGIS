@@ -175,11 +175,11 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   //adjust box if width or height is to small
   if ( painter && size.height() > rect().height() )
   {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), size.height() ) );
+    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), size.height() ) );
   }
   if ( painter && size.width() > rect().width() )
   {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), size.width(), rect().height() ) );
+    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), rect().height() ) );
   }
 
   if ( painter )
@@ -294,7 +294,7 @@ void QgsComposerLegend::adjustBoxSize()
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), size.width(), size.height() ) );
+    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), size.height() ) );
   }
 }
 

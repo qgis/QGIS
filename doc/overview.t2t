@@ -15,7 +15,7 @@ Required build tools:
 
 Required build deps:
 
-- Qt >= 4.5.0
+- Qt >= 4.7.0
 - Proj >= 4.4.x
 - GEOS >= 3.0
 - Sqlite3 >= 3.0.0
@@ -31,7 +31,7 @@ Optional dependencies:
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.8, PyQt >= must match Qt version, Qscintilla2
+- for python support - SIP >= 4.12, PyQt >= 4.8.3 must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
 -
 

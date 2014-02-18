@@ -60,11 +60,21 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
+    /*
+     * the current edition state changed
+     */
+    void editingToggled();
+
   private:
     /**
      * Deletes the rubber band pointers and clears mRubberBands
      */
     void removeRubberBands();
+
+    /**
+     * Disconnects signals and clears objects
+     */
+    void cleanTool( bool deleteSelectedFeature = true );
 
     /**
      * Creating rubber band marker for movin of point
@@ -94,6 +104,16 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * @param vertex currently processed vertex
      */
     void createTopologyRubberBands( QgsVectorLayer* vlayer, const QList<QgsVertexEntry*> &vertexMap, int vertex );
+
+    /**
+     * Returns the index of first selected vertex, -1 when all unselected
+     */
+    int firstSelectedVertex();
+
+    /**
+     * Select the specified vertex bounded to current index range, returns the valid selected index
+     */
+    int safeSelectVertex( int vertexNr );
 
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;

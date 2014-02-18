@@ -128,6 +128,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
       </widget>
      </item>
     </layout>

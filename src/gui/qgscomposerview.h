@@ -136,6 +136,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
     void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
 
+    /**Set zoom level, where a zoom level of 1.0 corresponds to 100%*/
+    void setZoomLevel( double zoomLevel );
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -187,9 +190,22 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
 
-    bool mPanning;
+    /**True if user is currently panning by clicking and dragging with the pan tool*/
+    bool mToolPanning;
+    /**True if user is currently panning by holding the middle mouse button*/
+    bool mMousePanning;
+    /**True if user is currently panning by holding the space key*/
+    bool mKeyPanning;
+
+    /**True if user is currently dragging with the move item content tool*/
+    bool mMovingItemContent;
+
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;
+    QPoint mMousePressStartPos;
+
+    /**Returns the default mouse cursor for a tool*/
+    QCursor defaultCursorForTool( Tool currentTool );
 
     /**Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
@@ -219,6 +235,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void actionFinished();
     /**Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
+    /**Is emitted when the view zoom changes*/
+    void zoomLevelChanged();
 
     /**Emitted before composerview is shown*/
     void composerViewShow( QgsComposerView* );

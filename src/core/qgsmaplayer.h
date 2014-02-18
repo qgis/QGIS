@@ -121,7 +121,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     const QString& metadataUrlFormat() const { return mMetadataUrlFormat; }
 
     /* Set the blending mode used for rendering a layer */
-    void setBlendMode( const QPainter::CompositionMode blendMode );
+    void setBlendMode( const QPainter::CompositionMode &blendMode );
     /* Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
@@ -284,9 +284,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml );
+    virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml );
 
     //TODO edit infos
     /**
@@ -329,12 +329,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @sa saveDefaultStyle()
      */
-    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
+    virtual QString saveNamedStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual QString saveSldStyle( const QString theURI, bool & theResultFlag );
-    virtual QString loadSldStyle( const QString theURI, bool &theResultFlag );
+    virtual QString saveSldStyle( const QString &theURI, bool &theResultFlag );
+    virtual QString loadSldStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool readSld( const QDomNode& node, QString& errorMessage )
+    virtual bool readSld( const QDomNode &node, QString &errorMessage )
     { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
 
 
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool writeSymbology( QDomNode &node, QDomDocument& doc, QString& errorMessage ) const = 0;
 
     /** Return pointer to layer's undo stack */
-    QUndoStack* undoStack();
+    QUndoStack *undoStack();
 
     /** @deprecated since 2.1 - returns NULL */
     Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
@@ -370,15 +370,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
-    float minimumScale();
+    float minimumScale() const;
 
     /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
-    float maximumScale();
+    float maximumScale() const;
 
     /** Accessor and mutator for the scale based visilibility flag */
     void toggleScaleBasedVisibility( bool theVisibilityFlag );
-    bool hasScaleBasedVisibility();
+    bool hasScaleBasedVisibility() const;
 
     /** Clear cached image
      * added in 1.5 */
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
-    void blendModeChanged( const QPainter::CompositionMode blendMode );
+    void blendModeChanged( const QPainter::CompositionMode &blendMode );
 
   protected:
     /** Set the extent */

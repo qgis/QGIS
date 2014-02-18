@@ -56,11 +56,12 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
       public:
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
-              QString label = QString(), QString description = QString() );
+              QString label = QString(), QString description = QString(), bool elseRule = false );
         ~Rule();
         QString dump( int offset = 0 ) const;
         QSet<QString> usedAttributes();
         QgsSymbolV2List symbols();
+        //! @note not available in python bindings
         // QgsLegendSymbolList legendSymbolItems();
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
@@ -95,6 +96,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
+        //! @note not available in python bindings
         // void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
         bool renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue );
@@ -107,11 +109,15 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! @note added in 1.9
         QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
+        //! tell which rules will be used to render the feature
+        QList<QgsRuleBasedRendererV2::Rule*> rulesForFeature( QgsFeature& feat );
+
         void stopRender( QgsRenderContext& context );
 
         static QgsRuleBasedRendererV2::Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap ) /Factory/;
 
         QList<QgsRuleBasedRendererV2::Rule*>& children();
+        QList<QgsRuleBasedRendererV2::Rule*> descendants() const;
         QgsRuleBasedRendererV2::Rule* parent();
 
         //! add child rule, take ownership, sets this as parent
@@ -126,6 +132,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void takeChild( QgsRuleBasedRendererV2::Rule* rule );
         //! take child rule out, set parent as null
         QgsRuleBasedRendererV2::Rule* takeChildAt( int i ) /TransferBack/;
+
+        void updateElseRules();
+
+        void setIsElse( bool iselse );
+        bool isElse();
 
       protected:
         void initFilter();
@@ -169,10 +180,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems();
 
     //! for debugging
-    virtual QString dump();
+    virtual QString dump() const;
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.
@@ -201,4 +213,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     static void refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales );
+
+  private:
+    QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );
+    QgsRuleBasedRendererV2 & operator=( const QgsRuleBasedRendererV2 & );
 };

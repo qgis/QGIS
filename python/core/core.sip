@@ -36,6 +36,7 @@
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
+%Include qgsgeometrysimplifier.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
 %Include qgshttptransaction.sip
@@ -71,11 +72,13 @@
 %Include qgspythonrunner.sip
 %Include qgsrectangle.sip
 %Include qgsrelation.sip
+%Include qgsrelationmanager.sip
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
 %Include qgsscaleutils.sip
+%Include qgssimplifymethod.sip
 %Include qgssnapper.sip
 %Include qgsspatialindex.sip
 %Include qgstolerance.sip
@@ -87,6 +90,7 @@
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
+%Include qgsvectorsimplifymethod.sip
 %Include qgsfontutils.sip
 
 %Include qgscachedfeatureiterator.sip
@@ -209,3 +213,5 @@
 %Include symbology-ng/qgssymbollayerv2registry.sip
 
 %Include symbology-ng/qgssymbologyv2conversion.sip
+
+%Include dxf/qgsdxfexport.sip

@@ -79,11 +79,12 @@ namespace QgisGui
    * provide filters with all available writable image formats.
    * @param theParent widget that should act as the parent for the file dialog
    * @param theMessage the message to display to the user
+   * @param defaultFilename default file name (empty by default)
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    * @note added in 1.6
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage );
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage, QString defaultFilename = QString::null );
 
   /**
 

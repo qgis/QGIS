@@ -70,11 +70,30 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( QColor color ) { mBorderColor = color; }
 
+    Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
+    void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+
+    /** Get outline color.
+     * @note added in 2.1 */
+    QColor outlineColor() const { return borderColor(); }
+    /** Set outline color.
+     * @note added in 2.1 */
+    void setOutlineColor( const QColor& color ) { setBorderColor( color ); }
+
+    /** Get fill color.
+     * @note added in 2.1 */
+    QColor fillColor() const { return color(); }
+    /** Set fill color.
+     * @note added in 2.1 */
+    void setFillColor( const QColor& color ) { setColor( color ); }
+
     double outlineWidth() const { return mOutlineWidth; }
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u ) { mOutlineWidthUnit = u; }
+
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
   protected:
 
@@ -88,6 +107,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     bool prepareCache( QgsSymbolV2RenderContext& context );
 
     QColor mBorderColor;
+    Qt::PenStyle mOutlineStyle;
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     QPen mPen;
@@ -103,6 +123,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     //Maximum width/height of cache image
     static const int mMaximumCacheWidth = 3000;
+
+  private:
+    QgsExpression *mAngleExpression;
+    QgsExpression *mNameExpression;
 };
 
 //////////
@@ -156,6 +180,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
   protected:
     QString mPath;

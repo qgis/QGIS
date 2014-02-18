@@ -128,17 +128,24 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
 
     /**Zoom content of item. Does nothing per default (but implemented in composer map)
-     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
-    @param x x-position of mouse cursor (in item coordinates)
-    @param y y-position of mouse cursor (in item coordinates)*/
+      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
+      @param x x-position of mouse cursor (in item coordinates)
+      @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets item position and width / height in one go
+      @param x item position x
+      @param y item position y
+      @param width item width
+      @param height item height
+      @param itemPoint item position mode
+      @param posIncludesFrame set to true if the position and size arguments include the item's frame border
+
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
@@ -180,8 +187,33 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @note introduced in 1.8
      * @see hasFrame
      */
-    void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
+    void setFrameEnabled( bool drawFrame );
 
+    /** Sets frame outline width
+     * @param outlineWidth new width for outline frame
+     * @returns nothing
+     * @note introduced in 2.2
+     * @see setFrameEnabled
+     */
+    virtual void setFrameOutlineWidth( double outlineWidth );
+
+    /** Returns the estimated amount the item's frame bleeds outside the item's
+     *  actual rectangle. For instance, if the item has a 2mm frame outline, then
+     *  1mm of this frame is drawn outside the item's rect. In this case the
+     *  return value will be 1.0
+     * @note introduced in 2.2
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /** Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     *  The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     *  more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     *  function, as rect() makes no allowances for the portion of outlines which are drawn
+     *  outside of the item.
+     * @note introduced in 2.2
+     * @see estimatedFrameBleed
+     */
+    virtual QRectF rectWithFrame() const;
 
     /** Whether this item has a Background or not.
      * @returns true if there is a Background around this item, otherwise false.
@@ -287,7 +319,15 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const {return mItemPositionLocked;}
 
-    double rotation() const {return mRotation;}
+    /**Returns the rotation for the composer item
+    @note this method was added in version 2.1*/
+    double itemRotation() const {return mItemRotation;}
+
+    /**Returns the rotation for the composer item
+     * @deprecated Use itemRotation()
+     *             instead
+     */
+    double rotation() const {return mItemRotation;}
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -306,7 +346,19 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     QString uuid() const { return mUuid; }
 
   public slots:
+    /**Sets the item rotation
+     * @deprecated Use setItemRotation( double rotation ) instead
+     */
     virtual void setRotation( double r );
+
+    /**Sets the item rotation
+      @param r item rotation in degrees
+      @param adjustPosition set to true if item should be shifted so that rotation occurs
+       around item center. If false, rotation occurs around item origin
+      @note this method was added in version 2.1
+    */
+    virtual void setItemRotation( double r, bool adjustPosition = false );
+
     void repaint();
 
   protected:
@@ -339,7 +391,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     mutable double mLastValidViewScaleFactor;
 
     /**Item rotation in degrees, clockwise*/
-    double mRotation;
+    double mItemRotation;
 
     /**Composition blend mode for item*/
     QPainter::CompositionMode mBlendMode;
@@ -384,12 +436,37 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     //some utility functions
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
+    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
+     * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
+     * instead
+     */
     bool imageSizeConsideringRotation( double& width, double& height ) const;
+
+    /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
+     * a specified amount
+        @param originalRect QRectF to be rotated and scaled
+        @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+        @param rotation the rotation in degrees to be applied to the rectangle
+    */
+    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+
     /**Calculates corner point after rotation and scaling*/
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
+    /**Calculates corner point after rotation and scaling
+     * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
+     * instead
+     */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
-    /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
+    /**Calculates width / height of the bounding box of a rotated rectangle*/
+    void sizeChangedByRotation( double& width, double& height, double rotation );
+    /**Calculates width / height of the bounding box of a rotated rectangle
+    * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
+    * instead
+    */
     void sizeChangedByRotation( double& width, double& height );
+
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise
         @param x in/out: x coordinate before / after the rotation
@@ -405,12 +482,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void deleteAlignItems();
 
   signals:
-    /**Is emitted on rotation change to notify north arrow pictures*/
-    void rotationChanged( double newRotation );
+    /**Is emitted on item rotation change*/
+    void itemRotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
     /**Emitted if the rectangle changes*/
     void sizeChanged();
+    /**Emitted if the item's frame style changes
+     * @note: this function was introduced in version 2.2
+    */
+    void frameChanged();
   private:
     // id (not unique)
     QString mId;

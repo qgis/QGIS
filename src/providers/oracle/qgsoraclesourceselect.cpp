@@ -351,6 +351,14 @@ void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex 
   }
 }
 
+void QgsOracleSourceSelect::on_mSearchGroupBox_toggled( bool checked )
+{
+  if ( mSearchTableEdit->text().isEmpty() )
+    return;
+
+  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
+}
+
 void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )

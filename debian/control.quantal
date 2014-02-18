@@ -1,6 +1,6 @@
 Source: qgis
 Section: science
-Priority: extra
+Priority: optional
 Maintainer: QGIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends:
  bison,
@@ -10,12 +10,12 @@ Build-Depends:
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
- libgdal1-dev,
+ libgdal-dev (>= 1.9.0),
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
  libproj-dev,
- libqt4-dev (>=4.6.0),
+ libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
  libqtwebkit-dev,
  libqwt-dev,
@@ -70,8 +70,10 @@ Description: QGIS - architecture-independent data
 
 Package: libqgis{QGIS_ABI}
 Architecture: any
+Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: qgis (<=0.9.2rc1), libqgis-core1, libqgis-gui1, libqgis0, libqgis1
+Conflicts: libqgis-core{QGIS_ABI}, libqgis-gui{QGIS_ABI}
 Description: QGIS - shared libraries
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -85,7 +87,7 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
- libgdal1-dev,
+ libgdal-dev (>= 1.9.0),
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
@@ -117,7 +119,7 @@ Description: GRASS plugin for QGIS
 
 Package: qgis-plugin-grass-common
 Architecture: all
-Depends: python, ${python:Depends}, ${misc:Depends}
+Depends: python2.7, ${python:Depends}, ${misc:Depends}
 Replaces: qgis-common (<< 1.5)
 Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for QGIS - architecture-independent data
@@ -130,10 +132,17 @@ Description: GRASS plugin for QGIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}),
-	python-psycopg2, python-qscintilla2,
-	python-pyspatialite,
-	${shlibs:Depends}, ${python:Depends}, ${misc:Depends}, ${sip:Depends}
+Depends:
+ python-qt4 (>= 4.1.0),
+ python-sip (>= 4.5.0),
+ python-qgis-common (= ${source:Version}),
+ python-psycopg2,
+ python-qscintilla2,
+ python-pyspatialite,
+ ${shlibs:Depends},
+ ${python:Depends},
+ ${misc:Depends},
+ ${sip:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS
@@ -146,7 +155,13 @@ Package: python-qgis-common
 Section: python
 Architecture: all
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, python-matplotlib, ${python:Depends}, ${misc:Depends}, ${sip:Depends}
+Depends:
+ gdal-bin,
+ python-gdal,
+ python-matplotlib,
+ ${python:Depends},
+ ${misc:Depends},
+ ${sip:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -157,7 +172,10 @@ Description: Python bindings to QGIS - architecture-independent files
 
 Package: qgis-providers
 Architecture: any
-Depends: qgis-providers-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ qgis-providers-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
 Replaces: qgis (<= 1.6)
 Breaks: qgis (<= 1.6)
 Description: collection of data providers to QGIS
@@ -179,7 +197,10 @@ Description: collection of data providers to QGIS - architecture-independent fil
 
 Package: qgis-mapserver
 Architecture: any
-Depends: qgis-providers (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ qgis-providers (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
 Description: QGIS mapserver
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -208,7 +229,11 @@ Description: QGIS API documentation
 
 Package: qgis-plugin-globe
 Architecture: any
-Depends: qgis (= ${binary:Version}), qgis-plugin-globe-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ qgis (= ${binary:Version}),
+ qgis-plugin-globe-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
 Description: OSG globe plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.

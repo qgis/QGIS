@@ -282,7 +282,8 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
   if ( !GDALInvGeoTransform( chain->adfGeotransform, chain->adfInvGeotransform ) )
   {
     // Error handling if inversion fails - although the inverse transform is not needed for warp operation
-    return NULL;
+    delete chain;
+    return 0;
   }
   return ( void* )chain;
 }

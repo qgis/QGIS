@@ -49,11 +49,11 @@ class CORE_EXPORT QgsRenderChecker
     {
       return static_cast<float>( mMismatchCount ) /
              static_cast<float>( mMatchTarget ) * 100;
-    };
-    unsigned int mismatchCount() { return mMismatchCount; };
-    unsigned int matchTarget() { return mMatchTarget; };
+    }
+    unsigned int mismatchCount() { return mMismatchCount; }
+    unsigned int matchTarget() { return mMatchTarget; }
     //only records time for actual render part
-    int elapsedTime() { return mElapsedTime; };
+    int elapsedTime() { return mElapsedTime; }
     void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; };
     /** Base directory name for the control image (with control image path
       * suffixed) the path to the image will be constructed like this:
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsRenderChecker
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
 
-    void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; };
+    void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; }
     //! @deprecated since 2.1 - use setMapSettings()
     Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
 
@@ -107,15 +107,21 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-  private:
+    QString expectedImageFile() { return mExpectedImageFile; };
+
+  protected:
 
     QString mReport;
-    QString mExpectedImageFile;
-    QString mControlName;
-    QString mRenderedImageFile;
-    unsigned int mMismatchCount;
     unsigned int mMatchTarget;
+    QgsMapRenderer * mpMapRenderer;
     int mElapsedTime;
+    QString mRenderedImageFile;
+    QString mExpectedImageFile;
+
+  private:
+
+    QString mControlName;
+    unsigned int mMismatchCount;
     int mElapsedTimeTarget;
     QgsMapSettings mMapSettings;
     QString mControlPathPrefix;

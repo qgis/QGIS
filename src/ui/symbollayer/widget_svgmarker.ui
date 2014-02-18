@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>479</height>
+    <height>471</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,9 @@
          </property>
          <property name="maximum">
           <double>100000.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.200000000000000</double>
          </property>
          <property name="value">
           <double>1.000000000000000</double>
@@ -82,7 +85,7 @@
         <double>360.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>5.000000000000000</double>
+        <double>0.500000000000000</double>
        </property>
       </widget>
      </item>
@@ -194,6 +197,9 @@
          <property name="decimals">
           <number>5</number>
          </property>
+         <property name="singleStep">
+          <double>0.200000000000000</double>
+         </property>
         </widget>
        </item>
        <item>
@@ -238,6 +244,9 @@
          <property name="maximum">
           <double>100000.000000000000000</double>
          </property>
+         <property name="singleStep">
+          <double>0.200000000000000</double>
+         </property>
         </widget>
        </item>
        <item>
@@ -256,6 +265,9 @@
          </property>
          <property name="maximum">
           <double>100000.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.200000000000000</double>
          </property>
         </widget>
        </item>

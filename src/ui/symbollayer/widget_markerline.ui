@@ -61,6 +61,9 @@
           <property name="maximum">
            <double>100000.000000000000000</double>
           </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
           <property name="value">
            <double>1.000000000000000</double>
           </property>
@@ -162,6 +165,9 @@
        </property>
        <property name="maximum">
         <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
        </property>
       </widget>
      </item>

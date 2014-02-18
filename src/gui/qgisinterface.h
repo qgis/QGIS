@@ -473,6 +473,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSelectRadius() = 0;
     //! Get access to the native identify action. Call trigger() on it to set the default identify map tool.
     virtual QAction *actionIdentify() = 0;
+    //! Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+    virtual QAction *actionFeatureAction() = 0;
     //! Get access to the native measure action. Call trigger() on it to set the default measure map tool.
     virtual QAction *actionMeasure() = 0;
     //! Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.
@@ -485,6 +487,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionZoomToSelected() = 0;
     //! Get access to the native zoom last action. Call trigger() on it to zoom to last.
     virtual QAction *actionZoomLast() = 0;
+    //! Get access to the native zoom next action. Call trigger() on it to zoom to next.
+    virtual QAction *actionZoomNext() = 0;
     //! Get access to the native zoom actual size action. Call trigger() on it to zoom to actual size.
     virtual QAction *actionZoomActualSize() = 0;
     //! Get access to the native map tips action. Call trigger() on it to toggle map tips.

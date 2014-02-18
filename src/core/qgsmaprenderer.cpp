@@ -259,7 +259,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
   mDrawing = true;
 
-  const QgsCoordinateTransform* ct;
+  const QgsCoordinateTransform *ct;
 
 #ifdef QGISDEBUG
   QgsDebugMsg( "Starting to render layer stack." );
@@ -394,7 +394,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       {
         r1 = mExtent;
         split = splitLayersExtent( ml, r1, r2 );
-        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mDestCRS->authid() );
+        ct = transformation( ml );
         mRenderContext.setExtent( r1 );
         QgsDebugMsg( "  extent 1: " + r1.toString() );
         QgsDebugMsg( "  extent 2: " + r2.toString() );
@@ -575,7 +575,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           {
             QgsRectangle r1 = mExtent;
             split = splitLayersExtent( ml, r1, r2 );
-            ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
+            ct = transformation( ml );
             mRenderContext.setExtent( r1 );
           }
           else
@@ -644,7 +644,8 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
-    emit hasCrsTransformEnabled( enabled );
+    emit hasCrsTransformEnabled( enabled ); // deprecated
+    emit hasCrsTransformEnabledChanged( enabled );
   }
 }
 
@@ -653,12 +654,16 @@ bool QgsMapRenderer::hasCrsTransformEnabled() const
   return mProjectionsEnabled;
 }
 
-void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo )
 {
   QgsDebugMsg( "* Setting destCRS : = " + crs.toProj4() );
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
+    if ( refreshCoordinateTransformInfo )
+    {
+      mLayerCoordinateTransformInfo.clear();
+    }
     QgsRectangle rect;
     if ( !mExtent.isEmpty() )
     {
@@ -707,17 +712,23 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       // extent separately.
       static const double splitCoord = 180.0;
 
+      const QgsCoordinateTransform *transform = transformation( layer );
       if ( layer->crs().geographicFlag() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point
-        QgsPoint ll = tr( layer )->transform( extent.xMinimum(), extent.yMinimum(),
-                                              QgsCoordinateTransform::ReverseTransform );
 
-        QgsPoint ur = tr( layer )->transform( extent.xMaximum(), extent.yMaximum(),
-                                              QgsCoordinateTransform::ReverseTransform );
+        QgsPoint ll( extent.xMinimum(), extent.yMinimum() );
+        QgsPoint ur( extent.xMaximum(), extent.yMaximum() );
 
-        extent = tr( layer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        if ( transform )
+        {
+          ll = transform->transform( ll.x(), ll.y(),
+                                     QgsCoordinateTransform::ReverseTransform );
+          ur = transform->transform( ur.x(), ur.y(),
+                                     QgsCoordinateTransform::ReverseTransform );
+          extent = transform->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        }
 
         if ( ll.x() > ur.x() )
         {
@@ -729,7 +740,10 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       }
       else // can't cross 180
       {
-        extent = tr( layer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        if ( transform )
+        {
+          extent = transform->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        }
       }
     }
     catch ( QgsCsException &cse )
@@ -745,14 +759,18 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
 
 QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
 {
-  QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
-  QgsDebugMsg( QString( "destCRS = " + tr( theLayer )->destCRS().authid() ) );
-  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+  //QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
+  //QgsDebugMsg( QString( "destCRS = " + tr( theLayer )->destCRS().authid() ) );
+  //QgsDebugMsg( QString( "extent = " + extent.toString() ) );
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      extent = tr( theLayer )->transformBoundingBox( extent );
+      const QgsCoordinateTransform *transform = transformation( theLayer );
+      if ( transform )
+      {
+        extent = transform->transformBoundingBox( extent );
+      }
     }
     catch ( QgsCsException &cse )
     {
@@ -767,14 +785,21 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
 
 QgsRectangle QgsMapRenderer::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent )
 {
-  QgsDebugMsg( QString( "layer sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
-  QgsDebugMsg( QString( "layer destCRS = " + tr( theLayer )->destCRS().authid() ) );
+#if QGISDEBUG
+  const QgsCoordinateTransform *transform = transformation( theLayer );
+  QgsDebugMsg( QString( "layer sourceCrs = " + ( transform ? transform->sourceCrs().authid() : "none" ) ) );
+  QgsDebugMsg( QString( "layer destCRS = " + ( transform ? transform->destCRS().authid() : "none" ) ) );
   QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+#endif
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      extent = tr( theLayer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+      const QgsCoordinateTransform *transform = transformation( theLayer );
+      if ( transform )
+      {
+        extent = transform->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+      }
     }
     catch ( QgsCsException &cse )
     {
@@ -793,7 +818,11 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
   {
     try
     {
-      point = tr( theLayer )->transform( point, QgsCoordinateTransform::ForwardTransform );
+      const QgsCoordinateTransform *transform = transformation( theLayer );
+      if ( transform )
+      {
+        point = transform->transform( point, QgsCoordinateTransform::ForwardTransform );
+      }
     }
     catch ( QgsCsException &cse )
     {
@@ -813,7 +842,11 @@ QgsRectangle QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
   {
     try
     {
-      rect = tr( theLayer )->transform( rect, QgsCoordinateTransform::ForwardTransform );
+      const QgsCoordinateTransform *transform = transformation( theLayer );
+      if ( transform )
+      {
+        rect = transform->transform( rect, QgsCoordinateTransform::ForwardTransform );
+      }
     }
     catch ( QgsCsException &cse )
     {
@@ -833,7 +866,9 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
   {
     try
     {
-      point = tr( theLayer )->transform( point, QgsCoordinateTransform::ReverseTransform );
+      const QgsCoordinateTransform *transform = transformation( theLayer );
+      if ( transform )
+        point = transform->transform( point, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -853,7 +888,9 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
   {
     try
     {
-      rect = tr( theLayer )->transform( rect, QgsCoordinateTransform::ReverseTransform );
+      const QgsCoordinateTransform *transform = transformation( theLayer );
+      if ( transform )
+        rect = transform->transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -891,7 +928,7 @@ void QgsMapRenderer::updateFullExtent()
 
       if ( lyr->extent().isEmpty() )
       {
-        it++;
+        ++it;
         continue;
       }
 
@@ -903,7 +940,7 @@ void QgsMapRenderer::updateFullExtent()
       mFullExtent.unionRect( extent );
 
     }
-    it++;
+    ++it;
   }
 
   if ( mFullExtent.width() == 0.0 || mFullExtent.height() == 0.0 )
@@ -956,11 +993,37 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
 {
   QgsMapSettings tmpSettings;
   tmpSettings.readXML( theNode );
+  //load coordinate transform into
+  mLayerCoordinateTransformInfo.clear();
+  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
+  if ( !layerCoordTransformInfoElem.isNull() )
+  {
+    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+    QDomElement layerCoordTransformElem;
+    for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
+    {
+      layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
+      QString layerId = layerCoordTransformElem.attribute( "layerid" );
+      if ( layerId.isEmpty() )
+      {
+        continue;
+      }
+
+      QgsLayerCoordinateTransform lct;
+      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
+      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
+      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
+      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
+      mLayerCoordinateTransformInfo.insert( layerId, lct );
+    }
+  }
+
 
   setMapUnits( tmpSettings.mapUnits() );
   setExtent( tmpSettings.extent() );
   setProjectionsEnabled( tmpSettings.hasCrsTransformEnabled() );
   setDestinationCrs( tmpSettings.destinationCrs() );
+
 
   return true;
 }
@@ -976,6 +1039,20 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   tmpSettings.setDestinationCrs( destinationCrs() );
 
   tmpSettings.writeXML( theNode, theDoc );
+  // layer coordinate transform infos
+  QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
+  QHash< QString, QgsLayerCoordinateTransform >::const_iterator coordIt = mLayerCoordinateTransformInfo.constBegin();
+  for ( ; coordIt != mLayerCoordinateTransformInfo.constEnd(); ++coordIt )
+  {
+    QDomElement layerCoordTransformElem = theDoc.createElement( "layer_coordinate_transform" );
+    layerCoordTransformElem.setAttribute( "layerid", coordIt.key() );
+    layerCoordTransformElem.setAttribute( "srcAuthId", coordIt->srcAuthId );
+    layerCoordTransformElem.setAttribute( "destAuthId", coordIt->destAuthId );
+    layerCoordTransformElem.setAttribute( "srcDatumTransform", QString::number( coordIt->srcDatumTransform ) );
+    layerCoordTransformElem.setAttribute( "destDatumTransform", QString::number( coordIt->destDatumTransform ) );
+    layerCoordTransformInfo.appendChild( layerCoordTransformElem );
+  }
+  theNode.appendChild( layerCoordTransformInfo );
   return true;
 }
 
@@ -987,18 +1064,45 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
   mLabelingEngine = iface;
 }
 
-const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
+const QgsCoordinateTransform *QgsMapRenderer::transformation( const QgsMapLayer *layer ) const
 {
   if ( !layer || !mDestCRS )
   {
     return 0;
   }
-  return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
+
+  if ( layer->crs().authid() == mDestCRS->authid() )
+  {
+    return 0;
+  }
+
+  QHash< QString, QgsLayerCoordinateTransform >::const_iterator ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
+  if ( ctIt != mLayerCoordinateTransformInfo.constEnd()
+       && ctIt->srcAuthId == layer->crs().authid()
+       && ctIt->destAuthId == mDestCRS->authid() )
+  {
+    return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
+  }
+  else
+  {
+    emit datumTransformInfoRequested( layer, layer->crs().authid(), mDestCRS->authid() );
+  }
+
+  //still not present? get coordinate transformation with -1/-1 datum transform as default
+  ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
+  if ( ctIt == mLayerCoordinateTransformInfo.constEnd()
+       || ctIt->srcAuthId == layer->crs().authid()
+       || ctIt->destAuthId == mDestCRS->authid()
+     )
+  {
+    return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid(), -1, -1 );
+  }
+  return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
 }
 
 /** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
  */
-QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode blendMode )
+QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode &blendMode )
 {
   // Map QgsMapRenderer::BlendNormal to QPainter::CompositionMode
   switch ( blendMode )
@@ -1034,7 +1138,7 @@ QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRender
   }
 }
 
-QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::CompositionMode blendMode )
+QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::CompositionMode &blendMode )
 {
   // Map QPainter::CompositionMode to QgsMapRenderer::BlendNormal
   switch ( blendMode )
@@ -1083,6 +1187,21 @@ const QgsMapSettings& QgsMapRenderer::mapSettings()
   mMapSettings.setDestinationCrs( destinationCrs() );
   mMapSettings.setMapUnits( mapUnits() );
   return mMapSettings;
+}
+
+void QgsMapRenderer::addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
+{
+  QgsLayerCoordinateTransform lt;
+  lt.srcAuthId = srcAuthId;
+  lt.destAuthId = destAuthId;
+  lt.srcDatumTransform = srcDatumTransform;
+  lt.destDatumTransform = destDatumTransform;
+  mLayerCoordinateTransformInfo.insert( layerId, lt );
+}
+
+void QgsMapRenderer::clearLayerCoordinateTransforms()
+{
+  mLayerCoordinateTransformInfo.clear();
 }
 
 bool QgsMapRenderer::mDrawing = false;

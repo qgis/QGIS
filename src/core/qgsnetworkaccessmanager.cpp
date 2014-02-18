@@ -31,7 +31,6 @@
 #include <QNetworkReply>
 #include <QNetworkDiskCache>
 
-#if QT_VERSION >= 0x40500
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
@@ -73,7 +72,6 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
-#endif
 
 QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 {
@@ -85,16 +83,13 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
     : QNetworkAccessManager( parent )
 {
-#if QT_VERSION >= 0x40500
   setProxyFactory( new QgsNetworkProxyFactory() );
-#endif
 }
 
 QgsNetworkAccessManager::~QgsNetworkAccessManager()
 {
 }
 
-#if QT_VERSION >= 0x40500
 void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
 {
   mProxyFactories.insert( 0, factory );
@@ -109,7 +104,6 @@ const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() co
 {
   return mProxyFactories;
 }
-#endif
 
 const QStringList &QgsNetworkAccessManager::excludeList() const
 {
@@ -123,6 +117,19 @@ const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const
 
 void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes )
 {
+  QgsDebugMsg( QString( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
+               .arg( proxy.type() == QNetworkProxy::DefaultProxy ? "DefaultProxy" :
+                     proxy.type() == QNetworkProxy::Socks5Proxy ? "Socks5Proxy" :
+                     proxy.type() == QNetworkProxy::NoProxy ? "NoProxy" :
+                     proxy.type() == QNetworkProxy::HttpProxy ? "HttpProxy" :
+                     proxy.type() == QNetworkProxy::HttpCachingProxy ? "HttpCachingProxy" :
+                     proxy.type() == QNetworkProxy::FtpCachingProxy ? "FtpCachingProxy" :
+                     "Undefined" )
+               .arg( proxy.hostName() )
+               .arg( proxy.port() )
+               .arg( proxy.user() )
+               .arg( proxy.password().isEmpty() ? "not set" : "set" ) );
+
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
 }

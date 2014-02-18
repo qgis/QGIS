@@ -147,7 +147,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 {
   QgsDebugMsg( "returning clipboard." );
   if ( !mUseSystemClipboard )
-      return mFeatureClipboard;
+    return mFeatureClipboard;
 
   QClipboard *cb = QApplication::clipboard();
 

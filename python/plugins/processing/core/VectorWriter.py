@@ -51,7 +51,7 @@ class VectorWriter:
 
         if encoding is None:
             settings = QSettings()
-            encoding = settings.value('/Processing/encoding', 'System')
+            encoding = settings.value('/Processing/encoding', 'System', type=str)
 
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True

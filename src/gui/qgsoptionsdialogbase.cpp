@@ -29,7 +29,10 @@
 
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mOptsKey( settingsKey ), mInit( false )
+    : QDialog( parent, fl )
+    , mOptsKey( settingsKey )
+    , mInit( false )
+    , mDialogTitle( "" )
 {
 }
 
@@ -44,22 +47,54 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
   }
 }
 
-void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
+void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
 {
+  // save dialog title so it can be used to be concatenated
+  // with category title in icon-only mode
+  if ( title.isEmpty() )
+    mDialogTitle = windowTitle();
+  else
+    mDialogTitle = title;
+
   // don't add to dialog margins
   // redefine now, or those in inherited .ui file will be added
   if ( layout() )
-    layout()->setContentsMargins( 12, 12, 12, 12 ); // Qt default spacing
+  {
+    layout()->setContentsMargins( 0, 0, 0, 0 ); // Qt default spacing
+  }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
   mOptListWidget = findChild<QListWidget*>( "mOptionsListWidget" );
+  QFrame* optionsFrame = findChild<QFrame*>( "mOptionsFrame" );
   mOptStackedWidget = findChild<QStackedWidget*>( "mOptionsStackedWidget" );
   mOptSplitter = findChild<QSplitter*>( "mOptionsSplitter" );
   mOptButtonBox = findChild<QDialogButtonBox*>( "buttonBox" );
+  QFrame* buttonBoxFrame = findChild<QFrame*>( "mButtonBoxFrame" );
 
-  if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter )
+  if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
     return;
+  }
+
+  QSettings settings;
+  int size = settings.value( "/IconSize", 24 ).toInt();
+  // buffer size to match displayed icon size in toolbars, and expected geometry restore
+  // newWidth (above) may need adjusted if you adjust iconBuffer here
+  int iconBuffer = 4;
+  mOptListWidget->setIconSize( QSize( size + iconBuffer, size + iconBuffer ) );
+  mOptListWidget->setFrameStyle( QFrame::NoFrame );
+
+  optionsFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
+  QVBoxLayout* layout = static_cast<QVBoxLayout*>( optionsFrame->layout() );
+
+  if ( buttonBoxFrame )
+  {
+    buttonBoxFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
+    layout->insertWidget( layout->count() + 1, buttonBoxFrame );
+  }
+  else
+  {
+    layout->insertWidget( layout->count() + 1, mOptButtonBox );
   }
 
   if ( mOptButtonBox )
@@ -77,15 +112,24 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   mInit = true;
 
   if ( restoreUi )
-    restoreOptionsBaseUi();
+    restoreOptionsBaseUi( mDialogTitle );
 }
 
-void QgsOptionsDialogBase::restoreOptionsBaseUi()
+void QgsOptionsDialogBase::restoreOptionsBaseUi( QString title )
 {
   if ( !mInit )
   {
     return;
   }
+
+  if ( !title.isEmpty() )
+  {
+    mDialogTitle = title;
+    updateWindowTitle();
+  }
+
+  // re-save original dialog title in case it was changed after dialog initialization
+  mDialogTitle = windowTitle();
 
   QSettings settings;
   restoreGeometry( settings.value( QString( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
@@ -126,6 +170,7 @@ void QgsOptionsDialogBase::showEvent( QShowEvent* e )
   if ( mInit )
   {
     updateOptionsListVerticalTabs();
+    optionsStackedWidget_CurrentChanged( mOptListWidget->currentRow() );
   }
   else
   {
@@ -143,6 +188,19 @@ void QgsOptionsDialogBase::paintEvent( QPaintEvent* e )
   QDialog::paintEvent( e );
 }
 
+void QgsOptionsDialogBase::updateWindowTitle()
+{
+  QListWidgetItem *curitem = mOptListWidget->currentItem();
+  if ( curitem )
+  {
+    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle ).arg( curitem->text() ) );
+  }
+  else
+  {
+    setWindowTitle( mDialogTitle );
+  }
+}
+
 void QgsOptionsDialogBase::updateOptionsListVerticalTabs()
 {
   if ( !mInit )
@@ -157,23 +215,25 @@ void QgsOptionsDialogBase::updateOptionsListVerticalTabs()
   int snapToIconWidth = iconWidth + 32;
 
   QList<int> splitSizes = mOptSplitter->sizes();
-  bool iconOnly = ( splitSizes.at( 0 ) <= snapToIconWidth );
+  mIconOnly = ( splitSizes.at( 0 ) <= snapToIconWidth );
 
-  int newWidth = mOptListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
+  // iconBuffer (above) may need adjusted if you adjust iconWidth here
+  int newWidth = mOptListWidget->verticalScrollBar()->isVisible() ? iconWidth + 22 : iconWidth + 9;
   bool diffWidth = mOptListWidget->minimumWidth() != newWidth;
 
   if ( diffWidth )
     mOptListWidget->setMinimumWidth( newWidth );
 
-  if ( iconOnly && ( diffWidth || mOptListWidget->width() != newWidth ) )
+  if ( mIconOnly && ( diffWidth || mOptListWidget->width() != newWidth ) )
   {
     splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
     splitSizes[0] = newWidth;
     mOptSplitter->setSizes( splitSizes );
   }
-  if ( mOptListWidget->wordWrap() && iconOnly )
+
+  if ( mOptListWidget->wordWrap() && mIconOnly )
     mOptListWidget->setWordWrap( false );
-  if ( !mOptListWidget->wordWrap() && !iconOnly )
+  if ( !mOptListWidget->wordWrap() && !mIconOnly )
     mOptListWidget->setWordWrap( true );
 }
 
@@ -182,6 +242,8 @@ void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int indx )
   mOptListWidget->blockSignals( true );
   mOptListWidget->setCurrentRow( indx );
   mOptListWidget->blockSignals( false );
+
+  updateWindowTitle();
 }
 
 void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )

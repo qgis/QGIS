@@ -63,7 +63,7 @@ int QgsGCPList::size() const
   {
     if (( *it )->isEnabled() )
       s++;
-    it++;
+    ++it;
   }
   return s;
 }

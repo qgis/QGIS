@@ -92,7 +92,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName( const QString theThemeName );
+    static void setThemeName( const QString &theThemeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -124,6 +124,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note This was added in QGIS 1.1
      */
     static const QString translatorsFilePath();
+
+    /*!
+      Returns the path to the licence file.
+    */
+    static const QString licenceFilePath();
 
     //! Returns the path to the help application.
     static const QString helpAppPath();
@@ -202,19 +207,22 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
+    static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath( const QString thePluginPath );
+    static void setPluginPath( const QString &thePluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath( const QString thePkgDataPath );
+    static void setPkgDataPath( const QString &thePkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! loads providers
     static void initQgis();
+
+    //! initialise qgis.db
+    static bool createDB( QString* errorMessage = 0 );
 
     //! deletes provider registry and map layer registry
     static void exitQgis();

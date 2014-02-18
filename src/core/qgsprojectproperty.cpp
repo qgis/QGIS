@@ -42,7 +42,6 @@ void QgsPropertyValue::dump( int tabs ) const
 } // QgsPropertyValue::dump()
 
 
-
 bool QgsPropertyValue::readXML( QDomNode & keyNode )
 {
   // this *should* be a Dom element node
@@ -265,9 +264,7 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
 } // QgsPropertyValue::writeXML
 
 
-
-
-QgsPropertyKey::QgsPropertyKey( QString const name )
+QgsPropertyKey::QgsPropertyKey( const QString &name )
     : mName( name )
 {}
 
@@ -330,17 +327,19 @@ void QgsPropertyKey::dump( int tabs ) const
         i.value()->dump( tabs + 1 );
       }
 
-//              qDebug("<%s>", name().toUtf8().constData());
-//              if ( i.value()->isValue() )
-//              {
-//                  qDebug("   <%s>", i.key().toUtf8().constData() );
-//              }
-//              i.value()->dump();
-//              if ( i.value()->isValue() )
-//              {
-//                  qDebug("   </%s>", i.key().toUtf8().constData() );
-//              }
-//              qDebug("</%s>", name().toUtf8().constData());
+#if 0
+      qDebug( "<%s>", name().toUtf8().constData() );
+      if ( i.value()->isValue() )
+      {
+        qDebug( "   <%s>", i.key().toUtf8().constData() );
+      }
+      i.value()->dump();
+      if ( i.value()->isValue() )
+      {
+        qDebug( "   </%s>", i.key().toUtf8().constData() );
+      }
+      qDebug( "</%s>", name().toUtf8().constData() );
+#endif
     }
   }
 

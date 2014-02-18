@@ -66,7 +66,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
+  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
       mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
   connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
@@ -107,6 +107,12 @@ void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 void QgsSingleSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
+  // Set also on the symbol clone
+  QgsMarkerSymbolV2 *markerSymbol = dynamic_cast<QgsMarkerSymbolV2 *>( mSingleSymbol );
+  if ( markerSymbol )
+  {
+    markerSymbol->setScaleMethod( scaleMethod );
+  }
 }
 
 void QgsSingleSymbolRendererV2Widget::showSymbolLevels()

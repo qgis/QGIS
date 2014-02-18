@@ -38,14 +38,24 @@
 #include <osg/DisplaySettings>
 
 //constructor
-QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WFlags fl )
     : QDialog( parent, fl )
-    , mViewer( 0 )
+    , mGlobe( globe )
 {
   setupUi( this );
+
+  mBaseLayerComboBox->addItem( "Readymap: NASA BlueMarble Imagery", "http://readymap.org/readymap/tiles/1.0.0/1/" );
+  mBaseLayerComboBox->addItem( "Readymap: NASA BlueMarble with land removed, only ocean", "http://readymap.org/readymap/tiles/1.0.0/2/" );
+  mBaseLayerComboBox->addItem( "Readymap: High resolution insets from various locations around the world Austin, TX; Kandahar, Afghanistan; Bagram, Afghanistan; Boston, MA; Washington, DC", "http://readymap.org/readymap/tiles/1.0.0/3/" );
+  mBaseLayerComboBox->addItem( "Readymap: Global Land Cover Facility 15m Landsat", "http://readymap.org/readymap/tiles/1.0.0/6/" );
+  mBaseLayerComboBox->addItem( "Readymap: NASA BlueMarble + Landsat + Ocean Masking Layer", "http://readymap.org/readymap/tiles/1.0.0/7/" );
+  mBaseLayerComboBox->addItem( "[Custom]" );
+
   loadStereoConfig();  //values from settings, default values from OSG
   setStereoConfig(); //overwrite with values from QSettings
   updateStereoDialog(); //update the dialog gui
+  loadVideoSettings();
+  loadMapSettings();
 
   elevationPath->setText( QDir::homePath() );
 }
@@ -126,6 +136,8 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
   saveStereoConfig();
 
   saveElevationDatasources();
+  saveVideoSettings();
+  saveMapSettings();
   accept();
 }
 
@@ -210,6 +222,20 @@ void QgsGlobePluginDialog::on_elevationDown_clicked()
   moveRow( elevationDatasourcesWidget, false );
 }
 
+void QgsGlobePluginDialog::on_mBaseLayerComboBox_currentIndexChanged( int index )
+{
+  QVariant url = mBaseLayerComboBox->itemData( index );
+  if ( url.isValid() )
+  {
+    mBaseLayerURL->setEnabled( false );
+    mBaseLayerURL->setText( url.toString() );
+  }
+  else
+  {
+    mBaseLayerURL->setEnabled( true );
+  }
+}
+
 void QgsGlobePluginDialog::moveRow( QTableWidget* widget, bool up )
 {
   //moves QTableWidget row up or down
@@ -284,6 +310,12 @@ void QgsGlobePluginDialog::readElevationDatasources()
     elevationDatasourcesWidget->setItem( i, 1, chkBoxItem );
     elevationDatasourcesWidget->setItem( i, 2, uri );
   }
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+  double scale = QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/verticalScale", 1 );
+  mTxtVerticalScale->setValue( scale );
+  mGlobe->setVerticalScale( scale );
+#endif
 }
 
 void QgsGlobePluginDialog::saveElevationDatasources()
@@ -336,6 +368,12 @@ void QgsGlobePluginDialog::saveElevationDatasources()
     QgsDebugMsg( "emitting elevationDatasourcesChanged" );
     emit elevationDatasourcesChanged();
   }
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+  double scale = mTxtVerticalScale->value();
+  mGlobe->setVerticalScale( scale );
+  QgsProject::instance()->writeEntry( "Globe-Plugin", "/verticalScale", scale );
+#endif
 }
 //END ELEVATION
 
@@ -522,11 +560,70 @@ void QgsGlobePluginDialog::setStereoMode()
   }
 }
 
+void QgsGlobePluginDialog::loadVideoSettings()
+{
+  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() );
+  mAANumSamples->setValidator( new QIntValidator( mAANumSamples ) );
+  mAANumSamples->setText( settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString() );
+}
+
+void QgsGlobePluginDialog::saveVideoSettings()
+{
+  settings.setValue( "/Plugin-Globe/anti-aliasing", mAntiAliasingGroupBox->isChecked() );
+  settings.setValue( "/Plugin-Globe/anti-aliasing-level", mAANumSamples->text() );
+}
+
+void QgsGlobePluginDialog::loadMapSettings()
+{
+  mBaseLayerGroupBox->setChecked( settings.value( "/Plugin-Globe/baseLayerEnabled", true ).toBool() );
+  QString mapUrl = settings.value( "/Plugin-Globe/baseLayerURL", "http://readymap.org/readymap/tiles/1.0.0/7/" ).toString();
+  int urlIndex = mBaseLayerComboBox->findData( mapUrl );
+
+  if ( urlIndex != -1 )
+  {
+    mBaseLayerComboBox->setCurrentIndex( urlIndex );
+  }
+  else
+  {
+    mBaseLayerComboBox->setCurrentIndex( mBaseLayerComboBox->findData( QVariant() ) );
+  }
+
+  mBaseLayerURL->setText( mapUrl );
+
+  mSkyGroupBox->setChecked( settings.value( "/Plugin-Globe/skyEnabled", false ).toBool() );
+  mSkyAutoAmbient->setChecked( settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
+  mSkyDateTime->setDateTime( settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime() );
+}
+
+void QgsGlobePluginDialog::saveMapSettings()
+{
+  settings.setValue( "/Plugin-Globe/baseLayerEnabled", mBaseLayerGroupBox->isChecked() );
+  settings.setValue( "/Plugin-Globe/baseLayerURL", mBaseLayerURL->text() );
+
+  // Let globe update the current view
+  if ( mBaseLayerGroupBox->isChecked() )
+  {
+    mGlobe->setBaseMap( mBaseLayerURL->text() );
+  }
+  else
+  {
+    mGlobe->setBaseMap( QString::null );
+  }
+
+  settings.setValue( "/Plugin-Globe/skyEnabled", mSkyGroupBox->isChecked() );
+  settings.setValue( "/Plugin-Globe/skyAutoAmbient", mSkyAutoAmbient->isChecked() );
+  settings.setValue( "/Plugin-Globe/skyDateTime", mSkyDateTime->dateTime() );
+
+  // Adjust sky of a running globe viewer
+  mGlobe->setSkyParameters( mSkyGroupBox->isChecked(), mSkyDateTime->dateTime(), mSkyAutoAmbient->isChecked() );
+}
+
 void QgsGlobePluginDialog::setStereoConfig()
 {
-  if ( mViewer )
+  osgViewer::Viewer* viewer = mGlobe->osgViewer();
+  if ( viewer )
   {
-    mViewer->getDatabasePager()->clear();
+    viewer->getDatabasePager()->clear();
     //SETTING THE VALUES IN THE OEGearth instance
     setStereoMode();
     osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );

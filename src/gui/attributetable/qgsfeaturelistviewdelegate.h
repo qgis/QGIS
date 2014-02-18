@@ -35,8 +35,6 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
   signals:
     void editButtonClicked( QModelIndex& index );
 
-  public slots:
-
   protected:
     virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const;
     virtual void paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const;

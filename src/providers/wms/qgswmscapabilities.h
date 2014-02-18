@@ -72,6 +72,7 @@ struct QgsWmsRequestProperty
   QgsWmsOperationType     getMap;
   QgsWmsOperationType     getFeatureInfo;
   QgsWmsOperationType     getTile;
+  QgsWmsOperationType     getLegendGraphic;
 };
 
 /** Exception Property structure */
@@ -575,6 +576,9 @@ public:
    */
   QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
 
+  /** Find out whether to invert axis orientation when parsing/writing coordinates */
+  bool shouldInvertAxisOrientation( const QString& ogcCrs );
+
 protected:
   bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
 
@@ -587,6 +591,7 @@ protected:
 
   void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
   void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
+  void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
   void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = 0 );
   void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
 
@@ -602,6 +607,12 @@ protected:
   void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
   QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+
+  /**
+   * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
+   * Returns true if the detection went fine.
+   */
+  bool detectTileLayerBoundingBox( QgsWmtsTileLayer& l );
 
 protected:
   bool mValid;
@@ -627,11 +638,6 @@ protected:
    * available CRSs per layer
    */
   QMap<QString, QStringList > mCrsForLayer;
-
-  /**
-   * extents per layer (in WMS CRS:84 datum)
-   */
-  QMap<QString, QgsRectangle> mExtentForLayer;
 
   /**
    * layers hosted by the WMS

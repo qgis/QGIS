@@ -116,7 +116,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theWkt The Wkt for the desired spatial reference system.
      * @return bool TRUE if success else false
      */
-    bool createFromWkt( const QString theWkt );
+    bool createFromWkt( const QString &theWkt );
 
     /*! Set up this srs by fetching the appropriate information from the
      * sqlite backend. If the srsid is < 100000, only the system srs.db
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theProjString A proj4 format string
      * @return bool TRUE if success else false
      */
-    bool createFromProj4( const QString theProjString );
+    bool createFromProj4( const QString &theProjString );
 
     /*! Set up this srs from a string definition, by default a WKT definition.  Otherwise
      * the string defines a authority, followed by a colon, followed by the definition.
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * uses the corresponding createFrom... function.
      * @param theDefinition A String containing a coordinate reference system definition.
      */
-    bool createFromString( const QString theDefinition );
+    bool createFromString( const QString &theDefinition );
 
     /*! Set up this srs from a various text formats.
      *
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * @note added in 1.8
      */
-    bool createFromUserInput( const QString theDefinition );
+    bool createFromUserInput( const QString &theDefinition );
 
     /*! Make sure that ESRI WKT import is done properly.
      * This is required for proper shapefile CRS import when using gdal>= 1.9.
@@ -354,6 +354,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool saveAsUserCRS( QString name );
 
+    /**Returns auth id of related geographic CRS*/
+    QString geographicCRSAuthId() const;
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
@@ -462,9 +465,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QString mValidationHint;
     mutable QString mWkt;
+    mutable QString mProj4;
 
     static bool loadIDs( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+    static bool syncDatumTransform( const QString& dbPath );
 
     //!Whether this is a coordinate system has inverted axis
     mutable int mAxisInverted;

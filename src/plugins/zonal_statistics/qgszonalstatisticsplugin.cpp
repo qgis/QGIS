@@ -29,19 +29,22 @@ static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QString pluginIcon_ = ":/zonal_statistics/raster-stats.png";
 
-QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface ): mIface( iface ), mAction( 0 )
+QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface )
+    : mIface( iface )
+    , mAction( 0 )
 {
-
 }
 
 QgsZonalStatisticsPlugin::~QgsZonalStatisticsPlugin()
 {
-
 }
 
 void QgsZonalStatisticsPlugin::initGui()
 {
+  delete mAction;
+
   mAction = new QAction( QIcon( ":/zonal_statistics/raster-stats.png" ), tr( "&Zonal statistics" ), 0 );
+  mAction->setObjectName( "ZonalStatistics" );
   QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
   mIface->addRasterToolBarIcon( mAction );
   mIface->addPluginToRasterMenu( tr( "&Zonal statistics" ), mAction );

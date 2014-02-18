@@ -426,7 +426,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
             int idx = primaryKeyAttrs[i];
             const QgsField &fld = fields[ idx ];
 
-            whereClause += delim + QString( "%1=%2" ).arg( QgsOracleConn::fieldExpression( fld ) ).arg( QgsOracleConn::quotedValue( pkVals[i].toString() ) );
+            whereClause += delim + QString( "%1=%2" ).arg( QgsOracleConn::fieldExpression( fld ) ).arg( QgsOracleConn::quotedValue( pkVals[i], fld.type() ) );
             delim = " AND ";
           }
         }
@@ -1213,12 +1213,11 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( fieldId.contains( idx ) )
         continue;
 
-      QString fieldname = mAttributeFields[idx].name();
-      QString fieldTypeName = mAttributeFields[idx].typeName();
+      const QgsField &fld = mAttributeFields[idx];
 
-      QgsDebugMsg( "Checking field against: " + fieldname );
+      QgsDebugMsg( "Checking field against: " + fld.name() );
 
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
+      if ( fld.name().isEmpty() || fld.name() == mGeometryColumn )
         continue;
 
       int i;
@@ -1234,7 +1233,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
           break;
       }
 
-      insert += delim + quotedIdentifier( fieldname );
+      insert += delim + quotedIdentifier( fld.name() );
 
       QString defVal = defaultValue( idx ).toString();
 
@@ -1251,13 +1250,13 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             values += delim + defVal;
           }
         }
-        else if ( fieldTypeName == "MDSYS.SDO_GEOMETRY" )
+        else if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
         {
           values += delim + "?";
         }
         else
         {
-          values += delim + quotedValue( v.toString() );
+          values += delim + quotedValue( v, mAttributeFields[idx].type() );
         }
       }
       else
@@ -1279,7 +1278,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       throw OracleException( tr( "Could not prepare insert statement" ), qry );
     }
 
-    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
       const QgsAttributes &attributevec = features->attributes();
 
@@ -1336,7 +1335,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     // update feature ids
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
         const QgsAttributes &attributevec = features->attributes();
 
@@ -1609,7 +1608,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
           }
           else
           {
-            sql += quotedValue( siter->toString() );
+            sql += quotedValue( *siter, fld.type() );
           }
         }
         catch ( OracleFieldNotFound )
@@ -1790,7 +1789,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
           g.ordinates << *ptr.dPtr++;
           if ( dim == 3 )
             g.ordinates << *ptr.dPtr++;
-          iOrdinate  += dim;
         }
       }
       break;
@@ -1978,6 +1976,28 @@ QgsRectangle QgsOracleProvider::extent()
   {
     QString sql;
     QSqlQuery qry( *mConnection );
+
+    if ( mUseEstimatedMetadata )
+    {
+      if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='X'" )
+                 .arg( quotedValue( mOwnerName ) )
+                 .arg( quotedValue( mTableName ) )
+                 .arg( quotedValue( mGeometryColumn ) ) ) && qry.next() )
+      {
+        mLayerExtent.setXMinimum( qry.value( 0 ).toDouble() );
+        mLayerExtent.setXMaximum( qry.value( 1 ).toDouble() );
+
+        if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='Y'" )
+                   .arg( quotedValue( mOwnerName ) )
+                   .arg( quotedValue( mTableName ) )
+                   .arg( quotedValue( mGeometryColumn ) ) )  && qry.next() )
+        {
+          mLayerExtent.setYMinimum( qry.value( 0 ).toDouble() );
+          mLayerExtent.setYMaximum( qry.value( 1 ).toDouble() );
+          return mLayerExtent;
+        }
+      }
+    }
 
     bool ok = false;
 

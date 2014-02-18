@@ -15,13 +15,14 @@ class QgsSymbolV2SelectorDialog : QDialog
     void keyPressEvent( QKeyEvent * event );
 
     void loadSymbol();
-
+    //! @note not available in python bindings
     // void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
 
     void updateUi();
 
     void updateLockButton();
 
+    //! @note not available in python bindings
     // SymbolLayerItem* currentLayerItem();
     QgsSymbolLayerV2* currentLayer();
 

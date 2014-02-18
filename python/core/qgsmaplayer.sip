@@ -84,7 +84,7 @@ class QgsMapLayer : QObject
     void setAbstract( const QString& abstract );
     const QString& abstract() const;
 
-    void setKeywordList( const QString& kwdList );
+    void setKeywordList( const QString& keywords );
     const QString& keywordList() const;
 
     /* Layer dataUrl information */
@@ -108,7 +108,7 @@ class QgsMapLayer : QObject
     const QString& metadataUrlFormat() const;
 
     /* Set the blending mode used for rendering a layer */
-    void setBlendMode( const QPainter::CompositionMode blendMode );
+    void setBlendMode( const QPainter::CompositionMode &blendMode );
     /* Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
@@ -171,7 +171,7 @@ class QgsMapLayer : QObject
     virtual bool isEditable() const;
 
     /** sets state from Dom document
-       @param layer_node is Dom node corresponding to ``maplayer'' tag
+       @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -271,9 +271,9 @@ class QgsMapLayer : QObject
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
 
-    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml /Out/ );
+    virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml /Out/ );
 
     //TODO edit infos
     /**
@@ -316,12 +316,12 @@ class QgsMapLayer : QObject
      * @return a QString with any status messages
      * @sa saveDefaultStyle()
      */
-    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
+    virtual QString saveNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
 
-    virtual QString saveSldStyle( const QString theURI, bool & theResultFlag );
-    virtual QString loadSldStyle( const QString theURI, bool &theResultFlag );
+    virtual QString saveSldStyle( const QString &theURI, bool &theResultFlag );
+    virtual QString loadSldStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool readSld( const QDomNode& node, QString& errorMessage );
+    virtual bool readSld( const QDomNode &node, QString &errorMessage );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -339,7 +339,7 @@ class QgsMapLayer : QObject
     virtual bool writeSymbology( QDomNode &node, QDomDocument& doc, QString& errorMessage ) const = 0;
 
     /** Return pointer to layer's undo stack */
-    QUndoStack* undoStack();
+    QUndoStack *undoStack();
 
     /** @deprecated since 2.1 - returns NULL */
     QImage *cacheImage() /Deprecated/;
@@ -355,15 +355,15 @@ class QgsMapLayer : QObject
 
     /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
-    float minimumScale();
+    float minimumScale() const;
 
     /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
-    float maximumScale();
+    float maximumScale() const;
 
     /** Accessor and mutator for the scale based visilibility flag */
     void toggleScaleBasedVisibility( bool theVisibilityFlag );
-    bool hasScaleBasedVisibility();
+    bool hasScaleBasedVisibility() const;
 
     /** @deprecated since 2.1 - does nothing */
     void clearCacheImage() /Deprecated/;

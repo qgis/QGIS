@@ -64,8 +64,6 @@ class QgsComposerLabel : QgsComposerItem
         @note: this function was added in version 1.4*/
     QColor fontColor() const;
 
-    void setSceneRect( const QRectF& rectangle );
-
     /** stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc document
@@ -79,5 +77,11 @@ class QgsComposerLabel : QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
   public slots:
+    /* Sets rotation for the label
+     * @deprecated Use setItemRotation( double rotation ) instead
+     */
     virtual void setRotation( double r );
+  
+    /* Sets rotation for the label */
+    virtual void setItemRotation( double r );
 };

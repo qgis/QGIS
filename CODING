@@ -20,7 +20,7 @@ Developers guide for QGIS
       1.3.3. Keyword Substitution
     1.4. Variable Names
     1.5. Enumerated Types
-    1.6. Global Constants
+    1.6. Global Constants & Macros
     1.7. Editing
       1.7.1. Tabs
       1.7.2. Indentation
@@ -30,9 +30,8 @@ Developers guide for QGIS
       1.9.1. Where-ever Possible Generalize Code
       1.9.2. Prefer Having Constants First in Predicates
       1.9.3. Whitespace Can Be Your Friend
-      1.9.4. Add Trailing Identifying Comments
-      1.9.5. Use Braces Even for Single Line Statements
-      1.9.6. Book recommendations
+      1.9.4. Use Braces Even for Single Line Statements
+      1.9.5. Book recommendations
   2. GIT Access
     2.1. Installation
       2.1.1. Install git for GNU/Linux
@@ -45,11 +44,12 @@ Developers guide for QGIS
     2.6. Development in branches
       2.6.1. Purpose
       2.6.2. Procedure
-    2.7. Submitting Patches
-      2.7.1. Patch file naming
-      2.7.2. Create your patch in the top level QGIS source dir
-      2.7.3. Getting your patch noticed
-      2.7.4. Due Diligence
+    2.7. Submitting Patches and Pull Requests
+      2.7.1. Pull Requests
+      2.7.2. Patch file naming
+      2.7.3. Create your patch in the top level QGIS source dir
+      2.7.4. Getting your patch noticed
+      2.7.5. Due Diligence
     2.8. Obtaining GIT Write Access
   3. Unit Testing
     3.1. The QGIS testing framework  - an overview
@@ -224,16 +224,16 @@ Enumerated types should be named in CamelCase with a leading capital e.g.:
         Feet,
         Degrees,
         UnknownUnit
-      } ;
+      };
 
 Do not use generic type names that will conflict with other types. e.g. use
 "UnkownUnit" rather than "Unknown"
 
 
-  1.6. Global Constants
-  =====================
+  1.6. Global Constants & Macros
+  ==============================
 
-Global constants should be written in upper case underscore separated e.g.:
+Global constants and macros should be written in upper case underscore separated e.g.:
 
   const long GEOCRS_ID = 3344;
 
@@ -251,14 +251,21 @@ requirements are met.
 Set your editor to emulate tabs with spaces. Tab spacing should be set to 2
 spaces.
 
+Note: In vim this is done with set expandtab ts=2
+
 
     1.7.2. Indentation
     ==================
 
-Source code should be indented to improve readability. There is a .indent.pro
-file in the QGIS src directory that contains the switches to be used when
-indenting code using the GNU indent program. If you don't use GNU indent, you
-should emulate these settings.
+Source code should be indented to improve readability.  There is a
+scripts/prepare-commit.sh that looks up the changed files and reindents them
+using astyle.  This should be run before committing.  You can also use
+scripts/astyle.sh to indent individual files.
+
+As newer versions of astyle indent differently than the version used to do a
+complete reindentation of the source, the script uses an old astyle version,
+that we include in our repository (enable WITH_ASTYLE in cmake to include it in
+the build).
 
 
     1.7.3. Braces
@@ -276,37 +283,40 @@ Braces should start on the line following the expression:
       ...
     }
 
-There is a scripts/prepare-commit.sh that looks up the changed files and
-reindents them using astyle.  This should be run before committing.
-
-As newer versions of astyle indent differently than the version used to do a
-complete reindentation of the source, the script uses an old astyle version,
-that we include in our repository.
-
 
   1.8. API Compatibility
   ======================
 
-From QGIS 1.0 we will provide a stable, backwards compatible API. This will
-provide a stable basis for people to develop against, knowing their code will
-work against any of the 1.x QGIS releases (although recompiling may be
-required).Cleanups to the API should be done in a manner similar to the
-Trolltech developers e.g.
+We try to keep the API stable and backwards compatible. Cleanups to the API
+should be done in a manner similar to the Trolltech developers e.g.
 
   class Foo 
   {
     public:
       /** This method will be deprecated, you are encouraged to use 
         doSomethingBetter() rather.
-        @see doSomethingBetter()
+        @deprecated doSomethingBetter()
        */
-      bool doSomething();
+      Q_DECL_DEPRECATED bool doSomething();
   
       /** Does something a better way.
-        @note This method was introduced in QGIS version 1.1
+        @note added in 1.1
        */
       bool doSomethingBetter();
   
+    signal:
+      /** This signal will be deprecated, you are encouraged to
+        connect to somethingHappenedBetter() rather.
+        @deprecated use somethingHappenedBetter()
+       */
+  #ifndef Q_MOC_RUN
+      Q_DECL_DEPRECATED
+  #endif
+      bool somethingHappened();
+  
+      /** Something happened
+        @note added in 1.1
+      bool somethingHappenedBetter();
   }
 
 
@@ -358,29 +368,10 @@ or this:
 
   if ( ! a && b )
 
-
-    1.9.4. Add Trailing Identifying Comments
-    ========================================
-
-Adding comments at the end of function, struct and class implementations makes
-it easier to find them later.
-
-Consider that you're at the bottom of a source file and need to find a very
-long function -- without these kinds of trailing comments you will have to page
-up past the body of the function to find its name.  Of course this is ok if you
-wanted to find the beginning of the function; but what if you were interested
-at code near its end?  You'd have to page up and then back down again to the
-desired part.
-
-e.g.,
-
-  void foo::bar()
-  { 
-      // ... imagine a lot of code here 
-  } // foo::bar()
+Note: prepare-commit.sh will take care of this.
 
 
-    1.9.5. Use Braces Even for Single Line Statements
+    1.9.4. Use Braces Even for Single Line Statements
     =================================================
 
 Using braces for code in if/then blocks or similar code structures even for
@@ -391,7 +382,7 @@ Consider:
 
     if (foo)
       bar();
-   else
+    else
       baz();
 
 Adding code after bar() or baz() without adding enclosing braces would create
@@ -406,11 +397,11 @@ So, prefer this:
    }
    else
    { 
-      baz();
+     baz();
    } 
 
 
-    1.9.6. Book recommendations
+    1.9.5. Book recommendations
     ===========================
 
 - Effective C++ (http://www.awprofessional.com/title/0321334876), Scott Meyers
@@ -443,7 +434,7 @@ Debian based distro users can do:
     2.1.2. Install git for Windows
     ==============================
 
-Windows users can obtain msys git (http://code.google.com/p/msysgit/).
+Windows users can obtain msys git (http://code.google.com/p/msysgit/) or use git distributed with cygwin (http://cygwin.com).
 
 
     2.1.3. Install git for OSX
@@ -509,11 +500,9 @@ development versions.
 
 If you're interested in checking out QGIS documentation sources:
 
-    svn co https://svn.osgeo.org/qgis/docs/trunk qgis_docs
+    git clone git@github.com:qgis/QGIS-Documentation.git
 
-/!\ Note: This url will change to a git URL in the near future.
-
-You can also take a look at DocumentationWritersCorner for more information.
+You can also take a look at the readme included with the documentation repo for more information.
 
 
   2.5. GIT Documentation
@@ -584,20 +573,86 @@ of the work on a wiki page.
 Testing before merging back to master: 
 When you are finished with the new feature and happy with the stability, make
 an announcement on the developer list.  Before merging back, the changes will
-be tested by developers and users. Binary packages (especially for OsX and
-Windows) will be generated to also involve non-developers. In trac, a new
-Component will be opened to file tickets against.  Once there are no remaining
-issues left, the technical advisor of the PSC merges the changes into master.
+be tested by developers and users.
 
 
-  2.7. Submitting Patches
-  =======================
+  2.7. Submitting Patches and Pull Requests
+  =========================================
 
-There are a few guidelines that will help you to get your patches into QGIS
-easily, and help us deal with the patches that are sent to use easily.
+There are a few guidelines that will help you to get your patches and pull
+requests into QGIS easily, and help us deal with the patches that are sent to
+use easily. 
 
 
-    2.7.1. Patch file naming
+    2.7.1. Pull Requests
+    ====================
+
+In general it is easier for developers if you submit GitHub pull
+requests. We do not describe Pull Requests here, but rather refer you to the
+GitHub pull request documentation here:
+
+https://help.github.com/articles/using-pull-requests
+
+If you make a pull request we ask that you please merge master to your PR
+branch regularly so that your PR is always mergable to the upstream master
+branch.
+
+If you are a developer and wish to evaluate the pull request queue, there is a
+very nice tool that lets you do this from the command line described here:
+
+http://thechangelog.com/git-pulls-command-line-tool-for-github-pull-requests/
+
+Please see the section below on 'getting your patch noticed'. In general when
+you submit a PR you should take the responsibility to follow it through to
+completion - respond to queries posted by other developers, seek out a
+'champion' for your feature and give them a gentle reminder occasionally if you
+see that your PR is not being acted on. Please bear in mind that the QGIS
+project is driven by volunteer effort and people may not be able to attend to
+your PR instantaneously. If you feel the PR is not receiving the attention it
+deserves your options to accelerate it should be (in order of priority):
+
+* Send a message to the mailing list 'marketing' your PR and how wonderful it
+  will be to have it included in the code base.
+* Send a message to the person your PR has been assigned to in the PR queue.
+* Send a message to Marco Hugentobler (who manages the PR queue).
+* Send a message to the project steering committee asking them to help see your
+  PR incorporated into the code base.
+
+
+      2.7.1.1. Best practice for creating a pull request
+      ==================================================
+
+* Always start a feature branch from current master.
+* If you are coding a feature branch, don't "merge" anything in to that branch,
+  rather rebase as described in the next point to keep your history clean.
+* Before you create a pull request do "git fetch origin" and "git rebase
+  origin/master" (given origin is the remote for upstream and not your own
+  remote, check your .git/config or do "git remote -v | grep github.com/qgis").
+* You may do a "git rebase" like in the last line repeatedly without doing any
+  damage (as long as the only purpose of your branch is to get merged into
+  master).
+* Attention: After a rebase you need to "git push -f" to your forked repo. 
+  CORE DEVS: DO NOT DO THIS ON THE QGIS PUBLIC REPOSITORY!
+
+
+      2.7.1.2. For merging a pull request
+      ===================================
+
+Option A
+
+* click the merge button (Creates a non-fast-forward merge)
+
+Option B
+
+* Checkout the pull request (See https://gist.github.com/piscisaureus/3342247)
+* Test (Also required for option A, obviously)
+* checkout master, git merge pr/1234
+* Optional: git pull --rebase: Creates a fast-forward, no "merge commit" is 
+  made. Cleaner history, but it is harder to revert the merge.
+* git push
+
+
+    2.7.2. Patch file naming
     ========================
 
 If the patch is a fix for a specific bug, please name the file with the bug
@@ -608,7 +663,7 @@ If the bug is an enhancement or new feature, its usually a good idea to create
 a ticket in trac (http://hub.qgis.org/projects/quantum-gis) first and then attach you 
 
 
-    2.7.2. Create your patch in the top level QGIS source dir
+    2.7.3. Create your patch in the top level QGIS source dir
     =========================================================
 
 This makes it easier for us to apply the patches since we don't need to
@@ -629,18 +684,18 @@ and then generate a patch which contains the delta between your feature branch
 and what is in the master branch.
 
 
-    2.7.3. Getting your patch noticed
+    2.7.4. Getting your patch noticed
     =================================
 
 QGIS developers are busy folk. We do scan the incoming patches on bug reports
 but sometimes we miss things.  Don't be offended or alarmed. Try to identify a
-developer to help you - using the Project Organigram (http://www.qgis.org/wiki/Project_Organigram) and contact them
+developer to help you - using the Technical Resources (http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources) and contact them
 asking them if they can look at your patch. If you don't get any response, you
 can escalate your query to one of the Project Steering Committee members
-(contact details also available on the Project Organigram).
+(contact details also available in the Technical Resources).
 
 
-    2.7.4. Due Diligence
+    2.7.5. Due Diligence
     ====================
 
 QGIS is licensed under the GPL. You should make every effort to ensure you only
@@ -1383,7 +1438,7 @@ guidelines are followed in layout and design of GUIs.
    boxes with only a single widget / item inside.
  2. Capitalise first letter only in labels:
    Labels (and group box labels) should be written as a phrase with leading
-   capital letter, and all remaing words written with lower case first letters 
+   capital letter, and all remaining words written with lower case first letters 
  3. Do not end labels for widgets or group boxes with a colon:
    Adding a colon causes visual noise and does not impart additional meaning,
    so don't use them. An exception to this rule is when you have two labels next
@@ -1425,14 +1480,4 @@ guidelines are followed in layout and design of GUIs.
 - Tim Sutton (author and editor)
 - Gary Sherman
 - Marco Hugentobler
-
-Original pages from wiki to deprecate:
-
-- http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
-- http://wiki.qgis.org/qgiswiki/CodingStandards (./)
-- http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
-- http://www.qgis.org/wiki/How_to_debug_QGIS_Plugins
-- http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
-- http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
-
 

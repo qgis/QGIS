@@ -42,6 +42,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) const;
     virtual void sendGetFeatureResponse( QByteArray* ba ) const;
     virtual void endGetFeatureResponse( QByteArray* ba ) const;
+    virtual void sendGetCoverageResponse( QByteArray* ba ) const;
 
   protected:
     void sendHttpResponse( QByteArray* ba, const QString& format ) const;
@@ -54,7 +55,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     QString readPostBody() const;
 
   private:
-    static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
+    static void medianCut( QVector<QRgb>& colorTable, QHash<QRgb, int>& colorIndexHash, int nColors, const QImage& inputImage );
     static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
     static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
                                QMap<int, QgsColorBox>::iterator colorBoxMapIt );
@@ -64,7 +65,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     /**Calculates a representative color for a box (pixel weighted average)*/
-    static QRgb boxColor( const QgsColorBox& box, int boxPixels );
+    static QRgb boxColor( const QgsColorBox& box, int boxPixels, int colorMapIndex, QHash<QRgb, int>& colorIndexHash );
 };
 
 #endif

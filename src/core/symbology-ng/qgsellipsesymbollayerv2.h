@@ -40,6 +40,8 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
     void writeSldMarker( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+
     void setSymbolName( const QString& name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
 
@@ -48,6 +50,9 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 
     void setSymbolHeight( double h ) { mSymbolHeight = h; }
     double symbolHeight() const { return mSymbolHeight; }
+
+    Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
+    void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
 
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
     double outlineWidth() const { return mOutlineWidth; }
@@ -78,6 +83,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsSymbolV2::OutputUnit mSymbolHeightUnit;
     QColor mFillColor;
     QColor mOutlineColor;
+    Qt::PenStyle mOutlineStyle;
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
 

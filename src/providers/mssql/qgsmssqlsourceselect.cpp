@@ -318,6 +318,14 @@ void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &
   }
 }
 
+void QgsMssqlSourceSelect::on_mSearchGroupBox_toggled( bool checked )
+{
+  if ( mSearchTableEdit->text().isEmpty() )
+    return;
+
+  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
+}
+
 void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
@@ -717,6 +725,7 @@ QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( QString connectionNa
     : QThread()
     , mConnectionName( connectionName )
     , mUseEstimatedMetadata( useEstimatedMetadata )
+    , mStopped( false )
 {
   qRegisterMetaType<QgsMssqlLayerProperty>( "QgsMssqlLayerProperty" );
 }

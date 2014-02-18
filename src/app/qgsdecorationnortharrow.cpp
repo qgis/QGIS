@@ -103,23 +103,12 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
   //Large IF statement controlled by enable check box
   if ( enabled() )
   {
-    if ( theQPainter->isActive() )
-    {
-      //QgsDebugMsg("Rendering north arrow on active painter");
-    }
-    else
-    {
-      //QgsDebugMsg("Rendering north arrow on INactive painter!!!");
-    }
-
     QPixmap myQPixmap; //to store the north arrow image in
 
     QString myFileNameQString = ":/images/north_arrows/default.png";
 
-    //QgsDebugMsg("Trying to load " + myFileNameQString);
     if ( myQPixmap.load( myFileNameQString ) )
     {
-
       double centerXDouble = myQPixmap.width() / 2;
       double centerYDouble = myQPixmap.height() / 2;
       //save the current canvas rotation

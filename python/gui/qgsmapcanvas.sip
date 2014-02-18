@@ -16,7 +16,6 @@ class QgsMapCanvasLayer
     bool isInOverview() const;
 
     QgsMapLayer* layer();
-    //const QgsMapLayer* layer() const;
 };
 
 
@@ -106,7 +105,8 @@ class QgsMapCanvas : QGraphicsView
     //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
     //// and in fact there is no transfer of ownership from c++ to python!
     //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
-    QgsMapRenderer* mapRenderer() /Deprecated/;
+    //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
+    QgsMapRenderer* mapRenderer() /Deprecated, KeepReference/;
 
     //! @deprecated since 2.1
     QPaintDevice &canvasPaintDevice() /Deprecated/;
@@ -294,6 +294,9 @@ class QgsMapCanvas : QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
+    //! ask user about datum transformation
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+
   signals:
     /** Let the owner know how far we are with render operations */
     //! @deprecated since 2.1 - already unused in 2.0 anyway
@@ -407,4 +410,6 @@ class QgsMapCanvas : QGraphicsView
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();
 
+private:
+    void connectNotify( const char * signal );
 }; // class QgsMapCanvas

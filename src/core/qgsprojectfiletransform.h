@@ -87,8 +87,8 @@ class CORE_EXPORT QgsProjectFileTransform
     void transform1800to1900();
 
     //helper functions
-    static int rasterBandNumber( const QDomElement& rasterPropertiesElem, const QString bandName, QgsRasterLayer* rlayer );
-    static void transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem );
+    static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );
+    static void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem );
     static void transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem );
 };
 

@@ -215,9 +215,7 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   SymbologyList itemList;
   QList< QPair< QString, QColor > > rasterItemList = layer->legendSymbologyItems();
   QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-#if QT_VERSION >= 0x40700
   itemList.reserve( rasterItemList.size() );
-#endif
 
   // GetLegendGraphics in case of WMS service... pixmap can return null if GetLegendGraphics
   // is not supported by the server
@@ -231,9 +229,8 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
     {
       QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
 
-#if QT_VERSION >= 0x40700
-      if ( rasterItemList.size() == 0 ) itemList.reserve( 1 );
-#endif
+      if ( rasterItemList.size() == 0 )
+        itemList.reserve( 1 );
       itemList.append( qMakePair( QString( "" ), QPixmap::fromImage( legendGraphic ) ) );
     }
   }
@@ -597,7 +594,6 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
 
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
-  symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
     itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( layer->featureCount( symbolIt->second ) ) + "]", itemMap[symbolIt->first] ) );

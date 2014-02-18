@@ -562,7 +562,6 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
             mModule, key, e, gDocElem, gnode, mDirect, mParent );
 
           layout->addWidget( so );
-          created = true;
           mItems.push_back( so );
         }
       }

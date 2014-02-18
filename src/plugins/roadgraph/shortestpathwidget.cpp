@@ -37,6 +37,7 @@
 #include <qgsfeature.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
+#include <qgsmessagebar.h>
 
 #include <qgsgraphdirector.h>
 #include <qgsgraphbuilder.h>
@@ -278,17 +279,27 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
 
   QgsGraph *graph = builder.graph();
 
-  QVector< int > pointIdx( 0, 0 );
-  QVector< double > pointCost( 0, 0.0 );
-
   int startVertexIdx = graph->findVertex( p1 );
 
   int criterionNum = 0;
   if ( mCriterionName->currentIndex() > 0 )
     criterionNum = 1;
 
-  QgsGraph* shortestpathTree = QgsGraphAnalyzer::shortestTree( graph, startVertexIdx, criterionNum );
+  if ( graph->vertexCount() == 0 )
+  {
+    mPlugin->iface()->messageBar()->pushMessage(
+      tr( "Cannot calculate path" ),
+      tr( "The created graph is empty. Please check your input data." ),
+      QgsMessageBar::WARNING,
+      mPlugin->iface()->messageTimeout()
+    );
 
+    delete graph;
+    return NULL;
+  }
+
+
+  QgsGraph* shortestpathTree = QgsGraphAnalyzer::shortestTree( graph, startVertexIdx, criterionNum );
   delete graph;
 
   if ( shortestpathTree->findVertex( p2 ) == -1 )

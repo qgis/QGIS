@@ -127,7 +127,7 @@ bool QgsFeatureAction::editFeature()
       {
         if ( dst[i] != src[i] )
         {
-          mLayer->changeAttributeValue( mFeature.id(), i, dst[i] );
+          mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
         }
       }
 

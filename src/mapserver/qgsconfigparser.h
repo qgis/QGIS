@@ -49,11 +49,18 @@ class QgsConfigParser
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
+    virtual void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
     virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const = 0;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
+    virtual void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
     /**Returns one or possibly several maplayers for a given type name. If no layers are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const = 0;
+
+    /**Returns one or possibly several maplayers for a given type name. If no layers are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned
@@ -71,9 +78,14 @@ class QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
+    /**Returns the xml fragment of layer styles*/
+    virtual QDomDocument getStyles( QStringList& layerList ) const = 0;
 
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     virtual QStringList wfsLayerNames() const { return QStringList(); }
+
+    /**Returns the names of the published wcs layers (not the ids as in wcsLayers() )*/
+    virtual QStringList wcsLayerNames() const { return QStringList(); }
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap )
@@ -113,6 +125,9 @@ class QgsConfigParser
     virtual QStringList wfstInsertLayers() const { return QStringList(); }
     virtual QStringList wfstDeleteLayers() const { return QStringList(); }
 
+    /**Returns an ID-list of layers which queryable in WCS service*/
+    virtual QStringList wcsLayers() const { return QStringList(); }
+
     /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
     virtual QStringList supportedOutputCrsList() const { return QStringList(); }
@@ -135,6 +150,7 @@ class QgsConfigParser
     /**Returns service address (or empty string if not defined in the configuration*/
     virtual QString serviceUrl() const { return QString(); }
     virtual QString wfsServiceUrl() const { return QString(); }
+    virtual QString wcsServiceUrl() const { return QString(); }
 
     QColor selectionColor() const { return mSelectionColor; }
     void setSelectionColor( const QColor& c ) { mSelectionColor = c; }
@@ -163,6 +179,8 @@ class QgsConfigParser
 
     /**Applies configuration specific label settings*/
     virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) { Q_UNUSED( lbl ); }
+
+    virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/

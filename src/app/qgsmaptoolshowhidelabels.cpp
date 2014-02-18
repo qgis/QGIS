@@ -290,7 +290,7 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
   }
 
   // different attribute value, edit table
-  if ( !vlayer->changeAttributeValue( fid, showCol, curVal, false ) )
+  if ( !vlayer->changeAttributeValue( fid, showCol, curVal ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     return false;

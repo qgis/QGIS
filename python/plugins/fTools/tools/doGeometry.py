@@ -181,9 +181,11 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     if self.chkWriteShapefile.isChecked():
       self.lineEdit.setEnabled( True )
       self.toolOut.setEnabled( True )
+      self.addToCanvasCheck.setEnabled( True )
     else:
       self.lineEdit.setEnabled( False )
       self.toolOut.setEnabled( False )
+      self.addToCanvasCheck.setEnabled( False )
 
   def populateLayers( self ):
     self.inShape.clear()
@@ -372,6 +374,12 @@ class geometryThread( QThread ):
     merge_all = self.myField == "--- " + self.tr( "Merge all" ) + " ---"
     if not len( unique ) == self.vlayer.featureCount() or merge_all:
       for i in unique:
+        # Strip spaces for strings, so "  A " and "A" will be grouped
+        # TODO: Make this optional (opt-out to keep it easy for beginners)
+        if isinstance( i, basestring ):
+          iMod = i.strip()
+        else:
+          iMod = i
         multi_feature= []
         first = True
         fit = vprovider.getFeatures()
@@ -379,9 +387,13 @@ class geometryThread( QThread ):
           atMap = inFeat.attributes()
           if not merge_all:
             idVar = atMap[ index ]
+            if isinstance( idVar, basestring ):
+              idVarMod = idVar.strip()
+            else:
+              idVarMod = idVar
           else:
             idVar = ""
-          if idVar.strip() == i.strip() or merge_all:
+          if idVarMod == iMod or merge_all:
             if first:
               atts = atMap
               first = False
@@ -565,11 +577,11 @@ class geometryThread( QThread ):
       if self.writeShape:
         outFeat.setGeometry( inGeom )
         atMap = inFeat.attributes()
-        maxIndex = index1 if index1>index2 else index2
-        if maxIndex>len(atMap):
-                atMap += [ "" ] * ( index2+1 - len(atMap) )
+        maxIndex = index1 if index1 > index2 else index2
+        if maxIndex >= len(atMap):
+          atMap += [ "" ] * ( index2+1 - len(atMap) )
         atMap[ index1 ] = attr1
-        if index1!=index2:
+        if index1 != index2:
           atMap[ index2 ] = attr2
         outFeat.setAttributes( atMap )
         writer.addFeature( outFeat )

@@ -272,10 +272,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
     void recalculateFeatureCount();
 
     /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
-    void setRelevantFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
+    void setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
     /** convert a QgsField to work with OGR */
     static bool convertField( QgsField &field, const QTextCodec &encoding );
+
+    /** Clean shapefile from features which are marked as deleted */
+    void repack();
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );

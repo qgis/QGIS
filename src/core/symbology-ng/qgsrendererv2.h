@@ -152,7 +152,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
-    //! @note: not available in python bindings
+    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
 
     //! set type and size of editing vertex markers for subsequent rendering
@@ -208,6 +208,9 @@ class CORE_EXPORT QgsFeatureRendererV2
     int mCurrentVertexMarkerType;
     /** The current size of editing marker */
     int mCurrentVertexMarkerSize;
+
+  private:
+    Q_DISABLE_COPY( QgsFeatureRendererV2 )
 };
 
 class QgsRendererV2Widget;  // why does SIP fail, when this isn't here

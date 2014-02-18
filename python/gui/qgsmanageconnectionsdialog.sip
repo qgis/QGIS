@@ -30,4 +30,5 @@ class QgsManageConnectionsDialog : QDialog
     void doExportImport();
     void selectAll();
     void clearSelection();
+    void selectionChanged();
 };

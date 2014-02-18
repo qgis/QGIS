@@ -56,6 +56,9 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
   QList<QgsSnapper::SnapLayer>::iterator snapLayerIt;
   for ( snapLayerIt = mSnapLayers.begin(); snapLayerIt != mSnapLayers.end(); ++snapLayerIt )
   {
+    if ( !snapLayerIt->mLayer->hasGeometryType() )
+      continue;
+
     //transform point from map coordinates to layer coordinates
     layerCoordPoint = mMapSettings.mapToLayerCoordinates( snapLayerIt->mLayer, mapCoordPoint );
 

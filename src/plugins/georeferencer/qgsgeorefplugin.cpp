@@ -78,10 +78,11 @@ static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface ),
-    mPluginGui( NULL )
+QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
+    , mActionRunGeoref( 0 )
+    , mPluginGui( 0 )
 {
 }
 
@@ -94,8 +95,11 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
  */
 void QgsGeorefPlugin::initGui()
 {
+  delete mActionRunGeoref;
+
   // Create the action for tool
   mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer" ), this );
+  mActionRunGeoref->setObjectName( "mActionRunGeoref" );
 
   // Connect the action to the run
   connect( mActionRunGeoref, SIGNAL( triggered() ), this, SLOT( run() ) );

@@ -375,7 +375,6 @@ class DBManager(QMainWindow):
 		# create toolbar
 		self.toolBar = QToolBar("Default", self)
 		self.toolBar.setObjectName("DB_Manager_ToolBar")
-		self.toolBar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 		self.addToolBar(self.toolBar)
 
 		# create menus' actions

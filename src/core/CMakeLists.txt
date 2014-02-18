@@ -81,6 +81,8 @@ SET(QGIS_CORE_SRCS
   qgsgeometry.cpp
   qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
+  qgsgeometrysimplifier.cpp
+  qgssimplifymethod.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshttptransaction.cpp
@@ -92,6 +94,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
   qgsmaptopixel.cpp
+  qgsmaptopixelgeometrysimplifier.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
@@ -134,6 +137,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorsimplifymethod.cpp
 
   qgsnetworkaccessmanager.cpp
 
@@ -169,6 +173,11 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerhtml.cpp
   composer/qgscomposermultiframe.cpp
   composer/qgscomposition.cpp
+  
+  dxf/qgsdxfexport.cpp
+  dxf/qgsdxfpaintdevice.cpp
+  dxf/qgsdxfpaintengine.cpp
+  dxf/qgsdxfpallabeling.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -468,6 +477,8 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsvectorlayerjoinbuffer.h
   qgslabelsearchtree.h
+  qgssimplifymethod.h
+  qgsvectorsimplifymethod.h
 
   qgsdiagramrendererv2.h
   diagram/qgsdiagram.h
@@ -568,6 +579,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   composer
+  dxf
   pal
   raster
   renderer

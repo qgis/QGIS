@@ -104,7 +104,7 @@ void QgsRasterTransparency::setTransparentThreeValuePixelList( QList<QgsRasterTr
 int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparency ) const
 {
   //if NaN return 0, transparent
-  if ( theValue != theValue )
+  if ( qIsNaN( theValue ) )
   {
     return 0;
   }
@@ -144,7 +144,7 @@ int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparenc
 int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue, double theBlueValue, int theGlobalTransparency ) const
 {
   //if NaN return 0, transparent
-  if ( theRedValue != theRedValue || theGreenValue != theGreenValue || theBlueValue != theBlueValue )
+  if ( qIsNaN( theRedValue ) || qIsNaN( theGreenValue ) || qIsNaN( theBlueValue ) )
   {
     return 0;
   }

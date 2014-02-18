@@ -109,7 +109,7 @@ class QgsOracleConn : public QObject
 
     /** Quote a value for placement in a SQL string.
      */
-    static QString quotedValue( QVariant value );
+    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
     //! Get the list of supported layers
     bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,

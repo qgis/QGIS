@@ -44,6 +44,7 @@ class QgsRequestHandler
     virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) const = 0;
     virtual void sendGetFeatureResponse( QByteArray* ba ) const = 0;
     virtual void endGetFeatureResponse( QByteArray* ba ) const = 0;
+    virtual void sendGetCoverageResponse( QByteArray* ba ) const = 0;
     QString format() const { return mFormat; }
   protected:
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/

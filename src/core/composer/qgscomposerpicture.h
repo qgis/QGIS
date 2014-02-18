@@ -60,6 +60,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    /**Returns the rotation used for drawing the picture within the composer item
+     * @deprecated Use pictureRotation() instead
+     */
+    double rotation() const { return mPictureRotation;};
+
+    /**Returns the rotation used for drawing the picture within the item
+      @note this function was added in version 2.1*/
+    double pictureRotation() const { return mPictureRotation;};
+
     /**Sets the map object for rotation (by id). A value of -1 disables the map rotation*/
     void setRotationMap( int composerMapId );
     /**Returns the id of the rotation map*/
@@ -67,9 +76,37 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**True if the rotation is taken from a map item*/
     bool useRotationMap() const {return mRotationMap;}
 
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
+     * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
+     * instead
+     */
+    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    /**Calculates corner point after rotation and scaling
+     * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
+     * instead
+     */
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    /**Calculates width / height of the bounding box of a rotated rectangle
+    * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
+    * instead
+    */
+    void sizeChangedByRotation( double& width, double& height );
+
   public slots:
-    /**Sets the rotation and adapts the item rect*/
+    /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,
+      only the way the picture is drawn within the item.
+     * @deprecated Use setPictureRotation( double rotation ) instead
+     */
     virtual void setRotation( double r );
+
+    /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,
+      only the way the picture is drawn within the item.
+      @note this function was added in version 2.1*/
+    virtual void setPictureRotation( double r );
+
+  signals:
+    /**Is emitted on picture rotation change*/
+    void pictureRotationChanged( double newRotation );
 
   private:
 
@@ -87,6 +124,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Calculates bounding rect for image such that aspect ratio is correct*/
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
 
+    /**Returns size of current raster or svg picture */
+    QSizeF pictureSize();
 
     QImage mImage;
     QSvgRenderer mSVG;
@@ -94,6 +133,9 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     Mode mMode;
 
     QSize mDefaultSvgSize;
+
+    /**Image rotation*/
+    double mPictureRotation;
     /**Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
     const QgsComposerMap* mRotationMap;
     /**Width of the picture (in mm)*/

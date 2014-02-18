@@ -65,7 +65,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
         QgsRasterInterface *input;
         int band;
         int row; // next row to be written
-        Raster(): provider( 0 ), projector( 0 ), input( 0 ), band( 1 ), row( 0 ) {}
+        Raster() : provider( 0 ), projector( 0 ), input( 0 ), band( 1 ), row( 0 ) {}
         double noDataValue; // output no data value
     };
 

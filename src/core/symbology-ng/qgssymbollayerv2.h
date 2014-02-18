@@ -38,6 +38,7 @@ class QPainter;
 class QSize;
 class QPolygonF;
 
+class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
 
@@ -46,8 +47,20 @@ class CORE_EXPORT QgsSymbolLayerV2
   public:
 
     // not necessarily supported by all symbol layers...
-    virtual void setColor( const QColor& color ) { mColor = color; }
     virtual QColor color() const { return mColor; }
+    virtual void setColor( const QColor& color ) { mColor = color; }
+    /** Set outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setOutlineColor( const QColor& color ) { Q_UNUSED( color ); }
+    /** Get outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor outlineColor() const { return QColor(); }
+    /** Set fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setFillColor( const QColor& color ) { Q_UNUSED( color ); }
+    /** Get fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor fillColor() const { return QColor(); }
 
     virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 
@@ -76,6 +89,12 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
 
+    /**Returns the estimated maximum distance which the layer style will bleed outside
+      the drawn shape. Eg, polygons drawn with an outline will draw half the width
+      of the outline outside of the polygon. This amount is estimated, since it may
+      be affected by data defined symbology rules.*/
+    virtual double estimateMaxBleed() const { return 0; }
+
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); } //= 0;
     virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; } //= 0;
 
@@ -91,6 +110,21 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
     virtual void removeDataDefinedProperty( const QString& property );
     virtual void removeDataDefinedProperties();
+    bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
+
+    virtual bool writeDxf( QgsDxfExport& e,
+                           double mmMapUnitScaleFactor,
+                           const QString& layerName,
+                           const QgsSymbolV2RenderContext* context,
+                           const QgsFeature* f,
+                           const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+
+    virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -108,8 +142,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
-    virtual void prepareExpressions( const QgsFields* fields, double scale = -1 );
-    virtual QgsExpression* expression( const QString& property );
+    virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
+    virtual QgsExpression* expression( const QString& property ) const;
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
@@ -135,6 +169,8 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
       VCenter,
       Bottom
     };
+
+    void startRender( QgsSymbolV2RenderContext& context );
 
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
@@ -174,11 +210,15 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+
     //handles marker offset and anchor point shift together
-    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
-    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+
+    //! @note available in python bindings as markerOffset2
+    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
-                       double& offsetX, double& offsetY );
+                       double& offsetX, double& offsetY ) const;
+
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;
@@ -193,6 +233,10 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
   private:
     static QgsMarkerSymbolLayerV2::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
     static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
+
+    QgsExpression* mOffsetExpression;
+    QgsExpression* mHorizontalAnchorExpression;
+    QgsExpression* mVerticalAnchorExpression;
 };
 
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
@@ -210,6 +254,8 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );
@@ -231,7 +277,7 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
     /**Default method to render polygon*/
-    void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings );
+    void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     double mAngle;
 };

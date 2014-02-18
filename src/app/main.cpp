@@ -68,6 +68,9 @@ int _fmode = _O_BINARY;
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
 typedef SInt32 SRefCon;
 #endif
+// For setting the maximum open files limit higher
+#include <sys/resource.h>
+#include <limits.h>
 #endif
 
 #include "qgisapp.h"
@@ -359,6 +362,41 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
 int main( int argc, char *argv[] )
 {
+#ifdef Q_OS_MACX
+  // Increase file resource limits (i.e., number of allowed open files)
+  // (from code provided by Larry Biehl, Purdue University, USA, from 'MultiSpec' project)
+  // This is generally 256 for the soft limit on Mac
+  // NOTE: setrlimit() must come *before* initialization of stdio strings,
+  //       e.g. before any debug messages, or setrlimit() gets ignored
+  // see: http://stackoverflow.com/a/17726104/2865523
+  struct rlimit rescLimit;
+  if ( getrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
+  {
+    rlim_t oldSoft( rescLimit.rlim_cur );
+    rlim_t oldHard( rescLimit.rlim_max );
+#ifdef OPEN_MAX
+    rlim_t newSoft( OPEN_MAX );
+    rlim_t newHard( std::min( oldHard, newSoft ) );
+#else
+    rlim_t newSoft( 4096 );
+    rlim_t newHard( std::min(( rlim_t )8192, oldHard ) );
+#endif
+    if ( rescLimit.rlim_cur < newSoft )
+    {
+      rescLimit.rlim_cur = newSoft;
+      rescLimit.rlim_max = newHard;
+
+      if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
+      {
+        QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
+                     .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
+      }
+    }
+    QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+                 .arg( oldSoft ).arg( oldHard ) );
+  }
+#endif
+
   QgsDebugMsg( QString( "Starting qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
@@ -752,28 +790,31 @@ int main( int argc, char *argv[] )
   }
 
   QTranslator qgistor( 0 );
-  if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
-  {
-    myApp.installTranslator( &qgistor );
-  }
-  else
-  {
-    qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
-  }
-
-  /* Translation file for Qt.
-   * The strings from the QMenuBar context section are used by Qt/Mac to shift
-   * the About, Preferences and Quit items to the Mac Application menu.
-   * These items must be translated identically in both qt_ and qgis_ files.
-   */
   QTranslator qttor( 0 );
-  if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+  if ( myTranslationCode != "C" )
   {
-    myApp.installTranslator( &qttor );
-  }
-  else
-  {
-    qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
+    {
+      myApp.installTranslator( &qgistor );
+    }
+    else
+    {
+      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    }
+
+    /* Translation file for Qt.
+     * The strings from the QMenuBar context section are used by Qt/Mac to shift
+     * the About, Preferences and Quit items to the Mac Application menu.
+     * These items must be translated identically in both qt_ and qgis_ files.
+     */
+    if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    {
+      myApp.installTranslator( &qttor );
+    }
+    else
+    {
+      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    }
   }
 
   //set up splash screen

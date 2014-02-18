@@ -46,9 +46,7 @@ bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterat
   {
     if ( C->isFidCached( featureRequest.filterFid() ) )
     {
-      QgsFeatureIds fids;
-      fids << featureRequest.filterFid();
-      featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest, fids ) );
+      featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
       return true;
     }
   }

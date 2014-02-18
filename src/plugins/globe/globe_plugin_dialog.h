@@ -24,23 +24,22 @@
 #include <qgsproject.h>
 #include <qgsvectorlayer.h>
 
+class GlobePlugin;
+
 class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
+    QgsGlobePluginDialog( QWidget * parent, GlobePlugin* globe, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
-    void setViewer( osgViewer::Viewer* viewer ) { mViewer = viewer; }
     void resetElevationDatasources();
     void readElevationDatasources();
     QTableWidget *elevationDatasources() { return elevationDatasourcesWidget; }
     void updatePointLayers();
     QgsVectorLayer* modelLayer();
     QString modelPath() { return modelPathLineEdit->text(); }
-  private:
-    osgViewer::Viewer* mViewer;
-    QSettings settings;
+
   private:
     QString openRasterFile();
     void updateStereoDialog();
@@ -59,6 +58,10 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     void saveStereoConfig();
     //! Handle stereoMode
     void setStereoMode();
+    void loadVideoSettings();
+    void saveVideoSettings();
+    void loadMapSettings();
+    void saveMapSettings();
 
   private slots:
     void on_buttonBox_accepted();
@@ -87,8 +90,15 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     void on_elevationUp_clicked();
     void on_elevationDown_clicked();
 
+    //MAP
+    void on_mBaseLayerComboBox_currentIndexChanged( int index );
+
   signals:
     void elevationDatasourcesChanged();
+
+  private:
+    GlobePlugin* mGlobe;
+    QSettings settings;
 };
 
 #endif    // QGIS_GLOBE_PLUGIN_DIALOG_H

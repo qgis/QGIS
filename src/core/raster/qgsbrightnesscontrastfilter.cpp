@@ -150,7 +150,7 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
   int r, g, b, alpha;
   double f = qPow(( mContrast + 100 ) / 100.0, 2 );
 
-  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {
@@ -178,6 +178,11 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
   {
     // Opaque pixel, do simpler math
     return qBound( 0, ( int )(((((( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
+  }
+  else if ( alpha == 0 )
+  {
+    // Totally transparent pixel
+    return 0;
   }
   else
   {

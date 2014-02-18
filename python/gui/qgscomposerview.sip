@@ -5,7 +5,7 @@
  * Creates the composer items according to the current map tools and keeps track
  * of the rubber band item.
  */
-class QgsComposerView: QGraphicsView
+class QgsComposerView : QGraphicsView
 {
 %TypeHeaderCode
 #include "qgscomposerview.h"
@@ -35,7 +35,29 @@ class QgsComposerView: QGraphicsView
       AddEllipse,
       AddTriangle,
       AddTable, //add attribute table
-      MoveItemContent //move content of item (e.g. content of map)
+      MoveItemContent, //move content of item (e.g. content of map)
+      Pan,
+      Zoom
+    };
+
+    enum ClipboardMode
+    {
+      ClipboardModeCut,
+      ClipboardModeCopy
+    };
+
+    enum PasteMode
+    {
+      PasteModeCursor,
+      PasteModeCenter,
+      PasteModeInPlace
+    };
+
+    enum ToolStatus
+    {
+      Inactive,
+      Active,
+      ActiveUntilMouseRelease
     };
 
     QgsComposerView( QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0 );
@@ -46,11 +68,29 @@ class QgsComposerView: QGraphicsView
     /**Ungroups the selected items*/
     void ungroupItems();
 
+    /**Cuts or copies the selected items*/
+    void copyItems( ClipboardMode mode );
+
+    /**Pastes items from clipboard*/
+    void pasteItems( PasteMode mode );
+
+    /**Deletes selected items*/
+    void deleteSelectedItems();
+
+    /**Selects all items*/
+    void selectAll();
+
+    /**Deselects all items*/
+    void selectNone();
+
+    /**Inverts current selection*/
+    void selectInvert();
+
     QgsComposerView::Tool currentTool() const;
     void setCurrentTool( QgsComposerView::Tool t );
 
     /**Sets composition (derived from QGraphicsScene)*/
-    void setComposition( QgsComposition* c );
+    void setComposition( QgsComposition* c /KeepReference/ );
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
@@ -66,6 +106,9 @@ class QgsComposerView: QGraphicsView
     void setHorizontalRuler( QgsComposerRuler* r );
     void setVerticalRuler( QgsComposerRuler* r );
 
+    /**Set zoom level, where a zoom level of 1.0 corresponds to 100%*/
+    void setZoomLevel( double zoomLevel );
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -73,6 +116,7 @@ class QgsComposerView: QGraphicsView
     void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
+    void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
 
@@ -91,6 +135,10 @@ class QgsComposerView: QGraphicsView
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
+    /**Is emitted when mouse cursor coordinates change*/
+    void cursorPosChanged( QPointF );
+    /**Is emitted when the view zoom changes*/
+    void zoomLevelChanged();
 
     /**Emitted before composerview is shown*/
     void composerViewShow( QgsComposerView* );

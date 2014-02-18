@@ -37,7 +37,7 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
      */
     QString parserErrorString();
 
-    const QString& displayExpression() const;
+    QString displayExpression() const;
     bool featureByIndex( const QModelIndex& index, QgsFeature& feat );
     QgsFeatureId idxToFid( const QModelIndex& index ) const;
     QModelIndex fidToIdx( const QgsFeatureId fid ) const;

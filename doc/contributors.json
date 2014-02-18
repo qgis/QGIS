@@ -532,6 +532,40 @@
           -23.199067
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vincent Mora",
+        "Committer": "Yes",
+        "First Commit Message": "- test that fails because of issue7244 (split several polygons of a multipolygon at the same time)",
+        "First Commit Date": "11-07-2013",
+        "GIT Nickname": "vmora"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.76,
+          45.115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Werner Macho",
+        "Committer": "Yes",
+        "First Commit Message": "testcommit werner, nothing changed",
+        "GIT Nickname": "mach0",
+        "First Commit Date": "30-06-2008"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.99380588531494,
+          48.791220421656064
+        ]
+      }
     }
   ]
 }

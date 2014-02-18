@@ -250,8 +250,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     );
   }
 
-  setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
-
   QSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
@@ -261,7 +259,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  restoreOptionsBaseUi();
+  QString title = QString( tr( "Layer Properties - %1" ) ).arg( layer->name() );
+  restoreOptionsBaseUi( title );
 } // QgsVectorLayerProperties ctor
 
 
@@ -391,6 +390,35 @@ void QgsVectorLayerProperties::syncToLayer( void )
   }
   cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
+
+  // get simplify drawing configuration
+  const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
+  mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
+
+  if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
+  {
+    mSimplifyDrawingAtProvider->setChecked( false );
+    mSimplifyDrawingAtProvider->setEnabled( false );
+    mSimplifyDrawingAtProvider->setText( QString( "%1 (%2)" ).arg( mSimplifyDrawingAtProvider->text(), tr( "Not supported" ) ) );
+  }
+  else
+  {
+    mSimplifyDrawingAtProvider->setChecked( !simplifyMethod.forceLocalOptimization() );
+    mSimplifyDrawingAtProvider->setEnabled( mSimplifyDrawingGroupBox->isChecked() );
+  }
+
+  // disable simplification for point layers, now it is not implemented
+  if ( layer->geometryType() == QGis::Point )
+  {
+    mOptionsStackedWidget->removeWidget( mOptsPage_Rendering );
+    mSimplifyDrawingGroupBox->setChecked( false );
+  }
+
+  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  myScalesList.append( "1:1" );
+  mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
+  mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -528,6 +556,20 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  //layer simplify drawing configuration
+  int simplifyHints = QgsVectorLayer::NoSimplification;
+  if ( mSimplifyDrawingGroupBox->isChecked() )
+  {
+    simplifyHints |= QgsVectorLayer::GeometrySimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
+  }
+  QgsVectorSimplifyMethod simplifyMethod = layer->simplifyMethod();
+  simplifyMethod.setSimplifyHints( simplifyHints );
+  simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
+  simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
+  simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );
+  layer->setSimplifyMethod( simplifyMethod );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
@@ -1063,4 +1105,16 @@ void QgsVectorLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
 void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 {
   cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
+}
+
+void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked )
+{
+  if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
+  {
+    mSimplifyDrawingAtProvider->setEnabled( false );
+  }
+  else
+  {
+    mSimplifyDrawingAtProvider->setEnabled( checked );
+  }
 }

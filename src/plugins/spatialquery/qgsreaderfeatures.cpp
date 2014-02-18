@@ -70,7 +70,7 @@ bool QgsReaderFeatures::nextFeatureSelected( QgsFeature & feature )
     return false;
 
   feature = *mIterSelectedFeature;
-  mIterSelectedFeature++;
+  ++mIterSelectedFeature;
 
   return true;
 } // bool QgsReaderFeatures::nextFeatureSelected( QgsFeature &feature )

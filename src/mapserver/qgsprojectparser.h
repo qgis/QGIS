@@ -45,11 +45,18 @@ class QgsProjectParser: public QgsConfigParser
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    virtual void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const;
+
     virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+
+    virtual void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
     /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const;
+
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
     int numberOfLayers() const;
 
@@ -64,6 +71,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
+    /**Returns the xml fragment of layers styles*/
+    virtual QDomDocument getStyles( QStringList& layerList ) const;
+
 
     /**Returns if output are MM or PIXEL*/
     virtual QgsMapRenderer::OutputUnits outputUnits() const;
@@ -79,6 +89,9 @@ class QgsProjectParser: public QgsConfigParser
     virtual QStringList wfstUpdateLayers() const;
     virtual QStringList wfstInsertLayers() const;
     virtual QStringList wfstDeleteLayers() const;
+
+    /**Returns an ID-list of layers queryable for WCS service (comes from <properties> -> <WCSLayers> in the project file*/
+    virtual QStringList wcsLayers() const;
 
     /**Returns a set of supported epsg codes for the capabilities document. The list comes from the property <WMSEpsgList> in the project file.
        An empty set means that all possible CRS should be advertised (which could result in very long capabilities documents)
@@ -120,8 +133,13 @@ class QgsProjectParser: public QgsConfigParser
 
     QString wfsServiceUrl() const;
 
+    QString wcsServiceUrl() const;
+
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     QStringList wfsLayerNames() const;
+
+    /**Returns the names of the published wcs layers (not the ids as in wcsLayers() )*/
+    QStringList wcsLayerNames() const;
 
     /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
     virtual QHash<QString, QString> featureInfoLayerAliasMap() const;
@@ -139,6 +157,8 @@ class QgsProjectParser: public QgsConfigParser
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
     void loadLabelSettings( QgsLabelingEngineInterface* lbl );
+
+    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 
   private:
 
@@ -272,6 +292,10 @@ class QgsProjectParser: public QgsConfigParser
      * This is for WFS Services
      **/
     void serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    /**Reads service metadata from projectfile or falls back to parent class method if not there
+     * This is for WCS Services
+     **/
+    void serviceWCSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

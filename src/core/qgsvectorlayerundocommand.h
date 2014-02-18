@@ -32,7 +32,7 @@ class QgsGeometryCache;
 #include "qgsvectorlayereditbuffer.h"
 
 
-class QgsVectorLayerUndoCommand : public QUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 {
   public:
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer )
@@ -50,7 +50,7 @@ class QgsVectorLayerUndoCommand : public QUndoCommand
 };
 
 
-class QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUndoCommand
 {
   public:
     QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f );
@@ -63,7 +63,7 @@ class QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUndoCommand
 };
 
 
-class QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayerUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayerUndoCommand
 {
   public:
     QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid );
@@ -77,7 +77,7 @@ class QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayerUndoCommand
 };
 
 
-class QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLayerUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLayerUndoCommand
 {
   public:
     QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry* newGeom );
@@ -95,10 +95,10 @@ class QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLayerUndoCommand
 };
 
 
-class QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLayerUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLayerUndoCommand
 {
   public:
-    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant& newValue );
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
     virtual void undo();
     virtual void redo();
 
@@ -111,7 +111,7 @@ class QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLayerUndoComman
 };
 
 
-class QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerUndoCommand
 {
   public:
     QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer* buffer, const QgsField& field );
@@ -125,7 +125,7 @@ class QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerUndoCommand
 };
 
 
-class QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLayerUndoCommand
+class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLayerUndoCommand
 {
   public:
     QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex );

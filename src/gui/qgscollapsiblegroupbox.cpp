@@ -233,9 +233,8 @@ void QgsCollapsibleGroupBoxBasic::checkClicked( bool chkd )
 void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 {
   // verify if sender is this group box's collapse button
-  bool senderCollBtn = false;
-  QgsGroupBoxCollapseButton* collBtn = qobject_cast<QgsGroupBoxCollapseButton*>( QObject::sender() );
-  senderCollBtn = ( collBtn && collBtn == mCollapseButton );
+  QgsGroupBoxCollapseButton *collBtn = qobject_cast<QgsGroupBoxCollapseButton*>( QObject::sender() );
+  bool senderCollBtn = ( collBtn && collBtn == mCollapseButton );
 
   mAltDown = ( mAltDown || mCollapseButton->altDown() );
   mShiftDown = ( mShiftDown || mCollapseButton->shiftDown() );

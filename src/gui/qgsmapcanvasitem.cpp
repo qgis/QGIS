@@ -118,6 +118,8 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
   context.setRendererScale( mMapCanvas->scale() );
   context.setScaleFactor( ms.outputDpi() / 25.4 );
   context.setRasterScaleFactor( 1.0 );
+
+    context.setForceVectorOutput( true );
   return true;
 }
 

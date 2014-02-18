@@ -19,4 +19,10 @@ class QgsDataDefinedSymbolDialog : QDialog
     static QString colorHelpText();
     static QString offsetHelpText();
     static QString fileNameHelpText();
+    static QString horizontalAnchorHelpText();
+    static QString verticalAnchorHelpText();
+    static QString gradientTypeHelpText();
+    static QString gradientCoordModeHelpText();
+    static QString gradientSpreadHelpText();
+    static QString boolHelpText();
 };

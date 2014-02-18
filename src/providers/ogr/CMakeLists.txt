@@ -1,5 +1,5 @@
 
-SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp)
+SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrgeometrysimplifier.cpp)
 
 SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h)
 

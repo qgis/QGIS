@@ -86,7 +86,7 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
@@ -228,17 +228,6 @@ void QgsComposerLabelWidget::on_mMiddleRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mRotationSpinBox_valueChanged( double v )
-{
-  if ( mComposerLabel )
-  {
-    mComposerLabel->beginCommand( tr( "Label rotation changed" ), QgsComposerMergeCommand::ComposerLabelRotation );
-    mComposerLabel->setRotation( v );
-    mComposerLabel->update();
-    mComposerLabel->endCommand();
-  }
-}
-
 void QgsComposerLabelWidget::setGuiElementValues()
 {
   blockAllSignals( true );
@@ -252,7 +241,6 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
-  mRotationSpinBox->setValue( mComposerLabel->rotation() );
   blockAllSignals( false );
 }
 
@@ -267,5 +255,4 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
-  mRotationSpinBox->blockSignals( block );
 }

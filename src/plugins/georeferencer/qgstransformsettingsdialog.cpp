@@ -64,6 +64,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cmbResampling->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastresampling", 0 ).toInt() );
   cmbCompressionComboBox->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastcompression", 0 ).toInt() );
   leTargetSRS->setText( s.value( "/Plugin-GeoReferencer/targetsrs" ).toString() );
+  mWorldFileCheckBox->setChecked( s.value( "/Plugin-Georeferencer/word_file_checkbox", false ).toBool() );
 
   cbxUserResolution->setChecked( s.value( "/Plugin-Georeferencer/user_specified_resolution", false ).toBool() );
   bool ok;
@@ -137,6 +138,7 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", false );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resx",  1.0 );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resy", -1.0 );
+  s.setValue( "/Plugin-GeoReferencer/word_file_checkbox", false );
   s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", "" );
 }
 
@@ -158,7 +160,7 @@ void QgsTransformSettingsDialog::accept()
   int minGCPpoints;
   if ( checkGCPpoints( cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt(), minGCPpoints ) )
   {
-    if ( leOutputRaster->text().isEmpty() )
+    if ( leOutputRaster->text().isEmpty() && !mWorldFileCheckBox->isChecked() )
     {
       QMessageBox::information( this, tr( "Info" ), tr( "Please set output name" ) );
       return;
@@ -195,6 +197,7 @@ void QgsTransformSettingsDialog::accept()
   s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", cbxUserResolution->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resx", dsbHorizRes->value() );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resy", dsbVerticalRes->value() );
+  s.setValue( "/Plugin-GeoReferencer/word_file_checkbox", mWorldFileCheckBox->isChecked() );
   QString pdfReportFileName = mReportFileLineEdit->text();
   if ( !pdfReportFileName.isEmpty() )
   {
@@ -300,6 +303,8 @@ void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const 
   else
   {
     mWorldFileCheckBox->setEnabled( false );
+    // reset world file checkbox when transformation differ from Linear
+    mWorldFileCheckBox->setChecked( false );
   }
 }
 

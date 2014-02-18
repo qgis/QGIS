@@ -373,7 +373,7 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
@@ -395,7 +395,7 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
@@ -417,7 +417,7 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
@@ -439,7 +439,7 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
+#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
     QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
@@ -888,11 +888,22 @@ void QgsComposerLegendWidget::updateLegend()
 
     //get layer id list
     QStringList layerIdList;
-    QgsMapCanvas* canvas = app->mapCanvas();
-    if ( canvas )
+    const QgsComposerMap* linkedMap = mLegend->composerMap();
+    if ( linkedMap && linkedMap->keepLayerSet() )
     {
-      layerIdList = canvas->mapSettings().layers();
+      //if there is a linked map, and if that linked map has a locked layer set, we take the layerIdList from that ComposerMap
+      layerIdList = linkedMap->layerSet();
     }
+    else
+    {
+      //we take the layerIdList from the Canvas
+      QgsMapCanvas* canvas = app->mapCanvas();
+      if ( canvas )
+      {
+        layerIdList = canvas->mapSettings().layers();
+      }
+    }
+
 
     //and also group info
     QgsAppLegendInterface legendIface( app->legend() );

@@ -17,6 +17,14 @@ class QgsColorRampComboBox : QComboBox
     //! return new instance of the current color ramp or NULL if there is no active color ramp
     QgsVectorColorRampV2* currentColorRamp();
 
+    //! @note not available in python bindings
+    // static QSize rampIconSize;
+
+    //! @note added in 2.2
+    void setShowGradientOnly( bool gradientOnly );
+    //! @note added in 2.2
+    bool showGradientOnly() const;
+
   public slots:
     void colorRampChanged( int index );
 };

@@ -50,6 +50,9 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void swapOptionsUI( int newIndex = -1 );
     void updateControls();
 
+  signals:
+    void optionsChanged();
+
   private:
 
     QString settingsKey( QString profile ) const;

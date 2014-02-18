@@ -16,9 +16,11 @@ class QgsVectorGradientColorRampV2Dialog : QDialog
     void removeStop();
 
     void stopDoubleClicked( QTreeWidgetItem* item, int column );
+    void setItemStopColor( const QColor& newColor );
 
   protected:
 
+    void updateStops();
     void updatePreview();
     void setStopColor( QTreeWidgetItem* item, QColor color );
 };

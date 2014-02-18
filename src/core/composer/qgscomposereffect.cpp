@@ -60,7 +60,7 @@ void QgsComposerEffect::draw( QPainter *painter )
 
 }
 
-void QgsComposerEffect::setCompositionMode( const QPainter::CompositionMode compositionMode )
+void QgsComposerEffect::setCompositionMode( const QPainter::CompositionMode &compositionMode )
 {
   mCompositionMode = compositionMode;
 

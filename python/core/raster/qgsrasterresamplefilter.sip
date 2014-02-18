@@ -19,7 +19,7 @@ class QgsRasterResampleFilter : QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock * block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) /Factory/;
 
     /**Set resampler for zoomed in scales. Takes ownership of the object*/
     void setZoomedInResampler( QgsRasterResampler* r /Transfer/ );
@@ -35,6 +35,6 @@ class QgsRasterResampleFilter : QgsRasterInterface
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& resamplefilterElem );
+    void readXML( const QDomElement& filterElem );
 };
 

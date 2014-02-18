@@ -129,7 +129,7 @@ QgsRectangle QgsMapLayer::extent()
 }
 
 /** Write blend mode for layer */
-void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
+void QgsMapLayer::setBlendMode( const QPainter::CompositionMode &blendMode )
 {
   mBlendMode = blendMode;
   emit blendModeChanged( blendMode );
@@ -623,7 +623,7 @@ void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
   mScaleBasedVisibility = theVisibilityFlag;
 }
 
-bool QgsMapLayer::hasScaleBasedVisibility()
+bool QgsMapLayer::hasScaleBasedVisibility() const
 {
   return mScaleBasedVisibility;
 }
@@ -633,7 +633,7 @@ void QgsMapLayer::setMinimumScale( float theMinScale )
   mMinScale = theMinScale;
 }
 
-float QgsMapLayer::minimumScale()
+float QgsMapLayer::minimumScale() const
 {
   return mMinScale;
 }
@@ -644,7 +644,7 @@ void QgsMapLayer::setMaximumScale( float theMaxScale )
   mMaxScale = theMaxScale;
 }
 
-float QgsMapLayer::maximumScale()
+float QgsMapLayer::maximumScale() const
 {
   return mMaxScale;
 }
@@ -761,7 +761,7 @@ QString QgsMapLayer::loadDefaultStyle( bool & theResultFlag )
   return loadNamedStyle( styleURI(), theResultFlag );
 }
 
-bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml )
+bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml )
 {
   QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db ).arg( theURI ) );
 
@@ -805,7 +805,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
   return theResultFlag;
 }
 
-QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
+QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
 {
   QgsDebugMsg( QString( "uri = %1 myURI = %2" ).arg( theURI ).arg( publicSource() ) );
 
@@ -943,7 +943,7 @@ QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
   return saveNamedStyle( styleURI(), theResultFlag );
 }
 
-QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
+QString QgsMapLayer::saveNamedStyle( const QString &theURI, bool &theResultFlag )
 {
   QString myErrorMessage;
   QDomDocument myDocument;
@@ -1118,7 +1118,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
   doc = myDocument;
 }
 
-QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
+QString QgsMapLayer::saveSldStyle( const QString &theURI, bool &theResultFlag )
 {
   QString errorMsg;
   QDomDocument myDocument;
@@ -1175,7 +1175,7 @@ QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
   return tr( "ERROR: Failed to created SLD style file as %1. Check file permissions and retry." ).arg( filename );
 }
 
-QString QgsMapLayer::loadSldStyle( const QString theURI, bool &theResultFlag )
+QString QgsMapLayer::loadSldStyle( const QString &theURI, bool &theResultFlag )
 {
   QgsDebugMsg( "Entered." );
 

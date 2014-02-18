@@ -36,6 +36,10 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
   protected:
     const QgsVectorLayer* mVectorLayer;
+    /** Get label for data defined entry.
+     * Implemented only for 'size' of marker symbols
+     * @added in 2.1 */
+    virtual QString dataDefinedPropertyLabel( const QString &entryName );
 
   signals:
     void changed();
@@ -71,6 +75,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;
@@ -109,6 +114,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mOutlineStyleComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
@@ -149,6 +155,44 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;
+};
+
+
+///////////
+
+#include "ui_widget_gradientfill.h"
+
+class QgsGradientFillSymbolLayerV2;
+
+class GUI_EXPORT QgsGradientFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetGradientFill
+{
+    Q_OBJECT
+
+  public:
+    QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsGradientFillSymbolLayerV2Widget( vl ); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  public slots:
+    void setColor( const QColor& color );
+    void setColor2( const QColor& color );
+    void applyColorRamp();
+    void setGradientType( int index );
+    void setCoordinateMode( int index );
+    void setGradientSpread( int index );
+    void offsetChanged();
+    void referencePointChanged();
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
+    void colorModeChanged();
+    void on_mSpinAngle_valueChanged( double value );
+
+  protected:
+    QgsGradientFillSymbolLayerV2* mLayer;
 };
 
 
@@ -300,11 +344,8 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
   private slots:
     void on_mAngleSpinBox_valueChanged( double d );
     void on_mDistanceSpinBox_valueChanged( double d );
-    void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mOffsetSpinBox_valueChanged( double d );
-    void on_mColorPushButton_colorChanged( const QColor& color );
     void on_mDistanceUnitComboBox_currentIndexChanged( int index );
-    void on_mLineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
 };

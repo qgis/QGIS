@@ -458,7 +458,6 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
     {
       mEdgeInside = actedge;
       return actedge;
-      break;
     }
 
     else if ( leftofnumber <= 0 )
@@ -1595,7 +1594,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
 
   while ( true )
   {
-    bool swaped = false;//flag which allows to exit the loop
+    bool swapped = false;//flag which allows to exit the loop
     bool* control = new bool[mHalfEdge.count()];//controlarray
 
     for ( int i = 0; i <= mHalfEdge.count() - 1; i++ )
@@ -1641,17 +1640,17 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
         if ( swapPossible(( uint )e1 ) && mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[e1]->getDual()]->getNext()]->getPoint()]->getZ() != el1 && swapMinAngle( e1 ) > minangle )
         {
           doOnlySwap(( uint )e1 );
-          swaped = true;
+          swapped = true;
         }
         else if ( swapPossible(( uint )e2 ) && mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[e2]->getDual()]->getNext()]->getPoint()]->getZ() != el2 && swapMinAngle( e2 ) > minangle )
         {
           doOnlySwap(( uint )e2 );
-          swaped = true;
+          swapped = true;
         }
         else if ( swapPossible(( uint )e3 ) && mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[e3]->getDual()]->getNext()]->getPoint()]->getZ() != el3 && swapMinAngle( e3 ) > minangle )
         {
           doOnlySwap(( uint )e3 );
-          swaped = true;
+          swapped = true;
         }
         control[e1] = true;
         control[e2] = true;
@@ -1666,7 +1665,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
         continue;
       }
     }
-    if ( !swaped )
+    if ( !swapped )
     {
       delete[] control;
       break;

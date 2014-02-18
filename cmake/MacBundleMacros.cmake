@@ -50,6 +50,8 @@ ENDFUNCTION (GET_INSTALL_NAME)
 
 FUNCTION (INSTALLNAMETOOL_CHANGE CHANGE CHANGETO CHANGEBIN)
     IF (EXISTS "${CHANGEBIN}" AND CHANGE AND CHANGETO)
+        # ensure CHANGEBIN is writable by user, e.g. Homebrew binaries are installed non-writable
+        EXECUTE_PROCESS (COMMAND chmod u+w "${CHANGEBIN}")
         EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
     ENDIF ()
 ENDFUNCTION (INSTALLNAMETOOL_CHANGE)
@@ -76,6 +78,8 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
             EXECUTE_PROCESS (COMMAND cp -Rfp "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
             EXECUTE_PROCESS (COMMAND ln -sfh Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
         ENDIF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
+        # ensure writable by user, e.g. Homebrew frameworks are installed non-writable
+        EXECUTE_PROCESS (COMMAND chmod -R u+w "${FWDEST}/${FWNAME}.framework")
         EXECUTE_PROCESS (COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${FWNAME}" "${FWDEST}/${FWNAME}.framework/${FWNAME}")
         # debug variants
         SET (FWD "${FWNAME}_debug")

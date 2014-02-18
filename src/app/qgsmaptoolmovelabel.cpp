@@ -150,8 +150,8 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   }
 
   vlayer->beginEditCommand( tr( "Moved label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
-  vlayer->changeAttributeValue( mCurrentLabelPos.featureId, xCol, xPosNew, true );
-  vlayer->changeAttributeValue( mCurrentLabelPos.featureId, yCol, yPosNew, true );
+  vlayer->changeAttributeValue( mCurrentLabelPos.featureId, xCol, xPosNew );
+  vlayer->changeAttributeValue( mCurrentLabelPos.featureId, yCol, yPosNew );
 
   // set rotation to that of label, if data-defined and no rotation set yet
   // honor whether to preserve preexisting data on pin
@@ -167,7 +167,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
     if ( dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, defRot, rSuccess ) )
     {
       double labelRot = mCurrentLabelPos.rotation * 180 / M_PI;
-      vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rCol, labelRot, true );
+      vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rCol, labelRot );
     }
   }
   vlayer->endEditCommand();

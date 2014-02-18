@@ -61,8 +61,20 @@ class QgsSymbolLayerV2
   public:
 
     // not necessarily supported by all symbol layers...
-    virtual void setColor( const QColor& color );
     virtual QColor color() const;
+    virtual void setColor( const QColor& color );
+    /** Set outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setOutlineColor( const QColor& color );
+    /** Get outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor outlineColor() const;
+    /** Set fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setFillColor( const QColor& color );
+    /** Get fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor fillColor() const;
 
     virtual ~QgsSymbolLayerV2();
 
@@ -90,6 +102,12 @@ class QgsSymbolLayerV2
     void setLocked( bool locked );
     bool isLocked() const;
 
+    /**Returns the estimated maximum distance which the layer style will bleed outside
+      the drawn shape. Eg, polygons drawn with an outline will draw half the width
+      of the outline outside of the polygon. This amount is estimated, since it may
+      be affected by data defined symbology rules.*/
+    virtual double estimateMaxBleed() const;
+
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     virtual QgsSymbolV2::OutputUnit outputUnit() const;
 
@@ -105,12 +123,27 @@ class QgsSymbolLayerV2
     virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
     virtual void removeDataDefinedProperty( const QString& property );
     virtual void removeDataDefinedProperties();
+    bool hasDataDefinedProperties() const;
+
+    virtual bool writeDxf( QgsDxfExport& e,
+                           double mmMapUnitScaleFactor,
+                           const QString& layerName,
+                           const QgsSymbolV2RenderContext* context,
+                           const QgsFeature* f,
+                           const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+
+    virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
-    virtual void prepareExpressions( const QgsFields* fields, double scale = -1 );
-    virtual QgsExpression* expression( const QString& property );
+    virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
+    virtual QgsExpression* expression( const QString& property ) const;
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
@@ -124,8 +157,24 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 %TypeHeaderCode
 #include <qgssymbollayerv2.h>
 %End
-
   public:
+
+    enum HorizontalAnchorPoint
+    {
+      Left,
+      HCenter,
+      Right
+    };
+
+    enum VerticalAnchorPoint
+    {
+      Top,
+      VCenter,
+      Bottom
+    };
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
@@ -155,9 +204,23 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     virtual QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void setHorizontalAnchorPoint( HorizontalAnchorPoint h );
+    HorizontalAnchorPoint horizontalAnchorPoint() const;
+
+    void setVerticalAnchorPoint( VerticalAnchorPoint v );
+    VerticalAnchorPoint verticalAnchorPoint() const;
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
-    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+
+    //handles marker offset and anchor point shift together
+    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+
+    //! @note available in python bindings as markerOffset2
+    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
+                       QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+                       double& offsetX, double& offsetY ) const /PyName=markerOffset2/;
+
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 };
 
@@ -181,6 +244,8 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+
   protected:
     QgsLineSymbolLayerV2( bool locked = false );
 };
@@ -202,5 +267,5 @@ class QgsFillSymbolLayerV2 : QgsSymbolLayerV2
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
     /**Default method to render polygon*/
-    void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings );
+    void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 };

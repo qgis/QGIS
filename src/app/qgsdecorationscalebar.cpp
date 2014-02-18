@@ -139,19 +139,10 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     QGis::UnitType myPreferredUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
     QGis::UnitType myMapUnits = canvas->mapUnits();
 
-    // Adjust units meter/feet or vice versa
-    if ( myMapUnits == QGis::Meters && myPreferredUnits == QGis::Feet )
-    {
-      // From meter to feet
-      myMapUnits = QGis::Feet;
-      myMapUnitsPerPixelDouble /= 0.3084;
-    }
-    else if ( myMapUnits == QGis::Feet && myPreferredUnits == QGis::Meters )
-    {
-      // From feet to meter
-      myMapUnits = QGis::Meters;
-      myMapUnitsPerPixelDouble *= 0.3084;
-    }
+    // Adjust units meter/feet/... or vice versa
+    myMapUnitsPerPixelDouble *= QGis::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
+    myMapUnits = myPreferredUnits;
+
     //Calculate size of scale bar for preferred number of map units
     double myScaleBarWidth = mPreferredSize / myMapUnitsPerPixelDouble;
 
@@ -465,8 +456,6 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     //Draw unit label
     //
     theQPainter->setPen( myBackColor );
-    myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
-    myFontHeight = myFontMetrics.height();
     //first the buffer
     for ( int i = 0 - myBufferSize; i <= myBufferSize; i++ )
     {

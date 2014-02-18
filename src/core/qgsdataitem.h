@@ -71,14 +71,14 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsDataItem * child, bool refresh = false );
+    virtual void addChildItem( QgsDataItem *child, bool refresh = false );
 
     // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsDataItem * child );
 
     // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsDataItem * removeChildItem( QgsDataItem * child );
+    virtual QgsDataItem *removeChildItem( QgsDataItem * child );
 
     virtual bool equal( const QgsDataItem *other );
 
@@ -259,8 +259,6 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
     QgsErrorItem( QgsDataItem* parent, QString error, QString path );
     ~QgsErrorItem();
 
-    //QVector<QgsDataItem*> createChildren();
-    //virtual bool equal( const QgsDataItem *other );
 };
 
 
@@ -316,7 +314,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 
-    static QString vsiPrefix( QString uri );
+    static QString vsiPrefix( QString uri ) { return qgsVsiPrefix( uri ); }
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
 

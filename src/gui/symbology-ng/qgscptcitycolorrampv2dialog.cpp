@@ -145,8 +145,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   QgsDebugMsg( "looking for ramp " + mRamp->schemeName() );
   if ( mRamp->schemeName() != "" )
   {
-    bool found = false;
-    found = updateRamp();
+    bool found = updateRamp();
     if ( ! found )
     {
       tabBar->setCurrentIndex( 1 );

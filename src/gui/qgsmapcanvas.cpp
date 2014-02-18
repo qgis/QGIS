@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QRect>
+#include <QSettings>
 #include <QTextStream>
 #include <QResizeEvent>
 #include <QString>
@@ -38,6 +39,8 @@ email                : sherman at mrcc.com
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscrscache.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -184,6 +187,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setFocusPolicy( Qt::StrongFocus );
 
   mMapRenderer = new QgsMapRenderer;
+  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( const QgsMapLayer*, const QString&, const QString& ) ),
+           this, SLOT( getDatumTransformInfo( const QgsMapLayer*, const QString& , const QString& ) ) );
+
+  mResizeTimer = new QTimer( this );
+  mResizeTimer->setSingleShot( true );
+  connect( mResizeTimer, SIGNAL( timeout() ), this, SLOT( refresh() ) );
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
@@ -241,7 +250,7 @@ QgsMapCanvas::~QgsMapCanvas()
   {
     QGraphicsItem* item = *it;
     delete item;
-    it++;
+    ++it;
   }
 
   mScene->deleteLater();  // crashes in python tests on windows
@@ -594,6 +603,9 @@ void QgsMapCanvas::refresh()
   }
 
   mDrawing = true;
+
+  //update $map variable to canvas
+  QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
 
   if ( mRenderFlag && !mFrozen )
   {
@@ -1016,10 +1028,11 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
 {
-  emit keyPressed( e );
-
   if ( mCanvasProperties->mouseButtonDown || mCanvasProperties->panSelectorDown )
+  {
+    emit keyPressed( e );
     return;
+  }
 
   QPainter paint;
   QPen     pen( Qt::gray );
@@ -1110,12 +1123,14 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         {
           mMapTool->keyPressEvent( e );
         }
-        e->ignore();
+        else e->ignore();
 
         QgsDebugMsg( "Ignoring key: " + QString::number( e->key() ) );
-
     }
   }
+
+  emit keyPressed( e );
+
 } //keyPressEvent()
 
 void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
@@ -1140,8 +1155,7 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
       {
         mMapTool->keyReleaseEvent( e );
       }
-
-      e->ignore();
+      else e->ignore();
 
       QgsDebugMsg( "Ignoring key release: " + QString::number( e->key() ) );
   }
@@ -1232,6 +1246,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
 void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 {
   QGraphicsView::resizeEvent(e);
+  mResizeTimer->start( 500 );
 
   QSize lastSize = size();
 
@@ -1247,7 +1262,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
   updateScale();
 
-  refresh();
+  //refresh();
 
   emit extentsChanged();
 }
@@ -1272,7 +1287,7 @@ void QgsMapCanvas::updateCanvasItemPositions()
       item->updatePosition();
     }
 
-    it++;
+    ++it;
   }
 }
 
@@ -1688,6 +1703,70 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
 
   mSettings.writeXML( mapcanvasNode, doc );
   // TODO: store only units, extent, projections, dest CRS
+}
+
+/**Ask user which datum transform to use*/
+void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
+{
+  if ( !ml )
+  {
+    return;
+  }
+
+  //check if default datum transformation available
+  QSettings s;
+  QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
+  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
+  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
+  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
+  {
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
+    return;
+  }
+
+  const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
+  const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+
+  if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
+  {
+    // just use the default transform
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
+    return;
+  }
+
+  //get list of datum transforms
+  QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
+  if ( dt.size() < 2 )
+  {
+    return;
+  }
+
+  //if several possibilities:  present dialog
+  QgsDatumTransformDialog d( ml->name(), dt );
+  if ( mMapRenderer && ( d.exec() == QDialog::Accepted ) )
+  {
+    int srcTransform = -1;
+    int destTransform = -1;
+    QList<int> t = d.selectedDatumTransform();
+    if ( t.size() > 0 )
+    {
+      srcTransform = t.at( 0 );
+    }
+    if ( t.size() > 1 )
+    {
+      destTransform = t.at( 1 );
+    }
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
+    if ( d.rememberSelection() )
+    {
+      s.setValue( settingsString + "_srcTransform", srcTransform );
+      s.setValue( settingsString + "_destTransform", destTransform );
+    }
+  }
+  else
+  {
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
+  }
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )

@@ -217,10 +217,11 @@ void QgsVectorLayerUndoCommandChangeGeometry::redo()
 }
 
 
-QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant& newValue )
+QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue )
     : QgsVectorLayerUndoCommand( buffer )
     , mFid( fid )
     , mFieldIndex( fieldIndex )
+    , mOldValue( oldValue )
     , mNewValue( newValue )
     , mFirstChange( true )
 {
@@ -235,13 +236,10 @@ QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribu
       mFirstChange = false;
     }
   }
-  else
+  else if ( mBuffer->mChangedAttributeValues.contains( mFid ) && mBuffer->mChangedAttributeValues[mFid].contains( mFieldIndex ) )
   {
-    if ( mBuffer->mChangedAttributeValues.contains( mFid ) && mBuffer->mChangedAttributeValues[mFid].contains( mFieldIndex ) )
-    {
-      mOldValue = mBuffer->mChangedAttributeValues[mFid][mFieldIndex];
-      mFirstChange = false;
-    }
+    mOldValue = mBuffer->mChangedAttributeValues[mFid][mFieldIndex];
+    mFirstChange = false;
   }
 
 }
@@ -257,15 +255,15 @@ void QgsVectorLayerUndoCommandChangeAttribute::undo()
     Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
     it.value().setAttribute( mFieldIndex, mOldValue );
   }
-  else
+  else if ( mFirstChange )
   {
     // existing feature
-    if ( mFirstChange )
-    {
-      mBuffer->mChangedAttributeValues[mFid].remove( mFieldIndex );
-      if ( mBuffer->mChangedAttributeValues[mFid].isEmpty() )
-        mBuffer->mChangedAttributeValues.remove( mFid );
+    mBuffer->mChangedAttributeValues[mFid].remove( mFieldIndex );
+    if ( mBuffer->mChangedAttributeValues[mFid].isEmpty() )
+      mBuffer->mChangedAttributeValues.remove( mFid );
 
+    if ( !mOldValue.isValid() )
+    {
       // get old value from provider
       QgsFeature tmp;
       QgsFeatureRequest request;
@@ -276,10 +274,10 @@ void QgsVectorLayerUndoCommandChangeAttribute::undo()
       if ( fi.nextFeature( tmp ) )
         original = tmp.attribute( mFieldIndex );
     }
-    else
-    {
-      mBuffer->mChangedAttributeValues[mFid][mFieldIndex] = mOldValue;
-    }
+  }
+  else
+  {
+    mBuffer->mChangedAttributeValues[mFid][mFieldIndex] = mOldValue;
   }
 
   emit mBuffer->attributeValueChanged( mFid, mFieldIndex, original );
@@ -313,7 +311,11 @@ QgsVectorLayerUndoCommandAddAttribute::QgsVectorLayerUndoCommandAddAttribute( Qg
     : QgsVectorLayerUndoCommand( buffer )
     , mField( field )
 {
-  mFieldIndex = layer()->pendingFields().count();
+  const QgsFields &fields = layer()->pendingFields();
+  int i;
+  for ( i = 0; i < fields.count() && fields.fieldOrigin( i ) != QgsFields::OriginJoin; i++ )
+    ;
+  mFieldIndex = i;
 }
 
 void QgsVectorLayerUndoCommandAddAttribute::undo()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>966</width>
-    <height>879</height>
+    <width>929</width>
+    <height>573</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -146,6 +146,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Rendering</string>
+          </property>
+          <property name="toolTip">
+           <string>Rendering</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Display</string>
           </property>
           <property name="toolTip">
@@ -234,23 +246,13 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="margin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>General</string>
-             </property>
-            </widget>
-           </item>
            <item>
             <widget class="QScrollArea" name="scrollArea">
              <property name="frameShape">
@@ -264,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>739</width>
+                <height>525</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -681,16 +683,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_5">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Style</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_3">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -703,8 +695,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -742,16 +734,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_6">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Labels</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QFrame" name="labelingFrame">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -775,16 +757,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_11">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Labels (deprecated)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_9">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -797,8 +769,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -849,16 +821,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_7">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Fields</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_5">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -871,8 +833,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -895,21 +857,154 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Rendering">
+          <layout class="QVBoxLayout" name="verticalLayout_19">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QScrollArea" name="scrollArea_19">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_19">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>755</width>
+                <height>452</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_32">
+               <item>
+                <widget class="QGroupBox" name="mSimplifyDrawingGroupBox">
+                 <property name="title">
+                  <string>Simplify geometry</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QGridLayout" name="_12">
+                  <item row="0" column="1" colspan="4">
+                   <widget class="QLabel" name="label_59">
+                    <property name="text">
+                     <string>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_56">
+                    <property name="text">
+                     <string>Simplification threshold (higher values result in more simplification): </string>
+                    </property>
+                    <property name="margin">
+                     <number>2</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QDoubleSpinBox" name="mSimplifyDrawingSpinBox">
+                    <property name="toolTip">
+                     <string>Higher values result in more simplification</string>
+                    </property>
+                    <property name="decimals">
+                     <number>2</number>
+                    </property>
+                    <property name="minimum">
+                     <double>1.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>5.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.200000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>1.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QLabel" name="mSimplifyDrawingPx">
+                    <property name="text">
+                     <string>pixels</string>
+                    </property>
+                    <property name="margin">
+                     <number>2</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="4">
+                   <spacer name="horizontalSpacer_40">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="2" column="1" colspan="4">
+                   <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
+                    <property name="text">
+                     <string>Simplify on provider side if possible</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="mSimplifyMaxScaleLabel">
+                    <property name="text">
+                     <string>Maximum scale at which the layer should be simplified (1:1 always simplifies): </string>
+                    </property>
+                    <property name="margin">
+                     <number>2</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_Display">
           <layout class="QVBoxLayout" name="verticalLayout_25">
            <property name="margin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLabel" name="label_12">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Display</string>
-             </property>
-            </widget>
-           </item>
            <item>
             <widget class="QScrollArea" name="scrollArea_10">
              <property name="frameShape">
@@ -923,8 +1018,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1072,16 +1167,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_8">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Actions</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_6">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1094,8 +1179,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>487</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1130,16 +1215,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_9">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Joins</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_7">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1152,8 +1227,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>487</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1161,74 +1236,65 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QGroupBox" name="mJoinsGrpBx">
-                 <property name="title">
-                  <string/>
+                <widget class="QTreeWidget" name="mJoinTreeWidget">
+                 <property name="columnCount">
+                  <number>3</number>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_22">
-                  <item>
-                   <widget class="QTreeWidget" name="mJoinTreeWidget">
-                    <property name="columnCount">
-                     <number>3</number>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Join layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Join field</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Target field</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout">
-                    <item>
-                     <widget class="QPushButton" name="mButtonAddJoin">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="mButtonRemoveJoin">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>0</width>
-                        <height>23</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
+                 <column>
+                  <property name="text">
+                   <string>Join layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Join field</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Target field</string>
+                  </property>
+                 </column>
                 </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QPushButton" name="mButtonAddJoin">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="mButtonRemoveJoin">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>0</width>
+                     <height>23</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
@@ -1242,16 +1308,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_10">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Diagrams</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_8">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1264,8 +1320,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1294,16 +1350,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_4">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Metadata</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_2">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1316,8 +1362,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>739</width>
+                <height>519</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1483,7 +1529,7 @@
                      <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
                       <item>
                        <property name="text">
-                        <string notr="true"></string>
+                        <string notr="true"/>
                        </property>
                       </item>
                       <item>
@@ -1509,7 +1555,7 @@
                      <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
                       <item>
                        <property name="text">
-                        <string notr="true"></string>
+                        <string notr="true"/>
                        </property>
                       </item>
                       <item>
@@ -1591,6 +1637,38 @@
          </widget>
         </widget>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QPushButton" name="pbnLoadStyle">
+           <property name="text">
+            <string>Load Style ...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnSaveDefaultStyle">
+           <property name="text">
+            <string>Save As Default</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnLoadDefaultStyle">
+           <property name="text">
+            <string>Restore Default Style</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnSaveStyleAs">
+           <property name="text">
+            <string>Save Style ...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -1613,35 +1691,7 @@
       <property name="margin">
        <number>0</number>
       </property>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="pbnSaveDefaultStyle">
-        <property name="text">
-         <string>Save As Default</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="pbnLoadStyle">
-        <property name="text">
-         <string>Load Style ...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="pbnLoadDefaultStyle">
-        <property name="text">
-         <string>Restore Default Style</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="pbnSaveStyleAs">
-        <property name="text">
-         <string>Save Style ...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="4">
+      <item row="2" column="1" colspan="4">
        <widget class="QDialogButtonBox" name="buttonBox">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -1658,15 +1708,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

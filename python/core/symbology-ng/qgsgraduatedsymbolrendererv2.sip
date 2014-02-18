@@ -71,6 +71,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     bool updateRangeLowerValue( int rangeIndex, double value );
 
     void addClass( QgsSymbolV2* symbol );
+    //! @note available in python bindings as addClassRange
+    void addClass( QgsRendererRangeV2 range ) /PyName=addClassRange/;
     void deleteClass( int idx );
     void deleteAllClasses();
 
@@ -99,7 +101,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
       int classes,
       Mode mode,
       QgsSymbolV2* symbol /Transfer/,
-      QgsVectorColorRampV2* ramp /Transfer/ ) /Factory/;
+      QgsVectorColorRampV2* ramp /Transfer/,
+      bool inverted = false ) /Factory/;
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
@@ -120,6 +123,9 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
+    //! @note added in 2.1
+    bool invertedColorRamp();
+    void setInvertedColorRamp( bool inverted );
 
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
@@ -130,12 +136,12 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     void updateSymbols( QgsSymbolV2* sym /Transfer/ );
 
     //! @note added in 1.6
-    void setRotationField( QString fieldName );
+    void setRotationField( QString fieldOrExpression );
     //! @note added in 1.6
     QString rotationField() const;
 
     //! @note added in 1.6
-    void setSizeScaleField( QString fieldName );
+    void setSizeScaleField( QString fieldOrExpression );
     //! @note added in 1.6
     QString sizeScaleField() const;
 
@@ -147,4 +153,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
   protected:
     QgsSymbolV2* symbolForValue( double value );
+
+  private:
+    QgsGraduatedSymbolRendererV2( const QgsGraduatedSymbolRendererV2 & );
+    QgsGraduatedSymbolRendererV2 & operator=( const QgsGraduatedSymbolRendererV2 & );
 };

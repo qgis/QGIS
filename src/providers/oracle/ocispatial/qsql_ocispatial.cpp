@@ -370,7 +370,7 @@ struct QOCISpatialResultPrivate
 
   void setCharset( dvoid* handle, ub4 type ) const
   {
-    int r = OCI_SUCCESS;
+    int r;
     Q_ASSERT( handle );
 
 #ifdef OCI_ATTR_CHARSET_FORM
@@ -2132,7 +2132,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
         }
 
         case SQLT_FLT:
-          ( *list )[r] =  *reinterpret_cast<double*>( data + r * columns[i].maxLen );
+          memcpy( &(( *list )[r] ), data + r * columns[i].maxLen, sizeof( double ) );
           break;
 
         case SQLT_STR:
@@ -2976,8 +2976,7 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
     return false;
 
   bool piecewise = false;
-  int r = OCI_SUCCESS;
-  r = OCIStmtFetch2( d->sql, d->err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT );
+  int r = OCIStmtFetch2( d->sql, d->err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT );
 
   if ( index < 0 ) //not interested in values
     return r == OCI_SUCCESS || r == OCI_SUCCESS_WITH_INFO;

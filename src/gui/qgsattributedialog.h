@@ -80,6 +80,13 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
 
     QgsFeature* feature() { return mFeature; }
 
+    /**
+     * Is this dialog editable?
+     *
+     * @return returns true, if this dialog was created in an editable manner.
+     */
+    bool editable() { return mEditable; }
+
   public slots:
     void accept();
 
@@ -105,6 +112,9 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
+
+    // true if this dialog is editable
+    bool mEditable;
 
     static int sFormCounter;
     static QString sSettingsPath;

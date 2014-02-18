@@ -169,7 +169,7 @@ void QgsDecorationGrid::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalX", mGridIntervalX );
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalY", mGridIntervalY );
   QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetX );
-  QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetY );
+  QgsProject::instance()->writeEntry( mNameConfig, "/OffsetY", mGridOffsetY );
   // QgsProject::instance()->writeEntry( mNameConfig, "/CrossLength", mCrossLength );
   // missing mGridPen, but should use styles anyway
   QgsProject::instance()->writeEntry( mNameConfig, "/ShowAnnotation", mShowGridAnnotation );

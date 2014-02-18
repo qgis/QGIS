@@ -10,9 +10,7 @@ class QgsZonalStatistics
 %End
 
   public:
-
-    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile,
-                        const QString& attributePrefix = "", int rasterBand = 1 );
+    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1 );
     ~QgsZonalStatistics();
 
     /**Starts the calculation

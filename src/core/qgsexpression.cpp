@@ -756,7 +756,7 @@ static QVariant fcnRPad( const QVariantList& values, const QgsFeature* , QgsExpr
   QString string = getStringValue( values.at( 0 ), parent );
   int length = getIntValue( values.at( 1 ), parent );
   QString fill = getStringValue( values.at( 2 ), parent );
-  return string.rightJustified( length, fill.at( 0 ), true );
+  return string.leftJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnLPad( const QVariantList& values, const QgsFeature* , QgsExpression *parent )
@@ -764,7 +764,7 @@ static QVariant fcnLPad( const QVariantList& values, const QgsFeature* , QgsExpr
   QString string = getStringValue( values.at( 0 ), parent );
   int length = getIntValue( values.at( 1 ), parent );
   QString fill = getStringValue( values.at( 2 ), parent );
-  return string.leftJustified( length, fill.at( 0 ), true );
+  return string.rightJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnFormatString( const QVariantList& values, const QgsFeature* , QgsExpression *parent )
@@ -976,7 +976,7 @@ static QVariant fcnYat( const QVariantList& values, const QgsFeature* f, QgsExpr
 }
 static QVariant fcnGeometry( const QVariantList& , const QgsFeature* f, QgsExpression* )
 {
-  QgsGeometry* geom = f->geometry();
+  QgsGeometry* geom = f ? f->geometry() : 0;
   if ( geom )
     return  QVariant::fromValue( *geom );
   else
@@ -1583,6 +1583,28 @@ QVariant QgsExpression::specialColumn( const QString& name )
   return it.value();
 }
 
+bool QgsExpression::hasSpecialColumn( const QString& name )
+{
+  static bool initialized = false;
+  if ( !initialized )
+  {
+    // Pre-register special columns that will exist within QGIS so that expressions that may use them are parsed correctly.
+    // This is really sub-optimal, we should get rid of the special columns and instead have contexts in which some values
+    // are defined and some are not ($rownum makes sense only in field calculator, $scale only when rendering, $page only for composer etc.)
+
+    QStringList lst;
+    lst << "$page" << "$feature" << "$numpages" << "$numfeatures" << "$atlasfeatureid" << "$atlasgeometry" << "$map";
+    foreach ( QString c, lst )
+      setSpecialColumn( c, QVariant() );
+
+    initialized = true;
+  }
+
+  if ( functionIndex( name ) != -1 )
+    return false;
+  return gmSpecialColumns.contains( name );
+}
+
 QList<QgsExpression::Function*> QgsExpression::specialColumns()
 {
   QList<Function*> defs;
@@ -1616,12 +1638,12 @@ int QgsExpression::functionCount()
 
 
 QgsExpression::QgsExpression( const QString& expr )
-    : mExpression( expr )
-    , mRowNumber( 0 )
+    : mRowNumber( 0 )
     , mScale( 0 )
+    , mExp( expr )
     , mCalc( 0 )
 {
-  mRootNode = ::parseExpression( mExpression, mParserErrorString );
+  mRootNode = ::parseExpression( expr, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
     Q_ASSERT( mRootNode );
@@ -1728,8 +1750,8 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
     mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( QString action, const QgsFeature* feat,
-    QgsVectorLayer* layer,
+QString QgsExpression::replaceExpressionText( const QString &action, const QgsFeature *feat,
+    QgsVectorLayer *layer,
     const QMap<QString, QVariant> *substitutionMap )
 {
   QString expr_action;
@@ -2266,7 +2288,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFiel
 
 QString QgsExpression::NodeColumnRef::dump() const
 {
-  return mName;
+  return QRegExp( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ).exactMatch( mName ) ? mName : quotedColumnRef( mName );
 }
 
 //
@@ -2315,13 +2337,14 @@ bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFiel
 
 QString QgsExpression::NodeCondition::dump() const
 {
-  QString msg = "CONDITION:\n";
+  QString msg = QString( "CASE " );
   foreach ( WhenThen* cond, mConditions )
   {
-    msg += QString( "- WHEN %1 THEN %2\n" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
+    msg += QString( "WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
   }
   if ( mElseExp )
-    msg += QString( "- ELSE %1" ).arg( mElseExp->dump() );
+    msg += QString( "ELSE %1" ).arg( mElseExp->dump() );
+  msg += QString( " END" );
   return msg;
 }
 

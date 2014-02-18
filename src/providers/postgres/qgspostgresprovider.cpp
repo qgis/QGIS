@@ -747,7 +747,6 @@ bool QgsPostgresProvider::loadFields()
         fieldSize = -1;
       }
       else if ( fieldTypeName == "text" ||
-                fieldTypeName == "bpchar" ||
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "hstore" ||
@@ -760,6 +759,24 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
         fieldSize = -1;
+      }
+      else if ( fieldTypeName == "bpchar" )
+      {
+        fieldType = QVariant::String;
+
+        QRegExp re( "character\\((\\d+)\\)" );
+        if ( re.exactMatch( formattedFieldType ) )
+        {
+          fieldSize = re.cap( 1 ).toInt();
+        }
+        else
+        {
+          QgsDebugMsg( QString( "unexpected formatted field type '%1' for field %2" )
+                       .arg( formattedFieldType )
+                       .arg( fieldName ) );
+          fieldSize = -1;
+          fieldPrec = -1;
+        }
       }
       else if ( fieldTypeName == "char" )
       {
@@ -981,6 +998,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
     }
   }
+
+  // supports geometry simplification on provider side
+  mEnabledCapabilities |= ( QgsVectorDataProvider::SimplifyGeometries | QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
 
   return true;
 }
@@ -1696,7 +1716,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     if ( stmt.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( stmt );
 
-    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
       const QgsAttributes &attrs = features->attributes();
 
@@ -1745,7 +1765,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     // update feature ids
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
         const QgsAttributes &attrs = features->attributes();
 
@@ -2392,7 +2412,8 @@ QgsRectangle QgsPostgresProvider::extent()
                && result.PQgetvalue( 0, 0 ).toLong() > 0 )
           {
             sql = QString( "SELECT %1(%2,%3,%4)" )
-                  .arg( mConnectionRO->majorVersion() < 2 ? "estimated_extent" : "st_estimated_extent" )
+                  .arg( mConnectionRO->majorVersion() < 2 ? "estimated_extent" :
+                        ( mConnectionRO->majorVersion() == 2 && mConnectionRO->minorVersion() < 1 ? "st_estimated_extent" : "st_estimatedextent" ) )
                   .arg( quotedValue( mSchemaName ) )
                   .arg( quotedValue( mTableName ) )
                   .arg( quotedValue( mGeometryColumn ) );
@@ -2545,10 +2566,9 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  QString detectedType;
-  QString detectedSrid;
-
-  if ( !schemaName.isEmpty() )
+  QString detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+  QString detectedSrid = mRequestedSrid;
+  if ( !schemaName.isEmpty() && ( detectedType.isEmpty() || detectedSrid.isEmpty() ) )
   {
     // check geometry columns
     sql = QString( "SELECT upper(type),srid FROM geometry_columns WHERE f_table_name=%1 AND f_geometry_column=%2 AND f_table_schema=%3" )
@@ -3343,6 +3363,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
     {
       errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
+      conn->disconnect();
       return false;
     }
 
@@ -3385,14 +3406,14 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   }
 
   res = conn->PQexec( sql );
-  conn->disconnect();
-  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
-  {
-    errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator." ).arg( dsUri.username() );
-    return false;
-  }
 
-  return true;
+  bool saved = res.PQresultStatus() == PGRES_COMMAND_OK;
+  if ( !saved )
+    errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator." ).arg( dsUri.username() );
+
+  conn->disconnect();
+
+  return saved;
 }
 
 
@@ -3422,7 +3443,9 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 
   QgsPostgresResult result = conn->PQexec( selectQmlQuery, false );
 
-  return result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
+  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
+  conn->disconnect();
+  return style;
 }
 
 QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
@@ -3453,6 +3476,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
     errCause = QObject::tr( "Error executing the select query for related styles. The query was logged" );
+    conn->disconnect();
     return -1;
   }
 
@@ -3478,14 +3502,18 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
     errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
+    conn->disconnect();
     return -1;
   }
+
   for ( int i = 0; i < result.PQntuples(); i++ )
   {
     ids.append( result.PQgetvalue( i, 0 ) );
     names.append( result.PQgetvalue( i, 1 ) );
     descriptions.append( result.PQgetvalue( i, 2 ) );
   }
+
+  conn->disconnect();
 
   return numberOfRelatedStyles;
 }
@@ -3498,27 +3526,28 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
-    return QObject::tr( "" );
-  }
-
-  QString selectQmlQuery = QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
-  QgsPostgresResult result = conn->PQexec( selectQmlQuery );
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
-    errCause = QObject::tr( "Error executing the select query. The query was logged" );
     return "";
   }
 
-  if ( result.PQntuples() == 1 )
+  QString style;
+  QString selectQmlQuery = QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
+  QgsPostgresResult result = conn->PQexec( selectQmlQuery );
+  if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {
-    return result.PQgetvalue( 0, 0 );
+    if ( result.PQntuples() == 1 )
+      style = result.PQgetvalue( 0, 0 );
+    else
+      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( "layer_styles" );
   }
   else
   {
-    errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( "layer_styles" );
-    return "";
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+    errCause = QObject::tr( "Error executing the select query. The query was logged" );
   }
+
+  conn->disconnect();
+
+  return style;
 }
 
 

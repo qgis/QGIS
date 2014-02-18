@@ -591,6 +591,10 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
       else if ( name == "GetFeatureInfo" )
       {
         ot = &capabilityProperty.request.getFeatureInfo;
+      }      
+      else if ( name == "GetLegendGraphic" || name == "sld:GetLegendGraphic" )
+      {
+        ot = &capabilityProperty.request.getLegendGraphic;
       }
       else
       {
@@ -641,6 +645,11 @@ void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestPrope
         QgsDebugMsg( "      GetFeatureInfo." );
         parseOperationType( e1, requestProperty.getFeatureInfo );
       }
+      else if ( operation == "GetLegendGraphic" || operation == "sld:GetLegendGraphic" )
+      {
+        QgsDebugMsg( "      GetLegendGraphic." );
+        parseOperationType( e1, requestProperty.getLegendGraphic );
+      }
     }
     n1 = n1.nextSibling();
   }
@@ -649,6 +658,38 @@ void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestPrope
 }
 
 
+
+void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty )
+{
+  QgsDebugMsg( "entering." );
+
+  legendUrlProperty.width  = e.attribute( "width" ).toUInt();
+  legendUrlProperty.height = e.attribute( "height" ).toUInt();
+
+  QDomNode n1 = e.firstChild();
+  while ( !n1.isNull() )
+  {
+    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    if ( !e1.isNull() )
+    {
+      QString tagName = e1.tagName();
+      if ( tagName.startsWith( "wms:" ) )
+        tagName = tagName.mid( 4 );
+
+      if ( tagName == "Format" )
+      {
+        legendUrlProperty.format = e1.text();
+      }
+      else if ( tagName == "OnlineResource" )
+      {
+        parseOnlineResource( e1, legendUrlProperty.onlineResource );
+      }
+    }
+    n1 = n1.nextSibling();
+  }
+
+  QgsDebugMsg( "exiting." );
+}
 
 void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
                                  QgsWmsLayerProperty *parentProperty )
@@ -798,6 +839,13 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
           else if ( e1.hasAttribute( "SRS" ) )
             bbox.crs = e1.attribute( "SRS" );
 
+          if ( shouldInvertAxisOrientation( bbox.crs ) )
+          {
+            QgsRectangle invAxisBbox( bbox.box.yMinimum(), bbox.box.xMinimum(),
+                                      bbox.box.yMaximum(), bbox.box.xMaximum() );
+            bbox.box = invAxisBbox;
+          }
+
           layerProperty.boundingBox.push_back( bbox );
         }
         else
@@ -872,28 +920,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
     // can be combined with others later in supportedCrsForLayers()
     mCrsForLayer[ layerProperty.name ] = layerProperty.crs;
 
-    // Store the WGS84 (CRS:84) extent so that it can be combined with others later
-    // in calculateExtent()
-
-    // Apply the coarse bounding box first
-    mExtentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
-
-    // see if we can refine the bounding box with the CRS-specific bounding boxes
-    for ( int i = 0; i < layerProperty.boundingBox.size(); i++ )
-    {
-      QgsDebugMsg( "testing bounding box CRS which is "
-                   + layerProperty.boundingBox[i].crs + "." );
-
-      if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
-      {
-        mExtentForLayer[ layerProperty.name ] = layerProperty.boundingBox[i].box;
-      }
-    }
-
-    QgsDebugMsg( "extent for "
-                 + layerProperty.name  + " is "
-                 + mExtentForLayer[ layerProperty.name ].toString( 3 )  + "." );
-
     // Insert into the local class' registry
     mLayersSupported.push_back( layerProperty );
 
@@ -948,7 +974,8 @@ void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty&
       }
       else if ( tagName == "LegendURL" )
       {
-        // TODO
+        styleProperty.legendUrl << QgsWmsLegendUrlProperty();
+        parseLegendUrl( e1, styleProperty.legendUrl.last() );
       }
       else if ( tagName == "StyleSheetURL" )
       {
@@ -1230,27 +1257,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
     s.wkScaleSet = n0.firstChildElement( "WellKnownScaleSet" ).text();
 
-    double metersPerUnit;
-    switch ( crs.mapUnits() )
-    {
-      case QGis::Meters:
-        metersPerUnit = 1.0;
-        break;
-
-      case QGis::Feet:
-        metersPerUnit = 0.3048;
-        break;
-
-      case QGis::Degrees:
-        metersPerUnit = 111319.49079327358;
-        break;
-
-      default:
-      case QGis::UnknownUnit:
-        QgsDebugMsg( "Unknown CRS units - assuming meters" );
-        metersPerUnit = 1.0;
-        break;
-    }
+    double metersPerUnit = QGis::fromUnitToUnitFactor( crs.mapUnits(), QGis::Meters );
 
     s.crs = crs.authid();
 
@@ -1418,6 +1425,15 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         l.defaultStyle = s.identifier;
     }
 
+    if ( l.styles.isEmpty() )
+    {
+      QgsWmtsStyle s;
+      s.identifier = "default";
+      s.title      = QObject::tr( "Generated default style" );
+      s.abstract   = QObject::tr( "Style was missing in capabilities" );
+      l.styles.insert( s.identifier, s );
+    }
+
     for ( QDomElement e1 = e0.firstChildElement( "Format" ); !e1.isNull(); e1 = e1.nextSiblingElement( "Format" ) )
     {
       l.formats << e1.text();
@@ -1575,6 +1591,22 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
     mTileThemes << QgsWmtsTheme();
     parseTheme( e0, mTileThemes.back() );
   }
+
+  // make sure that all layers have a bounding box
+  for ( QList<QgsWmtsTileLayer>::iterator it = mTileLayersSupported.begin(); it != mTileLayersSupported.end(); ++it )
+  {
+    QgsWmtsTileLayer& l = *it;
+
+    if ( l.boundingBox.crs.isEmpty() )
+    {
+      if ( !detectTileLayerBoundingBox( l ) )
+      {
+        QgsDebugMsg( "failed to detect bounding box for " + l.identifier + " - using extent of the whole world" );
+        l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+        l.boundingBox.crs = DEFAULT_LATLON_CRS;
+      }
+    }
+  }
 }
 
 
@@ -1631,6 +1663,66 @@ QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, QString name, Q
   }
 
   return defValue;
+}
+
+
+bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
+{
+  if ( l.setLinks.isEmpty() )
+    return false;
+
+  // take first supported tile matrix set
+  const QgsWmtsTileMatrixSetLink& setLink = l.setLinks.constBegin().value();
+
+  QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
+  if ( tmsIt == mTileMatrixSets.constEnd() )
+    return false;
+
+  QgsCoordinateReferenceSystem crs;
+  if ( !crs.createFromOgcWmsCrs( tmsIt->crs ) )
+    return false;
+
+  // take most coarse tile matrix ...
+  QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = tmsIt->tileMatrices.constEnd() - 1;
+  if ( tmIt == tmsIt->tileMatrices.constEnd() )
+    return false;
+
+  const QgsWmtsTileMatrix& tm = *tmIt;
+  double metersPerUnit = QGis::fromUnitToUnitFactor( crs.mapUnits(), QGis::Meters );
+  double res = tm.scaleDenom * 0.00028 / metersPerUnit;
+  QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                        tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+
+  QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
+               .arg( tmsIt->identifier ).arg( tm.identifier ).arg( tmsIt->crs ).arg( res ) );
+
+  QgsRectangle extent( tm.topLeft, bottomRight );
+  extent.normalize();
+
+  l.boundingBox.box = extent;
+  l.boundingBox.crs = tmsIt->crs;
+  return true;
+}
+
+
+bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
+{
+  //according to the WMS spec for 1.3, some CRS have inverted axis
+  bool changeXY = false;
+  if ( !mParserSettings.ignoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
+  {
+    //create CRS from string
+    QgsCoordinateReferenceSystem theSrs;
+    if ( theSrs.createFromOgcWmsCrs( ogcCrs ) && theSrs.axisInverted() )
+    {
+      changeXY = true;
+    }
+  }
+
+  if ( mParserSettings.invertAxisOrientation )
+    changeXY = !changeXY;
+
+  return changeXY;
 }
 
 

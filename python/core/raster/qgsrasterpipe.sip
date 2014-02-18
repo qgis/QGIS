@@ -75,6 +75,8 @@ class QgsRasterPipe
     QgsRasterDataProvider * provider() const;
     QgsRasterRenderer * renderer() const;
     QgsRasterResampleFilter * resampleFilter() const;
+    QgsBrightnessContrastFilter * brightnessFilter() const;
+    QgsHueSaturationFilter * hueSaturationFilter() const;
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
 

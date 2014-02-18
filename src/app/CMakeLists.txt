@@ -27,6 +27,7 @@ SET(QGIS_APP_SRCS
   qgsdecorationscalebardialog.cpp
   qgsdecorationgrid.cpp
   qgsdecorationgriddialog.cpp
+  qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -48,6 +49,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptoolcapture.cpp
   qgsmaptoolchangelabelproperties.cpp
@@ -132,9 +134,6 @@ SET(QGIS_APP_SRCS
   legend/qgsapplegendinterface.cpp
   legend/qgslegenditem.cpp
   legend/qgslegendlayer.cpp
-  legend/qgslegendpropertygroup.cpp
-  legend/qgslegendpropertyitem.cpp
-  legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
   legend/qgslayerorder.cpp
 
@@ -190,6 +189,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdelattrdialog.h
   qgsdiagramproperties.h
   qgsdisplayangle.h
+  qgsdxfexportdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsfieldsproperties.h
@@ -208,6 +208,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolcapture.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
+  qgsmaptoolfillring.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
   qgsmaptooldeletering.h
@@ -423,7 +424,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
-  ../core/composer ../core/raster ../core/symbology-ng
+  ../core/composer ../core/dxf ../core/raster ../core/symbology-ng
   ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster ../gui/editorwidgets ../gui/editorwidgets/core
   ../plugins
   ../python

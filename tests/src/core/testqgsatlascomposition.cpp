@@ -43,8 +43,14 @@ class TestQgsAtlasComposition: public QObject
     void filename();
     // test rendering with an autoscale atlas
     void autoscale_render();
+    // test rendering with an autoscale atlas using the old api
+    void autoscale_render_2_0_api();
     // test rendering with a fixed scale atlas
     void fixedscale_render();
+    // test rendering with a fixed scale atlas using the old api
+    void fixedscale_render_2_0_api();
+    // test rendering with two atlas-driven maps
+    void two_map_autoscale_render();
     // test rendering with a hidden coverage
     void hiding_render();
     // test rendering with feature sorting
@@ -61,6 +67,7 @@ class TestQgsAtlasComposition: public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsAtlasComposition* mAtlas;
+    QString mReport;
 };
 
 void TestQgsAtlasComposition::initTestCase()
@@ -73,6 +80,10 @@ void TestQgsAtlasComposition::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  mVectorLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
@@ -99,9 +110,9 @@ void TestQgsAtlasComposition::initTestCase()
   mAtlasMap->setFrameEnabled( true );
   mComposition->addComposerMap( mAtlasMap );
 
-  mAtlas = new QgsAtlasComposition( mComposition );
+  mAtlas = &mComposition->atlasComposition();
   mAtlas->setCoverageLayer( mVectorLayer );
-  mAtlas->setComposerMap( mAtlasMap );
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
 
   // an overview
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );
@@ -120,24 +131,35 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel1 );
   mLabel1->setText( "[% \"NAME_1\" %] area" );
-  mLabel1->adjustSizeToText();
-  mLabel1->setItemPosition( 150, 5 );
+  //next to explicetly set width, since expression isn't yet evaulated against
+  //an atlas feature and will be shorter then required
+  mLabel1->setSceneRect( QRectF( 150, 5, 60, 15 ) );
 
   // feature number label
   mLabel2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel2 );
   mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
-  mLabel2->adjustSizeToText();
-  mLabel2->setItemPosition( 150, 200 );
+  mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
   qWarning() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
   qWarning() << "feature number label font: " << mLabel2->font().toString() << " exactMatch:" << mLabel2->font().exactMatch();
+
+  mReport = "<h1>Composer Atlas Tests</h1>\n";
 }
 
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
   delete mVectorLayer;
+
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsAtlasComposition::init()
@@ -164,6 +186,29 @@ void TestQgsAtlasComposition::filename()
 
 void TestQgsAtlasComposition::autoscale_render()
 {
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasFixedScale( false );
+  mAtlasMap->setAtlasMargin( 0.10 );
+
+  mAtlas->beginRender();
+
+  for ( int fit = 0; fit < 2; ++fit )
+  {
+    mAtlas->prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+
+    QgsCompositionChecker checker( QString( "atlas_autoscale%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0, 10 ) );
+  }
+  mAtlas->endRender();
+  mAtlasMap->setAtlasDriven( false );
+  mAtlasMap->setAtlasFixedScale( false );
+  mAtlasMap->setAtlasMargin( 0 );
+}
+
+void TestQgsAtlasComposition::autoscale_render_2_0_api()
+{
+  mAtlas->setComposerMap( mAtlasMap );
   mAtlas->setFixedScale( false );
   mAtlas->setMargin( 0.10f );
 
@@ -174,19 +219,20 @@ void TestQgsAtlasComposition::autoscale_render()
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
 
-    QgsCompositionChecker checker( "Atlas autoscale test", mComposition,
-                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-                                   "expected_composermapatlas" + QDir::separator() +
-                                   QString( "autoscale_%1.png" ).arg(( int )fit ) );
-    QVERIFY( checker.testComposition( 0 ) );
+    QgsCompositionChecker checker( QString( "atlas_autoscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0 ) );
   }
   mAtlas->endRender();
+  mAtlas->setComposerMap( 0 );
+  mAtlas->setFixedScale( false );
+  mAtlas->setMargin( 0 );
 }
 
 void TestQgsAtlasComposition::fixedscale_render()
 {
+  mAtlasMap->setAtlasDriven( true );
   mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-  mAtlas->setFixedScale( true );
+  mAtlasMap->setAtlasFixedScale( true );
 
   mAtlas->beginRender();
 
@@ -195,20 +241,66 @@ void TestQgsAtlasComposition::fixedscale_render()
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
 
-    QgsCompositionChecker checker( "Atlas fixedscale test", mComposition,
-                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-                                   "expected_composermapatlas" + QDir::separator() +
-                                   QString( "fixedscale_%1.png" ).arg(( int )fit ) );
-    QVERIFY( checker.testComposition( 0 ) );
+    QgsCompositionChecker checker( QString( "atlas_fixedscale%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0 ) );
   }
   mAtlas->endRender();
 
+  mAtlasMap->setAtlasDriven( false );
+  mAtlasMap->setAtlasFixedScale( false );
+}
+
+void TestQgsAtlasComposition::fixedscale_render_2_0_api()
+{
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  mAtlas->setComposerMap( mAtlasMap );
+  mAtlas->setFixedScale( true );
+  mAtlas->beginRender();
+
+  for ( int fit = 0; fit < 2; ++fit )
+  {
+    mAtlas->prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+
+    QgsCompositionChecker checker( QString( "atlas_fixedscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0 ) );
+  }
+  mAtlas->endRender();
+  mAtlas->setComposerMap( 0 );
+  mAtlas->setFixedScale( false );
+}
+
+void TestQgsAtlasComposition::two_map_autoscale_render()
+{
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasFixedScale( false );
+  mAtlasMap->setAtlasMargin( 0.10 );
+  mOverview->setAtlasDriven( true );
+  mOverview->setAtlasFixedScale( false );
+  mOverview->setAtlasMargin( 2.0 );
+
+  mAtlas->beginRender();
+
+  for ( int fit = 0; fit < 2; ++fit )
+  {
+    mAtlas->prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+
+    QgsCompositionChecker checker( QString( "atlas_two_maps%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0, 10 ) );
+  }
+  mAtlas->endRender();
+  mAtlasMap->setAtlasDriven( false );
+  mAtlasMap->setAtlasFixedScale( false );
+  mAtlasMap->setAtlasMargin( 0 );
+  mOverview->setAtlasDriven( false );
 }
 
 void TestQgsAtlasComposition::hiding_render()
 {
   mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-  mAtlas->setFixedScale( true );
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasFixedScale( true );
   mAtlas->setHideCoverage( true );
 
   mAtlas->beginRender();
@@ -218,11 +310,8 @@ void TestQgsAtlasComposition::hiding_render()
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
 
-    QgsCompositionChecker checker( "Atlas hidden test", mComposition,
-                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-                                   "expected_composermapatlas" + QDir::separator() +
-                                   QString( "hiding_%1.png" ).arg(( int )fit ) );
-    QVERIFY( checker.testComposition( 0 ) );
+    QgsCompositionChecker checker( QString( "atlas_hiding%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0 ) );
   }
   mAtlas->endRender();
 }
@@ -230,7 +319,8 @@ void TestQgsAtlasComposition::hiding_render()
 void TestQgsAtlasComposition::sorting_render()
 {
   mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-  mAtlas->setFixedScale( true );
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasFixedScale( true );
   mAtlas->setHideCoverage( false );
 
   mAtlas->setSortFeatures( true );
@@ -244,11 +334,8 @@ void TestQgsAtlasComposition::sorting_render()
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
 
-    QgsCompositionChecker checker( "Atlas sorting test", mComposition,
-                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-                                   "expected_composermapatlas" + QDir::separator() +
-                                   QString( "sorting_%1.png" ).arg(( int )fit ) );
-    QVERIFY( checker.testComposition( 0 ) );
+    QgsCompositionChecker checker( QString( "atlas_sorting%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0 ) );
   }
   mAtlas->endRender();
 }
@@ -256,7 +343,8 @@ void TestQgsAtlasComposition::sorting_render()
 void TestQgsAtlasComposition::filtering_render()
 {
   mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-  mAtlas->setFixedScale( true );
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasFixedScale( true );
   mAtlas->setHideCoverage( false );
 
   mAtlas->setSortFeatures( false );
@@ -271,11 +359,8 @@ void TestQgsAtlasComposition::filtering_render()
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
 
-    QgsCompositionChecker checker( "Atlas filtering test", mComposition,
-                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-                                   "expected_composermapatlas" + QDir::separator() +
-                                   QString( "filtering_%1.png" ).arg(( int )fit ) );
-    QVERIFY( checker.testComposition( 0 ) );
+    QgsCompositionChecker checker( QString( "atlas_filtering%1" ).arg((( int )fit ) + 1 ), mComposition );
+    QVERIFY( checker.testComposition( mReport, 0 ) );
   }
   mAtlas->endRender();
 }

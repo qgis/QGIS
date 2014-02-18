@@ -28,6 +28,7 @@
 
 #include "qgsproject.h"
 
+#include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -66,6 +67,28 @@ void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbolV2* symbol )
   beginInsertRows( QModelIndex(), idx, idx );
   mRenderer->addClass( symbol );
   endInsertRows();
+}
+
+void QgsGraduatedSymbolRendererV2Model::addClass( QgsRendererRangeV2 range )
+{
+  if ( !mRenderer )
+  {
+    return;
+  }
+  int idx = mRenderer->ranges().size();
+  beginInsertRows( QModelIndex(), idx, idx );
+  mRenderer->addClass( range );
+  endInsertRows();
+}
+
+QgsRendererRangeV2 QgsGraduatedSymbolRendererV2Model::rendererRange( const QModelIndex &index )
+{
+  if ( !index.isValid() || !mRenderer || mRenderer->ranges().size() <= index.row() )
+  {
+    return QgsRendererRangeV2();
+  }
+
+  return mRenderer->ranges().value( index.row() );
 }
 
 Qt::ItemFlags QgsGraduatedSymbolRendererV2Model::flags( const QModelIndex & index ) const
@@ -385,7 +408,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
+  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
       mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
   connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
@@ -439,6 +462,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   if ( mRenderer->sourceColorRamp() )
   {
     cboGraduatedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
+    cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 }
 
@@ -517,7 +541,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   // create and set new renderer
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
-                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp );
+                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp, cbxInvertedColorRamp->isChecked() );
   QApplication::restoreOverrideCursor();
   if ( !r )
   {
@@ -543,7 +567,7 @@ void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
   if ( ramp == NULL )
     return;
 
-  mRenderer->updateColorRamp( ramp );
+  mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
   refreshSymbolView();
 }
 
@@ -606,6 +630,19 @@ QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
   return rows;
 }
 
+QgsRangeList QgsGraduatedSymbolRendererV2Widget::selectedRanges()
+{
+  QgsRangeList selectedRanges;
+  QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
+  QModelIndexList::const_iterator sIt = selectedRows.constBegin();
+
+  for ( ; sIt != selectedRows.constEnd(); ++sIt )
+  {
+    selectedRanges.append( mModel->rendererRange( *sIt ) );
+  }
+  return selectedRanges;
+}
+
 void QgsGraduatedSymbolRendererV2Widget::rangesDoubleClicked( const QModelIndex & idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
@@ -621,6 +658,8 @@ void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx 
   else
     mRowSelected = idx.row();
 }
+
+
 
 void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
 {
@@ -777,4 +816,26 @@ void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
 void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 {
   viewGraduated->selectionModel()->clear();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
+{
+  if ( !event )
+  {
+    return;
+  }
+
+  if ( event->key() == Qt::Key_C && event->modifiers() == Qt::ControlModifier )
+  {
+    mCopyBuffer.clear();
+    mCopyBuffer = selectedRanges();
+  }
+  else if ( event->key() == Qt::Key_V && event->modifiers() == Qt::ControlModifier )
+  {
+    QgsRangeList::const_iterator rIt = mCopyBuffer.constBegin();
+    for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
+    {
+      mModel->addClass( *rIt );
+    }
+  }
 }

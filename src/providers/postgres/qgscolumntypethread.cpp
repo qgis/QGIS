@@ -62,6 +62,8 @@ void QgsGeomColumnTypeThread::run()
                                 mAllowGeometrylessTables ) ||
        layerProperties.isEmpty() )
   {
+    mConn->disconnect();
+    mConn = 0;
     return;
   }
 

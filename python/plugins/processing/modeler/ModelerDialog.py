@@ -57,6 +57,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.hasChanged = False
         self.setupUi(self)
 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
+                            Qt.WindowCloseButtonHint)
+
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
@@ -116,7 +120,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def closeEvent(self, evt):
         if self.hasChanged:
             ret = QMessageBox.question(self, self.tr('Message'),
-                    self.tr('The are unchanged changes in model. Close '
+                    self.tr('There are unsaved changes in model. Close '
                             'modeler without saving?'),
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No)

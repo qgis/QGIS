@@ -9,7 +9,7 @@ class QgsVectorLayerJoinBuffer
 
     /**Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field */
-    void addJoin( QgsVectorJoinInfo joinInfo );
+    void addJoin( const QgsVectorJoinInfo& joinInfo );
 
     /**Removes  a vector layer join*/
     void removeJoin( const QString& joinLayerId );

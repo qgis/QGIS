@@ -9,16 +9,16 @@ class QgsFeatureRequest
     enum Flag
     {
       NoFlags            = 0,
-      NoGeometry         = 1,
-      SubsetOfAttributes = 2,
-      ExactIntersect     = 4
+      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
+      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
     };
     typedef QFlags<QgsFeatureRequest::Flag> Flags;
 
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Filter using a rectangle
+      FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature IDs
@@ -30,6 +30,8 @@ class QgsFeatureRequest
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
+    //! construct a request with a filter expression
+    explicit QgsFeatureRequest( const QgsExpression& expr );
 
     FilterType filterType() const;
 
@@ -46,7 +48,7 @@ class QgsFeatureRequest
     QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
     const QgsFeatureIds& filterFids() const;
 
-    //! Set filter expression. Ownership is taken.
+    //! Set filter expression. {@see QgsExpression}
     QgsFeatureRequest& setFilterExpression( const QString& expression );
     QgsExpression* filterExpression() const;
 
@@ -61,6 +63,21 @@ class QgsFeatureRequest
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
+
+    //! Set a simplification method for geometries that will be fetched
+    QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );
+    const QgsSimplifyMethod& simplifyMethod() const;
+
+    /**
+     * Check if a feature is accepted by this requests filter
+     *
+     * @param feature  The feature which will be tested
+     *
+     * @return true, if the filter accepts the feature
+     *
+     * @note added in 2.1
+     */
+    bool acceptFeature( const QgsFeature& feature );
 
 };
 

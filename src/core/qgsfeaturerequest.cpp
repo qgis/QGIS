@@ -42,6 +42,13 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 {
 }
 
+QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
+    : mFilter( FilterExpression )
+    , mFilterExpression( new QgsExpression( expr.expression() ) )
+    , mFlags( 0 )
+{
+}
+
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 {
   operator=( rh );
@@ -56,13 +63,14 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
   {
-    mFilterExpression = new QgsExpression( rh.mFilterExpression->dump() );
+    mFilterExpression = new QgsExpression( rh.mFilterExpression->expression() );
   }
   else
   {
     mFilterExpression = 0;
   }
   mAttrs = rh.mAttrs;
+  mSimplifyMethod = rh.mSimplifyMethod;
   return *this;
 }
 
@@ -113,7 +121,6 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
-
 QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields )
 {
   mFlags |= SubsetOfAttributes;
@@ -126,6 +133,12 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
       mAttrs.append( attrNum );
   }
 
+  return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod )
+{
+  mSimplifyMethod = simplifyMethod;
   return *this;
 }
 

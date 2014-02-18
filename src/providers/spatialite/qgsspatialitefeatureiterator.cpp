@@ -218,7 +218,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
     // handling a VirtualShape layer
     whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( mbr( rect ) );
   }
-  else
+  else if ( rect.isFinite() )
   {
     if ( mSource->spatialIndexRTree )
     {
@@ -247,6 +247,10 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       // using simple MBR filtering
       whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( mbr( rect ) );
     }
+  }
+  else
+  {
+    whereClause = "1";
   }
   return whereClause;
 }

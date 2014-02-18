@@ -774,6 +774,11 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
       green = colorRampEntryElem.attribute( "green" ).toInt();
       blue = colorRampEntryElem.attribute( "blue" ).toInt();
       newPaletteElem.setAttribute( "color", QColor( red, green, blue ).name() );
+      QString label = colorRampEntryElem.attribute( "label" );
+      if ( !label.isEmpty() )
+      {
+        newPaletteElem.setAttribute( "label", label );
+      }
       newColorPaletteElem.appendChild( newPaletteElem );
     }
     rasterRendererElem.appendChild( newColorPaletteElem );
@@ -804,8 +809,8 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
   }
 }
 
-int QgsProjectFileTransform::rasterBandNumber( const QDomElement& rasterPropertiesElem, const QString bandName,
-    QgsRasterLayer* rlayer )
+int QgsProjectFileTransform::rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName,
+    QgsRasterLayer *rlayer )
 {
   if ( !rlayer )
   {

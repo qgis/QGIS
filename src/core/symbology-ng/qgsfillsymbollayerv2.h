@@ -65,6 +65,20 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( QColor borderColor ) { mBorderColor = borderColor; }
 
+    /** Get outline color.
+     * @note added in 2.1 */
+    QColor outlineColor() const { return borderColor(); }
+    /** Set outline color.
+     * @note added in 2.1 */
+    void setOutlineColor( const QColor& color ) { setBorderColor( color ); }
+
+    /** Get fill color.
+     * @note added in 2.1 */
+    QColor fillColor() const { return color(); }
+    /** Set fill color.
+     * @note added in 2.1 */
+    void setFillColor( const QColor& color ) { setColor( color ); }
+
     Qt::PenStyle borderStyle() const { return mBorderStyle; }
     void setBorderStyle( Qt::PenStyle borderStyle ) { mBorderStyle = borderStyle; }
 
@@ -82,6 +96,12 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    double estimateMaxBleed() const;
+
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QBrush mBrush;
@@ -102,6 +122,155 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen );
 };
 
+class QgsVectorColorRampV2;
+
+class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
+{
+  public:
+
+    enum GradientColorType
+    {
+      SimpleTwoColor,
+      ColorRamp
+    };
+
+    enum GradientType
+    {
+      Linear,
+      Radial,
+      Conical
+    };
+
+    enum GradientCoordinateMode
+    {
+      Feature,
+      Viewport
+    };
+
+    enum GradientSpread
+    {
+      Pad,
+      Reflect,
+      Repeat
+    };
+
+    QgsGradientFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                  QColor color2 = Qt::white,
+                                  GradientColorType gradientColorType = SimpleTwoColor,
+                                  GradientType gradientType = Linear,
+                                  GradientCoordinateMode coordinateMode = Feature,
+                                  GradientSpread gradientSpread = Pad
+                                );
+
+    virtual ~QgsGradientFillSymbolLayerV2();
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    double estimateMaxBleed() const;
+
+    /**Type of gradient, eg linear or radial*/
+    GradientType gradientType() const { return mGradientType; };
+    void setGradientType( GradientType gradientType ) { mGradientType = gradientType; };
+
+    /**Gradient color mode, controls how gradient color stops are created*/
+    GradientColorType gradientColorType() const { return mGradientColorType; };
+    void setGradientColorType( GradientColorType gradientColorType ) { mGradientColorType = gradientColorType; };
+
+    /**Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
+    QgsVectorColorRampV2* colorRamp() { return mGradientRamp; };
+    void setColorRamp( QgsVectorColorRampV2* ramp );
+
+    /**Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
+    QColor color2() const { return mColor2; };
+    void setColor2( QColor color2 ) { mColor2 = color2; };
+
+    /**Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
+    GradientCoordinateMode coordinateMode() const { return mCoordinateMode; };
+    void setCoordinateMode( GradientCoordinateMode coordinateMode ) { mCoordinateMode = coordinateMode; };
+
+    /**Gradient spread mode. Controls how the gradient behaves outside of the predefined stops*/
+    GradientSpread gradientSpread() const { return mGradientSpread; };
+    void setGradientSpread( GradientSpread gradientSpread ) { mGradientSpread = gradientSpread; };
+
+    /**Starting point of gradient fill, in the range [0,0] - [1,1]*/
+    void setReferencePoint1( QPointF referencePoint ) { mReferencePoint1 = referencePoint; };
+    QPointF referencePoint1() const { return mReferencePoint1; };
+
+    /**Sets the starting point of the gradient to be the feature centroid*/
+    void setReferencePoint1IsCentroid( bool isCentroid ) { mReferencePoint1IsCentroid = isCentroid; };
+    bool referencePoint1IsCentroid() const { return mReferencePoint1IsCentroid; };
+
+    /**End point of gradient fill, in the range [0,0] - [1,1]*/
+    void setReferencePoint2( QPointF referencePoint ) { mReferencePoint2 = referencePoint; };
+    QPointF referencePoint2() const { return mReferencePoint2; };
+
+    /**Sets the end point of the gradient to be the feature centroid*/
+    void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; };
+    bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; };
+
+    /**Rotation angle for gradient fill. Can be used to rotate a gradient around its centre point*/
+    void setAngle( double angle ) { mAngle = angle; };
+    double angle() const { return mAngle; };
+
+    /**Offset for gradient fill*/
+    void setOffset( QPointF offset ) { mOffset = offset; };
+    QPointF offset() const { return mOffset; };
+
+    /**Units for gradient fill offset*/
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; };
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; };
+
+  protected:
+    QBrush mBrush;
+    QBrush mSelBrush;
+
+    GradientColorType mGradientColorType;
+    QColor mColor2;
+    QgsVectorColorRampV2* mGradientRamp;
+    GradientType mGradientType;
+    GradientCoordinateMode mCoordinateMode;
+    GradientSpread mGradientSpread;
+
+    QPointF mReferencePoint1;
+    bool mReferencePoint1IsCentroid;
+    QPointF mReferencePoint2;
+    bool mReferencePoint2IsCentroid;
+    double mAngle;
+
+    QPointF mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+
+  private:
+
+    //helper functions for data defined symbology
+    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points );
+
+    /**Applies the gradient to a brush*/
+    void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
+                        const GradientColorType &gradientColorType, QgsVectorColorRampV2 *gradientRamp, const GradientType &gradientType,
+                        const GradientCoordinateMode &coordinateMode, const GradientSpread &gradientSpread,
+                        const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle );
+
+    /**rotates a reference point by a specified angle around the point (0.5, 0.5)*/
+    QPointF rotateReferencePoint( const QPointF & refPoint, double angle );
+};
+
 /**Base class for polygon renderers generating texture images*/
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 {
@@ -115,6 +284,12 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
+    virtual double estimateMaxBleed() const;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QBrush mBrush;
@@ -232,6 +407,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    double estimateMaxBleed() const;
+
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     //getters and setters
@@ -239,9 +416,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double lineAngle() const { return mLineAngle; }
     void setDistance( double d ) { mDistance = d; }
     double distance() const { return mDistance; }
-    void setLineWidth( double w ) { mLineWidth = w; }
+    void setLineWidth( double w );
     double lineWidth() const { return mLineWidth; }
-    void setColor( const QColor& c ) { mColor = c; }
+    void setColor( const QColor& c );
     QColor color() const { return mColor; }
     void setOffset( double offset ) { mOffset = offset; }
     double offset() const { return mOffset; }
@@ -257,6 +434,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    bool setSubSymbol( QgsSymbolV2* symbol );
+    QgsSymbolV2* subSymbol();
 
   protected:
     /**Distance (in mm or map units) between lines*/
@@ -277,6 +457,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
   private:
     /**Applies the svg pattern to the brush*/
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
+
+    /**Fill line*/
+    QgsLineSymbolV2* mFillLineSymbol;
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
@@ -299,6 +482,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolLayerV2* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    double estimateMaxBleed() const;
 
     //getters and setters
     double distanceX() const { return mDistanceX; }
@@ -330,6 +515,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    virtual QSet<QString> usedAttributes() const;
 
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;

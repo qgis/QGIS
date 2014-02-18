@@ -94,7 +94,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
-QgsGdalProvider::QgsGdalProvider( QString const & uri, QgsError error )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
     : QgsRasterDataProvider( uri )
     , mValid( false )
     , mGdalBaseDataset( 0 )
@@ -103,7 +103,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri, QgsError error )
   setError( error );
 }
 
-QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
     , mUpdate( update )
@@ -2410,6 +2410,10 @@ void QgsGdalProvider::initBaseDataset()
     if ( isValid )
     {
       QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
+      // The no data value double may be non representable by data type, it can result
+      // in problems if that value is used to represent additional user defined no data
+      // see #3840
+      myNoDataValue = QgsRaster::representableValue( myNoDataValue, dataTypeFromGdal( myGdalDataType ) );
       mSrcNoDataValue.append( myNoDataValue );
       mSrcHasNoDataValue.append( true );
       mUseSrcNoDataValue.append( true );
@@ -2765,4 +2769,9 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
   }
 
   return &methods;
+}
+
+QGISEXTERN void cleanupProvider()
+{
+  GDALDestroyDriverManager();
 }

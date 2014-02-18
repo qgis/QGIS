@@ -35,15 +35,13 @@ class ANALYSIS_EXPORT QgsArcProperter
     /**
      * default constructor
      */
-    QgsArcProperter()
-    { }
+    QgsArcProperter() {}
 
     /**
      * QgsGraphDirector call this method for fetching attribute from source layer
      * \return required attributes list
      */
-    virtual QgsAttributeList requiredAttributes() const
-    { return QgsAttributeList(); }
+    virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
 
     /**
      * calculate and return adge property

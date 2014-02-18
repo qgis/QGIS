@@ -175,7 +175,7 @@ QString QgsDataDefinedSymbolDialog::colorHelpText()
 
 QString QgsDataDefinedSymbolDialog::offsetHelpText()
 {
-  return "<x>,<y>";
+  return "'<x>,<y>'";
 }
 
 QString QgsDataDefinedSymbolDialog::fileNameHelpText()
@@ -192,3 +192,25 @@ QString QgsDataDefinedSymbolDialog::verticalAnchorHelpText()
 {
   return tr( "'top'|'center'|'bottom'" );
 }
+
+QString QgsDataDefinedSymbolDialog::gradientTypeHelpText()
+{
+  return tr( "'linear'|'radial'|'conical'" );
+}
+
+QString QgsDataDefinedSymbolDialog::gradientCoordModeHelpText()
+{
+  return tr( "'feature'|'viewport'" );
+}
+
+QString QgsDataDefinedSymbolDialog::gradientSpreadHelpText()
+{
+  return tr( "'pad'|'repeat'|'reflect'" );
+}
+
+QString QgsDataDefinedSymbolDialog::boolHelpText()
+{
+  return tr( "0 (false)|1 (true)" );
+}
+
+

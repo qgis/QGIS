@@ -14,4 +14,8 @@ class QgsMessageLogViewer: QDialog
 
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
+
+  private:
+    void showEvent( QShowEvent * );
+    void hideEvent( QHideEvent * );
 };

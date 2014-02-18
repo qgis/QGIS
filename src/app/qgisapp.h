@@ -128,21 +128,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     @param dataSourceType type of ogr datasource
      @returns true if successfully added layer
      */
-    bool addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType );
+    bool addVectorLayers( const QStringList &theLayerQStringList, const QString &enc, const QString &dataSourceType );
 
     /** overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
       @returns true if successfully added layer(s)
       */
-    bool addRasterLayers( QStringList const & theLayerQStringList, bool guiWarning = true );
+    bool addRasterLayers( const QStringList &theLayerQStringList, bool guiWarning = true );
 
     /** open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
       @note
       This is essentially a simplified version of the above
       */
-    QgsRasterLayer* addRasterLayer( QString const & rasterFile, QString const & baseName, bool guiWarning = true );
+    QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
 
     /** Add a 'pre-made' map layer to the project */
     void addMapLayer( QgsMapLayer *theMapLayer );
@@ -268,6 +268,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionSplitParts() { return mActionSplitParts; }
     QAction *actionAddRing() { return mActionAddRing; }
+    QAction *actionFillRing() { return mActionFillRing; }
     QAction *actionAddPart() { return mActionAddPart; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
     QAction *actionDeleteRing() { return mActionDeleteRing; }
@@ -443,6 +444,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
 
+    /** @note added in 2.1 */
+    static QString normalizedMenuName( const QString & name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
+
 #ifdef Q_OS_WIN
     //! ugly hack
     void skipNextContextMenuEvent();
@@ -572,7 +576,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void loadGDALSublayers( QString uri, QStringList list );
 
     /**Deletes the selected attributes for the currently selected vector layer*/
-    void deleteSelected( QgsMapLayer *layer = 0, QWidget* parent = 0 );
+    void deleteSelected( QgsMapLayer *layer = 0, QWidget* parent = 0, bool promptConfirmation = false );
 
     //! project was written
     void writeProject( QDomDocument & );
@@ -613,6 +617,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Update project menu with the project templates
     void updateProjectFromTemplates();
+
+    //! Opens the options dialog
+    void showOptionsDialog( QWidget *parent = 0, QString currentPage = QString() );
+
+    /** Refreshes the state of the layer actions toolbar action
+      * @note added in 2.1 */
+    void refreshActionFeatureAction();
 
   protected:
 
@@ -678,7 +689,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to handle user center input;
     void userCenter();
     //! Remove a layer from the map and legend
-    void removeLayer();
+    void removeLayer( bool promptConfirmation = true );
     /** Duplicate map layer(s) in legend
      * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
@@ -831,6 +842,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool fileSave();
     //! Save project as
     void fileSaveAs();
+    //! Export project in dxf format
+    void dxfExport();
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
@@ -928,6 +941,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void splitParts();
     //! activates the add ring tool
     void addRing();
+    //! activates the fill ring tool
+    void fillRing();
     //! activates the add part tool
     void addPart();
     //! simplifies feature
@@ -1149,6 +1164,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void clipboardChanged();
 
+    //! catch MapCanvas keyPress event so we can check if selected feature collection must be deleted
+    void mapCanvas_keyPressed( QKeyEvent *e );
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1349,6 +1367,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mVertexMove;
         QgsMapTool* mVertexDelete;
         QgsMapTool* mAddRing;
+        QgsMapTool* mFillRing;
         QgsMapTool* mAddPart;
         QgsMapTool* mSimplifyFeature;
         QgsMapTool* mDeleteRing;
@@ -1418,7 +1437,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QRect *mMapWindow;
     //! The previously selected non zoom map tool.
     int mPreviousNonZoomMapTool;
-    //QCursor *mCursorZoomIn; //doesnt seem to be used anymore (TS)
     QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
     QString mFullPathName;
@@ -1432,9 +1450,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QStringList mRecentProjectPaths;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
-    //! How to determine the number of decimal places used to
-    //! display the mouse position
-    bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
     /** QGIS-internal vector feature clipboard */

@@ -74,9 +74,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQgisInterface - Pointer to the QGIS interface object
  */
-RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
 
   mQShortestPathDock = NULL;
@@ -103,6 +103,7 @@ void RoadGraphPlugin::initGui()
 
   // Create the action for tool
   mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings" ), this );
+  mQSettingsAction->setObjectName( "mQSettingsAction" );
 
   // Set the what's this text
   mQSettingsAction->setWhatsThis( tr( "Road graph plugin settings" ) );
@@ -211,7 +212,8 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   }
   if ( layer == NULL )
     return NULL;
-  if ( layer->geometryType() == QGis::Line )
+  if ( layer->wkbType() == QGis::WKBLineString
+       || layer->wkbType() == QGis::WKBMultiLineString )
   {
     QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* >( layer->dataProvider() );
     if ( provider == NULL )

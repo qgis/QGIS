@@ -30,7 +30,8 @@ QgsRenderContext::QgsRenderContext()
     mScaleFactor( 1.0 ),
     mRasterScaleFactor( 1.0 ),
     mRendererScale( 1.0 ),
-    mLabelingEngine( NULL )
+    mLabelingEngine( NULL ),
+    mUseRenderingOptimization( true )
 {
 
 }
@@ -64,4 +65,3 @@ void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
 {
   mCoordTransform = t;
 }
-

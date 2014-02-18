@@ -100,6 +100,7 @@ void CoordinateCapture::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mQActionPointer->setCheckable( true );
   mQActionPointer->setChecked( mpDockWidget->isVisible() );
   // Set the what's this text

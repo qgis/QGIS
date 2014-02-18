@@ -136,8 +136,11 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
 
 void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
 {
-  disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  }
   mComposerMap = map;
 
   if ( !map )
@@ -154,6 +157,11 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
 
 void QgsComposerScaleBar::invalidateCurrentMap()
 {
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
   disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
   mComposerMap = 0;
@@ -164,7 +172,7 @@ void QgsComposerScaleBar::refreshSegmentMillimeters()
   if ( mComposerMap )
   {
     //get extent of composer map
-    QgsRectangle composerMapRect = mComposerMap->extent();
+    QgsRectangle composerMapRect = *( mComposerMap->currentMapExtent() );
 
     //get mm dimension of composer map
     QRectF composerItemRect = mComposerMap->rect();
@@ -181,7 +189,7 @@ double QgsComposerScaleBar::mapWidth() const
     return 0.0;
   }
 
-  QgsRectangle composerMapRect = mComposerMap->extent();
+  QgsRectangle composerMapRect = *( mComposerMap->currentMapExtent() );
   if ( mUnits == MapUnits )
   {
     return composerMapRect.width();
@@ -194,9 +202,13 @@ double QgsComposerScaleBar::mapWidth() const
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
-    if ( mUnits == Feet )
+    if ( mUnits == QgsComposerScaleBar::Feet )
     {
-      measure /= 0.3048;
+      measure /= QGis::fromUnitToUnitFactor( QGis::Feet, QGis::Meters );
+    }
+    else if ( mUnits == QgsComposerScaleBar::NauticalMiles )
+    {
+      measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, QGis::Meters );
     }
     return measure;
   }
@@ -230,11 +242,19 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mHeight = 3;
 
   mPen = QPen( QColor( 0, 0, 0 ) );
+  mPen.setJoinStyle( Qt::MiterJoin );
   mPen.setWidthF( 1.0 );
 
   mBrush.setColor( QColor( 0, 0, 0 ) );
   mBrush.setStyle( Qt::SolidPattern );
 
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mFont.setFamily( defaultFontString );
+  }
   mFont.setPointSizeF( 12.0 );
   mFontColor = QColor( 0, 0, 0 );
 
@@ -243,25 +263,71 @@ void QgsComposerScaleBar::applyDefaultSettings()
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::applyDefaultSize()
+void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u )
 {
   if ( mComposerMap )
   {
-    setUnits( Meters );
-    double widthMeter = mapWidth();
-    int nUnitsPerSegment =  widthMeter / 10.0; //default scalebar width equals half the map width
-    setNumUnitsPerSegment( nUnitsPerSegment );
+    setUnits( u );
+    double upperMagnitudeMultiplier = 1.0;
+    double widthInSelectedUnits = mapWidth();
+    double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
+    setNumUnitsPerSegment( initialUnitsPerSegment );
 
-    if ( nUnitsPerSegment > 1000 )
+    switch ( mUnits )
     {
-      setNumUnitsPerSegment(( int )( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
-      setUnitLabeling( tr( "km" ) );
-      setNumMapUnitsPerScaleBarUnit( 1000 );
+      case MapUnits:
+      {
+        upperMagnitudeMultiplier = 1.0;
+        setUnitLabeling( tr( "units" ) );
+        break;
+      }
+      case Meters:
+      {
+        if ( initialUnitsPerSegment > 1000.0 )
+        {
+          upperMagnitudeMultiplier = 1000.0;
+          setUnitLabeling( tr( "km" ) );
+        }
+        else
+        {
+          upperMagnitudeMultiplier = 1.0;
+          setUnitLabeling( tr( "m" ) );
+        }
+        break;
+      }
+      case Feet:
+      {
+        if ( initialUnitsPerSegment > 5419.95 )
+        {
+          upperMagnitudeMultiplier = 5419.95;
+          setUnitLabeling( tr( "miles" ) );
+        }
+        else
+        {
+          upperMagnitudeMultiplier = 1.0;
+          setUnitLabeling( tr( "ft" ) );
+        }
+        break;
+      }
+      case NauticalMiles:
+      {
+        upperMagnitudeMultiplier = 1;
+        setUnitLabeling( tr( "Nm" ) );
+        break;
+      }
     }
-    else
+
+    double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
+    int segmentMagnitude = floor( log10( segmentWidth ) );
+    double unitsPerSegment = upperMagnitudeMultiplier * ( pow( 10.0, segmentMagnitude ) );
+    double multiplier = floor(( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
+
+    if ( multiplier > 0 )
     {
-      setUnitLabeling( tr( "m" ) );
+      unitsPerSegment = unitsPerSegment * multiplier;
     }
+    setNumUnitsPerSegment( unitsPerSegment );
+    setNumMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
 
     setNumSegments( 4 );
     setNumSegmentsLeft( 2 );

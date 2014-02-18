@@ -92,7 +92,7 @@ class CORE_EXPORT QGis
         case WKBPoint25D:      return WKBMultiPoint25D;
         case WKBLineString25D: return WKBMultiLineString25D;
         case WKBPolygon25D:    return WKBMultiPolygon25D;
-        default:                    return type;
+        default:               return type;
       }
     }
 
@@ -184,7 +184,8 @@ class CORE_EXPORT QGis
         case WKBPoint:              return "WKBPoint";
         case WKBLineString:         return "WKBLineString";
         case WKBPolygon:            return "WKBPolygon";
-        case WKBMultiPoint:         return "WKBMultiLineString";
+        case WKBMultiPoint:         return "WKBMultiPoint";
+        case WKBMultiLineString:    return "WKBMultiLineString";
         case WKBMultiPolygon:       return "WKBMultiPolygon";
         case WKBNoGeometry:         return "WKBNoGeometry";
         case WKBPoint25D:           return "WKBPoint25D";
@@ -248,6 +249,8 @@ class CORE_EXPORT QGis
     //! Provides translated version of the type value
     // Added in version 2.0
     static QString tr( QGis::UnitType unit );
+    //! Returns the conversion factor between the specified units
+    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     //! User defined event types
     enum UserEvent
@@ -262,6 +265,9 @@ class CORE_EXPORT QGis
     };
 
     static const double DEFAULT_IDENTIFY_RADIUS;
+
+    //! Default threshold between map coordinates and device coordinates for map2pixel simplification
+    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
   private:
     // String representation of unit types (set in qgis.cpp)
@@ -323,6 +329,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+
+QString qgsVsiPrefix( QString path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
@@ -388,6 +396,14 @@ const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
 
+/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+ *  by SIP, and it would be hard to define size_t correctly in SIP.
+ *  Currently used "unsigned long long" was introduced in C++11 (2011)
+ *  but it was supported already before C++11 on common platforms.
+ *  "unsigned long long int" gives syntax error in SIP.
+ *  KEEP IN SYNC WITH qgssize defined in SIP! */
+typedef unsigned long long qgssize;
+
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32
@@ -400,5 +416,4 @@ typedef QMap<QString, QString> QgsStringMap;
 #  define QGISEXTERN extern "C"
 #endif
 #endif
-
 #endif

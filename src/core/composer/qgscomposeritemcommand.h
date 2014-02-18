@@ -74,7 +74,6 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       //composer label
       ComposerLabelSetText,
       ComposerLabelSetId,
-      ComposerLabelRotation,
       //composer map
       ComposerMapRotation,
       ComposerMapAnnotationDistance,
@@ -111,14 +110,15 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       TableMargin,
       TableGridStrokeWidth,
       //composer shape
-      ShapeRotation,
+      ShapeCornerRadius,
       ShapeOutlineWidth,
       //composer arrow
       ArrowOutlineWidth,
       ArrowHeadWidth,
       //item
       ItemOutlineWidth,
-      ItemMove
+      ItemMove,
+      ItemRotation
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );

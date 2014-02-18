@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
-    <height>572</height>
+    <width>727</width>
+    <height>707</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,8 +29,8 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout">
-   <item row="0" column="0" colspan="2">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QLabel" name="lblDataUri">
      <property name="text">
       <string>Datasource</string>
@@ -38,238 +38,263 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox1">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="title">
-      <string>Fields</string>
-     </property>
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>11</number>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <item row="0" column="0">
-       <widget class="QListView" name="lstFields">
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+      <widget class="QGroupBox" name="groupBox1">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Fields</string>
+       </property>
+       <layout class="QGridLayout">
+        <property name="margin">
+         <number>11</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QListView" name="lstFields">
+          <property name="whatsThis">
+           <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Values</string>
+       </property>
+       <layout class="QGridLayout">
+        <property name="margin">
+         <number>11</number>
         </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QGroupBox" name="groupBox2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title">
-      <string>Values</string>
-     </property>
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>11</number>
-      </property>
-      <item row="0" column="0" colspan="2">
-       <widget class="QListView" name="lstValues">
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <item row="0" column="0" colspan="2">
+         <widget class="QListView" name="lstValues">
+          <property name="whatsThis">
+           <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of values for the current field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <property name="uniformItemSizes">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="btnSampleValues">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="uniformItemSizes">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btnSampleValues">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; of records in the vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Sample</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnGetAllValues">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+          </property>
+          <property name="text">
+           <string>Sample</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="btnGetAllValues">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;&gt;if the table is big, the operation can consume some time&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>All</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mUseUnfilteredLayer">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Use unfiltered layer</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+          </property>
+          <property name="text">
+           <string>All</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QCheckBox" name="mUseUnfilteredLayer">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Use unfiltered layer</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox4">
+         <property name="title">
+          <string>Operators</string>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>11</number>
+          </property>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="btnLike">
+            <property name="text">
+             <string>LIKE</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QPushButton" name="btnIn">
+            <property name="text">
+             <string>IN</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btnLessEqual">
+            <property name="text">
+             <string>&lt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btnLessThan">
+            <property name="text">
+             <string>&lt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="QPushButton" name="btnNotIn">
+            <property name="text">
+             <string>NOT IN</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="btnGreaterThan">
+            <property name="text">
+             <string>&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="btnEqual">
+            <property name="text">
+             <string>=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="btnILike">
+            <property name="text">
+             <string>ILIKE</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QPushButton" name="btnOr">
+            <property name="text">
+             <string>OR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="btnPct">
+            <property name="text">
+             <string>%</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btnNotEqual">
+            <property name="text">
+             <string>!=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="btnGreaterEqual">
+            <property name="text">
+             <string>&gt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="btnAnd">
+            <property name="text">
+             <string>AND</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="6">
+           <widget class="QPushButton" name="btnNot">
+            <property name="text">
+             <string>NOT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Provider specific filter expression</string>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>11</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QTextEdit" name="txtSQL"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox4">
-     <property name="title">
-      <string>Operators</string>
-     </property>
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>11</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="btnEqual">
-        <property name="text">
-         <string>=</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnLessThan">
-        <property name="text">
-         <string>&lt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="btnNot">
-        <property name="text">
-         <string>NOT</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QPushButton" name="btnOr">
-        <property name="text">
-         <string>OR</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="btnAnd">
-        <property name="text">
-         <string>AND</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="btnPct">
-        <property name="text">
-         <string>%</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QPushButton" name="btnIn">
-        <property name="text">
-         <string>IN</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="6">
-       <widget class="QPushButton" name="btnNotIn">
-        <property name="text">
-         <string>NOT IN</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btnNotEqual">
-        <property name="text">
-         <string>!=</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="btnGreaterThan">
-        <property name="text">
-         <string>&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="btnLike">
-        <property name="text">
-         <string>LIKE</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="btnILike">
-        <property name="text">
-         <string>ILIKE</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnGreaterEqual">
-        <property name="text">
-         <string>&gt;=</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="btnLessEqual">
-        <property name="text">
-         <string>&lt;=</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox3">
-     <property name="maximumSize">
-      <size>
-       <width>32767</width>
-       <height>116</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Provider specific filter expression</string>
-     </property>
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>11</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QTextEdit" name="txtSQL"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
@@ -277,8 +302,19 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <zorder>splitter_2</zorder>
+  <zorder>lblDataUri</zorder>
+  <zorder>buttonBox</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>lstFields</tabstop>
   <tabstop>lstValues</tabstop>

@@ -271,15 +271,14 @@ void QgsAttributeDialog::init()
 
     foreach ( const QgsRelation& relation, relations )
     {
-      relation.id();
-
-      QWidget *myWidget = QgsRelationEditorWidget::createRelationEditor( relation, *mFeature, mContext );
-      myWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+      QgsRelationEditorWidget *myWidget = QgsRelationEditorWidget::createRelationEditor( relation, *mFeature, mContext, mDialog );
       if ( !myWidget )
         continue;
 
+      myWidget->setProperty( "qgisRelation", relation.id() );
+      myWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
       mypInnerLayout->addWidget( myWidget, index, 0, 1, 2 );
-      mypInnerLayout->setRowStretch( index, 1 );
+      mypInnerLayout->setRowStretch( index, 2 );
       ++index;
     }
 
@@ -303,47 +302,70 @@ void QgsAttributeDialog::init()
     myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
     myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 #endif
-    for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
+
+    // Get all widgets on the dialog
+    QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>();
+    Q_FOREACH( QWidget* myWidget, myWidgets )
     {
-      QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>( theFields[fldIdx].name() );
-      if ( myWidgets.isEmpty() )
-        continue;
-
-      foreach ( QWidget *myWidget, myWidgets )
+      // Check the widget's properties for a relation definition
+      QVariant vRel = myWidget->property( "qgisRelation" );
+      if ( vRel.isValid() )
       {
-        QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, mLayer, fldIdx, mFeature->attribute( fldIdx ), mContext );
-
-        if ( mLayer->editType( fldIdx ) != QgsVectorLayer::Immutable )
+        QgsRelationManager* relMgr = QgsProject::instance()->relationManager();
+        QgsRelation relation = relMgr->relation( vRel.toString() );
+        if ( relation.isValid() )
         {
-          if ( mLayer->isEditable() && mLayer->fieldEditable( fldIdx ) )
+          QgsRelationEditorWidget *relWdg = QgsRelationEditorWidget::createRelationEditor( relation, *mFeature, mContext, myWidget );
+          if ( !myWidget->layout() )
           {
-            myWidget->setEnabled( true );
+            myWidget->setLayout( new QHBoxLayout() );
           }
-          else if ( mLayer->editType( fldIdx ) == QgsVectorLayer::Photo )
+          myWidget->layout()->addWidget( relWdg );
+        }
+      }
+      else
+      {
+        // No widget definition properties defined, check if the widget's
+        // objectName matches a field name
+        for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
+        {
+          if ( myWidget->objectName() == theFields[fldIdx].name() )
           {
-            foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+            QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, mLayer, fldIdx, mFeature->attribute( fldIdx ), mContext );
+
+            if ( mLayer->editType( fldIdx ) != QgsVectorLayer::Immutable )
             {
-              w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+              if ( mLayer->isEditable() && mLayer->fieldEditable( fldIdx ) )
+              {
+                myWidget->setEnabled( true );
+              }
+              else if ( mLayer->editType( fldIdx ) == QgsVectorLayer::Photo )
+              {
+                foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+                {
+                  w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+                }
+              }
+              else if ( mLayer->editType( fldIdx ) == QgsVectorLayer::WebView )
+              {
+                foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+                {
+                  w->setEnabled( qobject_cast<QWebView *>( w ) ? true : false );
+                }
+              }
+              else if ( mLayer->editType( fldIdx ) == QgsVectorLayer::EditorWidgetV2 )
+              {
+                QgsEditorWidgetWrapper* ww = QgsEditorWidgetWrapper::fromWidget( myWidget );
+                if ( ww )
+                {
+                  ww->setEnabled( false );
+                }
+              }
+              else
+              {
+                myWidget->setEnabled( false );
+              }
             }
-          }
-          else if ( mLayer->editType( fldIdx ) == QgsVectorLayer::WebView )
-          {
-            foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
-            {
-              w->setEnabled( qobject_cast<QWebView *>( w ) ? true : false );
-            }
-          }
-          else if ( mLayer->editType( fldIdx ) == QgsVectorLayer::EditorWidgetV2 )
-          {
-            QgsEditorWidgetWrapper* ww = QgsEditorWidgetWrapper::fromWidget( myWidget );
-            if ( ww )
-            {
-              ww->setEnabled( false );
-            }
-          }
-          else
-          {
-            myWidget->setEnabled( false );
           }
         }
       }
@@ -396,6 +418,8 @@ void QgsAttributeDialog::init()
     }
   }
 
+  mEditable = mLayer->isEditable();
+
   if ( mDialog )
   {
     if ( mDialog->objectName().isEmpty() )
@@ -429,6 +453,16 @@ void QgsAttributeDialog::init()
   {
     if ( buttonBox )
     {
+      // Add dummy buttons
+      if ( mLayer->isEditable() )
+      {
+        buttonBox->clear();
+
+        buttonBox->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+        connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
+        connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+      }
+
       buttonBox->setVisible( false );
     }
   }

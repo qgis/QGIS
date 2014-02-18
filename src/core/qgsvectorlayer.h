@@ -32,6 +32,7 @@
 #include "qgssnapper.h"
 #include "qgsfield.h"
 #include "qgsrelation.h"
+#include "qgsvectorsimplifymethod.h"
 
 class QPainter;
 class QImage;
@@ -57,6 +58,7 @@ class QgsDiagramLayerSettings;
 class QgsGeometryCache;
 class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
+class QgsAbstractGeometrySimplifier;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -129,11 +131,11 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorRelation( QString name , const QString relationId, QObject *parent )
+    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relationId ) {}
 
-    QgsAttributeEditorRelation( QString name , const QgsRelation& relation, QObject *parent )
+    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relation.id() )
         , mRelation( relation ) {}
@@ -149,7 +151,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relManager The relation manager to use for the initialization
      * @return true if the relation was found in the relationmanager
      */
-    bool init( QgsRelationManager* relManager );
+    bool init( QgsRelationManager *relManager );
 
   private:
     QString mRelationId;
@@ -177,7 +179,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
   /**Join field index in the source layer. For backward compatibility with 1.x (x>=7)*/
   int joinFieldIndex;
 };
-
 
 /** \ingroup core
  * Represents a vector layer which manages a vector based data sets.
@@ -589,7 +590,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *                           for this layer
      *  @note added in 2.0
      */
-    void setDisplayExpression( const QString displayExpression );
+    void setDisplayExpression( const QString &displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -784,13 +785,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param theResultFlag will be set to true if a named style is correctly loaded
      * @param loadFromLocalDb if true forces to load from local db instead of datasource one
      */
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDb );
 
     /**
      * Calls loadNamedStyle( theURI, theResultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
 
     virtual bool applyNamedStyle( QString namedStyle , QString errorMsg );
 
@@ -869,10 +870,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
 
-    /** Updates an existing feature
-        @param f feature to update
-        @return                    True in case of success and False in case of error
-        @note added in 1.8
+    /** Updates an existing feature. This method needs to query the datasource
+        on every call. Consider using {@link changeAttributeValue()} or
+        {@link changeGeometry()} instead.
+        @param f  Feature to update
+        @return   True in case of success and False in case of error
+        @note     Added in 1.8
      */
     bool updateFeature( QgsFeature &f );
 
@@ -950,8 +953,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @param geom geometry to modify
      *  @param ignoreFeatures list of feature ids where intersections should be ignored
      *  @return 0 in case of success
+     *
+     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
      */
-    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
+    Q_DECL_DEPRECATED int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
@@ -1060,8 +1065,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2 */
     bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
-    /** changed an attribute value (but does not commit it) */
-    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal = true );
+    /**
+     * Changes an attribute value (but does not commit it)
+     *
+     * @deprecated The emitSignal parameter is obsolete and not considered at the moment. It will
+     *             be removed in future releases. Remove it to be prepared for the future. (Since 2.1)
+     */
+    Q_DECL_DEPRECATED bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal );
+
+    /**
+     * Changes an attribute value (but does not commit it)
+     *
+     * @param fid   The feature id of the feature to be changed
+     * @param field The index of the field to be updated
+     * @param newValue The value which will be assigned to the field
+     * @param oldValue The previous value to restore on undo (will otherwise be retrieved)
+     *
+     * @return true in case of success
+     */
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
@@ -1240,14 +1262,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QList<QgsRelation> referencingRelations( int idx );
 
-    /**
-     * Get relations, where the foreign key is on another layer, referencing this layer
-     *
-     * @param idx Only get relations, where idx forms part of the referenced key
-     * @return A list of relations
-     */
-    QList<QgsRelation> referencedRelations( int idx );
-
     /**access date format
      * @note added in 1.9
      */
@@ -1337,7 +1351,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /* Set the blending mode used for rendering each feature
      * @note added in 2.0
      */
-    void setFeatureBlendMode( const QPainter::CompositionMode blendMode );
+    void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
     /* Returns the current blending mode for features
      * @note added in 2.0
      */
@@ -1357,6 +1371,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }
 
+    /** Simplification flags for fast rendering of features */
+    enum SimplifyHint
+    {
+      NoSimplification           = 0, //!< No simplification can be applied
+      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+    };
+    /** Set the simplification settings for fast rendering of features  */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mSimplifyMethod = simplifyMethod; }
+    /** Returns the simplification settings for fast rendering of features  */
+    inline const QgsVectorSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
+
+    /** Returns whether the VectorLayer can apply the specified simplification hint */
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const;
 
   public slots:
     /**
@@ -1497,10 +1526,31 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void rendererChanged();
 
     /** Signal emitted when setFeatureBlendMode() is called */
-    void featureBlendModeChanged( const QPainter::CompositionMode blendMode );
+    void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );
 
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
+
+    /**
+     * Signal emitted when a new edit command has been started
+     *
+     * @param text Description for this edit command
+     */
+    void editCommandStarted( const QString& text );
+
+    /**
+     * Signal emitted, when an edit command successfully ended
+     * @note This does not mean it is also committed, only that it is written
+     * to the edit buffer. See {@link beforeCommitChanges()}
+     */
+    void editCommandEnded();
+
+    /**
+     * Signal emitted, whan an edit command is destroyed
+     * @note This is not a rollback, it is only related to the current edit command.
+     * See {@link beforeRollBack()}
+     */
+    void editCommandDestroyed();
 
   private slots:
     void onRelationsLoaded();
@@ -1543,6 +1593,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Add joined attributes to a feature */
     //void addJoinedAttributes( QgsFeature& f, bool all = false );
+
+    /** Read labeling from SLD */
+    void readSldLabeling( const QDomNode& node );
 
   private:                       // Private attributes
 
@@ -1592,6 +1645,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;
+
+    /** Simplification object which holds the information about how to simplify the features for fast rendering */
+    QgsVectorSimplifyMethod mSimplifyMethod;
 
     /** Label */
     QgsLabel *mLabel;

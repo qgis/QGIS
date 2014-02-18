@@ -199,22 +199,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_4">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>General</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_2">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -227,8 +211,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>712</height>
+                <width>653</width>
+                <height>708</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -770,22 +754,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_5">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Coordinate Reference System (CRS)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -798,8 +766,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>323</width>
-                <height>46</height>
+                <width>653</width>
+                <height>708</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -836,16 +804,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_6">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Identifiable layers</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_3">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -858,8 +816,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>133</width>
-                <height>100</height>
+                <width>653</width>
+                <height>708</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -918,16 +876,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_7">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Default styles</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_4">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -940,8 +888,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>371</width>
-                <height>336</height>
+                <width>653</width>
+                <height>708</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -959,7 +907,7 @@
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
+                 <layout class="QGridLayout" name="gridLayout_11">
                   <property name="leftMargin">
                    <number>9</number>
                   </property>
@@ -1296,16 +1244,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_8">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>OWS server</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_5">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1318,8 +1256,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>491</width>
-                <height>1347</height>
+                <width>637</width>
+                <height>1535</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1332,7 +1270,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
                  <property name="title">
-                  <string>Service capabilitities</string>
+                  <string>Service capabilities</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1471,7 +1409,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpWMSCapabilities">
                  <property name="title">
-                  <string>WMS capabilitities</string>
+                  <string>WMS capabilities</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
@@ -1831,7 +1769,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>WFS capabilitities</string>
+                  <string>WFS capabilities</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
@@ -1904,6 +1842,72 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="grpWCSCapabilities">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>3</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>WCS capabilities</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">projowsserver</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QTableWidget" name="twWCSLayers">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <column>
+                     <property name="text">
+                      <string>Layer</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Published</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="pbnWCSLayersUnselectAll">
+                    <property name="text">
+                     <string>Unselect all</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QPushButton" name="pbnWCSLayersSelectAll">
+                    <property name="text">
+                     <string>Select all</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="2">
+                   <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <item>
+                     <widget class="QLabel" name="mWCSUrlLabel">
+                      <property name="text">
+                       <string>Advertised URL</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mWCSUrlLineEdit"/>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_6">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -1928,16 +1932,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_20">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Macros</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_6">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1950,8 +1944,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>163</width>
-                <height>111</height>
+                <width>653</width>
+                <height>708</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2040,15 +2034,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelector</class>

@@ -63,6 +63,7 @@ void TestStyleV2::initTestCase()
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
+  QgsApplication::createDB();
   mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
 
   // output test environment

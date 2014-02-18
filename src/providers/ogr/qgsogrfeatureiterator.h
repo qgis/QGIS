@@ -21,6 +21,7 @@
 
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
+class QgsOgrAbstractGeometrySimplifier;
 
 class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
@@ -58,6 +59,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
 
+    //! Setup the simplification of geometries to fetch using the specified simplify method
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+
 
     bool readFeature( OGRFeatureH fet, QgsFeature& feature );
 
@@ -73,7 +77,13 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
-};
 
+  private:
+    //! optional object to simplify OGR-geometries fecthed by this feature iterator
+    QgsOgrAbstractGeometrySimplifier* mGeometrySimplifier;
+
+    //! returns whether the iterator supports simplify geometries on provider side
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
+};
 
 #endif // QGSOGRFEATUREITERATOR_H

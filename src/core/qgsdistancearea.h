@@ -55,7 +55,10 @@ class CORE_EXPORT QgsDistanceArea
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
 
-    //! sets source spatial reference system (by QGIS CRS)
+    /**
+     * Sets source spatial reference system (by QGIS CRS)
+     * @note: missing in Python bindings in QGIS < 2.2
+     */
     void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
 
     //! sets source spatial reference system by authid
@@ -77,11 +80,11 @@ class CORE_EXPORT QgsDistanceArea
     const QString& ellipsoid() const { return mEllipsoid; }
 
     //! returns ellipsoid's semi major axis
-    double ellipsoidSemiMajor() { return mSemiMajor; }
+    double ellipsoidSemiMajor() const { return mSemiMajor; }
     //! returns ellipsoid's semi minor axis
-    double ellipsoidSemiMinor() { return mSemiMinor; }
+    double ellipsoidSemiMinor() const { return mSemiMinor; }
     //! returns ellipsoid's inverse flattening
-    double ellipsoidInverseFlattening() { return mInvFlattening; }
+    double ellipsoidInverseFlattening() const { return mInvFlattening; }
 
     //! general measurement (line distance or polygon area)
     double measure( QgsGeometry* geometry );

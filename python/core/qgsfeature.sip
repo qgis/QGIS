@@ -101,6 +101,12 @@ typedef QList<QgsFeature> QgsFeatureList;
 
 typedef QMap<int, QgsField> QgsFieldMap;
 
+/** \ingroup core
+ * The feature class encapsulates a single feature including its id,
+ * geometry and a list of field/values attributes.
+ *
+ * @author Gary E.Sherman
+ */
 class QgsFeature
 {
 %TypeHeaderCode
@@ -258,9 +264,19 @@ class QgsFeature
   }
 %End
 
+    /**
+     * Initialize this feature with the given number of fields. Discard any previously set attribute data.
+     * @param fieldCount Number of fields to initialize
+     */
     void initAttributes( int fieldCount );
 
-    /**Deletes an attribute and its value*/
+    /**
+     * Deletes an attribute and its value
+     *
+     * @param field The index of the field
+     *
+     * @note For Python: raises a KeyError exception if the field is not found
+     */
     void deleteAttribute( int field );
 %MethodCode
   if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
@@ -286,7 +302,7 @@ class QgsFeature
     /**
      * Get the geometry object associated with this feature
      */
-    QgsGeometry *geometry();
+    QgsGeometry *geometry() const;
 
     /**
      * Get the geometry object associated with this feature
@@ -310,12 +326,14 @@ class QgsFeature
      */
     void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
 
-    /** Assign a field map with the feature to allow attribute access by
-     * attribute name
+    /** Assign a field map with the feature to allow attribute access by attribute name
      *
-     *  @param fields         The attribute fields which this feature holds
-     *  @param initAttributes If true, attributes are initialized. Clears any
-     *  data previously assigned.
+     *  @param fields         The attribute fields which this feature holds. When used from python, make sure
+     *                        a copy of the fields is held by python, as ownership stays there.
+     *                        I.e. Do not call feature.setFields( myDataProvider.fields() ) but instead call
+     *                        myFields = myDataProvider.fields()
+     *                        feature.setFields( myFields )
+     *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
      *  @note added in 2.0
@@ -327,9 +345,15 @@ class QgsFeature
      */
     const QgsFields* fields() const;
 
-    /** Insert a value into attribute.
-     *  Raises a KeyError exception if the attribute name is not found
+    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
+     *
+     *  @param name The name of the field to set
+     *  @param value The value to set
+     *
+     *  @return false if attribute name could not be converted to index (C++ only)
+     *
+     *  @note For Python: raises a KeyError exception instead of returning false
      *  @note added in 2.0
      */
     void setAttribute( const QString& name, QVariant value /GetWrapper/ );
@@ -353,11 +377,17 @@ class QgsFeature
   }
 %End
     /** Remove an attribute value.
-     *  Raises a KeyError exception if the attribute name is not found
+     *  Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
+     *
+     *  @param name The name of the field to delete
+     *
+     *  @return false if attribute name could not be converted to index (C++ only)
+     *
+     *  @note For Python: raises a KeyError exception instead of returning false
      *  @note added in 2.0
      */
-    void deleteAttribute( const QString& name );
+    bool deleteAttribute( const QString& name );
 %MethodCode
   int fieldIdx = sipCpp->fieldNameIndex(*a0);
   if (fieldIdx == -1)
@@ -371,8 +401,14 @@ class QgsFeature
   }
 %End
     /** Lookup attribute value from attribute name.
-     *  Raises a KeyError exception if the attribute is not found
+     *  Returns invalid variant if attribute name could not be converted to index (C++ only)
      *  Field map must be associated to make this work.
+     *
+     *  @param name The name of the attribute to get
+     *
+     *  @return The value of the attribute (C++: Invalid variant if no such name exists )
+     *
+     *  @note For Python: raises a KeyError exception if field is not found
      *  @note added in 2.0
      */
     SIP_PYOBJECT attribute( const QString& name ) const;
@@ -391,6 +427,7 @@ class QgsFeature
 %End
     /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
      *  Field map must be associated to make this work.
+     *
      *  @note added in 2.0
      */
     int fieldNameIndex( const QString& fieldName ) const;

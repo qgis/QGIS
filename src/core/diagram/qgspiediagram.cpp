@@ -15,6 +15,7 @@
 #include "qgspiediagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsrendercontext.h"
+#include "qgsexpression.h"
 
 #include <QPainter>
 
@@ -34,10 +35,21 @@ QgsDiagram* QgsPieDiagram::clone() const
   return new QgsPieDiagram( *this );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
-  QVariant attrVal = attributes[is.classificationAttribute];
+
+  QVariant attrVal;
+  if ( is.classificationAttributeIsExpression )
+  {
+    QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
+    attrVal = expression->evaluate( feature );
+  }
+  else
+  {
+    attrVal = feature.attributes()[is.classificationAttribute];
+  }
+
   if ( !attrVal.isValid() )
   {
     return QSizeF(); //zero size if attribute is missing
@@ -95,7 +107,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRen
 
 int  QgsPieDiagram::sCount = 0;
 
-void QgsPieDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
   QPainter* p = c.painter();
   if ( !p )
@@ -109,10 +121,11 @@ void QgsPieDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c
   double valSum = 0;
   int valCount = 0;
 
-  QList<int>::const_iterator catIt = s.categoryIndices.constBegin();
-  for ( ; catIt != s.categoryIndices.constEnd(); ++catIt )
+  QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
+  for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )
   {
-    currentVal = att[*catIt].toDouble();
+    QgsExpression* expression = getExpression( *catIt, feature.fields() );
+    currentVal = expression->evaluate( feature ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
     if ( currentVal ) valCount++;

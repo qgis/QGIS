@@ -368,6 +368,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
+    //! ask user about datum transformation
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -583,6 +586,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Optionally use cache with rendered map layers for the current map settings
     QgsMapRendererCache* mCache;
 
+
+    QTimer *mResizeTimer;
 }; // class QgsMapCanvas
 
 

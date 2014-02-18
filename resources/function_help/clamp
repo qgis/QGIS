@@ -14,6 +14,6 @@ Restricts an input value to a specified range.
 <!-- Show example of function.-->
      clamp(1,5,10) &rarr; 5 (<i>input</i> is between 1 and 10 so is returned unchanged)<br>
      clamp(1,0,10) &rarr; 1 (<i>input</i> is less than minimum value of 1, so function returns 1)<br>
-     clamp(1,11,10) &rarr; 10 (<i>input</i> is greater than maximum value of 10, so function returns 11)<br>
+     clamp(1,11,10) &rarr; 10 (<i>input</i> is greater than maximum value of 10, so function returns 10)<br>
      
      

@@ -327,10 +327,10 @@ python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
 __Snow Leopard system Python__
 
 Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want (requires at least SIP
-4.9), and make sure to run the versioned python binary (this one responds to
-the 'arch' command, 'python' does not).
-Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
+Also, you need to specify the architecture you want and make sure to run the
+versioned python binary (this one responds to the 'arch' command, 'python' does
+not).  Substitute '2.7' for python version and 10.7 for SDK version below for
+Lion.
 
 If you are using 32-bit Qt (Qt Carbon):
 

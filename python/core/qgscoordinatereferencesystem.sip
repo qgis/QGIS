@@ -16,7 +16,7 @@ class QgsCoordinateReferenceSystem
     {
       InternalCrsId,
       PostgisCrsId,
-      EpsgCrsId
+      EpsgCrsId     // deprecated
     };
 
     //! Default constructor
@@ -71,7 +71,7 @@ class QgsCoordinateReferenceSystem
      * @param theWkt The Wkt for the desired spatial reference system.
      * @return bool TRUE if success else false
      */
-    bool createFromWkt( const QString theWkt );
+    bool createFromWkt( const QString &theWkt );
 
     /*! Set up this srs by fetching the appropriate information from the
      * sqlite backend. If the srsid is < 100000, only the system srs.db
@@ -89,7 +89,7 @@ class QgsCoordinateReferenceSystem
      * in the parameters member. The reason for this is so that we
      * can easily present the user with 'natural language' representation
      * of the projection and ellipsoid by looking them up in the srs.bs sqlite
-     * database. Also having the ellpse and proj elements stripped out
+     * database. Also having the ellipse and proj elements stripped out
      * is helpful to speed up globbing queries (see below).
      *
      * We try to match the proj string to and srsid using the following logic:
@@ -106,13 +106,10 @@ class QgsCoordinateReferenceSystem
      *   check for a match in entities that have the same ellps and proj entries so
      *   that it doesn't munch yer cpu so much.
      *
-     * @note If the srs was not matched, we will create a new entry on the users tbl_srs
-     *    for this srs.
-     *
      * @param theProjString A proj4 format string
      * @return bool TRUE if success else false
      */
-    bool createFromProj4( const QString theProjString );
+    bool createFromProj4( const QString &theProjString );
 
     /*! Set up this srs from a string definition, by default a WKT definition.  Otherwise
      * the string defines a authority, followed by a colon, followed by the definition.
@@ -121,7 +118,7 @@ class QgsCoordinateReferenceSystem
      * uses the corresponding createFrom... function.
      * @param theDefinition A String containing a coordinate reference system definition.
      */
-    bool createFromString( const QString theDefinition );
+    bool createFromString( const QString &theDefinition );
 
     /*! Set up this srs from a various text formats.
      *
@@ -138,7 +135,7 @@ class QgsCoordinateReferenceSystem
      *
      * @note added in 1.8
      */
-    bool createFromUserInput( const QString theDefinition );
+    bool createFromUserInput( const QString &theDefinition );
 
     /*! Make sure that ESRI WKT import is done properly.
      * This is required for proper shapefile CRS import when using gdal>= 1.9.
@@ -215,6 +212,7 @@ class QgsCoordinateReferenceSystem
 
     /** Sets custom function to force valid CRS
      *  QGIS uses implementation in QgisGui::customSrsValidation
+     * @note not available in python bindings
      */
     // static void setCustomSrsValidation( CUSTOM_CRS_VALIDATION f );
 
@@ -305,8 +303,12 @@ class QgsCoordinateReferenceSystem
      */
     static int syncDb();
 
+
     /*! Save the proj4-string as a custom CRS
      * @returns bool true if success else false
      */
     bool saveAsUserCRS( QString name );
+
+    /**Returns auth id of related geographic CRS*/
+    QString geographicCRSAuthId() const;
 };

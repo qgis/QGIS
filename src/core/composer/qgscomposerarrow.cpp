@@ -76,7 +76,7 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
   arrowPen.setColor( mArrowColor );
   painter->setPen( arrowPen );
   painter->setBrush( QBrush( mArrowColor ) );
-  painter->drawLine( QPointF( mStartPoint.x() - transform().dx(), mStartPoint.y() - transform().dy() ), QPointF( mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy() ) );
+  painter->drawLine( QPointF( mStartPoint.x() - pos().x(), mStartPoint.y() - pos().y() ), QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) );
 
   if ( mMarkerMode == DefaultMarker )
   {
@@ -98,10 +98,10 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
 void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
 {
   //maintain the relative position of start and stop point in the rectangle
-  double startPointXPos = ( mStartPoint.x() - transform().dx() ) / rect().width();
-  double startPointYPos = ( mStartPoint.y() - transform().dy() ) / rect().height();
-  double stopPointXPos = ( mStopPoint.x() - transform().dx() ) / rect().width();
-  double stopPointYPos = ( mStopPoint.y() - transform().dy() ) / rect().height();
+  double startPointXPos = ( mStartPoint.x() - pos().x() ) / rect().width();
+  double startPointYPos = ( mStartPoint.y() - pos().y() ) / rect().height();
+  double stopPointXPos = ( mStopPoint.x() - pos().x() ) / rect().width();
+  double stopPointYPos = ( mStopPoint.y() - pos().y() ) / rect().height();
 
   mStartPoint.setX( rectangle.left() + startPointXPos * rectangle.width() );
   mStartPoint.setY( rectangle.top() + startPointYPos * rectangle.height() );
@@ -117,7 +117,7 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
   QBrush arrowBrush = p->brush();
   arrowBrush.setColor( mArrowColor );
   p->setBrush( arrowBrush );
-  drawArrowHead( p, mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy(), angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
+  drawArrowHead( p, mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y(), angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
 }
 
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
@@ -156,12 +156,12 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   QPointF canvasPoint;
   if ( type == StartMarker )
   {
-    canvasPoint = QPointF( mStartPoint.x() - transform().dx(), mStartPoint.y() - transform().dy() );
+    canvasPoint = QPointF( mStartPoint.x() - pos().x(), mStartPoint.y() - pos().y() );
     imageFixPoint.setY( mStartArrowHeadHeight );
   }
   else //end marker
   {
-    canvasPoint = QPointF( mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy() );
+    canvasPoint = QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() );
     imageFixPoint.setY( 0 );
   }
 

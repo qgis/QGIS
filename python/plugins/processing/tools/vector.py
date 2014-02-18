@@ -43,34 +43,16 @@ def features(layer):
 
         def __init__(self, layer):
             self.layer = layer
-            self.iter = layer.getFeatures()
             self.selection = False
+            self.iter = layer.getFeatures()
             if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
-                self.selected = layer.selectedFeatures()
-                if len(self.selected) > 0:
+                selected = layer.selectedFeatures()
+                if len(selected) > 0:
                     self.selection = True
-                    self.idx = 0
+                    self.iter = iter(selected)
 
         def __iter__(self):
-            return self
-
-        def next(self):
-            if self.selection:
-                if self.idx < len(self.selected):
-                    feature = self.selected[self.idx]
-                    self.idx += 1
-                    return feature
-                else:
-                    raise StopIteration()
-            else:
-                if self.iter.isClosed():
-                    raise StopIteration()
-                f = QgsFeature()
-                if self.iter.nextFeature(f):
-                    return f
-                else:
-                    self.iter.close()
-                    raise StopIteration()
+            return self.iter
 
         def __len__(self):
             if self.selection:
@@ -153,34 +135,27 @@ def spatialindex(layer):
 
 
 def createUniqueFieldName(fieldName, fieldList):
+    def nextname(name):
+        num = 1
+        while True:
+            returnname ='{name}_{num}'.format(name=name[:8], num=num)
+            yield returnname
+            num += 1
+
+    def found(name):
+        return any(f.name() == name for f in fieldList)
+
     shortName = fieldName[:10]
 
-    if len(fieldList) == 0:
+    if not fieldList:
         return shortName
 
-    fieldNames = [f.name() for f in fieldList]
-
-    if shortName not in fieldNames:
+    if not found(shortName):
         return shortName
 
-    shortName = fieldName[:8] + '_1'
-    changed = True
-    while changed:
-        changed = False
-        for n in fieldList:
-            if n == shortName:
-
-                # Create unique field name
-                num = int(shortName[-1:])
-                if num < 9:
-                    shortName = shortName[:8] + '_' + str(num + 1)
-                else:
-                    shortName = shortName[:7] + '_' + str(num + 1)
-
-                changed = True
-
-    return shortName
-
+    for newname in nextname(shortName):
+        if not found(newname):
+            return newname
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)

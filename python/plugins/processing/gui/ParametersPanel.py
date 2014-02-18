@@ -185,6 +185,8 @@ class ParametersPanel(QtGui.QWidget):
             return layer.name()
 
     def getWidgetFromParameter(self, param):
+        # TODO Create Parameter widget class that holds the logic
+        # for creating a widget that belongs to the parameter.
         if isinstance(param, ParameterRaster):
             layers = dataobjects.getRasterLayers()
             items = []
@@ -320,18 +322,11 @@ class ParametersPanel(QtGui.QWidget):
         elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
             fieldTypes = [QtCore.QVariant.Int, QtCore.QVariant.Double]
 
-        fieldNames = []
-        fields = layer.pendingFields()
-        if len(fieldTypes) == 0:
-            for field in fields:
-                if not field.name() in fieldNames:
-                    fieldNames.append(unicode(field.name()))
-        else:
-            for field in fields:
-                if field.type() in fieldTypes and not field.name() \
-                    in fieldNames:
-                    fieldNames.append(unicode(field.name()))
-        return sorted(fieldNames, cmp=locale.strcoll)
+        fieldNames = set()
+        for field in layer.pendingFields():
+            if not fieldTypes or field.type() in fieldTypes:
+                fieldNames.add(unicode(field.name()))
+        return sorted(list(fieldNames), cmp=locale.strcoll)
 
     def somethingDependsOnThisParameter(self, parent):
         for param in self.alg.parameters:
@@ -341,22 +336,13 @@ class ParametersPanel(QtGui.QWidget):
         return False
 
     def setTableContent(self):
-        params = self.alg.parameters
-        outputs = self.alg.outputs
-        numParams = 0
-        for param in params:
-            if not param.hidden:
-                numParams += 1
-        numOutputs = 0
-        for output in outputs:
-            if not output.hidden:
-                numOutputs += 1
+        params = [parm for parm in self.alg.parameters if not parm.hidden]
+        outputs = [output for output in self.alg.outputs if not output.hidden]
+        numParams = len(parms)
+        numOutputs = len(outputs)
         self.tableWidget.setRowCount(numParams + numOutputs)
 
-        i = 0
-        for param in params:
-            if param.hidden:
-                continue
+        for i, param in enumerate(params):
             item = QtGui.QTableWidgetItem(param.description)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i, 0, item)
@@ -364,11 +350,8 @@ class ParametersPanel(QtGui.QWidget):
             self.valueItems[param.name] = item
             self.tableWidget.setCellWidget(i, 1, item)
             self.tableWidget.setRowHeight(i, 22)
-            i += 1
 
-        for output in outputs:
-            if output.hidden:
-                continue
+        for i, output in enumerate(outputs):
             item = QtGui.QTableWidgetItem(output.description + '<'
                     + output.__module__.split('.')[-1] + '>')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -377,4 +360,3 @@ class ParametersPanel(QtGui.QWidget):
             self.valueItems[output.name] = item
             self.tableWidget.setCellWidget(i, 1, item)
             self.tableWidget.setRowHeight(i, 22)
-            i += 1

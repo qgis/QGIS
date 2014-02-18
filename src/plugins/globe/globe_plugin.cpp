@@ -38,6 +38,7 @@
 #include <qgsdistancearea.h>
 
 #include <QAction>
+#include <QDir>
 #include <QToolBar>
 #include <QMessageBox>
 
@@ -60,8 +61,13 @@
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
-#include <osgEarth/Version>
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
+#include <osgEarthDrivers/cache_filesystem/FileSystemCache>
+#endif
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+#include <osgEarthUtil/VerticalScale>
+#endif
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
 
@@ -80,14 +86,17 @@ static const QString sExperimental = QString( "true" );
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( NULL )
-    , mQActionSettingsPointer( NULL )
+    , mQActionPointer( 0 )
+    , mQActionSettingsPointer( 0 )
+    , mQActionUnload( 0 )
     , mOsgViewer( 0 )
     , mViewerWidget( 0 )
+    , mMapNode( 0 )
+    , mBaseLayer( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
-    , mElevationManager( NULL )
-    , mObjectPlacer( NULL )
+    , mElevationManager( 0 )
+    , mObjectPlacer( 0 )
 {
   mIsGlobeRunning = false;
   //needed to be "seen" by other plugins by doing
@@ -96,15 +105,27 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   setObjectName( "globePlugin" );
   setParent( theQgisInterface->mainWindow() );
 
-// add internal osg plugin path if bundled osg on OS X
-#ifdef HAVE_MACAPP_BUNDLED_OSG
-  if ( !QgsApplication::isRunningFromBuildDir() )
+// update path to osg plugins on Mac OS X
+#ifdef Q_OS_MACX
+  if ( !getenv( "OSG_LIBRARY_PATH" ) )
   {
-    osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( QgsApplication::pluginPath() + "/../osgPlugins" ).toStdString() );
+    // OSG_PLUGINS_PATH value set by CMake option
+    QString ogsPlugins( OSG_PLUGINS_PATH );
+#ifdef HAVE_MACAPP_BUNDLED_OSG
+    if ( !QgsApplication::isRunningFromBuildDir() )
+    {
+      // add internal osg plugin path if bundled osg
+      ogsPlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+    }
+#endif
+    if ( QFile::exists( ogsPlugins ) )
+    {
+      osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( ogsPlugins ).toStdString() );
+    }
   }
 #endif
 
-  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
+  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), this, QgisGui::ModalDialogFlags );
 }
 
 //destructor
@@ -193,10 +214,17 @@ private:
 
 void GlobePlugin::initGui()
 {
+  delete mQActionPointer;
+  delete mQActionSettingsPointer;
+  delete mQActionUnload;
+
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
+  mQActionSettingsPointer->setObjectName( "mQActionSettingsPointer" );
   mQActionUnload = new QAction( tr( "Unload Globe" ), this );
+  mQActionUnload->setObjectName( "mQActionUnload" );
 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );
@@ -234,6 +262,8 @@ void GlobePlugin::run()
 {
   if ( mViewerWidget == 0 )
   {
+    QSettings settings;
+
 #ifdef QGISDEBUG
     if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
@@ -266,17 +296,18 @@ void GlobePlugin::run()
       setupMap();
     }
 
-    if ( getenv( "GLOBE_SKY" ) )
-    {
-      SkyNode* sky = new SkyNode( mMapNode->getMap() );
-      sky->setDateTime( 2011, 1, 6, 17.0 );
-      //sky->setSunPosition( osg::Vec3(0,-1,0) );
-      sky->attach( mOsgViewer );
-      mRootNode->addChild( sky );
-    }
+    // Initialize the sky node if required
+    setSkyParameters( settings.value( "/Plugin-Globe/skyEnabled", false ).toBool()
+                      , settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime()
+                      , settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
 
     // create a surface to house the controls
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 1, 1 )
     mControlCanvas = ControlCanvas::get( mOsgViewer );
+#else
+    mControlCanvas = new ControlCanvas( mOsgViewer );
+#endif
+
     mRootNode->addChild( mControlCanvas );
 
     mOsgViewer->setSceneData( mRootNode );
@@ -299,8 +330,6 @@ void GlobePlugin::run()
     // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
     mOsgViewer->getDatabasePager()->setDoPreCompile( true );
 
-    mSettingsDialog->setViewer( mOsgViewer );
-
 #ifdef GLOBE_OSG_STANDALONE_VIEWER
     mOsgViewer->run();
 #endif
@@ -309,9 +338,24 @@ void GlobePlugin::run()
     mViewerWidget->setGeometry( 100, 100, 1024, 800 );
     mViewerWidget->show();
 
+    if ( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() )
+    {
+      QGLFormat glf = QGLFormat::defaultFormat();
+      glf.setSampleBuffers( true );
+      bool aaLevelIsInt;
+      int aaLevel;
+      QString aaLevelStr = settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString();
+      aaLevel = aaLevelStr.toInt( &aaLevelIsInt );
+      if ( aaLevelIsInt )
+      {
+        glf.setSamples( aaLevel );
+      }
+      mViewerWidget->setFormat( glf );
+    }
+
     // Set a home viewpoint
     manip->setHomeViewpoint(
-      osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
+      osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 2e7 ),
       1.0 );
 
     setupControls();
@@ -344,14 +388,18 @@ void GlobePlugin::settings()
 void GlobePlugin::setupMap()
 {
   QSettings settings;
-  /*
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
+  FileSystemCacheOptions cacheOptions;
+  cacheOptions.rootPath() = cacheDirectory.toStdString();
+#else
   TMSCacheOptions cacheOptions;
   cacheOptions.setPath( cacheDirectory.toStdString() );
-  */
+#endif
 
   MapOptions mapOptions;
-  //mapOptions.cache() = cacheOptions;
+  mapOptions.cache() = cacheOptions;
   osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
@@ -361,9 +409,6 @@ void GlobePlugin::setupMap()
   ImageLayerOptions layerOptions( "world", driverOptions );
   map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
   */
-  TMSOptions imagery;
-  imagery.url() = "http://readymap.org/readymap/tiles/1.0.0/7/";
-  map->addImageLayer( new ImageLayer( "Imagery", imagery ) );
 
   MapNodeOptions nodeOptions;
   //nodeOptions.proxySettings() =
@@ -378,6 +423,11 @@ void GlobePlugin::setupMap()
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
+
+  if ( settings.value( "/Plugin-Globe/baseLayerEnabled", true ).toBool() )
+  {
+    setBaseMap( settings.value( "/Plugin-Globe/baseLayerURL", "http://readymap.org/readymap/tiles/1.0.0/7/" ).toString() );
+  }
 
   mRootNode = new osg::Group();
   mRootNode->addChild( mMapNode );
@@ -477,15 +527,20 @@ double GlobePlugin::getSelectedElevation()
 
 void GlobePlugin::syncExtent()
 {
+  QgsMapCanvas* mapCanvas = mQGisIface->mapCanvas();
+  QgsMapRenderer* mapRenderer = mapCanvas->mapRenderer();
+  QgsRectangle extent = mapCanvas->extent();
+
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
-  //get mapCanvas->extent().height() in meters
-  QgsRectangle extent = mQGisIface->mapCanvas()->extent();
   QgsDistanceArea dist;
-  dist.setEllipsoidalMode( true );
-  //dist.setProjectionsEnabled( true );
+
+  dist.setSourceCrs( mapRenderer->destinationCrs().srsid() );
+  dist.setEllipsoidalMode( mapRenderer->hasCrsTransformEnabled() );
+  dist.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
   double height = dist.measureLine( ll, ul );
@@ -500,6 +555,22 @@ void GlobePlugin::syncExtent()
   osgEarth::Util::Viewpoint viewpoint( osg::Vec3d( extent.center().x(), extent.center().y(), 0.0 ), 0.0, -90.0, distance );
   manip->setViewpoint( viewpoint, 4.0 );
 }
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+void GlobePlugin::setVerticalScale( double value )
+{
+  if ( mMapNode )
+  {
+    if ( !mVerticalScale.get() || mVerticalScale->getScale() != value )
+    {
+      mMapNode->getTerrainEngine()->removeEffect( mVerticalScale );
+      mVerticalScale = new osgEarth::Util::VerticalScale();
+      mVerticalScale->setScale( value );
+      mMapNode->getTerrainEngine()->addEffect( mVerticalScale );
+    }
+  }
+}
+#endif
 
 void GlobePlugin::setupControls()
 {
@@ -628,26 +699,29 @@ void GlobePlugin::setupControls()
   mControlCanvas->addControl( backgroundGrp2 );
 
   //Zoom Reset
+#if ENABLE_HOME_BUTTON
   osg::Image* homeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
   ImageControl* home = new NavigationControl( homeImg );
   home->setPosition( imgLeft + 12 + 3, imgTop + 2 );
+  imgTop = imgTop + 23 + 2;
   home->addEventHandler( new HomeControlHandler( manip ) );
   mControlCanvas->addControl( home );
+#endif
 
   //refresh layers
   osg::Image* refreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
   ImageControl* refresh = new NavigationControl( refreshImg );
-  refresh->setPosition( imgLeft + 12 + 3, imgTop + 2 + 23 + 2 );
+  refresh->setPosition( imgLeft + 12 + 3, imgTop + 3 );
+  imgTop = imgTop + 23 + 2;
   refresh->addEventHandler( new RefreshControlHandler( this ) );
   mControlCanvas->addControl( refresh );
 
   //Sync Extent
-#if ENABLE_SYNC_BUTTON
   osg::Image* syncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
   ImageControl* sync = new NavigationControl( syncImg );
+  sync->setPosition( imgLeft + 12 + 3, imgTop + 2 );
   sync->addEventHandler( new SyncExtentControlHandler( this ) );
   mControlCanvas->addControl( sync );
-#endif
 }
 
 void GlobePlugin::setupProxy()
@@ -703,9 +777,11 @@ void GlobePlugin::imageLayersChanged()
     mTileSource = new QgsOsgEarthTileSource( mQGisIface );
     mTileSource->initialize( "", 0 );
     ImageLayerOptions options( "QGIS" );
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
+    options.cachePolicy() = CachePolicy::NO_CACHE;
+#endif
     mQgisMapLayer = new ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
-    //[layer->setCache is private in 1.3.0] mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {
@@ -730,7 +806,7 @@ void GlobePlugin::elevationLayersChanged()
     // Remove elevation layers
     ElevationLayerVector list;
     map->getElevationLayers( list );
-    for ( ElevationLayerVector::iterator i = list.begin(); i != list.end(); i++ )
+    for ( ElevationLayerVector::iterator i = list.begin(); i != list.end(); ++i )
     {
       map->removeElevationLayer( *i );
     }
@@ -762,11 +838,64 @@ void GlobePlugin::elevationLayersChanged()
 
       //if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+    double scale = QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/verticalScale", 1 );
+    setVerticalScale( scale );
+#endif
   }
   else
   {
     QgsDebugMsg( "layersChanged: Globe NOT running, skipping" );
     return;
+  }
+}
+
+void GlobePlugin::setBaseMap( QString url )
+{
+  if ( mMapNode )
+  {
+    mMapNode->getMap()->removeImageLayer( mBaseLayer );
+    if ( url.isNull() )
+    {
+      mBaseLayer = 0;
+    }
+    else
+    {
+      TMSOptions imagery;
+      imagery.url() = url.toStdString();
+      mBaseLayer = new ImageLayer( "Imagery", imagery );
+      mMapNode->getMap()->insertImageLayer( mBaseLayer, 0 );
+    }
+  }
+}
+
+void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, bool autoAmbience )
+{
+  if ( mRootNode )
+  {
+    if ( enabled )
+    {
+      // Create if not yet done
+      if ( !mSkyNode.get() )
+        mSkyNode = new SkyNode( mMapNode->getMap() );
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
+      mSkyNode->setAutoAmbience( autoAmbience );
+#else
+      Q_UNUSED( autoAmbience );
+#endif
+      mSkyNode->setDateTime( dateTime.date().year()
+                             , dateTime.date().month()
+                             , dateTime.date().day()
+                             , dateTime.time().hour() + dateTime.time().minute() / 60.0 );
+      //sky->setSunPosition( osg::Vec3(0,-1,0) );
+      mSkyNode->attach( mOsgViewer );
+      mRootNode->addChild( mSkyNode );
+    }
+    else
+    {
+      mRootNode->removeChild( mSkyNode );
+    }
   }
 }
 
@@ -807,6 +936,10 @@ void GlobePlugin::help()
 void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
 {
 #ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+  Q_UNUSED( node );
+  Q_UNUSED( lat );
+  Q_UNUSED( lon );
+  Q_UNUSED( alt );
 #else
   // get elevation
   double elevation = 0.0;

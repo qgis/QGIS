@@ -41,6 +41,7 @@ class TestQgsComposerEffects: public QObject
     QgsComposerShape* mComposerRect1;
     QgsComposerShape* mComposerRect2;
     QgsMapSettings mMapSettings;
+    QString mReport;
 };
 
 void TestQgsComposerEffects::initTestCase()
@@ -61,11 +62,21 @@ void TestQgsComposerEffects::initTestCase()
   mComposerRect2->setShapeType( QgsComposerShape::Rectangle );
   mComposition->addComposerShape( mComposerRect2 );
 
+  mReport = "<h1>Composer Effects Tests</h1>\n";
 }
 
 void TestQgsComposerEffects::cleanupTestCase()
 {
   delete mComposition;
+
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsComposerEffects::init()
@@ -82,9 +93,8 @@ void TestQgsComposerEffects::blend_modes()
 {
   mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  QgsCompositionChecker checker( "Composer effects blending", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composereffects" + QDir::separator() + "composereffect_blend.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composereffects_blend", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
   // reset blending
   mComposerRect2->setBlendMode( QPainter::CompositionMode_SourceOver );
 }
@@ -93,9 +103,8 @@ void TestQgsComposerEffects::transparency()
 {
   mComposerRect2->setTransparency( 50 );
 
-  QgsCompositionChecker checker( "Composer item transparency", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composereffects" + QDir::separator() + "composereffect_transparency.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composereffects_transparency", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
 }
 
 QTEST_MAIN( TestQgsComposerEffects )
