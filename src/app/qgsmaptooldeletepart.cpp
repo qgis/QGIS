@@ -15,21 +15,23 @@
 
 #include "qgsmaptooldeletepart.h"
 
+#include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
+#include "qgsmessagebar.h"
+#include "qgsgeometry.h"
 
 #include <QMouseEvent>
 #include <QMessageBox>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolVertexEdit( canvas ), mCross( 0 )
+    : QgsMapToolEdit( canvas ), mCross( 0 )
 {
 }
 
 QgsMapToolDeletePart::~QgsMapToolDeletePart()
 {
-  delete mCross;
 }
 
 void QgsMapToolDeletePart::canvasMoveEvent( QMouseEvent *e )
@@ -40,8 +42,6 @@ void QgsMapToolDeletePart::canvasMoveEvent( QMouseEvent *e )
 
 void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
 {
-  delete mCross;
-  mCross = 0;
 
   mRecentSnappingResults.clear();
   //do snap -> new recent snapping results
@@ -49,80 +49,137 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
   {
     //error
   }
-
-  if ( mRecentSnappingResults.size() > 0 )
-  {
-    QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
-
-    //show vertex marker
-    mCross = new QgsVertexMarker( mCanvas );
-    mCross->setIconType( QgsVertexMarker::ICON_X );
-    mCross->setCenter( markerPoint );
-  }
-  else
-  {
-    displaySnapToleranceWarning();
-  }
 }
 
 void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
 {
   Q_UNUSED( e );
-  delete mCross;
-  mCross = 0;
 
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
     return;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+  vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   if ( !vlayer )
-    return;
-
-  if ( mRecentSnappingResults.size() > 0 )
   {
-    QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
-    for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
+    notifyNotVectorLayer();
+    return;
+  }
+
+  if ( !vlayer->isEditable() )
+  {
+    notifyNotEditableLayer();
+    return;
+  }
+  QgsGeometry* g;
+  QgsFeature f;
+  int partNum;
+  switch( vlayer->geometryType() )
+  {
+    case QGis::Point:
+    case QGis::Line:
     {
-      if ( sr_it->snappedVertexNr != -1 )
-        deletePart( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer );
-      else if ( sr_it->beforeVertexNr != -1 )
-        deletePart( sr_it->snappedAtGeometry, sr_it->beforeVertexNr, vlayer );
-      else if ( sr_it->afterVertexNr != -1 )
-        deletePart( sr_it->snappedAtGeometry, sr_it->afterVertexNr, vlayer );
+      if ( mRecentSnappingResults.size() == 0 )
+      {
+        return;
+      }
+      QgsSnappingResult sr = mRecentSnappingResults.first();
+      vlayer->getFeatures( QgsFeatureRequest().setFilterFid( sr.snappedAtGeometry ) ).nextFeature( f );
+      g = f.geometry();
+      if ( !g )
+        return;
+      if ( ( g->type() == QGis::Point && g->asMultiPoint().size() == 1) ||
+           ( g->type() == QGis::Line  && g->asMultiPolyline().size() == 1 ) )
+      {
+        notifySinglePart();
+        return;
+      }
+      int vertex = sr.snappedVertexNr;
+      if ( vertex == -1 )
+      {
+        vertex = sr.beforeVertexNr;
+      }
+      partNum = partNumberOfVertex( g, vertex );
+      break;
+    }
+    case QGis::Polygon:
+    {
+      QgsPoint p = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(),e->y());
+      p = toLayerCoordinates(vlayer, p);
+      f = featureUnderPoint(p);
+      g = f.geometry();
+      if ( !g )
+        return;
+      if ( g->asMultiPolygon().size() == 1 )
+      {
+        notifySinglePart();
+        return;
+      }
+      partNum = partNumberOfPoint( g, p );
+      if ( partNum < 0 )
+        return;
+      break;
+    }
+    default:
+    {
+      QgsDebugMsg("Unknown geometry type");
+      return;
     }
   }
-
-}
-
-
-void QgsMapToolDeletePart::deletePart( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer )
-{
-  QgsFeature f;
-  vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fId ) ).nextFeature( f );
-
-  // find out the part number
-  QgsGeometry* g = f.geometry();
-  if ( !g->isMultipart() )
-  {
-    QMessageBox::information( mCanvas, tr( "Delete part" ), tr( "This isn't a multipart geometry." ) );
-    return;
-  }
-
-  int partNum = partNumberOfVertex( g, beforeVertexNr );
-
   if ( g->deletePart( partNum ) )
   {
     vlayer->beginEditCommand( tr( "Part of multipart feature deleted" ) );
-    vlayer->changeGeometry( fId, g );
+    vlayer->changeGeometry( f.id(), g );
     vlayer->endEditCommand();
     mCanvas->refresh();
   }
   else
   {
-    QMessageBox::information( mCanvas, tr( "Delete part" ), tr( "Couldn't remove the selected part." ) );
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Delete part" ),
+      tr( "Couldn't remove the selected part." ),
+      QgsMessageBar::WARNING,
+      QgisApp::instance()->messageTimeout() );
   }
+  return;
+}
 
+QgsFeature QgsMapToolDeletePart::featureUnderPoint(QgsPoint p)
+{
+  QgsRectangle r;
+  double searchRadius = mCanvas->extent().width()/100;
+  r.setXMinimum( p.x() - searchRadius );
+  r.setXMaximum( p.x() + searchRadius );
+  r.setYMinimum( p.y() - searchRadius );
+  r.setYMaximum( p.y() + searchRadius );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ) );
+  QgsFeature f;
+  fit.nextFeature( f );
+  return f;
+}
+
+
+int QgsMapToolDeletePart::partNumberOfPoint(QgsGeometry *g, QgsPoint point)
+{
+  int part;
+  switch ( g->wkbType() )
+  {
+    case QGis::WKBMultiPolygon25D:
+    case QGis::WKBMultiPolygon:
+    {
+      QgsMultiPolygon mpolygon = g->asMultiPolygon();
+      for ( part = 0; part < mpolygon.count(); part++ ) // go through the polygons
+      {
+        const QgsPolygon& polygon = mpolygon[part];
+        QgsGeometry* partGeo = QgsGeometry::fromPolygon(polygon);
+        if ( partGeo->contains( &point ) )
+          return part;
+      }
+      return -1; // not found
+    }
+    default:
+      return -1;
+  }
 }
 
 int QgsMapToolDeletePart::partNumberOfVertex( QgsGeometry* g, int beforeVertexNr )
@@ -131,6 +188,14 @@ int QgsMapToolDeletePart::partNumberOfVertex( QgsGeometry* g, int beforeVertexNr
 
   switch ( g->wkbType() )
   {
+    case QGis::WKBLineString25D:
+    case QGis::WKBLineString:
+    case QGis::WKBPoint25D:
+    case QGis::WKBPoint:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBPolygon:
+      return 1;
+
     case QGis::WKBMultiPoint25D:
     case QGis::WKBMultiPoint:
       if ( beforeVertexNr < g->asMultiPoint().count() )
@@ -175,12 +240,17 @@ int QgsMapToolDeletePart::partNumberOfVertex( QgsGeometry* g, int beforeVertexNr
   }
 }
 
-
 void QgsMapToolDeletePart::deactivate()
 {
-  delete mCross;
-  mCross = 0;
-
   QgsMapTool::deactivate();
 }
 
+void QgsMapToolDeletePart::notifySinglePart()
+{
+  QgisApp::instance()->messageBar()->pushMessage(
+    tr( "Cannot use delete part" ),
+    tr( "The Delete part tool cannot be used on single part features." ),
+    QgsMessageBar::INFO,
+    QgisApp::instance()->messageTimeout() );
+  return;
+}

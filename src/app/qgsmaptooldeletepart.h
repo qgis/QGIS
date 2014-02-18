@@ -16,12 +16,12 @@
 #ifndef QGSMAPTOOLDELETEPART_H
 #define QGSMAPTOOLDELETEPART_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsmaptooledit.h"
 
 class QgsVertexMarker;
 
 /**Map tool to delete vertices from line/polygon features*/
-class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolVertexEdit
+class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -39,13 +39,19 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolVertexEdit
     void deactivate();
 
   private:
-    QgsVertexMarker* mCross;
+    QgsVectorLayer* vlayer;
+    QList<QgsSnappingResult> mRecentSnappingResults;
 
-    //! delete part of a geometry
-    void deletePart( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
-
-    //! find out part number of geometry given the snapped vertex number
+    //! find out the part number of geometry given the vertex number
     int partNumberOfVertex( QgsGeometry* g, int beforeVertexNr );
+
+    //! find out the part number of geometry including the point
+    int partNumberOfPoint( QgsGeometry* g, QgsPoint point );
+
+    //! find which feature is under the point position (different from snapping as we allow the whole polygon surface)
+    QgsFeature featureUnderPoint(QgsPoint p);
+
+    void notifySinglePart();
 
 };
 
