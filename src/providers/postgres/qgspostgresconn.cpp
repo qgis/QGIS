@@ -288,6 +288,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   QgsDebugMsg( sql );
   QgsPostgresResult colRes = PQexec( sql );
 
+  layerProperty.pkCols.clear();
   layerProperty.nSpCols = 0;
 
   if ( colRes.PQresultStatus() == PGRES_TUPLES_OK )
@@ -414,7 +415,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    .arg( srid )
                    .arg( relkind ) );
 
-      layerProperty.pkCols.clear();
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
