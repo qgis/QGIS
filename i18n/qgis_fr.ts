@@ -15325,8 +15325,7 @@ Veuillez contacter les développeurs.
         <location filename="../src/app/qgisapp.cpp" line="4425"/>
         <location filename="../src/app/qgisapp.cpp" line="4446"/>
         <source>Commit errors</source>
-        <translation>Erreurs de commi:
-%s</translation>
+        <translation>Erreurs de commit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4426"/>
