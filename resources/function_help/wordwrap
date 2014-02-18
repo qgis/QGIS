@@ -12,5 +12,5 @@ Returns a string wrapped to a maximum/minimum number of characters.
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     wordwrap('UNIVERSITY OF QGIS',' ',13) &rarr; 'UNIVERSITY OF\nQGIS'<br>
-     wordwrap('UNIVERSITY OF QGIS',' ',-3) &rarr; 'UNIVERSITY\nOF QGIS'</p>
+     wordwrap('UNIVERSITY OF QGIS',13) &rarr; 'UNIVERSITY OF\nQGIS'<br>
+     wordwrap('UNIVERSITY OF QGIS',-3) &rarr; 'UNIVERSITY\nOF QGIS'</p>
