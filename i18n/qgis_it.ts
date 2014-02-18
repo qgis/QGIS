@@ -11680,8 +11680,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="59"/>
         <source>Road graph plugin</source>
-        <translatorcomment>penso sia meglio lasciarlo in inglese piuttosto che grafo Strada - non concordo</translatorcomment>
-        <translation>Plugin grafo strade</translation>
+        <translation>Grafo strade</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="60"/>
@@ -32805,17 +32804,17 @@ In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi 
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="773"/>
         <source>Highlight layer</source>
-        <translation>Evidenzia layer</translation>
+        <translation>Evidenzia vettore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="776"/>
         <source>Activate layer</source>
-        <translation>Attiva layer</translation>
+        <translation>Attiva vettore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="777"/>
         <source>Layer properties...</source>
-        <translation>Proprietà layer...</translation>
+        <translation>Proprietà vettore...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="780"/>
@@ -59539,7 +59538,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="58"/>
         <source>Shortest path</source>
-        <translation>Via più breve</translation>
+        <translation>Percorso più breve</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="69"/>
@@ -59645,7 +59644,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="105"/>
         <source>Settings</source>
-        <translation>Preferenze</translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="109"/>
@@ -59656,8 +59655,7 @@ URL provata: %1</translation>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="116"/>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="131"/>
         <source>Road graph</source>
-        <translatorcomment>Io propongo Road graph (grafo strade); non vedo perche&apos; non tradurlo</translatorcomment>
-        <translation>Road Graph (grafo strade)</translation>
+        <translation>Grafo strade</translation>
     </message>
 </context>
 <context>
@@ -68093,6 +68091,7 @@ Restituisce una stringa che rappresenta un colore basato sulle sue componenti ro
      color_rgba(&lt;i&gt;rosso, verde, blu, alfa&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  rosso&lt;/i&gt; &amp;rarr; componente rossa espressa come valore intero da 0 a 255.&lt;br&gt;
 &lt;i&gt;  verde&lt;/i&gt; &amp;rarr; componente verde espressa come valore intero da 0 a 255.&lt;br&gt;
