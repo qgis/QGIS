@@ -62,9 +62,6 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
       mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
       mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
       mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );        
-
-      // TODO[MD]: after merge
-      //mChangedFeaturesRequest.setFilterFids( L->editBuffer()->changedAttributeValues().keys().toSet() );
     //}
   }
 }

@@ -42,6 +42,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   mLayerTransparency = layer->layerTransparency();
   mFeatureBlendMode = layer->featureBlendMode();
 
+  mSimplifyMethod = layer->simplifyMethod();
+  mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorLayer::GeometrySimplification );
+
   QSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
@@ -114,21 +117,20 @@ bool QgsVectorLayerRenderer::render()
                                       .setSubsetOfAttributes( mAttrNames, mFields );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
-#if 0  //TODO[MD]: after merge
-  if ( simplifyDrawingCanbeApplied( mContext, QgsVectorLayer::GeometrySimplification ) )
+  if ( mSimplifyGeometry )
   {
-    QPainter* p = rendererContext.painter();
+    QPainter* p = mContext.painter();
     double dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
     double map2pixelTol = mSimplifyMethod.threshold() * 96.0f / dpi;
 
-    const QgsMapToPixel& mtp = rendererContext.mapToPixel();
+    const QgsMapToPixel& mtp = mContext.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
-    const QgsCoordinateTransform* ct = rendererContext.coordinateTransform();
+    const QgsCoordinateTransform* ct = mContext.coordinateTransform();
 
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
     if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
     {
-      QgsPoint center = rendererContext.extent().center();
+      QgsPoint center = mContext.extent().center();
       double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
       QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
@@ -153,7 +155,6 @@ bool QgsVectorLayerRenderer::render()
 
     featureRequest.setSimplifyMethod( simplifyMethod );
   }
-#endif
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
 

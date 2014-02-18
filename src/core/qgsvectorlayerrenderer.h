@@ -22,6 +22,7 @@ typedef QList<int> QgsAttributeList;
 #include "qgsfield.h"  // QgsFields
 #include "qgsfeature.h"  // QgsFeatureIds
 #include "qgsfeatureiterator.h"
+#include "qgsvectorsimplifymethod.h"
 
 #include "qgsmaplayerrenderer.h"
 
@@ -86,6 +87,9 @@ protected:
 
   int mLayerTransparency;
   QPainter::CompositionMode mFeatureBlendMode;
+
+  QgsVectorSimplifyMethod mSimplifyMethod;
+  bool mSimplifyGeometry;
 };
 
 
