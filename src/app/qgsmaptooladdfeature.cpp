@@ -95,6 +95,9 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   // POINT CAPTURING
   if ( mode() == CapturePoint )
   {
+    if ( e->button() != Qt::LeftButton )
+      return;
+
     //check we only use this tool for point/multipoint layers
     if ( vlayer->geometryType() != QGis::Point )
     {
