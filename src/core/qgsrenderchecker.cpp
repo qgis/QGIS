@@ -33,6 +33,7 @@ QgsRenderChecker::QgsRenderChecker( ) :
     mRenderedImageFile( "" ),
     mExpectedImageFile( "" ),
     mMismatchCount( 0 ),
+    mColorTolerance( 0 ),
     mElapsedTimeTarget( 0 ),
     mControlPathPrefix( "" )
 {
@@ -287,16 +288,31 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
 
   mMismatchCount = 0;
+  int colorTolerance = ( int ) mColorTolerance;
   for ( int x = 0; x < myExpectedImage.width(); ++x )
   {
     for ( int y = 0; y < myExpectedImage.height(); ++y )
     {
       QRgb myExpectedPixel = myExpectedImage.pixel( x, y );
       QRgb myActualPixel = myResultImage.pixel( x, y );
-      if ( myExpectedPixel != myActualPixel )
+      if ( mColorTolerance == 0 )
       {
-        ++mMismatchCount;
-        myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+        if ( myExpectedPixel != myActualPixel )
+        {
+          ++mMismatchCount;
+          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+        }
+      }
+      else
+      {
+        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > colorTolerance ||
+             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > colorTolerance ||
+             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > colorTolerance ||
+             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > colorTolerance )
+        {
+          ++mMismatchCount;
+          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+        }
       }
     }
   }
@@ -317,7 +333,9 @@ bool QgsRenderChecker::compareImages( QString theTestName,
              QString::number( mMismatchCount ) + "/" +
              QString::number( mMatchTarget ) +
              " pixels mismatched (allowed threshold: " +
-             QString::number( theMismatchCount ) + ")";
+             QString::number( theMismatchCount ) +
+             ", allowed color component tolerance: " +
+             QString::number( mColorTolerance ) + ")";
   mReport += "</td></tr>";
 
   //

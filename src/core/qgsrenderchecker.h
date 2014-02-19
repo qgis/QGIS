@@ -68,6 +68,14 @@ class CORE_EXPORT QgsRenderChecker
 
     void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; }
     void setMapRenderer( QgsMapRenderer *thepMapRenderer ) { mpMapRenderer = thepMapRenderer; }
+
+    /** Set tolerance for color components used by runTest() and compareImages().
+     * Default value is 0.
+     * @param theColorTolerance is maximum difference for each color component
+     * including alpha to be considered correct.
+     * @note added in 2.1
+     */
+    void setColorTolerance( unsigned int theColorTolerance ) { mColorTolerance = theColorTolerance; }
     /**
      * Test using renderer to generate the image to be compared.
      * @param theTestName - to be used as the basis for writing a file to
@@ -116,6 +124,7 @@ class CORE_EXPORT QgsRenderChecker
 
     QString mControlName;
     unsigned int mMismatchCount;
+    unsigned int mColorTolerance;
     int mElapsedTimeTarget;
     QString mControlPathPrefix;
 
