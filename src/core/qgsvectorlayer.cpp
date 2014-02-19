@@ -698,7 +698,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //do startRender before getFeatures to give renderers the possibility of querying features in the startRender method
   mRendererV2->startRender( rendererContext, this );
 
-  QgsFeatureRequest& featureRequest = QgsFeatureRequest()
+  QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                       .setFilterRect( rendererContext.extent() )
                                       .setSubsetOfAttributes( attributes );
 
