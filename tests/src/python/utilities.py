@@ -17,7 +17,8 @@ import qgis
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
-                       QgsVectorFileWriter)
+                       QgsVectorFileWriter,
+                       QgsFontUtils)
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
@@ -48,7 +49,7 @@ IFACE = None
 GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
 GOOGLECRS = 900913  # constant for EPSG:GOOGLECRS Google Mercator id
 
-TESTFONT = None
+FONTSLOADED = False
 
 
 def assertHashesForFile(theHashes, theFilename):
@@ -216,18 +217,31 @@ def compareWkt(a, b, tol=0.000001):
     return True
 
 
-def loadTestFont():
-    # load the FreeSansQGIS test font
-    global TESTFONT  # pylint: disable=W0603
+def getTestFontFamily():
+    return QgsFontUtils.standardTestFontFamily()
 
-    if TESTFONT is None:
-        fontid = QtGui.QFontDatabase().addApplicationFont(
-            os.path.join(unitTestDataPath('font'),
-                         'QGIS-Vera', 'QGIS-Vera.ttf'))
-        if fontid != -1:
-            TESTFONT = QtGui.QFont('QGIS Vera Sans')
 
-    return TESTFONT
+def getTestFont(style='Roman', size=12):
+    """Only Roman and Bold are loaded by default
+    Others available: Oblique, Bold Oblique
+    """
+    if not FONTSLOADED:
+        loadTestFonts()
+    return QgsFontUtils.getStandardTestFont(style, size)
+
+
+def loadTestFonts():
+    if QGISAPP is None:
+        getQgisTestApp()
+
+    global FONTSLOADED  # pylint: disable=W0603
+    if FONTSLOADED is False:
+        QgsFontUtils.loadStandardTestFonts(['Roman', 'Bold'])
+        msg = getTestFontFamily() + ' base test font styles could not be loaded'
+        res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman')
+               and QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))
+        assert res, msg
+        FONTSLOADED = True
 
 
 def openInBrowserTab(url):

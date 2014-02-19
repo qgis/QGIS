@@ -224,7 +224,7 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
   {
     QString fontstyle( f.key() );
     QString fontpath( f.value() );
-    if ( ! ( loadstyles.contains( fontstyle ) || loadstyles.contains( "All" ) ) )
+    if ( !( loadstyles.contains( fontstyle ) || loadstyles.contains( "All" ) ) )
     {
       continue;
     }
@@ -248,8 +248,8 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
         int fontID = QFontDatabase::addApplicationFont( fontPath );
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
-        QgsDebugMsg( QString( "Test font '%1' %2 from filesystem")
-            .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
+        QgsDebugMsg( QString( "Test font '%1' %2 from filesystem" )
+                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
       }
       else
       {
@@ -260,8 +260,8 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
           loaded = ( fontID != -1 );
           fontsLoaded = ( fontsLoaded || loaded );
         }
-        QgsDebugMsg( QString( "Test font '%1' %2 from testdata.qrc")
-            .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
+        QgsDebugMsg( QString( "Test font '%1' %2 from testdata.qrc" )
+                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
       }
     }
   }

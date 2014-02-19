@@ -49,12 +49,13 @@ from utilities import (
     unittest,
     expectedFailure,
     unitTestDataPath,
-    loadTestFont,
+    loadTestFonts,
+    getTestFont,
     openInBrowserTab
 )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
-TESTFONT = loadTestFont()
+FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
 PALREPORTS = {}
@@ -65,10 +66,11 @@ class TestQgsPalLabeling(TestCase):
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
     _PalFeaturesDb = os.path.join(_PalDataDir, 'pal_features_v3.sqlite')
-    _TestFont = TESTFONT
+    _TestFont = getTestFont()  # Roman at 12 pt
     _MapRegistry = None
     _MapRenderer = None
     _Canvas = None
+    _PalEngine = None
 
     @classmethod
     def setUpClass(cls):
@@ -82,10 +84,6 @@ class TestQgsPalLabeling(TestCase):
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()
         assert res, msg
-
-        # load the FreeSansQGIS labeling test font
-        msg = '\nCould not load test font, SKIPPING TEST SUITE'
-        assert TESTFONT is not None, msg
 
         cls._TestFunction = ''
         cls._TestGroup = ''
@@ -182,7 +180,7 @@ class TestQgsPalLabeling(TestCase):
         font = self.getTestFont()
         font.setPointSize(48)
         lyr.textFont = font
-        lyr.textNamedStyle = 'Medium'
+        lyr.textNamedStyle = 'Roman'
         return lyr
 
     @staticmethod

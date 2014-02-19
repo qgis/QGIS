@@ -27,6 +27,8 @@ from utilities import (
     unittest,
     expectedFailure,
     unitTestDataPath,
+    getTestFontFamily,
+    loadTestFonts
 )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -36,31 +38,41 @@ class TestQgsFontUtils(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._family = 'QGIS Vera Sans'
-        cls._fontdb = QFontDatabase()
-        """:type : QFontDatabase"""
+        cls._family = getTestFontFamily()
+        cls._has_style = QgsFontUtils.fontFamilyHasStyle
 
-    def test_loading_specific_test_font(self):
-        QgsFontUtils.loadStandardTestFonts(['Roman'])
-        msg = self._family + ' Roman test font styles could not be loaded'
-        assert self._has_style(self._family, 'Roman'), msg
+    def test_loading_base_test_fonts(self):
+        loadTestFonts()
 
-    def test_loading_all_test_fonts(self):
+    def test_loading_every_test_font(self):
         QgsFontUtils.loadStandardTestFonts(['All'])
         # styles = ''
-        # for style in self._fontdb.styles(self._family):
+        # for style in QFontDatabase().styles(self._family):
         #     styles += ' ' + style
         # print self._family + ' styles:' + styles
+
+        res = (
+            self._has_style(self._family, 'Roman')
+            and self._has_style(self._family, 'Oblique')
+            and self._has_style(self._family, 'Bold')
+            and self._has_style(self._family, 'Bold Oblique')
+        )
         msg = self._family + ' test font styles could not be loaded'
-        res = (self._has_style(self._family, 'Roman')
-               and self._has_style(self._family, 'Oblique')
-               and self._has_style(self._family, 'Bold')
-               and self._has_style(self._family, 'Bold Oblique'))
         assert res, msg
 
-    def _has_style(self, family, style):
-        return (family in self._fontdb.families()
-                and style in self._fontdb.styles(family))
+    def test_get_specific_test_font(self):
+        # default returned is Roman at 12 pt
+        f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
+        """:type: QFont"""
+        res = (
+            f.family() == self._family
+            and f.bold()
+            and f.italic()
+            and f.pointSize() == 14
+        )
+        msg = self._family + ' test font Bold Oblique at 14 pt not retrieved'
+        assert res, msg
+
 
 if __name__ == '__main__':
     unittest.main()
