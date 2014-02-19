@@ -103,7 +103,7 @@ int QgsProjectParser::numberOfLayers() const
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
-  if ( mProjectLayerElements.size() < 1 )
+  if ( mProjectLayerElements.size() < 1 && mLegendGroupElements.size() < 1 )
   {
     return;
   }
