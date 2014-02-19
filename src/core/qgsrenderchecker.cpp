@@ -244,13 +244,23 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   mReport += "Expected Duration : <= " + QString::number( mElapsedTimeTarget ) +
              "ms (0 indicates not specified)<br>";
   mReport += "Actual Duration :  " + QString::number( mElapsedTime ) + "ms<br>";
+
+  // limit image size in page to something reasonable
+  int imgWidth = qMin( myExpectedImage.width(), 400 );
+  int imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
   QString myImagesString = "</td></tr>"
                            "<tr><td>Test Result:</td><td>Expected Result:</td><td>Difference (all blue is good, any red is bad)</td></tr>\n"
-                           "<tr><td><img src=\"file://" +
+                           "<tr><td><img width=" + QString::number( imgWidth ) +
+                           " height=" + QString::number( imgHeight ) +
+                           " src=\"file://" +
                            mRenderedImageFile +
-                           "\"></td>\n<td><img src=\"file://" +
+                           "\"></td>\n<td><img width=" + QString::number( imgWidth ) +
+                           " height=" + QString::number( imgHeight ) +
+                           " src=\"file://" +
                            mExpectedImageFile +
-                           "\"></td><td><img src=\"file://" +
+                           "\"></td>\n<td><img width=" + QString::number( imgWidth ) +
+                           " height=" + QString::number( imgHeight ) +
+                           " src=\"file://" +
                            myDiffImageFile  +
                            "\"></td>\n</tr>\n</table>";
   //
