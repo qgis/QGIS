@@ -11123,6 +11123,10 @@ It will be disabled.</source>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -33556,6 +33560,14 @@ p, li { white-space: pre-wrap; }
         <source>Download has been successful.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Could not transform canvas extent.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not transform layer extent.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOSMExportDialog</name>
@@ -42948,6 +42960,13 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
+    <name>QgsRelReferenceConfigDlg</name>
+    <message>
+        <source>Preview Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
@@ -42968,6 +42987,10 @@ standard deviation ×</source>
     <message>
         <source>Relation</source>
         <translation>Relācija</translation>
+    </message>
+    <message>
+        <source>Expression Builder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47868,6 +47891,14 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Description of this provider</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">CRS</translation>
     </message>
 </context>
 <context>
