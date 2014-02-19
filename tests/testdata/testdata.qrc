@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/testdata">
-        <file>font/FreeSansQGIS.ttf</file>
+        <file>font/QGIS-Vera/QGIS-Vera.ttf</file>
+        <file>font/QGIS-Vera/QGIS-VeraBd.ttf</file>
     </qresource>
 </RCC>

@@ -737,7 +737,7 @@ int main( int argc, char *argv[] )
   }
 
   // load standard test font from testdata.qrc (for unit tests)
-  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
+  QFile testFont( ":/testdata/font/QGIS-Vera/QGIS-Vera.ttf" );
   if ( testFont.open( QIODevice::ReadOnly ) )
   {
     int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );

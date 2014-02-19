@@ -23,13 +23,15 @@ from qgis.core import (
     QgsPalLayerSettings,
 )
 
+from utilities import loadTestFont
+
 
 class TestPointBase(object):
 
     def __init__(self):
         """Dummy assignments, intended to be overriden in subclasses"""
         self.lyr = QgsPalLayerSettings()
-        self._TestFont = QApplication.font()
+        self._TestFont = loadTestFont()
 
     def checkTest(self, **kwargs):
         """Intended to be overriden in subclasses"""

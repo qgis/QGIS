@@ -50,6 +50,7 @@ GOOGLECRS = 900913  # constant for EPSG:GOOGLECRS Google Mercator id
 
 TESTFONT = None
 
+
 def assertHashesForFile(theHashes, theFilename):
     """Assert that a files has matches one of a list of expected hashes"""
     myHash = hashForFile(theFilename)
@@ -220,10 +221,11 @@ def loadTestFont():
     global TESTFONT  # pylint: disable=W0603
 
     if TESTFONT is None:
-        fontid = QtGui.QFontDatabase.addApplicationFont(
-            os.path.join(unitTestDataPath('font'), 'FreeSansQGIS.ttf'))
+        fontid = QtGui.QFontDatabase().addApplicationFont(
+            os.path.join(unitTestDataPath('font'),
+                         'QGIS-Vera', 'QGIS-Vera.ttf'))
         if fontid != -1:
-            TESTFONT = QtGui.QFont('FreeSansQGIS')
+            TESTFONT = QtGui.QFont('QGIS Vera Sans')
 
     return TESTFONT
 
@@ -235,6 +237,6 @@ def openInBrowserTab(url):
         # some Linux OS pause execution on webbrowser open, so background it
         cmd = 'import webbrowser;' \
               'webbrowser.open_new_tab({0})'.format(url)
-        p = subprocess.Popen([sys.executable, "-c", cmd],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT).pid
+        subprocess.Popen([sys.executable, "-c", cmd],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
