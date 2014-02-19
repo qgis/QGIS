@@ -728,7 +728,7 @@ Interrogazione:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="119"/>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation>SR</translation>
     </message>
 </context>
 <context>
