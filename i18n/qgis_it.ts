@@ -6778,7 +6778,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="612"/>
         <source>Cut Features</source>
-        <translation>Taglia geometrie</translation>
+        <translation>Taglia elementi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="615"/>
@@ -6913,7 +6913,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="956"/>
         <source>Measure Line</source>
-        <translation>Linea di misura</translation>
+        <translation>Misura linea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="959"/>
@@ -23621,7 +23621,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="59"/>
         <source>Boundary direction</source>
-        <translation>Direzione del confine</translation>
+        <translation>Direzione del bordo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="57"/>
@@ -39729,7 +39729,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
         <source>None / Planimetric</source>
         <translatorcomment>Nessuno / Planimetria? (ght)
 #dubbio#</translatorcomment>
-        <translation>Nessuno / Planimetrico</translation>
+        <translation>Nessuno / Misura planimetrica</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="106"/>
@@ -58404,7 +58404,7 @@ ho provato a aggiungerla.. (ght)
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1553"/>
         <source>Fees</source>
-        <translation>Tasse</translation>
+        <translation>Costi di accesso</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1554"/>
