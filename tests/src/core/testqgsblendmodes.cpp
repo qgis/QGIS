@@ -57,6 +57,8 @@ class TestQgsBlendModes: public QObject
     QgsRasterLayer* mRasterLayer1;
     QgsRasterLayer* mRasterLayer2;
     QString mTestDataDir;
+    QgsRectangle mExtent;
+    QString mReport;
 };
 
 
@@ -117,10 +119,20 @@ void TestQgsBlendModes::initTestCase()
     QList<QgsMapLayer *>() << mRasterLayer2 );
 
   mpMapRenderer = new QgsMapRenderer();
+
+  // points extent was not always reliable
+  mExtent = QgsRectangle( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
 }
 void TestQgsBlendModes::cleanupTestCase()
 {
-
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsBlendModes::vectorBlending()
@@ -134,7 +146,7 @@ void TestQgsBlendModes::vectorBlending()
   //Set blending modes for both layers
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
-  mpMapRenderer->setExtent( mpPointsLayer->extent() );
+  mpMapRenderer->setExtent( mExtent );
   QVERIFY( imageCheck( "vector_blendmodes" ) );
 
   //Reset layers
@@ -152,7 +164,7 @@ void TestQgsBlendModes::featureBlending()
 
   //Set feature blending modes for point layer
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
-  mpMapRenderer->setExtent( mpPointsLayer->extent() );
+  mpMapRenderer->setExtent( mExtent );
   QVERIFY( imageCheck( "vector_featureblendmodes" ) );
 
   //Reset layers
@@ -169,7 +181,7 @@ void TestQgsBlendModes::vectorLayerTransparency()
 
   //Set feature blending modes for point layer
   mpLinesLayer->setLayerTransparency( 50 );
-  mpMapRenderer->setExtent( mpPointsLayer->extent() );
+  mpMapRenderer->setExtent( mExtent );
   QVERIFY( imageCheck( "vector_layertransparency" ) );
 
   //Reset layers
@@ -202,6 +214,7 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );
+  mReport += myChecker.report();
   return myResultFlag;
 }
 
