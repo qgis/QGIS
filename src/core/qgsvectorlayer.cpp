@@ -698,7 +698,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //do startRender before getFeatures to give renderers the possibility of querying features in the startRender method
   mRendererV2->startRender( rendererContext, this );
 
-  QgsFeatureRequest& featureRequest = QgsFeatureRequest()
+  QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                       .setFilterRect( rendererContext.extent() )
                                       .setSubsetOfAttributes( attributes );
 
@@ -716,22 +716,38 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
     if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
     {
-      QgsPoint center = rendererContext.extent().center();
-      double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+      try
+      {
+        QgsPoint center = rendererContext.extent().center();
+        double rectSize = ct->sourceCrs().geographicFlag() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
-      QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
-      QgsRectangle targetRect = ct->transform( sourceRect );
+        QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
+        QgsRectangle targetRect = ct->transform( sourceRect );
 
-      QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
-      QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
-      QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
-      QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
+        QgsDebugMsg( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ) );
+        QgsDebugMsg( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ) );
 
-      double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
-      double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+        if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
+        {
+          QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+          QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+          QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+          QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
-      if ( targetHypothenuse != 0 )
-        map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
+          double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
+          double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+
+          QgsDebugMsg( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ) );
+          QgsDebugMsg( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ) );
+
+          if ( targetHypothenuse != 0 )
+            map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
+        }
+      }
+      catch ( QgsCsException &cse )
+      {
+        QgsMessageLog::logMessage( tr( "Simplify transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
+      }
     }
 
     QgsSimplifyMethod simplifyMethod;

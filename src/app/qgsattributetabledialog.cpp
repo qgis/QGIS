@@ -154,6 +154,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
   mExpressionSelectButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
+  mAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;

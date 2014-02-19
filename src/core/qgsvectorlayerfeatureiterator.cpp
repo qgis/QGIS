@@ -31,13 +31,35 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
 
   if ( L->editBuffer() )
   {
-    mAddedFeatures = QgsFeatureMap( L->editBuffer()->addedFeatures() );
-    mChangedGeometries = QgsGeometryMap( L->editBuffer()->changedGeometries() );
-    mDeletedFeatureIds = QgsFeatureIds( L->editBuffer()->deletedFeatureIds() );
-    mChangedAttributeValues = QgsChangedAttributesMap( L->editBuffer()->changedAttributeValues() );
+    if ( request.filterType() == QgsFeatureRequest::FilterFid )
+    {
+      // only copy relevant parts
+      if( L->editBuffer()->addedFeatures().contains( request.filterFid() ) )
+        mAddedFeatures.insert( request.filterFid(), L->editBuffer()->addedFeatures()[ request.filterFid() ] );
+
+      if( L->editBuffer()->changedGeometries().contains( request.filterFid() ) )
+        mChangedGeometries.insert( request.filterFid(), L->editBuffer()->changedGeometries()[ request.filterFid() ] );
+
+      if( L->editBuffer()->deletedFeatureIds().contains( request.filterFid() ) )
+        mDeletedFeatureIds.insert( request.filterFid() );
+
+      if( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
+        mChangedAttributeValues.insert( request.filterFid(), L->editBuffer()->changedAttributeValues()[ request.filterFid() ] );
+
+      if( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
+        mChangedFeaturesRequest.setFilterFids( QgsFeatureIds() << request.filterFid() );
+    }
+    else
+    {
+      mAddedFeatures = QgsFeatureMap( L->editBuffer()->addedFeatures() );
+      mChangedGeometries = QgsGeometryMap( L->editBuffer()->changedGeometries() );
+      mDeletedFeatureIds = QgsFeatureIds( L->editBuffer()->deletedFeatureIds() );
+      mChangedAttributeValues = QgsChangedAttributesMap( L->editBuffer()->changedAttributeValues() );
+      mChangedFeaturesRequest.setFilterFids( L->editBuffer()->changedAttributeValues().keys().toSet() );
+    }
+
     mAddedAttributes = QList<QgsField>( L->editBuffer()->addedAttributes() );
     mDeletedAttributeIds = QgsAttributeList( L->editBuffer()->deletedAttributeIds() );
-    mChangedFeaturesRequest.setFilterFids( L->editBuffer()->changedAttributeValues().keys().toSet() );
   }
 
   // prepare joins: may add more attributes to fetch (in order to allow join)

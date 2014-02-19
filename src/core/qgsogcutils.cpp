@@ -2100,6 +2100,28 @@ static bool isGeometryColumn( const QgsExpression::Node* node )
   return fd->name() == "$geometry";
 }
 
+static QgsGeometry* geometryFromConstExpr( const QgsExpression::Node* node )
+{
+  // Right now we support only geomFromWKT(' ..... ')
+  // Ideally we should support any constant sub-expression (not dependant on feature's geometry or attributes)
+
+  if ( node->nodeType() == QgsExpression::ntFunction )
+  {
+    const QgsExpression::NodeFunction* fnNode = static_cast<const QgsExpression::NodeFunction*>( node );
+    QgsExpression::Function* fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
+    if ( fnDef->name() == "geomFromWKT" )
+    {
+      const QList<QgsExpression::Node*>& args = fnNode->args()->list();
+      if ( args[0]->nodeType() == QgsExpression::ntLiteral )
+      {
+        QString wkt = static_cast<const QgsExpression::NodeLiteral*>( args[0] )->value().toString();
+        return QgsGeometry::fromWkt( wkt );
+      }
+    }
+  }
+  return 0;
+}
+
 
 QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::NodeFunction* node, QDomDocument& doc, QString& errorMessage )
 {
@@ -2107,8 +2129,32 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
 
   if ( fd->name() == "bbox" )
   {
-    errorMessage = QString( "<BBOX> is currently not supported." );
-    return QDomElement();
+    QList<QgsExpression::Node*> argNodes = node->args()->list();
+    Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
+
+    QgsGeometry* geom = geometryFromConstExpr( argNodes[1] );
+    if ( geom && isGeometryColumn( argNodes[0] ) )
+    {
+      QgsRectangle rect = geom->boundingBox();
+      delete geom;
+
+      QDomElement elemBox = rectangleToGMLBox( &rect, doc );
+
+      QDomElement geomProperty = doc.createElement( "ogc:PropertyName" );
+      geomProperty.appendChild( doc.createTextNode( "geometry" ) );
+
+      QDomElement funcElem = doc.createElement( "ogr:BBOX" );
+      funcElem.appendChild( geomProperty );
+      funcElem.appendChild( elemBox );
+      return funcElem;
+    }
+    else
+    {
+      delete geom;
+
+      errorMessage = QString( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('...'))" );
+      return QDomElement();
+    }
   }
 
   if ( isBinarySpatialOperator( fd->name() ) )

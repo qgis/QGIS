@@ -150,6 +150,12 @@ void QgsFieldCalculator::accept()
         break;
       }
     }
+
+    if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+    {
+      QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
+      return;
+    }
   }
 
   if ( mAttributeId == -1 )
@@ -169,6 +175,11 @@ void QgsFieldCalculator::accept()
 
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
+
+  bool newField = !mUpdateExistingGroupBox->isChecked();
+  QVariant emptyAttribute;
+  if( newField )
+    emptyAttribute = QVariant( mVectorLayer->pendingFields()[mAttributeId].type() );
 
   QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
   while ( fit.nextFeature( feature ) )
@@ -191,7 +202,7 @@ void QgsFieldCalculator::accept()
     }
     else
     {
-      mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, feature.attributes().value( mAttributeId ) );
+      mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
     }
 
     rownum++;

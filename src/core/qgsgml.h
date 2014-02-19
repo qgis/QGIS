@@ -18,6 +18,7 @@
 #include <expat.h>
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -32,7 +33,6 @@
 #include <QStack>
 
 class QgsRectangle;
-class QgsCoordinateReferenceSystem;
 
 /**This class reads data from a WFS server or alternatively from a GML file. It
  * uses the expat XML parser and an event based model to keep performance high.
@@ -69,6 +69,10 @@ class CORE_EXPORT QgsGml : public QObject
     /** Get feature ids map */
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
+    /** Returns features spatial reference system
+      @note Added in QGIS 2.1 */
+    QgsCoordinateReferenceSystem crs() const;
+
   private slots:
 
     void setFinished();
@@ -92,6 +96,7 @@ class CORE_EXPORT QgsGml : public QObject
       attribute,
       geometry,
       coordinate,
+      posList,
       multiPoint,
       multiLine,
       multiPolygon
@@ -138,6 +143,15 @@ class CORE_EXPORT QgsGml : public QObject
       */
     int pointsFromCoordinateString( QList<QgsPoint>& points, const QString& coordString ) const;
 
+    /**Creates a set of points from a gml:posList or gml:pos coordinate string.
+       @param points list that will contain the created points
+       @param coordString the text containing the coordinates
+       @param dimension number of dimensions
+       @return 0 in case of success
+      */
+    int pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const;
+
+    int pointsFromString( QList<QgsPoint>& points, const QString& coordString ) const;
     int getPointWKB( unsigned char** wkb, int* size, const QgsPoint& ) const;
     int getLineWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& lineCoordinates ) const;
     int getRingWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& ringCoordinates ) const;
@@ -215,6 +229,12 @@ class CORE_EXPORT QgsGml : public QObject
     QString mCoordinateSeparator;
     /**Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
+    /** Number of dimensions in pos or posList */
+    int mDimension;
+    /** Coordinates mode, coordinate or posList */
+    ParseMode mCoorMode;
+    /** EPSG of parsed features geometries */
+    int mEpsg;
 };
 
 #endif

@@ -6077,7 +6077,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Creates a heatmap raster for the input point vector.</source>
-        <translation>Crea un mapa de calor (Heatmap) de la capa de puntos de entrada.</translation>
+        <translation>Crea un mapa de calor ráster para la capa vectorial de puntos de entrada.</translation>
     </message>
     <message>
         <source>&amp;Heatmap</source>
@@ -6283,7 +6283,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Quartic (biweight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuártica (biponderada)</translation>
     </message>
     <message>
         <source>Triangular</source>
@@ -6295,7 +6295,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Triweight</source>
-        <translation type="unfinished"></translation>
+        <translation>Triponderada</translation>
     </message>
     <message>
         <source>Epanechnikov</source>
@@ -7336,7 +7336,7 @@ Actúa sobre todas las capas editables</translation>
     </message>
     <message>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Estiramiento de corte acumulativo a todo el conjunto de datos</translation>
     </message>
     <message>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
@@ -11520,19 +11520,19 @@ SQL: %1</translation>
     </message>
     <message>
         <source>minidump written to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>minivolcado escrito en %1</translation>
     </message>
     <message>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>la escritura del minivolcado a %1falló (%2)</translation>
     </message>
     <message>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>la creación del minivolcado a %1falló (%2)</translation>
     </message>
     <message>
         <source>Crash dumped</source>
-        <translation type="unfinished"></translation>
+        <translation>Volcado fallido</translation>
     </message>
     <message>
         <source>Save style to DB (%1)</source>
@@ -11790,7 +11790,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el tipo de archivo shape creado. Puede ser uno de NULL para un archivo .dbf sencillo sin archivo .shp, POINT, ARC, POLYGON o MULTIPOINT para 2D o POINTZ, ARCZ, POLYGONZ o MULTIPOINTZ para 3D. Los archivos shape con valores de medida no se admiten ni los archivos MULTIPATCH.</translation>
     </message>
     <message>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
@@ -11822,235 +11822,231 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se define con SÍ se escribirán campos de extensión. Si el nombre de campo no encontrado en el esquema base coincide con el patrón foo_bar, se considerará foo como el nombre de espacio del elemento y se escribirá un elemento &lt;foo:bar&gt;. De lo contrario los elementos se escribirán en el nombre de espacio &lt;org:&gt;.</translation>
     </message>
     <message>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se define a NO, sólo se excribirán elementos &lt;entry&gt; o &lt;item&gt;. El usuario tendrá que proporcionar el cabezado y pie de documento adecuados.</translation>
     </message>
     <message>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
-        <translation type="unfinished"></translation>
+        <translation>Contenido XML que se pondrá entre el elemento &lt;channel&gt; y el primer elemento &lt;item&gt; para un documentos RSS o entre la etiqueta xml y el primer elemento &lt;entry&gt; de un documento Atom.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;title&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;description&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;link&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;updated&gt; del encabezado. Debería tener el formato fechahora de XML. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro de los elementos &lt;author&gt; &lt;name&gt; del encabezado. Si no se proporcionan se usará un valor cualquiera, ya que estos elementos son imprescindibles.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;id&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se proporciona, esta URI se insertará como localización del esquema. Tenga en cuenta que el archivo de esquema no es realmente accedido por OGR, por lo que queda de mano del usuario asegurarse de que coincidirá con el esquema del archivo de datos GML producido por OGR.</translation>
     </message>
     <message>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Esto escribe un archivo de esquema de aplicación GML en un archivo .xsd correspondiente (con el mismo nombre base). Si se usa INTERNAL el esquema se escribe dentro del archivo GML, pero esto es experimental y con casi toda seguridad no válido como XML. OFF desactiva la generación del esquema (y es implícito si se usa XSISCHEMAURI).</translation>
     </message>
     <message>
         <source>This is the prefix for the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este es el prefijo para el nombre de espacio objetivo de la aplicación.</translation>
     </message>
     <message>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Puede establecerse a VERDADERO para evitar la escritura del prefijo del nombre de espacio objetivo de la aplicación en el archivo GML.</translation>
     </message>
     <message>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establece como predeterminado &apos;http://ogr.maptools.org/&apos;. Este es el nombre de espacio objetivo de la aplicación.</translation>
     </message>
     <message>
         <source>If not specified, GML2 will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si no se especifica, se usara GML2.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
-        <translation type="unfinished"></translation>
+        <translation>solo válido cuando FORMATO=GML3/GML3Degree/GML3.2) Valor predeterminado SÍ. Si es SÍ, los SRE con autoridad EPSG se escribirán con un prefijo &apos;urn:ogc:def:crs:EPSG::&apos;. En ese caso, si el SRE es geográfico sin un orden de EJE explícito,pero en el que el mismo código de autoridad de SRE importado con ImportFromEPSGA() debería ser tratado como lat/lon, entonces la función cuidará del intercambio de orden de coordenadas. Si se establece a NO, los SRE con autoridad EPSG se escribirán con el prefijo &apos;EPSG&apos;, incluso si están en orden lat/lon.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>sólo válido cuando FORMATO=GML3/GML3Degree/GML3.2). Valor predeterminado SÍ. Si se establece a NO, el elementoe &lt;gml:boundedBy&gt; no se escribirá para cada objeto espacial.</translation>
     </message>
     <message>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establece como predeterminado SÍ. Si es SÍ, se indentará la salida con espacios para una mejor lectura, pero a costa del tamaño de archivo.</translation>
     </message>
     <message>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión al escribir una capa cuyos objetos espaciales son de tipo wkbLineString, el controlador GPX elije escribirlos como rutas. Si se especifica FORCE_GPX_TRACK=SÍ, se escribirán como trazas.</translation>
     </message>
     <message>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión al escribir una capa cuyos objetos espaciales son de tipo wkbMultiLineString, el controlador GPX elije escribirlos como trazas. Si se especifica FORCE_GPX_ROUTE=SÍ, se escribirán como rutas, siempre que las multilíneas estén compuestas por una sola línea.</translation>
     </message>
     <message>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se especifica GPX_USE_EXTENSIONS=SÍ, se escribirán campos extra dentro de la etiqueta &lt;extensions&gt;.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo usado si GPX_USE_EXTENSIONS=SÍ y GPX_EXTENSIONS_NS_URL está establecido. El valor de nombre de espacio usado para las etiquetas de extensión. Por omisión, &apos;ogr&apos;.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo usado si GPX_USE_EXTENSIONS=SÍ y GPX_EXTENSIONS_NS está establecido. La URI del nombre de espacio. Por omisión, &apos;http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión los archivos se crean con la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT, que puede tener un valor de CRLF (formato DOS) o LF (formato UNIX).</translation>
     </message>
     <message>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element. </source>
-        <translation type="unfinished"></translation>
+        <translation>Le permite especificar el campo a usar para el elemento &lt;name&gt; de KML.</translation>
     </message>
     <message>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le permite especificar el campo a usar para el elemento &lt;description&gt; de KML.</translation>
     </message>
     <message>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le permite especificar el AltitudeMode a usar para geometrías KML. Esto sólo afectará a geometrías 3D y debe ser una de las opciones de KML válidas.</translation>
     </message>
     <message>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Use esto para activar el &apos;modo de índice espacial rápido&apos;. En este modo la escritura de archivos puede ser 5 veces más rápida, pero las consultas espaciales puede ser hasta 30 veces más lentas.</translation>
     </message>
     <message>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Determina si se deberán usar archivos seed 2D (seed_2d.dgn) o 3D (seed_3d.dgn). Esta opción es ignorada si se proporciona la opción SEED.</translation>
     </message>
     <message>
         <source>Override the seed file to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el archivo seed a usar.</translation>
     </message>
     <message>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica si se deberá copiar el archivo seed completo. Si no, sólo se copiarán los primeros tres elementos.</translation>
     </message>
     <message>
         <source>Indicates whether the color table should be copied from the seed file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica si se deberá copiar la tabla de colores del archivo seed.</translation>
     </message>
     <message>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el nombre de unidad maestra del archivo seed con el nombre de unidad de uno o dos caracteres proporcionado.</translation>
     </message>
     <message>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el nombre de subunidad del archivo seed con el nombre de unidad de uno o dos caracteres proporcionado.</translation>
     </message>
     <message>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el número de subunidades por unidad maestra. Por omisión se usa el valor del archivo seed.</translation>
     </message>
     <message>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el número de UOR (Unidades de resolución) por subunidad. Por omisión se usa el valor del archivo seed.</translation>
     </message>
     <message>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>ORIGEN=X,Y,Z: suplanta el origen del plano de diseño. Por omisión se usa el origen del archivo seed.</translation>
     </message>
     <message>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían incorporar los archivos de actualización en la base de datos al vuelo.</translation>
     </message>
     <message>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se debería añadir el atributo DEPTH (profundidad) en entidades SOUNDG y asignar la profundidad del sondeo. Esto sólo se debería habilitar cuando SPLIT_MULTIPOINT tambiéne está activado.</translation>
     </message>
     <message>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían devolver todas las primitivas de geometrías de bajo nivel como capas especiales NodoAislado, NodoConectado, Borde y Cara.</translation>
     </message>
     <message>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se activa, atributos numéricos que tengan asignada una cadena vacía como valor se guardarán como un valor numérico especial. Esta opción normalmente no debería ser necesaria, pero puede ser útil cuando se ha traducido S-57 a S-57 sin pérdida.</translation>
     </message>
     <message>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían adjuntar los campos LNAM y LNAM_REFS a objetos espaciales que capturan la relación objeto a objeto en el grupo FFPT del archivo S-57.</translation>
     </message>
     <message>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían adjuntar los atributos adicionales que relacionan objetos espaciales con sus primitivas geométricas subyacentes. Estos son los valores del grupo FSPT y se necesitan en primer lugar cuando se hacen traducciones S-57 a S-57.</translation>
     </message>
     <message>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían registrar los valores de atributos a UTF-8 desde la codificación de caracteres especificada en el registro S57 DSSI.</translation>
     </message>
     <message>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se puede usar para evitar la creación de geometry_columns (columnas_de_geometría) y tablas spatial_ref_sys (sistema_de_referencia_espacial). Por omisión estas tablas de metadatos se crean cuando se crea una nueva base de datos.</translation>
     </message>
     <message>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla el formato usado para la columna de geometría. El valor predeterminado es WKB. Normalmente esto es más eficiente que WKT (Texto Bien Conocido) en cuanto a espacio y procesamiento, pero más difícil de inspeccionar o usar en aplicaciones sencillas.</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla si los nombres de capas y campos se limpiarán para un uso más fácil en SQLite. Los nombres limpiados se convertirán a minúsculas y algunas caracteres especiales (&apos; - #) se sustituirán por guiones bajos.</translation>
     </message>
     <message>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre_columna1 [, nombre_columna2, ...] Una lista de columnas (cadena) que se debe comprimir con el algoritmo ZLib DEFLATE. Esto puede ser beneficioso para bases de datos que tienen grandes binarios de cadena. Sin embargo, se debe usar con cuidado, ya que el valor de dichas columnas se verá como contenido binario comprimido con otras utilidades de SQLite (o versiones anteriores de OGR). Con OGR al insertar, modificar o consultar columnas comprimidas, la compresión/descompresión se hace de forma transparente. Sin embargo, tales columnas no se pueden consultar (fácilmente) con un filtro de atributos o una sentencia WHERE. Nota: en la definición de la tabla tales columnas tiene un tipo de declaración &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar el contenido de los archivos CSV de EPSG en la tabla spatial_ref_sys (sistema de referencia espacial). Establecer a NO para bases de datos SQLite normales.</translation>
     </message>
     <message>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si la base de datos es de tipo SpatiaLite y si OGR está enlazado contra libspatialite, esta opción se puede usar para controlar si se debe crear un índice espacial.</translation>
     </message>
     <message>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Si el formato del BLOB de la geometría es de tipo SpatiLite, esta opción se puede usar para controlar si se debe usar el formato comprimido para geometrías (LINESTRINGs, POLYGONs)</translation>
     </message>
     <message>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usado para forzar el número de SRID del SRE asociado con la  capa. Cuando esta opción no se especifica y hay un SRE asociado con la capa, se hace una búsqueda en la tabla spatial_ref_sys (Sistema de referencia espacial) para encontrar una coincidencia con el SRE y si no la hay se inserta una nueva entrada en la tabla spatial_ref_sys. Cuando se especifica la opción SRID, esta búsqueda (y la eventual inserción de una nueva entrada) no se hace: se usa el SRID especificado.</translation>
     </message>
     <message>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica la extensión de archivo de exportación de GeoConcept. En versiones anteriores de GeoConcept se usaba TXT. Actualmente se usa GTX.</translation>
     </message>
     <message>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuando se establece esta opción, la nueva capa se creará dentro de la carpeta llamada FeatureDataset. Si la carpeta no existe, se creará.</translation>
     </message>
     <message>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer el nombre de la columna de geometría en la nueva capa. Valor por omisión &apos;SHAPE&apos;.</translation>
     </message>
     <message>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la columna OID a crear. Valor por omisión &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede sobreescribir una capa OGR en lugar</translation>
     </message>
     <message>
         <source>linear</source>
@@ -12098,6 +12094,14 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
+        <translation>Por omisión, los archivos BNA se crean en formato multilínea. Para cada registro la primera línea contiene los identificadores y el tipo/número de coordenadas que siguen. Cada línea siguiente contiene un par de coordenadas.</translation>
+    </message>
+    <message>
+        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
+        <translation>Se deberían dividir los sondeos multipunto en muchas entidades de sondeo de un solo punto. Las geometrías multipunto no son bien manejadas por muchos formatos, por lo que puede ser conveniente dividir entidades de sondeo únicas con muchos puntos en muchas entidades de punto único.</translation>
+    </message>
+    <message>
+        <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16454,7 +16458,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>Open field calculator (Ctrl+I)</source>
@@ -18123,6 +18127,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Item properties</source>
         <translation>Propiedades del elemento</translation>
     </message>
+    <message>
+        <source>Landscape</source>
+        <translation>Horizontal</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -18946,11 +18954,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Show Rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar deslizadores</translation>
     </message>
     <message>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar deslizadores</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
@@ -19205,7 +19213,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Uuid (read-only)</source>
-        <translation>UUID (sólo lectura)</translation>
+        <translation type="obsolete">UUID (sólo lectura)</translation>
     </message>
     <message>
         <source>Id</source>
@@ -19546,11 +19554,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Title Font...</source>
-        <translation>Tipo de letra de título...</translation>
+        <translation type="obsolete">Tipo de letra de título...</translation>
     </message>
     <message>
         <source>Group Font...</source>
-        <translation>Tipo de letra de grupo...</translation>
+        <translation type="obsolete">Tipo de letra de grupo...</translation>
     </message>
     <message>
         <source>Layer Font...</source>
@@ -19558,7 +19566,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Item Font...</source>
-        <translation>Tipo de letra de elemento...</translation>
+        <translation type="obsolete">Tipo de letra de elemento...</translation>
     </message>
     <message>
         <source>Symbol width </source>
@@ -19590,7 +19598,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Auto Update</source>
-        <translation>Auto actualizar</translation>
+        <translation type="obsolete">Auto actualizar</translation>
     </message>
     <message>
         <source>v</source>
@@ -19658,7 +19666,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Subgroup Font...</source>
-        <translation>Tipo de letra de subgrupos...</translation>
+        <translation type="obsolete">Tipo de letra de subgrupos...</translation>
     </message>
     <message>
         <source>Font color...</source>
@@ -19783,6 +19791,26 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Legend height</source>
         <translation>Altura de la leyenda</translation>
+    </message>
+    <message>
+        <source>Auto update</source>
+        <translation>Auto actualizar</translation>
+    </message>
+    <message>
+        <source>Title font...</source>
+        <translation>Tipo de letra de título...</translation>
+    </message>
+    <message>
+        <source>Subgroup font...</source>
+        <translation>Tipo de letra de subgrupos...</translation>
+    </message>
+    <message>
+        <source>Group font...</source>
+        <translation>Tipo de letra de grupo...</translation>
+    </message>
+    <message>
+        <source>Item font...</source>
+        <translation>Tipo de letra de elemento...</translation>
     </message>
 </context>
 <context>
@@ -20417,7 +20445,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Map Rotation</source>
-        <translation>Rotación del mapa</translation>
+        <translation type="obsolete">Rotación del mapa</translation>
     </message>
     <message utf8="true">
         <source> °</source>
@@ -20458,6 +20486,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Frame fill colors</source>
         <translation>Colores de relleno del marco</translation>
+    </message>
+    <message>
+        <source>Map rotation</source>
+        <translation>Rotación del mapa</translation>
     </message>
 </context>
 <context>
@@ -20626,6 +20658,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Image Rotation</source>
+        <translation type="obsolete">Rotación de imagen</translation>
+    </message>
+    <message>
+        <source>Image rotation</source>
         <translation>Rotación de imagen</translation>
     </message>
 </context>
@@ -21177,11 +21213,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Header Font...</source>
-        <translation>Tipo de letra de la cabecera...</translation>
+        <translation type="obsolete">Tipo de letra de la cabecera...</translation>
     </message>
     <message>
         <source>Content Font...</source>
-        <translation>Tipo de letra del contenido...</translation>
+        <translation type="obsolete">Tipo de letra del contenido...</translation>
     </message>
     <message>
         <source>Attribute Table</source>
@@ -21206,6 +21242,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Fonts</source>
         <translation>Tipos de letra</translation>
+    </message>
+    <message>
+        <source>Header font...</source>
+        <translation>Tipo de letra de la cabecera...</translation>
+    </message>
+    <message>
+        <source>Content font...</source>
+        <translation>Tipo de letra del contenido...</translation>
     </message>
 </context>
 <context>
@@ -21775,7 +21819,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>World file on</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de mundo activado</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -22490,11 +22534,11 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>Catch</source>
-        <translation type="unfinished"></translation>
+        <translation>Capturar</translation>
     </message>
     <message>
         <source>Switch to catching widgets in main application</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar a controles de captura en la aplicación principal</translation>
     </message>
     <message>
         <source>Save</source>
@@ -22787,7 +22831,7 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>&apos;pad&apos;|&apos;repeat&apos;|&apos;reflect&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;rellenar&apos;|&apos;repetir&apos;|&apos;reflejar&apos;</translation>
     </message>
     <message>
         <source>0 (false)|1 (true)</source>
@@ -23802,7 +23846,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished"></translation>
+        <translation>^.. la expresión necesita grupos de captura</translation>
     </message>
     <message>
         <source>Definition of filename and delimiters is not valid</source>
@@ -27919,7 +27963,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split stereo vertical eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir cartografía estéreo de ojo vertical</translation>
     </message>
     <message>
         <source>Screen height (m)</source>
@@ -27935,7 +27979,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split stereo horizontal eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir cartografía estéreo de ojo horizontal</translation>
     </message>
     <message>
         <source>Map</source>
@@ -28255,7 +28299,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.
 Press cancel to abort breaks calculation or OK to continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>La clasificación de ruptura natural (Jenks) es complejidad 0(n2), su clasificación puede llevar bastante tiempo.
+Presione Cancelar para abortar el cálculo de ruptura u OK para continuar.</translation>
     </message>
 </context>
 <context>
@@ -30963,7 +31008,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Attribute changes</source>
-        <translation>Cambios de atributo</translation>
+        <translation type="obsolete">Cambios de atributo</translation>
     </message>
     <message>
         <source>Could not open url</source>
@@ -30988,6 +31033,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>Activate layer</source>
         <translation>Activar capa</translation>
+    </message>
+    <message>
+        <source>Attributes changed</source>
+        <translation>Atributos cambiados</translation>
     </message>
 </context>
 <context>
@@ -32309,7 +32358,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
-        <translation type="unfinished"></translation>
+        <translation>Desmarcar para escribir rotación derivada del motor de etiquetado en anclada y NULO en desanclada</translation>
     </message>
     <message>
         <source>Preserve existing rotation values during label pin/unpin operations</source>
@@ -33946,11 +33995,11 @@ no se muestran</translation>
     </message>
     <message>
         <source>Pinned label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta anclada</translation>
     </message>
     <message>
         <source>Unpinned label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta desanclada</translation>
     </message>
 </context>
 <context>
@@ -34529,6 +34578,34 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Date</source>
         <translation>Fecha</translation>
+    </message>
+    <message>
+        <source>Whole number (smallint - 16bit)</source>
+        <translation>Número entero (entero pequeño - 16bit)</translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 32bit)</source>
+        <translation>Número entero (entero - 32bit)</translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 64bit)</source>
+        <translation>Número entero (entero - 64bit)</translation>
+    </message>
+    <message>
+        <source>Decimal number (numeric)</source>
+        <translation>Número decimal (numérico)</translation>
+    </message>
+    <message>
+        <source>Decimal number (decimal)</source>
+        <translation>Número decimal (decimal)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation>Número decimal (doble)</translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation>Texto, longitud ilimitada (texto)</translation>
     </message>
 </context>
 <context>
@@ -35231,7 +35308,7 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     </message>
     <message>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <source>GeoServer</source>
@@ -35985,6 +36062,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Download has been successful.</source>
         <translation>La descarga ha tenido éxito.</translation>
+    </message>
+    <message>
+        <source>Could not transform canvas extent.</source>
+        <translation>No se pudo transformar la extensión del lienzo.</translation>
+    </message>
+    <message>
+        <source>Could not transform layer extent.</source>
+        <translation>No se pudo transformar la extensión de la capa.</translation>
     </message>
 </context>
 <context>
@@ -36967,7 +37052,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Section</source>
-        <translation>Sección</translation>
+        <translation type="obsolete">Sección</translation>
     </message>
     <message>
         <source>GroupBox</source>
@@ -38181,11 +38266,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation>Mejor rendimiento gráfico a costa de perder la posibilidad de cancelar la representación y dibujado de objetos espaciales incremental</translation>
+        <translation>Mejor rendimiento gráfico a costa de perder la posibilidad de cancelar la representación y dibujado incremental de objetos espaciales</translation>
     </message>
     <message>
         <source>Enable back buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar buffer trasero</translation>
     </message>
     <message>
         <source>Debugging</source>
@@ -38454,6 +38539,10 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translation>Escala máxima a la que la capa se debería simplificar (1:1 siempre simplifica): </translation>
+    </message>
+    <message>
+        <source>Ask for datum transformation when no default is defined</source>
+        <translation>Preguntar la transformación de datum cuando no haya una predefinida</translation>
     </message>
 </context>
 <context>
@@ -39842,11 +39931,15 @@ Información de error ampliada:
     </message>
     <message>
         <source>Only look in the layer registries</source>
-        <translation>Buscar solo en los registros de la capa</translation>
+        <translation type="obsolete">Buscar solo en los registros de la capa</translation>
     </message>
     <message>
         <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
         <translation>No resolver el tipo de columnas sin restricción (GEOMETRÍA)</translation>
+    </message>
+    <message>
+        <source>Only show layers in the layer registries</source>
+        <translation>Mostrar capas sólo en los registros de capa</translation>
     </message>
 </context>
 <context>
@@ -41605,7 +41698,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Nota:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Los complementos en desuso normalmente no son adecuados para uso en producción. Estos complementos no son mantenidos y se deberían considerar herramientas «obsoletas». QGIS no recomienda instalar estos complementos a no ser que aún los necesite y no haya otras alternativas disponibles.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -43068,7 +43165,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Add geometry to feature response</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir geometría a la respuesta del objeto</translation>
     </message>
     <message>
         <source>Relations</source>
@@ -45480,7 +45577,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -46151,6 +46252,13 @@ desviación estándar ×</translation>
     </message>
 </context>
 <context>
+    <name>QgsRelReferenceConfigDlg</name>
+    <message>
+        <source>Preview Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
@@ -46171,6 +46279,10 @@ desviación estándar ×</translation>
     <message>
         <source>Relation</source>
         <translation>Relación</translation>
+    </message>
+    <message>
+        <source>Expression Builder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49241,7 +49353,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Trabajamos realmente duro para hacer este gran software para usted. ¿Ve todas las estupendas funciones que tiene? ¿Tiene una agradable sensación cuando lo usa? QGIS es una labor de amor por un equipo dedicado de desarrolladores. Queremos que lo copie &amp;amp;amp; lo comparta y lo ponga en manos de toda la gente que sea posible. Si QGIS le está ahorrando dinero o le gusta nuestro trabajo y tiene la posibilidad económica de ayudar, por favor considere patrocinar el desarrollo de QGIS. Usamos el dinero de los patrocinadores para pagar viajes y coster relacionados con nuestros encuentros bianuales de desarrollo y para apoyar los objetivos generales del proyecto. &lt;br /&gt;&lt;br /&gt;Por favor, vea la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;página web del patrocinio de QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; para más detalles. En la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Página de patrocinadores&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; puede ver la buena gente y empresas que nos están ayudando económicamente - ¡un gran &apos;gracias&apos; a todos ellos!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -51331,6 +51460,14 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Description of this provider</source>
         <translation>Descripción de este proveedor</translation>
+    </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">SRC</translation>
     </message>
 </context>
 <context>
@@ -54369,7 +54506,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Returned legend image is flawed [URL: %1]</source>
-        <translation type="unfinished"></translation>
+        <translation>La imagen de la leyenda devuelta es defectuosa [URL: %1]</translation>
     </message>
     <message>
         <source>Download of GetLegendGraphic failed: %1</source>
@@ -54378,6 +54515,10 @@ URL probada: %1</translation>
     <message>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
         <translation>Descargados %1 de %2 bytes de GetLegendGraphic.</translation>
+    </message>
+    <message>
+        <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
+        <translation>Falló el análisis del resultado. Se estimaron %1 tipos de objeto espacial del gml (%2), pero no se analizó ningún objeto espacial.</translation>
     </message>
 </context>
 <context>
@@ -55568,7 +55709,7 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Typing</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclear</translation>
     </message>
     <message>
         <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
@@ -56166,7 +56307,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Pad</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar</translation>
     </message>
     <message>
         <source>Repeat</source>
@@ -60768,7 +60909,59 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
+&lt;p&gt;El complemento Mapa de calor utiliza Estimacioń de Densidad de Núcleo para crear un ráster de densidad (mapa de calor)
+de una capa vectorial de puntos de entrada. La densidad se calcula en base al número de puntos en cada localización, de
+forma que números más grandes de puntos agrupados dan como resultado valores mas grandes.
+Los mapas de calor permiten una fácil identificación de «puntos calientes» y agrupamiento de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros del diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;La entrada siempre es una capa vectorial de tipo puntos. Todas las capas vectoriales de puntos que estén actualmente cargadas en la vista del mapa se muestran en la lista desplegable. Pulse el botón desplegable y seleccione la capa que desee.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de salida&lt;/h3&gt;
+&lt;p&gt;Se puede establecer la ubicación del ráster de salida y su nombre de archivo haciendo clic en el botón &lt;label&gt;...&lt;/label&gt; que hay junto al cuadro de texto Ráster de salida.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; El formato de archivo se añade automáticamente según el formtato de salida seleccionado, si no se indica explícitamente.&lt;/p&gt;
+
+&lt;h3&gt;Formato de salida&lt;/h3&gt;
+&lt;p&gt;En la lista desplegable están todos los formatos admitidos para escritura por GDAL. Pulse y seleccione el formato de salida requerido para su archivo.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt;Se recomiendan los formatos GeoTiff y ERDAS Imagine .img. Algunos formatos pueden hacer que pete la aplicación. Limítese en lo posible a los formatos recomendados hasta que se solucione el problema o use otros formatos que sepa que GDAL soporta por completo.&lt;/p&gt;
+
+&lt;h3&gt;Radios (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Se usa para especificar el radio de búsqueda del mapa de calor (o ancho de banda del núcleo) en metros o unidades de mapa. El radio especifica la distancia alrededor de un punto a la que se sentirá la influencia
+ del punto. Valores mayores dan como resultado una mayor suavidad, pero valores más pequeños pueden mostrar detalles más finos y la variación en la densidad de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opciones avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Filas y columnas&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;style&gt;
@@ -63939,7 +64132,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Función strpos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Función strpos()&lt;/h3&gt;
 Devuielve el índice de una expresión regular en una cadena.
 
 &lt;h4&gt;Sintaxis&lt;/h4&gt;
@@ -65016,6 +65209,300 @@ Esta función toma un argumento.
 </translation>
     </message>
     <message>
+        <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
+Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;crosses function&lt;/h3&gt;
+Returns 1 if the supplied geometries have some, but not all, interior points in common.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;AND logical operator&lt;/h3&gt;
+Returns 1 when condition a and b are true.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; condition a AND condition b &lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
+Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;convexHull( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+a &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$map function&lt;/h3&gt;
+Returns the id of the current map item if the map is being drawn in a composition, or &quot;canvas&quot; if the map is being
+drawn within the main QGIS window.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$map&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;overview_map&quot; (within a composer item)&lt;br /&gt;
+$map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt;
+
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;combine function&lt;/h3&gt;
+Returns the combination of geometry a and geometry b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;combine( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;touches function&lt;/h3&gt;
+Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;touches( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
+Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;string/number LIKE pattern&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
+Returns a geometry from a GML representation of geometry
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromGML(text)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+text &amp;rarr; GML representation of a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;contains function&lt;/h3&gt;
+ Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;contains( geometry a , geometry a)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;distance function&lt;/h3&gt;
+ Returns the minimum distance (based on spatial ref) between two geometries in projected units.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;distance( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ILIKE expression&lt;/h3&gt;
+Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;string/number ILIKE pattern&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;intersection function&lt;/h3&gt;
+Returns a geometry that represents the shared portion of geometry a and geometry b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersection( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;union function&lt;/h3&gt;
+Returns a geometry that represents the point set union of the geometries.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;union( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
+Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;IS expression&lt;/h3&gt;
+Returns 1 if a is the same as b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;a is b&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
+Return the index of a regular expression in a string.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Returns -1 if the expression isn&apos;t found.
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is string.  The regular expression to look for.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -65032,9 +65519,209 @@ Restricts an input value to a specified range.
 &lt;!-- Show example of function.--&gt;
      clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;input&lt;/i&gt; is between 1 and 10 so is returned unchanged)&lt;br&gt;
      clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;input&lt;/i&gt; is less than minimum value of 1, so function returns 1)&lt;br&gt;
-     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; is greater than maximum value of 10, so function returns 11)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; is greater than maximum value of 10, so function returns 10)&lt;br&gt;
      
      
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
+Returns a geometry that represents the portions of a and b that do not intersect.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;symDifference( geometry a, geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;intersects function&lt;/h3&gt;
+Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;intersects( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;bbox function&lt;/h3&gt;
+Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;buffer function&lt;/h3&gt;
+Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;buffer(a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; distance for the buffer
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;centroid function&lt;/h3&gt;
+Returns the geometric center of a geometry.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;centroid(a)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
+Returns 1 when condition a or b is true.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; condition a OR condition b &lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 1  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;NOT&lt;/h3&gt;
+Returns 1 if a is not the same as b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; a NOT b &lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$geometry function&lt;/h3&gt;
+Returns the geometry of the current feature. Can be used for processing with other functions.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$geometry&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;within function&lt;/h3&gt;
+Returns 1 if the geometry a is completely inside geometry b
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;within( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
+Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
+Returns a geometry created from a Well-Known Text (WKT) representation.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geomFromWKT(text)&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+text &amp;rarr; Well-Known Text (WKT) representation of a geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;difference function&lt;/h3&gt;
+Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;difference( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>

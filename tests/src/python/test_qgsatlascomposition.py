@@ -83,7 +83,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mComposition.addComposerLabel( self.mLabel1 )
         self.mLabel1.setText( "[% \"NAME_1\" %] area" )
         self.mLabel1.adjustSizeToText()
-        self.mLabel1.setItemPosition( 150, 5 )
+        self.mLabel1.setSceneRect( QRectF( 150, 5, 60, 15 ) )
 
         qWarning( "header label font: %s exactMatch:%s" % ( self.mLabel1.font().toString(), self.mLabel1.font().exactMatch() ) )
 
@@ -92,7 +92,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mComposition.addComposerLabel( self.mLabel2 )
         self.mLabel2.setText( "# [%$feature || ' / ' || $numfeatures%]" )
         self.mLabel2.adjustSizeToText()
-        self.mLabel2.setItemPosition( 150, 200 )
+        self.mLabel2.setSceneRect( QRectF( 150, 200, 60, 15 ) )
 
         qWarning( "feature number label font: %s exactMatch:%s" % ( self.mLabel2.font().toString(), self.mLabel2.font().exactMatch() ) )
 

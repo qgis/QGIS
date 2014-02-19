@@ -136,6 +136,26 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
   mSymbol.reset( s );
 }
 
+void QgsSingleSymbolRendererV2::setRotationField( QString fieldOrExpression )
+{
+  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+}
+
+QString QgsSingleSymbolRendererV2::rotationField() const
+{
+  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+}
+
+void QgsSingleSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
+{
+  mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+}
+
+QString QgsSingleSymbolRendererV2::sizeScaleField() const
+{
+  return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
+}
+
 void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mScaleMethod = scaleMethod;
@@ -315,12 +335,12 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", mRotation->expression() );
+    rotationElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", mSizeScale->expression() );
+    sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 

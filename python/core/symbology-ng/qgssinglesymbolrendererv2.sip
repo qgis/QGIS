@@ -21,12 +21,12 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     void setSymbol( QgsSymbolV2* s /Transfer/ );
 
     //! @note added in 1.5
-    void setRotationField( QString expression );
+    void setRotationField( QString fieldOrExpression );
     //! @note added in 1.5
     QString rotationField() const;
 
     //! @note added in 1.5
-    void setSizeScaleField( QString expression );
+    void setSizeScaleField( QString fieldOrExpression );
     //! @note added in 1.5
     QString sizeScaleField() const;
 

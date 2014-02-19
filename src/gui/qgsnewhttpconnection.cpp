@@ -40,7 +40,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   // using connection-wms and connection-wfs -> parse credential key fro it.
   mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
 
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^/]+" ), txtName ) );
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 
   cmbDpiMode->clear();
   cmbDpiMode->addItem( tr( "all" ) );

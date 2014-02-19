@@ -441,7 +441,7 @@ QString QgsOracleProvider::whereClause( QgsFeatureId featureId ) const
             int idx = mPrimaryKeyAttrs[i];
             const QgsField &fld = field( idx );
 
-            whereClause += delim + QString( "%1=%2" ).arg( mConnection->fieldExpression( fld ) ).arg( quotedValue( pkVals[i].toString() ) );
+            whereClause += delim + QString( "%1=%2" ).arg( mConnection->fieldExpression( fld ) ).arg( quotedValue( pkVals[i], fld.type() ) );
             delim = " AND ";
           }
         }
@@ -1222,12 +1222,11 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( fieldId.contains( idx ) )
         continue;
 
-      QString fieldname = mAttributeFields[idx].name();
-      QString fieldTypeName = mAttributeFields[idx].typeName();
+      const QgsField &fld = mAttributeFields[idx];
 
-      QgsDebugMsg( "Checking field against: " + fieldname );
+      QgsDebugMsg( "Checking field against: " + fld.name() );
 
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
+      if ( fld.name().isEmpty() || fld.name() == mGeometryColumn )
         continue;
 
       int i;
@@ -1243,7 +1242,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
           break;
       }
 
-      insert += delim + quotedIdentifier( fieldname );
+      insert += delim + quotedIdentifier( fld.name() );
 
       QString defVal = defaultValue( idx ).toString();
 
@@ -1260,13 +1259,13 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             values += delim + defVal;
           }
         }
-        else if ( fieldTypeName == "MDSYS.SDO_GEOMETRY" )
+        else if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
         {
           values += delim + "?";
         }
         else
         {
-          values += delim + quotedValue( v.toString() );
+          values += delim + quotedValue( v, mAttributeFields[idx].type() );
         }
       }
       else
@@ -1620,7 +1619,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
           }
           else
           {
-            sql += quotedValue( siter->toString() );
+            sql += quotedValue( *siter, fld.type() );
           }
         }
         catch ( OracleFieldNotFound )

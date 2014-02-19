@@ -185,7 +185,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
           {
             const QgsField &fld = P->field( idx );
 
-            QVariant v = P->convertValue( fld.type(), mQry.value( col ).toString() );
+            QVariant v = mQry.value( col );
+            if ( v.type() != fld.type() )
+              v = P->convertValue( fld.type(), v.toString() );
             primaryKeyVals << v;
 
             if ( mAttributeList.contains( idx ) )
@@ -219,7 +221,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
       const QgsField &fld = P->field( idx );
 
-      QVariant v = P->convertValue( fld.type(), mQry.value( col ).toString() );
+      QVariant v = mQry.value( col );
+      if ( v.type() != fld.type() )
+        v = P->convertValue( fld.type(), v.toString() );
       feature.setAttribute( idx, v );
 
       col++;

@@ -311,7 +311,11 @@ QgsVectorLayerUndoCommandAddAttribute::QgsVectorLayerUndoCommandAddAttribute( Qg
     : QgsVectorLayerUndoCommand( buffer )
     , mField( field )
 {
-  mFieldIndex = layer()->pendingFields().count();
+  const QgsFields &fields = layer()->pendingFields();
+  int i;
+  for ( i = 0; i < fields.count() && fields.fieldOrigin( i ) != QgsFields::OriginJoin; i++ )
+    ;
+  mFieldIndex = i;
 }
 
 void QgsVectorLayerUndoCommandAddAttribute::undo()

@@ -1354,8 +1354,8 @@ void QgsPluginManager::updateWindowTitle( )
     {
       // if it's not the Settings tab, add the plugin count
       title += QString( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
-      setWindowTitle( title );
     }
+    setWindowTitle( title );
   }
   else
   {

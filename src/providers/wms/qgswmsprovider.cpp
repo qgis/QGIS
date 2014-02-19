@@ -33,6 +33,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
+#include "qgsgeometry.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
@@ -638,20 +639,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     mCacheReply = 0;
   }
 
-  //according to the WMS spec for 1.3, some CRS have inverted axis
-  bool changeXY = false;
-  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
-  {
-    //create CRS from string
-    QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( mImageCrs ) && theSrs.axisInverted() )
-    {
-      changeXY = true;
-    }
-  }
-
-  if ( mInvertAxisOrientation )
-    changeXY = !changeXY;
+  bool changeXY = shouldInvertAxisOrientation( mImageCrs );
 
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
@@ -2492,6 +2480,13 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
           else if ( e1.hasAttribute( "SRS" ) )
             bbox.crs = e1.attribute( "SRS" );
 
+          if ( shouldInvertAxisOrientation( bbox.crs ) )
+          {
+            QgsRectangle invAxisBbox( bbox.box.yMinimum(), bbox.box.xMinimum(),
+                                      bbox.box.yMaximum(), bbox.box.xMaximum() );
+            bbox.box = invAxisBbox;
+          }
+
           layerProperty.boundingBox.push_back( bbox );
         }
         else
@@ -4239,19 +4234,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
   // Collect which layers to query on
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
-  bool changeXY = false;
-  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
-  {
-    //create CRS from string
-    QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( mImageCrs ) && theSrs.axisInverted() )
-    {
-      changeXY = true;
-    }
-  }
-
-  if ( mInvertAxisOrientation )
-    changeXY = !changeXY;
+  bool changeXY = shouldInvertAxisOrientation( mImageCrs );
 
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
@@ -4458,9 +4441,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       // http://sourceforge.net/p/expat/bugs/498/
       QDomDocument dom;
       dom.setContent( gmlByteArray ); // gets XML encoding
+      gmlByteArray.clear();
       QTextStream stream( &gmlByteArray );
       stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
       dom.save( stream, 4, QDomNode::EncodingFromTextStream );
+
+      QgsDebugMsg( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
 
       QGis::WkbType wkbType;
       QgsGmlSchema gmlSchema;
@@ -4549,7 +4535,13 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         // the same as this layer, because layerExtentToOutputExtent() may be used
         // for results -> verify CRS and reprojects if necessary
         QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
-        QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
+        QgsCoordinateReferenceSystem featuresCrs = gml.crs();
+        QgsDebugMsg( QString( "%1 features read, crs: %2 %3" ).arg( features.size() ).arg( featuresCrs.authid() ).arg( featuresCrs.description() ) );
+        QgsCoordinateTransform *coordinateTransform = 0;
+        if ( featuresCrs.isValid() && featuresCrs != crs() )
+        {
+          coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+        }
         QgsFeatureStore featureStore( fields, crs() );
         QMap<QString, QVariant> params;
         params.insert( "sublayer", *layers );
@@ -4562,9 +4554,24 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
           QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
 
+          if ( coordinateTransform && feature->geometry() )
+          {
+            feature->geometry()->transform( *coordinateTransform );
+          }
           featureStore.features().append( QgsFeature( *feature ) );
         }
         featureStoreList.append( featureStore );
+        delete coordinateTransform;
+      }
+      // It is suspicious if we guessed feature types from GML but could not get
+      // features from it. Either we geuessed wrong schema or parsing features failed.
+      // Report it as error so that user can switch to another format in results dialog.
+      if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
+      {
+        QgsError err = ERROR( tr( "Cannot identify" ) );
+        err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( "," ) ) );
+        QgsDebugMsg( "parsing GML error: " +  err.message() );
+        return QgsRasterIdentifyResult( err );
       }
       results.insert( count, qVariantFromValue( featureStoreList ) );
     }
@@ -4936,6 +4943,28 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   QgsDebugMsg( msg );
   emit statusChanged( msg );
 }
+
+bool QgsWmsProvider::shouldInvertAxisOrientation( const QString& ogcCrs )
+{
+  //according to the WMS spec for 1.3, some CRS have inverted axis
+  bool changeXY = false;
+  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
+  {
+    //create CRS from string
+    QgsCoordinateReferenceSystem theSrs;
+    if ( theSrs.createFromOgcWmsCrs( ogcCrs ) && theSrs.axisInverted() )
+    {
+      changeXY = true;
+    }
+  }
+
+  if ( mInvertAxisOrientation )
+    changeXY = !changeXY;
+
+  return changeXY;
+}
+
+
 
 /**
  * Class factory to return a pointer to a newly created

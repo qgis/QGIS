@@ -134,9 +134,6 @@ SET(QGIS_APP_SRCS
   legend/qgsapplegendinterface.cpp
   legend/qgslegenditem.cpp
   legend/qgslegendlayer.cpp
-  legend/qgslegendpropertygroup.cpp
-  legend/qgslegendpropertyitem.cpp
-  legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
   legend/qgslayerorder.cpp
 

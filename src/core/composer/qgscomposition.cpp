@@ -83,6 +83,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
   createDefaultPageStyleSymbol();
   addPaperItem();
 
+  updateBounds();
+
   //add mouse selection handles to composition, and initially hide
   mSelectionHandles = new QgsComposerMouseHandles( this );
   addItem( mSelectionHandles );
@@ -154,6 +156,36 @@ void QgsComposition::loadDefaults()
   mAlignmentSnapTolerance = settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble();
 }
 
+void QgsComposition::updateBounds()
+{
+  setSceneRect( compositionBounds() );
+}
+
+QRectF QgsComposition::compositionBounds() const
+{
+  //start with an empty rectangle
+  QRectF bounds = QRectF( 0, 0, 0, 0 );
+
+  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* composerItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    const QgsPaperItem* paperItem = dynamic_cast<const QgsPaperItem*>( *itemIt );
+    if (( composerItem || paperItem ) )
+    {
+      //expand bounds with current item's bounds
+      bounds = bounds.united(( *itemIt )->sceneBoundingRect() );
+    }
+  }
+
+  //finally, expand bounds out by 5% page size to give a bit of a margin
+  bounds.adjust( -mPageWidth * 0.05, -mPageWidth * 0.05, mPageWidth * 0.05, mPageWidth * 0.05 );
+
+  return bounds;
+}
+
 void QgsComposition::setPaperSize( double width, double height )
 {
   mPageWidth = width;
@@ -164,6 +196,7 @@ void QgsComposition::setPaperSize( double width, double height )
     mPages.at( i )->setSceneRect( QRectF( 0, currentY, width, height ) );
     currentY += ( height + mSpaceBetweenPages );
   }
+  updateBounds();
   emit paperSizeChanged();
 }
 
@@ -198,8 +231,10 @@ void QgsComposition::setNumPages( int pages )
     }
   }
 
-  // update the corresponding variable
+  //update the corresponding variable
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
+
+  updateBounds();
 
   emit nPagesChanged();
 }
@@ -636,6 +671,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mGenerateWorldFile = compositionElem.attribute( "generateWorldFile", "0" ).toInt() == 1 ? true : false;
 
   updatePaperItems();
+
+  updateBounds();
 
   return true;
 }
@@ -1490,7 +1527,7 @@ void QgsComposition::updateZValues( bool addUndoCommands )
   QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
   QgsComposerItem* currentItem = 0;
 
-  QUndoCommand* parentCommand;
+  QUndoCommand* parentCommand = 0;
   if ( addUndoCommands )
   {
     parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
@@ -1500,7 +1537,7 @@ void QgsComposition::updateZValues( bool addUndoCommands )
     currentItem = *it;
     if ( currentItem )
     {
-      QgsComposerItemCommand* subcommand;
+      QgsComposerItemCommand* subcommand = 0;
       if ( addUndoCommands )
       {
         subcommand = new QgsComposerItemCommand( *it, "", parentCommand );
@@ -1948,22 +1985,34 @@ void QgsComposition::endMultiFrameCommand()
 void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.insert( multiFrame );
+
+  updateBounds();
 }
 
 void QgsComposition::removeMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.remove( multiFrame );
+
+  updateBounds();
 }
 
 void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
 {
   addItem( arrow );
+
+  updateBounds();
+  connect( arrow, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerArrowAdded( arrow );
 }
 
 void QgsComposition::addComposerLabel( QgsComposerLabel* label )
 {
   addItem( label );
+
+  updateBounds();
+  connect( label, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerLabelAdded( label );
 }
 
@@ -1981,42 +2030,69 @@ void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreview
     map->cache();
   }
 
+  updateBounds();
+  connect( map, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerMapAdded( map );
 }
 
 void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 {
   addItem( scaleBar );
+
+  updateBounds();
+  connect( scaleBar, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerScaleBarAdded( scaleBar );
 }
 
 void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
 {
   addItem( legend );
+
+  updateBounds();
+  connect( legend, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerLegendAdded( legend );
 }
 
 void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
 {
   addItem( picture );
+
+  updateBounds();
+  connect( picture, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerPictureAdded( picture );
 }
 
 void QgsComposition::addComposerShape( QgsComposerShape* shape )
 {
   addItem( shape );
+
+  updateBounds();
+  connect( shape, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerShapeAdded( shape );
 }
 
 void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
 {
   addItem( table );
+
+  updateBounds();
+  connect( table, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerTableAdded( table );
 }
 
 void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
 {
   addItem( frame );
+
+  updateBounds();
+  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerHtmlFrameAdded( html, frame );
 }
 
@@ -2090,6 +2166,8 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createComma
       }
     }
   }
+
+  updateBounds();
 }
 
 void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state )

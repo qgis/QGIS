@@ -288,6 +288,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   QgsDebugMsg( sql );
   QgsPostgresResult colRes = PQexec( sql );
 
+  layerProperty.pkCols.clear();
   layerProperty.nSpCols = 0;
 
   if ( colRes.PQresultStatus() == PGRES_TUPLES_OK )
@@ -414,7 +415,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    .arg( srid )
                    .arg( relkind ) );
 
-      layerProperty.pkCols.clear();
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
@@ -1365,6 +1365,30 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( QString type )
   {
     return QGis::WKBUnknown;
   }
+}
+
+QGis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
+{
+  // polyhedralsurface / TIN / triangle => Polygon
+  if ( wkbType % 100 >= 15 )
+    wkbType = wkbType / 1000 * 1000 + QGis::WKBPolygon;
+
+  switch ( wkbType / 1000 )
+  {
+    case 0:
+      break;
+    case 1: // Z
+      wkbType = 0x80000000 + wkbType % 100;
+      break;
+    case 2: // M => Z
+      wkbType = 0x80000000 + wkbType % 100;
+      break;
+    case 3: // ZM
+      wkbType = 0xc0000000 + wkbType % 100;
+      break;
+  }
+
+  return ( QGis::WkbType ) wkbType;
 }
 
 QString QgsPostgresConn::displayStringForWkbType( QGis::WkbType type )

@@ -263,8 +263,14 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 
 QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
-  QgsExpression exp( mAttrName );
-  QSet<QString> attributes( exp.referencedColumns().toSet() );
+  QSet<QString> attributes;
+
+  if ( QgsExpression* exp = QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( mAttrName ) )
+  {
+    attributes.unite( exp->referencedColumns().toSet() );
+    delete exp;
+  }
+
   if ( mRotation.data() ) attributes.unite( mRotation->referencedColumns().toSet() );
   if ( mSizeScale.data() ) attributes.unite( mSizeScale->referencedColumns().toSet() );
 
@@ -635,6 +641,9 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   // Returns class breaks such that classes are internally homogeneous while
   // assuring heterogeneity among classes.
 
+  if ( !values.count() )
+    return QList<double>();
+
   if ( classes <= 1 )
   {
     return QList<double>() << maximum;
@@ -766,15 +775,22 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   int attrNum = vlayer->fieldNameIndex( attrName );
   double minimum;
   double maximum;
+
+  QScopedPointer<QgsExpression> expression;
+
   if ( attrNum == -1 )
   {
+    // try to use expression
+    expression.reset( new QgsExpression( attrName ) );
+    if ( expression->hasParserError() || !expression->prepare( vlayer->pendingFields() ) )
+      return 0; // should have a means to report errors
+
     QList<double> values;
     QgsFeatureIterator fit = vlayer->getFeatures();
     QgsFeature feature;
-    QgsExpression expression( attrName );
     while ( fit.nextFeature( feature ) )
     {
-      values << expression.evaluate( feature ).toDouble();
+      values << expression->evaluate( feature ).toDouble();
     }
     qSort( values );
     minimum = values.first();
@@ -802,15 +818,21 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     // get values from layer
     QList<double> values;
     QgsFeature f;
-    QgsAttributeList lst;
-    lst.append( attrNum );
+    QStringList lst;
+    if ( expression.isNull() )
+      lst.append( attrName );
+    else
+      lst = expression->referencedColumns();
 
-    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( lst ) );
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
 
     // create list of non-null attribute values
     while ( fit.nextFeature( f ) )
-      if ( !f.attribute( attrNum ).isNull() )
-        values.append( f.attribute( attrNum ).toDouble() );
+    {
+      QVariant v = expression.isNull() ? f.attribute( attrNum ) : expression->evaluate( f );
+      if ( !v.isNull() )
+        values.append( v.toDouble() );
+    }
 
     // calculate the breaks
     if ( mode == Quantile )
@@ -1041,12 +1063,12 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", mRotation->expression() );
+    rotationElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", mSizeScale->expression() );
+    sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
@@ -1152,6 +1174,26 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
     ++i;
   }
   this->setSourceSymbol( sym->clone() );
+}
+
+void QgsGraduatedSymbolRendererV2::setRotationField( QString fieldOrExpression )
+{
+  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+}
+
+QString QgsGraduatedSymbolRendererV2::rotationField() const
+{
+  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+}
+
+void QgsGraduatedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
+{
+  mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+}
+
+QString QgsGraduatedSymbolRendererV2::sizeScaleField() const
+{
+  return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
 void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )

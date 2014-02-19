@@ -152,6 +152,9 @@ void QgsHighlight::setSymbolColor( QgsSymbolV2* symbol, const QColor & color )
       symbolLayer->setColor( color ); // line symbology layers
       symbolLayer->setOutlineColor( color ); // marker and fill symbology layers
       symbolLayer->setFillColor( mTemporaryFillColor ); // marker and fill symbology layers
+
+      symbolLayer->removeDataDefinedProperty( "color" );
+      symbolLayer->removeDataDefinedProperty( "color_border" );
     }
   }
 }

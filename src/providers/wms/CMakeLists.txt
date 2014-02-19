@@ -21,6 +21,7 @@ QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 INCLUDE_DIRECTORIES( . ../../core ../../core/raster ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR} # temporary solution until gdal get removed completely form QgsRasterLayer
+  ${GEOS_INCLUDE_DIR}
 )
 
 ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_MOC_SRCS})

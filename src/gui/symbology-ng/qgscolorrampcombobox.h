@@ -40,7 +40,10 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     //! @note not available in python bindings
     static QSize rampIconSize;
 
+    //! @note added in 2.2
     void setShowGradientOnly( bool gradientOnly ) { mShowGradientOnly = gradientOnly; }
+    //! @note added in 2.2
+    bool showGradientOnly() const { return mShowGradientOnly; }
 
   public slots:
     void colorRampChanged( int index );

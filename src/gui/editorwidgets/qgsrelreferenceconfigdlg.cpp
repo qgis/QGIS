@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionbuilderdialog.h"
 
 QgsRelReferenceConfigDlg::QgsRelReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -28,13 +29,14 @@ QgsRelReferenceConfigDlg::QgsRelReferenceConfigDlg( QgsVectorLayer* vl, int fiel
 
   foreach ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
   {
-    QgsField fld = relation.fieldPairs().first().second;
     mComboRelation->addItem( QString( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     if ( relation.referencedLayer() )
     {
       mTxtDisplayExpression->setText( relation.referencedLayer()->displayExpression() );
     }
   }
+
+  connect( mPbnPreviewExpression, SIGNAL( clicked() ), this, SLOT( previewExpressionBuilder() ) );
 }
 
 void QgsRelReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config )
@@ -74,5 +76,28 @@ QgsEditorWidgetConfig QgsRelReferenceConfigDlg::config()
   myConfig.insert( "ShowForm", mCbxShowForm->isChecked() );
   myConfig.insert( "Relation", mComboRelation->itemData( mComboRelation->currentIndex() ) );
 
+  QString relName = mComboRelation->itemData( mComboRelation->currentIndex() ).toString();
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relName );
+
+  if ( relation.isValid() )
+  {
+    relation.referencedLayer()->setDisplayExpression( mTxtDisplayExpression->text() );
+  }
+
   return myConfig;
+}
+
+void QgsRelReferenceConfigDlg::previewExpressionBuilder()
+{
+  QString relName = mComboRelation->itemData( mComboRelation->currentIndex() ).toString();
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relName );
+
+  // Show expression builder
+  QgsExpressionBuilderDialog dlg( relation.referencedLayer(), mTxtDisplayExpression->text() , this );
+  dlg.setWindowTitle( tr( "Preview Expression" ) );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    mTxtDisplayExpression->setText( dlg.expressionText() );
+  }
 }

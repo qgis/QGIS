@@ -7,13 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>175</height>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -21,14 +24,28 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxAllowNull">
-     <property name="text">
-      <string>Allow NULL value</string>
-     </property>
-    </widget>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="mTxtDisplayExpression"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mPbnPreviewExpression">
+       <property name="text">
+        <string>Expression Builder</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../images/images.qrc">
+         <normaloff>:/images/themes/default/mIconExpressionEditorOpen.svg</normaloff>:/images/themes/default/mIconExpressionEditorOpen.svg</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mComboRelation"/>
+   </item>
+   <item row="7" column="0">
     <widget class="QCheckBox" name="mCbxShowForm">
      <property name="text">
       <string>Show embedded form</string>
@@ -42,14 +59,17 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mComboRelation"/>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mTxtDisplayExpression"/>
+   <item row="6" column="0">
+    <widget class="QCheckBox" name="mCbxAllowNull">
+     <property name="text">
+      <string>Allow NULL value</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -165,22 +165,14 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     void updateSymbols( QgsSymbolV2* sym );
 
     //! @note added in 1.6
-    void setRotationField( QString expression )
-    {
-      mRotation.reset( expression.isEmpty() ? NULL : new QgsExpression( expression ) );
-      Q_ASSERT( !mRotation.data() || !mRotation->hasParserError() );
-    }
+    void setRotationField( QString fieldOrExpression );
     //! @note added in 1.6
-    QString rotationField() const {  return mRotation.data() ? mRotation->expression() : QString();}
+    QString rotationField() const;
 
     //! @note added in 1.6
-    void setSizeScaleField( QString expression )
-    {
-      mSizeScale.reset( expression.isEmpty() ? NULL : new QgsExpression( expression ) );
-      Q_ASSERT( !mSizeScale.data() || !mSizeScale->hasParserError() );
-    }
+    void setSizeScaleField( QString fieldOrExpression );
     //! @note added in 1.6
-    QString sizeScaleField() const { return mSizeScale.data() ? mSizeScale->expression() : QString(); }
+    QString sizeScaleField() const;
 
     //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );

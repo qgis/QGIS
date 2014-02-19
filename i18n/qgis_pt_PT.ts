@@ -4142,7 +4142,7 @@ Módulo não será ativado.</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation>Produz um mapa matricial de proximidade</translation>
+        <translation>Produz um mapa raster de proximidade</translation>
     </message>
     <message>
         <source>Near black</source>
@@ -5183,7 +5183,7 @@ abrir documentação local GDAL em vez da ajuda online.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="26"/>
         <source>&amp;Input file (raster)</source>
-        <translation>Ficheiro de &amp;entrada (matricial)</translation>
+        <translation>Ficheiro de &amp;entrada (raster)</translation>
     </message>
     <message>
         <source>&amp;Output directory for contour lines (shapefile)</source>
@@ -5736,7 +5736,7 @@ adequado para uso directo em Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
         <source>Polygonize (Raster to vector)</source>
-        <translation>Vectorizar (Matricial para vector)</translation>
+        <translation>Vectorizar (Raster para vector)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="39"/>
@@ -5875,7 +5875,7 @@ adequado para uso directo em Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
         <source>Rasterize (Vector to raster)</source>
-        <translation>Vectorizar (Vector para matricial)</translation>
+        <translation>Vectorizar (Vector para raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
@@ -5890,7 +5890,7 @@ adequado para uso directo em Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="58"/>
         <source>&amp;Output file for rasterized vectors (raster)</source>
-        <translation>Ficheiro de &amp;saída para resultados (matricial)</translation>
+        <translation>Ficheiro de &amp;saída para resultados (raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="76"/>
@@ -6871,7 +6871,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
         <source>Output raster</source>
-        <translation>Ficheiro matricial de saída</translation>
+        <translation>Ficheiro raster de saída</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="62"/>
@@ -7174,7 +7174,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="199"/>
         <source>&amp;Raster</source>
-        <translation>&amp;Matricial</translation>
+        <translation>&amp;Raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="173"/>
@@ -7243,7 +7243,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="421"/>
         <source>Raster</source>
-        <translation>Matricial</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="440"/>
@@ -8093,7 +8093,7 @@ Shift+seleção da camada ativa</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1181"/>
         <source>Raster calculator ...</source>
-        <translation>Calculadora matricial ...</translation>
+        <translation>Calculadora raster ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1190"/>
@@ -8108,7 +8108,7 @@ Shift+seleção da camada ativa</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1202"/>
         <source>Add Raster Layer...</source>
-        <translation>Adicionar Camada Matricial...</translation>
+        <translation>Adicionar Camada Raster...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1205"/>
@@ -8423,7 +8423,7 @@ Shift+seleção da camada ativa</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1474"/>
         <source>Stretch histogram of active raster to view extents</source>
-        <translation>Ajustar histograma da camada matricial à extensão do mapa</translation>
+        <translation>Ajustar histograma da camada raster à extensão do mapa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1483"/>
@@ -8723,7 +8723,7 @@ Linha errada: %1</translation>
     </message>
     <message>
         <source>Values from raster layers statistics</source>
-        <translation>Valores a partir das estatísticas da camada matricial</translation>
+        <translation>Valores das estatísticas da camada raster</translation>
     </message>
     <message>
         <source>Mean</source>
@@ -11056,7 +11056,7 @@ Deseja especificar o caminho (GISBASE) para sua instalação GRASS?</translation
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1148"/>
         <source>Cannot read raster map region</source>
-        <translation>Impossível ler região do mapa matricial</translation>
+        <translation>Impossível ler região do mapa raster</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1165"/>
@@ -11602,12 +11602,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="37"/>
         <source>Raster Terrain Analysis plugin</source>
-        <translation>Módulo de Análise de Terreno Matricial</translation>
+        <translation>Módulo de Análise de Terreno Raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="38"/>
         <source>A plugin for raster based terrain analysis</source>
-        <translation>Um módulo para análise de terreno baseada em cálculo matricial</translation>
+        <translation>Um módulo para análise de terreno baseada em cálculo raster</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="149"/>
@@ -11771,7 +11771,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito, ficheiros BNA são criados em formato multi-linha. Para cada registo, a primeira linha contém os identificadores e o tipo/número de coordenadas a seguir. Cada uma das seguintes linhas contêm um par de coordenadas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
@@ -11841,7 +11841,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="546"/>
         <source>The BNA writer will try to recognize ellipses and circles when writing a polygon. This will only work if the feature has previously been read from a BNA file. As some software packages do not support ellipses/circles in BNA data file, it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not to export them as such, but keep them as polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>O escritor BNA tentará reconhecer elipses e círculos ao escrever um polígono. Este processo só funcionará se o elemento já tiver sido lido de um ficheiro BNA. Como certos pacotes de software não suportam elipses/círculos em ficheiros de dados BNA, pode ser útil informar o escritor especificando ELLIPSES_AS_ELLIPSES=NO para que não os exporte como tal, e mantê-los como polígonos.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="555"/>
@@ -11856,17 +11856,17 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="580"/>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito ao criar novos ficheiros csv estes são criado com a terminação de linha da plataforma local (CR/LF em win32 ou LF em todos os outros sistemas). Esta opção pode ser sobreposta usando a opção LINEFORMAT.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="592"/>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito, a geometria de um elemento é descartado quando é escrito num ficheiro .csv. É possível exportar a geometria na sua representação WKT especificando GEOMETRY=AS_WKT. Também é possível exportar geometrias de pontos nas suas suas componentes X,Y,Z especificando GEOMETRY=AS_XYZ, GEOMETRY=AS_XY ou GEOMETRY=AS_YX.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="607"/>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision.</source>
-        <translation type="unfinished"></translation>
+        <translation>Crie o ficheiro .csvt associado para descrever o tipo de cada coluna da camada e opcionalmente o comprimento e precisão.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="613"/>
@@ -11881,17 +11881,17 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="642"/>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignora o tipo de shapefile criado. Pode ser do tipo NULL para .dbf simples sem o ficheiro .shp, POINT, ARC, POLYGON, ou MULTIPOINT para 2D, ou POINTZ, AECZ, POLYGONZ ou MULTIPOINTZ para 3D. Não são suportados shapefiles com valores de medida, nem ficheiros MULTIPATCH.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="661"/>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
-        <translation type="unfinished"></translation>
+        <translation>determine o valor de codificação no ficheiro DBF. O valor por defeito é LDID/87. Não é claro que outros valores possam ser apropriados.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="670"/>
         <source>Set to YES to resize fields to their optimal size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha SIM para ajustar os campos ao seu tamanho óptimo.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="692"/>
@@ -11901,12 +11901,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="720"/>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha SIM para escrever uma propriedade bbox com a bounding box das geometrias ao nível do elemento e da colecção. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="726"/>
         <source>Maximum number of figures after decimal separator to write in coordinates. Default to 15. Truncation will occur to remove trailing zeros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Número máximo de dígitos depois do separador decimal ao escrever as coordenadas. Por defeito 15. Irá ocorrer truncagem para remover os zeros à direita.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="734"/>
@@ -11918,22 +11918,22 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="747"/>
         <source>whether the document must be in RSS 2.0 or Atom 1.0 format. Default value : RSS</source>
-        <translation type="unfinished"></translation>
+        <translation>se o documento deve estar em RSS 2.0 ou Atom formato 1.0. Valor por defeito: RSS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="756"/>
         <source>The encoding of location information. Default value : SIMPLE. W3C_GEO only supports point geometries. SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>A codificação da informação de localização. Valor por defeito: SIMPLE. W3C_GEO suporta apenas geometrias de pontos. SIMPLE e W3C_GEO apenas suporta geometrias em coordenadas geográficas WGS84.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="767"/>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se definido como SIM, os campos de extensão serão gravados. Se o nome do campo não encontrado no esquema base corresponder ao padrão foo_bar, foo será considerado como o namespace do elemento, e um elemento &lt;foo:bar&gt; será gravado. Caso contrário, os elementos serão escritos no namespace &lt;ogr:&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="776"/>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se definido como NÃO, apenas elementos &lt;entry&gt; ou &lt;item&gt; serão gravados. O utilizador terá de fornecer o cabeçalho e rodapé apropriados do documento.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="782"/>
@@ -11943,32 +11943,33 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="789"/>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Valor colocado dentro do elemento &lt;title&gt; no cabeçalho. Se não for fornecido, um valor fictício será utilizado uma vez que o elemento é obrigatório.</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="795"/>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;description&gt; no cabeçalho. Se não for fornecido, um valor fictício será utilizado uma vez que o elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="801"/>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;link&gt; no cabeçalho. Se não for fornecido, um valor fictício será utilizado uma vez que o elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="807"/>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;updated&gt; no cabeçalho. Deve ser formatado como um datetime XML. Se não for fornecido, um valor fictício será utilizado uma vez que o elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="814"/>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;author&gt;&lt;name&gt; no cabeçalho. Se não for fornecido, um valor fictício será utilizado uma vez que o elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="820"/>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;id&gt; no cabeçalho. Se não for fornecido, um valor fictício será utilizado uma vez que o elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="828"/>
@@ -11980,27 +11981,27 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="841"/>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se fornecido, este URI será inserido como o local do esquema. Note que o ficheiro de esquema não é realmente acedido pelo OGR, por isso é da responsabilidade do utilizador garantir que o mesmo coincidirá com o esquema do OGR produzido ficheiro de dados GML.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="849"/>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Grava o esquema de ficheiros de uma aplicação GML num ficheiro .xsd correspondente (com o mesmo nome de base). Se for usado INTERNAL o esquema será escrito dentro do ficheiro GML, mas é experimental e não será certamente XML válido. OFF desactiva a criação do esquema (e está implícito se for usado XSISCHEMAURI).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="862"/>
         <source>This is the prefix for the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este é o prefixo para o namespace de destino da aplicação.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="867"/>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pode ser definido como TRUE para evitar escrever o prefixo do namespace de destino da aplicação no ficheiro GML.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito é &apos;http://ogr.maptools.org/&apos; Este é o namespace de destino da aplicação.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="879"/>
@@ -12010,17 +12011,17 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="889"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
-        <translation type="unfinished"></translation>
+        <translation>válido apenas quando FORMAT = GML3/GML3Degree/GML3.2). Por defeito YES. Se YES, SRS com autoridade EPSG será gravado com o prefixo &apos;urn: ogc: def: crs: EPSG :: &apos;. Nesse caso, se o SRS é um SRS geográfico sem ordem AXIS explícita, mas que o mesmo código autoridade SRS importado com ImportFromEPSGA () deve ser tratado como lat/long, então a função tratará de trocar a ordem das coordenadas Se definido como NO, o SRS com autoridade EPSG será gravado com o  prefixo &apos;EPSG:&apos; , mesmo que estejam na  ordem lat / long.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="901"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>válido apenas quando FORMAT = GML3/GML3Degree/GML3.2). Por defeito YES. Se definido como NO, o elemento &lt;gml:boundedBy&gt; não será escrito para cada elemento.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="908"/>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito YES. Se YES, o resultado será indentado com espaços para maior legibilidade, mas à custa do tamanho do ficheiro.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="917"/>
@@ -12039,32 +12040,32 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="945"/>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito, ao escrever uma camada cujos elementos são do tipo wkbLineString, o driver GPX opta por escrevê-los como rotas. Se for especificado FORCE_GPX_TRACK = yes, serão escritos como trilhos.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="953"/>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito, ao escrever uma camada cujos elementos são do tipo wkbMultiLineString, o driver GPX opta _ por escrevê-los como trilhos. Se FORCE_GPX_ROUTE = YES for especificado, serão gravados como rotas, desde que as multilinhas sejam compostas por apenas uma única linha.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="962"/>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se o GPX_USE_EXTENSIONS=YES for especificado, campos extra serão gravados dentro da tag &lt;extensions&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="968"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Só usado se GPX_USE_EXTENSIONS = YES e GPX_EXTENSIONS_NS_URL forem definidos. O valor do namespace usado para tags de extensão. Por defeito, &apos;ogr&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="974"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Só usado se o GPX_USE_EXTENSIONS = YES e o GPX_EXTENSIONS_NS estão definidos. O namespace URI. Por defeito, &apos;.http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="980"/>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeito os ficheiros são criados com as convenções de terminação de linha da plataforma local (CR / LF em win32 ou LF em todos os outros sistemas) Isto pode ser ultrapassado através do uso da opção de criação da camada LINEFORMAT que pode ter o valor CRLF (formato DOS) ou LF (formato Unix).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="995"/>
@@ -12098,7 +12099,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1073"/>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Use para ativar o &apos;modo de índice espacial rápido&apos;. Neste modo a gravação de ficheiros pode ser de cerca de 5 vezes mais rápido, mas as consultas espaciais podem ser até 30 vezes mais lentas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1085"/>
@@ -12115,62 +12116,62 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1110"/>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Determinar se o ficheiro seed 2D (seed_2d.dgn) ou 3D (seed_3d.dgn) deve ser usado. Esta opção é ignorada se a opção SEED for fornecida.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1116"/>
         <source>Override the seed file to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir o ficheiro seed a usar.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1121"/>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicar se todo o ficheiro seed deve ser copiado. Caso contrário, apenas os três primeiros elementos serão copiados.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1127"/>
         <source>Indicates whether the color table should be copied from the seed file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica se a tabela de cores deve ser copiada do ficheiro seed.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1132"/>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir o nome da unidade master do ficheiro seed por um ou dois caracteres fornecidos do nome da unidade .</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1138"/>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir o nome da sub-unidade do ficheiro seed por um ou dois caracteres fornecidos do nome da unidade.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1144"/>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir o número de subunidades por unidade master. Por defeito, é usado o valor do ficheiro seed.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1150"/>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir o número de UORs (Unidades de resolução) por sub-unidade. Por defeito, é usado o valor do ficheiro seed.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1156"/>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>ORIGIN = x, y, z: Substitui a origem do plano de desenho. Por defeito, é usado origem do ficheiro seed.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1192"/>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation type="unfinished"></translation>
+        <translation>Os ficheiros de actualização devem ser incorporados nos dados de base em tempo real.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sondagens multipontos devem ser separadas em sondagens de pontos simples. Geometrias multipontos não são bem manipuladas por muitos formatos, por isso convém separar elementos de sondagem com muito pontos em elemento de pontos simples.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1208"/>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Um atributo DEPTH deve ser adicionado a elementos SOUNDG e representar a profundidade da sondagem. Apenas deve estar activo quando SPLIT_MULTIPOINT também está activo.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1215"/>
@@ -12208,44 +12209,44 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1280"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1354"/>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pode ser usado para evitar criar as tabelas geometry_columns e spatial_ref_sys numa nova tabela. Por defeito estas tabelas de metadados são criadas quando uma nova base de dados é criada.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1297"/>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla o formato usado na coluna da geometria. Por defeito WKB. Formato geramente mais eficiente em termos de espaço e processamento, mas mais difícil de ver ou usar em aplicações simples que o WKT (Well Known Text).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1375"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla se os nome de camadas e campos são limpos para facilitar o uso no SQLite. Nome limpos serão convertidos para minúsculas e caractéres especiais (&apos; - #) serão convertidos em sublinhado.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1326"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1407"/>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
-        <translation type="unfinished"></translation>
+        <translation>nome_coluna1 [nome_coluna2,...] Uma lista de colunas (String) que deve ser comprimida com o algoritmo ZLib DEFLATE. Isso pode ser benéfico para bases de dados que tenha blobs de strings grandes. No entanto, utilize com cuidado, uma vez que o valor dessas colunas será visto como conteúdo binário comprimido por outros utilitários SQLite (ou anteriores versões OGR). Com OGR, ao inserir, modificar ou consultar colunas comprimidas, a compressão / descompressão é feita de forma transparente. No entanto, essas colunas não podem ser (facilmente) consultadas com um filtro de atributo ou cláusula WHERE. Nota: na definição da tabela, colunas deste tipo são declaradas como &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1365"/>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir o conteúdo dos ficheiros CSV EPSG na tabela spatial_ref_sys. Defina como NÃO para bases de dados SQLite normais.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1382"/>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se a base de dados é do tipo SpatiaLite , e se o OGR está ligado ao libspatialite, esta opção pode ser utilizada para controlar se um índice espacial deve ser criado.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1389"/>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Se o formato da geometria BLOB é ao gosto do SpatiaLite, esta opção pode ser usada para controlar se o formato comprimido para geometrias (LINESTRINGs, POLYGONs) deve ser usado</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1396"/>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usado para forçar o número SRID do SRS associado à camada. Quando esta opção não é especificada  SRS está associado à camada, é feita uma pesquisa na spatial_ref_sys para encontrar uma correspondência para o SRS, e, se não houver correspondência, uma nova entrada é inserida para o SRS na tabela spatial_ref_sys. Quando a opção SRID for especificada, esta pesquisa (e a eventual inserção de uma nova entrada) não será feita: o SRID especificado é usado como está.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1422"/>
@@ -12258,12 +12259,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1459"/>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica a extensão de ficheiro de exportação GeoConcept. Foi usado TXT em versões anteriores do GeoConcept. Actualmente é usado GXT.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1490"/>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quando esta opção estiver definida, a nova camada  será criada dentro da pasta chamada FeatureDataset. Se a pasta não existir, será criada.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1496"/>
@@ -12285,7 +12286,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1850"/>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível substituir um camada OGR no local</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2451"/>
@@ -12518,17 +12519,17 @@ Apenas %1 de %2 elementos escritos.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9718"/>
         <source>minidump written to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>minidump escrito em %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9722"/>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Falhou a escrita do minidump em %1(%2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9729"/>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Falhou a criação do minidump em %1(%2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9732"/>
@@ -12636,7 +12637,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="319"/>
         <source>Raster Histogram</source>
-        <translation>Histograma Matricial</translation>
+        <translation>Histograma Raster</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="322"/>
@@ -12890,7 +12891,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2046"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation>Este ficheiro matricial não possui bandas e é inválido como uma camada matricial.</translation>
+        <translation>Este ficheiro raster não possui bandas e é inválido como camada raster.</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2764"/>
@@ -13801,7 +13802,7 @@ Erro da base de dados: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="241"/>
         <source>Infinite filter rectangle specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Foi especificado um rectangulo de filtro infinito</translation>
     </message>
     <message>
         <source>Trying to fetch geometry on a layer without geometry.</source>
@@ -13893,7 +13894,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1678"/>
         <source>unhandled response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Resposta não tratada: %1</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="481"/>
@@ -14692,7 +14693,7 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="7140"/>
         <location filename="../src/app/qgisapp.cpp" line="7149"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation>Para alterar o brilho ou o contraste, precisa de ter uma camada matricial selecionada.</translation>
+        <translation>Para alterar o brilho ou o contraste, precisa de ter uma camada raster selecionada.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7175"/>
@@ -14702,8 +14703,8 @@ SQL: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7193"/>
-        <source>http://qgis.org/de/site/forusers/commercial_support.html</source>
-        <translation>http://qgis.org/de/site/forusers/commercial_support.html</translation>
+        <source>http://www.qgis.org/en/commercial-support.html</source>
+        <translation>http://www.qgis.org/en/commercial-support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7304"/>
@@ -14749,7 +14750,7 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="8927"/>
         <location filename="../src/app/qgisapp.cpp" line="9074"/>
         <source>Raster layer</source>
-        <translation>Camada Matricial</translation>
+        <translation>Camada Raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9076"/>
@@ -17060,8 +17061,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="131"/>
-        <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Para ver o conjunto de indivíduos e/ou instituições que tenham contribuído financeiramente para o desenvolvimento do QGIS e outros custos de projectos ver &lt;ah href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</translation>
+        <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Para ver o conjunto de indivíduos e/ou instituições que tenham contribuído financeiramente para o desenvolvimento do QGIS e outros custos de projectos ver &lt;ah href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="230"/>
@@ -19974,14 +19975,14 @@ Podem as classes ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedades do elemento</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3132"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3149"/>
         <source>Set as atlas feature for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Define como elemento do atlas para %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="730"/>
@@ -28259,7 +28260,7 @@ Erro de análise:
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="426"/>
         <source>Run layer action</source>
-        <translation type="unfinished"></translation>
+        <translation>Executar acção da camada</translation>
     </message>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="457"/>
@@ -28757,7 +28758,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="262"/>
         <source>Recent (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Recente (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="347"/>
@@ -44444,7 +44445,7 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Escala máxima a partir da qual a camada deve ser simplificada (1:1 é sempre simplificada): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2092"/>
@@ -48458,7 +48459,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Módulos inválidos&lt;/h3&gt;&lt;p&gt;Os módulos nesta lista estão &lt;b&gt;danificados ou são incompatíveis&lt;/b&gt;com esta versão do QGIS.&lt;/p&gt;&lt;p&gt;Clique num módulo; se possível o QGIS mostrará mais informação.&lt;/p&gt;&lt;p&gt;A principal razão para ter módulos inválidos deve-se ao facto de não estarem compilados para esta versão do QGIS. Talvez possa transferir-outra versão a partir de &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Outra razão frequente poderá dever-se ao facto de o módulo necessitar de algumas bibliotecas python externas (depêndencias). Dependendo do seu sistema operativo, pode instalá-las. Após a correcta instalação o módulo deverá funcionar.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
@@ -54505,7 +54506,7 @@ desvio padrão ×</translation>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="321"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="326"/>
         <source>- expression -</source>
-        <translation type="unfinished"></translation>
+        <translation>- expressão -</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="239"/>
@@ -56614,12 +56615,12 @@ mas implica um melhor desempenho depois.</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Error</source>
-        <translation type="unfinished">Erro</translation>
+        <translation>Erro</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível adicionar a ligação &apos;%1&apos; : já existe uma ligação com o mesmo nome.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="441"/>
@@ -56978,7 +56979,7 @@ mas implica um melhor desempenho depois.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
-        <translation>Mapa &quot;%1&quot; transformação &quot;na hora&quot;.</translation>
+        <translation>Mapa &quot;%1&quot; transformação &quot;on the fly&quot;.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
@@ -57802,7 +57803,7 @@ Você deseja sobrepor a [%2] relação?</translation>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  &lt;br /&gt;&lt;br /&gt;Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  &lt;br /&gt;&lt;br /&gt;Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
@@ -57820,7 +57821,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Trabalhamos no duro para fazermos este agradável software para si. Vê todas as características boas que tem? Tem aquela sensação confortável quando o usa? O QGIS é um trabalho de amor de uma equipa dedicada de programadores. Queremo que você copie &amp;amp; partilhe-o e ponha no máximo de mãos possível. Se o QGIS faz com que guarde dinheiro ou gosta do nosso rabalho e tem possibilidades financeirss para ajudar, por favor considere patrocionar o desenvolvimento do QGIS. Nós usamos o dinheiro dos nossos patrocinadores para pagar as viagens e os custos relacionados com os nosssos hackfests bi-anuais, e para assegurar suporte para as metas do nosso projecto.  &lt;br /&gt;&lt;br /&gt;Por favor veja &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Página Web do Patrocínio QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; para mais detalhes. Na &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Página de Patrocinadores&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; pode ver as boas pessoas e empresas que estão ajudar-nos financeiramente - um grande &apos;obrigado&apos; para todos vós!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Trabalhamos no duro para fazermos este agradável software para si. Vê todas as características boas que tem? Tem aquela sensação confortável quando o usa? O QGIS é um trabalho de amor de uma equipa dedicada de programadores. Queremo que você copie &amp;amp; partilhe-o e ponha no máximo de mãos possível. Se o QGIS faz com que guarde dinheiro ou gosta do nosso rabalho e tem possibilidades financeirss para ajudar, por favor considere patrocionar o desenvolvimento do QGIS. Nós usamos o dinheiro dos nossos patrocinadores para pagar as viagens e os custos relacionados com os nosssos hackfests bi-anuais, e para assegurar suporte para as metas do nosso projecto.  &lt;br /&gt;&lt;br /&gt;Por favor veja &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Página Web do Patrocínio QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; para mais detalhes. Na &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Página de Patrocinadores&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; pode ver as boas pessoas e empresas que estão ajudar-nos financeiramente - um grande &apos;obrigado&apos; para todos vós!&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
@@ -57840,7 +57841,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; for more details. In the list below you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; for more details. In the list below you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
@@ -57864,7 +57865,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Nós trabalhamos muito duro para fazer este software agradável para você. Viu todos os recursos legais que ele tem? Obteve uma sensação agradável ao utilizá-lo? Quantum GIS é um trabalho de amor por uma equipe dedicada de desenvolvedores. Nós queremos que você possa copia-lo, compartilhá-lo e colocá-lo nas mãos de tantas pessoas quanto for possível. Se o QGIS está poupando seu dinheiro ou se você gosta de nosso trabalho e tem a capacidade financeira para ajudar, por favor, considere patrocinar o desenvolvimento do Quantum GIS. Nós utilizamos o dinheiro dos patrocinadores para pagar as despesas de viagem e custos relacionados aos nossos encontros bianuais, e também a apoiar os objetivos de nosso projeto. Por favor, veja o &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Página de patrocinadores do QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; para mais detalhes. Na lista abaixo, você pode ver as boas pessoas e as empresas que estão nos ajudando financeiramente - Um grande grande &apos;obrigado&apos; a todos&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Nós trabalhamos muito duro para fazer este software agradável para você. Viu todos os recursos legais que ele tem? Obteve uma sensação agradável ao utilizá-lo? Quantum GIS é um trabalho de amor por uma equipe dedicada de desenvolvedores. Nós queremos que você possa copia-lo, compartilhá-lo e colocá-lo nas mãos de tantas pessoas quanto for possível. Se o QGIS está poupando seu dinheiro ou se você gosta de nosso trabalho e tem a capacidade financeira para ajudar, por favor, considere patrocinar o desenvolvimento do Quantum GIS. Nós utilizamos o dinheiro dos patrocinadores para pagar as despesas de viagem e custos relacionados aos nossos encontros bianuais, e também a apoiar os objetivos de nosso projeto. Por favor, veja o &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Página de patrocinadores do QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; para mais detalhes. Na lista abaixo, você pode ver as boas pessoas e as empresas que estão nos ajudando financeiramente - Um grande grande &apos;obrigado&apos; a todos&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Patrocinadores 2011&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
@@ -59188,8 +59189,8 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
         <translation>Publicações QGIS</translation>
     </message>
     <message>
-        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://qgis.org/en/site/about/case_studies/index.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://qgis.org/en/site/about/case_studies/index.html).</source>
-        <translation type="obsolete">Se você escrever um artigo científico ou qualquer outro artigo que se refere ao QGIS adoraríamos de incluir o seu trabalho na &lt;a href = &quot;http://qgis.org/en/site/about/case_studies/index.html&quot; &gt; secção de casos estudos &lt;/a&gt; da página inicial do Quantum GIS (http://http://qgis.org/en/site/about/case_studies/index.html).</translation>
+        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
+        <translation type="obsolete">Se você escrever um artigo científico ou qualquer outro artigo que se refere ao QGIS adoraríamos de incluir o seu trabalho na &lt;a href = &quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot; &gt; secção de casos estudos &lt;/a&gt; da página inicial do Quantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="48"/>
@@ -59197,8 +59198,8 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
         <translation>Torne-se um tradutor QGIS</translation>
     </message>
     <message>
-        <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page (http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui).&lt;/a&gt;</source>
-        <translation type="obsolete">Gostaria de ver o QGIS na sua língua nativa? Estamos à procura de mais tradutores e gostariamos de sua ajuda! O processo de tradução é bastante simples - as instruções estão disponíveis na página do QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page (http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui).&lt;/a&gt;</translation>
+        <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page (http://www.qgis.org/wiki/GUI_Translation).&lt;/a&gt;</source>
+        <translation type="obsolete">Gostaria de ver o QGIS na sua língua nativa? Estamos à procura de mais tradutores e gostariamos de sua ajuda! O processo de tradução é bastante simples - as instruções estão disponíveis na página do QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page (http://www.qgis.org/wiki/GUI_Translation).&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="57"/>
@@ -59206,8 +59207,8 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
         <translation>Listas de discussão QGIS</translation>
     </message>
     <message>
-        <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://qgis.org/en/site/forusers/support.html#mailing-lists).</source>
-        <translation type="obsolete">Se precisar de ajuda para usar QGIS temos uma lista discussão de &apos;utilizadores&apos; onde os utilizadores ajudam-se uns aos outros com os problemas relacionados ao uso do nosso sofware. Também temos uma lista de discussão dos &apos;desenvolvedores&apos; para aqueles que querem ajuda e discutir coisas relativas ao código de base do QGIS. Detalhes sobre como se inscrever estão disponíveis na &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;seCção comunidade &lt;/a&gt; da página inicial do QGIS (http://qgis.org/en/site/forusers/support.html#mailing-lists).</translation>
+        <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html).</source>
+        <translation type="obsolete">Se precisar de ajuda para usar QGIS temos uma lista discussão de &apos;utilizadores&apos; onde os utilizadores ajudam-se uns aos outros com os problemas relacionados ao uso do nosso sofware. Também temos uma lista de discussão dos &apos;desenvolvedores&apos; para aqueles que querem ajuda e discutir coisas relativas ao código de base do QGIS. Detalhes sobre como se inscrever estão disponíveis na &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;seCção comunidade &lt;/a&gt; da página inicial do QGIS (http://www.qgis.org/en/community/mailing-lists.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="66"/>
@@ -59276,18 +59277,18 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
-        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://qgis.org/en/site/about/case_studies/index.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation>Se está a escrever um artigo científico ou qualquer outro artigo que se refere ao QGIS adoraríamos incluir o seu trabalho na &lt;a href = &quot;http://qgis.org/en/site/about/case_studies/index.html&quot; &gt; da secção de casos estudo &lt;/a&gt; da página inicial do QGIS.</translation>
+        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
+        <translation>Se está a escrever um artigo científico ou qualquer outro artigo que se refere ao QGIS adoraríamos incluir o seu trabalho na &lt;a href = &quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot; &gt; da secção de casos estudo &lt;/a&gt; da página inicial do QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
-        <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
-        <translation>Gostaria de ver o QGIS na sua língua? Estamos à procura de mais tradutores e gostariamos da sua ajuda! O processo de tradução é bastante simples - as instruções estão disponíveis na página wiki do QGIS &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;na página de traduções.&lt;/a&gt;</translation>
+        <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
+        <translation>Gostaria de ver o QGIS na sua língua? Estamos à procura de mais tradutores e gostariamos da sua ajuda! O processo de tradução é bastante simples - as instruções estão disponíveis na página wiki do QGIS &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;na página de traduções.&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation>Se precisar de ajuda para usar QGIS temos uma lista discussão de &apos;utilizadores&apos; onde os utilizadores ajudam-se uns aos outros com os problemas relacionados com o uso do nosso sofware. Também temos uma lista de discussão dos &apos;programadores&apos; para aqueles que querem ajuda e discutir coisas relativas ao código base do QGIS. Os detalhes sobre como se subscrever estão em &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt; da secção comunidade &lt;/a&gt; da página inicial do QGIS.</translation>
+        <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <translation>Se precisar de ajuda para usar QGIS temos uma lista discussão de &apos;utilizadores&apos; onde os utilizadores ajudam-se uns aos outros com os problemas relacionados com o uso do nosso sofware. Também temos uma lista de discussão dos &apos;programadores&apos; para aqueles que querem ajuda e discutir coisas relativas ao código base do QGIS. Os detalhes sobre como se subscrever estão em &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt; da secção comunidade &lt;/a&gt; da página inicial do QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="67"/>
@@ -59346,8 +59347,8 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
-        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation>Se o QGIS está a poupar o seu dinheiro ou gosta de nosso trabalho e tem a capacidade financeira para nos ajudar, por favor, considere patrocinar o desenvolvimento do QGIS. Nós usamos o dinheiro de patrocinadores para pagar viagens e os custos relacionados aos nossos encontros regulares de hackfest, e apoiar na generalidade os objetivos de nosso projeto. Por favor, consulte o &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;Patrocínio QGIS Web Page&lt;/a&gt; para mais detalhes.</translation>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation>Se o QGIS está a poupar o seu dinheiro ou gosta de nosso trabalho e tem a capacidade financeira para nos ajudar, por favor, considere patrocinar o desenvolvimento do QGIS. Nós usamos o dinheiro de patrocinadores para pagar viagens e os custos relacionados aos nossos encontros regulares de hackfest, e apoiar na generalidade os objetivos de nosso projeto. Por favor, consulte o &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Patrocínio QGIS Web Page&lt;/a&gt; para mais detalhes.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="185"/>
@@ -59389,8 +59390,8 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
         <translation>Patrocínio QGIS</translation>
     </message>
     <message>
-        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="obsolete">Se o QGIS está a poupar o seu dinheiro ou gosta de nosso trabalho e tem a capacidade financeira para nos ajudar, por favor, considere patrocinar o desenvolvimento do Quantum GIS. Nós usamos o dinheiro de patrocinadores para pagar viagens e os custos relacionados aos nossos encontros bianuais, e apoiar na generalidade os objetivos de nosso projeto. Por favor, consulte o &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;Patrocínio QGIS Web Page  &lt;/a&gt; para mais detalhes.</translation>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation type="obsolete">Se o QGIS está a poupar o seu dinheiro ou gosta de nosso trabalho e tem a capacidade financeira para nos ajudar, por favor, considere patrocinar o desenvolvimento do Quantum GIS. Nós usamos o dinheiro de patrocinadores para pagar viagens e os custos relacionados aos nossos encontros bianuais, e apoiar na generalidade os objetivos de nosso projeto. Por favor, consulte o &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Patrocínio QGIS Web Page  &lt;/a&gt; para mais detalhes.</translation>
     </message>
     <message>
         <source>Quantum GIS has Plugins!</source>

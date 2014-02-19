@@ -110,12 +110,12 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void setInvertedColorRamp( bool inverted );
 
     //! @note added in 1.6
-    void setRotationField( QString expression );
+    void setRotationField( QString fieldOrExpression );
     //! @note added in 1.6
     QString rotationField() const;
 
     //! @note added in 1.6
-    void setSizeScaleField( QString expression );
+    void setSizeScaleField( QString fieldOrExpression );
     //! @note added in 1.6
     QString sizeScaleField() const;
 

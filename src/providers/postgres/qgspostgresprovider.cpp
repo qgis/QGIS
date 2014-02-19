@@ -758,7 +758,6 @@ bool QgsPostgresProvider::loadFields()
         fieldSize = -1;
       }
       else if ( fieldTypeName == "text" ||
-                fieldTypeName == "bpchar" ||
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "hstore" ||
@@ -771,6 +770,24 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
         fieldSize = -1;
+      }
+      else if ( fieldTypeName == "bpchar" )
+      {
+        fieldType = QVariant::String;
+
+        QRegExp re( "character\\((\\d+)\\)" );
+        if ( re.exactMatch( formattedFieldType ) )
+        {
+          fieldSize = re.cap( 1 ).toInt();
+        }
+        else
+        {
+          QgsDebugMsg( QString( "unexpected formatted field type '%1' for field %2" )
+                       .arg( formattedFieldType )
+                       .arg( fieldName ) );
+          fieldSize = -1;
+          fieldPrec = -1;
+        }
       }
       else if ( fieldTypeName == "char" )
       {

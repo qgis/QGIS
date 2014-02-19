@@ -45,6 +45,24 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
   return action.addFeature();
 }
 
+void QgsMapToolAddFeature::activate()
+{
+  if ( !mCanvas || mCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( vlayer && vlayer->geometryType() == QGis::NoGeometry )
+  {
+    QgsFeature f;
+    addFeature( vlayer, &f );
+    return;
+  }
+
+  QgsMapTool::activate();
+}
+
 void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsDebugMsg( "entered." );
@@ -77,6 +95,9 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   // POINT CAPTURING
   if ( mode() == CapturePoint )
   {
+    if ( e->button() != Qt::LeftButton )
+      return;
+
     //check we only use this tool for point/multipoint layers
     if ( vlayer->geometryType() != QGis::Point )
     {
