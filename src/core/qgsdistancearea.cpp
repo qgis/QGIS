@@ -991,6 +991,12 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
     measureUnits = QGis::Meters;
     QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
   }
+  else if ( mEllipsoidalMode && mEllipsoid == GEO_NONE )
+  {
+    // Measuring in plane within the source CRS. Force its map units
+    measureUnits = mCoordTransform->sourceCrs().mapUnits();
+    QgsDebugMsg( "We're measuing on planimetric distance/area on given CRS, measured value is in CRS units" );
+  }
 
   // Gets the conversion factor between the specified units
   double factorUnits = QGis::fromUnitToUnitFactor( measureUnits, displayUnits );
