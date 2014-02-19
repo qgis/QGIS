@@ -35,75 +35,35 @@ from utilities import (
     expectedFailure,
 )
 
+from qgis_local_server import (
+    QgisLocalServer,
+    FcgiServerProcess,
+    WebServerProcess,
+    getLocalServer
+)
+
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import TestPointBase
-from qgis_local_server import (QgisLocalServerConfig,
-                               ServerConfigNotAccessibleError,
-                               ServerSpawnNotAccessibleError)
 
-SERVER = None
-SPAWN = False
-TESTPROJDIR = ''
-TESTPROJPATH = ''
-
-# TODO [LS]: attempt to spawn local server; add function in qgis_local_server.py
-
-try:
-    # first try to connect to locally spawned server
-    # http://127.0.0.1:8448/qgis_mapserv.fcgi (see qgis_local_server.py)
-    SERVER = QgisLocalServerConfig(
-        tempfile.mkdtemp(),
-        chkcapa=True, spawn=True)
-    SPAWN = True
-    print '\n------------ Using SPAWNED local test server ------------\n'
-except ServerSpawnNotAccessibleError, e:
-    SERVER = None
-    # print e
-    # TODO [LS]: add some error output if server is spawned, but not working
-    pass  # may have no local spawn fcgi setup
-
-if SERVER is None:
-    try:
-        # next try to connect to configured local server
-        SERVER = QgisLocalServerConfig(
-            str(QgsApplication.qgisSettingsDirPath()),
-            chkcapa=True, spawn=False)
-    except ServerConfigNotAccessibleError, e:
-        SERVER = None
-        print e
-
-if SERVER is not None:
-    TESTPROJDIR = SERVER.projectDir()
-    TESTPROJPATH = os.path.join(TESTPROJDIR, 'pal_test.qgs')
-
-
-def skipUnlessHasServer():  # skip test class decorator
-    if SERVER is not None:
-        return lambda func: func
-    return unittest.skip('\nConfigured local QGIS Server is not accessible\n\n')
+MAPSERV = getLocalServer()
 
 
 class TestServerBase(TestQgsPalLabeling):
 
     _TestProj = None
     """:type: QgsProject"""
-    _TestProjSetup = False
+    _TestProjName = ''
 
     @classmethod
     def setUpClass(cls):
         TestQgsPalLabeling.setUpClass()
+        MAPSERV.startup()
+        MAPSERV.web_dir_install(os.listdir(cls._PalDataDir), cls._PalDataDir)
 
         cls._TestProj = QgsProject.instance()
-        cls._TestProj.setFileName(str(TESTPROJPATH).strip())
-        if not cls._TestProjSetup:
-            try:
-                shutil.copy(cls._PalFeaturesDb, TESTPROJDIR)
-                for qml in glob.glob(cls._PalDataDir + os.sep + '*.qml'):
-                    shutil.copy(qml, TESTPROJDIR)
-            except IOError, e:
-                raise IOError(str(e) +
-                              '\nCould not set up test server directory')
-            cls._TestProjSetup = True
+        cls._TestProjName = 'pal_test.qgs'
+        cls._TestProj.setFileName(
+            os.path.join(MAPSERV.web_dir(), cls._TestProjName))
 
         # the blue background (set via layer style) to match renderchecker's
         cls._BkgrdLayer = TestQgsPalLabeling.loadFeatureLayer('background')
@@ -116,13 +76,18 @@ class TestServerBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         # layers removed, save empty project file
         cls._TestProj.write()
+        if "PAL_REPORT" in os.environ:
+            MAPSERV.stop_processes()
+            MAPSERV.open_temp_dir()
+        else:
+            MAPSERV.shutdown()
 
     def defaultWmsParams(self, layername):
         return {
             'SERVICE': 'WMS',
             'VERSION': '1.3.0',
             'REQUEST': 'GetMap',
-            'MAP': str(TESTPROJPATH).strip(),
+            'MAP': self._TestProjName,
             # layer stacking order for rendering: bottom,to,top
             'LAYERS': ['background', str(layername).strip()],  # or 'name,name'
             'STYLES': ',',
@@ -140,7 +105,6 @@ class TestServerBase(TestQgsPalLabeling):
         }
 
 
-@skipUnlessHasServer()
 class TestServerPoint(TestServerBase, TestPointBase):
 
     @classmethod
@@ -166,7 +130,7 @@ class TestServerPoint(TestServerBase, TestPointBase):
         self._TestProj.write()
         # get server results
         # print self.params.__repr__()
-        res, self._TestImage = SERVER.getMap(self.params, False)
+        res, self._TestImage = MAPSERV.get_map(self.params, False)
         # print self._TestImage.__repr__()
         self.saveContolImage(self._TestImage)
         self.assertTrue(res, 'Failed to retrieve/save image from test server')
@@ -176,7 +140,6 @@ class TestServerPoint(TestServerBase, TestPointBase):
                                           grpprefix=self._CheckGroup))
 
 
-@skipUnlessHasServer()
 class TestServerVsCanvasPoint(TestServerPoint):
 
     @classmethod
