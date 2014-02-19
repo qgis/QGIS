@@ -127,6 +127,15 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   }
 }
 
+QgsCoordinateTransform* QgsCoordinateTransform::clone() const
+{
+  QgsCoordinateTransform* tr = new QgsCoordinateTransform( sourceCrs(), destCRS() );
+  tr->setSourceDatumTransform( sourceDatumTransform() );
+  tr->setDestinationDatumTransform( destinationDatumTransform() );
+  tr->initialise();
+  return tr;
+}
+
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& theCRS )
 {
   mSourceCRS = theCRS;

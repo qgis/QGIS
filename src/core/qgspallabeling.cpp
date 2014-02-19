@@ -3297,10 +3297,15 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   lyr.fieldIndex = fldIndex;
 
   lyr.xform = mMapRenderer->coordinateTransform();
+  lyr.ct = 0;
   if ( mMapRenderer->hasCrsTransformEnabled() )
-    lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
-  else
-    lyr.ct = NULL;
+  {
+    const QgsCoordinateTransform* tr = mMapRenderer->transformation( layer );
+    if ( tr )
+    {
+      lyr.ct = tr->clone();
+    }
+  }
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
@@ -3318,10 +3323,15 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
   l->setArrangementFlags( s->placementFlags );
 
   s->palLayer = l;
+  s->ct = 0;
   if ( mMapRenderer->hasCrsTransformEnabled() )
-    s->ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
-  else
-    s->ct = NULL;
+  {
+    const QgsCoordinateTransform* tr = mMapRenderer->transformation( layer );
+    if ( tr )
+    {
+      s->ct = tr->clone();
+    }
+  }
   s->xform = mMapRenderer->coordinateTransform();
   mActiveDiagramLayers.insert( layer, *s );
   return 1;
