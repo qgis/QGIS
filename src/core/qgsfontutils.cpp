@@ -36,7 +36,13 @@ bool QgsFontUtils::fontFamilyOnSystem( const QString& family )
 {
   QFont tmpFont = QFont( family );
   // compare just beginning of family string in case 'family [foundry]' differs
-  return family.startsWith( tmpFont.family(), Qt::CaseInsensitive );
+  return tmpFont.family().startsWith( family, Qt::CaseInsensitive );
+}
+
+bool QgsFontUtils::fontFamilyHasStyle( const QString& family, const QString& style )
+{
+  QFontDatabase fontDB;
+  return ( fontFamilyOnSystem( family ) && fontDB.styles( family ).contains( style ) );
 }
 
 bool QgsFontUtils::fontFamilyMatchOnSystem( const QString& family, QString* chosen, bool* match )
@@ -196,13 +202,17 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
   return false;
 }
 
+QString QgsFontUtils::standardTestFontFamily()
+{
+  return "QGIS Vera Sans";
+}
+
 bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
 {
   // load standard test font from filesystem or testdata.qrc (for unit tests and general testing)
-  QFontDatabase fontDB;
   bool fontsLoaded = false;
 
-  QString fontFamily( "QGIS Vera Sans" );
+  QString fontFamily = standardTestFontFamily();
   QMap<QString, QString> fontStyles;
   fontStyles.insert( "Roman", "QGIS-Vera/QGIS-Vera.ttf" );
   fontStyles.insert( "Oblique", "QGIS-Vera/QGIS-VeraIt.ttf" );
@@ -220,8 +230,7 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
     }
     QString familyStyle = QString( "%1 %2" ).arg( fontFamily ).arg( fontstyle );
 
-    if ( fontFamilyOnSystem( fontFamily )
-         && fontDB.styles( fontFamily ).contains( fontstyle ) )
+    if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
       fontsLoaded = ( fontsLoaded || false );
       QgsDebugMsg( QString( "Test font '%1' already available" ).arg( familyStyle ) );
@@ -258,4 +267,20 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
   }
 
   return fontsLoaded;
+}
+
+QFont QgsFontUtils::getStandardTestFont( const QString& style, int pointsize )
+{
+  QFontDatabase fontDB;
+  if ( ! fontFamilyHasStyle( standardTestFontFamily(), style ) )
+  {
+    loadStandardTestFonts( QStringList() << style );
+  }
+
+  QFont f = fontDB.font( standardTestFontFamily(), style, pointsize );
+  // in case above statement fails to set style
+  f.setBold( style.contains( "Bold" ) );
+  f.setItalic( style.contains( "Oblique" ) );
+
+  return f;
 }
