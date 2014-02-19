@@ -93,10 +93,10 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
     QString myAnomalyHash = imageToHash( controlImagePath() + mControlName
                                          + QDir::separator() + myFile );
     QString myHashMessage = QString(
-                              "Checking if anomaly %1 (hash %2)" )
+                              "Checking if anomaly %1 (hash %2)<br>" )
                             .arg( myFile )
                             .arg( myAnomalyHash );
-    myHashMessage += QString( " matches %1 (hash %2)" )
+    myHashMessage += QString( "&nbsp; matches %1 (hash %2)" )
                      .arg( theDiffImageFile )
                      .arg( myImageHash );
     //foo CDash
@@ -246,8 +246,13 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   mReport += "Actual Duration :  " + QString::number( mElapsedTime ) + "ms<br>";
 
   // limit image size in page to something reasonable
-  int imgWidth = qMin( myExpectedImage.width(), 400 );
-  int imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
+  int imgWidth = 420;
+  int imgHeight = 280;
+  if ( ! myExpectedImage.isNull() )
+  {
+    imgWidth = qMin( myExpectedImage.width(), imgWidth );
+    imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
+  }
   QString myImagesString = "</td></tr>"
                            "<tr><td>Test Result:</td><td>Expected Result:</td><td>Difference (all blue is good, any red is bad)</td></tr>\n"
                            "<tr><td><img width=" + QString::number( imgWidth ) +
