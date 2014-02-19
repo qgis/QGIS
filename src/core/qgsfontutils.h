@@ -51,6 +51,14 @@ class CORE_EXPORT QgsFontUtils
      */
     static bool updateFontViaStyle( QFont& f, const QString& fontstyle, bool fallback = false );
 
+    /** Loads standard test fonts from filesystem or qrc resource
+     * @param loadstyles List of styles to load, e.g. All, Roman, Oblique, Bold, Bold Oblique
+     * @returns Whether any font was loaded
+     * @note Done by default on debug app/server startup to ensure fonts available for unit tests (Roman and Bold)
+     * @note Added in QGIS 2.1
+     */
+    static bool loadStandardTestFonts( QStringList loadstyles );
+
 };
 
 #endif // QGSFONTUTILS_H

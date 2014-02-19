@@ -20,6 +20,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgsapplication.h"
 #include "qgscapabilitiescache.h"
 #include "qgsconfigcache.h"
+#include "qgsfontutils.h"
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
 #include "qgssoaprequesthandler.h"
@@ -248,48 +249,12 @@ int main( int argc, char * argv[] )
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef QGSMSDEBUG
-  // load standard test font from filesystem or testdata.qrc (for unit tests)
-  bool testFontLoaded = false;
-  QFontDatabase fontDB;
-  QFont testFont = fontDB.font( "QGIS Vera Sans", "Roman", 12 );
-  if ( testFont.family().startsWith( "QGIS", Qt::CaseInsensitive ) )
-  {
-    testFontLoaded = true;
-    QgsDebugMsg( "Test font already available" );
-  }
-  else
-  {
-    QString fontFromWhere( "" );
-    if ( QgsApplication::isRunningFromBuildDir() )
-    {
-      // [LS] workaround for serious bugs on Mac 10.9, where fonts from qrc resources fail:
-      //   https://bugreports.qt-project.org/browse/QTBUG-30917
-      //   https://bugreports.qt-project.org/browse/QTBUG-32789
-      QString testFont( QgsApplication::buildSourcePath() + "/tests/testdata/font/QGIS-Vera/QGIS-Vera.ttf" );
-      int fontID = QFontDatabase::addApplicationFont( testFont );
-      testFontLoaded = ( fontID != -1 );
-      fontFromWhere = testFontLoaded ? "filesystem" : "";
-    }
-    else
-    {
-      QFile testFont( ":/testdata/font/QGIS-Vera/QGIS-Vera.ttf" );
-      if ( testFont.open( QIODevice::ReadOnly ) )
-      {
-        int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
-        testFontLoaded = ( fontID != -1 );
-      } // else app wasn't built with ENABLE_TESTS or not GUI app
-      fontFromWhere = testFontLoaded ? "testdata.qrc" : "";
-    }
-    QgsDebugMsg( QString( "Test font %1loaded from %2 on startup" ).arg( testFontLoaded ? "" : "NOT " ).arg( fontFromWhere ) );
-  }
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
   while ( fcgi_accept() >= 0 )
   {
     printRequestInfos(); //print request infos if in debug mode
-#ifdef QGSMSDEBUG
-    QgsDebugMsg( QString( "Test font %1loaded" ).arg( testFontLoaded ? "" : "NOT " ) );
-#endif
 
     //use QgsGetRequestHandler in case of HTTP GET and QgsSOAPRequestHandler in case of HTTP POST
     QgsRequestHandler* theRequestHandler = 0;
