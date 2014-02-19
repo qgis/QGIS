@@ -9741,7 +9741,7 @@ Den vil blive slået fra.</translation>
         <translation>Plugin %1 returnerede ikke en gyldig værdi og kan ikke indlæses</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="91"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="88"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="243"/>
         <source>Python error</source>
         <translation>Python-fejl</translation>
@@ -10931,7 +10931,7 @@ Kun %1 af %2 objekter skrevet.</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Styrer, hvorvidt lag- og feltnavne vil blive renset for nemmere brug i SQLite. Rensede navne vil blive konverteret til små bogstaver, og nogle specialtegn (&apos; - #) vil blive ændret til understregninger.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1850"/>
@@ -12445,7 +12445,7 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="89"/>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
         <translation>Den ekstra plugin sti &apos;%1&apos; findes ikke !</translation>
     </message>
@@ -38334,12 +38334,12 @@ Udvidet fejlinformation:
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="111"/>
         <source>Could not transform canvas extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke transformere kanvasomrids.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="151"/>
         <source>Could not transform layer extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke transformere lagomrids.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="186"/>
@@ -49485,7 +49485,7 @@ standardafvigelse ×</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelreferenceconfigdlg.cpp" line="97"/>
         <source>Preview Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksempel på udtryk</translation>
     </message>
 </context>
 <context>
@@ -49498,12 +49498,12 @@ standardafvigelse ×</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="23"/>
         <source>Display expression</source>
-        <translation>Visningsudtryk</translation>
+        <translation>Vis udtryk</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="35"/>
         <source>Expression Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Udtryksgenerator</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="65"/>
@@ -55152,12 +55152,12 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejl ved forenklingstransformering: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3962"/>
