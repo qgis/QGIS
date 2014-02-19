@@ -18,9 +18,16 @@ import os
 import shutil
 import platform
 import subprocess
+import time
 import inspect
 import urllib
+import urllib2
 import tempfile
+
+from utilities import (
+    unitTestDataPath,
+    openInBrowserTab
+)
 
 # allow import error to be raised if qgis is not on sys.path
 try:
@@ -29,6 +36,10 @@ try:
 except ImportError, e:
     raise ImportError(str(e) + '\n\nPlace path to pyqgis modules on sys.path,'
                                ' or assign to PYTHONPATH')
+
+FCGIBIN = None
+MAPSERV = None
+SERVRUN = False
 
 
 class ServerProcessError(Exception):
@@ -178,13 +189,27 @@ class FcgiServerProcess(ServerProcess):
                 fcgi_sock = os.path.join(temp_dir, 'var', 'run',
                                          'qgs_mapserv.sock')
                 if self._mac:
+                    self.set_startenv({'QGIS_LOG_FILE': '{0}/log/qgis_server.log'.format(temp_dir)})
+                    # self.set_startcmd([
+                    #     exe, '-n', '-s', fcgi_sock, '--', temp_dir + fcgi_bin, '&'
+                    # ])
+                    # self.set_startcmd([init_scr, 'start', exe, fcgi_sock,
+                    #                    temp_dir + fcgi_bin, temp_dir])
+                    # self.set_startcmd([
+                    #     '/bin/bash', 'exec' 'env', '-i',
+                    #     'QGIS_LOG_FILE=' + temp_dir + '/log/qgis_server.log',
+                    #     exe, '-n', '-s', fcgi_sock, '--', temp_dir + fcgi_bin
+                    # ])
+                    # self.set_startcmd([
+                    #     '/bin/bash', '-c',
+                    #     "'exec env -i QGIS_LOG_FILE={0}/log/qgis_server.log {1} -n -s {2} -- {3}'".format(temp_dir, exe, fcgi_sock, temp_dir + fcgi_bin)])
                     init_scr = os.path.join(conf_dir, 'fcgi', 'scripts',
                                             'spawn_fcgi_mac.sh')
                     self.set_startcmd([init_scr, 'start', exe, fcgi_sock,
-                                       temp_dir + fcgi_bin])
+                                       temp_dir + fcgi_bin, temp_dir])
                     self.set_stopcmd([init_scr, 'stop'])
-                    self.set_restartcmd([init_scr, 'start', exe, fcgi_sock,
-                                         temp_dir + fcgi_bin])
+                    self.set_restartcmd([init_scr, 'restart', exe, fcgi_sock,
+                                         temp_dir + fcgi_bin, temp_dir])
                     self.set_statuscmd([init_scr, 'status'])
                 else:  # linux
                     pass
@@ -195,7 +220,7 @@ class FcgiServerProcess(ServerProcess):
 # noinspection PyPep8Naming
 class QgisLocalServer(object):
 
-    def __init__(self, fcgi_bin, test_data_dir=''):
+    def __init__(self, fcgi_bin):
         msg = 'FCGI binary not found at:\n{0}'.format(fcgi_bin)
         assert os.path.exists(fcgi_bin), msg
 
@@ -208,12 +233,7 @@ class QgisLocalServer(object):
         self._web_url = 'http://{0}:{1}'.format(self._ip, self._port)
         self._fcgibin_path = '/cgi-bin/qgis_mapserv.fcgi'
         self._fcgi_url = '{0}{1}'.format(self._web_url, self._fcgibin_path)
-        if not test_data_dir:
-            scr_dir = os.path.dirname(os.path.abspath(
-                inspect.getfile(inspect.currentframe())))
-            test_data_dir = os.path.abspath(
-                os.path.join(scr_dir, '..', '..', 'testdata'))
-        self._conf_dir = os.path.join(test_data_dir, 'qgis_local_server')
+        self._conf_dir = unitTestDataPath('qgis_local_server')
 
         self._fcgiserv_process = self._webserv_process = None
         self._fcgiserv_bin = fcgi_bin
@@ -340,8 +360,19 @@ class QgisLocalServer(object):
         return self._temp_dir
 
     def open_temp_dir(self):
-        if os.path.exists(self._temp_dir):
+        if not os.path.exists(self._temp_dir):
+            return
+        s = platform.system().lower()
+        if s.startswith('dar'):
             subprocess.call(['open', self._temp_dir])
+        elif s.startswith('lin'):
+            # xdg-open "$1" &> /dev/null &
+            subprocess.call(['xdg-open', self._temp_dir,
+                             '&>', '/dev/null', '&'])
+        elif s.startswith('win'):
+            subprocess.call([self._temp_dir])
+        else:  # ?
+            pass
 
     def remove_temp_dir(self):
         if os.path.exists(self._temp_dir):
@@ -390,7 +421,7 @@ class QgisLocalServer(object):
             tmp.write(xml)
             url = tmp.name
             tmp.close()
-            open_in_browser_tab(url)
+            openInBrowserTab(url)
             return False, ''
 
         success = ('perhaps you left off the .qgs extension' in xml or
@@ -429,7 +460,7 @@ class QgisLocalServer(object):
         url = self._fcgi_url + '?' + self.process_params(params)
 
         if browser:
-            open_in_browser_tab(url)
+            openInBrowserTab(url)
             return False, ''
 
         tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
@@ -491,10 +522,17 @@ class QgisLocalServer(object):
         os.makedirs(os.path.join(self._temp_dir, 'var', 'run'), mode=0755)
         os.makedirs(self._web_dir, mode=0755)
 
-        # copy in components
-        shutil.copy2(self._fcgiserv_bin, cgi_bin)
-        shutil.copy2(os.path.join(self._conf_dir, 'index.html'),
-                     self._web_dir)
+        # symlink or copy in components
+        shutil.copy2(os.path.join(self._conf_dir, 'index.html'), self._web_dir)
+        if not platform.system().lower().startswith('win'):
+            # symlink allow valid runningFromBuildDir results
+            os.symlink(self._fcgiserv_bin,
+                       os.path.join(cgi_bin,
+                                    os.path.basename(self._fcgiserv_bin)))
+        else:
+            # TODO: what to do here for Win runningFromBuildDir?
+            #       copy qgisbuildpath.txt from output/bin directory, too?
+            shutil.copy2(self._fcgiserv_bin, cgi_bin)
 
     @staticmethod
     def _exe_path(exe):
@@ -513,27 +551,154 @@ class QgisLocalServer(object):
         return ''
 
 
-def open_in_browser_tab(url):
-    if sys.platform[:3] in ('win', 'dar'):
-        import webbrowser
-        webbrowser.open_new_tab(url)
+# noinspection PyPep8Naming
+def getLocalServer():
+    """ Start a local test server controller that independently manages Web and
+    FCGI-spawn processes.
+
+    Input
+        NIL
+
+    Output
+        handle to QgsLocalServer, that's been tested to be valid, then shutdown
+
+    If MAPSERV is already running the handle to it will be returned.
+
+    IMPORTANT: When using MAPSERV in a test class, ensure to set these:
+
+        @classmethod
+        def setUpClass(cls):
+            MAPSERV.startup()
+
+    This ensures the subprocesses are started and the temp directory is created.
+
+        @classmethod
+        def tearDownClass(cls):
+            MAPSERV.shutdown()
+            # or, when testing, instead of shutdown...
+            MAPSERV.stop_processes()
+            MAPSERV.open_temp_dir()
+
+    This ensures the subprocesses are stopped and the temp directory is removed.
+    If this is not used, the server processes may continue to run after tests.
+
+    :rtype: QgisLocalServer
+    """
+    global SERVRUN  # pylint: disable=W0603
+    global MAPSERV  # pylint: disable=W0603
+    if SERVRUN:
+        msg = 'Local server has already failed to launch or run'
+        assert MAPSERV is not None, msg
     else:
-        # some Linux OS pause execution on webbrowser open, so background it
-        import subprocess
-        cmd = 'import webbrowser;' \
-              'webbrowser.open_new_tab({0})'.format(url)
-        subprocess.Popen([sys.executable, "-c", cmd],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
+        SERVRUN = True
+
+    global FCGIBIN  # pylint: disable=W0603
+    if FCGIBIN is None:
+        msg = 'Could not find QGIS_PREFIX_PATH (build directory) in environ'
+        assert 'QGIS_PREFIX_PATH' in os.environ, msg
+
+        fcgi_path = os.path.join(os.environ['QGIS_PREFIX_PATH'], 'bin',
+                                 'qgis_mapserv.fcgi')
+        msg = 'Could not locate qgis_mapserv.fcgi in build/bin directory'
+        assert os.path.exists(fcgi_path), msg
+
+        FCGIBIN = fcgi_path
+
+    if MAPSERV is None:
+        # On QgisLocalServer init, Web and FCGI-spawn executables are located,
+        # configurations to start/stop/restart those processes (relative to
+        # host platform) are loaded into controller, a temporary web
+        # directory is created, and the FCGI binary copied to its cgi-bin.
+        srv = QgisLocalServer(FCGIBIN)
+        # noinspection PyStatementEffect
+        """:type : QgisLocalServer"""
+
+        try:
+            msg = 'Temp web directory could not be created'
+            assert os.path.exists(srv.temp_dir()), msg
+
+            # install test project components to temporary web directory
+            test_proj_dir = os.path.join(srv.config_dir(), 'test-project')
+            srv.web_dir_install(os.listdir(test_proj_dir), test_proj_dir)
+            # verify they were copied
+            msg = 'Test project could not be copied to temp web directory'
+            res = os.path.exists(os.path.join(srv.web_dir(), 'test-server.qgs'))
+            assert res, msg
+
+            # verify subprocess' status can be checked
+            msg = 'Server processes status could not be checked'
+            assert not srv.processes_running(), msg
+
+            # startup server subprocesses, and check capabilities
+            srv.startup()
+            msg = 'Server processes could not be started'
+            assert srv.processes_running(), msg
+
+            # verify web server (try for 30 seconds)
+            start_time = time.time()
+            res = None
+            while time.time() - start_time < 30:
+                time.sleep(1)
+                try:
+                    res = urllib2.urlopen(srv.web_url())
+                    if res.getcode() == 200:
+                        break
+                except urllib2.URLError:
+                    pass
+            # res = None
+            # try:
+            #     res = urllib2.urlopen(srv.web_url(), timeout=30)
+            # except urllib2.URLError:
+            #     pass
+            msg = 'Web server basic access to root index.html failed'
+            print repr(res)
+            assert (res is not None
+                    and res.getcode() == 200
+                    and 'Web Server Working' in res.read()), msg
+
+            # verify basic wms service
+            params = {
+                'SERVICE': 'WMS',
+                'VERSION': '1.3.0',
+                'REQUEST': 'GetCapabilities'
+            }
+            msg = '\nFCGI server failed to return capabilities'
+            assert srv.get_capabilities(params, False)[0], msg
+
+            params = {
+                'SERVICE': 'WMS',
+                'VERSION': '1.3.0',
+                'REQUEST': 'GetCapabilities',
+                'MAP': 'test-server.qgs'
+            }
+            msg = '\nFCGI server failed to return capabilities for project'
+            assert srv.get_capabilities(params, False)[0], msg
+
+            # verify the subprocesses can be stopped and controller shutdown
+            srv.shutdown()  # should remove temp directory (and test project)
+            msg = 'Server processes could not be stopped'
+            assert not srv.processes_running(), msg
+            msg = 'Temp web directory could not be removed'
+            assert not os.path.exists(srv.temp_dir()), msg
+
+            MAPSERV = srv
+        except AssertionError, err:
+            srv.shutdown()
+            raise AssertionError(err)
+
+    return MAPSERV
 
 
 if __name__ == '__main__':
+    # NOTE: see test_qgis_local_server.py for CTest suite
+
     # this is a symlink to <build dir>/output/bin/qgis_mapserv.fcgi
+    # (because <build dir> is not known, unless this is imported to ctest)
     fcgibin = '/opt/qgis_mapserv/qgis_mapserv.fcgi'
-    srv = QgisLocalServer(fcgibin)
-    proj_dir = os.path.join(srv.config_dir(), 'test-project')
-    srv.web_dir_install(os.listdir(proj_dir), proj_dir)
-    # srv.open_web_dir()
+    local_srv = QgisLocalServer(fcgibin)
+    proj_dir = os.path.join(local_srv.config_dir(), 'test-project')
+    local_srv.web_dir_install(os.listdir(proj_dir), proj_dir)
+    # local_srv.open_web_dir()
     # creating crs needs app instance to access /resources/srs.db
     #   crs = QgsCoordinateReferenceSystem()
     # default for labeling test data sources: WGS 84 / UTM zone 13N
@@ -542,7 +707,7 @@ if __name__ == '__main__':
         'SERVICE': 'WMS',
         'VERSION': '1.3.0',
         'REQUEST': 'GetMap',
-        # 'MAP': os.path.join(srv.web_dir(), 'test-server.qgs'),
+        # 'MAP': os.path.join(local_srv.web_dir(), 'test-server.qgs'),
         'MAP': 'test-server.qgs',
         # layer stacking order for rendering: bottom,to,top
         'LAYERS': ['background', 'aoi'],  # or 'background,aoi'
@@ -561,16 +726,16 @@ if __name__ == '__main__':
         'IgnoreGetMapUrl': '1'
     }
 
-    srv.startup(True)
+    local_srv.startup(True)
     try:
-        srv.check_server_capabilities()
+        local_srv.check_server_capabilities()
         # open resultant png with system
-        result, png = srv.get_map(req_params)
+        result, png = local_srv.get_map(req_params)
     finally:
-        srv.shutdown()
+        local_srv.shutdown()
 
     if result:
         # print png
-        open_in_browser_tab('file://' + png)
+        openInBrowserTab('file://' + png)
     else:
         raise ServerProcessError('GetMap Test', 'Failed to generate PNG')

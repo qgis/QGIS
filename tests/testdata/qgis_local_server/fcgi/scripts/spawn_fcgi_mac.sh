@@ -2,7 +2,7 @@
 
 PROCESS="mapserv"
 LABEL="org.qgis.test-${PROCESS}"
-USAGE="${0} {stop|status} or {start|restart spawn_bin fcgi_socket fcgi_bin}"
+USAGE="${0} {stop|status} or {start|restart spawn_bin fcgi_socket fcgi_bin qgis_server_temp_dir}"
 
 if [ ! -z $2 ]; then
   SPAWN_BIN=$2
@@ -12,10 +12,18 @@ if [ ! -z $2 ]; then
   if [ ! -z $4 ]; then
     FCGI_BIN=$4
   fi
+  if [ ! -z $5 ]; then
+    QGIS_SERVER_TEMP_DIR=$5
+  fi
 fi
 
 START () {
+  # QGIS_LOG_FILE /test-projects/qgis_wms_server.log
+  launchctl setenv QGIS_LOG_FILE "${QGIS_SERVER_TEMP_DIR}/log/qgis_server.log"
   launchctl submit -l $LABEL -- "${SPAWN_BIN}" -n -s "${FCGI_SOCKET}" -- "${FCGI_BIN}"
+  
+#   QGIS_LOG_FILE="${QGIS_SERVER_TEMP_DIR}/log/qgis_server.log"
+#   launchctl submit -l $LABEL -- exec env - QGIS_LOG_FILE=${QGIS_LOG_FILE} "${SPAWN_BIN}" -n -s "${FCGI_SOCKET}" -- "${FCGI_BIN}"
   return $?
 }
 
@@ -41,6 +49,7 @@ case $1 in
 	res=$(STATUS)
 	if [ $res -eq 0 ]; then
 	  echo ""
+	  launchctl unsetenv QGIS_LOG_FILE
     launchctl remove $LABEL
     exit $?
 	else
