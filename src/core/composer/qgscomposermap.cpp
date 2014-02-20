@@ -178,22 +178,20 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   if ( mMapRenderer->labelingEngine() )
     theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );
 
+
   //use stored layer set or read current set from main canvas
-  if ( mKeepLayerSet )
+  const QStringList theLayerSet = mKeepLayerSet ? mLayerSet : mMapRenderer->layerSet() ;
+
+  if ( -1 == mCurrentExportLayer )
   {
-    theMapRenderer.setLayerSet( mLayerSet );
+    theMapRenderer.setLayerSet( theLayerSet );
   }
   else
   {
-    theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
-  }
-
-  if ( -1 != mCurrentExportLayer )
-  {
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
     theMapRenderer.setLayerSet(
-      ( layerIdx >= 0 && layerIdx < theMapRenderer.layerSet().length() )
-      ? QStringList( theMapRenderer.layerSet()[ theMapRenderer.layerSet().length() - layerIdx - 1 ] )
+      ( layerIdx >= 0 && layerIdx < theLayerSet.length() )
+      ? QStringList( theLayerSet[ theLayerSet.length() - layerIdx - 1 ] )
       : QStringList()
     );
   }

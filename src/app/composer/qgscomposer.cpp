@@ -2040,8 +2040,14 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             for ( ; it != items.end(); ++it )
             {
               composerItem = dynamic_cast<QgsComposerMap*>( *it );
-              if (composerItem && composerItem->numberExportLayers()) break;
-              else ( *it )->show();
+              if ( composerItem && composerItem->numberExportLayers() )
+              {
+                break;
+              }
+              else
+              {
+                ( *it )->show();
+              }
             }
           }
 
