@@ -8196,7 +8196,7 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kods tika korekti saglabāts.</translation>
     </message>
     <message>
         <source>Click on button to restore all tabs from last session.</source>
@@ -10078,7 +10078,7 @@ Error(%2): %3</source>
     <message>
         <source>Unable to initialize SpatialMetadata:
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nav iespējams inicializēt Telpiskos Metadatus:</translation>
     </message>
     <message>
         <source>Could not create a new database
@@ -10162,7 +10162,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konsole</translation>
     </message>
     <message>
         <source>ESRI FileGDB</source>
@@ -13209,7 +13209,7 @@ Errors: %3
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">viss</translation>
     </message>
     <message>
         <source>Rollback</source>
@@ -13428,6 +13428,8 @@ Please contact the developers.
         <comment>number of features deleted</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -13447,12 +13449,16 @@ Please contact the developers.
         <comment>number of objects to remove</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n object(s) removed.</source>
         <comment>number of objects removed</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -14654,11 +14660,11 @@ User DB Path:	%9
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Piemērot</translation>
     </message>
     <message>
         <source>Table View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabulas skats</translation>
     </message>
     <message>
         <source>Advanced Filter (Expression)</source>
@@ -14722,7 +14728,7 @@ User DB Path:	%9
     </message>
     <message>
         <source>Form View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Formas skats</translation>
     </message>
 </context>
 <context>
@@ -15180,6 +15186,8 @@ Database:%2</source>
         <comment>number of rows</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -15265,7 +15273,7 @@ Database:%2</source>
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rīkjosla</translation>
     </message>
     <message>
         <source>New Shapefile</source>
@@ -15331,7 +15339,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Add Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pievienot izvēlētos slāņus</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -15638,7 +15646,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nejaušas krāsas</translation>
     </message>
 </context>
 <context>
@@ -20399,7 +20407,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rīkjosla</translation>
     </message>
     <message>
         <source>Catch</source>
@@ -24080,7 +24088,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nederīgi</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1
@@ -29894,7 +29902,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
     </message>
     <message>
         <source>U</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">U</translation>
     </message>
     <message>
         <source>Strikeout text</source>
@@ -30250,7 +30258,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
     </message>
     <message>
         <source>Underlined text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pasvītrots teksts</translation>
     </message>
     <message>
         <source>Bold text
@@ -32283,7 +32291,7 @@ not displayed</source>
     </message>
     <message>
         <source>%1: OK!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: OK!</translation>
     </message>
     <message>
         <source>Import to MSSQL database</source>
@@ -32293,7 +32301,8 @@ not displayed</source>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dažu slāņu imports izgāzās!
+</translation>
     </message>
     <message>
         <source>Import was successful.</source>
@@ -32581,11 +32590,11 @@ not displayed</source>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Piemērot filtru</translation>
     </message>
     <message>
         <source>Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Piemērot filtru</translation>
     </message>
 </context>
 <context>
@@ -33349,7 +33358,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Noņemt atribūtu</translation>
     </message>
 </context>
 <context>
@@ -36742,11 +36751,11 @@ Error: %4</source>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Piemērot filtru</translation>
     </message>
     <message>
         <source>Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Piemērot filtru</translation>
     </message>
 </context>
 <context>
@@ -40046,7 +40055,7 @@ Proceed?</source>
     </message>
     <message>
         <source> %</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <source>Fees</source>
@@ -41222,7 +41231,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datu tips </translation>
     </message>
     <message>
         <source>Byte - Eight bit unsigned integer</source>
@@ -41620,7 +41629,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">No</translation>
     </message>
     <message>
         <source>To</source>
@@ -45010,7 +45019,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Piemērot filtru</translation>
     </message>
     <message>
         <source>Are you sure you want to update the internal statistics for DB: %1?
@@ -48847,11 +48856,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>displayed as</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">rādīt kā</translation>
     </message>
     <message>
         <source>Layer info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Slāņa informācija</translation>
     </message>
     <message>
         <source>Layer source</source>
