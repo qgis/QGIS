@@ -383,6 +383,11 @@ class QgsComposerMap : QgsComposerItem
     /** Sets the margin size (percentage) used when the map is in atlas mode */
     void setAtlasMargin( double margin ); 
 
+    /**Set the layer to export
+     @param layerIdx can be set to -1 to export all layerr and must be less than numberExportLayers()
+     @note this method was added in version 2.2 */
+    int numberExportLayers() const;
+
   signals:
     void extentChanged();
     

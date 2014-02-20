@@ -440,8 +440,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
     bool setAtlasMode( QgsComposition::AtlasMode mode );
 
-    // necessary because composerItems( QList< QgsPaperItem* > & pages )
-    // may not return pages in the correct order
+    /** Return pages in the correct order
+     @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
+     @note added in version 2.2*/
     QList< QgsPaperItem* > pages() { return mPages; }
 
   public slots:
