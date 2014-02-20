@@ -7221,7 +7221,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="480"/>
         <source>Web</source>
-        <translation>SIte internet</translation>
+        <translation>Site internet</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
