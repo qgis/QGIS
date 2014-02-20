@@ -190,19 +190,6 @@ class FcgiServerProcess(ServerProcess):
                                          'qgs_mapserv.sock')
                 if self._mac:
                     self.set_startenv({'QGIS_LOG_FILE': '{0}/log/qgis_server.log'.format(temp_dir)})
-                    # self.set_startcmd([
-                    #     exe, '-n', '-s', fcgi_sock, '--', temp_dir + fcgi_bin, '&'
-                    # ])
-                    # self.set_startcmd([init_scr, 'start', exe, fcgi_sock,
-                    #                    temp_dir + fcgi_bin, temp_dir])
-                    # self.set_startcmd([
-                    #     '/bin/bash', 'exec' 'env', '-i',
-                    #     'QGIS_LOG_FILE=' + temp_dir + '/log/qgis_server.log',
-                    #     exe, '-n', '-s', fcgi_sock, '--', temp_dir + fcgi_bin
-                    # ])
-                    # self.set_startcmd([
-                    #     '/bin/bash', '-c',
-                    #     "'exec env -i QGIS_LOG_FILE={0}/log/qgis_server.log {1} -n -s {2} -- {3}'".format(temp_dir, exe, fcgi_sock, temp_dir + fcgi_bin)])
                     init_scr = os.path.join(conf_dir, 'fcgi', 'scripts',
                                             'spawn_fcgi_mac.sh')
                     self.set_startcmd([init_scr, 'start', exe, fcgi_sock,
@@ -243,7 +230,7 @@ class QgisLocalServer(object):
         self._web_dir = ''
 
         servers = [
-            ('spawn-fcgi', 'lighttpd'),
+            ('spawn-fcgi', 'lighttpd')
             #('fcgiwrap', 'nginx'),
             #('uwsgi', 'nginx'),
         ]
@@ -564,6 +551,10 @@ def getLocalServer():
 
     If MAPSERV is already running the handle to it will be returned.
 
+    Before unit test class add:
+
+        MAPSERV = getLocalServer()
+
     IMPORTANT: When using MAPSERV in a test class, ensure to set these:
 
         @classmethod
@@ -576,11 +567,24 @@ def getLocalServer():
         def tearDownClass(cls):
             MAPSERV.shutdown()
             # or, when testing, instead of shutdown...
-            MAPSERV.stop_processes()
-            MAPSERV.open_temp_dir()
+            #   MAPSERV.stop_processes()
+            #   MAPSERV.open_temp_dir()
 
     This ensures the subprocesses are stopped and the temp directory is removed.
     If this is not used, the server processes may continue to run after tests.
+
+    If you need to restart the qgis_mapserv.fcgi spawning process to show
+    changes to project settings, consider adding:
+
+        def setUp(self):
+            '''Run before each test.'''
+            # web server stays up across all tests
+            MAPSERV.fcgi_server_process().start()
+
+        def tearDown(self):
+            '''Run after each test.'''
+            # web server stays up across all tests
+            MAPSERV.fcgi_server_process().stop()
 
     :rtype: QgisLocalServer
     """
@@ -645,13 +649,8 @@ def getLocalServer():
                         break
                 except urllib2.URLError:
                     pass
-            # res = None
-            # try:
-            #     res = urllib2.urlopen(srv.web_url(), timeout=30)
-            # except urllib2.URLError:
-            #     pass
             msg = 'Web server basic access to root index.html failed'
-            print repr(res)
+            # print repr(res)
             assert (res is not None
                     and res.getcode() == 200
                     and 'Web Server Working' in res.read()), msg
