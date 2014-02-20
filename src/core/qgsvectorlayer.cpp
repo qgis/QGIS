@@ -136,6 +136,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
+    , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
     , mCurrentRendererContext( 0 )
 
@@ -1179,14 +1180,29 @@ void QgsVectorLayer::setExtent( const QgsRectangle &r )
 
 QgsRectangle QgsVectorLayer::extent()
 {
-  if ( mValidExtent )
-    return QgsMapLayer::extent();
-
   QgsRectangle rect;
   rect.setMinimal();
 
   if ( !hasGeometryType() )
     return rect;
+
+  if ( !mValidExtent && mLazyExtent && mDataProvider )
+  {
+    // get the extent
+    QgsRectangle mbr = mDataProvider->extent();
+
+    // show the extent
+    QString s = mbr.toString();
+
+    QgsDebugMsg( "Extent of layer: " +  s );
+    // store the extent
+    setExtent( mbr );
+
+    mLazyExtent = false;
+  }
+
+  if( mValidExtent )
+    return QgsMapLayer::extent();
 
   if ( !mDataProvider )
   {
@@ -1703,17 +1719,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     {
       // TODO: Check if the provider has the capability to send fullExtentCalculated
       connect( mDataProvider, SIGNAL( fullExtentCalculated() ), this, SLOT( updateExtents() ) );
-
-#if 0 // allow lazy calculation of extents and give the creator of the vector layer a chance to 'manually' setExtent
-      // get the extent
-      QgsRectangle mbr = mDataProvider->extent();
-
-      // show the extent
-      QString s = mbr.toString();
-      QgsDebugMsg( "Extent of layer: " +  s );
-      // store the extent
-      setExtent( mbr );
-#endif
 
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();

@@ -1756,6 +1756,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
     bool mValidExtent;
+    bool mLazyExtent;
 
     // Features in renderer classes counted
     bool mSymbolFeatureCounted;
