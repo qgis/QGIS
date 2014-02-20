@@ -699,8 +699,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   mRendererV2->startRender( rendererContext, this );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
-                                      .setFilterRect( rendererContext.extent() )
-                                      .setSubsetOfAttributes( attributes );
+                                     .setFilterRect( rendererContext.extent() )
+                                     .setSubsetOfAttributes( attributes );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
   if ( simplifyDrawingCanbeApplied( rendererContext, QgsVectorLayer::GeometrySimplification ) )

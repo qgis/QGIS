@@ -139,7 +139,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QNetworkRequest *pReq(( QNetworkRequest * ) &req ); // hack user agent
 
   QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
-  if( !userAgent.isEmpty() )
+  if ( !userAgent.isEmpty() )
     userAgent += " ";
   userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
@@ -189,7 +189,7 @@ void QgsNetworkAccessManager::abortRequest()
 
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
 
-  if( reply->isRunning() )
+  if ( reply->isRunning() )
     reply->close();
 }
 

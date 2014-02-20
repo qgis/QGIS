@@ -2530,7 +2530,7 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
 
 int QgsGeometry::addPart( QgsGeometry *newPart )
 {
-  if( !newPart )
+  if ( !newPart )
     return 4;
 
   const GEOSGeometry * geosPart = newPart->asGeos();
@@ -3329,7 +3329,7 @@ bool QgsGeometry::intersects( const QgsRectangle& r ) const
 
 bool QgsGeometry::intersects( const QgsGeometry* geometry ) const
 {
-  if( !geometry )
+  if ( !geometry )
     return false;
 
   try // geos might throw exception on error
@@ -3391,7 +3391,7 @@ bool QgsGeometry::geosRelOp(
   const QgsGeometry *a,
   const QgsGeometry *b )
 {
-  if( !a || !b )
+  if ( !a || !b )
     return false;
 
   try // geos might throw exception on error

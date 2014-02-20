@@ -178,7 +178,7 @@ void QgsFieldCalculator::accept()
 
   bool newField = !mUpdateExistingGroupBox->isChecked();
   QVariant emptyAttribute;
-  if( newField )
+  if ( newField )
     emptyAttribute = QVariant( mVectorLayer->pendingFields()[mAttributeId].type() );
 
   QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
