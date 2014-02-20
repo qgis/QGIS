@@ -10760,7 +10760,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="546"/>
         <source>The BNA writer will try to recognize ellipses and circles when writing a polygon. This will only work if the feature has previously been read from a BNA file. As some software packages do not support ellipses/circles in BNA data file, it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not to export them as such, but keep them as polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przy zapisie poligonów w BNA zostanie podjęta próba rozpoznania elips i okręgów. Zadziała to jedynie w przypadku, gdy obiekt był odczytywany z pliku BNA. Niektóre programy nie obsługują tego typu obiektów w plikach BNA. Parametr ELLIPSES_AS_ELLIPSES=NO umożliwia wymuszenie zapisu takich obiektów jako poligony.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="555"/>
@@ -10801,7 +10801,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="642"/>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadpisz typ pliku Shapefile. Odpowiednio: NULL dla zwykłych plików.dbf, bez pliku .shp; POINT, ARC, POLYGON lub MULTIPOINT dla 2D; POINTZ, ARCZ, POLYGONZ lub MULTIPOINTZ dla 3D. Pliki MULTIPATCH nie są wspierane.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="661"/>
@@ -10821,7 +10821,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="720"/>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw na YES, aby zapisać właściwości bbox z zakresem geometrii na poziomie obiektu oraz kolekcji obiektów.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="726"/>
@@ -10841,7 +10841,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="767"/>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór YES spowoduje zapis dodatkowych kolumn. Jeśli nazwa kolumny nie zostanie znaleziona w schemacie bazowym będzie odpowiadała wzorcowi foo_bar, foo zostanie uznane jako przestrzeń nazw elementu i zapisany zostanie element &lt;foo:bar&gt;. W przeciwnym wypadku element zostanie zapisany w przestrzeni nazw &lt;ogr:&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="776"/>
@@ -11031,7 +11031,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1208"/>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy atrybut DEPTH powinien zostać dodany do obiektów SOUNDG i traktowany jako głębokość sondowania. Powinno zostać włączone tylko jeśli włączone jest również SPLIT_MULTIPOINT.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1215"/>
@@ -11041,22 +11041,22 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1221"/>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gdy włączone, atrybuty numeryczne zostaną zapisane jako wartości specjalne (przypisanie pustego teksu). Ta opcja zwykle nie jest konieczna, ale może być pomocna przy bezstratnej konwersji S-57 na S-57.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1228"/>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy kolumny LNAM i LNAM_REFS zostaną dołączone do obiektów przechowujących relacje w grupie FFPT pliku S-57.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1234"/>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy powinny zostać dołączone dodatkowe atrybuty wiążące obiekty z ich geometrią. Chodzi o wartości grupy FSPT. Jest to najczęściej konieczne przy konwersji S-57 do S-57.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1241"/>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy wartośći atrybutów powinny zostać przekodowane na UTF-8 z kodowania zdefiniowanego w S57 DSSI.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1280"/>
@@ -11083,12 +11083,12 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy rozdzielić wielopunkty z sondowania na wiele obiektów punktowych. Geometrie wielopunktowe nie są dobrze obsługiwane przez wiele formatów, więc operacja ta może być czasem konieczna.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Określa czy nazwy warstw i kolumn będą dostosowane do wykorzystania przez SQLite. Zamiana obejmuje konwersję na małe litery oraz podmianę niektórych znaków specjalnych (&apos; - #) na podkreślenia.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1365"/>
@@ -26585,7 +26585,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="695"/>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">^.. wyrażenie wymaga grup przechwytywania</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="706"/>
@@ -40650,7 +40650,7 @@ Uwaga: zapisywanie hasła nie jest obowiązkowe. Zostaniesz o nie poproszony w r
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="68"/>
         <source>If the service requires basic authentication, enter a user name and optional password</source>
-        <translation>Jeśli usługa wymaga uwierzytelnienia, wprowadź nazwę użytkownika i, opcjonalnie, hasło</translation>
+        <translation>Jeśli usługa wymaga uwierzytelnienia, wprowadź nazwę użytkownika (opcjonalnie hasło)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="91"/>
@@ -40689,7 +40689,7 @@ Uwaga: zapisywanie hasła nie jest obowiązkowe. Zostaniesz o nie poproszony w r
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="188"/>
         <source>Referer</source>
-        <translation type="unfinished"></translation>
+        <translation>Referer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="81"/>
@@ -41478,12 +41478,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="111"/>
         <source>Could not transform canvas extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można przetransformować zasięgu mapy.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="151"/>
         <source>Could not transform layer extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można przetransformować zasięgu warstwy.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="186"/>
@@ -41967,7 +41967,11 @@ Prefer network: default value; load from the network if the cached entry is olde
 
 Always network: always load from network and do not check if the cache has a valid entry (similar to the &quot;Reload&quot; feature in browsers)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia pamięci
+Zawsze z pamięci: wczytaj z pamięci, nawet jeśli ich okres wygał.
+Preferuj pamięć: wczytaj z pamięci jeśli to możliwe, w innym przypadku z sieci. Dane mogą być nieaktualne, lecz nie wygasł ich okres.
+Preferuj sieć (domyślne): wczytaj z sieci jeśli wpis w pamięci jest starszy niż wpis z sieci.
+Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="379"/>
@@ -44861,7 +44865,7 @@ Błąd: %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ogranicz wyświetlane tabele tylko do zapisanych w widoku all_sdo_metadata. Może to znacząco przespieszyć pierwsze wyświetlenie tabel przestrzennych.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="134"/>
