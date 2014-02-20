@@ -2021,66 +2021,27 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
              && dynamic_cast<QgsPaperGrid*>( items.last() )
              && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
-        QgsComposerMap* mapItem = NULL;
-        QStringList savedLayerSet;
-        bool keepLayerSet;
-        bool hasBackground;
-        bool hasFrame;
-        QStringList layerStack;
+        int composerItemLayerIdx = 0;
         QList<QGraphicsItem *>::const_iterator it = items.begin();
         for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
         {
           itemsHider.hideAll();
-          mapItem = dynamic_cast<QgsComposerMap*>( *it );
+          QgsComposerItem * composerItem = dynamic_cast<QgsComposerItem*>( *it );
           QString layerName( "Layer " + QString::number( svgLayerId ) );
-          if ( mapItem )
+          if ( composerItem && composerItem->numberExportLayers() )
           {
-            mapItem->show();
-            if ( layerStack.isEmpty() ) // first page for this mapItem
-            {
-              keepLayerSet = mapItem->keepLayerSet();
-              if ( !keepLayerSet ) mapItem->storeCurrentLayerSet();
-              mapItem->setKeepLayerSet( true );
-              savedLayerSet = mapItem->layerSet();
-              layerStack = savedLayerSet;
-              hasBackground = mapItem->hasBackground();
-              hasFrame = mapItem->hasFrame();
-              if ( hasBackground ) layerStack.append( "svg background layer" );
-              if ( hasFrame ) layerStack.prepend( "svg frame layer" );
-            }
-            if ( !layerStack.isEmpty() ) // no layers... this can happen
-            {
-              const QString layerId( layerStack.takeLast() );
-              if ( layerId == "svg background layer" )
-              {
-                mapItem->setFrameEnabled( false );
-                mapItem->setBackgroundEnabled( true );
-                layerName.append( " Background" );
-                mapItem->setLayerSet( QStringList() );
-              }
-              else if ( layerId == "svg frame layer" )
-              {
-                mapItem->setFrameEnabled( true );
-                mapItem->setBackgroundEnabled( false );
-                layerName.append( " Frame" );
-                mapItem->setLayerSet( QStringList() );
-              }
-              else
-              {
-                mapItem->setFrameEnabled( false );
-                mapItem->setBackgroundEnabled( false );
-                const QgsMapLayer * ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-                layerName.append( " " + ( ml ? ml->name() : "" ) );
-                mapItem->setLayerSet( QStringList( layerId ) );
-              }
-            }
+            composerItem->show();
+            composerItem->setCurrentExportLayer( composerItemLayerIdx );
+            ++composerItemLayerIdx;
           }
           else
           {
-            // show all items until the next composermap
-            for ( ; it != items.end() && !dynamic_cast<QgsComposerMap*>( *it ); ++it )
+            // show all items until the next item that renders on a separate layer
+            for ( ; it != items.end(); ++it )
             {
-              ( *it )->show();
+              composerItem = dynamic_cast<QgsComposerMap*>( *it );
+              if (composerItem && composerItem->numberExportLayers()) break;
+              else ( *it )->show();
             }
           }
 
@@ -2124,13 +2085,10 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             svgDocRoot.appendChild( mainGroup );
           }
 
-          if ( mapItem && layerStack.isEmpty() ) // restore mapItem and pass to next item
+          if ( composerItem && composerItem->numberExportLayers() && composerItem->numberExportLayers() == composerItemLayerIdx ) // restore and pass to next item
           {
-            mapItem->setKeepLayerSet( keepLayerSet );
-            mapItem->setLayerSet( savedLayerSet );
-            mapItem->setBackgroundEnabled( hasBackground );
-            mapItem->setFrameEnabled( hasFrame );
-            mapItem = NULL;
+            composerItem->setCurrentExportLayer();
+            composerItemLayerIdx = 0;
             ++it;
           }
         }
