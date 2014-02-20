@@ -280,7 +280,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
         QDateTime datetime( value.toDateTime() );
         if ( datetime.isValid() )
           return QString( "TO_DATE('%1','YYYY-MM-DD HH24:MI:SS')" ).arg( datetime.toString( "yyyy-MM-dd hh:mm:ss" ) );
-	break;
+        break;
       }
 
       case QVariant::Date:
@@ -300,7 +300,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
       }
 
       default:
-	break;
+        break;
     }
   }
 

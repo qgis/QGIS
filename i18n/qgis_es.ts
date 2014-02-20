@@ -11524,11 +11524,11 @@ SQL: %1</translation>
     </message>
     <message>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation>la escritura del minivolcado a %1falló (%2)</translation>
+        <translation>la escritura del minivolcado a %1 falló (%2)</translation>
     </message>
     <message>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation>la creación del minivolcado a %1falló (%2)</translation>
+        <translation>la creación del minivolcado a %1 falló (%2)</translation>
     </message>
     <message>
         <source>Crash dumped</source>
@@ -11770,7 +11770,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation>Cuando se crean archivos CVS, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
+        <translation>Cuando se crean archivos CSV, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
     </message>
     <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
@@ -11826,7 +11826,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation>Si se define a NO, sólo se excribirán elementos &lt;entry&gt; o &lt;item&gt;. El usuario tendrá que proporcionar el cabezado y pie de documento adecuados.</translation>
+        <translation>Si se define a NO, sólo se escribirán elementos &lt;entry&gt; o &lt;item&gt;. El usuario tendrá que proporcionar el encabezado y pie de documento adecuados.</translation>
     </message>
     <message>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
@@ -11886,7 +11886,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation>sólo válido cuando FORMATO=GML3/GML3Degree/GML3.2). Valor predeterminado SÍ. Si se establece a NO, el elementoe &lt;gml:boundedBy&gt; no se escribirá para cada objeto espacial.</translation>
+        <translation>sólo válido cuando FORMATO=GML3/GML3Degree/GML3.2). Valor predeterminado SÍ. Si se establece a NO, el elemento &lt;gml:boundedBy&gt; no se escribirá para cada objeto espacial.</translation>
     </message>
     <message>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
@@ -12046,7 +12046,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation>No se puede sobreescribir una capa OGR en lugar</translation>
+        <translation>No se puede sobrescribir una capa OGR en lugar</translation>
     </message>
     <message>
         <source>linear</source>
@@ -12070,7 +12070,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>pad</source>
-        <translation type="unfinished"></translation>
+        <translation>rellenar</translation>
     </message>
     <message>
         <source>repeat</source>
@@ -12102,7 +12102,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla si los nombres de capas y campos se limpiarán para un uso más fácil en SQLite. Los nombres limpiados se convertirán a minúsculas y algunas caracteres especiales (&apos; - #) se sustituirán por guiones bajos.</translation>
     </message>
 </context>
 <context>
@@ -22842,7 +22842,7 @@ y el archivo actual es [%3]</translation>
     <name>QgsDatumTransformDialog</name>
     <message>
         <source>Select datum transformations for layer</source>
-        <translation>Seleccionar transformaciones de datum para la capa</translation>
+        <translation>Seleccionar transformaciones de dátum para la capa</translation>
     </message>
     <message>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
@@ -22853,7 +22853,7 @@ y el archivo actual es [%3]</translation>
     <name>QgsDatumTransformDialogBase</name>
     <message>
         <source>Select datum transformations</source>
-        <translation>Seleccionar transformaciones de datum</translation>
+        <translation>Seleccionar transformaciones de dátum</translation>
     </message>
     <message>
         <source>src transform</source>
@@ -24938,7 +24938,7 @@ Error del analizador:
     <name>QgsEditorWidgetRegistry</name>
     <message>
         <source>Unknown attribute editor widget &apos;%1&apos;</source>
-        <translation>Control &apos;%1&apos; del editor de atributos desconcido</translation>
+        <translation>Control &apos;%1&apos; del editor de atributos desconocido</translation>
     </message>
     <message>
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
@@ -38506,7 +38506,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Default datum transformations</source>
-        <translation>Transformaciones de datum predeterminadas</translation>
+        <translation>Transformaciones de dátum predeterminadas</translation>
     </message>
     <message>
         <source>Source CRS</source>
@@ -38518,15 +38518,15 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Source datum transform</source>
-        <translation>Transformar datum de origen</translation>
+        <translation>Transformar dátum de origen</translation>
     </message>
     <message>
         <source>Destination datum transform</source>
-        <translation>Transformar datum de destino</translation>
+        <translation>Transformar dátum de destino</translation>
     </message>
     <message>
         <source>Max retry in case of tile request errors</source>
-        <translation>Máximos reintentos en cado de errores en la solicitud de teselas</translation>
+        <translation>Máximos reintentos en caso de errores en la solicitud de teselas</translation>
     </message>
     <message>
         <source>User-Agent</source>
@@ -38542,7 +38542,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation>Preguntar la transformación de datum cuando no haya una predefinida</translation>
+        <translation>Preguntar la transformación de dátum cuando no haya una predefinida</translation>
     </message>
 </context>
 <context>
@@ -46255,7 +46255,7 @@ desviación estándar ×</translation>
     <name>QgsRelReferenceConfigDlg</name>
     <message>
         <source>Preview Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión de vista preliminar</translation>
     </message>
 </context>
 <context>
@@ -46274,7 +46274,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Show embedded form</source>
-        <translation>Mostrar formularion empotrado</translation>
+        <translation>Mostrar formulario empotrado</translation>
     </message>
     <message>
         <source>Relation</source>
@@ -46282,7 +46282,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Expression Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Constructor de expresiones</translation>
     </message>
 </context>
 <context>
@@ -51463,11 +51463,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de transformación de simplificación capturado: %1</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished">SRC</translation>
+        <translation>SRC</translation>
     </message>
 </context>
 <context>
@@ -55409,7 +55409,7 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Processing R script (*.rsx)</source>
-        <translation>Procesande script de R (*.rsx)</translation>
+        <translation>Procesando script de R (*.rsx)</translation>
     </message>
     <message>
         <source>Save script</source>
@@ -58998,7 +58998,7 @@ Este diálogo le permite seleccionar algunas opciones básicas de QGIS. Hay ocho
 &lt;a name=&quot;general&quot;&gt;
 &lt;h4&gt;General&lt;/h4&gt;
 &lt;/a&gt;
-En esta pestapa puede establecer opciones generales sobre el comportamiento del proyecto al abrirlo y guardarlo, aspecto predeterminado del mapa, su tema de iconos favorito y muchas otras.
+En esta pestaña puede establecer opciones generales sobre el comportamiento del proyecto al abrirlo y guardarlo, aspecto predeterminado del mapa, su tema de iconos favorito y muchas otras.
 &lt;a name=&quot;ren&quot;&gt;
 &lt;h4&gt;Renderizado &amp; SVG&lt;/h4&gt;
 &lt;/a&gt;
@@ -60909,7 +60909,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
+        <translation>&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
 &lt;p&gt;El complemento Mapa de calor utiliza Estimacioń de Densidad de Núcleo para crear un ráster de densidad (mapa de calor)
 de una capa vectorial de puntos de entrada. La densidad se calcula en base al número de puntos en cada localización, de
 forma que números más grandes de puntos agrupados dan como resultado valores mas grandes.
@@ -60935,31 +60935,30 @@ Los mapas de calor permiten una fácil identificación de «puntos calientes» y
 &lt;h3&gt;Opciones avanzadas&lt;/h3&gt;
 
 &lt;h4&gt;Filas y columnas&lt;/h4&gt;
-&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
-Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
-are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+&lt;p&gt;Se usa para cambiar las dimensiones del archivo ráster de salida. Estos valores también están enlazados con los valores &lt;b&gt;tamaño X de celda&lt;/b&gt; y el &lt;b&gt;tamaño Y de celda&lt;/b&gt;. 
+Aumentar el número de filas y columnas disminuirá el tamaño de celda y aumentará el tamaño del archivo de salida. Los valores en Filas y Columnas también están enlazados, 
+por lo que duplicar el número de filas duplicará automáticamente el número de columnas y reducirá a la mitad el tamaño de celda. El área geográfica del ráster de salida permanecerá igual.&lt;/p&gt;
 
-&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
-&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
-  raster.&lt;/p&gt;
+&lt;h4&gt;Tamaño X e Y de celda&lt;/h4&gt;
+&lt;p&gt;Controla el tamaño geográfico de cada píxel en el ráster de salida. Cambiar estos valores también cambiará el número de filas y columnas del ráster de salida.&lt;/p&gt;
   
-&lt;h4&gt;Kernel shape&lt;/h4&gt;
-&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
-different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
-triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
-which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+&lt;h4&gt;Forma del kernel&lt;/h4&gt;
+&lt;p&gt;La forma del kernel controla la tasa a la que la influencia de un punto disminuye a medida que la distancia desde el punto aumenta. Diferentes kernel decaen a 
+diferentes tasas; así, un kernel triponderado da a los objetos espaciales más peso para distancias más próximas al punto que el kernel Epanechnikov. En consecuencia,
+el triponderado da zonas calientes más &quot;afiladas&quot; y el Epanechnikov da zonas calientes más &quot;suaves&quot;.En QGIS hay disponible diversas funciones de kernel estándar,
+las cuales están descritas e ilustradas en la &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h4&gt;Decay ratio&lt;/h4&gt;
-&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+&lt;h4&gt;Relación de decadencia&lt;/h4&gt;
+&lt;p&gt;Para kernel triangulares, la relación de decadencia define la cantidad de influencia que se aplica a los píxeles más externos en el radio de buffer. Un valor de 0 refleja un kernel triangular estándar, en el que la influencia cae a cero cuando la distancia desde el píxel al punto se aproxima al radio especificado. En contraste, un valor de 1 indica que no hay caída cuando aumenta la distancia desde el punto.&lt;/p&gt;
 
-&lt;h4&gt;Use radius from field&lt;/h4&gt;
-&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+&lt;h4&gt;Usar radio a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma opcional, el valor de un campo especificado se puede usar para controlar el radio del kernel para cada punto de la capa de entrada.&lt;/p&gt;
 
-&lt;h4&gt;Use weight from field&lt;/h4&gt;
-&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+&lt;h4&gt;Usar peso a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma opcional, se puede usar un atributo que contenga los pesos para puntos para dar más peso a unos puntos de la capa de entrada que a otros.&lt;/p&gt;
 
-&lt;h2&gt;Further Details&lt;/h2&gt;
-&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+&lt;h2&gt;Más detalles&lt;/h2&gt;
+&lt;p&gt;Contacte con el autor en aruntheguy arroba gmail puntot com&lt;/p&gt;
 
 </translation>
     </message>
@@ -61132,7 +61131,174 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Consola de Python para QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Configuración&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				La consola de Python para QGIS es una terminal para la ejecución de órdenes de python. 
+				También tiene un editor de archivos de Python que le permite editar y guardar sus scripts de Python. 
+				Tanto la consola como el editor están basados en el paquete PyQScintilla2.&lt;br&gt;
+				La consola se divide en dos paneles principales, superior e inferior 
+				cuyo tamaño se puede ajustar usando el separador horizontal. El panel del área de salida es un control de solo lectura que 
+				muestra la salida de las órdenes. Puede arrastrar y soltar o copiar y pegar texto en el área de entrada y 
+				ejecutar porciones de códifo desde el panel de salida seleccionado algo de texto y haciendo clic en la 
+				orden&lt;label&gt;Introducir seleccionado&lt;/label&gt; del menú contextual. 
+				No importa si el texto seleccionado contiene el punto de inserción del intérprete (&gt;&gt;&gt;, ...). El área de entrada es una termina 
+				interactiva de python para las órdenes de entrada.&lt;br&gt;Para acceder al editor de archivos de python use el 
+				botón &lt;label&gt;Mostrar editor&lt;/label&gt; de la barra de herramientas. 
+				El editor permite editar y guardar archivos de python y ofrece una funcionalidad básica  
+				para administrar su código (comentar y descomentar 
+				código, comprobar sintaxis, compartir el código vía codepad.org y mucho más).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Consola&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principales:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Compleción de código, resaltado de sintaxis y calltips para las siguientes API:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Espacio&lt;/label&gt; para ver la lista de autocompleción.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Mayús+Espacio&lt;/label&gt; para ver el historial de órdenes.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Ejecutar porciones de códifo con el órden &lt;label&gt;Introducir seleccionado&lt;/label&gt; del panel de salida.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abrir la documentación de la API de QGIS tecleando &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abrir el Cookbook de PyQGIS tecleando &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Guardar y limpiar el historial de órdenes accediendo desde el menú contextual del panel de entrada. 
+			El historial se guardará en el archivo ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Barra de herramientas:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Limpiar consola de Python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase de procesado&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase de PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Herramienta para importar la clase PyQt4.QtGui&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Ejecutar órden (como la tecla Enter pulsada)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Configuración&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Ayuda&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principales:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Compleción de código, resaltado de sintaxis y calltips para las siguientes API:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Espacio&lt;/label&gt; para ver la lista de autocompleción.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Compartir porciones de código vía codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Comprobación de sintaxis.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Inspector de objetos: un explorador de clases y funciones.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ir a la definicioń de un objeto con un clic del ratón. (desde el inspector de objectos)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ejecutar porciones de código con la orden &lt;label&gt;Introducir seleccionado&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ejecutar el script completo con la orden &lt;label&gt;Ejecutar script&lt;/label&gt; 
+			(esto crea un archivo compilado a bytes con la extensión .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Más ajustes para la consola de python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompleción:&lt;/label&gt; Si está marcado la compleción de código está habilitada. Puede obtener autocompleción
+a partir del documento actual, desde API onstaladas y tanto desde API como desde el documento actual.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Umbral de autocompleción:&lt;/label&gt; Establece el umbral para mostrar la lista de autocompleción (en caracteres tecleados)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Inserción automática de paréntesis:&lt;/label&gt; Si está marcado habilita el cierre automático para los paréntesis.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto guardar script antes de ejecutar:&lt;/label&gt; Le permite guardar automáticamente el
+script a ejecutar para evitar guardarlo después de cualquier modificación.
+Esta acción guardará un archivo temporal en el directorio temporal del equipo 
+que se borrará automáticamente después de ejecutar.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar archivos de API precargados:&lt;/label&gt; Puede elegir si usar el archivo de API precargado o cargar algunos archivos de API guardados en su equipo.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar archivo de API preparado:&lt;/label&gt; Si está marcado el archivo *.pap se usará para la compleción de código. Para generar un archivo de API preparado tiene que cargar al menos un archivo *.api y luego compilarlo haciendo clic en el botón &lt;label&gt;Compilar API...&lt;/label&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Nota:&lt;/b&gt; Para guardar el estado de los controles de la consola tiene que cerrar la Consola de  Python 
+	desde el botón cerrar. Esto le permite guardar la geometría para restaurarla en el próximo inicio.
+&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>

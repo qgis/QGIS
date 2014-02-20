@@ -11836,6 +11836,10 @@ Deze zal daarom niet actief worden gemaakt.</translation>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -45111,6 +45115,13 @@ standaarddeviatie x</translation>
     </message>
 </context>
 <context>
+    <name>QgsRelReferenceConfigDlg</name>
+    <message>
+        <source>Preview Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
@@ -45131,6 +45142,10 @@ standaarddeviatie x</translation>
     <message>
         <source>Relation</source>
         <translation>Relatie</translation>
+    </message>
+    <message>
+        <source>Expression Builder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50403,6 +50418,14 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Description of this provider</source>
         <translation>Omschrijving van deze provider</translation>
+    </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">CRS</translation>
     </message>
 </context>
 <context>

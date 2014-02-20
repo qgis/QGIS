@@ -265,7 +265,7 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
   if ( !layerItem ) return size;
 
   //Let the user omit the layer title item by having an empty layer title string
-  if ( layerItem->text().isEmpty() || layerItem->style() == QgsComposerLegendStyle::Hidden ) return size;
+  if ( layerItem->text().isEmpty() ) return size;
 
   double y = point.y();
 
@@ -805,12 +805,15 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
     {
       Atom atom;
 
-      Nucleon nucleon;
-      nucleon.item = currentLegendItem;
-      nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
-      atom.nucleons.append( nucleon );
-      atom.size.rwidth() = nucleon.size.width();
-      atom.size.rheight() = nucleon.size.height();
+      if ( currentLegendItem->style() != QgsComposerLegendStyle::Hidden )
+      {
+        Nucleon nucleon;
+        nucleon.item = currentLegendItem;
+        nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
+        atom.nucleons.append( nucleon );
+        atom.size.rwidth() = nucleon.size.width();
+        atom.size.rheight() = nucleon.size.height();
+      }
 
       QList<Atom> layerAtoms;
 
@@ -826,13 +829,12 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
           // append to layer atom
           // the width is not correct at this moment, we must align all symbol labels
           atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
-          //if ( currentLegendItem->rowCount() > 1 )
-          //if ( currentLegendItem->style() != QgsComposerLegendStyle::Hidden )
-          //{
-          //atom.size.rheight() += mSymbolSpace;
-          // TODO: for now we keep Symbol and SymbolLabel Top margin in sync
-          atom.size.rheight() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
-          //}
+          // Add symbol space only if there is already title or another item above
+          if ( atom.nucleons.size() > 0 )
+          {
+            // TODO: for now we keep Symbol and SymbolLabel Top margin in sync
+            atom.size.rheight() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
+          }
           atom.size.rheight() += symbolNucleon.size.height();
           atom.nucleons.append( symbolNucleon );
         }

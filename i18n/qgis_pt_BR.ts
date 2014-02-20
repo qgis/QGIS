@@ -25152,33 +25152,33 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation type="obsolete">O sistema de referência espacial de origem (SRC) não é válido. </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="600"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="606"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="596"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="602"/>
         <source>CRS</source>
         <translation>SRC</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="598"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="594"/>
         <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>O SRC não é válido. As coordenadas não podem ser reprojetadas. O SRC é: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="605"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="601"/>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>O SRC de destino não é válido. As coordenadas não podem ser reprojetadas. O SRC é: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="660"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="656"/>
         <source>inverse transform</source>
         <translation>transformação inversa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="660"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="656"/>
         <source>forward transform</source>
         <translation>transformação à frente</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="662"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="658"/>
         <source>%1 of
 %2PROJ.4: %3 +to %4
 Error: %5</source>
@@ -41187,12 +41187,12 @@ enhancement</source>
 <context>
     <name>QgsNetworkAccessManager</name>
     <message>
-        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="184"/>
+        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="190"/>
         <source>Network request %1 timed out</source>
         <translation>Solicitação de rede %1 expirou</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="184"/>
+        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="190"/>
         <source>Network</source>
         <translation>Rede</translation>
     </message>
@@ -43872,7 +43872,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3508"/>
         <source>Miter limit</source>
-        <translation type="unfinished">Limite pontiagudo</translation>
+        <translation>Limite da esquadria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3515"/>
@@ -43882,7 +43882,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3532"/>
         <source>Quadrant segments</source>
-        <translation type="unfinished">Quadrante de segmentos</translation>
+        <translation>Segmentos do quadrante</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3626"/>
@@ -43951,7 +43951,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3971"/>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Pergunte sobre a transformação do datum quando um padrão não estiver definido</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4019"/>
@@ -44126,7 +44126,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="624"/>
         <source>Custom side bar style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo da barra lateral personalizado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="604"/>
@@ -44181,7 +44181,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="822"/>
         <source>Prompt to save project and data source changes when required</source>
-        <translation type="unfinished">Avisar para salvar projetos e alterações de fonte de dados, quando necessário</translation>
+        <translation>Avisar para salvar projetos e alterações de fonte de dados, quando necessário</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="838"/>
@@ -44243,12 +44243,12 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1137"/>
         <source>Current environment variables (read-only - bold indicates modified at startup)</source>
-        <translation type="unfinished">Variáveis ​​de ambiente atuais (somente-leitura - negrito indica modificação na inicialização)</translation>
+        <translation>Variáveis ​​de ambiente atuais (somente-leitura - negrito indica modificação na inicialização)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1199"/>
         <source>Show only QGIS-specific variables</source>
-        <translation type="unfinished">Mostrar somente variáveis específicas do QGIS</translation>
+        <translation>Mostrar somente variáveis específicas do QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1209"/>
@@ -44268,12 +44268,12 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1468"/>
         <source>Prompt for raster sublayers when opening</source>
-        <translation type="unfinished">Prompt para subcamadas raster quando abrir</translation>
+        <translation>Perguntar sobre as subcamadas raster quando abrir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1502"/>
         <source>Ignore shapefile encoding declaration</source>
-        <translation type="unfinished">Ignorar declaração de codificação do shapefile</translation>
+        <translation>Ignorar declaração de codificação do shapefile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1499"/>
@@ -44283,52 +44283,52 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1516"/>
         <source>Add Oracle layers with double click and select in extended mode</source>
-        <translation type="unfinished">Adicionar uma camadas Oracle com duplo clique e selecione no modo estendido</translation>
+        <translation>Adicionar uma camadas Oracle com duplo clique e selecionar no modo estendido</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1577"/>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation type="unfinished">Melhor desempenho gráfico com o custo de perder a possibilidade de cancelar a renderização e desenho incremental de feições</translation>
+        <translation>Melhor desempenho gráfico com o custo de perder a possibilidade de cancelar a renderização e desenho incremental de feições</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1580"/>
         <source>Enable back buffer</source>
-        <translation type="unfinished">Habilitar buffer de restauração</translation>
+        <translation>Habilitar buffer de restauração</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1631"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation type="unfinished">&lt;b&gt;Nota:&lt;/b&gt; Ajuste para abaixo de 1000 para evitar que a tela seja atualizada até que todas as feições tenham sido renderizadas</translation>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt; Ajuste para abaixo de 1000 para evitar que a tela seja atualizada até que todas as feições tenham sido renderizadas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1638"/>
         <source>Enable feature simplication by default for newly added layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar a simplificação da feição por padrão para novas camadas adicionadas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1647"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt; A simplificação da feição pode acelerar a renderização mas pode trazer algumas inconsistência na renderização</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1654"/>
         <source>Simplification threshold (higher values result in more simplification): </source>
-        <translation type="unfinished"></translation>
+        <translation>Limite da simplificação (valores altos resultam em mais simplificação): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1664"/>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores altos resultam em mais simplificação</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1709"/>
         <source>Simplify on provider side if possible</source>
-        <translation type="unfinished">Simplifique no lado do provedor se possível</translation>
+        <translation>Simplifique no lado do provedor se possível</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Escala máxima em que a camada deve ser simplificada (1:1 sempre simplifica): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1861"/>
@@ -44354,7 +44354,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1996"/>
         <source>Cumulative pixel count cut limits</source>
-        <translation type="unfinished">Limites de corte de contagem cumulativa de pixel</translation>
+        <translation>Limites de corte de contagem cumulativa de pixel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2010"/>
@@ -44369,17 +44369,17 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2092"/>
         <source>Debugging</source>
-        <translation type="unfinished">Depurar</translation>
+        <translation>Depurar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2098"/>
         <source>Show these events in the Log Message panel (under Rendering tab)</source>
-        <translation type="unfinished">Mostrar esses eventos no painel de mensagens do Log (na aba Renderização)</translation>
+        <translation>Mostrar esses eventos no painel de mensagens do Log (na aba Renderização)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2123"/>
         <source>Map canvas refresh</source>
-        <translation type="unfinished">Atualização da tela de mapa</translation>
+        <translation>Atualização da tela de mapa</translation>
     </message>
     <message>
         <source>Map canvas &amp; legend</source>
@@ -44388,7 +44388,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2177"/>
         <source>Default map appearance (overridden by project properties)</source>
-        <translation type="unfinished">Aparência padrão do mapa (substituido pela propriedades do projeto)</translation>
+        <translation>Aparência padrão do mapa (substituido pela propriedades do projeto)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2281"/>
@@ -44437,7 +44437,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2613"/>
         <source>Nautical Miles</source>
-        <translation type="unfinished">Milhas Náuticas</translation>
+        <translation>Milhas Náuticas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2783"/>
@@ -44472,70 +44472,70 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2927"/>
         <source>Composition defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrões da composição</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2935"/>
         <source>Default font</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonte padrão</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2950"/>
         <source>Grid appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aparência da grade</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2958"/>
         <source>Grid style</source>
-        <translation type="unfinished">Estilo da grade</translation>
+        <translation>Estilo da grade</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2968"/>
         <source>Color...</source>
-        <translation type="unfinished">Cor...</translation>
+        <translation>Cor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2980"/>
         <source>Grid defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrões da grade</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2986"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Espaçamento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2993"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3050"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3081"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3006"/>
         <source>Grid offset</source>
-        <translation type="unfinished">Afastamento da grade</translation>
+        <translation>Afastamento da grade</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3018"/>
         <source>x: </source>
-        <translation type="unfinished">x: </translation>
+        <translation>x: </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3028"/>
         <source>y: </source>
-        <translation type="unfinished">y: </translation>
+        <translation>y: </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3040"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3071"/>
         <source>Snap tolerance</source>
-        <translation type="unfinished">Tolerância da atração</translation>
+        <translation>Tolerância da atração</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3063"/>
         <source>Guide defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrões das Guias</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3232"/>
@@ -44586,7 +44586,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3858"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
-        <translation type="unfinished">Habilitar automaticamente a reprojeção &apos;on the fly&apos; se o SRC de uma nova camada adicionada diferir do SRC da camada(s) que já está presente. O SRC da camada(s) atual será usada.</translation>
+        <translation>Habilitar automaticamente a reprojeção &apos;on the fly&apos; se o SRC de uma nova camada adicionada diferir do SRC da camada(s) que já está presente. O SRC da camada(s) atual será usada.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3851"/>
@@ -44596,7 +44596,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4140"/>
         <source>Default expiration period for WMS-C/WMTS tiles (hours)</source>
-        <translation type="unfinished">Prazo de validade padrão para tiles WMS-C/WMTS (horas)</translation>
+        <translation>Prazo de validade padrão para tiles WMS-C/WMTS (horas)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3782"/>
@@ -44630,17 +44630,17 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4158"/>
         <source>Max retry in case of tile request errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Número máximo de tentativas em caso de erro na requisção de tiles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4176"/>
         <source>User-Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>User-Agent</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4214"/>
         <source>Size [KiB]</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho [KiB]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4234"/>
@@ -61423,17 +61423,17 @@ Erros no provedor:</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="895"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Nota:&lt;/b&gt; A simplificação da feição pode acelerar a renderização mas pode trazer algumas inconsistência na renderização</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="902"/>
         <source>Simplification threshold (higher values result in more simplification): </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Limite da simplificação (valores altos resultam em mais simplificação): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="912"/>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valores altos resultam em mais simplificação</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="934"/>
@@ -61448,7 +61448,7 @@ Erros no provedor:</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="964"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Escala máxima em que a camada deve ser simplificada (1:1 sempre simplifica): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1032"/>

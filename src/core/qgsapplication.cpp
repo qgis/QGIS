@@ -91,6 +91,7 @@ void QgsApplication::init( QString customConfigPath )
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+  // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
 
   // check if QGIS is run from build directory (not the install directory)
   QFile f;

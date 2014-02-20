@@ -15,7 +15,11 @@
 
 #include "qgsfontutils.h"
 
+#include "qgsapplication.h"
+#include "qgslogger.h"
+
 #include <QApplication>
+#include <QFile>
 #include <QFont>
 #include <QFontDatabase>
 #include <QFontInfo>
@@ -32,7 +36,13 @@ bool QgsFontUtils::fontFamilyOnSystem( const QString& family )
 {
   QFont tmpFont = QFont( family );
   // compare just beginning of family string in case 'family [foundry]' differs
-  return family.startsWith( tmpFont.family(), Qt::CaseInsensitive );
+  return tmpFont.family().startsWith( family, Qt::CaseInsensitive );
+}
+
+bool QgsFontUtils::fontFamilyHasStyle( const QString& family, const QString& style )
+{
+  QFontDatabase fontDB;
+  return ( fontFamilyOnSystem( family ) && fontDB.styles( family ).contains( style ) );
 }
 
 bool QgsFontUtils::fontFamilyMatchOnSystem( const QString& family, QString* chosen, bool* match )
@@ -190,4 +200,87 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
   }
 
   return false;
+}
+
+QString QgsFontUtils::standardTestFontFamily()
+{
+  return "QGIS Vera Sans";
+}
+
+bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
+{
+  // load standard test font from filesystem or testdata.qrc (for unit tests and general testing)
+  bool fontsLoaded = false;
+
+  QString fontFamily = standardTestFontFamily();
+  QMap<QString, QString> fontStyles;
+  fontStyles.insert( "Roman", "QGIS-Vera/QGIS-Vera.ttf" );
+  fontStyles.insert( "Oblique", "QGIS-Vera/QGIS-VeraIt.ttf" );
+  fontStyles.insert( "Bold", "QGIS-Vera/QGIS-VeraBd.ttf" );
+  fontStyles.insert( "Bold Oblique", "QGIS-Vera/QGIS-VeraBI.ttf" );
+
+  QMap<QString, QString>::const_iterator f = fontStyles.constBegin();
+  for ( ; f != fontStyles.constEnd(); ++f )
+  {
+    QString fontstyle( f.key() );
+    QString fontpath( f.value() );
+    if ( !( loadstyles.contains( fontstyle ) || loadstyles.contains( "All" ) ) )
+    {
+      continue;
+    }
+    QString familyStyle = QString( "%1 %2" ).arg( fontFamily ).arg( fontstyle );
+
+    if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
+    {
+      fontsLoaded = ( fontsLoaded || false );
+      QgsDebugMsg( QString( "Test font '%1' already available" ).arg( familyStyle ) );
+    }
+    else
+    {
+      bool loaded = false;
+      if ( QgsApplication::isRunningFromBuildDir() )
+      {
+        // workaround for bugs with Qt 4.8.5 (other versions?) on Mac 10.9, where fonts
+        // from qrc resources load but fail to work and default font is substituted [LS]:
+        //   https://bugreports.qt-project.org/browse/QTBUG-30917
+        //   https://bugreports.qt-project.org/browse/QTBUG-32789
+        QString fontPath( QgsApplication::buildSourcePath() + "/tests/testdata/font/" + fontpath );
+        int fontID = QFontDatabase::addApplicationFont( fontPath );
+        loaded = ( fontID != -1 );
+        fontsLoaded = ( fontsLoaded || loaded );
+        QgsDebugMsg( QString( "Test font '%1' %2 from filesystem" )
+                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
+      }
+      else
+      {
+        QFile fontResource( ":/testdata/font/" + fontpath );
+        if ( fontResource.open( QIODevice::ReadOnly ) )
+        {
+          int fontID = QFontDatabase::addApplicationFontFromData( fontResource.readAll() );
+          loaded = ( fontID != -1 );
+          fontsLoaded = ( fontsLoaded || loaded );
+        }
+        QgsDebugMsg( QString( "Test font '%1' %2 from testdata.qrc" )
+                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
+      }
+    }
+  }
+
+  return fontsLoaded;
+}
+
+QFont QgsFontUtils::getStandardTestFont( const QString& style, int pointsize )
+{
+  QFontDatabase fontDB;
+  if ( ! fontFamilyHasStyle( standardTestFontFamily(), style ) )
+  {
+    loadStandardTestFonts( QStringList() << style );
+  }
+
+  QFont f = fontDB.font( standardTestFontFamily(), style, pointsize );
+  // in case above statement fails to set style
+  f.setBold( style.contains( "Bold" ) );
+  f.setItalic( style.contains( "Oblique" ) );
+
+  return f;
 }

@@ -97,7 +97,7 @@ void TestQgsWcsProvider::read( )
   QStringList versions;
 
   // TODO: 1.1 test disabled for now beacuse it was failing, UMN Mapserver is giving
-  // 1x1 pixel response if GRIDORIGIN coordinate has a negative value, but it has to be 
+  // 1x1 pixel response if GRIDORIGIN coordinate has a negative value, but it has to be
   // verified if the problem is really on Mapserver side
   //versions << "1.0" << "1.1";
   versions << "1.0";

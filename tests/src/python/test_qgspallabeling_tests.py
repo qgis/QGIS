@@ -29,7 +29,7 @@ class TestPointBase(object):
     def __init__(self):
         """Dummy assignments, intended to be overriden in subclasses"""
         self.lyr = QgsPalLayerSettings()
-        self._TestFont = QApplication.font()
+        self._TestFont = QApplication.font()  # will become a standard test font
 
     def checkTest(self, **kwargs):
         """Intended to be overriden in subclasses"""
