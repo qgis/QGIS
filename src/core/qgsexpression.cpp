@@ -633,17 +633,17 @@ static QVariant fcnTrim( const QVariantList& values, const QgsFeature* , QgsExpr
 
 static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
 {
-  if (values.length() > 1)
+  if ( values.length() == 2 || values.length() == 3 )
   {
     QString str = getStringValue( values.at( 0 ), parent );
-    int wrap = getIntValue( values.at(1), parent );
+    int wrap = getIntValue( values.at( 1 ), parent );
 
-    if (!str.isEmpty() && wrap != 0)
+    if ( !str.isEmpty() && wrap != 0 )
     {
       QString newstr;
       QString delimiterstr;
-      if (values.length() == 3) delimiterstr = getStringValue ( values.at(2), parent );
-      if (delimiterstr.isEmpty()) delimiterstr = " ";
+      if ( values.length() == 3 ) delimiterstr = getStringValue( values.at( 2 ), parent );
+      if ( delimiterstr.isEmpty() ) delimiterstr = " ";
       int delimiterlength = delimiterstr.length();
 
       QStringList lines = str.split( "\n" );
@@ -656,32 +656,38 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , Qgs
         strhit = 0;
         lasthit = 0;
 
-        while (strcurrent < strlength)
+        while ( strcurrent < strlength )
         {
           // positive wrap value = desired maximum line width to wrap
           // negative wrap value = desired minimum line width before wrap
-          if (wrap > 0)
+          if ( wrap > 0 )
           {
             //first try to locate delimiter backwards
-            strhit = lines[i].lastIndexOf( delimiterstr, strcurrent + wrap);
-            if (strhit == lasthit || strhit == -1) {
+            strhit = lines[i].lastIndexOf( delimiterstr, strcurrent + wrap );
+            if ( strhit == lasthit || strhit == -1 )
+            {
               //if no new backward delimiter found, try to locate forward
-              strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
-             }
+              strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs( wrap ) );
+            }
             lasthit = strhit;
-          } else {
-            strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
           }
-          if (strhit > -1) {
+          else
+          {
+            strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs( wrap ) );
+          }
+          if ( strhit > -1 )
+          {
             newstr.append( lines[i].midRef( strcurrent , strhit - strcurrent ) );
             newstr.append( "\n" );
             strcurrent = strhit + delimiterlength;
-          } else {
+          }
+          else
+          {
             newstr.append( lines[i].midRef( strcurrent ) );
             strcurrent = strlength;
           }
         }
-        if (i < lines.size() - 1) newstr.append( "\n" );
+        if ( i < lines.size() - 1 ) newstr.append( "\n" );
       }
 
       return QVariant( newstr );
