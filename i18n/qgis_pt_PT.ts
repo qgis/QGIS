@@ -111,29 +111,29 @@
         <translation>Sistema de coordenadas</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="107"/>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="153"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="106"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="152"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
         <translation>Clique no mapa para ver as coordenadas e capturar para a área de transferência.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="110"/>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="263"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="109"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="262"/>
         <source>&amp;Coordinate Capture</source>
         <translation>&amp;Captura de Coordenadas</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Click to select the CRS to use for coordinate display</source>
         <translation>Clique para selecionar o SRC a usar para mostrar as coordenadas</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="133"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="132"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
         <translation>Coordenadas no SRC selecionado (Lat, Long ou Este, Norte)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
         <translation>Coordenadas no sistema de coordenadas do mapa (Lat,Long ou Este, Norte)</translation>
     </message>
@@ -146,18 +146,18 @@
         <translation type="obsolete">Coordenadas no sistema de coordenadas do mapa</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="140"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="139"/>
         <source>Copy to clipboard</source>
         <translation>Copiar para a área de transferência</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="145"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="144"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
         <translatorcomment>Dúvida na tradução de &quot;Mouse Tracking&quot;. Outra hipótese era o &quot;seguimento do rato&quot; ou &quot;monitorização da posição do rato&quot;. Resolvi com rastreio (to track). Usei terminar para (to) stop.</translatorcomment>
         <translation>Clique para ativar o rastreio do rato. Clique no mapa para terminar</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="150"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="149"/>
         <source>Start capture</source>
         <translation>Iniciar captura</translation>
     </message>
@@ -4289,7 +4289,7 @@ Install it and try again.</source>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation>Extrair projecção</translation>
+        <translation>Extrair projeção</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
@@ -6151,7 +6151,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) permite expandir uma matriz c
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
         <source>Warp (Reproject)</source>
-        <translation>Torcer (Reprojectar)</translation>
+        <translation>Torcer (Reprojetar)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="119"/>
@@ -7353,7 +7353,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="872"/>
         <source>Select Single Feature</source>
-        <translation>Seleccionar um elemento</translation>
+        <translation>Selecionar um elemento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="884"/>
@@ -7373,7 +7373,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="920"/>
         <source>Select Features by Radius</source>
-        <translation>Selecionar elementos por eaio</translation>
+        <translation>Selecionar elementos por raio</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="929"/>
@@ -7408,7 +7408,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1262"/>
         <source>Add WMS/WMTS Layer...</source>
-        <translation>Adicionar camada WMS/WMTS...</translation>
+        <translation>Adicionar Camada WMS/WMTS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1286"/>
@@ -8397,7 +8397,7 @@ Shift+seleção da camada ativa</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1426"/>
         <source>Project Properties...</source>
-        <translation>Propriedades do Projecto...</translation>
+        <translation>Propriedades do Projeto...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1429"/>
@@ -19988,25 +19988,25 @@ Podem as classes ser excluídas antes da classificação?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="382"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="752"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="764"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="748"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
         <source>Item properties</source>
-        <translation>Propriedades do elemento</translation>
+        <translation>Propriedades do item</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="719"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3135"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3180"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3132"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3149"/>
         <source>Set as atlas feature for %1</source>
-        <translation>Define como elemento do atlas para %1</translation>
+        <translation>Definir como elemento do atlas para %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="734"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="730"/>
         <source>x: %1 mm</source>
         <translation>x: %1 mm</translation>
     </message>
@@ -20021,8 +20021,8 @@ Podem as classes ser excluídas antes da classificação?</translation>
         <translation>página: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="849"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="870"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="845"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="866"/>
         <source>Enable atlas preview</source>
         <translation>Activar pré-visualização do atlas</translation>
     </message>
@@ -21150,7 +21150,7 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="937"/>
         <source>Atlas Settings</source>
-        <translation>Configuraçõies do Atlas</translation>
+        <translation>Configurações do Atlas</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -22135,7 +22135,7 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="543"/>
         <source>WMS LegendGraphic</source>
-        <translation>WMS LegendGraphic</translation>
+        <translation>Legenda do WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="561"/>
@@ -22851,7 +22851,7 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="257"/>
         <source>Controlled by atlas</source>
-        <translation>Controlado pelo o atlas</translation>
+        <translation>Controlado pelo atlas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="275"/>
@@ -23268,7 +23268,7 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="120"/>
         <source>Search directories</source>
-        <translation>Directórios de pesquisa</translation>
+        <translation>Diretórios de pesquisa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="137"/>
@@ -24125,7 +24125,7 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="782"/>
         <source>Move item content</source>
-        <translation>Mover conteúdodo item</translation>
+        <translation>Mover conteúdo do item</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="842"/>
@@ -28321,7 +28321,7 @@ Erro de análise:
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="434"/>
         <source>Run layer action</source>
-        <translation>Executar acção da camada</translation>
+        <translation type="unfinished">Correr ação da camada</translation>
     </message>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="465"/>
@@ -28622,7 +28622,7 @@ Erro de análise:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="296"/>
         <source>Show shadow rectangles (for debugging)</source>
-        <translation>Mostrar retângulos sombra (for debugging)</translation>
+        <translation type="unfinished">Mostrar retângulos sombra (para depuração)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="303"/>
@@ -31553,7 +31553,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1336"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1912"/>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation>Falha ao processara transformação GCP: Transformação não tem solução</translation>
+        <translation>Falha ao processar a transformação GCP: Transformação não tem resolução</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1368"/>
@@ -34692,7 +34692,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="147"/>
         <source>Add GRASS raster layer</source>
-        <translation>Adicionar uma camada raster do GRASS</translation>
+        <translation>Adicionar camada raster do GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="152"/>
@@ -39963,7 +39963,7 @@ não mostrados</translation>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="46"/>
         <source>Snap tolerance</source>
-        <translation>Tolerância de atracção</translation>
+        <translation>Tolerância de atração</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="47"/>
@@ -43442,7 +43442,7 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="328"/>
         <source>Check file contents</source>
-        <translation>Verificar concteúdo do ficheiro</translation>
+        <translation>Verificar conteúdo do ficheiro</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="329"/>
@@ -44323,7 +44323,8 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="736"/>
         <source>Create new project from default project</source>
-        <translation>Criar novo projecto a partir de um projecto padrão</translation>
+
+        <translation>Criar novo projeto a partir de um projeto padrão</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="761"/>
@@ -44465,7 +44466,7 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="727"/>
         <source>Open project on launch</source>
-        <translation>Abrir projecto no arranque</translation>
+        <translation>Abrir projeto no arranque</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="822"/>
@@ -44645,7 +44646,7 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2418"/>
         <source>Add new layers to selected or current group</source>
-        <translation>Adicionar nova camada ao grupo catual ou selecionado</translation>
+        <translation>Adicionar nova camada ao grupo atual ou selecionado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1274"/>
@@ -44883,7 +44884,7 @@ Sempre rede: Carrega sempre a partir de rede e não verifica se a cache tem uma 
         <location filename="../src/ui/qgsoptionsbase.ui" line="3040"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3071"/>
         <source>Snap tolerance</source>
-        <translation>Tolerância de atracção</translation>
+        <translation>Tolerância de atração</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3063"/>
@@ -45643,7 +45644,7 @@ erro:%2
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="57"/>
         <source>Add Oracle GeoRaster Layer...</source>
-        <translation>Adicionar camada GeoRaster Oracle...</translation>
+        <translation>Adicionar Camada GeoRaster Oracle...</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="60"/>
@@ -48605,7 +48606,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Módulos inválidos&lt;/h3&gt;&lt;p&gt;Os módulos nesta lista estão &lt;b&gt;danificados ou são incompatíveis&lt;/b&gt;com esta versão do QGIS.&lt;/p&gt;&lt;p&gt;Clique num módulo; se possível o QGIS mostrará mais informação.&lt;/p&gt;&lt;p&gt;A principal razão para ter módulos inválidos deve-se ao facto de não estarem compilados para esta versão do QGIS. Talvez possa transferir-outra versão a partir de &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Outra razão frequente poderá dever-se ao facto de o módulo necessitar de algumas bibliotecas python externas (depêndencias). Dependendo do seu sistema operativo, pode instalá-las. Após a correcta instalação o módulo deverá funcionar.&lt;/p&gt;</translation>
+        <translation type="unfinished">&lt;h3&gt;Módulos inválidos&lt;/h3&gt;&lt;p&gt;Os módulos nesta lista estão &lt;b&gt;danificados ou incompatíveis&lt;/b&gt;com esta versão do QGIS.&lt;/p&gt;&lt;p&gt;Clique num módulo; se possível o QGIS mostra-lhe mais informação.&lt;/p&gt;&lt;p&gt;A principal razão para ter módulos inválidos deve-se ao facto de não estar construído para esta versão do QGIS. Se calhar transferiu-o de outra versão a partir do &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Outra razão frequente poderá dever-se ao facto de o módulo necessitar de algumas bibliotecas python externas (depêndencias). Pode instalá-las, dependendo do seu sistema operativo. Após a correta instalação, o módulo deverá funcionar.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
@@ -50329,12 +50330,12 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1412"/>
         <source>WMS capabilities</source>
-        <translation>capacidades WMS</translation>
+        <translation>Capacidades WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1772"/>
         <source>WFS capabilities</source>
-        <translation>capacidades WFS</translation>
+        <translation>Capacidades WFS</translation>
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
@@ -50688,7 +50689,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1853"/>
         <source>WCS capabilities</source>
-        <translation>capacidades WCS</translation>
+        <translation>Capacidades WCS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1961"/>
@@ -57137,7 +57138,7 @@ mas implica um melhor desempenho depois.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
-        <translation>Mapa &quot;%1&quot; transformação &quot;on the fly&quot;.</translation>
+        <translation>Mapa &quot;%1&quot; transformação &quot;instantânea&quot;.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
@@ -59386,7 +59387,7 @@ Foi detectado um problema com a sua base de dados de símbolo.</translation>
     </message>
     <message>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation type="obsolete">Se você escrever um artigo científico ou qualquer outro artigo que se refere ao QGIS adoraríamos de incluir o seu trabalho na &lt;a href = &quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot; &gt; secção de casos estudos &lt;/a&gt; da página inicial do Quantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
+        <translation type="obsolete">Se escrever um artigo científico ou qualquer outro artigo referente ao QGIS adoraríamos de incluir o seu trabalho na &lt;a href = &quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot; &gt; secção de casos estudos &lt;/a&gt; da página inicial do Quantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="48"/>
@@ -66582,6 +66583,7 @@ Gostaria de o adicionar ao Índice de Camadas?</translation>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="272"/>
         <source>Draw line only inside polygon</source>
         <translation type="unfinished"></translation>
+        <translation>Desenhar linha apenas dentro do polígono</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="220"/>
@@ -69675,11 +69677,11 @@ A extensão não será activada.</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation>&amp;Ferramenta de investigação</translation>
+        <translation>&amp;Ferramentas de investigação</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation>Selecção aleatória</translation>
+        <translation>Seleção aleatória</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
@@ -69719,7 +69721,7 @@ A extensão não será activada.</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation>Cruzar</translation>
+        <translation>Intersetar</translation>
     </message>
     <message>
         <source>Union</source>
@@ -69799,7 +69801,7 @@ A extensão não será activada.</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation>&amp;Ferramenta de gerenciamento de dados</translation>
+        <translation>&amp;Ferramentas de gestão de dados</translation>
     </message>
     <message>
         <source>Create spatial index</source>
@@ -75592,7 +75594,7 @@ Retorna a substituição de uma cadeia de texto com a cadeia de texto fornecida.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
         <source>Re-project raster from a location to the current location</source>
-        <translation>Reprojectar o raster de um local para o local catual</translation>
+        <translation>Reprojetar o raster de uma localização para a localização atual</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
