@@ -1025,21 +1025,20 @@ class QgsVectorLayer : QgsMapLayer
     /** @note not available in python bindings */
     // inline QgsGeometryCache* cache();
 
-    /** Simplification flags for fast rendering of features */
-    enum SimplifyHint
-    {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
-    };
-    /** Set the simplification settings for fast rendering of features  */
+    /** Set the simplification settings for fast rendering of features
+     *  @note added in 2.2
+     */
     void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod );
-    /** Returns the simplification settings for fast rendering of features  */
+    /** Returns the simplification settings for fast rendering of features
+     *  @note added in 2.2
+     */
     const QgsVectorSimplifyMethod& simplifyMethod() const;
 
-    /** Returns whether the VectorLayer can apply the specified simplification hint */
-    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const;
+    /** Returns whether the VectorLayer can apply the specified simplification hint
+     *  @note Do not use in 3rd party code - may be removed in future version!
+     *  @note added in 2.2
+     */
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
   public slots:
     /**

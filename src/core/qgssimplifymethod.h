@@ -20,6 +20,7 @@ class QgsAbstractGeometrySimplifier;
 
 /**
  * This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+ * @note added in 2.2
  */
 class CORE_EXPORT QgsSimplifyMethod
 {

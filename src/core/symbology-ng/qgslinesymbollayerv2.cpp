@@ -188,7 +188,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   p->setPen( context.selected() ? mSelPen : mPen );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
-  if ( points.size() <= 2 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( context.renderContext(), QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+  if ( points.size() <= 2 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( context.renderContext(), QgsVectorSimplifyMethod::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawPolyline( points );

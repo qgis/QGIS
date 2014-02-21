@@ -89,7 +89,7 @@ void TestQgsBlendModes::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(

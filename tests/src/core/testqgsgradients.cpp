@@ -96,7 +96,7 @@ void TestQgsGradients::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
@@ -250,7 +250,7 @@ void TestQgsGradients::gradientSymbolFromQml()
   mReport += "<h2>Gradient symbol from QML test</h2>\n";
   QVERIFY( setQml( "gradient" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QVERIFY( imageCheck( "gradient_from_qml" ) );
 }

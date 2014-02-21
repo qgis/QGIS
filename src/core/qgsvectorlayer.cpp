@@ -186,7 +186,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
   // Default simplify drawing settings
   QSettings settings;
-  mSimplifyMethod.setSimplifyHints( settings.value( "/qgis/simplifyDrawingHints", mSimplifyMethod.simplifyHints() ).toInt() );
+  mSimplifyMethod.setSimplifyHints( ( QgsVectorSimplifyMethod::SimplifyHints ) settings.value( "/qgis/simplifyDrawingHints", ( int ) mSimplifyMethod.simplifyHints() ).toInt() );
   mSimplifyMethod.setThreshold( settings.value( "/qgis/simplifyDrawingTol", mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( "/qgis/simplifyLocal", mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( "/qgis/simplifyMaxScale", mSimplifyMethod.maximumScale() ).toFloat() );
@@ -704,7 +704,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                      .setSubsetOfAttributes( attributes );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
-  if ( simplifyDrawingCanbeApplied( rendererContext, QgsVectorLayer::GeometrySimplification ) )
+  if ( simplifyDrawingCanbeApplied( rendererContext, QgsVectorSimplifyMethod::GeometrySimplification ) )
   {
     QPainter* p = rendererContext.painter();
     double dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
@@ -1290,7 +1290,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const
+bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
   if ( mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
@@ -1907,7 +1907,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
 
     // get the simplification drawing settings
-    mSimplifyMethod.setSimplifyHints( e.attribute( "simplifyDrawingHints", "1" ).toInt() );
+    mSimplifyMethod.setSimplifyHints( ( QgsVectorSimplifyMethod::SimplifyHints ) e.attribute( "simplifyDrawingHints", "1" ).toInt() );
     mSimplifyMethod.setThreshold( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
     mSimplifyMethod.setForceLocalOptimization( e.attribute( "simplifyLocal", "1" ).toInt() );
     mSimplifyMethod.setMaximumScale( e.attribute( "simplifyMaxScale", "1" ).toFloat() );
