@@ -19,9 +19,7 @@ import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from qgis.core import (
-    QgsPalLayerSettings,
-)
+from qgis.core import *
 
 
 class TestPointBase(object):
@@ -29,7 +27,13 @@ class TestPointBase(object):
     def __init__(self):
         """Dummy assignments, intended to be overriden in subclasses"""
         self.lyr = QgsPalLayerSettings()
+        """:type: QgsPalLayerSettings"""
         self._TestFont = QApplication.font()  # will become a standard test font
+        self.params = dict()
+        self._Pal = None
+        """:type: QgsPalLabeling"""
+        self._Canvas = None
+        """:type: QgsMapCanvas"""
 
     def checkTest(self, **kwargs):
         """Intended to be overriden in subclasses"""
@@ -55,20 +59,22 @@ class TestPointBase(object):
     def test_partials_labels_enabled(self):
         # Set Big font size
         font = QFont(self._TestFont)
-        font.setPointSizeF(90)
+        font.setPointSizeF(120)
         self.lyr.textFont = font
         # Enable partials labels
-        self._PalEngine.setShowingPartialsLabels(True)
+        self._Pal.setShowingPartialsLabels(True)
+        self._Pal.saveEngineSettings()
         # Check
         self.checkTest()
 
     def test_partials_labels_disabled(self):
         # Set Big font size
         font = QFont(self._TestFont)
-        font.setPointSizeF(90)
+        font.setPointSizeF(120)
         self.lyr.textFont = font
         # Disable partials labels
-        self._PalEngine.setShowingPartialsLabels(False)
+        self._Pal.setShowingPartialsLabels(False)
+        self._Pal.saveEngineSettings()
         # Check
         self.checkTest()
 
