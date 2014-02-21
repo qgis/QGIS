@@ -61,6 +61,7 @@ PALREPORT = 'PAL_REPORT' in os.environ
 PALREPORTS = {}
 
 
+# noinspection PyPep8Naming,PyShadowingNames
 class TestQgsPalLabeling(TestCase):
 
     _TestDataDir = unitTestDataPath()
@@ -82,6 +83,7 @@ class TestQgsPalLabeling(TestCase):
 
         # verify that spatialite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
+        # noinspection PyArgumentList
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()
         assert res, msg
 
@@ -92,16 +94,20 @@ class TestQgsPalLabeling(TestCase):
         cls._TestImage = ''
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
+        # noinspection PyArgumentList
         cls._MapRegistry = QgsMapLayerRegistry.instance()
+        """:type: QgsMapLayerRegistry"""
         # set color to match render test comparisons background
         cls._Canvas.setCanvasColor(QColor(152, 219, 249))
         cls._Map = cls._Canvas.map()
         cls._Map.resize(QSize(600, 400))
         cls._MapRenderer = cls._Canvas.mapRenderer()
+        """:type: QgsMapRenderer"""
         cls._CRS = QgsCoordinateReferenceSystem()
         # default for labeling test data sources: WGS 84 / UTM zone 13N
         cls._CRS.createFromSrid(32613)
         cls._MapRenderer.setDestinationCrs(cls._CRS)
+        cls._MapRenderer.setProjectionsEnabled(False)
         # use platform's native logical output dpi for QgsMapRenderer on launch
 
         cls.setDefaultEngineSettings()
@@ -140,7 +146,9 @@ class TestQgsPalLabeling(TestCase):
         vlayer.loadNamedStyle(os.path.join(cls._PalDataDir,
                                            '{0}.qml'.format(table)))
         cls._MapRegistry.addMapLayer(vlayer)
-        cls._MapRenderer.setLayerSet([vlayer.id()])
+        # place new layer on top of render stack
+        render_lyrs = [vlayer.id()] + list(cls._MapRenderer.layerSet())
+        cls._MapRenderer.setLayerSet(render_lyrs)
 
         # zoom to aoi
         cls._MapRenderer.setExtent(cls.aoiExtent())
@@ -234,6 +242,7 @@ class TestQgsPalLabeling(TestCase):
         chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
         chk.setMapRenderer(self._MapRenderer)
+        # noinspection PyUnusedLocal
         res = False
         if imgpath:
             res = chk.compareImages(self._Test, mismatch, str(imgpath))
@@ -317,7 +326,7 @@ class TestPALConfig(TestQgsPalLabeling):
         self.assertFalse(pal.isShowingPartialsLabels())
 
 
-
+# noinspection PyPep8Naming,PyShadowingNames
 def runSuite(module, tests):
     """This allows for a list of test names to be selectively run.
     Also, ensures unittest verbose output comes at end, after debug output"""

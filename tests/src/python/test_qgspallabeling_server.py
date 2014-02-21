@@ -61,7 +61,7 @@ class TestServerBase(TestQgsPalLabeling):
         MAPSERV.startup()
         MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qml'))
 
-    # noinspection PyArgumentList
+        # noinspection PyArgumentList
         cls._TestProj = QgsProject.instance()
         cls._TestProjName = 'pal_test.qgs'
         cls._TestProj.setFileName(
@@ -175,9 +175,17 @@ if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
     suite = [
-        # 'TestServerVsCanvasPoint.test_text_size_map_unit',
+        'TestServerPoint.test_default_label',
+        'TestServerPoint.test_text_size_map_unit',
+        'TestServerPoint.test_text_color',
         'TestServerPoint.test_partials_labels_enabled',
-        'TestServerPoint.test_partials_labels_disabled'
+        'TestServerPoint.test_partials_labels_disabled',
+
+        'TestServerVsCanvasPoint.test_default_label',
+        'TestServerVsCanvasPoint.test_text_size_map_unit',
+        'TestServerVsCanvasPoint.test_text_color',
+        'TestServerVsCanvasPoint.test_partials_labels_enabled',
+        'TestServerVsCanvasPoint.test_partials_labels_disabled',
     ]
     res = runSuite(sys.modules[__name__], suite)
     # if SPAWN:

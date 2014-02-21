@@ -63,7 +63,11 @@ if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
     suite = [
-        'TestCanvasPoint.test_text_size_map_unit'
+        'TestCanvasPoint.test_default_label',
+        'TestCanvasPoint.test_text_size_map_unit',
+        'TestCanvasPoint.test_text_color',
+        'TestCanvasPoint.test_partials_labels_enabled',
+        'TestCanvasPoint.test_partials_labels_disabled',
     ]
     res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

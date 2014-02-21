@@ -22,13 +22,15 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
+# noinspection PyPep8Naming
 class TestPointBase(object):
 
     def __init__(self):
         """Dummy assignments, intended to be overriden in subclasses"""
         self.lyr = QgsPalLayerSettings()
         """:type: QgsPalLayerSettings"""
-        self._TestFont = QApplication.font()  # will become a standard test font
+        # noinspection PyArgumentList
+        self._TestFont = QFont()  # will become a standard test font
         self.params = dict()
         self._Pal = None
         """:type: QgsPalLabeling"""
@@ -47,7 +49,7 @@ class TestPointBase(object):
         # Label text size in map units
         self.lyr.fontSizeInMapUnits = True
         font = QFont(self._TestFont)
-        font.setPointSizeF(500)
+        font.setPointSizeF(460)
         self.lyr.textFont = font
         self.checkTest()
 
