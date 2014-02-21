@@ -45086,7 +45086,7 @@ Błąd: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="635"/>
         <source>Other spatial field %1.%2.%3 ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Zignorowano inną kolumnę przestrzenną %1.%2.%3.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="649"/>
@@ -45450,7 +45450,9 @@ Błąd: %2</translation>
         <source>Drop created table %1 failed.
 SQL:%2
 Error: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się usunięcie tabeli %1.
+SQL:%2
+Błąd: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2781"/>
@@ -46217,7 +46219,7 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="293"/>
         <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie sprawdzaj typu dla kolumn GEOMETRY</translation>
     </message>
     <message>
         <source>Allow geometryless tables</source>
@@ -46241,7 +46243,7 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only show layers in the layer registries</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlaj tylko zarejestrowane warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="233"/>
@@ -52960,7 +52962,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelreferenceconfigdlg.cpp" line="97"/>
         <source>Preview Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd wyrażenia</translation>
     </message>
 </context>
 <context>
@@ -52978,7 +52980,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="35"/>
         <source>Expression Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor wyrażeń</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="65"/>
@@ -55033,12 +55035,12 @@ kontrastu</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>WSZYSTKIE warunki</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>JEDEN z warunków</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
@@ -57189,7 +57191,7 @@ Nadpisać ją?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="74"/>
         <source>Share Menu</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Współdziel menu</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="75"/>
@@ -58212,12 +58214,12 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="94"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Na pasku narzędzi wydruku znajdziesz dwa narzędzia do przesuwania obiektów. Pierwsze (ikona ręki) przesuwa obiekty na wydruku. Po wybraniu elementu można go przesuwać również strzałkami na klawiaturze. Do precyzyjnego ustawienia wykorzystaj sekcję &lt;strong&gt;Pozycja i rozmiar&lt;/strong&gt; znajdującą się w zakładce &lt;strong&gt;Właściwości&lt;/strong&gt;. Drugie narzędzie (kwadrat ze strzałką) pozwala przesunąć zawartość mapy w ramce.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="117"/>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Na wydruku można obracać mapę wybierając kąt obrotu w zakładce &lt;strong&gt;Właściwości&lt;/strong&gt;. Aby umieścić na wydruku strzałkę północy, wybierz &lt;strong&gt;Dodaj obraz&lt;/strong&gt;. Po wskazaniu miejsca na wydruku wystarczy powiązać obraz z odpowiednią mapą poprzez &lt;strong&gt;Synchronizuj z mapą&lt;/strong&gt;. Obrót obrazu (strzałki) będzie zsynchronizowany z obrotem mapy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="129"/>
@@ -59119,7 +59121,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd upraszczania: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
@@ -61786,7 +61788,7 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1235"/>
         <source>No other exceptionCode specified by this service and server applies to this exception.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak innych exceptionCode zwracanych przez usługę.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1236"/>
@@ -61796,7 +61798,7 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1237"/>
         <source>Operation request specifies to &quot;store&quot; the result, but not enough storage is available to do this.</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacja wymaga zapisania wyniku, lecz nie ma wystarczającej ilości pamięci do tej operacji.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1266"/>
@@ -62563,7 +62565,7 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parsowanie nie powiodło się. Oczekiwano %1 typów z GML (%2), lecz nie znaleziono żadnego do parsowania.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4625"/>
