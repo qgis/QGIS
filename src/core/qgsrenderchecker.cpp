@@ -234,10 +234,10 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   mReport += "<tr><td colspan=2>";
   mReport += "Test image and result image for " + theTestName + "<br>"
              "Expected size: " + QString::number( myExpectedImage.width() ).toLocal8Bit() + "w x " +
-             QString::number( myExpectedImage.width() ).toLocal8Bit() + "h (" +
+             QString::number( myExpectedImage.height() ).toLocal8Bit() + "h (" +
              QString::number( mMatchTarget ).toLocal8Bit() + " pixels)<br>"
              "Actual   size: " + QString::number( myResultImage.width() ).toLocal8Bit() + "w x " +
-             QString::number( myResultImage.width() ).toLocal8Bit() + "h (" +
+             QString::number( myResultImage.height() ).toLocal8Bit() + "h (" +
              QString::number( myPixelCount ).toLocal8Bit() + " pixels)";
   mReport += "</td></tr>";
   mReport += "<tr><td colspan = 2>\n";
