@@ -2000,6 +2000,7 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
          || tokenIt->compare( "AND", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "OR", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "LIKE", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "DMETAPHONE", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "SOUNDEX", Qt::CaseInsensitive ) == 0 )
     {
