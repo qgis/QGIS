@@ -6843,7 +6843,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="735"/>
         <source>Add Part</source>
-        <translation>Aggiungi una parte</translation>
+        <translation>Aggiungi parte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="747"/>
@@ -7104,7 +7104,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1238"/>
         <source>Add MSSQL Spatial Layer...</source>
-        <translation>Aggiungi un vettore MSSQL...</translation>
+        <translation>Aggiungi vettore MSSQL...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1250"/>
@@ -13508,7 +13508,6 @@ Errori: %3
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
         <translation>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -29561,7 +29560,7 @@ Premi annulla per interrompere il calcolo degli intervalli o OK per continuare.<
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="210"/>
         <source>Add new category using settings in GRASS Edit toolbox</source>
-        <translation>Aggiungi una nuova categoria usando il pannello della barra strumenti GRASS</translation>
+        <translation>Aggiungi nuova categoria usando il pannello della barra strumenti GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="241"/>
@@ -31654,7 +31653,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="149"/>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation>Aggiungi un rasters GRASS all&apos;area mappa</translation>
+        <translation>Aggiungi un raster GRASS all&apos;area mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="156"/>
@@ -53203,7 +53202,7 @@ Vuoi davvero sovrascrivere la tabella [%2]?</translation>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="256"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="259"/>
         <source>Add a shapefile to the list of files to be imported</source>
-        <translation>Aggiungi uno shapefile nella lista di quelli da importare</translation>
+        <translation>Aggiungi uno shapefile alla lista di quelli da importare</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="45"/>
