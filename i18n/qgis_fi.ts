@@ -27876,46 +27876,46 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Syntaksivirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="66"/>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="77"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="72"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="83"/>
         <source>Not available for layer</source>
         <translation>Ei käytettävissä tasolle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="156"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="115"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="162"/>
         <source>Evaluation error</source>
         <translation>Evaluointivirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="137"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="143"/>
         <source>Provider error</source>
         <translation>Tarjoajavirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="137"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="143"/>
         <source>Could not add the new field to the provider.</source>
         <translation>Uuden kentän lisääminen ei onnistu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="215"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="221"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="215"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="221"/>
         <source>An error occured while evaluating the calculation string:
 %1</source>
         <translation>Tapahtui virhe evaluoitaessa laskentajonoa:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="316"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="322"/>
         <source>Please enter a field name</source>
         <translation>Ole hyvä ja anna tiedon nimi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="323"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="329"/>
         <source>
  The expression is invalid see (more info) for details</source>
         <translation>
@@ -67212,7 +67212,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 </source>
         <translation>
 &lt;h3&gt;color_cmyka() funktio&lt;/h3&gt;
-Palauttaa merkkijono joka edustaa väriä perustuen sen syaani, purppura, keltainen, musta ja alpha (läpinäkyvyys) komponentteihin
+Palauttaa merkkijonon joka edustaa väriä perustuen sen syaani, purppura, keltainen, musta ja alpha (läpinäkyvyys) komponentteihin
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
      color_cmyka(&lt;i&gt;syaani, purppura, keltainen, musta, alpha&lt;/i&gt;)&lt;/p&gt;
@@ -68910,7 +68910,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;color_hsla() funktio&lt;/h3&gt;
-Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, vaaleuden ja alfa (läpinäkyvyyden) määriteisiin.
+Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, vaaleuden ja alfa (läpinäkyvyyden) määritteisiin.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
      color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
@@ -68962,7 +68962,7 @@ Ei mitään
 This group contains functions that operate on record identifiers.
 </source>
         <translation>&lt;h3&gt;Tietue ryhmä&lt;/h3&gt;
-Tämä ryhmä sisältää toiminnot, jotka toimivat tietuetunnuksilla</translation>
+Tämä ryhmä sisältää toiminnot, jotka toimivat tietuetunnuksilla.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
@@ -69124,7 +69124,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toreal() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;toreal() funktio&lt;/h3&gt;
 Muuntaa merkkijonon liukuluvuksi (real). Mikään ei muutu jos arvoa ei voida muuntaa (esim &apos;123.56asd&apos; on virheellinen). Numerot pyöristetään muutosten tallennuksen jälkeen jos tarkkuus on pienempi kuin muunnoksen tulos.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -69438,7 +69438,22 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$map funktio&lt;/h3&gt;
+Palauttaa nykyisen kartan id:n jos kartta on piirretty kokoonpanossa tai &quot;karttapohjalla&quot; jos kartta on piirretty QGIS pääikkunassa..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$map&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;yleiskartta&quot; (kokoonpanon jäsen)&lt;br /&gt;
+$map &amp;rarr; &quot;karttapohja (QGIS pääkarttapohjasta)&lt;/pre&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="847"/>
@@ -69455,7 +69470,19 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;distance funktio&lt;/h3&gt;
+Palauttaa minimietäisyyden (perustuen alueelliseen referenssiin) kahden geometrian välillä perustuen projektoituihin yksiköihin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;distance( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; palauttaa 4&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1941"/>
@@ -69472,7 +69499,19 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;difference funktio&lt;/h3&gt;
+Palauttaa geometrian joka esittää sitä osaa geometriasta a joka ei leikkaa geometrian b kanssa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;difference( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; palauttaa LINESTRING(4 4, 5 5)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1539"/>
@@ -69610,7 +69649,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;yat() funktio&lt;/h3&gt;
+Hakee nykyisen ominaisuuden y koordinaatin
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - on int. pisteen indeksie (indeksi alkaa nollasta (0); negatiiviset arvot viittaavat viimeiseen indeksiin).
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1334"/>
@@ -69628,7 +69678,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tostring() funktio&lt;/h3&gt;
+Muuntaa numeron merkkijonoksi.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; on kokonaisluku tai liukuluku.  Numero joka muunnetaan merkkijonoksi.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1602"/>
@@ -69648,7 +69711,22 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ln() funktio&lt;/h3&gt;
+Palauttaa luonnollisen logaritmin arvon annetulle lausekkeelle.
+&lt;br&gt;
+Tämä funktio tarvitsee yhden argumentin.
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - mikä tahansa positiivinen luku.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="605"/>
@@ -69669,7 +69747,23 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsva() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, arvon ja alfa (läpinäkyvyyden) määritteisiin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; värin arvo kokonaislukuna väliltä 0 - 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; alpha komponentti kokonaislukuna alkaen 0 (täysin läpinäkyvä) aina 255 (peittävä) saakka.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="505"/>
@@ -69686,7 +69780,19 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$numfeatures funktio&lt;/h3&gt;
+Atlas generoinnissa, palauttaa ominaisuuksien kokonaislukumäärän kattavuustasolla.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="531"/>
@@ -69708,7 +69814,24 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_cmyk() funktio&lt;/h3&gt;
+Palauttaa merkkijonon joka edustaa väriä perustuen sen syaani, purppura, keltainen, ja musta komponentteihin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  syaani&lt;/i&gt; &amp;rarr; värin syaani komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  purppura&lt;/i&gt; &amp;rarr; värin purppura komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  keltainen&lt;/i&gt; &amp;rarr; värin keltainen komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  musta&lt;/i&gt; &amp;rarr; värin musta komponentti,prosenttiosuus kokonaisluku 0-100 .&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1618"/>
@@ -69741,7 +69864,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;year() funktio&lt;/h3&gt;
+Erottelee vuosiosan päiväyksestä, tai vuosien lukumäärän &lt;code&gt;Interval&lt;/code&gt; tyyppisestä tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta vuosi erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan vuosien lukumäärä.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="685"/>
@@ -69788,7 +69929,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;contains funktio&lt;/h3&gt;
+Palauttaa arvon tosi jos ja ainoastaan jos yhtään ainutta pistettä ei ole a:n ulkopuolella, ja vähintään b:n yksi sisäpuolinen piste  sijaitsee a:n sisäpuolella. 
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;contains( geometry a , geometry a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="745"/>
@@ -69805,7 +69959,19 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$rownum funktio&lt;/h3&gt;
+Palauttaa nykyisen rivin numeron.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1701"/>
@@ -69829,7 +69995,27 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;coalesce() funktio&lt;/h3&gt;
+Palauttaa ensimmäisen non-NULL arvon lausekkeiden listalta.
+&lt;br&gt;
+Tämä funktio voi käyttää minkä tahansa määrän argumentteja.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;expression&lt;/code&gt; - mikä tahansa kelvollinen lauseke tai arvo huolimatta tyypistä.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; fieldA:n arvo jos ei ole non-NULL
+tai muuten &quot;fallbackField&quot; arvo tai merkkijono &apos;ERROR&apos; jos molemmat ovat NULL&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1184"/>
@@ -69846,7 +70032,20 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;todatetime() funktio&lt;/h3&gt;
+Muuntaa merkkijonon Qt data time tyypiksi.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on merkkijono Qt date time muodossa.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="931"/>
@@ -69864,7 +70063,20 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;min() funkio&lt;/h3&gt;
+Palauttaa pienimmän arvon arvojoukosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a numero.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="97"/>
@@ -69884,14 +70096,31 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsl() funktio&lt;/h3&gt;
+Palauttaa merkkijonon esityksen väristä joka perustuu sen sävyn, kylläisyyden ja vaaleuden attribuutteihin.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; värin vaaleus kokonaislukuna väliltä 0 - 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="634"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Merkkijono ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot joilla operoidaan merkkijonoja esim. korvausta, merkkikoon muuntamista jne.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="698"/>
@@ -69915,7 +70144,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;month() funktio&lt;/h3&gt;
+Erottelee kuukaisiosan päiväyksestä, tai kuukausien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta kuukausi erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan kuukausien lukumäärä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="758"/>
@@ -69939,7 +70187,26 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;scale_linear() funktio&lt;/h3&gt;
+Muuntaa annetun arvon syötettävästä aineistosta tulosalueelle käyttäen lineaarista interpolointia.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; on arvo syötettävästä aineistosta. Funktio palauttaa vastaavan tyyppisen skaalatun arvon tulosrajaukselta.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; määrittelee syötettävän alueen, pienimmän ja suurimman syötettävän &lt;i&gt;val&lt;/i&gt; joka voidaan ottaa huomioon.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; määrittelee tulosalueen, pienimmän ja suurimman arvon jonka funktio palauttaa.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(esim., skaalaus arvojen 0 ja 1 väliltä tulosteeksi kulma väliltä 0 ja 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(esim., skaalaus populatiosta joka vaihtelee 1000 ja 10000 välistä josta tuloksen merkin koko 9 ja 20 välille)&lt;/i&gt;&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1954"/>
@@ -69956,7 +70223,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$area funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden alueen koon.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1095"/>
@@ -69978,7 +70257,23 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_rgba() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen punaisen, vihreän, sinisen ja alfa (läpinäkyvyyden) määritteisiin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_rgba(&lt;i&gt;red, green, blue, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; punainen väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; vihreä väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; sininen väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; alpha komponentti kokonaislukuna alkaen 0 (täysin läpinäkyvä) aina 255 (peittävä) saakka.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1390"/>
@@ -69999,7 +70294,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_rgb() function&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen punaisen, vihreän ja sinisen määritteisiin
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; punainen väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; vihreä väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; sininen väri, kokonaislukuna 0-255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1687"/>
@@ -70017,7 +70328,20 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;trim() funktio&lt;/h3&gt;
+Poistaa merkkijonosta kaikki tyhjätilamerkit (välilyönti, tab, jne) alusta ja lopusta.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     trim(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string. Merkkijono joka &quot;trimmataan&quot;.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1741"/>
@@ -70038,7 +70362,23 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;log() funktio&lt;/h3&gt;
+Palauttaa logaritmin arvon annetusta arvosta ja kannasta.
+&lt;br&gt;
+Tämä funktio tarvitsee kaksi argumenttia.
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - mikä tahansa positiivinen numero.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - mikä tahansa positiivinen numero.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1407"/>
@@ -70056,14 +70396,29 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;upper() funktio&lt;/h3&gt;
+Muuntaa merkkijonon isoiksi kirjaimiksi.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono joka muunnetaan isoiksi merkeiksi.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="844"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ehdollisuuksien ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää toiminnot käsitellä ehdollisia tarkastuksia lausekkeissa.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1653"/>
@@ -70088,7 +70443,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;minute() funktio&lt;/h3&gt;
+Erottelee minuutit datetime tai time tiedosta, tai minuuttien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on datetime tai time. Päiväys josta erotellaan minuutit.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval tieto josta palautetaan minuuttien lukumäärä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
@@ -70105,7 +70480,19 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$x funktio&lt;/h3&gt;
+Palautetaan nykyisen ominaisuuden x koordinaatti.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="175"/>
@@ -70130,7 +70517,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;second() funktio&lt;/h3&gt;
+Erottelee sekuntit datetime tai time tiedosta, tai sekuntien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on datetime tai time. Päiväys josta sekuntit erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan sekuntien lukumäärä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="217"/>
@@ -70147,14 +70554,28 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$feature funktio&lt;/h3&gt;
+Atlas generoinnissa, palauttaa nykyisen ominaisuuden numeron joka on iteroitu kattavuus tasosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1938"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Geometria ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot joilla operoidaan geometria objekteja kuten pituus, alue jne.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1171"/>
@@ -70171,7 +70592,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$numpages funktio&lt;/h3&gt;
+Palauttaa sivujen lukumäärän rakenteessa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1021"/>
@@ -70187,7 +70620,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$length funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden pituuden.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1363"/>
@@ -70204,7 +70648,19 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tan() funktio&lt;/h3&gt;
+Palauttaa kulman tangentin.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulma radiaaneina.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1721"/>
@@ -70228,7 +70684,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;week() funktio&lt;/h3&gt;
+Erottelee viikon numeron päiväyksestä, viikkojen määrän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta viikko erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan viikkojen määrä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="637"/>
@@ -70246,7 +70721,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;length() funktio&lt;/h3&gt;
+Palauttaa merkkijonon pituuden.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono josta pituus lasketaan.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1598"/>
@@ -70254,7 +70742,9 @@ Returns the length of a string.
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Väri ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot värien käsittelyyn
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1922"/>
@@ -70274,7 +70764,20 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;atan2() funktio&lt;/h3&gt;
+Palauttaa x/y:n arcustangentin käyttäen kahden argumentin 
+etumerkkejä tuloksen neljänneksen päättelyyn.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y-koordinaatti ero&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x-koordinaatti ero&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1814"/>
@@ -70294,7 +70797,22 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsv() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, ja arvon määritteisiin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; värin arvo kokonaislukuna väliltä 0 - 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="731"/>
@@ -70312,7 +70830,20 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;concat() function&lt;/h3&gt;
+Kokoaa useita merkkijonoja yhdeksi merkkijonoksi.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     concat(&lt;i&gt;string&lt;i&gt;[,&lt;i&gt;string&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="959"/>
@@ -70329,7 +70860,19 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;acos() funktio&lt;/h3&gt;
+Palauttaa arvosta arcus kosinin radiaaneissa.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulman kosini.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1468"/>
@@ -70346,7 +70889,19 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;exp() funktio&lt;/h3&gt;
+Palauttaa arvon eksopentin.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; numero.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
@@ -70378,7 +70933,34 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;CASE lauseke&lt;/h3&gt;
+Ehdollinen lauseke jota voidaan käyttää useiden lausekkeiden evaluintiin ja
+tuloksen palauttamiseen.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] useiden vaihtoehtoisten komponentit
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - Ehdollinen lauseke joka evaluoidaan. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - Jos &lt;i&gt;condition&lt;/i&gt; evaluoidaaan todeksi niin &lt;i&gt;result&lt;/i&gt; käsitellään ja palutetaan. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - Jos mikään edellisistä ehdoista ei evaluoidu todeksi niin &lt;i&gt;result&lt;/i&gt; käsitellään ja palautetaan. &lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="247"/>
@@ -70557,7 +71139,181 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;format_date() funktio&lt;/h3&gt;
+Muotoillee tyypin tai merkkijonon räätälöidyksi merkkijonoksi. Käyttää Qt data time muotisia merkkijonoja.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string. Date/Time/DateTime merkkijono.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - on string. Merkkijono malli jota käytetään muotoiltaessa syötettävää merkkijonoa.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Lausekeon&lt;/th&gt;
+
+        &lt;th&gt;Tulosut&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;päivä  numerona ilman etunollia (1 - 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;päivä numerona etunollilla (01 - 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;lyhennetty paikallinen päivän nimi (esim. &apos;Maa&apos; - &apos;Sun&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;pitkä paikallinen päivän nimi (esim. &apos;maanantai&apos; - &apos;sunnuntai&apos;). Uses &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;kuukauden numero ilman etunollia (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;kuukauden numero etunollilla (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;lyhyt paikallinen kuukauden nimi (esim. &apos;tam&apos; - &apos;jou&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;pitkä paikallinen kuukauden nimi (esim. &apos;tammikuu&apos; - &apos;joulukuu&apos;). Uses &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;vuosi kahdella numerolla (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;vuosi neljällä numerolla&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Näitä lausekkeita voidaan käyttää aika osalle mallin merkkijonossaThese expressions may be used for the time part of the format string:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Lausekeon&lt;/th&gt;
+
+        &lt;th&gt;Tulosut&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;tunnit ilman etunollia (0 - 23 tai 1 - 12 jos AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;tunnit etunollilla (00 - 23 tai 01 - 12 jos AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;tunnit ilman etunolliao (0 - 23, myös kun AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;tunnit etunollilla (00 - 23, myös kun AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;minuutit ilman etunollia (0 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;minuutit etunollilla (00 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;sekuntit ilman etunollia (0 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;sekuntit etunollilla (00 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;millisekuntit ilman etunollia (0 - 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;millisekuntit etunollilla (000 - 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP or A&lt;/td&gt;
+
+      &lt;td&gt;tulkitse AM/PM ajaksi. &lt;i&gt;AP&lt;/i&gt; tulee olla joko &quot;AM&quot; tai &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;tulkitse AM/PM ajaksi. &lt;i&gt;ap&lt;/i&gt; tulee olla joko &quot;am&quot; tai &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="651"/>
