@@ -189,7 +189,9 @@ class FcgiServerProcess(ServerProcess):
                 fcgi_sock = os.path.join(temp_dir, 'var', 'run',
                                          'qgs_mapserv.sock')
                 if self._mac:
-                    self.set_startenv({'QGIS_LOG_FILE': '{0}/log/qgis_server.log'.format(temp_dir)})
+                    self.set_startenv({
+                        'QGIS_LOG_FILE':
+                        '{0}/log/qgis_server.log'.format(temp_dir)})
                     init_scr = os.path.join(conf_dir, 'fcgi', 'scripts',
                                             'spawn_fcgi_mac.sh')
                     self.set_startcmd([init_scr, 'start', exe, fcgi_sock,
@@ -450,19 +452,61 @@ class QgisLocalServer(object):
             openInBrowserTab(url)
             return False, ''
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-        success = True
-        filepath = tmp.name
-        # print 'filepath: ' + filepath
-        tmp.close()
-        filepath2, headers = urllib.urlretrieve(url, tmp.name)
+        # try until qgis_mapserv.fcgi process is available (for 20 seconds)
+        # on some platforms the fcgi_server_process is a daemon handling the
+        # launch of the fcgi-spawner, which may be running quickly, but the
+        # qgis_mapserv.fcgi spawned process is not yet accepting connections
+        resp = None
+        tmp_png = None
+        # noinspection PyUnusedLocal
+        filepath = ''
+        # noinspection PyUnusedLocal
+        success = False
+        start_time = time.time()
+        while time.time() - start_time < 20:
+            resp = None
+            try:
+                tmp_png = urllib2.urlopen(url)
+            except urllib2.HTTPError as resp:
+                if resp.code == 503 or resp.code == 500:
+                    time.sleep(1)
+                else:
+                    raise ServerProcessError(
+                        'Web/FCGI Process Request HTTPError',
+                        'Cound not connect to process: ' + str(resp.code),
+                        resp.message
+                    )
+            except urllib2.URLError as resp:
+                raise ServerProcessError(
+                    'Web/FCGI Process Request URLError',
+                    'Cound not connect to process: ' + str(resp.code),
+                    resp.reason
+                )
+            else:
+                delta = time.time() - start_time
+                print 'Seconds elapsed for server GetMap: ' + str(delta)
+                break
 
-        if (headers.getmaintype() != 'image' or
-                headers.getheader('Content-Type') != 'image/png'):
-            success = False
-            if os.path.exists(filepath):
-                os.unlink(filepath)
-            filepath = ''
+        if resp is not None:
+            raise ServerProcessError(
+                'Web/FCGI Process Request Error',
+                'Cound not connect to process: ' + str(resp.code)
+            )
+
+        if (tmp_png is not None
+                and tmp_png.info().getmaintype() == 'image'
+                and tmp_png.info().getheader('Content-Type') == 'image/png'):
+
+            tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+            filepath = tmp.name
+            tmp.write(tmp_png.read())
+            tmp.close()
+            success = True
+        else:
+            raise ServerProcessError(
+                'FCGI Process Request Error',
+                'No valid PNG output'
+            )
 
         return success, filepath
 
