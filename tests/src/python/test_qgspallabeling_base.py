@@ -113,6 +113,7 @@ class TestQgsPalLabeling(TestCase):
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labelling"""
         cls._Pal = QgsPalLabeling()
+        """:type: QgsPalLabeling"""
         cls._MapRenderer.setLabelingEngine(cls._Pal)
         cls._PalEngine = cls._MapRenderer.labelingEngine()
 

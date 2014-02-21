@@ -25,6 +25,7 @@ import os
 import glob
 import shutil
 import tempfile
+import time
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -58,8 +59,9 @@ class TestServerBase(TestQgsPalLabeling):
     def setUpClass(cls):
         TestQgsPalLabeling.setUpClass()
         MAPSERV.startup()
-        MAPSERV.web_dir_install(os.listdir(cls._PalDataDir), cls._PalDataDir)
+        MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qml'))
 
+    # noinspection PyArgumentList
         cls._TestProj = QgsProject.instance()
         cls._TestProjName = 'pal_test.qgs'
         cls._TestProj.setFileName(
@@ -70,6 +72,11 @@ class TestServerBase(TestQgsPalLabeling):
         cls._CheckMismatch = 200  # default for server tests; mismatch expected
         cls._CheckGroup = ''  # default '' will check against server control
 
+        settings = QSettings()
+        # noinspection PyArgumentList
+        cls._CacheDir = settings.value(
+            "cache/directory", QgsApplication.qgisSettingsDirPath() + "cache")
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
@@ -78,10 +85,24 @@ class TestServerBase(TestQgsPalLabeling):
         cls._TestProj.write()
         if "PAL_REPORT" in os.environ:
             MAPSERV.stop_processes()
+            # MAPSERV.fcgi_server_process().stop()
             MAPSERV.open_temp_dir()
         else:
             MAPSERV.shutdown()
 
+    def setUp(self):
+        """Run before each test."""
+        # web server stays up across all tests
+        # MAPSERV.fcgi_server_process().stop()
+        # self.deleteCache()
+
+    # noinspection PyPep8Naming
+    def deleteCache(self):
+        for item in os.listdir(self._CacheDir):
+            shutil.rmtree(os.path.join(self._CacheDir, item),
+                          ignore_errors=True)
+
+    # noinspection PyPep8Naming
     def defaultWmsParams(self, layername):
         return {
             'SERVICE': 'WMS',
@@ -128,12 +149,14 @@ class TestServerPoint(TestServerBase, TestPointBase):
         self.lyr.writeToLayer(self.layer)
         # save project file
         self._TestProj.write()
+        # always restart FCGI before tests, so settings can be applied
+        # MAPSERV.fcgi_server_process().start()
         # get server results
         # print self.params.__repr__()
-        res, self._TestImage = MAPSERV.get_map(self.params, False)
+        res_m, self._TestImage = MAPSERV.get_map(self.params, False)
         # print self._TestImage.__repr__()
         self.saveContolImage(self._TestImage)
-        self.assertTrue(res, 'Failed to retrieve/save image from test server')
+        self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
         # gp = kwargs['grpprefix'] if 'grpprefix' in kwargs else ''
         self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
                                           imgpath=self._TestImage,
@@ -152,7 +175,9 @@ if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
     suite = [
-        'TestServerVsCanvasPoint.test_text_size_map_unit'
+        # 'TestServerVsCanvasPoint.test_text_size_map_unit',
+        'TestServerPoint.test_partials_labels_enabled',
+        'TestServerPoint.test_partials_labels_disabled'
     ]
     res = runSuite(sys.modules[__name__], suite)
     # if SPAWN:
