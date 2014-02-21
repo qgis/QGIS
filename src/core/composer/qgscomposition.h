@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ZValueAbove
     };
 
-    //! @deprecated since 2.1 - use the constructor with QgsMapSettings
+    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
     Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
     explicit QgsComposition( const QgsMapSettings& mapSettings );
 
@@ -260,11 +260,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setUseAdvancedEffects( bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
-    //! @deprecated since 2.1 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
+    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
     Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() {return mMapRenderer;}
 
     //! Return setting of QGIS map canvas
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}

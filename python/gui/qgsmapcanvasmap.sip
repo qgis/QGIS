@@ -28,32 +28,32 @@ class QgsMapCanvasMap : QgsMapCanvasItem
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas* canvas /TransferThis/ );
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setContent( const QImage& image, const QgsRectangle& rect );
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     QImage contentImage() const;
 
     virtual void paint( QPainter * painter );
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void resize( QSize size ) /Deprecated/;
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void enableAntiAliasing( bool flag ) /Deprecated/;
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void render() /Deprecated/;
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void setBackgroundColor( const QColor& color ) /Deprecated/;
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void setPanningOffset( const QPoint& point ) /Deprecated/;
 
-    //! @deprecated in 2.1
+    //! @deprecated in 2.4
     QPaintDevice& paintDevice() /Deprecated/;
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void updateContents() /Deprecated/;
 };

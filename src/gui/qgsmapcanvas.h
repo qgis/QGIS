@@ -127,64 +127,64 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
     //! Get access to properties used for map rendering
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsMapSettings& mapSettings() const;
 
     //! sets whether to use projections for this layer set
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setCrsTransformEnabled( bool enabled );
 
     //! sets destination coordinate reference system
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! Get access to the labeling results (may be null)
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsLabelingResults* labelingResults() const;
 
     //! Set whether to cache images of rendered layers
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setCachingEnabled( bool enabled );
 
     //! Check whether images of rendered layers are curerently being cached
-    //! @note added in 2.1
+    //! @note added in 2.4
     bool isCachingEnabled() const;
 
     //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
-    //! @note added in 2.1
+    //! @note added in 2.4
     void clearCache();
 
     //! Set whether the layers are rendered in parallel or sequentially
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setParallelRenderingEnabled( bool enabled );
 
     //! Check whether the layers are rendered in parallel or sequentially
-    //! @note added in 2.1
+    //! @note added in 2.4
     bool isParallelRenderingEnabled() const;
 
     //! Set how often map preview should be updated while it is being rendered (in miliseconds)
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setMapUpdateInterval( int timeMiliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in miliseconds)
-    //! @note added in 2.1
+    //! @note added in 2.4
     int mapUpdateInterval() const;
 
-    //! @deprecated since 2.1 - there could be more than just one "map" items
+    //! @deprecated since 2.4 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
-    //! @deprecated since 2.1 - use mapRendererSettings() for anything related to current renderer settings
+    //! @deprecated since 2.4 - use mapRendererSettings() for anything related to current renderer settings
     Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas paint device
-    //! @deprecated since 2.1
+    //! @deprecated since 2.4
     Q_DECL_DEPRECATED QPaintDevice &canvasPaintDevice();
 
     //! Get the last reported scale of the canvas
     double scale();
 
     //! Clear the map canvas
-    //! @deprecated since 2.1 - use refresh() - clear does the same thing
+    //! @deprecated since 2.4 - use refresh() - clear does the same thing
     Q_DECL_DEPRECATED void clear();
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
@@ -238,14 +238,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     virtual QColor canvasColor() const;
 
     /** Set color of selected vector features */
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setSelectionColor( const QColor& color );
 
     /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
     /** Updates the full extent */
-    //! @deprecated since v2.1 - does nothing
+    //! @deprecated since v2.4 - does nothing
     Q_DECL_DEPRECATED void updateFullExtent() {}
 
     //! return the map layer at position index in the layer stack
@@ -268,11 +268,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
-    //! @deprecated since 2.1 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
+    //! @deprecated since 2.4 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
     Q_DECL_DEPRECATED void setDirty( bool _dirty );
 
     //! Return the state of the canvas (dirty or not)
-    //! @deprecated since 2.1 - dirty flag is not kept anymore - always returns false
+    //! @deprecated since 2.4 - dirty flag is not kept anymore - always returns false
     Q_DECL_DEPRECATED bool isDirty() const;
 
     //! Set map units (needed by project properties dialog)
@@ -316,7 +316,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! Select which Qt class to render with
-    //! @deprecated since 2.1 - does nothing because now we always render to QImage
+    //! @deprecated since 2.4 - does nothing because now we always render to QImage
     Q_DECL_DEPRECATED void useImageToRender( bool theFlag );
 
     // following 2 methods should be moved elsewhere or changed to private
@@ -352,14 +352,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();
 
-    //! @deprecated in 2.1 - does nothing - kept for API compatibility
+    //! @deprecated in 2.4 - does nothing - kept for API compatibility
     Q_DECL_DEPRECATED void updateMap();
 
     //! stop rendering (if there is any right now)
-    //! @note added in 2.1
+    //! @note added in 2.4
     void stopRendering();
 
-    //! @deprecated since 2.1 - does nothing - errors are reported by different means
+    //! @deprecated since 2.4 - does nothing - errors are reported by different means
     Q_DECL_DEPRECATED void showError( QgsMapLayer * mapLayer );
 
     //! called to read map canvas settings from project
@@ -387,7 +387,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   signals:
     /** Let the owner know how far we are with render operations */
-    //! @deprecated since 2.1 - already unused in 2.0 anyway
+    //! @deprecated since 2.4 - already unused in 2.0 anyway
     Q_DECL_DEPRECATED void setProgress( int, int );
 
     /** emits current mouse position
@@ -415,12 +415,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    //! @deprecated since 2.1 - anything related to rendering progress is not visible outside of map canvas
+    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
     Q_DECL_DEPRECATED void mapCanvasRefreshed();
 
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    //! @deprecated since 2.1 - anything related to rendering progress is not visible outside of map canvas
+    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
     Q_DECL_DEPRECATED void renderStarting();
 
     //! Emitted when a new set of layers has been received
@@ -448,15 +448,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomNextStatusChanged( bool );
 
     //! Emitted when on-the-fly projection has been turned on/off
-    //! @note added in 2.1
+    //! @note added in 2.4
     void hasCrsTransformEnabledChanged( bool flag );
 
     //! Emitted when map CRS has changed
-    //! @note added in 2.1
+    //! @note added in 2.4
     void destinationCrsChanged();
 
     //! Emmitted when map units are changed
-    //! @note added in 2.1
+    //! @note added in 2.4
     void mapUnitsChanged();
 
   protected:
@@ -598,7 +598,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
  *   - changes done in map renderer are pushed to map canvas settings
  *
  * This class can be removed within API cleanup when QgsMapRenderer will not be accessible from canvas API anymore.
- * Added in 2.1. This class is not a part of public API!
+ * Added in 2.4. This class is not a part of public API!
  */
 class QgsMapCanvasRendererSync : public QObject
 {

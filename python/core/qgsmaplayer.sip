@@ -117,7 +117,7 @@ class QgsMapLayer : QObject
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.1
+     * @note added in 2.4
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
 
@@ -215,10 +215,10 @@ class QgsMapLayer : QObject
     void removeCustomProperty( const QString& key );
 
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     virtual QString lastErrorTitle() /Deprecated/;
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     virtual QString lastError() /Deprecated/;
 
     /** Get current status error. This error describes some principal problem
@@ -341,11 +341,11 @@ class QgsMapLayer : QObject
     /** Return pointer to layer's undo stack */
     QUndoStack *undoStack();
 
-    /** @deprecated since 2.1 - returns NULL */
+    /** @deprecated since 2.4 - returns NULL */
     QImage *cacheImage() /Deprecated/;
-    /** @deprecated since 2.1 - does nothing */
+    /** @deprecated since 2.4 - does nothing */
     void setCacheImage( QImage * thepImage /Transfer/ ) /Deprecated/;
-    /** @deprecated since 2.1 - does nothing */
+    /** @deprecated since 2.4 - does nothing */
     virtual void onCacheImageDelete() /Deprecated/;
 
   public slots:
@@ -365,7 +365,7 @@ class QgsMapLayer : QObject
     void toggleScaleBasedVisibility( bool theVisibilityFlag );
     bool hasScaleBasedVisibility() const;
 
-    /** @deprecated since 2.1 - does nothing */
+    /** @deprecated since 2.4 - does nothing */
     void clearCacheImage() /Deprecated/;
 
     /** \brief Obtain Metadata for this layer */
@@ -376,7 +376,7 @@ class QgsMapLayer : QObject
 
   signals:
 
-    //! @deprecated in 2.1 - not emitted anymore
+    //! @deprecated in 2.4 - not emitted anymore
     void drawingProgress( int theProgress, int theTotalSteps );
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
@@ -395,7 +395,7 @@ class QgsMapLayer : QObject
      */
     void repaintRequested();
 
-    //! \note Deprecated in 2.1 and not emitted anymore
+    //! \note Deprecated in 2.4 and not emitted anymore
     void screenUpdateRequested();
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */

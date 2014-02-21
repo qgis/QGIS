@@ -89,7 +89,7 @@ class QgsPalLayerSettings
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
     ~QgsPalLayerSettings();
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
 
     enum Placement
@@ -582,7 +582,7 @@ class QgsLabelComponent
 
 /**
  * Class that stores computed placement from labeling engine.
- * @note added in 2.1
+ * @note added in 2.4
  */
 class QgsLabelingResults
 {
@@ -645,7 +645,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.1 - use override with QgsMapSettings
+    //! @deprecated since 2.4 - use override with QgsMapSettings
     virtual void init( QgsMapRenderer* mr ) /Deprecated/;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings );
@@ -674,7 +674,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) /Deprecated/;
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
-    //! @note added in 2.1
+    //! @note added in 2.4
     QgsLabelingResults* takeResults() /TransferBack/;
 
     //! called when passing engine among map renderers
@@ -703,8 +703,8 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();
-    //! @deprecated since 2.1 - settings are always stored in project
+    //! @deprecated since 2.4 - settings are always stored in project
     bool isStoredWithProject() const /Deprecated/;
-    //! @deprecated since 2.1 - settings are always stored in project
+    //! @deprecated since 2.4 - settings are always stored in project
     void setStoredWithProject( bool store ) /Deprecated/;
 };

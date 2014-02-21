@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      * conditions that may happen (e.g. something is changed in the layer while it is
      * being rendered).
      *
-     * @note added in 2.1
+     * @note added in 2.4
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
 

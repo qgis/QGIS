@@ -36,7 +36,7 @@ class QgsLabelingEngineInterface
     virtual ~QgsLabelingEngineInterface();
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.1 - use override with QgsMapSettings
+    //! @deprecated since 2.4 - use override with QgsMapSettings
     virtual void init( QgsMapRenderer* mp ) = 0 /Deprecated/;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) = 0;
@@ -66,11 +66,11 @@ class QgsLabelingEngineInterface
     virtual void exit() = 0;
     //! return infos about labels at a given (map) position
     //! @note: this method was added in version 1.7
-    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0 /Deprecated/;
     //! return infos about labels within a given (map) rectangle
     //! @note: this method was added in version 1.9
-    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0 /Deprecated/;
 
     //! called when passing engine among map renderers
@@ -265,7 +265,7 @@ class QgsMapRenderer : QObject
     static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
     //! bridge to QgsMapSettings
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsMapSettings& mapSettings();
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
@@ -293,12 +293,12 @@ class QgsMapRenderer : QObject
     void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
     //! emitted when the current extent gets changed
-    //! @note added in 2.1
+    //! @note added in 2.4
     void extentsChanged();
 
   public slots:
 
-    //! @deprecated in 2.1 - does nothing
+    //! @deprecated in 2.4 - does nothing
     void onDrawingProgress( int current, int total ) /Deprecated/;
 
   protected:

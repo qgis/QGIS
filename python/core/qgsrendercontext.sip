@@ -11,7 +11,7 @@ class QgsRenderContext
     ~QgsRenderContext();
 
     //! create initialized QgsRenderContext instance from given QgsMapSettings
-    //! @note added in 2.1
+    //! @note added in 2.4
     static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
     //getters

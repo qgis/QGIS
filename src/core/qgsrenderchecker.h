@@ -68,10 +68,10 @@ class CORE_EXPORT QgsRenderChecker
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; }
-    //! @deprecated since 2.1 - use setMapSettings()
+    //! @deprecated since 2.4 - use setMapSettings()
     Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
 
     /**

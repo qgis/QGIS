@@ -125,7 +125,7 @@ class QgsRasterLayer : QgsMapLayer
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.1
+     * @note added in 2.4
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
 
@@ -137,10 +137,10 @@ class QgsRasterLayer : QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     QString lastError() /Deprecated/;
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     QString lastErrorTitle() /Deprecated/;
 
     /**Returns a list with classification items (Text and color)
@@ -213,7 +213,7 @@ class QgsRasterLayer : QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    //! @deprecated since 2.1 - does nothing
+    //! @deprecated since 2.4 - does nothing
     void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */

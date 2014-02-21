@@ -40,36 +40,36 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
 
     ~QgsMapCanvasMap();
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     void setContent( const QImage& image, const QgsRectangle& rect );
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     QImage contentImage() const { return mImage; }
 
     virtual void paint( QPainter * painter );
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void refresh() {}
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void resize( QSize size ) { Q_UNUSED( size ); }
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void enableAntiAliasing( bool flag ) { Q_UNUSED( flag ); }
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void render() {}
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void setBackgroundColor( const QColor& color ) { Q_UNUSED( color ); }
 
-    //! @deprecated in 2.1 - not called by QgsMapCanvas anymore
+    //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
     Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point ) { Q_UNUSED( point ); }
 
-    //! @deprecated in 2.1
+    //! @deprecated in 2.4
     Q_DECL_DEPRECATED QPaintDevice& paintDevice();
 
-    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void updateContents() {}
 
   private:

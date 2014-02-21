@@ -188,7 +188,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     //! Fields of the layer. Currently only available in startRender() calls
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsFields* fields() const { return mFields; }
 
     double outputLineWidth( double width ) const;

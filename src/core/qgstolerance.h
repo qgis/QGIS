@@ -50,7 +50,7 @@ class CORE_EXPORT QgsTolerance
     * The value is read from settings and transformed if necessary.
     * @return value of vertex tolerance in map units
     */
-    //! @deprecated since 2.1 - use override with QgsMapSettings
+    //! @deprecated since 2.4 - use override with QgsMapSettings
     Q_DECL_DEPRECATED static double vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* renderer );
 
     /**
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsTolerance
     * The value is read from settings and transformed if necessary.
     * @return value of default tolerance in map units
     */
-    //! @deprecated since 2.1 - use override with QgsMapSettings
+    //! @deprecated since 2.4 - use override with QgsMapSettings
     Q_DECL_DEPRECATED static double defaultTolerance( QgsMapLayer* layer, QgsMapRenderer* renderer );
 
     /**
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsTolerance
     * @param units type of units to be translated
     * @return value of tolerance in map units
     */
-    //! @deprecated since 2.1 - use the override with QgsMapSettings
+    //! @deprecated since 2.4 - use the override with QgsMapSettings
     Q_DECL_DEPRECATED static double toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units = MapUnits );
 
   private:

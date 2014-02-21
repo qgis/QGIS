@@ -79,7 +79,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 #endif
 
     //! Called when rendering has finished. Default implementation does nothing.
-    //! @deprecated since 2.1 - not called anymore - map tools must not directly depend on rendering progress
+    //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
     Q_DECL_DEPRECATED virtual void renderComplete();
 
 

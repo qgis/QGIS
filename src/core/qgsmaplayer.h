@@ -130,7 +130,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void reload() {}
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.1
+     * @note added in 2.4
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) { Q_UNUSED( rendererContext ); return 0; }
 
@@ -228,10 +228,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void removeCustomProperty( const QString& key );
 
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     Q_DECL_DEPRECATED virtual QString lastErrorTitle();
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     Q_DECL_DEPRECATED virtual QString lastError();
 
     /** Get current status error. This error describes some principal problem
@@ -356,11 +356,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return pointer to layer's undo stack */
     QUndoStack *undoStack();
 
-    /** @deprecated since 2.1 - returns NULL */
+    /** @deprecated since 2.4 - returns NULL */
     Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
-    /** @deprecated since 2.1 - does nothing */
+    /** @deprecated since 2.4 - does nothing */
     Q_DECL_DEPRECATED void setCacheImage( QImage * ) {}
-    /** @deprecated since 2.1 - does nothing */
+    /** @deprecated since 2.4 - does nothing */
     Q_DECL_DEPRECATED virtual void onCacheImageDelete() {}
 
   public slots:
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Clear cached image
      * added in 1.5 */
-    //! @deprecated in 2.1 - does nothing
+    //! @deprecated in 2.4 - does nothing
     Q_DECL_DEPRECATED void clearCacheImage();
 
     /** \brief Obtain Metadata for this layer */
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   signals:
 
-    //! @deprecated in 2.1 - not emitted anymore
+    //! @deprecated in 2.4 - not emitted anymore
     void drawingProgress( int theProgress, int theTotalSteps );
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void repaintRequested();
 
-    //! \note Deprecated in 2.1 and not emitted anymore
+    //! \note Deprecated in 2.4 and not emitted anymore
     void screenUpdateRequested();
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */

@@ -84,7 +84,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
 
-    //! @deprecated since 2.1 - not using QgsVectorLayer directly anymore
+    //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     Q_DECL_DEPRECATED virtual void startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer );
 
     virtual void stopRender( QgsRenderContext& context ) = 0;

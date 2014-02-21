@@ -1023,7 +1023,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.1
+     * @note added in 2.4
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
 

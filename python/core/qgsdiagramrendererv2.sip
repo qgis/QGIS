@@ -124,7 +124,7 @@ class QgsDiagramRendererV2
     virtual ~QgsDiagramRendererV2();
 
     /** Returns new instance that is equivalent to this one
-     * @note added in 2.1 */
+     * @note added in 2.4 */
     virtual QgsDiagramRendererV2* clone() const = 0;
 
     /**Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/

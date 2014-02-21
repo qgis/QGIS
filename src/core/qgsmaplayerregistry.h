@@ -152,7 +152,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note Added in QGIS 1.4
      */
-    //! @deprecated since 2.1 - does nothing
+    //! @deprecated since 2.4 - does nothing
     Q_DECL_DEPRECATED void clearAllLayerCaches();
 
     /**

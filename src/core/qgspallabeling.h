@@ -67,7 +67,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
     ~QgsPalLayerSettings();
 
-    //! @note added in 2.1
+    //! @note added in 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
 
     enum Placement
@@ -660,7 +660,7 @@ class CORE_EXPORT QgsLabelComponent
 
 /**
  * Class that stores computed placement from labeling engine.
- * @note added in 2.1
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsLabelingResults
 {
@@ -723,7 +723,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.1 - use override with QgsMapSettings
+    //! @deprecated since 2.4 - use override with QgsMapSettings
     Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr );
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings );
@@ -731,7 +731,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual bool willUseLayer( QgsVectorLayer* layer );
 
     //! called to find out whether the layer is used for labeling
-    //! @note added in 2.1
+    //! @note added in 2.4
     static bool staticWillUseLayer( QgsVectorLayer* layer );
     static bool staticWillUseLayer( const QString& layerID );
 
@@ -753,14 +753,14 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called when we're done with rendering
     virtual void exit();
     //! return infos about labels at a given (map) position
-    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
     //! return infos about labels within a given (map) rectangle
-    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
-    //! @note added in 2.1
+    //! @note added in 2.4
     QgsLabelingResults* takeResults();
 
     //! called when passing engine among map renderers
@@ -789,9 +789,9 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();
-    //! @deprecated since 2.1 - settings are always stored in project
+    //! @deprecated since 2.4 - settings are always stored in project
     Q_DECL_DEPRECATED bool isStoredWithProject() const { return true; }
-    //! @deprecated since 2.1 - settings are always stored in project
+    //! @deprecated since 2.4 - settings are always stored in project
     Q_DECL_DEPRECATED void setStoredWithProject( bool store ) { Q_UNUSED( store ); }
 
   protected:

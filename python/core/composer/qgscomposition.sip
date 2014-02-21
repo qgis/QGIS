@@ -28,7 +28,7 @@ class QgsComposition : QGraphicsScene
       Crosses
     };
 
-    //! @deprecated since 2.1 - use the constructor with QgsMapSettings
+    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
     QgsComposition( QgsMapRenderer* mapRenderer ) /Deprecated/;
     explicit QgsComposition( const QgsMapSettings& mapSettings );
 
@@ -204,11 +204,11 @@ class QgsComposition : QGraphicsScene
     void setUseAdvancedEffects( bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
-    //! @deprecated since 2.1 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
+    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
     QgsMapRenderer* mapRenderer() /Deprecated/;
 
     //! Return setting of QGIS map canvas
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsMapSettings& mapSettings() const;
 
     QgsComposition::PlotStyle plotStyle() const;

@@ -67,7 +67,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsFeatureRendererV2* embeddedRenderer() { return mRenderer;}
 
     //! not available in python bindings
-    //! @deprecated since 2.1
+    //! @deprecated since 2.4
     Q_DECL_DEPRECATED void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list ) { Q_UNUSED( list ); }
 
     void setLabelFont( const QFont& f ) { mLabelFont = f; }

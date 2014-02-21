@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual ~QgsLabelingEngineInterface() {}
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.1 - use override with QgsMapSettings
+    //! @deprecated since 2.4 - use override with QgsMapSettings
     Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mp ) = 0;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) = 0;
@@ -105,11 +105,11 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual void exit() = 0;
     //! return infos about labels at a given (map) position
     //! @note: this method was added in version 1.7
-    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
     //! return infos about labels within a given (map) rectangle
     //! @note: this method was added in version 1.9
-    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
     //! called when passing engine among map renderers
@@ -309,12 +309,12 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     const QgsCoordinateTransform* transformation( const QgsMapLayer *layer ) const;
 
     //! bridge to QgsMapSettings
-    //! @note added in 2.1
+    //! @note added in 2.4
     const QgsMapSettings& mapSettings();
 
   signals:
 
-    //! @deprecated in 2.1 - not emitted anymore
+    //! @deprecated in 2.4 - not emitted anymore
     void drawingProgress( int current, int total );
 
     /** This signal is emitted when CRS transformation is enabled/disabled.
@@ -328,12 +328,12 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     /** This signal is emitted when CRS transformation is enabled/disabled.
      *  @param flag true if transformation is enabled.
-     *  @note Added in 2.1 */
+     *  @note Added in 2.4 */
     void hasCrsTransformEnabledChanged( bool flag );
 
     void destinationSrsChanged();
 
-    //! @deprecated in 2.1 - not emitted anymore
+    //! @deprecated in 2.4 - not emitted anymore
     void updateMap();
 
     void mapUnitsChanged();
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void drawError( QgsMapLayer* );
 
     //! emitted when the current extent gets changed
-    //! @note added in 2.1
+    //! @note added in 2.4
     void extentsChanged();
 
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
   public slots:
 
-    //! @deprecated in 2.1 - does nothing
+    //! @deprecated in 2.4 - does nothing
     Q_DECL_DEPRECATED void onDrawingProgress( int current, int total );
 
   protected:

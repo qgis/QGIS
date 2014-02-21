@@ -75,7 +75,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * if it is possible that both feature source and provider may need reading/writing to some shared data at the
      * same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
      *
-     * @note added in 2.1
+     * @note added in 2.4
      * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
     virtual QgsAbstractFeatureSource* featureSource() const /Factory/;

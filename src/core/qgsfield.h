@@ -224,11 +224,11 @@ class CORE_EXPORT QgsFields
 
     //! Look up field's index from name - case insensitive
     //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
-    //! @note added in 2.1
+    //! @note added in 2.4
     int fieldNameIndex( const QString& fieldName ) const;
 
     //! Utility function to get list of attribute indexes
-    //! @note added in 2.1
+    //! @note added in 2.4
     QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances

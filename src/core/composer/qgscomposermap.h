@@ -189,7 +189,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     QgsRectangle extent() const {return mExtent;}
 
-    //! @deprecated since 2.1 - use mapSettings() - may return 0 if not initialized with QgsMapRenderer
+    //! @deprecated since 2.4 - use mapSettings() - may return 0 if not initialized with QgsMapRenderer
     Q_DECL_DEPRECATED const QgsMapRenderer* mapRenderer() const;
 
     /**Sets offset values to shift image (useful for live updates when moving item content)*/

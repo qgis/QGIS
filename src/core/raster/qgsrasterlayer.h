@@ -283,7 +283,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.1
+     * @note added in 2.4
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
 
@@ -295,10 +295,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     Q_DECL_DEPRECATED QString lastError();
 
-    //! @deprecated since 2.1 - returns empty string
+    //! @deprecated since 2.4 - returns empty string
     Q_DECL_DEPRECATED QString lastErrorTitle();
 
     /**Returns a list with classification items (Text and color)
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    //! @deprecated in 2.1 - does nothing
+    //! @deprecated in 2.4 - does nothing
     Q_DECL_DEPRECATED void updateProgress( int, int );
 
     /** \brief receive progress signal from provider */

@@ -160,11 +160,11 @@ class QgsFields
     //! Get field at particular index (must be in range 0..N-1)
     //! Look up field's index from name - case insensitive
     //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
-    //! @note added in 2.1
+    //! @note added in 2.4
     int fieldNameIndex( const QString& fieldName ) const;
 
     //! Utility function to get list of attribute indexes
-    //! @note added in 2.1
+    //! @note added in 2.4
     QgsAttributeList allAttributesList() const;
 
     QgsField& operator[](int i) /Factory/;
