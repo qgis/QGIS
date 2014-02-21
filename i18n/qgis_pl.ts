@@ -44920,7 +44920,7 @@ Błąd: %2</translation>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="214"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Oracle przechowuje liczne metadane o tabelach, takie jak liczba rekordów, typ geometrii, zasięg przestrzenny danych geometrycznych. Jeśli tabela ma wiele rekordów, uzyskanie tych informacji może być czasochłonne.&lt;/p&gt;&lt;p&gt; Włączenie tych opcji spowoduje przyspieszenie tych operacji poprzez:&lt;/p&gt;&lt;p&gt;1) Oszacowanie liczby rekordów z all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Zasięg tabeli będzie zawsze określany funkcją SDO_TUNE.EXTENTS_OF, nawet jeśli użyto filtra warstwy.&lt;/p&gt;&lt;p&gt;3) Tabela geometrii jest określana z pierwszych 100 niepustych (NOT NULL) rekordów geometrii.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>
@@ -66358,7 +66358,13 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Dodaj warstwę wektorową&lt;/h3&gt;
+
+To okno dialogowe jest wykorzystywane do dodawania warstw wektorowych do projektu. Dane wektorowe definiują obiekty przestrzenne jako punkty, linie lub poligony (obszary domknięte).&lt;/p&gt;
+QGIS obsługuje dane wektorowe w wielu formatach, m.in. poprzez bibliotekę OGR takie jak Shapefile (ESRI), MIF (format wymiany MapInfo) oraz TAB (format natywny MapInfo).&lt;/p&gt;
+QGIS obsługuje warstwy PostGIS (baza PostgreSQL), SpatiaLite (baza SQLite) oraz z plików tekstowych CSV. Pełna lista obsługiwanych formatów dostępna jest w Dodatku A.1 podręcznika użytkownika.&lt;/p&gt;
+Szczegółowy opis pracy z warstwami wektorowymi został opisany w rozdziale 5 &apos;Praca z danymi wektorowymi&apos;.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1333"/>
@@ -66404,24 +66410,24 @@ Okno dialogowe pozwalające na dodanie warstw PostGIS (tabel z kolumną geometri
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Połączenia z PostgreSQL&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#add&quot;&gt;Dodawanie warstw&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#filter&quot;&gt;Filtrowanie warstwy&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrowanie warstw&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;connect&quot;&gt;
 &lt;h4&gt;Połączenia z PostgreSQL&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;Wybierz połączenie z bazą z rozwijalnej listy i kliknij &lt;label&gt;Połącz&lt;/label&gt;.
-&lt;li&gt;Jeśli nie ma żadnych dostępnych połączeń, wybierz przycisk &lt;label&gt;Nowe&lt;/label&gt;, aby utworzyć połączenie do swojej bazy.
-&lt;li&gt;Aby zmodyfikować połączenie, kliknij przycisk &lt;label&gt;Edytuj&lt;/label&gt;.
+&lt;li&gt;Wybierz połączenie z bazą z listy rozwijalnej i kliknij &lt;label&gt;Połącz&lt;/label&gt;.
+&lt;li&gt;Jeśli nie ma żadnych dostępnych połączeń, wybierz przycisk &lt;label&gt;Nowe&lt;/label&gt; aby utworzyć połączenie z bazą.
+&lt;li&gt;Aby zmodyfikować istniejące połączenie, kliknij przycisk &lt;label&gt;Edytuj&lt;/label&gt;.
 &lt;/ul&gt;
 &lt;a name=&quot;add&quot;&gt;
 &lt;h4&gt;Dodawanie warstw&lt;/h4&gt;
 &lt;/a&gt;
 Aby dodać warstwę:
 &lt;ol&gt;
-&lt;li&gt;Wybierz połączenie z bazą z rozwijalnej listy.
+&lt;li&gt;Wybierz połączenie z bazą z listy rozwijalnej.
 &lt;li&gt;Kliknij &lt;label&gt;Połącz&lt;/label&gt;.
-&lt;li&gt;Wskaż wybraną warstwę na liście dostępnych warstw.
+&lt;li&gt;Wskaż wybraną warstwę na liście.
 &lt;li&gt;Możesz dodać kilka warstw jednocześnie trzymając wciśnięty klawisz Ctrl.
 &lt;li&gt;Kliknij &lt;label&gt;Dodaj&lt;/label&gt;, aby dodać warstwy do mapy.
 &lt;/ol&gt;
@@ -66623,7 +66629,52 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Edytor wyrażeń&lt;/h3&gt;
+Edytor wyrażeń umożliwia utworzenie zaawanasowanych filtrów w oparciu o wyrażenia.
+
+Zwykle są one wykonywane dużo szybciej niż wyrażenia QGIS, lecz posiadają 
+pewne ograniczenia (związane np. z pikami SHP) lub działają w nieco inny sposób.
+
+&lt;h4&gt;Źródła danych&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Źródło&lt;/th&gt;
+  &lt;th&gt;Documentacja&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;OGR&lt;/td&gt;
+  &lt;td&gt;zgodne z
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;format&lt;/a&gt; (np.
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
+    dla SHP)
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
+  &lt;td&gt;zgodne z
+    &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; oraz
+    &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt; 
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;SpatiaLite&lt;/td&gt;
+  &lt;td&gt;zgodne z 
+    &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; oraz
+    &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;Oracle Spatial/Locator&lt;/td&gt;
+  &lt;td&gt;zgodne z
+    &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt;Oracle Spatial/Locator&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td colspan=2&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1279"/>
@@ -66719,24 +66770,28 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 &lt;/ul&gt;
 </source>
         <translation type="unfinished">&lt;h3&gt;Nowe połączenie dla PostGIS&lt;/h3&gt;
-Utworzenie nowego połączenia z bazą PostGIS wymaga posiadania pewnych informacji o serwerze, bazie danych i znajomości nazwy użytkownika oraz hasła logowania do bazy.
+Utworzenie nowego połączenia z bazą PostGIS wymaga posiadania pewnych informacji o serwerze, bazie danych (np. nazwy użytkownika oraz hasła logowania do bazy).
 &lt;h4&gt;Wymagane parametry&lt;/h4&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;label&gt;Nazwa&lt;/label&gt; - opisowa nazwa dla połączenia
-&lt;li&gt;&lt;label&gt;Host&lt;/label&gt; - nazwa hosta serwera bazy danych (np. madison.qgis.org; jeśli baza PostGIS jest na tym samym komputerze, będzie to localhost)
+&lt;li&gt;&lt;label&gt;Usługa&lt;/label&gt; nazwa usługi podana w &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;&lt;/a&gt;
+&lt;li&gt;&lt;label&gt;Host&lt;/label&gt; - nazwa lub numer IP serwera; jeśli baza PostGIS jest na tym samym komputerze, pozosta puste lub wpisz localhost
+&lt;li&gt;&lt;label&gt;Port&lt;/label&gt; - port PostreSQL. Domyślny port to 5432. Jeśli nie masz pewności, skonsultuj się z administratorem bazy danych
 &lt;li&gt;&lt;label&gt;Baza danych&lt;/label&gt; - nazwa bazy danych do której będzie utworzone połączenie
-&lt;li&gt;&lt;label&gt;Port&lt;/label&gt; - port PostreSQL. Domyślny port to 5432. Jeśli nie masz pewności, skonsultuj się z administratorem bazy danych.
-&lt;li&gt;&lt;label&gt;Użytkownik&lt;/label&gt; - twoja nazwa użytkownika bazy
-&lt;li&gt;&lt;label&gt;Hasło&lt;/label&gt; - twoje hasło do bazy
+&lt;li&gt;&lt;label&gt;tryb SSL&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;tryb połaczenia SSL&lt;/a&gt;
+&lt;li&gt;&lt;label&gt;Użytkownik&lt;/label&gt; - nazwa użytkownika bazy
+&lt;li&gt;&lt;label&gt;Hasło&lt;/label&gt; - hasło użytkownia
 &lt;/ul&gt;
 &lt;h4&gt;Opcje&lt;/h4&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;label&gt;Zapisz hasło&lt;/label&gt; - jeśli dostęp do twojej bazy danych jest chroniony hasłem, możesz je zapamiętać w QGIS, jednak należy mieć świadomość względów bezpieczeństwa. Hasło jest przechowywane otwatrym tekstem w preferencjach QGIS.  
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Zapisz hasło&lt;/label&gt; - jeśli dostęp do twojej bazy danych jest chroniony hasłem, możesz je zapamiętać w QGIS, jednak należy mieć świadomość względów bezpieczeństwa. Hasło jest przechowywane jako zwykły tekst w preferencjach QGIS.  
 &lt;li&gt;&lt;label&gt;Sprawdź tylko tabelę geometry_columns&lt;/label&gt; - QGIS przeszukuje wszystkie tabele w bazie danych, które mają kolumnę z danymi przestrzennymi. Możesz tak skonfigurować połączenie, aby szukać warstw tylko &quot;zarejestrowanych&quot; jako posiadające wpis w geometry_columns. Przyspieszy to tworzenie listy dostępnych warstw, ale można w ten sposób pominąć warstwy, których nie ma w spisie.
 &lt;li&gt;&lt;label&gt;Sprawdź tylko schemat „public”&lt;/label&gt; - Opcja ta pozwala przeszukiwać tylko schemat &amp;#92;public, co także przyspiesza listowanie warstw, ale przydatne jest jedynie w przypadku, gdy tylko tam są przechowywane.
-&lt;/ol&gt;
+&lt;/ul&gt;
+
 &lt;h4&gt;Test połączenia&lt;/h4&gt;
 Przycisk &lt;label&gt;Test połączenia&lt;/label&gt; inicjuje połączenie z bazą używając parametrów, które zostały wskazane. Jest to dobry sposób sprawdzenia poprawności parametrów połączenia, zanim zostanie ono zapisane.
+
 </translation>
     </message>
     <message>
@@ -67920,7 +67975,66 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Kalkulator pól&lt;/h3&gt;
+Kalkulator pól umożliwia przeprowadzenia obliczeń na wartościach z warstwy oraz zapisanie ich w tabeli atrybutów.
+
+&lt;h4&gt;Obsługiwane operacje&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Operacja&lt;/th&gt;
+  &lt;th&gt;Opis&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;nazwa_kolumny&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;nazwa_kolumny&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;wartość z kolumny &lt;tt&gt;nazwa_kolumny&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;tekst&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;zawartość tekstu&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;liczba&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;wartość liczby&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;wartość NULL&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;e do potęgi &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logarytm naturalny (tj. o podstawie e) z &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logarytm dziesiętny z &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logogarytm o podstawie &lt;tt&gt;b&lt;/tt&gt; z &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;pierwiastek kwadratowy&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;sinus &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;cosinus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangens &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcus sinus &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcus cosinus &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcus tangens &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień &lt;tt&gt;a&lt;/tt&gt; na integer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień &lt;tt&gt;a&lt;/tt&gt; na real&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień &lt;tt&gt;a&lt;/tt&gt; na tekst&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień tekst &lt;tt&gt;a&lt;/tt&gt; na małe litery&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień tekst &lt;tt&gt;a&lt;/tt&gt; na duże litery&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;długośc tekstu &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcus tangesns z &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; używając znaków argumentów do określenia kwadrantu wyniku.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;z_tego&lt;/tt&gt;,&lt;tt&gt;na_to&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień &lt;tt&gt;z_tego&lt;/tt&gt; &lt;tt&gt;na_to&lt;/tt&gt; w tekście &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;z_tego&lt;/tt&gt;,&lt;tt&gt;na_to&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zamień w wyrażeniu regularnym &lt;tt&gt;z_tego&lt;/tt&gt; &lt;tt&gt;na_to&lt;/tt&gt; w tekście &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;poczatek&lt;/tt&gt;,&lt;tt&gt;dlugosc&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;zwróć &lt;tt&gt;dlugosc&lt;/tt&gt; znaków z tekstu &lt;tt&gt;a&lt;/tt&gt; rozpoczynając od &lt;tt&gt;poczatek&lt;/tt&gt; (pierwszy znak ma indeks 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;połącz tekst &lt;tt&gt;a&lt;/tt&gt; oraz &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;number bieżącego wiersza&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;powierzchnia poligonu&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;obwód poligonu&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;długość linii&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;ID obiektu&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;współrzędna X punktu&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;współrzędna Y punktu&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;współrzędna X &lt;tt&gt;n&lt;/tt&gt;-tego punktu linii (indeksowane od 0; wartości ujemne - liczone od końca)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;współrzędna Y &lt;tt&gt;n&lt;/tt&gt;-tego punktu linii (indeksowane od 0; wartości ujemne - liczone od końca)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; do potęgi &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; razy &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; podzielone przez &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; plus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; minus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;wartość dodatnia&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;wartośc ujemna &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="982"/>
@@ -68300,7 +68414,22 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Definicja układu współrzędnych użytkownika&lt;/h3&gt;
+Jeśli QGIS nie udostępnia informacji o interesującym użytkownika układzie współrzędnych, może on zostać zdefinioowany. &lt;p&gt;
+Tak zdefiniowane układy są zapisane w bazie danychużytkownika QGIS. W bazie tej zapisywane sa równiez zakładki przestrzenne użytkownika i inne dane.
+
+&lt;h4&gt;Definiuj&lt;/h4&gt;
+Aby utworzyc nowy układ wybierz przycisk &lt;label&gt;Dodaj nowy&lt;/label&gt; i wprowadź:
+&lt;ul&gt;
+&lt;li&gt;nazwę (opisową) 
+&lt;li&gt;parametry układu
+&lt;/ul&gt;
+
+&lt;p&gt;
+Parametry muszą rozpoczynać się od bloku +proj= opisującego układ odniesienia.
+&lt;p&gt;
+Definiowanie nowego układu w QGIS wymaga dobrego zrozumienia  biblioteki PROJ.4. Aby rozpocząć, przeczytaj &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Ten podręcznik opisuje użycie &lt;i&gt;PROJ.4&lt;/i&gt; i powiązanych z nim narzędzi. Parametry kartograficzne użyte w &lt;i&gt;PROJ.4&lt;/i&gt; sa częściowo opisane w podręczniku użytkownika QGIS.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="352"/>
