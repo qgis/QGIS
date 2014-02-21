@@ -631,6 +631,72 @@ static QVariant fcnTrim( const QVariantList& values, const QgsFeature* , QgsExpr
   return QVariant( str.trimmed() );
 }
 
+static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  if ( values.length() == 2 || values.length() == 3 )
+  {
+    QString str = getStringValue( values.at( 0 ), parent );
+    int wrap = getIntValue( values.at( 1 ), parent );
+
+    if ( !str.isEmpty() && wrap != 0 )
+    {
+      QString newstr;
+      QString delimiterstr;
+      if ( values.length() == 3 ) delimiterstr = getStringValue( values.at( 2 ), parent );
+      if ( delimiterstr.isEmpty() ) delimiterstr = " ";
+      int delimiterlength = delimiterstr.length();
+
+      QStringList lines = str.split( "\n" );
+      int strlength, strcurrent, strhit, lasthit;
+
+      for ( int i = 0; i < lines.size(); i++ )
+      {
+        strlength = lines[i].length();
+        strcurrent = 0;
+        strhit = 0;
+        lasthit = 0;
+
+        while ( strcurrent < strlength )
+        {
+          // positive wrap value = desired maximum line width to wrap
+          // negative wrap value = desired minimum line width before wrap
+          if ( wrap > 0 )
+          {
+            //first try to locate delimiter backwards
+            strhit = lines[i].lastIndexOf( delimiterstr, strcurrent + wrap );
+            if ( strhit == lasthit || strhit == -1 )
+            {
+              //if no new backward delimiter found, try to locate forward
+              strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs( wrap ) );
+            }
+            lasthit = strhit;
+          }
+          else
+          {
+            strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs( wrap ) );
+          }
+          if ( strhit > -1 )
+          {
+            newstr.append( lines[i].midRef( strcurrent , strhit - strcurrent ) );
+            newstr.append( "\n" );
+            strcurrent = strhit + delimiterlength;
+          }
+          else
+          {
+            newstr.append( lines[i].midRef( strcurrent ) );
+            strcurrent = strlength;
+          }
+        }
+        if ( i < lines.size() - 1 ) newstr.append( "\n" );
+      }
+
+      return QVariant( newstr );
+    }
+  }
+
+  return QVariant();
+}
+
 static QVariant fcnLength( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -1416,7 +1482,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
-    << "title" << "length" << "replace" << "trim"
+    << "title" << "length" << "replace" << "trim" << "wordwrap"
     << "regexp_replace" << "regexp_substr"
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
@@ -1484,6 +1550,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "upper", 1, fcnUpper, "String" )
     << new StaticFunction( "title", 1, fcnTitle, "String" )
     << new StaticFunction( "trim", 1, fcnTrim, "String" )
+    << new StaticFunction( "wordwrap", -1, fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
