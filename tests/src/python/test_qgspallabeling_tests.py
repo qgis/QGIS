@@ -58,6 +58,25 @@ class TestPointBase(object):
         self.lyr.textColor = Qt.blue
         self.checkTest()
 
+    def test_background_rect(self):
+        self.lyr.shapeDraw = True
+        self.checkTest()
+
+    def test_background_rect_w_offset(self):
+        # Label rectangular background
+        # verify fix for issues
+        #   http://hub.qgis.org/issues/9057
+        #   http://gis.stackexchange.com/questions/86900
+        self.lyr.fontSizeInMapUnits = True
+        font = QFont(self._TestFont)
+        font.setPointSizeF(460)
+        self.lyr.textFont = font
+
+        self.lyr.shapeDraw = True
+        self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
+        self.lyr.shapeOffset = QPointF(-2900.0, -450.0 )
+        self.checkTest()
+
     def test_partials_labels_enabled(self):
         # Set Big font size
         font = QFont(self._TestFont)

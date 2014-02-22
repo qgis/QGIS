@@ -4591,8 +4591,8 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     p->save();
     p->translate( QPointF( component.center().x(), component.center().y() ) );
     p->rotate( component.rotation() );
-    double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits, true );
-    double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits, true );
+    double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits, false );
+    double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits, false );
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset() );
 
