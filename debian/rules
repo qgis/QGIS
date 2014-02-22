@@ -47,7 +47,8 @@ CMAKE_OPTS := \
 	-D WITH_MAPSERVER=TRUE \
 	-D MAPSERVER_SKIP_ECW=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
-	-D WITH_APIDOC=TRUE
+	-D WITH_APIDOC=TRUE \
+	-D WITH_GLOBE=TRUE
 
 MAKEFLAGS += VERBOSE=YES
 
@@ -61,11 +62,6 @@ ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise raring saucy tru
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie"))
-	CMAKE_OPTS += -D WITH_GLOBE=FALSE
-else
-	CMAKE_OPTS += -D WITH_GLOBE=TRUE
-endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"jessie raring saucy trusty sid sid-oracle"))
 	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so

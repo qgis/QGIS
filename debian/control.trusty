@@ -170,6 +170,7 @@ Package: qgis-providers
 Architecture: any
 Depends:
  qgis-providers-common (= ${source:Version}),
+ libqt4-sql-sqlite,
  ${shlibs:Depends},
  ${misc:Depends}
 Replaces: qgis (<= 1.6)
