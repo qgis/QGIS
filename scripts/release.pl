@@ -75,6 +75,7 @@ system("git pull --rebase") == 0 or die "git pull rebase failed";
 
 my $release = "$newmajor.$newminor";
 my $relbranch = "release-${newmajor}_${newminor}";
+my $reltag = "final-${newmajor}_${newminor}_0";
 
 print "Creating branch...\n";
 system("git checkout -b $relbranch" ) == 0 or die "git checkout release branch failed";
@@ -85,9 +86,10 @@ system("dch -r ''" ) == 0 or die "dch failed";
 system( "dch --newversion $newmajor.$newminor.0 'Release of $release'" ) == 0 or die "dch failed";
 system( "cp debian/changelog /tmp" ) == 0 or die "backup changelog failed";
 system( "git commit -a -m 'Release of $release ($releasename)'" ) == 0 or die "release commit failed";
+system( "git tag $reltag -m 'Version $release'" ) == 0 or die "tag failed";
 
 print "Producing archive...\n";
-system( "git archive --format tar HEAD | bzip2 -c >qgis-$release.0.tar.bz2" ) == 0 or die "git archive failed";
+system( "git archive --format tar --prefix=qgis-$release.0/ $reltag | bzip2 -c >qgis-$release.0.tar.bz2" ) == 0 or die "git archive failed";
 system( "md5sum qgis-$newmajor.$newminor.0.tar.bz2 >qgis-$release.0.tar.bz2.md5" ) == 0 or die "md5sum failed";
 
 $newminor++;
@@ -101,9 +103,9 @@ system( "dch --newversion $newmajor.$newminor.0 'New development version $newmaj
 system( "git commit -a -m 'Bump version to $newmajor.$newminor'" ) == 0 or die "bump version failed";
 
 print "Push dry-run...\n";
-system( "git push -n origin master $relbranch" ) == 0 or die "git push -n failed";
+system( "git push -n origin master $relbranch $reltag" ) == 0 or die "git push -n failed";
 
-print "Now manually push and upload the tarballs :\n\tgit push origin master $relbranch\n\trsync qgis-$release.0.tar.bz2* qgis.org:/var/www/downloads/\n\n";
+print "Now manually push and upload the tarballs :\n\tgit push origin master $relbranch $reltag\n\trsync qgis-$release.0.tar.bz2* qgis.org:/var/www/downloads/\n\n";
 
 =head1 NAME
 
