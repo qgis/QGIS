@@ -78,6 +78,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
   // mHistoShowBands = (HistoShowBands) settings.value( "/Raster/histogram/showBands", (int) ShowAll ).toInt();
   mHistoShowBands = ShowAll;
 
+  bool isInt = true;
   if ( true )
   {
     //band selector
@@ -87,6 +88,11 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
           ++myIteratorInt )
     {
       cboHistoBand->addItem( mRasterLayer->bandName( myIteratorInt ) );
+      QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->srcDataType( myIteratorInt );
+      if ( !( mySrcDataType == QGis::Byte ||
+              mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
+              mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
+        isInt = false;
     }
 
     // histo min/max selectors
@@ -164,11 +170,20 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action = new QAction( tr( "Display" ), group );
     action->setSeparator( true );
     menu->addAction( action );
-    action = new QAction( tr( "Draw as lines" ), group );
-    action->setData( QVariant( "Draw lines" ) );
-    action->setCheckable( true );
     // should we plot as histogram instead of line plot? (int data only)
-    action->setChecked( mHistoDrawLines );
+    action = new QAction( "", group );
+    action->setData( QVariant( "Draw lines" ) );
+    if ( isInt )
+    {
+      action->setText( tr( "Draw as lines" ) );
+      action->setCheckable( true );
+      action->setChecked( mHistoDrawLines );
+    }
+    else
+    {
+      action->setText( tr( "Draw as lines (only int layers)" ) );
+      action->setEnabled( false );
+    }
     menu->addAction( action );
 
     // actions
