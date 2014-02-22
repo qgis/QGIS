@@ -110,16 +110,7 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
   if ( !fallback )
   {
     // does the font even have the requested style?
-    bool hasstyle = false;
-    foreach ( const QString &style, fontDB.styles( f.family() ) )
-    {
-      if ( style == fontstyle )
-      {
-        hasstyle = true;
-        break;
-      }
-    }
-
+    bool hasstyle = fontFamilyHasStyle( f.family(), fontstyle );
     if ( !hasstyle )
     {
       return false;
@@ -129,16 +120,18 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
   // is the font's style already the same as requested?
   if ( fontstyle == fontDB.styleString( f ) )
   {
-    return true;
+    return false;
   }
 
-  int defaultSize = QApplication::font().pointSize(); // QFontDatabase::font() needs an integer for size
+  QFont appfont = QApplication::font();
+  int defaultSize = appfont.pointSize(); // QFontDatabase::font() needs an integer for size
 
   QFont styledfont;
   bool foundmatch = false;
 
+  // if fontDB.font() fails, it returns the default app font; but, that may be the target style
   styledfont = fontDB.font( f.family(), fontstyle, defaultSize );
-  if ( QApplication::font() != styledfont )
+  if ( appfont != styledfont || fontstyle != fontDB.styleString( f ) )
   {
     foundmatch = true;
   }
