@@ -44,6 +44,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 
     void showFilterWidget( bool visible );
     void setFilterSyntax( QAction * );
+    void setCaseSensitive( bool caseSensitive );
     void setFilter();
 
     // layer menu items
