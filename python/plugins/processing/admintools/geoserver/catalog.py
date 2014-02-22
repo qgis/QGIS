@@ -41,7 +41,10 @@ from processing.admintools.geoserver.layergroup import LayerGroup, \
     UnsavedLayerGroup
 from processing.admintools.geoserver.workspace import workspace_from_index, \
     Workspace
-from processing.admintools import httplib2
+try:
+  from processing.admintools import httplib2
+except ImportError:
+  import httplib2
 
 
 logger = logging.getLogger('gsconfig.catalog')
