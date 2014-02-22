@@ -140,7 +140,14 @@ class TestComposerVsCanvasPoint(TestComposerPoint):
     def setUpClass(cls):
         TestComposerPoint.setUpClass()
         cls._CheckGroup = 'pal_canvas'
-        cls._CheckMismatch = 2700  # rounding errors on composer output?
+        # rounding errors in composer; antialiasing?
+        cls._CheckMismatch = 2700
+        # cls._CheckMismatch = 0  # uncomment to PAL_REPORT actual difference
+
+    def setUp(self):
+        super(TestComposerVsCanvasPoint, self).setUp()
+        if 'test_background_svg' in self.id():
+            self._CheckMismatch = 3600
 
 
 if __name__ == '__main__':
