@@ -3757,6 +3757,17 @@ bool QgisApp::fileSave()
 
     QgsProject::instance()->setFileName( fullPath.filePath() );
   }
+  else
+  {
+    QFileInfo fi( QgsProject::instance()->fileName() );
+    if ( fi.exists() && ! fi.isWritable() )
+    {
+      messageBar()->pushMessage( tr( "Insufficient permissions" ),
+                                 tr( "The project file is not writable." ),
+                                 QgsMessageBar::WARNING );
+      return false;
+    }
+  }
 
   if ( QgsProject::instance()->write() )
   {
