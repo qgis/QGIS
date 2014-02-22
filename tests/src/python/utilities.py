@@ -150,6 +150,11 @@ def unitTestDataPath(theSubdir=None):
     return myPath
 
 
+def svgSymbolsPath():
+    return os.path.abspath(
+        os.path.join(unitTestDataPath(), '..', '..', 'images', 'svg'))
+
+
 def setCanvasCrs(theEpsgId, theOtfpFlag=False):
     """Helper to set the crs for the CANVAS before a test is run.
 
