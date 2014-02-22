@@ -450,10 +450,6 @@ ELSE (WIN32)
     SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
     IF (WITH_GLOBE)
       SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
-      IF (QGIS_MACAPP_BUNDLE GREATER 0)
-        # ensure OSG plugins bundled path will be used by globe plugin
-        SET (HAVE_MACAPP_BUNDLED_OSG 1)
-      ENDIF (QGIS_MACAPP_BUNDLE GREATER 0)
     ENDIF (WITH_GLOBE)
     # recent cmakes force SDKs, recent SDKs don't have user symlinks
     # need to find non-system frameworks

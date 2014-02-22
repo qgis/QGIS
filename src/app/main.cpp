@@ -858,9 +858,9 @@ int main( int argc, char *argv[] )
     // Now set the paths inside the bundle
     myPath += "/Contents/Plugins";
     QCoreApplication::addLibraryPath( myPath );
-    if ( QgsApplication::isRunningFromBuildDir() )
+    if ( QgsApplication::isRunningFromBuildDir() || QGIS_MACAPP_BUNDLE == 0 )
     {
-      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
+      QCoreApplication::addLibraryPath( QT_PLUGINS_DIR );
     }
     //next two lines should not be needed, testing only
 #if 0
