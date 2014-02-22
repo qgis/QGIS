@@ -8,6 +8,8 @@ Set the following env variables when manually running tests:
   PAL_CONTROL_IMAGE to trigger building of new control images
   PAL_REPORT to open any failed image check reports in web browser
 
+  PAL_SERVER_TEMP to open the web server temp directory, instead of deleting
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -44,7 +46,10 @@ from qgis_local_server import (
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from test_qgspallabeling_tests import TestPointBase
+from test_qgspallabeling_tests import (
+    TestPointBase,
+    suiteTests
+)
 
 MAPSERV = getLocalServer()
 
@@ -83,9 +88,8 @@ class TestServerBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         # layers removed, save empty project file
         cls._TestProj.write()
-        if "PAL_REPORT" in os.environ:
+        if "PAL_SERVER_TEMP" in os.environ:
             MAPSERV.stop_processes()
-            # MAPSERV.fcgi_server_process().stop()
             MAPSERV.open_temp_dir()
         else:
             MAPSERV.shutdown()
@@ -173,21 +177,10 @@ class TestServerVsCanvasPoint(TestServerPoint):
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
-    # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
-    suite = [
-        'TestServerPoint.test_default_label',
-        'TestServerPoint.test_text_size_map_unit',
-        'TestServerPoint.test_text_color',
-        'TestServerPoint.test_partials_labels_enabled',
-        'TestServerPoint.test_partials_labels_disabled',
-
-        'TestServerVsCanvasPoint.test_default_label',
-        'TestServerVsCanvasPoint.test_text_size_map_unit',
-        'TestServerVsCanvasPoint.test_text_color',
-        'TestServerVsCanvasPoint.test_partials_labels_enabled',
-        'TestServerVsCanvasPoint.test_partials_labels_disabled',
-    ]
+    # SEE: test_qgspallabeling_tests.suiteTests() to define suite
+    suite = (
+        ['TestServerPoint.' + t for t in suiteTests()['sp_suite']] +
+        ['TestServerVsCanvasPoint.' + t for t in suiteTests()['sp_vs_suite']]
+    )
     res = runSuite(sys.modules[__name__], suite)
-    # if SPAWN:
-    #     os.remove(TESTPROJDIR)  # remove temp directory (why does this error?)
     sys.exit(not res.wasSuccessful())

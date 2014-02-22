@@ -34,7 +34,10 @@ from utilities import (
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from test_qgspallabeling_tests import TestPointBase
+from test_qgspallabeling_tests import (
+    TestPointBase,
+    suiteTests
+)
 
 
 # noinspection PyShadowingNames
@@ -152,19 +155,10 @@ class TestComposerVsCanvasPoint(TestComposerPoint):
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
-    # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
-    suite = [
-        'TestComposerPoint.test_default_label',
-        'TestComposerPoint.test_text_size_map_unit',
-        'TestComposerPoint.test_text_color',
-        'TestComposerPoint.test_partials_labels_enabled',
-        'TestComposerPoint.test_partials_labels_disabled',
-
-        'TestComposerVsCanvasPoint.test_default_label',
-        'TestComposerVsCanvasPoint.test_text_size_map_unit',
-        'TestComposerVsCanvasPoint.test_text_color',
-        'TestComposerVsCanvasPoint.test_partials_labels_enabled',
-        'TestComposerVsCanvasPoint.test_partials_labels_disabled',
-    ]
+    # SEE: test_qgspallabeling_tests.suiteTests() to define suite
+    suite = (
+        ['TestComposerPoint.' + t for t in suiteTests()['sp_suite']] +
+        ['TestComposerVsCanvasPoint.' + t for t in suiteTests()['sp_vs_suite']]
+    )
     res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

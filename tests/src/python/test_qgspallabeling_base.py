@@ -210,7 +210,10 @@ class TestQgsPalLabeling(TestCase):
         return res
 
     def saveContolImage(self, tmpimg=''):
-        if 'PAL_CONTROL_IMAGE' not in os.environ:
+        # don't save control images for RenderVsOtherOutput (Vs) tests, since
+        # those control images belong to a different test result
+        if ('PAL_CONTROL_IMAGE' not in os.environ
+                or 'Vs' in self._TestGroup):
             return
         testgrpdir = 'expected_' + self._TestGroupPrefix
         testdir = os.path.join(self._TestDataDir, 'control_images',
@@ -228,6 +231,10 @@ class TestQgsPalLabeling(TestCase):
         else:
             self._Map.render()
             self._Canvas.saveAsImage(imgpath)
+            # delete extraneous world file (always generated)
+            wrld_file = imgbasepath + '.PNGw'
+            if os.path.exists(wrld_file):
+                os.remove(wrld_file)
 
     def renderCheck(self, mismatch=0, imgpath='', grpprefix=''):
         """Check rendered map canvas or existing image against control image
@@ -331,8 +338,12 @@ def runSuite(module, tests):
     """This allows for a list of test names to be selectively run.
     Also, ensures unittest verbose output comes at end, after debug output"""
     loader = unittest.defaultTestLoader
-    if 'PAL_SUITE' in os.environ and tests:
-        suite = loader.loadTestsFromNames(tests, module)
+    if 'PAL_SUITE' in os.environ:
+        if tests:
+            suite = loader.loadTestsFromNames(tests, module)
+        else:
+            raise Exception(
+                "\n\n####__ 'PAL_SUITE' set, but no tests specified __####\n")
     else:
         suite = loader.loadTestsFromModule(module)
     verb = 2 if 'PAL_VERBOSE' in os.environ else 0

@@ -142,5 +142,24 @@ class TestPointBase(object):
         self.checkTest()
 
 
+# noinspection PyPep8Naming
+def suiteTests():
+    """
+    Use to define which tests are run when PAL_SUITE is set.
+    Use sp_vs_suite comparison of server and composer outputs to canvas
+    """
+    return {
+        'sp_suite': [
+            # 'test_background_svg',
+            'test_background_svg_w_offset',
+        ],
+        'sp_vs_suite': [
+            # 'test_background_svg',
+            'test_background_svg_w_offset',
+            # 'test_background_rect_w_offset',
+        ]
+    }
+
+
 if __name__ == '__main__':
     pass
