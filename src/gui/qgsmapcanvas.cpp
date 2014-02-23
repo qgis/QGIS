@@ -1799,15 +1799,10 @@ void QgsMapCanvas::mapToolDestroyed()
   mMapTool = 0;
 }
 
-#if 0 // TODO[MD]: after merge
 #ifdef HAVE_TOUCH
 bool QgsMapCanvas::event( QEvent * e )
 {
   bool done = false;
-  if ( mDrawing )
-  {
-    return done;
-  }
   if ( e->type() == QEvent::Gesture )
   {
     // call handler of current map tool
@@ -1823,5 +1818,4 @@ bool QgsMapCanvas::event( QEvent * e )
   }
   return done;
 }
-#endif
 #endif
