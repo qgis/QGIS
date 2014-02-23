@@ -26,7 +26,7 @@
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mLabelRubberBand( 0 ), mFeatureRubberBand( 0 ), mFixPointRubberBand( 0 )
-  , mCurrentLayer( 0 )
+    , mCurrentLayer( 0 )
 {
 }
 
@@ -138,7 +138,7 @@ QgsPalLayerSettings& QgsMapToolLabel::currentLabelSettings( bool* ok )
     mCurrentSettings = QgsPalLayerSettings::fromLayer( vlayer );
 
     if ( ok )
-        *ok = true;
+      *ok = true;
 
     return mCurrentSettings;
   }

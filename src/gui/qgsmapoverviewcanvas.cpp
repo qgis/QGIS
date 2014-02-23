@@ -260,19 +260,19 @@ void QgsMapOverviewCanvas::refresh()
   if ( !mSettings.hasValidSettings() )
     return; // makes no sense to render anything
 
-  if (mJob)
+  if ( mJob )
   {
-    qDebug("oveview - cancelling old");
+    qDebug( "oveview - cancelling old" );
     mJob->cancel();
-    qDebug("oveview - deleting old");
+    qDebug( "oveview - deleting old" );
     delete mJob; // get rid of previous job (if any)
   }
 
-  qDebug("oveview - starting new");
+  qDebug( "oveview - starting new" );
 
   // TODO: setup overview mode
-  mJob = new QgsMapRendererSequentialJob(mSettings);
-  connect(mJob, SIGNAL(finished()), this, SLOT(mapRenderingFinished()));
+  mJob = new QgsMapRendererSequentialJob( mSettings );
+  connect( mJob, SIGNAL( finished() ), this, SLOT( mapRenderingFinished() ) );
   mJob->start();
 
   // schedule repaint
@@ -284,7 +284,7 @@ void QgsMapOverviewCanvas::refresh()
 
 void QgsMapOverviewCanvas::mapRenderingFinished()
 {
-  qDebug("overview - finished");
+  qDebug( "overview - finished" );
   mPixmap = QPixmap::fromImage( mJob->renderedImage() );
 
   delete mJob;

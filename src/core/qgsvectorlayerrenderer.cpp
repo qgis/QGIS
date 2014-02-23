@@ -22,14 +22,14 @@
 
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
-  : QgsMapLayerRenderer( layer->id() )
-  , mContext( context )
-  , mFields( layer->pendingFields() )
-  , mRendererV2( 0 )
-  , mCache( 0 )
-  , mLabeling( false )
-  , mDiagrams( false )
-  , mLayerTransparency( 0 )
+    : QgsMapLayerRenderer( layer->id() )
+    , mContext( context )
+    , mFields( layer->pendingFields() )
+    , mRendererV2( 0 )
+    , mCache( 0 )
+    , mLabeling( false )
+    , mDiagrams( false )
+    , mLayerTransparency( 0 )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -114,8 +114,8 @@ bool QgsVectorLayerRenderer::render()
   mRendererV2->startRender( mContext, mFields );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
-                                      .setFilterRect( mContext.extent() )
-                                      .setSubsetOfAttributes( mAttrNames, mFields );
+                                     .setFilterRect( mContext.extent() )
+                                     .setSubsetOfAttributes( mAttrNames, mFields );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
   if ( mSimplifyGeometry )
@@ -189,7 +189,7 @@ bool QgsVectorLayerRenderer::render()
     // use destination in composition mode to merge source's alpha with destination
     mContext.painter()->setCompositionMode( QPainter::CompositionMode_DestinationIn );
     mContext.painter()->fillRect( 0, 0, mContext.painter()->device()->width(),
-                                        mContext.painter()->device()->height(), transparentFillColor );
+                                  mContext.painter()->device()->height(), transparentFillColor );
   }
 
   return true;
@@ -220,7 +220,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 
       if ( mContext.renderingStopped() )
       {
-        qDebug("breaking!");
+        qDebug( "breaking!" );
         break;
       }
 
@@ -283,7 +283,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
     if ( mContext.renderingStopped() )
     {
-      qDebug("rendering stop!");
+      qDebug( "rendering stop!" );
       stopRendererV2( selRenderer );
       return;
     }

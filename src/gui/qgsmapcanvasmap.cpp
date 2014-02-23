@@ -40,10 +40,10 @@ void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect 
 
 void QgsMapCanvasMap::paint( QPainter* painter )
 {
-  int w = qRound(boundingRect().width()) - 2, h = qRound(boundingRect().height()) - 2; // setRect() makes the size +2 :-(
-  if (mImage.size() != QSize(w,h))
-    qDebug("map paint DIFFERENT SIZE: img %d,%d  item %d,%d", mImage.width(), mImage.height(), w, h);
-  painter->drawImage( QRect(0, 0, w, h), mImage );
+  int w = qRound( boundingRect().width() ) - 2, h = qRound( boundingRect().height() ) - 2; // setRect() makes the size +2 :-(
+  if ( mImage.size() != QSize( w, h ) )
+    qDebug( "map paint DIFFERENT SIZE: img %d,%d  item %d,%d", mImage.width(), mImage.height(), w, h );
+  painter->drawImage( QRect( 0, 0, w, h ), mImage );
 }
 
 QPaintDevice& QgsMapCanvasMap::paintDevice()

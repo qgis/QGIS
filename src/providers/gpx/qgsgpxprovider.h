@@ -146,7 +146,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
                      CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
                  };
 
-private:
+  private:
 
     QgsGPSData* data;
 

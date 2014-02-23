@@ -17,14 +17,14 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 
 QgsMapSettings::QgsMapSettings()
-  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
-  , mSize( QSize( 0, 0 ) )
-  , mExtent()
-  , mProjectionsEnabled( false )
-  , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
-  , mBackgroundColor( Qt::white )
-  , mSelectionColor( Qt::yellow )
-  , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling )
+    : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+    , mSize( QSize( 0, 0 ) )
+    , mExtent()
+    , mProjectionsEnabled( false )
+    , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
+    , mBackgroundColor( Qt::white )
+    , mSelectionColor( Qt::yellow )
+    , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling )
 {
   updateDerived();
 
@@ -38,7 +38,7 @@ QgsRectangle QgsMapSettings::extent() const
   return mExtent;
 }
 
-void QgsMapSettings::setExtent(const QgsRectangle& extent)
+void QgsMapSettings::setExtent( const QgsRectangle& extent )
 {
   mExtent = extent;
 
@@ -104,7 +104,7 @@ void QgsMapSettings::updateDerived()
 
   // calculate the actual extent of the mapCanvas
   double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
+                 dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
@@ -144,7 +144,7 @@ QSize QgsMapSettings::outputSize() const
   return mSize;
 }
 
-void QgsMapSettings::setOutputSize(const QSize& size)
+void QgsMapSettings::setOutputSize( const QSize& size )
 {
   mSize = size;
 
@@ -156,7 +156,7 @@ int QgsMapSettings::outputDpi() const
   return mDpi;
 }
 
-void QgsMapSettings::setOutputDpi(int dpi)
+void QgsMapSettings::setOutputDpi( int dpi )
 {
   mDpi = dpi;
 
@@ -169,7 +169,7 @@ QStringList QgsMapSettings::layers() const
   return mLayers;
 }
 
-void QgsMapSettings::setLayers(const QStringList& layers)
+void QgsMapSettings::setLayers( const QStringList& layers )
 {
   mLayers = layers;
 }

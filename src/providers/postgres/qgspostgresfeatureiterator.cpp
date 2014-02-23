@@ -287,90 +287,90 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   //}
 
 
-    const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+  const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
 
-    QString query = "SELECT ", delim = "";
+  QString query = "SELECT ", delim = "";
 
-    bool isPointLayer = QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown ? mSource->mRequestedGeomType : mSource->mDetectedGeomType ) ) == QGis::WKBPoint;
-    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !isPointLayer )
-    {
-      QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
-                                     ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
-                                         : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
+  bool isPointLayer = QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown ? mSource->mRequestedGeomType : mSource->mDetectedGeomType ) ) == QGis::WKBPoint;
+  if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !isPointLayer )
+  {
+    QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
+                                   ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
+                                       : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
 
-      double tolerance = simplifyMethod.tolerance() * 0.8; //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+    double tolerance = simplifyMethod.tolerance() * 0.8; //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
 
-      query += QString( "%1(%5(%2%3,%6),'%4')" )
-               .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-               .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-               .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
-               .arg( QgsPostgresProvider::endianString() )
-               .arg( simplifyFunctionName )
-               .arg( tolerance );
+    query += QString( "%1(%5(%2%3,%6),'%4')" )
+             .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+             .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
+             .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
+             .arg( QgsPostgresProvider::endianString() )
+             .arg( simplifyFunctionName )
+             .arg( tolerance );
+    delim = ",";
+  }
+  else if ( mFetchGeometry )
+  {
+    query += QString( "%1(%2%3,'%4')" )
+             .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+             .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
+             .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
+             .arg( QgsPostgresProvider::endianString() );
+    delim = ",";
+  }
+
+  switch ( mSource->mPrimaryKeyType )
+  {
+    case pktOid:
+      query += delim + "oid";
       delim = ",";
-    }
-    else if ( mFetchGeometry )
-    {
-      query += QString( "%1(%2%3,'%4')" )
-               .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-               .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-               .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
-               .arg( QgsPostgresProvider::endianString() );
+      break;
+
+    case pktTid:
+      query += delim + "ctid";
       delim = ",";
-    }
+      break;
 
-    switch ( mSource->mPrimaryKeyType )
-    {
-      case pktOid:
-        query += delim + "oid";
+    case pktInt:
+      query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields[ mSource->mPrimaryKeyAttrs[0] ].name() );
+      delim = ",";
+      break;
+
+    case pktFidMap:
+      foreach ( int idx, mSource->mPrimaryKeyAttrs )
+      {
+        query += delim + mConn->fieldExpression( mSource->mFields[idx] );
         delim = ",";
-        break;
+      }
+      break;
 
-      case pktTid:
-        query += delim + "ctid";
-        delim = ",";
-        break;
-
-      case pktInt:
-        query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields[ mSource->mPrimaryKeyAttrs[0] ].name() );
-        delim = ",";
-        break;
-
-      case pktFidMap:
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
-        {
-          query += delim + mConn->fieldExpression( mSource->mFields[idx] );
-          delim = ",";
-        }
-        break;
-
-      case pktUnknown:
-        QgsDebugMsg( "Cannot declare cursor without primary key." );
-        return false;
-        break;
-    }
-
-    bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-    foreach ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
-    {
-      if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
-        continue;
-
-      query += delim + mConn->fieldExpression( mSource->mFields[idx] );
-    }
-
-    query += " FROM " + mSource->mQuery;
-
-    if ( !whereClause.isEmpty() )
-      query += QString( " WHERE %1" ).arg( whereClause );
-
-    if ( !mConn->openCursor( mCursorName, query ) )
-    {
-      // reloading the fields might help next time around
-      rewind();
-      // TODO how to cleanly force reload of fields?  P->loadFields();
+    case pktUnknown:
+      QgsDebugMsg( "Cannot declare cursor without primary key." );
       return false;
-    }
+      break;
+  }
+
+  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  foreach ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
+  {
+    if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
+      continue;
+
+    query += delim + mConn->fieldExpression( mSource->mFields[idx] );
+  }
+
+  query += " FROM " + mSource->mQuery;
+
+  if ( !whereClause.isEmpty() )
+    query += QString( " WHERE %1" ).arg( whereClause );
+
+  if ( !mConn->openCursor( mCursorName, query ) )
+  {
+    // reloading the fields might help next time around
+    rewind();
+    // TODO how to cleanly force reload of fields?  P->loadFields();
+    return false;
+  }
 
   return true;
 }
@@ -378,143 +378,143 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
 bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature )
 {
-    feature.initAttributes( mSource->mFields.count() );
+  feature.initAttributes( mSource->mFields.count() );
 
-    int col = 0;
+  int col = 0;
 
-    if ( mFetchGeometry )
+  if ( mFetchGeometry )
+  {
+    int returnedLength = ::PQgetlength( queryResult.result(), row, col );
+    if ( returnedLength > 0 )
     {
-      int returnedLength = ::PQgetlength( queryResult.result(), row, col );
-      if ( returnedLength > 0 )
+      unsigned char *featureGeom = new unsigned char[returnedLength + 1];
+      memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
+      memset( featureGeom + returnedLength, 0, 1 );
+
+      // modify 2.5D WKB types to make them compliant with OGR
+      unsigned int wkbType;
+      memcpy( &wkbType, featureGeom + 1, sizeof( wkbType ) );
+      wkbType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
+      memcpy( featureGeom + 1, &wkbType, sizeof( wkbType ) );
+
+      // change wkb type of inner geometries
+      if ( wkbType == QGis::WKBMultiPoint25D ||
+           wkbType == QGis::WKBMultiLineString25D ||
+           wkbType == QGis::WKBMultiPolygon25D )
       {
-        unsigned char *featureGeom = new unsigned char[returnedLength + 1];
-        memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
-        memset( featureGeom + returnedLength, 0, 1 );
-
-        // modify 2.5D WKB types to make them compliant with OGR
-        unsigned int wkbType;
-        memcpy( &wkbType, featureGeom + 1, sizeof( wkbType ) );
-        wkbType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
-        memcpy( featureGeom + 1, &wkbType, sizeof( wkbType ) );
-
-        // change wkb type of inner geometries
-        if ( wkbType == QGis::WKBMultiPoint25D ||
-             wkbType == QGis::WKBMultiLineString25D ||
-             wkbType == QGis::WKBMultiPolygon25D )
+        unsigned int numGeoms;
+        memcpy( &numGeoms, featureGeom + 5, sizeof( unsigned int ) );
+        unsigned char *wkb = featureGeom + 9;
+        for ( unsigned int i = 0; i < numGeoms; ++i )
         {
-          unsigned int numGeoms;
-          memcpy( &numGeoms, featureGeom + 5, sizeof( unsigned int ) );
-          unsigned char *wkb = featureGeom + 9;
-          for ( unsigned int i = 0; i < numGeoms; ++i )
+          unsigned int localType;
+          memcpy( &localType, wkb + 1, sizeof( localType ) );
+          localType = QgsPostgresConn::wkbTypeFromOgcWkbType( localType );
+          memcpy( wkb + 1, &localType, sizeof( localType ) );
+
+          // skip endian and type info
+          wkb += sizeof( unsigned int ) + 1;
+
+          // skip coordinates
+          switch ( wkbType )
           {
-            unsigned int localType;
-            memcpy( &localType, wkb + 1, sizeof( localType ) );
-            localType = QgsPostgresConn::wkbTypeFromOgcWkbType( localType );
-            memcpy( wkb + 1, &localType, sizeof( localType ) );
-
-            // skip endian and type info
-            wkb += sizeof( unsigned int ) + 1;
-
-            // skip coordinates
-            switch ( wkbType )
+            case QGis::WKBMultiPoint25D:
+              wkb += sizeof( double ) * 3;
+              break;
+            case QGis::WKBMultiLineString25D:
             {
-              case QGis::WKBMultiPoint25D:
-                wkb += sizeof( double ) * 3;
-                break;
-              case QGis::WKBMultiLineString25D:
+              unsigned int nPoints;
+              memcpy( &nPoints, wkb, sizeof( int ) );
+              wkb += sizeof( int ) + sizeof( double ) * 3 * nPoints;
+            }
+            break;
+            default:
+            case QGis::WKBMultiPolygon25D:
+            {
+              unsigned int nRings;
+              memcpy( &nRings, wkb, sizeof( int ) );
+              wkb += sizeof( int );
+              for ( unsigned int j = 0; j < nRings; ++j )
               {
                 unsigned int nPoints;
                 memcpy( &nPoints, wkb, sizeof( int ) );
-                wkb += sizeof( int ) + sizeof( double ) * 3 * nPoints;
+                wkb += sizeof( nPoints ) + sizeof( double ) * 3 * nPoints;
               }
-              break;
-              default:
-              case QGis::WKBMultiPolygon25D:
-              {
-                unsigned int nRings;
-                memcpy( &nRings, wkb, sizeof( int ) );
-                wkb += sizeof( int );
-                for ( unsigned int j = 0; j < nRings; ++j )
-                {
-                  unsigned int nPoints;
-                  memcpy( &nPoints, wkb, sizeof( int ) );
-                  wkb += sizeof( nPoints ) + sizeof( double ) * 3 * nPoints;
-                }
-              }
-              break;
             }
+            break;
           }
         }
-
-        feature.setGeometryAndOwnership( featureGeom, returnedLength + 1 );
-      }
-      else
-      {
-        feature.setGeometryAndOwnership( 0, 0 );
       }
 
-      col++;
-    }
-
-    QgsFeatureId fid = 0;
-
-    bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-    const QgsAttributeList& fetchAttributes = mRequest.subsetOfAttributes();
-
-    switch ( mSource->mPrimaryKeyType )
-    {
-      case pktOid:
-      case pktTid:
-      case pktInt:
-        fid = mConn->getBinaryInt( queryResult, row, col++ );
-        if ( mSource->mPrimaryKeyType == pktInt &&
-             ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs[0] ) ) )
-          feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
-        break;
-
-      case pktFidMap:
-      {
-        QList<QVariant> primaryKeyVals;
-
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
-        {
-          const QgsField &fld = mSource->mFields[idx];
-
-          QVariant v = QgsPostgresProvider::convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
-          primaryKeyVals << v;
-
-          if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
-            feature.setAttribute( idx, v );
-
-          col++;
-        }
-
-        fid = mSource->mShared->lookupFid( QVariant( primaryKeyVals ) );
-
-      }
-      break;
-
-      case pktUnknown:
-        Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
-        return false;
-    }
-
-    feature.setFeatureId( fid );
-    QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
-
-    // iterate attributes
-    if ( subsetOfAttributes )
-    {
-      foreach ( int idx, fetchAttributes )
-        getFeatureAttribute( idx, queryResult, row, col, feature );
+      feature.setGeometryAndOwnership( featureGeom, returnedLength + 1 );
     }
     else
     {
-      for ( int idx = 0; idx < mSource->mFields.count(); ++idx )
-        getFeatureAttribute( idx, queryResult, row, col, feature );
+      feature.setGeometryAndOwnership( 0, 0 );
     }
 
-    return true;
+    col++;
+  }
+
+  QgsFeatureId fid = 0;
+
+  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  const QgsAttributeList& fetchAttributes = mRequest.subsetOfAttributes();
+
+  switch ( mSource->mPrimaryKeyType )
+  {
+    case pktOid:
+    case pktTid:
+    case pktInt:
+      fid = mConn->getBinaryInt( queryResult, row, col++ );
+      if ( mSource->mPrimaryKeyType == pktInt &&
+           ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs[0] ) ) )
+        feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
+      break;
+
+    case pktFidMap:
+    {
+      QList<QVariant> primaryKeyVals;
+
+      foreach ( int idx, mSource->mPrimaryKeyAttrs )
+      {
+        const QgsField &fld = mSource->mFields[idx];
+
+        QVariant v = QgsPostgresProvider::convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
+        primaryKeyVals << v;
+
+        if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+          feature.setAttribute( idx, v );
+
+        col++;
+      }
+
+      fid = mSource->mShared->lookupFid( QVariant( primaryKeyVals ) );
+
+    }
+    break;
+
+    case pktUnknown:
+      Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
+      return false;
+  }
+
+  feature.setFeatureId( fid );
+  QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
+
+  // iterate attributes
+  if ( subsetOfAttributes )
+  {
+    foreach ( int idx, fetchAttributes )
+      getFeatureAttribute( idx, queryResult, row, col, feature );
+  }
+  else
+  {
+    for ( int idx = 0; idx < mSource->mFields.count(); ++idx )
+      getFeatureAttribute( idx, queryResult, row, col, feature );
+  }
+
+  return true;
 }
 
 void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature )
@@ -532,19 +532,19 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 //  ------------------
 
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
-  : mConnInfo( p->mUri.connectionInfo() )
-  , mGeometryColumn( p->mGeometryColumn )
-  , mSqlWhereClause( p->mSqlWhereClause )
-  , mFields( p->mAttributeFields )
-  , mSpatialColType( p->mSpatialColType )
-  , mRequestedSrid( p->mRequestedSrid )
-  , mDetectedSrid( p->mDetectedSrid )
-  , mRequestedGeomType( p->mRequestedGeomType )
-  , mDetectedGeomType( p->mDetectedGeomType )
-  , mPrimaryKeyType( p->mPrimaryKeyType )
-  , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
-  , mQuery( p->mQuery )
-  , mShared( p->mShared )
+    : mConnInfo( p->mUri.connectionInfo() )
+    , mGeometryColumn( p->mGeometryColumn )
+    , mSqlWhereClause( p->mSqlWhereClause )
+    , mFields( p->mAttributeFields )
+    , mSpatialColType( p->mSpatialColType )
+    , mRequestedSrid( p->mRequestedSrid )
+    , mDetectedSrid( p->mDetectedSrid )
+    , mRequestedGeomType( p->mRequestedGeomType )
+    , mDetectedGeomType( p->mDetectedGeomType )
+    , mPrimaryKeyType( p->mPrimaryKeyType )
+    , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
+    , mQuery( p->mQuery )
+    , mShared( p->mShared )
 {
 }
 

@@ -25,22 +25,22 @@
  */
 class CORE_EXPORT QgsMapLayerRenderer
 {
-public:
-  QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}
-  virtual ~QgsMapLayerRenderer() {}
+  public:
+    QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}
+    virtual ~QgsMapLayerRenderer() {}
 
-  //! Do the rendering (based on data stored in the class)
-  virtual bool render() = 0;
+    //! Do the rendering (based on data stored in the class)
+    virtual bool render() = 0;
 
-  //! Return list of errors (problems) that happened during the rendering
-  QStringList errors() const { return mErrors; }
+    //! Return list of errors (problems) that happened during the rendering
+    QStringList errors() const { return mErrors; }
 
-  //! Get access to the ID of the layer rendered by this class
-  QString layerID() const { return mLayerID; }
+    //! Get access to the ID of the layer rendered by this class
+    QString layerID() const { return mLayerID; }
 
-protected:
-  QStringList mErrors;
-  QString mLayerID;
+  protected:
+    QStringList mErrors;
+    QString mLayerID;
 };
 
 #endif // QGSMAPLAYERRENDERER_H

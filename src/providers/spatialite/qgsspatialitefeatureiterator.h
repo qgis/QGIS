@@ -29,29 +29,29 @@ class QgsSpatiaLiteProvider;
 
 class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
-  ~QgsSpatiaLiteFeatureSource();
+  public:
+    QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
+    ~QgsSpatiaLiteFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
-  QString mGeometryColumn;
-  QString mSubsetString;
-  QgsFields mFields;
-  QString mQuery;
-  bool isQuery;
-  bool mVShapeBased;
-  QString mIndexTable;
-  QString mIndexGeometry;
-  QString mPrimaryKey;
-  bool spatialIndexRTree;
-  bool spatialIndexMbrCache;
+  protected:
+    QString mGeometryColumn;
+    QString mSubsetString;
+    QgsFields mFields;
+    QString mQuery;
+    bool isQuery;
+    bool mVShapeBased;
+    QString mIndexTable;
+    QString mIndexGeometry;
+    QString mPrimaryKey;
+    bool spatialIndexRTree;
+    bool spatialIndexMbrCache;
 
-  QgsSpatiaLiteProvider::SqliteHandles* handle;
-  sqlite3 *sqliteHandle;
+    QgsSpatiaLiteProvider::SqliteHandles* handle;
+    sqlite3 *sqliteHandle;
 
-  friend class QgsSpatiaLiteFeatureIterator;
+    friend class QgsSpatiaLiteFeatureIterator;
 };
 
 class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>

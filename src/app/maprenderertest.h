@@ -13,81 +13,81 @@
 
 class TestWidget : public QLabel
 {
-  Q_OBJECT
-public:
-  TestWidget(QgsMapLayer* layer)
-  {
-    job = 0;
-
-    // init renderer
-    ms.setLayers(QStringList(layer->id()));
-    ms.setExtent(layer->extent());
-    ms.setOutputSize(size());
-
-    if (ms.hasValidSettings())
-      qDebug("map renderer settings valid");
-
-    connect(&timer, SIGNAL(timeout()), SLOT(onMapUpdateTimeout()));
-    timer.setInterval(100);
-  }
-
-  void mousePressEvent(QMouseEvent * event)
-  {
-    if (event->button() == Qt::RightButton)
+    Q_OBJECT
+  public:
+    TestWidget( QgsMapLayer* layer )
     {
-      qDebug("cancelling!");
+      job = 0;
 
-      if (job)
+      // init renderer
+      ms.setLayers( QStringList( layer->id() ) );
+      ms.setExtent( layer->extent() );
+      ms.setOutputSize( size() );
+
+      if ( ms.hasValidSettings() )
+        qDebug( "map renderer settings valid" );
+
+      connect( &timer, SIGNAL( timeout() ), SLOT( onMapUpdateTimeout() ) );
+      timer.setInterval( 100 );
+    }
+
+    void mousePressEvent( QMouseEvent * event )
+    {
+      if ( event->button() == Qt::RightButton )
       {
-        job->cancel();
-        delete job;
-        job = 0;
+        qDebug( "cancelling!" );
+
+        if ( job )
+        {
+          job->cancel();
+          delete job;
+          job = 0;
+        }
+      }
+      else
+      {
+        qDebug( "starting!" );
+
+        if ( job )
+        {
+          qDebug( "need to cancel first!" );
+          job->cancel();
+          delete job;
+          job = 0;
+        }
+
+        job = new QgsMapRendererSequentialJob( ms );
+        connect( job, SIGNAL( finished() ), SLOT( f() ) );
+
+        job->start();
+
+        timer.start();
       }
     }
-    else
+
+  protected slots:
+    void f()
     {
-      qDebug("starting!");
+      qDebug( "finished!" );
 
-      if (job)
-      {
-        qDebug("need to cancel first!");
-        job->cancel();
-        delete job;
-        job = 0;
-      }
+      timer.stop();
 
-      job = new QgsMapRendererSequentialJob(ms);
-      connect(job, SIGNAL(finished()), SLOT(f()));
-
-      job->start();
-
-      timer.start();
+      if ( job )
+        setPixmap( QPixmap::fromImage( job->renderedImage() ) );
     }
-  }
 
-protected slots:
-  void f()
-  {
-    qDebug("finished!");
+    void onMapUpdateTimeout()
+    {
+      qDebug( "update timer!" );
 
-    timer.stop();
+      if ( job )
+        setPixmap( QPixmap::fromImage( job->renderedImage() ) );
+    }
 
-    if (job)
-      setPixmap(QPixmap::fromImage( job->renderedImage() ));
-  }
-
-  void onMapUpdateTimeout()
-  {
-    qDebug("update timer!");
-
-    if (job)
-      setPixmap(QPixmap::fromImage( job->renderedImage() ));
-  }
-
-protected:
-  QgsMapSettings ms;
-  QgsMapRendererQImageJob* job;
-  QTimer timer;
+  protected:
+    QgsMapSettings ms;
+    QgsMapRendererQImageJob* job;
+    QTimer timer;
 };
 
 

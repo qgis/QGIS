@@ -123,7 +123,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @note added in 2.4
      * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
-    virtual QgsAbstractFeatureSource* featureSource() const { Q_ASSERT(0 && "All providers must support featureSource()"); return 0; }
+    virtual QgsAbstractFeatureSource* featureSource() const { Q_ASSERT( 0 && "All providers must support featureSource()" ); return 0; }
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     static QVariant convertValue( QVariant::Type type, QString value );
 
-protected:
+  protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
 

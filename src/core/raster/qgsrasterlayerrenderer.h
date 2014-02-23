@@ -13,19 +13,19 @@ class QgsRenderContext;
 
 class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
-public:
-  QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext );
-  ~QgsRasterLayerRenderer();
+  public:
+    QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext );
+    ~QgsRasterLayerRenderer();
 
-  virtual bool render();
+    virtual bool render();
 
-protected:
+  protected:
 
-  QPainter* mPainter;
-  const QgsMapToPixel* mMapToPixel;
-  QgsRasterViewPort* mRasterViewPort;
+    QPainter* mPainter;
+    const QgsMapToPixel* mMapToPixel;
+    QgsRasterViewPort* mRasterViewPort;
 
-  QgsRasterPipe* mPipe;
+    QgsRasterPipe* mPipe;
 };
 
 #endif // QGSRASTERLAYERRENDERER_H

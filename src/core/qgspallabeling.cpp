@@ -68,8 +68,8 @@ static void _fixQPictureDPI( QPainter* p )
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  p->scale( (double)qt_defaultDpiX() / p->device()->logicalDpiX(),
-            (double)qt_defaultDpiY() / p->device()->logicalDpiY() );
+  p->scale(( double )qt_defaultDpiX() / p->device()->logicalDpiX(),
+           ( double )qt_defaultDpiY() / p->device()->logicalDpiY() );
 }
 
 
@@ -3355,7 +3355,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
   s->xform = &mMapSettings->mapToPixel();
   mActiveDiagramLayers.insert( layer->id(), *s );
 
-  mActiveDiagramLayers[ layer->id() ].renderer = layer->diagramRenderer()->clone();
+  mActiveDiagramLayers[ layer->id()].renderer = layer->diagramRenderer()->clone();
 
   return 1;
 }
@@ -3834,7 +3834,7 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
 // helper function for checking for job cancellation within PAL
 static bool _palIsCancelled( void* ctx )
 {
-  return ( ( QgsRenderContext* ) ctx )->renderingStopped();
+  return (( QgsRenderContext* ) ctx )->renderingStopped();
 }
 
 void QgsPalLabeling::drawLabeling( QgsRenderContext& context )

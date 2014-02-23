@@ -407,30 +407,30 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 /** Handler for downloading of coverage data - output is written to mCachedData */
 class QgsWcsDownloadHandler : public QObject
 {
-  Q_OBJECT
-public:
-  QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError );
-  ~QgsWcsDownloadHandler();
+    Q_OBJECT
+  public:
+    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError );
+    ~QgsWcsDownloadHandler();
 
-  void blockingDownload();
+    void blockingDownload();
 
-protected slots:
-  void cacheReplyFinished();
-  void cacheReplyProgress( qint64, qint64 );
+  protected slots:
+    void cacheReplyFinished();
+    void cacheReplyProgress( qint64, qint64 );
 
-protected:
-  void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+  protected:
+    void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
-  QgsNetworkAccessManager* mNAM;
-  QEventLoop* mEventLoop;
+    QgsNetworkAccessManager* mNAM;
+    QEventLoop* mEventLoop;
 
-  QNetworkReply* mCacheReply;
+    QNetworkReply* mCacheReply;
 
-  QByteArray& mCachedData;
-  QString mWcsVersion;
-  QgsError& mCachedError;
+    QByteArray& mCachedData;
+    QString mWcsVersion;
+    QgsError& mCachedError;
 
-  static int sErrors; // this should be ideally per-provider...?
+    static int sErrors; // this should be ideally per-provider...?
 };
 
 

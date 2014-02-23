@@ -60,10 +60,10 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
 }
 
 QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
-  : QGraphicsScene( 0 )
-  , mMapRenderer( 0 )
-  , mMapSettings( mapSettings )
-  , mAtlasComposition( this )
+    : QGraphicsScene( 0 )
+    , mMapRenderer( 0 )
+    , mMapSettings( mapSettings )
+    , mAtlasComposition( this )
 {
   init();
 }
@@ -98,7 +98,7 @@ void QgsComposition::init()
 
   setBackgroundBrush( QColor( 215, 215, 215 ) );
   createDefaultPageStyleSymbol();
-  
+
   addPaperItem();
 
   updateBounds();

@@ -819,7 +819,7 @@ namespace pal
     return solution;
   }
 
-  void Pal::registerCancellationCallback(Pal::FnIsCancelled fnCancelled, void *context)
+  void Pal::registerCancellationCallback( Pal::FnIsCancelled fnCancelled, void *context )
   {
     fnIsCancelled = fnCancelled;
     fnIsCancelledContext = context;

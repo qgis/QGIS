@@ -32,35 +32,35 @@ class QgsVectorLayerFeatureIterator;
 /** Partial snapshot of vector layer's state (only the members necessary for access to features) */
 class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
-  ~QgsVectorLayerFeatureSource();
+  public:
+    QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
+    ~QgsVectorLayerFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-  friend class QgsVectorLayerFeatureIterator;
+    friend class QgsVectorLayerFeatureIterator;
 
-protected:
+  protected:
 
-  QgsAbstractFeatureSource* mProviderFeatureSource;
+    QgsAbstractFeatureSource* mProviderFeatureSource;
 
-  QgsVectorLayerJoinBuffer* mJoinBuffer;
+    QgsVectorLayerJoinBuffer* mJoinBuffer;
 
-  QgsFields mFields;
+    QgsFields mFields;
 
-  bool mHasEditBuffer;
+    bool mHasEditBuffer;
 
-  bool mCanBeSimplified;
+    bool mCanBeSimplified;
 
-  // A deep-copy is only performed, if the original maps change
-  // see here https://github.com/qgis/Quantum-GIS/pull/673
-  // for explanation
-  QgsFeatureMap mAddedFeatures;
-  QgsGeometryMap mChangedGeometries;
-  QgsFeatureIds mDeletedFeatureIds;
-  QList<QgsField> mAddedAttributes;
-  QgsChangedAttributesMap mChangedAttributeValues;
-  QgsAttributeList mDeletedAttributeIds;
+    // A deep-copy is only performed, if the original maps change
+    // see here https://github.com/qgis/Quantum-GIS/pull/673
+    // for explanation
+    QgsFeatureMap mAddedFeatures;
+    QgsGeometryMap mChangedGeometries;
+    QgsFeatureIds mDeletedFeatureIds;
+    QList<QgsField> mAddedAttributes;
+    QgsChangedAttributesMap mChangedAttributeValues;
+    QgsAttributeList mDeletedAttributeIds;
 };
 
 

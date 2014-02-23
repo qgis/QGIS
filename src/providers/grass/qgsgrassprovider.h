@@ -509,7 +509,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
       TOPO_NODE    // topology nodes
     };
 
-private:
+  private:
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset

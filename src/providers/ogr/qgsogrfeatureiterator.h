@@ -25,21 +25,21 @@ class QgsOgrAbstractGeometrySimplifier;
 
 class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsOgrFeatureSource( const QgsOgrProvider* p );
+  public:
+    QgsOgrFeatureSource( const QgsOgrProvider* p );
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
-  QString mFilePath;
-  QString mLayerName;
-  int mLayerIndex;
-  QString mSubsetString;
-  QTextCodec* mEncoding;
-  QgsFields mFields;
-  OGRwkbGeometryType mOgrGeometryTypeFilter;
+  protected:
+    QString mFilePath;
+    QString mLayerName;
+    int mLayerIndex;
+    QString mSubsetString;
+    QTextCodec* mEncoding;
+    QgsFields mFields;
+    OGRwkbGeometryType mOgrGeometryTypeFilter;
 
-  friend class QgsOgrFeatureIterator;
+    friend class QgsOgrFeatureIterator;
 };
 
 class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>

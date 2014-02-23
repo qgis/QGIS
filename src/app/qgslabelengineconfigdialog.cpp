@@ -57,8 +57,8 @@ void QgsLabelEngineConfigDialog::onOK()
   lbl.setSearchMethod(( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
 
   lbl.setNumCandidatePositions( spinCandPoint->value(),
-                                  spinCandLine->value(),
-                                  spinCandPolygon->value() );
+                                spinCandLine->value(),
+                                spinCandPolygon->value() );
 
   lbl.setShowingCandidates( chkShowCandidates->isChecked() );
   lbl.setShowingShadowRectangles( mShadowDebugRectChkBox->isChecked() );

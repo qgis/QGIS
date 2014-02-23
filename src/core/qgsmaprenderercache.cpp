@@ -20,8 +20,8 @@ bool QgsMapRendererCache::init( QgsRectangle extent, double scale )
   QMutexLocker lock( &mMutex );
 
   // check whether the params are the same
-  if (extent == mExtent &&
-      scale == mScale )
+  if ( extent == mExtent &&
+       scale == mScale )
     return true;
 
   // set new params
@@ -49,7 +49,7 @@ QImage QgsMapRendererCache::cacheImage( QString layerId )
 void QgsMapRendererCache::layerDataChanged()
 {
   // TODO!
-  qDebug("nothing here yet");
+  qDebug( "nothing here yet" );
 }
 
 

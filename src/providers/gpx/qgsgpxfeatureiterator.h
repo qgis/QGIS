@@ -25,20 +25,20 @@ class QgsGPXProvider;
 
 class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsGPXFeatureSource( const QgsGPXProvider* p );
-  ~QgsGPXFeatureSource();
+  public:
+    QgsGPXFeatureSource( const QgsGPXProvider* p );
+    ~QgsGPXFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
-  QString mFileName;
-  QgsGPXProvider::DataType mFeatureType;
-  QgsGPSData* data;
-  QVector<int> indexToAttr;
-  QgsFields mFields;
+  protected:
+    QString mFileName;
+    QgsGPXProvider::DataType mFeatureType;
+    QgsGPSData* data;
+    QVector<int> indexToAttr;
+    QgsFields mFields;
 
-  friend class QgsGPXFeatureIterator;
+    friend class QgsGPXFeatureIterator;
 };
 
 

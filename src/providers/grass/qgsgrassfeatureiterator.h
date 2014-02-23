@@ -23,26 +23,26 @@ class QgsGrassProvider;
 
 class QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsGrassFeatureSource( const QgsGrassProvider* provider );
-  ~QgsGrassFeatureSource();
+  public:
+    QgsGrassFeatureSource( const QgsGrassProvider* provider );
+    ~QgsGrassFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
-  struct Map_info* mMap;
-  int     mLayerType;     // layer type POINT, LINE, ...
-  int     mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
-  int     mLayerId;       // ID used in layers
-  QGis::WkbType mQgisType;// WKBPoint, WKBLineString, ...
+  protected:
+    struct Map_info* mMap;
+    int     mLayerType;     // layer type POINT, LINE, ...
+    int     mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
+    int     mLayerId;       // ID used in layers
+    QGis::WkbType mQgisType;// WKBPoint, WKBLineString, ...
 
-  int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
-  int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
+    int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
+    int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
 
-  QgsFields mFields;
-  QTextCodec* mEncoding;
+    QgsFields mFields;
+    QTextCodec* mEncoding;
 
-  friend class QgsGrassFeatureIterator;
+    friend class QgsGrassFeatureIterator;
 };
 
 

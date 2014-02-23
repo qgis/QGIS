@@ -13,17 +13,17 @@ class QgsRectangle;
  */
 class CORE_EXPORT QgsXmlUtils
 {
-public:
+  public:
 
-  /* reading */
+    /* reading */
 
-  static QGis::UnitType readMapUnits( const QDomElement& element );
-  static QgsRectangle readRectangle( const QDomElement& element );
+    static QGis::UnitType readMapUnits( const QDomElement& element );
+    static QgsRectangle readRectangle( const QDomElement& element );
 
-  /* writing */
+    /* writing */
 
-  static QDomElement writeMapUnits( QGis::UnitType units, QDomDocument& doc );
-  static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
+    static QDomElement writeMapUnits( QGis::UnitType units, QDomDocument& doc );
+    static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
 };
 
 

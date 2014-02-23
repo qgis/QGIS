@@ -40,21 +40,21 @@ QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( const QSize& iconSi
 /** Fallback layer renderer implementation for layer that do not support map renderer yet. */
 class QgsPluginLayerRenderer : public QgsMapLayerRenderer
 {
-public:
-  QgsPluginLayerRenderer( QgsPluginLayer* layer, QgsRenderContext& rendererContext )
-    : QgsMapLayerRenderer( layer->id() )
-    , mLayer( layer )
-    , mRendererContext( rendererContext )
-  {}
+  public:
+    QgsPluginLayerRenderer( QgsPluginLayer* layer, QgsRenderContext& rendererContext )
+        : QgsMapLayerRenderer( layer->id() )
+        , mLayer( layer )
+        , mRendererContext( rendererContext )
+    {}
 
-  virtual bool render()
-  {
-    return mLayer->draw( mRendererContext );
-  }
+    virtual bool render()
+    {
+      return mLayer->draw( mRendererContext );
+    }
 
-protected:
-  QgsPluginLayer* mLayer;
-  QgsRenderContext& mRendererContext;
+  protected:
+    QgsPluginLayer* mLayer;
+    QgsRenderContext& mRendererContext;
 };
 
 QgsMapLayerRenderer* QgsPluginLayer::createMapRenderer( QgsRenderContext& rendererContext )

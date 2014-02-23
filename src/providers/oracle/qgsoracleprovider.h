@@ -410,18 +410,18 @@ class QgsOracleProvider : public QgsVectorDataProvider
 /** Assorted Oracle utility functions */
 class QgsOracleUtils
 {
-public:
-  static QString whereClause( QgsFeatureId featureId,
-                              const QgsFields& fields,
-                              QgsOraclePrimaryKeyType primaryKeyType,
-                              const QList<int>& primaryKeyAttrs,
-                              QSharedPointer<QgsOracleSharedData> sharedData );
+  public:
+    static QString whereClause( QgsFeatureId featureId,
+                                const QgsFields& fields,
+                                QgsOraclePrimaryKeyType primaryKeyType,
+                                const QList<int>& primaryKeyAttrs,
+                                QSharedPointer<QgsOracleSharedData> sharedData );
 
-  static QString whereClause( QgsFeatureIds featureIds,
-                              const QgsFields& fields,
-                              QgsOraclePrimaryKeyType primaryKeyType,
-                              const QList<int>& primaryKeyAttrs,
-                              QSharedPointer<QgsOracleSharedData> sharedData );
+    static QString whereClause( QgsFeatureIds featureIds,
+                                const QgsFields& fields,
+                                QgsOraclePrimaryKeyType primaryKeyType,
+                                const QList<int>& primaryKeyAttrs,
+                                QSharedPointer<QgsOracleSharedData> sharedData );
 };
 
 
@@ -430,21 +430,21 @@ public:
  *  from different threads and therefore locking has to be involved. */
 class QgsOracleSharedData
 {
-public:
-  QgsOracleSharedData();
+  public:
+    QgsOracleSharedData();
 
-  // FID lookups
-  QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
-  QVariant removeFid( QgsFeatureId fid );
-  void insertFid( QgsFeatureId fid, const QVariant& k );
-  QVariant lookupKey( QgsFeatureId featureId );
+    // FID lookups
+    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QVariant removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariant& k );
+    QVariant lookupKey( QgsFeatureId featureId );
 
-protected:
-  QMutex mMutex; //!< Access to all data members is guarded by the mutex
+  protected:
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-  QgsFeatureId mFidCounter;                    // next feature id if map is used
-  QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
-  QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+    QgsFeatureId mFidCounter;                    // next feature id if map is used
+    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
 };
 
 

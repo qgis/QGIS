@@ -26,18 +26,18 @@ class QgsSpatialIndex;
 
 class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsMemoryFeatureSource( const QgsMemoryProvider* p );
-  ~QgsMemoryFeatureSource();
+  public:
+    QgsMemoryFeatureSource( const QgsMemoryProvider* p );
+    ~QgsMemoryFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
-  QgsFields mFields;
-  QgsFeatureMap mFeatures;
-  QgsSpatialIndex* mSpatialIndex;
+  protected:
+    QgsFields mFields;
+    QgsFeatureMap mFeatures;
+    QgsSpatialIndex* mSpatialIndex;
 
-  friend class QgsMemoryFeatureIterator;
+    friend class QgsMemoryFeatureIterator;
 };
 
 

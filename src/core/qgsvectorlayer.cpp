@@ -178,7 +178,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
   // Default simplify drawing settings
   QSettings settings;
-  mSimplifyMethod.setSimplifyHints( ( QgsVectorSimplifyMethod::SimplifyHints ) settings.value( "/qgis/simplifyDrawingHints", ( int ) mSimplifyMethod.simplifyHints() ).toInt() );
+  mSimplifyMethod.setSimplifyHints(( QgsVectorSimplifyMethod::SimplifyHints ) settings.value( "/qgis/simplifyDrawingHints", ( int ) mSimplifyMethod.simplifyHints() ).toInt() );
   mSimplifyMethod.setThreshold( settings.value( "/qgis/simplifyDrawingTol", mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( "/qgis/simplifyLocal", mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( "/qgis/simplifyMaxScale", mSimplifyMethod.maximumScale() ).toFloat() );
@@ -837,7 +837,7 @@ QgsRectangle QgsVectorLayer::extent()
     mLazyExtent = false;
   }
 
-  if( mValidExtent )
+  if ( mValidExtent )
     return QgsMapLayer::extent();
 
   if ( !mDataProvider )
@@ -1541,7 +1541,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
 
     // get the simplification drawing settings
-    mSimplifyMethod.setSimplifyHints( ( QgsVectorSimplifyMethod::SimplifyHints ) e.attribute( "simplifyDrawingHints", "1" ).toInt() );
+    mSimplifyMethod.setSimplifyHints(( QgsVectorSimplifyMethod::SimplifyHints ) e.attribute( "simplifyDrawingHints", "1" ).toInt() );
     mSimplifyMethod.setThreshold( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
     mSimplifyMethod.setForceLocalOptimization( e.attribute( "simplifyLocal", "1" ).toInt() );
     mSimplifyMethod.setMaximumScale( e.attribute( "simplifyMaxScale", "1" ).toFloat() );

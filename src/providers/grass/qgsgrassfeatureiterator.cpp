@@ -565,15 +565,15 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 
 
 QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
-  : mMap( p->mMap )
-  , mLayerType( p->mLayerType )
-  , mGrassType( p->mGrassType )
-  , mLayerId( p->mLayerId )
-  , mQgisType( p->mQgisType )
-  , mCidxFieldIndex( p->mCidxFieldIndex )
-  , mCidxFieldNumCats( p->mCidxFieldNumCats )
-  , mFields( p->fields() )
-  , mEncoding( p->mEncoding )
+    : mMap( p->mMap )
+    , mLayerType( p->mLayerType )
+    , mGrassType( p->mGrassType )
+    , mLayerId( p->mLayerId )
+    , mQgisType( p->mQgisType )
+    , mCidxFieldIndex( p->mCidxFieldIndex )
+    , mCidxFieldNumCats( p->mCidxFieldNumCats )
+    , mFields( p->fields() )
+    , mEncoding( p->mEncoding )
 {
   int layerId = QgsGrassProvider::openLayer( p->mGisdbase, p->mLocation, p->mMapset, p->mMapName, p->mLayerField );
 

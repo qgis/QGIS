@@ -2966,7 +2966,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
 
 
 QgsOracleSharedData::QgsOracleSharedData()
-  : mFidCounter( 0 )
+    : mFidCounter( 0 )
 {
 }
 

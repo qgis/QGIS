@@ -355,7 +355,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     bool calculateExtent();
 
-private:
+  private:
 
     //QStringList identifyAs( const QgsPoint &point, QString format );
 
@@ -495,99 +495,99 @@ private:
 /** Handler for downloading of non-tiled WMS requests, the data are written to the given image */
 class QgsWmsImageDownloadHandler : public QObject
 {
-  Q_OBJECT
-public:
-  QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image );
-  ~QgsWmsImageDownloadHandler();
+    Q_OBJECT
+  public:
+    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image );
+    ~QgsWmsImageDownloadHandler();
 
-  void downloadBlocking();
+    void downloadBlocking();
 
-protected slots:
-  void cacheReplyFinished();
-  void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
+  protected slots:
+    void cacheReplyFinished();
+    void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
 
-protected:
-  void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+  protected:
+    void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
-  QString mProviderUri;
+    QString mProviderUri;
 
-  QNetworkReply* mCacheReply;
-  QImage* mCachedImage;
+    QNetworkReply* mCacheReply;
+    QImage* mCachedImage;
 
-  QEventLoop* mEventLoop;
-  QgsNetworkAccessManager* mNAM;
+    QEventLoop* mEventLoop;
+    QgsNetworkAccessManager* mNAM;
 };
 
 
 /** Handler for tiled WMS-C/WMTS requests, the data are written to the given image */
 class QgsWmsTiledImageDownloadHandler : public QObject
 {
-  Q_OBJECT
-public:
+    Q_OBJECT
+  public:
 
-  struct TileRequest
-  {
-    TileRequest( const QUrl& u, const QRectF& r, int i ) : url( u ), rect( r ), index( i ) {}
-    QUrl url;
-    QRectF rect;
-    int index;
-  };
+    struct TileRequest
+    {
+      TileRequest( const QUrl& u, const QRectF& r, int i ) : url( u ), rect( r ), index( i ) {}
+      QUrl url;
+      QRectF rect;
+      int index;
+    };
 
-  QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform );
-  ~QgsWmsTiledImageDownloadHandler();
+    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform );
+    ~QgsWmsTiledImageDownloadHandler();
 
-  void downloadBlocking();
+    void downloadBlocking();
 
-protected slots:
-  void tileReplyFinished();
+  protected slots:
+    void tileReplyFinished();
 
-protected:
-  /**
-   * \brief Relaunch tile request cloning previous request parameters and managing max repeat
-   *
-   * \param oldRequest request to clone to generate new tile request
-   *
-   * request is not launched if max retry is reached. Message is logged.
-   */
-  void repeatTileRequest( QNetworkRequest const &oldRequest );
+  protected:
+    /**
+     * \brief Relaunch tile request cloning previous request parameters and managing max repeat
+     *
+     * \param oldRequest request to clone to generate new tile request
+     *
+     * request is not launched if max retry is reached. Message is logged.
+     */
+    void repeatTileRequest( QNetworkRequest const &oldRequest );
 
-  void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+    void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
-  QString mProviderUri;
+    QString mProviderUri;
 
-  QgsWmsAuthorization mAuth;
+    QgsWmsAuthorization mAuth;
 
-  QImage* mCachedImage;
-  QgsRectangle mCachedViewExtent;
+    QImage* mCachedImage;
+    QgsRectangle mCachedViewExtent;
 
-  QEventLoop* mEventLoop;
-  QgsNetworkAccessManager* mNAM;
+    QEventLoop* mEventLoop;
+    QgsNetworkAccessManager* mNAM;
 
-  int mTileReqNo;
-  bool mSmoothPixmapTransform;
+    int mTileReqNo;
+    bool mSmoothPixmapTransform;
 
-  //! Running tile requests
-  QList<QNetworkReply*> mReplies;
+    //! Running tile requests
+    QList<QNetworkReply*> mReplies;
 };
 
 
 /** Class keeping simple statistics for WMS provider - per unique URI */
 class QgsWmsStatistics
 {
-public:
-  struct Stat
-  {
-    Stat() : errors( 0 ), cacheHits( 0 ), cacheMisses( 0 ) {}
-    int errors;
-    int cacheHits;
-    int cacheMisses;
-  };
+  public:
+    struct Stat
+    {
+      Stat() : errors( 0 ), cacheHits( 0 ), cacheMisses( 0 ) {}
+      int errors;
+      int cacheHits;
+      int cacheMisses;
+    };
 
-  //! get reference to layer's statistics - insert to map if does not exist yet
-  static Stat& statForUri( const QString& uri ) { return sData[uri]; }
+    //! get reference to layer's statistics - insert to map if does not exist yet
+    static Stat& statForUri( const QString& uri ) { return sData[uri]; }
 
-protected:
-  static QMap<QString, Stat> sData;
+  protected:
+    static QMap<QString, Stat> sData;
 };
 
 

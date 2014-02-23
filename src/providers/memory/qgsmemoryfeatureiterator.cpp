@@ -85,7 +85,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if (  mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
+      if ( mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
         hasFeature = true;
     }
     else
@@ -191,9 +191,9 @@ bool QgsMemoryFeatureIterator::close()
 // -------------------------
 
 QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
-  : mFields( p->mFields )
-  , mFeatures( p->mFeatures )
-  , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
+    : mFields( p->mFields )
+    , mFeatures( p->mFeatures )
+    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
 {
 }
 

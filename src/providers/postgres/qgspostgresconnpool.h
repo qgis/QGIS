@@ -29,35 +29,35 @@ class QgsPostgresConn;
 //! stores data related to one server
 class QgsPostgresConnPoolGroup : public QObject
 {
-  Q_OBJECT
-public:
+    Q_OBJECT
+  public:
 
-  static const int maxConcurrentConnections;
+    static const int maxConcurrentConnections;
 
-  struct Item
-  {
-    QgsPostgresConn* c;
-    QTime lastUsedTime;
-  };
+    struct Item
+    {
+      QgsPostgresConn* c;
+      QTime lastUsedTime;
+    };
 
-  QgsPostgresConnPoolGroup( const QString& ci );
-  ~QgsPostgresConnPoolGroup();
+    QgsPostgresConnPoolGroup( const QString& ci );
+    ~QgsPostgresConnPoolGroup();
 
-  QgsPostgresConn* acquire();
+    QgsPostgresConn* acquire();
 
-  void release( QgsPostgresConn* conn );
+    void release( QgsPostgresConn* conn );
 
-protected slots:
-  void handleConnectionExpired();
+  protected slots:
+    void handleConnectionExpired();
 
-protected:
-  Q_DISABLE_COPY(QgsPostgresConnPoolGroup)
+  protected:
+    Q_DISABLE_COPY( QgsPostgresConnPoolGroup )
 
-  QString connInfo;
-  QStack<Item> conns;
-  QMutex connMutex;
-  QSemaphore sem;
-  QTimer expirationTimer;
+    QString connInfo;
+    QStack<Item> conns;
+    QMutex connMutex;
+    QSemaphore sem;
+    QTimer expirationTimer;
 };
 
 typedef QMap<QString, QgsPostgresConnPoolGroup*> QgsPostgresConnPoolGroups;
@@ -81,22 +81,22 @@ typedef QMap<QString, QgsPostgresConnPoolGroup*> QgsPostgresConnPoolGroups;
  */
 class QgsPostgresConnPool
 {
-public:
+  public:
 
-  static QgsPostgresConnPool* instance();
+    static QgsPostgresConnPool* instance();
 
-  //! Try to acquire a connection: if no connections are available, the thread will get blocked.
-  //! @return initialized connection or null on error
-  QgsPostgresConn* acquireConnection( const QString& connInfo );
+    //! Try to acquire a connection: if no connections are available, the thread will get blocked.
+    //! @return initialized connection or null on error
+    QgsPostgresConn* acquireConnection( const QString& connInfo );
 
-  //! Release an existing connection so it will get back into the pool and can be reused
-  void releaseConnection( QgsPostgresConn* conn );
+    //! Release an existing connection so it will get back into the pool and can be reused
+    void releaseConnection( QgsPostgresConn* conn );
 
-protected:
-  QgsPostgresConnPoolGroups mGroups;
-  QMutex mMutex;
+  protected:
+    QgsPostgresConnPoolGroups mGroups;
+    QMutex mMutex;
 
-  static QgsPostgresConnPool* mInstance;
+    static QgsPostgresConnPool* mInstance;
 };
 
 #endif // QGSPOSTGRESCONNPOOL_H

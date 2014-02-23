@@ -26,13 +26,13 @@
 
 
 QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer )
-  : mMapSettings( mapRenderer->mapSettings() )
+    : mMapSettings( mapRenderer->mapSettings() )
 {
 
 }
 
 QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
-  : mMapSettings( mapSettings )
+    : mMapSettings( mapSettings )
 {
 }
 

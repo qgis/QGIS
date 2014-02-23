@@ -431,9 +431,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if ( (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
-                || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-                || ( vl->layerTransparency() != 0 ) ) )
+        if ((( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+             || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+             || ( vl->layerTransparency() != 0 ) ) )
         {
           flattenedLayer = true;
           mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),

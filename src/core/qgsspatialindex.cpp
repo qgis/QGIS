@@ -50,80 +50,80 @@ class QgisVisitor : public SpatialIndex::IVisitor
 
 class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 {
-public:
-  QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
-      : mNewIndex( newIndex ) {}
+  public:
+    QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
+        : mNewIndex( newIndex ) {}
 
-  void visitNode( const INode& n )
-  { Q_UNUSED( n ); }
+    void visitNode( const INode& n )
+    { Q_UNUSED( n ); }
 
-  void visitData( const IData& d )
-  {
-    SpatialIndex::IShape* shape;
-    d.getShape( &shape );
-    mNewIndex->insertData( 0, 0, *shape, d.getIdentifier() );
-    delete shape;
-  }
+    void visitData( const IData& d )
+    {
+      SpatialIndex::IShape* shape;
+      d.getShape( &shape );
+      mNewIndex->insertData( 0, 0, *shape, d.getIdentifier() );
+      delete shape;
+    }
 
-  void visitData( std::vector<const IData*>& v )
-  { Q_UNUSED( v ); }
+    void visitData( std::vector<const IData*>& v )
+    { Q_UNUSED( v ); }
 
-private:
-  SpatialIndex::ISpatialIndex* mNewIndex;
+  private:
+    SpatialIndex::ISpatialIndex* mNewIndex;
 };
 
 
 /** Data of spatial index that may be implicitly shared */
 class QgsSpatialIndexData : public QSharedData
 {
-public:
-  QgsSpatialIndexData()
-  {
-    initTree();
-  }
+  public:
+    QgsSpatialIndexData()
+    {
+      initTree();
+    }
 
-  QgsSpatialIndexData( const QgsSpatialIndexData& other )
-    : QSharedData( other )
-  {
-    initTree();
+    QgsSpatialIndexData( const QgsSpatialIndexData& other )
+        : QSharedData( other )
+    {
+      initTree();
 
-    // copy R-tree data one by one (is there a faster way??)
-    double low[]  = { DBL_MIN, DBL_MIN };
-    double high[] = { DBL_MAX, DBL_MAX };
-    SpatialIndex::Region query( low, high, 2 );
-    QgsSpatialIndexCopyVisitor visitor( mRTree );
-    other.mRTree->intersectsWithQuery( query, visitor );
-  }
+      // copy R-tree data one by one (is there a faster way??)
+      double low[]  = { DBL_MIN, DBL_MIN };
+      double high[] = { DBL_MAX, DBL_MAX };
+      SpatialIndex::Region query( low, high, 2 );
+      QgsSpatialIndexCopyVisitor visitor( mRTree );
+      other.mRTree->intersectsWithQuery( query, visitor );
+    }
 
-  ~QgsSpatialIndexData()
-  {
-    delete mRTree;
-    delete mStorage;
-  }
+    ~QgsSpatialIndexData()
+    {
+      delete mRTree;
+      delete mStorage;
+    }
 
-  void initTree()
-  {
-    // for now only memory manager
-    mStorage = StorageManager::createNewMemoryStorageManager();
+    void initTree()
+    {
+      // for now only memory manager
+      mStorage = StorageManager::createNewMemoryStorageManager();
 
-    // R-Tree parameters
-    double fillFactor = 0.7;
-    unsigned long indexCapacity = 10;
-    unsigned long leafCapacity = 10;
-    unsigned long dimension = 2;
-    RTree::RTreeVariant variant = RTree::RV_RSTAR;
+      // R-Tree parameters
+      double fillFactor = 0.7;
+      unsigned long indexCapacity = 10;
+      unsigned long leafCapacity = 10;
+      unsigned long dimension = 2;
+      RTree::RTreeVariant variant = RTree::RV_RSTAR;
 
-    // create R-tree
-    SpatialIndex::id_type indexId;
-    mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity,
-                                    leafCapacity, dimension, variant, indexId );
-  }
+      // create R-tree
+      SpatialIndex::id_type indexId;
+      mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity,
+                                      leafCapacity, dimension, variant, indexId );
+    }
 
-  /** storage manager */
-  SpatialIndex::IStorageManager* mStorage;
+    /** storage manager */
+    SpatialIndex::IStorageManager* mStorage;
 
-  /** R-tree containing spatial index */
-  SpatialIndex::ISpatialIndex* mRTree;
+    /** R-tree containing spatial index */
+    SpatialIndex::ISpatialIndex* mRTree;
 };
 
 // -------------------------------------------------------------------------
@@ -135,7 +135,7 @@ QgsSpatialIndex::QgsSpatialIndex()
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex& other )
-  : d( other.d )
+    : d( other.d )
 {
 }
 
@@ -143,7 +143,7 @@ QgsSpatialIndex:: ~QgsSpatialIndex()
 {
 }
 
-QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex& other )
+QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex & other )
 {
   if ( this != &other )
     d = other.d;

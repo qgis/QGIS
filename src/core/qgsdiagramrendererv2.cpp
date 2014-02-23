@@ -269,8 +269,8 @@ void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
   mDiagram = d;
 }
 
-QgsDiagramRendererV2::QgsDiagramRendererV2(const QgsDiagramRendererV2& other)
-  : mDiagram( other.mDiagram ? other.mDiagram->clone() : 0 )
+QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
+    : mDiagram( other.mDiagram ? other.mDiagram->clone() : 0 )
 {
 }
 

@@ -414,14 +414,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
-public:
+  public:
     // static functions
 
     static void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
-                           unsigned char **wkb, size_t *geom_size );
+                                  unsigned char **wkb, size_t *geom_size );
     static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
-                               int endian_arch );
-private:
+                                      int endian_arch );
+  private:
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
                                    int little_endian,
                                    int endian_arch );

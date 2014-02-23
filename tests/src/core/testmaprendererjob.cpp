@@ -93,8 +93,8 @@ void TestQgsMapRendererJob::testNormal()
 
   // TODO: custom painter
 
-  imgS.save("/tmp/imgS.png");
-  imgP.save("/tmp/imgP.png");
+  imgS.save( "/tmp/imgS.png" );
+  imgP.save( "/tmp/imgP.png" );
   //img.save("/tmp/img5.png");
 
   QCOMPARE( imgS, imgP );
@@ -269,7 +269,7 @@ void TestQgsMapRendererJob::testCache()
   QCOMPARE( i1, i2 );
   QVERIFY( timeNotCachedMS > 100 );
   QVERIFY( timeCachedMS < 10 );
-  qDebug("CACHING %d vs %d (ms)", timeNotCachedMS, timeCachedMS );
+  qDebug( "CACHING %d vs %d (ms)", timeNotCachedMS, timeCachedMS );
 
   QgsMapLayerRegistry::instance()->removeMapLayer( l->id() );
 }

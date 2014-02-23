@@ -86,23 +86,23 @@ class QgsMapCanvas::CanvasProperties
 
 
 QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer )
-  : QObject( canvas )
-  , mCanvas( canvas )
-  , mRenderer( renderer )
+    : QObject( canvas )
+    , mCanvas( canvas )
+    , mRenderer( renderer )
 {
-  connect( mCanvas, SIGNAL(extentsChanged()), this, SLOT(onExtentC2R()) );
-  connect( mRenderer, SIGNAL(extentsChanged()), this, SLOT(onExtentR2C()) );
+  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( onExtentC2R() ) );
+  connect( mRenderer, SIGNAL( extentsChanged() ), this, SLOT( onExtentR2C() ) );
 
-  connect( mCanvas, SIGNAL(mapUnitsChanged()), this, SLOT(onMapUnitsC2R()) );
-  connect( mRenderer, SIGNAL(mapUnitsChanged()), this, SLOT(onMapUnitsR2C()) );
+  connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsC2R() ) );
+  connect( mRenderer, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsR2C() ) );
 
-  connect( mCanvas, SIGNAL(hasCrsTransformEnabledChanged(bool)), this, SLOT(onCrsTransformC2R()) );
-  connect( mRenderer, SIGNAL(hasCrsTransformEnabled(bool)), this, SLOT(onCrsTransformR2C()) );
+  connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( onCrsTransformC2R() ) );
+  connect( mRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( onCrsTransformR2C() ) );
 
-  connect( mCanvas, SIGNAL(destinationCrsChanged()), this, SLOT(onDestCrsC2R()) );
-  connect( mRenderer, SIGNAL(destinationSrsChanged()), this, SLOT(onDestCrsR2C()) );
+  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( onDestCrsC2R() ) );
+  connect( mRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( onDestCrsR2C() ) );
 
-  connect( mCanvas, SIGNAL(layersChanged()), this, SLOT(onLayersC2R()) );
+  connect( mCanvas, SIGNAL( layersChanged() ), this, SLOT( onLayersC2R() ) );
   // TODO: layers R2C ? (should not happen!)
 
 }
@@ -217,7 +217,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   moveCanvasContents( true );
 
-  connect(&mMapUpdateTimer, SIGNAL( timeout() ), SLOT( mapUpdateTimeout() ) );
+  connect( &mMapUpdateTimer, SIGNAL( timeout() ), SLOT( mapUpdateTimeout() ) );
   mMapUpdateTimer.setInterval( 250 );
 
 #ifdef Q_OS_WIN
@@ -281,7 +281,7 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
-  Q_UNUSED(theFlag);
+  Q_UNUSED( theFlag );
 }
 
 QgsMapCanvasMap* QgsMapCanvas::map()
@@ -453,7 +453,7 @@ const QgsMapSettings &QgsMapCanvas::mapSettings() const
   return mSettings;
 }
 
-void QgsMapCanvas::setCrsTransformEnabled(bool enabled)
+void QgsMapCanvas::setCrsTransformEnabled( bool enabled )
 {
   if ( mSettings.hasCrsTransformEnabled() == enabled )
     return;
@@ -465,7 +465,7 @@ void QgsMapCanvas::setCrsTransformEnabled(bool enabled)
   emit hasCrsTransformEnabledChanged( enabled );
 }
 
-void QgsMapCanvas::setDestinationCrs(const QgsCoordinateReferenceSystem &crs)
+void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   if ( mSettings.destinationCrs() == crs )
     return;
@@ -566,28 +566,28 @@ void QgsMapCanvas::refresh()
 {
   if ( !mSettings.hasValidSettings() )
   {
-    qDebug("CANVAS refresh - invalid settings -> nothing to do");
+    qDebug( "CANVAS refresh - invalid settings -> nothing to do" );
     return;
   }
 
   if ( !mRenderFlag || mFrozen )  // do we really need two flags controlling rendering?
   {
-    qDebug("CANVAS render flag off");
+    qDebug( "CANVAS render flag off" );
     return;
   }
 
   if ( mRefreshScheduled )
   {
-    qDebug("CANVAS refresh already scheduled");
+    qDebug( "CANVAS refresh already scheduled" );
     return;
   }
 
   mRefreshScheduled = true;
 
-  qDebug("CANVAS refresh scheduling");
+  qDebug( "CANVAS refresh scheduling" );
 
   // schedule a refresh
-  QTimer::singleShot( 1, this, SLOT(refreshMap()));
+  QTimer::singleShot( 1, this, SLOT( refreshMap() ) );
 
   /*
   // we can't draw again if already drawing...
@@ -648,7 +648,7 @@ void QgsMapCanvas::refreshMap()
 {
   Q_ASSERT( mRefreshScheduled );
 
-  qDebug("CANVAS refresh!");
+  qDebug( "CANVAS refresh!" );
 
   stopRendering(); // if any...
 
@@ -662,7 +662,7 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererParallelJob( mSettings );
   else
     mJob = new QgsMapRendererSequentialJob( mSettings );
-  connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
+  connect( mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
   mJob->setCache( mCache );
 
   QStringList layersForGeometryCache;
@@ -696,7 +696,7 @@ void QgsMapCanvas::layerRequestedRepaint()
 
 void QgsMapCanvas::rendererJobFinished()
 {
-  qDebug("CANVAS finish! %d", !mJobCancelled );
+  qDebug( "CANVAS finish! %d", !mJobCancelled );
 
   mMapUpdateTimer.stop();
 
@@ -720,13 +720,13 @@ void QgsMapCanvas::rendererJobFinished()
       QFont fnt = p.font();
       fnt.setBold( true );
       p.setFont( fnt );
-      int lh = p.fontMetrics().height()*2;
+      int lh = p.fontMetrics().height() * 2;
       QRect r( 0, h - lh, w, lh );
       p.setPen( Qt::NoPen );
       p.setBrush( QColor( 0, 0, 0, 110 ) );
       p.drawRect( r );
       p.setPen( Qt::white );
-      QString msg = QString("%1 :: %2 ms").arg( mUseParallelRendering ? "PARALLEL" : "SEQUENTIAL" ).arg( mJob->renderingTime() );
+      QString msg = QString( "%1 :: %2 ms" ).arg( mUseParallelRendering ? "PARALLEL" : "SEQUENTIAL" ).arg( mJob->renderingTime() );
       p.drawText( r, msg, QTextOption( Qt::AlignCenter ) );
     }
 
@@ -746,7 +746,7 @@ void QgsMapCanvas::rendererJobFinished()
 
 void QgsMapCanvas::mapUpdateTimeout()
 {
-  qDebug("CANVAS update timer!");
+  qDebug( "CANVAS update timer!" );
 
   mMap->setContent( mJob->renderedImage(), mSettings.visibleExtent() );
 }
@@ -756,7 +756,7 @@ void QgsMapCanvas::stopRendering()
 {
   if ( mJob )
   {
-    qDebug("CANVAS stop rendering!");
+    qDebug( "CANVAS stop rendering!" );
     mJobCancelled = true;
     mJob->cancel();
     Q_ASSERT( mJob == 0 ); // no need to delete here: already deleted in finished()
@@ -1112,7 +1112,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         refresh();
         break;
 
-    case Qt::Key_S:
+      case Qt::Key_S:
         mDrawRenderingStats = !mDrawRenderingStats;
         refresh();
         break;
@@ -1245,7 +1245,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 {
-  QGraphicsView::resizeEvent(e);
+  QGraphicsView::resizeEvent( e );
   mResizeTimer->start( 500 );
 
   QSize lastSize = size();
@@ -1592,8 +1592,8 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
-  qDebug("start %f,%f", start.x(), start.y());
-  qDebug("end %f,%f", end.x(), end.y());
+  qDebug( "start %f,%f", start.x(), start.y() );
+  qDebug( "end %f,%f", end.x(), end.y() );
 
   double dx = qAbs( end.x() - start.x() );
   double dy = qAbs( end.y() - start.y() );
@@ -1601,8 +1601,8 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   // modify the extent
   QgsRectangle r = mapSettings().visibleExtent();
 
-  qDebug(" -------------XXX diff: %f,%f", dx, dy);
-  qDebug(" ------------oldR: %f,%f", r.xMinimum(), r.yMinimum());
+  qDebug( " -------------XXX diff: %f,%f", dx, dy );
+  qDebug( " ------------oldR: %f,%f", r.xMinimum(), r.yMinimum() );
 
   if ( end.x() < start.x() )
   {
@@ -1631,7 +1631,7 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   setExtent( r );
 
   r = mapSettings().visibleExtent();
-  qDebug(" ------------newR: %f,%f", r.xMinimum(), r.yMinimum());
+  qDebug( " ------------newR: %f,%f", r.xMinimum(), r.yMinimum() );
 
   refresh();
 }

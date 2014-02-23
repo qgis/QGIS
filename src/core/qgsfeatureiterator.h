@@ -109,25 +109,25 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 template<typename T>
 class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
-public:
-  QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request ), mSource( source ), mOwnSource( ownSource )
-  {
-    mSource->iteratorOpened( this );
-  }
+  public:
+    QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
+        : QgsAbstractFeatureIterator( request ), mSource( source ), mOwnSource( ownSource )
+    {
+      mSource->iteratorOpened( this );
+    }
 
-  ~QgsAbstractFeatureIteratorFromSource()
-  {
-    if ( mOwnSource )
-      delete mSource;
-  }
+    ~QgsAbstractFeatureIteratorFromSource()
+    {
+      if ( mOwnSource )
+        delete mSource;
+    }
 
-protected:
-  //! to be called by from subclass in close()
-  void iteratorClosed() { mSource->iteratorClosed( this ); }
+  protected:
+    //! to be called by from subclass in close()
+    void iteratorClosed() { mSource->iteratorClosed( this ); }
 
-  T* mSource;
-  bool mOwnSource;
+    T* mSource;
+    bool mOwnSource;
 };
 
 

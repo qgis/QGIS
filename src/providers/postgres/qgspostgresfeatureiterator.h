@@ -27,31 +27,31 @@ class QgsPostgresResult;
 
 class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsPostgresFeatureSource( const QgsPostgresProvider* p );
+  public:
+    QgsPostgresFeatureSource( const QgsPostgresProvider* p );
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
+  protected:
 
-  QString mConnInfo;
+    QString mConnInfo;
 
-  QString mGeometryColumn;
-  QString mSqlWhereClause;
-  QgsFields mFields;
-  QgsPostgresGeometryColumnType mSpatialColType;
-  QString mRequestedSrid;
-  QString mDetectedSrid;
-  QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
-  QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
-  QgsPostgresPrimaryKeyType mPrimaryKeyType;
-  QList<int> mPrimaryKeyAttrs;
-  QString mQuery;
-  // TODO: loadFields()
+    QString mGeometryColumn;
+    QString mSqlWhereClause;
+    QgsFields mFields;
+    QgsPostgresGeometryColumnType mSpatialColType;
+    QString mRequestedSrid;
+    QString mDetectedSrid;
+    QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
+    QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
+    QgsPostgresPrimaryKeyType mPrimaryKeyType;
+    QList<int> mPrimaryKeyAttrs;
+    QString mQuery;
+    // TODO: loadFields()
 
-  QSharedPointer<QgsPostgresSharedData> mShared;
+    QSharedPointer<QgsPostgresSharedData> mShared;
 
-  friend class QgsPostgresFeatureIterator;
+    friend class QgsPostgresFeatureIterator;
 };
 
 

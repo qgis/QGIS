@@ -29,67 +29,67 @@ typedef QList<int> QgsAttributeList;
 
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
-public:
-  QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
-  ~QgsVectorLayerRenderer();
+  public:
+    QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
+    ~QgsVectorLayerRenderer();
 
-  virtual bool render();
+    virtual bool render();
 
-  //! where to save the cached geometries
-  //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-  void setGeometryCachePointer( QgsGeometryCache* cache );
+    //! where to save the cached geometries
+    //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
+    void setGeometryCachePointer( QgsGeometryCache* cache );
 
-private:
+  private:
 
-  /**Registers label and diagram layer
-    @param attributes attributes needed for labeling and diagrams will be added to the list
-   */
-  void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
-  void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
+    /**Registers label and diagram layer
+      @param attributes attributes needed for labeling and diagrams will be added to the list
+     */
+    void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
+    void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
 
-  /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
-   */
-  void drawRendererV2( QgsFeatureIterator& fit );
+    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
+     */
+    void drawRendererV2( QgsFeatureIterator& fit );
 
-  /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
-   */
-  void drawRendererV2Levels( QgsFeatureIterator& fit );
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+     */
+    void drawRendererV2Levels( QgsFeatureIterator& fit );
 
-  /** Stop version 2 renderer and selected renderer (if required) */
-  void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );
+    /** Stop version 2 renderer and selected renderer (if required) */
+    void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );
 
 
-protected:
+  protected:
 
-  QgsRenderContext& mContext;
+    QgsRenderContext& mContext;
 
-  QgsFields mFields; // TODO: use fields from mSource
+    QgsFields mFields; // TODO: use fields from mSource
 
-  QgsFeatureIds mSelectedFeatureIds;
+    QgsFeatureIds mSelectedFeatureIds;
 
-  QgsVectorLayerFeatureSource* mSource;
+    QgsVectorLayerFeatureSource* mSource;
 
-  QgsFeatureRendererV2 *mRendererV2;
+    QgsFeatureRendererV2 *mRendererV2;
 
-  bool mCacheFeatures;
-  QgsGeometryCache* mCache;
+    bool mCacheFeatures;
+    QgsGeometryCache* mCache;
 
-  bool mDrawVertexMarkers;
-  bool mVertexMarkerOnlyForSelection;
-  int mVertexMarkerStyle, mVertexMarkerSize;
+    bool mDrawVertexMarkers;
+    bool mVertexMarkerOnlyForSelection;
+    int mVertexMarkerStyle, mVertexMarkerSize;
 
-  QGis::GeometryType mGeometryType;
+    QGis::GeometryType mGeometryType;
 
-  QStringList mAttrNames;
+    QStringList mAttrNames;
 
-  bool mLabeling;
-  bool mDiagrams;
+    bool mLabeling;
+    bool mDiagrams;
 
-  int mLayerTransparency;
-  QPainter::CompositionMode mFeatureBlendMode;
+    int mLayerTransparency;
+    QPainter::CompositionMode mFeatureBlendMode;
 
-  QgsVectorSimplifyMethod mSimplifyMethod;
-  bool mSimplifyGeometry;
+    QgsVectorSimplifyMethod mSimplifyMethod;
+    bool mSimplifyGeometry;
 };
 
 

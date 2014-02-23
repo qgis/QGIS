@@ -482,20 +482,20 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 /** Assorted Postgres utility functions */
 class QgsPostgresUtils
 {
-public:
-  static QString whereClause( QgsFeatureId featureId,
-                              const QgsFields& fields,
-                              QgsPostgresConn* conn,
-                              QgsPostgresPrimaryKeyType pkType,
-                              const QList<int>& pkAttrs,
-                              QSharedPointer<QgsPostgresSharedData> sharedData );
+  public:
+    static QString whereClause( QgsFeatureId featureId,
+                                const QgsFields& fields,
+                                QgsPostgresConn* conn,
+                                QgsPostgresPrimaryKeyType pkType,
+                                const QList<int>& pkAttrs,
+                                QSharedPointer<QgsPostgresSharedData> sharedData );
 
-  static QString whereClause( QgsFeatureIds featureIds,
-                              const QgsFields& fields,
-                              QgsPostgresConn* conn,
-                              QgsPostgresPrimaryKeyType pkType,
-                              const QList<int>& pkAttrs,
-                              QSharedPointer<QgsPostgresSharedData> sharedData );
+    static QString whereClause( QgsFeatureIds featureIds,
+                                const QgsFields& fields,
+                                QgsPostgresConn* conn,
+                                QgsPostgresPrimaryKeyType pkType,
+                                const QList<int>& pkAttrs,
+                                QSharedPointer<QgsPostgresSharedData> sharedData );
 };
 
 /** Data shared between provider class and its feature sources. Ideally there should
@@ -503,28 +503,28 @@ public:
  *  from different threads and therefore locking has to be involved. */
 class QgsPostgresSharedData
 {
-public:
-  QgsPostgresSharedData();
+  public:
+    QgsPostgresSharedData();
 
-  long featuresCounted();
-  void setFeaturesCounted( long count );
-  void addFeaturesCounted( long diff );
-  void ensureFeaturesCountedAtLeast( long fetched );
+    long featuresCounted();
+    void setFeaturesCounted( long count );
+    void addFeaturesCounted( long diff );
+    void ensureFeaturesCountedAtLeast( long fetched );
 
-  // FID lookups
-  QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
-  QVariant removeFid( QgsFeatureId fid );
-  void insertFid( QgsFeatureId fid, const QVariant& k );
-  QVariant lookupKey( QgsFeatureId featureId );
+    // FID lookups
+    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QVariant removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariant& k );
+    QVariant lookupKey( QgsFeatureId featureId );
 
-protected:
-  QMutex mMutex; //!< Access to all data members is guarded by the mutex
+  protected:
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-  long mFeaturesCounted;    //! Number of features in the layer
+    long mFeaturesCounted;    //! Number of features in the layer
 
-  QgsFeatureId mFidCounter;                    // next feature id if map is used
-  QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
-  QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+    QgsFeatureId mFidCounter;                    // next feature id if map is used
+    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
 };
 
 #endif

@@ -3554,8 +3554,8 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
 // ----------
 
 QgsPostgresSharedData::QgsPostgresSharedData()
- : mFeaturesCounted( -1 )
- , mFidCounter( 0 )
+    : mFeaturesCounted( -1 )
+    , mFidCounter( 0 )
 {
 }
 

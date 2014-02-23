@@ -376,7 +376,7 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
     const void *blob = sqlite3_column_blob( stmt, ic );
     size_t blob_size = sqlite3_column_bytes( stmt, ic );
     QgsSpatiaLiteProvider::convertToGeosWKB(( const unsigned char * )blob, blob_size,
-                        &featureGeom, &geom_size );
+                                            &featureGeom, &geom_size );
     if ( featureGeom )
       feature.setGeometryAndOwnership( featureGeom, geom_size );
     else
@@ -391,19 +391,19 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
 
 
 QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p )
-  : mGeometryColumn( p->mGeometryColumn )
-  , mSubsetString( p->mSubsetString )
-  , mFields( p->attributeFields )
-  , mQuery( p->mQuery )
-  , isQuery( p->isQuery )
-  , mVShapeBased( p->mVShapeBased )
-  , mIndexTable( p->mIndexTable )
-  , mIndexGeometry( p->mIndexGeometry )
-  , mPrimaryKey( p->mPrimaryKey )
-  , spatialIndexRTree( p->spatialIndexRTree )
-  , spatialIndexMbrCache( p->spatialIndexMbrCache )
-  , handle( QgsSpatiaLiteProvider::SqliteHandles::openDb( p->mSqlitePath ) )
-  , sqliteHandle( handle->handle() )
+    : mGeometryColumn( p->mGeometryColumn )
+    , mSubsetString( p->mSubsetString )
+    , mFields( p->attributeFields )
+    , mQuery( p->mQuery )
+    , isQuery( p->isQuery )
+    , mVShapeBased( p->mVShapeBased )
+    , mIndexTable( p->mIndexTable )
+    , mIndexGeometry( p->mIndexGeometry )
+    , mPrimaryKey( p->mPrimaryKey )
+    , spatialIndexRTree( p->spatialIndexRTree )
+    , spatialIndexMbrCache( p->spatialIndexMbrCache )
+    , handle( QgsSpatiaLiteProvider::SqliteHandles::openDb( p->mSqlitePath ) )
+    , sqliteHandle( handle->handle() )
 {
 }
 

@@ -472,10 +472,10 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
 // ------------
 
 QgsGPXFeatureSource::QgsGPXFeatureSource( const QgsGPXProvider* p )
- : mFileName( p->mFileName )
- , mFeatureType( p->mFeatureType )
- , indexToAttr( p->indexToAttr )
- , mFields( p->attributeFields )
+    : mFileName( p->mFileName )
+    , mFeatureType( p->mFeatureType )
+    , indexToAttr( p->indexToAttr )
+    , mFields( p->attributeFields )
 {
   data = QgsGPSData::getData( mFileName );
 }

@@ -780,13 +780,13 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   }
 
 #if 0
-    QFile myFile( "/tmp/qgiswcscache.dat" );
-    if ( myFile.open( QIODevice::WriteOnly ) )
-    {
-      QDataStream myStream( &myFile );
-      myStream.writeRawData( mCachedData.data(),  mCachedData.size() );
-      myFile.close();
-    }
+  QFile myFile( "/tmp/qgiswcscache.dat" );
+  if ( myFile.open( QIODevice::WriteOnly ) )
+  {
+    QDataStream myStream( &myFile );
+    myStream.writeRawData( mCachedData.data(),  mCachedData.size() );
+    myFile.close();
+  }
 #endif
 
   mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
@@ -932,10 +932,10 @@ bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const & xml, con
   {
     errorTitle = tr( "Dom Exception" );
     errorText = tr( "Could not get WCS Service Exception at %1 at line %2 column %3\n\nResponse was:\n\n%4" )
-             .arg( errorMsg )
-             .arg( errorLine )
-             .arg( errorColumn )
-             .arg( QString( xml ) );
+                .arg( errorMsg )
+                .arg( errorLine )
+                .arg( errorColumn )
+                .arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + errorText );
 
@@ -1657,11 +1657,11 @@ QGISEXTERN bool isProvider()
 int QgsWcsDownloadHandler::sErrors = 0;
 
 QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError )
-  : mNAM( new QgsNetworkAccessManager )
-  , mEventLoop( new QEventLoop )
-  , mCachedData( cachedData )
-  , mWcsVersion( wcsVersion )
-  , mCachedError( cachedError )
+    : mNAM( new QgsNetworkAccessManager )
+    , mEventLoop( new QEventLoop )
+    , mCachedData( cachedData )
+    , mWcsVersion( wcsVersion )
+    , mCachedError( cachedError )
 {
   mNAM->setupDefaultProxyAndCache();
 

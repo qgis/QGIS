@@ -37,13 +37,13 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
   // CRS transforms
 
-  QSignalSpy spy0( mCanvas, SIGNAL(hasCrsTransformEnabledChanged(bool)) );
+  QSignalSpy spy0( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ) );
   mr->setProjectionsEnabled( true );
   QCOMPARE( mr->hasCrsTransformEnabled(), true );
   QCOMPARE( mCanvas->hasCrsTransformEnabled(), true );
   QCOMPARE( spy0.count(), 1 );
 
-  QSignalSpy spy1( mr, SIGNAL(hasCrsTransformEnabled(bool)) );
+  QSignalSpy spy1( mr, SIGNAL( hasCrsTransformEnabled( bool ) ) );
   mCanvas->setCrsTransformEnabled( false );
   QCOMPARE( mr->hasCrsTransformEnabled(), false );
   QCOMPARE( mCanvas->hasCrsTransformEnabled(), false );
@@ -51,7 +51,7 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
   // Extent
 
-  QSignalSpy spy2( mCanvas, SIGNAL(extentsChanged()) );
+  QSignalSpy spy2( mCanvas, SIGNAL( extentsChanged() ) );
   QgsRectangle r1( 10, 10, 20, 20 );
   mr->setExtent( r1 );
   QgsRectangle r2 = mr->extent();
@@ -59,7 +59,7 @@ void TestQgsMapCanvas::testMapRendererInteraction()
   QCOMPARE( spy2.count(), 1 );
 
   QgsRectangle r3( 100, 100, 200, 200 );
-  QSignalSpy spy3( mr, SIGNAL(extentsChanged()) );
+  QSignalSpy spy3( mr, SIGNAL( extentsChanged() ) );
   mCanvas->setExtent( r3 );
   QgsRectangle r4 = mCanvas->extent();
   QCOMPARE( mr->extent(), r4 );
@@ -67,18 +67,18 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
   // Destination CRS
 
-  QgsCoordinateReferenceSystem crs1("EPSG:27700");
+  QgsCoordinateReferenceSystem crs1( "EPSG:27700" );
   QCOMPARE( crs1.isValid(), true );
-  QSignalSpy spy4( mCanvas, SIGNAL(destinationCrsChanged()) );
+  QSignalSpy spy4( mCanvas, SIGNAL( destinationCrsChanged() ) );
   mr->setDestinationCrs( crs1 );
-  qDebug(" crs %s vs %s", mCanvas->mapSettings().destinationCrs().authid().toAscii().data(), crs1.authid().toAscii().data() );
+  qDebug( " crs %s vs %s", mCanvas->mapSettings().destinationCrs().authid().toAscii().data(), crs1.authid().toAscii().data() );
   QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs1 );
   QCOMPARE( mr->destinationCrs(), crs1 );
   QCOMPARE( spy4.count(), 1 );
 
-  QgsCoordinateReferenceSystem crs2("EPSG:4326");
+  QgsCoordinateReferenceSystem crs2( "EPSG:4326" );
   QCOMPARE( crs2.isValid(), true );
-  QSignalSpy spy5( mr, SIGNAL(destinationSrsChanged()) );
+  QSignalSpy spy5( mr, SIGNAL( destinationSrsChanged() ) );
   mCanvas->setDestinationCrs( crs2 );
   QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs2 );
   QCOMPARE( mr->destinationCrs(), crs2 );

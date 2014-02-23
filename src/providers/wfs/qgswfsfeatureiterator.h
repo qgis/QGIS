@@ -24,19 +24,19 @@ typedef QMap<QgsFeatureId, QgsFeature*> QgsFeaturePtrMap;
 
 class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsWFSFeatureSource( const QgsWFSProvider* p );
-  ~QgsWFSFeatureSource();
+  public:
+    QgsWFSFeatureSource( const QgsWFSProvider* p );
+    ~QgsWFSFeatureSource();
 
-  QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
+  protected:
 
-  QgsFields mFields;
-  QgsFeaturePtrMap mFeatures;
-  QgsSpatialIndex* mSpatialIndex;
+    QgsFields mFields;
+    QgsFeaturePtrMap mFeatures;
+    QgsSpatialIndex* mSpatialIndex;
 
-  friend class QgsWFSFeatureIterator;
+    friend class QgsWFSFeatureIterator;
 };
 
 class QgsWFSFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>

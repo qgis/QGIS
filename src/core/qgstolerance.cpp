@@ -33,7 +33,7 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, 
   return toleranceInMapUnits( tolerance, layer, renderer->mapSettings(), units );
 }
 
-double QgsTolerance::vertexSearchRadius(QgsMapLayer *layer, const QgsMapSettings &mapSettings)
+double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   QSettings settings;
   double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
@@ -61,7 +61,7 @@ double QgsTolerance::defaultTolerance( QgsMapLayer* layer, QgsMapRenderer* rende
 }
 
 
-double QgsTolerance::computeMapUnitPerPixel(QgsMapLayer* layer, const QgsMapSettings& mapSettings )
+double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSettings& mapSettings )
 {
   if ( ! mapSettings.hasCrsTransformEnabled() )
   {

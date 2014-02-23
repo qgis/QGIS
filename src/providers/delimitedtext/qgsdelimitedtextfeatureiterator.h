@@ -23,34 +23,34 @@
 
 class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
-public:
-  QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
-  ~QgsDelimitedTextFeatureSource();
+  public:
+    QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
+    ~QgsDelimitedTextFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
-protected:
-  QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-  QgsExpression *mSubsetExpression;
-  QgsRectangle mExtent;
-  bool mUseSpatialIndex;
-  QgsSpatialIndex *mSpatialIndex;
-  bool mUseSubsetIndex;
-  QList<quintptr> mSubsetIndex;
-  QgsDelimitedTextFile *mFile;
-  QgsFields mFields;
-  int mFieldCount;  // Note: this includes field count for wkt field
-  int mXFieldIndex;
-  int mYFieldIndex;
-  int mWktFieldIndex;
-  bool mWktHasZM;
-  bool mWktHasPrefix;
-  QGis::GeometryType mGeometryType;
-  QString mDecimalPoint;
-  bool mXyDms;
-  QList<int> attributeColumns;
+  protected:
+    QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
+    QgsExpression *mSubsetExpression;
+    QgsRectangle mExtent;
+    bool mUseSpatialIndex;
+    QgsSpatialIndex *mSpatialIndex;
+    bool mUseSubsetIndex;
+    QList<quintptr> mSubsetIndex;
+    QgsDelimitedTextFile *mFile;
+    QgsFields mFields;
+    int mFieldCount;  // Note: this includes field count for wkt field
+    int mXFieldIndex;
+    int mYFieldIndex;
+    int mWktFieldIndex;
+    bool mWktHasZM;
+    bool mWktHasPrefix;
+    QGis::GeometryType mGeometryType;
+    QString mDecimalPoint;
+    bool mXyDms;
+    QList<int> attributeColumns;
 
-  friend class QgsDelimitedTextFeatureIterator;
+    friend class QgsDelimitedTextFeatureIterator;
 };
 
 

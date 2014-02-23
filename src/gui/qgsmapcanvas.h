@@ -602,28 +602,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
  */
 class QgsMapCanvasRendererSync : public QObject
 {
-  Q_OBJECT
-public:
-  QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer );
+    Q_OBJECT
+  public:
+    QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer );
 
-protected slots:
-  void onExtentC2R();
-  void onExtentR2C();
+  protected slots:
+    void onExtentC2R();
+    void onExtentR2C();
 
-  void onMapUnitsC2R();
-  void onMapUnitsR2C();
+    void onMapUnitsC2R();
+    void onMapUnitsR2C();
 
-  void onCrsTransformC2R();
-  void onCrsTransformR2C();
+    void onCrsTransformC2R();
+    void onCrsTransformR2C();
 
-  void onDestCrsC2R();
-  void onDestCrsR2C();
+    void onDestCrsC2R();
+    void onDestCrsR2C();
 
-  void onLayersC2R();
+    void onLayersC2R();
 
-protected:
-  QgsMapCanvas* mCanvas;
-  QgsMapRenderer* mRenderer;
+  protected:
+    QgsMapCanvas* mCanvas;
+    QgsMapRenderer* mRenderer;
 };
 
 

@@ -173,7 +173,7 @@ namespace pal
       bool showPartial;
 
 
-      typedef bool (*FnIsCancelled)(void* ctx);
+      typedef bool ( *FnIsCancelled )( void* ctx );
       /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
       FnIsCancelled fnIsCancelled;
       /** Application-specific context for the cancellation check function */

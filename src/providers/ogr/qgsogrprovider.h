@@ -347,8 +347,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 class QgsOgrUtils
 {
-public:
-  static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes );
-  static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
-  static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
+  public:
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+    static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
+    static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
 };

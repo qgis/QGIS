@@ -664,21 +664,21 @@ class CORE_EXPORT QgsLabelComponent
  */
 class CORE_EXPORT QgsLabelingResults
 {
-public:
-  QgsLabelingResults();
-  ~QgsLabelingResults();
+  public:
+    QgsLabelingResults();
+    ~QgsLabelingResults();
 
-  //! return infos about labels at a given (map) position
-  QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) const;
-  //! return infos about labels within a given (map) rectangle
-  QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
+    //! return infos about labels at a given (map) position
+    QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) const;
+    //! return infos about labels within a given (map) rectangle
+    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
 
-private:
-  QgsLabelingResults( const QgsLabelingResults& ) {} // no copying allowed
+  private:
+    QgsLabelingResults( const QgsLabelingResults& ) {} // no copying allowed
 
-  QgsLabelSearchTree* mLabelSearchTree;
+    QgsLabelSearchTree* mLabelSearchTree;
 
-  friend class QgsPalLabeling;
+    friend class QgsPalLabeling;
 };
 
 

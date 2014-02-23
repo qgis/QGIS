@@ -25,9 +25,9 @@
 
 
 QgsPostgresConnPoolGroup::QgsPostgresConnPoolGroup( const QString& ci )
-  : connInfo( ci )
-  , sem( POSTGRES_MAX_CONCURRENT_CONNS )
-  , expirationTimer( this )
+    : connInfo( ci )
+    , sem( POSTGRES_MAX_CONCURRENT_CONNS )
+    , expirationTimer( this )
 {
   // just to make sure the object belongs to main thread and thus will get events
   moveToThread( qApp->thread() );

@@ -166,18 +166,18 @@ class QgsAbstractFeatureIterator;
  */
 class CORE_EXPORT QgsAbstractFeatureSource
 {
-public:
-  virtual ~QgsAbstractFeatureSource();
+  public:
+    virtual ~QgsAbstractFeatureSource();
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
 
-protected:
-  void iteratorOpened( QgsAbstractFeatureIterator* it );
-  void iteratorClosed( QgsAbstractFeatureIterator* it );
+  protected:
+    void iteratorOpened( QgsAbstractFeatureIterator* it );
+    void iteratorClosed( QgsAbstractFeatureIterator* it );
 
-  QSet< QgsAbstractFeatureIterator* > mActiveIterators;
+    QSet< QgsAbstractFeatureIterator* > mActiveIterators;
 
-  template<typename> friend class QgsAbstractFeatureIteratorFromSource;
+    template<typename> friend class QgsAbstractFeatureIteratorFromSource;
 };
 
 #endif // QGSFEATUREREQUEST_H
