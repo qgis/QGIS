@@ -1799,6 +1799,7 @@ void QgsMapCanvas::mapToolDestroyed()
   mMapTool = 0;
 }
 
+#if 0 // TODO[MD]: after merge
 #ifdef HAVE_TOUCH
 bool QgsMapCanvas::event( QEvent * e )
 {
@@ -1822,4 +1823,5 @@ bool QgsMapCanvas::event( QEvent * e )
   }
   return done;
 }
+#endif
 #endif
