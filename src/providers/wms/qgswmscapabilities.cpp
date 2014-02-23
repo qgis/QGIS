@@ -103,8 +103,8 @@ bool QgsWmsSettings::parseUri( QString uriString )
 
 
 QgsWmsCapabilities::QgsWmsCapabilities()
-  : mValid( false )
-  , mLayerCount( -1 )
+    : mValid( false )
+    , mLayerCount( -1 )
 {
 }
 
@@ -591,7 +591,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
       else if ( name == "GetFeatureInfo" )
       {
         ot = &capabilityProperty.request.getFeatureInfo;
-      }      
+      }
       else if ( name == "GetLegendGraphic" || name == "sld:GetLegendGraphic" )
       {
         ot = &capabilityProperty.request.getLegendGraphic;
@@ -692,7 +692,7 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlP
 }
 
 void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
-                                 QgsWmsLayerProperty *parentProperty )
+                                     QgsWmsLayerProperty *parentProperty )
 {
   QgsDebugMsg( "entering." );
 
@@ -732,7 +732,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
         //   Ref: 7.2.4.8 Inheritance of layer properties
         subLayerProperty.style                    = layerProperty.style;
         subLayerProperty.crs                      = layerProperty.crs;
-        subLayerProperty.boundingBox              = layerProperty.boundingBox;
+        subLayerProperty.boundingBoxes            = layerProperty.boundingBoxes;
         subLayerProperty.ex_GeographicBoundingBox = layerProperty.ex_GeographicBoundingBox;
         // TODO
 
@@ -846,7 +846,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
             bbox.box = invAxisBbox;
           }
 
-          layerProperty.boundingBox.push_back( bbox );
+          layerProperty.boundingBoxes << bbox;
         }
         else
         {
@@ -1180,20 +1180,33 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
       }
       else if ( tagName == "BoundingBox" )
       {
-        l.boundingBox.box = QgsRectangle(
-                              e1.attribute( "minx" ).toDouble(),
-                              e1.attribute( "miny" ).toDouble(),
-                              e1.attribute( "maxx" ).toDouble(),
-                              e1.attribute( "maxy" ).toDouble()
-                            );
+        QgsWmsBoundingBoxProperty bb;
+        bb.box = QgsRectangle(
+                   e1.attribute( "minx" ).toDouble(),
+                   e1.attribute( "miny" ).toDouble(),
+                   e1.attribute( "maxx" ).toDouble(),
+                   e1.attribute( "maxy" ).toDouble()
+                 );
         if ( e1.hasAttribute( "SRS" ) )
-          l.boundingBox.crs = e1.attribute( "SRS" );
+          bb.crs = e1.attribute( "SRS" );
         else if ( e1.hasAttribute( "srs" ) )
-          l.boundingBox.crs = e1.attribute( "srs" );
+          bb.crs = e1.attribute( "srs" );
         else if ( e1.hasAttribute( "CRS" ) )
-          l.boundingBox.crs = e1.attribute( "CRS" );
+          bb.crs = e1.attribute( "CRS" );
         else if ( e1.hasAttribute( "crs" ) )
-          l.boundingBox.crs = e1.attribute( "crs" );
+          bb.crs = e1.attribute( "crs" );
+        else
+          QgsDebugMsg( "crs of bounding box undefined" );
+
+        if ( !bb.crs.isEmpty() )
+        {
+          QgsCoordinateReferenceSystem crs;
+          crs.createFromOgcWmsCrs( bb.crs );
+          if ( crs.isValid() )
+            bb.crs = crs.authid();
+
+          l.boundingBoxes << bb;
+        }
       }
       else if ( tagName == "Resolutions" )
       {
@@ -1225,9 +1238,10 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );
-    m.matrixWidth  = ceil( l.boundingBox.box.width() / m.tileWidth / r );
-    m.matrixHeight = ceil( l.boundingBox.box.height() / m.tileHeight / r );
-    m.topLeft = QgsPoint( l.boundingBox.box.xMinimum(), l.boundingBox.box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    Q_ASSERT( l.boundingBoxes.size() == 1 );
+    m.matrixWidth  = ceil( l.boundingBoxes[0].box.width() / m.tileWidth / r );
+    m.matrixHeight = ceil( l.boundingBoxes[0].box.height() / m.tileHeight / r );
+    m.topLeft = QgsPoint( l.boundingBoxes[0].box.xMinimum(), l.boundingBoxes[0].box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     ms.tileMatrices.insert( r, m );
     i++;
   }
@@ -1242,20 +1256,22 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
   //
 
   mTileMatrixSets.clear();
-  for ( QDomNode n0 = e.firstChildElement( "TileMatrixSet" ); !n0.isNull(); n0 = n0.nextSiblingElement( "TileMatrixSet" ) )
+  for ( QDomElement e0 = e.firstChildElement( "TileMatrixSet" );
+        !e0.isNull();
+        e0 = e0.nextSiblingElement( "TileMatrixSet" ) )
   {
     QgsWmtsTileMatrixSet s;
-    s.identifier = n0.firstChildElement( "ows:Identifier" ).text();
-    s.title      = n0.firstChildElement( "ows:Title" ).text();
-    s.abstract   = n0.firstChildElement( "ows:Abstract" ).text();
-    parseKeywords( n0, s.keywords );
+    s.identifier = e0.firstChildElement( "ows:Identifier" ).text();
+    s.title      = e0.firstChildElement( "ows:Title" ).text();
+    s.abstract   = e0.firstChildElement( "ows:Abstract" ).text();
+    parseKeywords( e0, s.keywords );
 
-    QString supportedCRS = n0.firstChildElement( "ows:SupportedCRS" ).text();
+    QString supportedCRS = e0.firstChildElement( "ows:SupportedCRS" ).text();
 
     QgsCoordinateReferenceSystem crs;
     crs.createFromOgcWmsCrs( supportedCRS );
 
-    s.wkScaleSet = n0.firstChildElement( "WellKnownScaleSet" ).text();
+    s.wkScaleSet = e0.firstChildElement( "WellKnownScaleSet" ).text();
 
     double metersPerUnit = QGis::fromUnitToUnitFactor( crs.mapUnits(), QGis::Meters );
 
@@ -1273,20 +1289,20 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
                  .arg( invert ? "yes" : "no" )
                );
 
-    for ( QDomNode n1 = n0.firstChildElement( "TileMatrix" );
-          !n1.isNull();
-          n1 = n1.nextSiblingElement( "TileMatrix" ) )
+    for ( QDomElement e1 = e0.firstChildElement( "TileMatrix" );
+          !e1.isNull();
+          e1 = e1.nextSiblingElement( "TileMatrix" ) )
     {
       QgsWmtsTileMatrix m;
 
-      m.identifier = n1.firstChildElement( "ows:Identifier" ).text();
-      m.title      = n1.firstChildElement( "ows:Title" ).text();
-      m.abstract   = n1.firstChildElement( "ows:Abstract" ).text();
-      parseKeywords( n1, m.keywords );
+      m.identifier = e1.firstChildElement( "ows:Identifier" ).text();
+      m.title      = e1.firstChildElement( "ows:Title" ).text();
+      m.abstract   = e1.firstChildElement( "ows:Abstract" ).text();
+      parseKeywords( e1, m.keywords );
 
-      m.scaleDenom = n1.firstChildElement( "ScaleDenominator" ).text().toDouble();
+      m.scaleDenom = e1.firstChildElement( "ScaleDenominator" ).text().toDouble();
 
-      QStringList topLeft = n1.firstChildElement( "TopLeftCorner" ).text().split( " " );
+      QStringList topLeft = e1.firstChildElement( "TopLeftCorner" ).text().split( " " );
       if ( topLeft.size() == 2 )
       {
         if ( invert )
@@ -1304,10 +1320,10 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         continue;
       }
 
-      m.tileWidth    = n1.firstChildElement( "TileWidth" ).text().toInt();
-      m.tileHeight   = n1.firstChildElement( "TileHeight" ).text().toInt();
-      m.matrixWidth  = n1.firstChildElement( "MatrixWidth" ).text().toInt();
-      m.matrixHeight = n1.firstChildElement( "MatrixHeight" ).text().toInt();
+      m.tileWidth    = e1.firstChildElement( "TileWidth" ).text().toInt();
+      m.tileHeight   = e1.firstChildElement( "TileHeight" ).text().toInt();
+      m.matrixWidth  = e1.firstChildElement( "MatrixWidth" ).text().toInt();
+      m.matrixHeight = e1.firstChildElement( "MatrixHeight" ).text().toInt();
 
       double res = m.scaleDenom * 0.00028 / metersPerUnit;
 
@@ -1344,7 +1360,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
     l.abstract   = e0.firstChildElement( "ows:Abstract" ).text();
     parseKeywords( e0, l.keywords );
 
-    l.boundingBox.crs = "";
+    QgsWmsBoundingBoxProperty bb;
 
     QDomElement bbox = e0.firstChildElement( "ows:WGS84BoundingBox" );
     if ( !bbox.isNull() )
@@ -1354,41 +1370,44 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                                          QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
-        l.boundingBox.crs = DEFAULT_LATLON_CRS;
+        bb.crs = DEFAULT_LATLON_CRS;
+        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
       }
     }
 
-    if ( l.boundingBox.crs.isEmpty() )
+    for ( bbox = e0.firstChildElement( "ows:BoundingBox" );
+          !bbox.isNull();
+          bbox = bbox.nextSiblingElement( "ows:BoundingBox" ) )
     {
-      bbox = e0.firstChildElement( "ows:BoundingBox" );
-      if ( !bbox.isNull() )
+      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
+      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+
+      if ( ll.size() == 2 && ur.size() == 2 )
       {
-        QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
-        QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
 
-        if ( ll.size() == 2 && ur.size() == 2 )
+        if ( bbox.hasAttribute( "SRS" ) )
+          bb.crs = bbox.attribute( "SRS" );
+        else if ( bbox.hasAttribute( "srs" ) )
+          bb.crs = bbox.attribute( "srs" );
+        else if ( bbox.hasAttribute( "CRS" ) )
+          bb.crs = bbox.attribute( "CRS" );
+        else if ( bbox.hasAttribute( "crs" ) )
+          bb.crs = bbox.attribute( "crs" );
+        else
+          QgsDebugMsg( "crs of bounding box undefined" );
+
+        if ( !bb.crs.isEmpty() )
         {
-          l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                                            QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
-
-          if ( bbox.hasAttribute( "SRS" ) )
-            l.boundingBox.crs = bbox.attribute( "SRS" );
-          else if ( bbox.hasAttribute( "srs" ) )
-            l.boundingBox.crs = bbox.attribute( "srs" );
-          else if ( bbox.hasAttribute( "CRS" ) )
-            l.boundingBox.crs = bbox.attribute( "CRS" );
-          else if ( bbox.hasAttribute( "crs" ) )
-            l.boundingBox.crs = bbox.attribute( "crs" );
+          QgsCoordinateReferenceSystem crs;
+          crs.createFromOgcWmsCrs( bb.crs );
+          if ( crs.isValid() )
+            bb.crs = crs.authid();
+          l.boundingBoxes << bb;
         }
       }
-    }
-
-    if ( l.boundingBox.crs.isEmpty() )
-    {
-      l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
-      l.boundingBox.crs = DEFAULT_LATLON_CRS;
     }
 
     for ( QDomElement e1 = e0.firstChildElement( "Style" );
@@ -1597,13 +1616,16 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
   {
     QgsWmtsTileLayer& l = *it;
 
-    if ( l.boundingBox.crs.isEmpty() )
+    if ( l.boundingBoxes.isEmpty() )
     {
       if ( !detectTileLayerBoundingBox( l ) )
       {
         QgsDebugMsg( "failed to detect bounding box for " + l.identifier + " - using extent of the whole world" );
-        l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
-        l.boundingBox.crs = DEFAULT_LATLON_CRS;
+
+        QgsWmsBoundingBoxProperty bb;
+        bb.crs = DEFAULT_LATLON_CRS;
+        bb.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+        l.boundingBoxes << bb;
       }
     }
   }
@@ -1699,8 +1721,11 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
   QgsRectangle extent( tm.topLeft, bottomRight );
   extent.normalize();
 
-  l.boundingBox.box = extent;
-  l.boundingBox.crs = tmsIt->crs;
+  QgsWmsBoundingBoxProperty bb;
+  bb.box = extent;
+  bb.crs = crs.authid();
+  l.boundingBoxes << bb;
+
   return true;
 }
 
@@ -1731,9 +1756,9 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
 
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject *parent )
- : QObject( parent )
- , mBaseUrl( baseUrl )
- , mAuth( auth )
+    : QObject( parent )
+    , mBaseUrl( baseUrl )
+    , mAuth( auth )
 {
 }
 
@@ -1764,7 +1789,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
   QEventLoop loop;
-  connect(mCapabilitiesReply, SIGNAL(finished()), &loop, SLOT(quit()));
+  connect( mCapabilitiesReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mError.isEmpty();

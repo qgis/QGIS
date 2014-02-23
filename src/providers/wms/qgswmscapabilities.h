@@ -115,7 +115,6 @@ struct QgsWmsContactInformationProperty
 // TODO: Fill to WMS specifications
 struct QgsWmsServiceProperty
 {
-  // QString                            name;  // Should always be "WMS"
   QString                            title;
   QString                            abstract;
   QStringList                        keywordList;
@@ -134,8 +133,6 @@ struct QgsWmsBoundingBoxProperty
 {
   QString   crs;
   QgsRectangle   box;    // consumes minx, miny, maxx, maxy.
-  double    resx;   // spatial resolution (in CRS units)
-  double    resy;   // spatial resolution (in CRS units)
 };
 
 /** Dimension Property structure */
@@ -262,7 +259,7 @@ struct QgsWmsLayerProperty
   QStringList                             keywordList;
   QStringList                             crs;        // coord ref sys
   QgsRectangle                            ex_GeographicBoundingBox;
-  QVector<QgsWmsBoundingBoxProperty>      boundingBox;
+  QVector<QgsWmsBoundingBoxProperty>      boundingBoxes;
   QVector<QgsWmsDimensionProperty>        dimension;
   QgsWmsAttributionProperty               attribution;
   QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
@@ -314,7 +311,6 @@ struct QgsWmtsTileMatrixSet
   QString identifier;
   QString title, abstract;
   QStringList keywords;
-  QVector<QgsWmsBoundingBoxProperty> boundingBox;
   QString crs;
   QString wkScaleSet;
   QMap<double, QgsWmtsTileMatrix> tileMatrices;
@@ -370,7 +366,7 @@ struct QgsWmtsTileLayer
   QString identifier;
   QString title, abstract;
   QStringList keywords;
-  QgsWmsBoundingBoxProperty boundingBox;
+  QVector<QgsWmsBoundingBoxProperty> boundingBoxes;
   QStringList formats;
   QStringList infoFormats;
   QString defaultStyle;
@@ -439,7 +435,7 @@ struct QgsWmsParserSettings
 struct QgsWmsAuthorization
 {
   QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString() )
-    : mUserName( userName ), mPassword( password ), mReferer( referer ) {}
+      : mUserName( userName ), mPassword( password ), mReferer( referer ) {}
 
   void setAuthorization( QNetworkRequest &request ) const
   {
@@ -470,206 +466,206 @@ struct QgsWmsAuthorization
 /** URI that gets passed to provider */
 class QgsWmsSettings
 {
-public:
+  public:
 
-  bool parseUri( QString uriString );
+    bool parseUri( QString uriString );
 
-  QString baseUrl() const { return mBaseUrl; }
-  QgsWmsAuthorization authorization() const { return mAuth; }
+    QString baseUrl() const { return mBaseUrl; }
+    QgsWmsAuthorization authorization() const { return mAuth; }
 
-  QgsWmsParserSettings parserSettings() const { return mParserSettings; }
+    QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
-protected:
-  QgsWmsParserSettings    mParserSettings;
+  protected:
+    QgsWmsParserSettings    mParserSettings;
 
-  //! layer is tiled, tile layer and active matrix set
-  bool                    mTiled;
-  QHash<QString, QString>  mTileDimensionValues;
-  QString                 mTileMatrixSetId;
+    //! layer is tiled, tile layer and active matrix set
+    bool                    mTiled;
+    QHash<QString, QString>  mTileDimensionValues;
+    QString                 mTileMatrixSetId;
 
-  /**
-   * Maximum width and height of getmap requests
-   */
-  int mMaxWidth;
-  int mMaxHeight;
+    /**
+     * Maximum width and height of getmap requests
+     */
+    int mMaxWidth;
+    int mMaxHeight;
 
-  //! Data source URI of the WMS for this layer
-  QString mHttpUri;
+    //! Data source URI of the WMS for this layer
+    QString mHttpUri;
 
-  //! URL part of URI (httpuri)
-  QString mBaseUrl;
+    //! URL part of URI (httpuri)
+    QString mBaseUrl;
 
-  QgsWmsAuthorization mAuth;
+    QgsWmsAuthorization mAuth;
 
-  bool mIgnoreGetMapUrl;
-  bool mIgnoreGetFeatureInfoUrl;
-  bool mSmoothPixmapTransform;
-  enum QgsWmsDpiMode mDpiMode;
+    bool mIgnoreGetMapUrl;
+    bool mIgnoreGetFeatureInfoUrl;
+    bool mSmoothPixmapTransform;
+    enum QgsWmsDpiMode mDpiMode;
 
-  /**
-   * Active sublayers managed by this provider in a draw function, in order from bottom to top
-   * (some may not be visible in a draw function, cf. activeSubLayerVisibility)
-   */
-  QStringList mActiveSubLayers;
-  QStringList mActiveSubStyles;
+    /**
+     * Active sublayers managed by this provider in a draw function, in order from bottom to top
+     * (some may not be visible in a draw function, cf. activeSubLayerVisibility)
+     */
+    QStringList mActiveSubLayers;
+    QStringList mActiveSubStyles;
 
-  /**
-   * Visibility status of the given active sublayer
-   */
-  QMap<QString, bool> mActiveSubLayerVisibility;
+    /**
+     * Visibility status of the given active sublayer
+     */
+    QMap<QString, bool> mActiveSubLayerVisibility;
 
-  //! FEATURE_COUNT for GetFeatureInfo
-  int mFeatureCount;
+    //! FEATURE_COUNT for GetFeatureInfo
+    int mFeatureCount;
 
-  /**
-   * MIME type of the image encoding used from the WMS server
-   */
-  QString mImageMimeType;
+    /**
+     * MIME type of the image encoding used from the WMS server
+     */
+    QString mImageMimeType;
 
-  QString mCrsId;
+    QString mCrsId;
 
-  friend class QgsWmsProvider;
+    friend class QgsWmsProvider;
 };
 
 
 /** keeps information about capabilities of particular URI */
 class QgsWmsCapabilities
 {
-public:
-  QgsWmsCapabilities();
+  public:
+    QgsWmsCapabilities();
 
-  bool isValid() const { return mValid; }
+    bool isValid() const { return mValid; }
 
-  bool parseResponse( const QByteArray& response, const QgsWmsParserSettings& settings );
+    bool parseResponse( const QByteArray& response, const QgsWmsParserSettings& settings );
 
-  QString lastError() const { return mError; }
-  QString lastErrorFormat() const { return mErrorFormat; }
+    QString lastError() const { return mError; }
+    QString lastErrorFormat() const { return mErrorFormat; }
 
-  QgsWmsCapabilitiesProperty capabilitiesProperty() { return mCapabilities; }
+    QgsWmsCapabilitiesProperty capabilitiesProperty() { return mCapabilities; }
 
-  /**
-   * \brief   Returns a list of the supported layers of the WMS server
-   *
-   * \retval The list of layers will be placed here.
-   *
-   * \todo Document this better
-   */
-  QVector<QgsWmsLayerProperty> supportedLayers() const { return mLayersSupported; }
+    /**
+     * \brief   Returns a list of the supported layers of the WMS server
+     *
+     * \retval The list of layers will be placed here.
+     *
+     * \todo Document this better
+     */
+    QVector<QgsWmsLayerProperty> supportedLayers() const { return mLayersSupported; }
 
-  //! get raster image encodings supported by the WMS, expressed as MIME types
-  QStringList supportedImageEncodings() const { return mCapabilities.capability.request.getMap.format; }
+    //! get raster image encodings supported by the WMS, expressed as MIME types
+    QStringList supportedImageEncodings() const { return mCapabilities.capability.request.getMap.format; }
 
-  /**
-   * \brief   Returns a map for the hierarchy of layers
-   */
-  void layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const { parents = mLayerParents; parentNames = mLayerParentNames; }
+    /**
+     * \brief   Returns a map for the hierarchy of layers
+     */
+    void layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const { parents = mLayerParents; parentNames = mLayerParentNames; }
 
-  /**
-   * \brief   Returns a list of the supported tile layers of the WMS server
-   *
-   * \retval The list of tile sets will be placed here.
-   */
-  QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
+    /**
+     * \brief   Returns a list of the supported tile layers of the WMS server
+     *
+     * \retval The list of tile sets will be placed here.
+     */
+    QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
 
-  /**
-   * \brief   Returns a list of the available tile matrix sets
-   */
-  QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
+    /**
+     * \brief   Returns a list of the available tile matrix sets
+     */
+    QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
 
-  /** Find out whether to invert axis orientation when parsing/writing coordinates */
-  bool shouldInvertAxisOrientation( const QString& ogcCrs );
+    /** Find out whether to invert axis orientation when parsing/writing coordinates */
+    bool shouldInvertAxisOrientation( const QString& ogcCrs );
 
-protected:
-  bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
+  protected:
+    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
 
-  void parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty );
-  void parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute );
-  void parseKeywordList( QDomElement  const & e, QStringList& keywordListProperty );
-  void parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty );
-  void parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty );
-  void parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty );
+    void parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty );
+    void parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute );
+    void parseKeywordList( QDomElement  const & e, QStringList& keywordListProperty );
+    void parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty );
+    void parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty );
+    void parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty );
 
-  void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
-  void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
-  void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-  void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = 0 );
-  void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
+    void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
+    void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
+    void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
+    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = 0 );
+    void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
 
-  void parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType );
-  void parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType );
-  void parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty );
-  void parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty );
-  void parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty );
+    void parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType );
+    void parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType );
+    void parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty );
+    void parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty );
+    void parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty );
 
-  void parseTileSetProfile( QDomElement const &e );
-  void parseWMTSContents( QDomElement const &e );
-  void parseKeywords( const QDomNode &e, QStringList &keywords );
-  void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
+    void parseTileSetProfile( QDomElement const &e );
+    void parseWMTSContents( QDomElement const &e );
+    void parseKeywords( const QDomNode &e, QStringList &keywords );
+    void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-  QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+    QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
 
-  /**
-   * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
-   * Returns true if the detection went fine.
-   */
-  bool detectTileLayerBoundingBox( QgsWmtsTileLayer& l );
+    /**
+     * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
+     * Returns true if the detection went fine.
+     */
+    bool detectTileLayerBoundingBox( QgsWmtsTileLayer& l );
 
-protected:
-  bool mValid;
+  protected:
+    bool mValid;
 
-  QString mError;
-  QString mErrorCaption;
-  QString mErrorFormat;
+    QString mError;
+    QString mErrorCaption;
+    QString mErrorFormat;
 
-  QgsWmsParserSettings mParserSettings;
+    QgsWmsParserSettings mParserSettings;
 
-  //! number of layers and parents
-  int mLayerCount;
-  QMap<int, int> mLayerParents;
-  QMap<int, QStringList> mLayerParentNames;
+    //! number of layers and parents
+    int mLayerCount;
+    QMap<int, int> mLayerParents;
+    QMap<int, QStringList> mLayerParentNames;
 
-  /**
-   * WMS "queryable" per layer
-   * Used in determining if the Identify map tool can be useful on the rendered WMS map layer.
-   */
-  QMap<QString, bool> mQueryableForLayer;
+    /**
+     * WMS "queryable" per layer
+     * Used in determining if the Identify map tool can be useful on the rendered WMS map layer.
+     */
+    QMap<QString, bool> mQueryableForLayer;
 
-  /**
-   * available CRSs per layer
-   */
-  QMap<QString, QStringList > mCrsForLayer;
+    /**
+     * available CRSs per layer
+     */
+    QMap<QString, QStringList > mCrsForLayer;
 
-  /**
-   * layers hosted by the WMS
-   */
-  QVector<QgsWmsLayerProperty> mLayersSupported;
+    /**
+     * layers hosted by the WMS
+     */
+    QVector<QgsWmsLayerProperty> mLayersSupported;
 
-  /**
-   * tilesets hosted by the WMTS
-   */
-  QList<QgsWmtsTileLayer> mTileLayersSupported;
+    /**
+     * tilesets hosted by the WMTS
+     */
+    QList<QgsWmtsTileLayer> mTileLayersSupported;
 
-  /**
-   * themes hosted by the WMTS
-   */
-  QList<QgsWmtsTheme> mTileThemes;
+    /**
+     * themes hosted by the WMTS
+     */
+    QList<QgsWmtsTheme> mTileThemes;
 
-  /**
-   * Parsed capabilities of the WMS
-   */
-  QgsWmsCapabilitiesProperty mCapabilities;
+    /**
+     * Parsed capabilities of the WMS
+     */
+    QgsWmsCapabilitiesProperty mCapabilities;
 
-  //! Formats supported by server and provider
-  QMap<QgsRaster::IdentifyFormat, QString> mIdentifyFormats;
-
-
-  /**
-   * tile matrix sets hosted by the WMS
-   */
-  QHash<QString, QgsWmtsTileMatrixSet> mTileMatrixSets;
+    //! Formats supported by server and provider
+    QMap<QgsRaster::IdentifyFormat, QString> mIdentifyFormats;
 
 
-  friend class QgsWmsProvider;
+    /**
+     * tile matrix sets hosted by the WMS
+     */
+    QHash<QString, QgsWmtsTileMatrixSet> mTileMatrixSets;
+
+
+    friend class QgsWmsProvider;
 };
 
 
@@ -677,42 +673,42 @@ protected:
 /** class that handles download of capabilities */
 class QgsWmsCapabilitiesDownload : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
+  public:
+    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
 
-  bool downloadCapabilities();
+    bool downloadCapabilities();
 
-  QString lastError() const { return mError; }
+    QString lastError() const { return mError; }
 
-  QByteArray response() const { return mHttpCapabilitiesResponse; }
+    QByteArray response() const { return mHttpCapabilitiesResponse; }
 
-signals:
-  /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
-  void statusChanged( QString const &  theStatusQString );
+  signals:
+    /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
+    void statusChanged( QString const &  theStatusQString );
 
-protected slots:
-  void capabilitiesReplyFinished();
-  void capabilitiesReplyProgress( qint64, qint64 );
+  protected slots:
+    void capabilitiesReplyFinished();
+    void capabilitiesReplyProgress( qint64, qint64 );
 
-protected:
-  //! URL part of URI (httpuri)
-  QString mBaseUrl;
+  protected:
+    //! URL part of URI (httpuri)
+    QString mBaseUrl;
 
-  QgsWmsAuthorization mAuth;
+    QgsWmsAuthorization mAuth;
 
-  /** The reply to the capabilities request */
-  QNetworkReply *mCapabilitiesReply;
+    /** The reply to the capabilities request */
+    QNetworkReply *mCapabilitiesReply;
 
-  /** The error message associated with the last WMS error. */
-  QString mError;
+    /** The error message associated with the last WMS error. */
+    QString mError;
 
-  /** The mime type of the message */
-  QString mErrorFormat;
+    /** The mime type of the message */
+    QString mErrorFormat;
 
-  /** Capabilities of the WMS (raw) */
-  QByteArray mHttpCapabilitiesResponse;
+    /** Capabilities of the WMS (raw) */
+    QByteArray mHttpCapabilitiesResponse;
 
 };
 

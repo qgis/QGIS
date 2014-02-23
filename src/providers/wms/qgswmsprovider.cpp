@@ -89,7 +89,6 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCachedViewExtent( 0 )
-    , mCoordinateTransform( 0 )
     , mExtentDirty( true )
     , mGetFeatureInfoUrlBase( "" )
     , mTileReqNo( 0 )
@@ -177,13 +176,6 @@ QgsWmsProvider::~QgsWmsProvider()
     delete mCachedImage;
     mCachedImage = 0;
   }
-
-  if ( mCoordinateTransform )
-  {
-    delete mCoordinateTransform;
-    mCoordinateTransform = 0;
-  }
-
 }
 
 QgsRasterInterface * QgsWmsProvider::clone() const
@@ -346,15 +338,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
 
   if ( crs != mImageCrs && !crs.isEmpty() )
   {
-    // delete old coordinate transform as it is no longer valid
-    if ( mCoordinateTransform )
-    {
-      delete mCoordinateTransform;
-      mCoordinateTransform = 0;
-    }
-
     mExtentDirty = true;
-
     mImageCrs = crs;
   }
 
@@ -934,12 +918,12 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
     return false;
 
   // see if we can refine the bounding box with the CRS-specific bounding boxes
-  for ( int i = 0; i < layerProperty->boundingBox.size(); i++ )
+  for ( int i = 0; i < layerProperty->boundingBoxes.size(); i++ )
   {
-    if ( layerProperty->boundingBox[i].crs == crs )
+    if ( layerProperty->boundingBoxes[i].crs == crs )
     {
       // exact bounding box is provided for this CRS
-      extent = layerProperty->boundingBox[i].box;
+      extent = layerProperty->boundingBoxes[i].box;
       return true;
     }
   }
@@ -951,15 +935,15 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
   // Use the coarse bounding box
   extent = layerProperty->ex_GeographicBoundingBox;
 
-  for ( int i = 0; i < layerProperty->boundingBox.size(); i++ )
+  for ( int i = 0; i < layerProperty->boundingBoxes.size(); i++ )
   {
-    if ( layerProperty->boundingBox[i].crs == DEFAULT_LATLON_CRS )
+    if ( layerProperty->boundingBoxes[i].crs == DEFAULT_LATLON_CRS )
     {
-      if ( layerProperty->boundingBox[i].box.contains( extent ) )
+      if ( layerProperty->boundingBoxes[i].box.contains( extent ) )
         continue; // this bounding box is less specific (probably inherited from parent)
 
       // this BBox is probably better than the one in ex_GeographicBoundingBox
-      extent = layerProperty->boundingBox[i].box;
+      extent = layerProperty->boundingBoxes[i].box;
       break;
     }
   }
@@ -1014,10 +998,10 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml, QSt
   {
     errorTitle = tr( "Dom Exception" );
     errorText = tr( "Could not get WMS Service Exception: %1 at line %2 column %3\n\nResponse was:\n\n%4" )
-             .arg( errorMsg )
-             .arg( errorLine )
-             .arg( errorColumn )
-             .arg( QString( xml ) );
+                .arg( errorMsg )
+                .arg( errorLine )
+                .arg( errorColumn )
+                .arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + errorText );
 
@@ -1085,7 +1069,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e, QString& erro
   else if ( seCode == "LayerNotDefined" )
   {
     errorText = tr( "GetMap request is for a Layer not offered by the server, "
-                 "or GetFeatureInfo request is for a Layer not shown on the map." );
+                    "or GetFeatureInfo request is for a Layer not shown on the map." );
   }
   else if ( seCode == "StyleNotDefined" )
   {
@@ -1102,17 +1086,17 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e, QString& erro
   else if ( seCode == "CurrentUpdateSequence" )
   {
     errorText = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to "
-                 "current value of service metadata update sequence number." );
+                    "current value of service metadata update sequence number." );
   }
   else if ( seCode == "InvalidUpdateSequence" )
   {
     errorText = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is greater "
-                 "than current value of service metadata update sequence number." );
+                    "than current value of service metadata update sequence number." );
   }
   else if ( seCode == "MissingDimensionValue" )
   {
     errorText = tr( "Request does not include a sample dimension value, and the server did not declare a "
-                 "default value for that dimension." );
+                    "default value for that dimension." );
   }
   else if ( seCode == "InvalidDimensionValue" )
   {
@@ -1182,48 +1166,54 @@ bool QgsWmsProvider::calculateExtent()
 
   QgsDebugMsg( "entered." );
 
-  // Set up the coordinate transform from the WMS standard CRS:84 bounding
-  // box to the user's selected CRS
-  if ( !mCoordinateTransform )
-  {
-    QgsCoordinateReferenceSystem qgisSrsSource;
-    QgsCoordinateReferenceSystem qgisSrsDest;
-
-    if ( mSettings.mTiled && mTileLayer )
-    {
-      QgsDebugMsg( QString( "Tile layer's extent: %1 %2" ).arg( mTileLayer->boundingBox.box.toString() ).arg( mTileLayer->boundingBox.crs ) );
-      qgisSrsSource.createFromOgcWmsCrs( mTileLayer->boundingBox.crs );
-    }
-    else
-    {
-      qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
-    }
-
-    qgisSrsDest.createFromOgcWmsCrs( mImageCrs );
-
-    mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
-  }
-
   if ( mSettings.mTiled )
   {
     if ( mTileLayer )
     {
-      try
-      {
-        QgsRectangle extent = mCoordinateTransform->transformBoundingBox( mTileLayer->boundingBox.box, QgsCoordinateTransform::ForwardTransform );
+      int i;
+      for ( i = 0; i < mTileLayer->boundingBoxes.size() && mTileLayer->boundingBoxes[i].crs != mImageCrs; i++ )
+        QgsDebugMsg( QString( "Skip %1 [%2]" ).arg( mTileLayer->boundingBoxes[i].crs ).arg( mImageCrs ) );
 
-        //make sure extent does not contain 'inf' or 'nan'
-        if ( extent.isFinite() )
+      if ( i < mTileLayer->boundingBoxes.size() )
+      {
+        mLayerExtent = mTileLayer->boundingBoxes[i].box;
+      }
+      else
+      {
+        QgsCoordinateReferenceSystem qgisSrsDest;
+        qgisSrsDest.createFromOgcWmsCrs( mImageCrs );
+
+        // pick the first that transforms fin(it)e
+        for ( i = 0; i < mTileLayer->boundingBoxes.size(); i++ )
         {
-          QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
-          mLayerExtent = extent;
-          return true;
+          QgsCoordinateReferenceSystem qgisSrsSource;
+          qgisSrsSource.createFromOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
+
+          QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest );
+
+          QgsDebugMsg( QString( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes[i].crs ).arg( mImageCrs ) );
+
+          try
+          {
+            QgsRectangle extent = ct.transformBoundingBox( mTileLayer->boundingBoxes[i].box, QgsCoordinateTransform::ForwardTransform );
+
+            //make sure extent does not contain 'inf' or 'nan'
+            if ( extent.isFinite() )
+            {
+              mLayerExtent = extent;
+              break;
+            }
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse );
+          }
         }
       }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse );
-      }
+
+      QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
+
+      return true;
     }
 
     QgsDebugMsg( "no extent returned" );
@@ -1760,7 +1750,7 @@ QString QgsWmsProvider::metadata()
 
     foreach ( const QgsWmtsTileLayer &l, mCaps.mTileLayersSupported )
     {
-      metadata += "<tr><td colspan=\"2\">";
+      metadata += "<tr><td>";
       metadata += l.identifier;
       metadata += "</td><td class=\"glossy\">";
 
@@ -1774,7 +1764,7 @@ QString QgsWmsProvider::metadata()
       }
       else
       {
-        Q_ASSERT( l.tileMode == WMTS || l.tileMode == WMSC );
+        metadata += tr( "Invalid tile mode" );
       }
 
       metadata += "</td></tr>";
@@ -1812,16 +1802,23 @@ QString QgsWmsProvider::metadata()
       metadata += "<tr><td class=\"glossy\">";
       metadata += tr( "CRS" );
       metadata += "</td>";
+      metadata += "<td>";
+      metadata += "<table><tr>";
       metadata += "<td class=\"glossy\">";
-      metadata += l.boundingBox.crs;
-      metadata += "</td></tr>";
-
-      metadata += "<tr><td class=\"glossy\">";
-      metadata += tr( "Bounding Box" );
+      metadata += tr( "CRS" );
       metadata += "</td>";
       metadata += "<td class=\"glossy\">";
-      metadata += l.boundingBox.box.toString();
-      metadata += "</td></tr>";
+      metadata += tr( "Bounding Box" );
+      metadata += "</td>";
+      for ( int i = 0; i < l.boundingBoxes.size(); i++ )
+      {
+        metadata += "<tr><td>";
+        metadata += l.boundingBoxes[i].crs;
+        metadata += "</td><td>";
+        metadata += l.boundingBoxes[i].box.toString();
+        metadata += "</td></tr>";
+      }
+      metadata += "</table></td></tr>";
 
       metadata += "<tr><td class=\"glossy\">";
       metadata += tr( "Available Tilesets" );
@@ -1847,14 +1844,129 @@ QString QgsWmsProvider::metadata()
       metadata += "<tr><td>";
       metadata += "<table width=\"100%\">";
 
+      if ( mTileMatrixSet )
+      {
+        metadata += "<tr><table width=\"100%\">";
+
+        metadata += QString( "<tr><th colspan=14 class=\"glossy\">%1 %2</th></tr>"
+                             "<tr>"
+                             "<th rowspan=2 class=\"glossy\">%3</th>"
+                             "<th colspan=2 class=\"glossy\">%4</th>"
+                             "<th colspan=2 class=\"glossy\">%5</th>"
+                             "<th colspan=2 class=\"glossy\">%6</th>"
+                             "<th colspan=2 class=\"glossy\">%7</th>"
+                             "<th colspan=4 class=\"glossy\">%8</th>"
+                             "</tr><tr>"
+                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                             "<th class=\"glossy\">%11</th>"
+                             "<th class=\"glossy\">%12</th>"
+                             "<th class=\"glossy\">%13</th>"
+                             "<th class=\"glossy\">%14</th>"
+                             "</tr>" )
+                    .arg( tr( "Selected tile matrix set " ) ).arg( mSettings.mTileMatrixSetId )
+                    .arg( tr( "Scale" ) )
+                    .arg( tr( "Tile size [px]" ) )
+                    .arg( tr( "Tile size [mu]" ) )
+                    .arg( tr( "Matrix size" ) )
+                    .arg( tr( "Matrix extent [mu]" ) )
+                    .arg( tr( "Bounds" ) )
+                    .arg( tr( "Width" ) ).arg( tr( "Height" ) )
+                    .arg( tr( "Top" ) ).arg( tr( "Left" ) )
+                    .arg( tr( "Bottom" ) ).arg( tr( "Right" ) );
+
+        foreach ( QVariant res, property( "resolutions" ).toList() )
+        {
+          double key = res.toDouble();
+
+          QgsWmtsTileMatrix &tm = mTileMatrixSet->tileMatrices[ key ];
+
+          double tw = key * tm.tileWidth;
+          double th = key * tm.tileHeight;
+
+          QgsRectangle r( tm.topLeft.x(), tm.topLeft.y() - tw * tm.matrixWidth, tm.topLeft.x() + th * tm.matrixHeight, tm.topLeft.y() );
+
+          metadata += QString( "<tr>"
+                               "<td>%1</td>"
+                               "<td>%2</td><td>%3</td>"
+                               "<td>%4</td><td>%5</td>"
+                               "<td>%6</td><td>%7</td>"
+                               "<td>%8</td><td>%9</td>" )
+                      .arg( tm.scaleDenom )
+                      .arg( tm.tileWidth ).arg( tm.tileHeight )
+                      .arg( tw ).arg( th )
+                      .arg( tm.matrixWidth ).arg( tm.matrixHeight )
+                      .arg( tw * tm.matrixWidth, 0, 'f' )
+                      .arg( th * tm.matrixHeight, 0, 'f' );
+
+          // top
+          if ( mLayerExtent.yMaximum() > r.yMaximum() )
+          {
+            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                        .arg( tr( "%n missing row(s)", 0, ( int ) ceil(( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ) )
+                        .arg( tr( "Layer's upper bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
+                        .arg( r.yMaximum(), 0, 'f' );
+          }
+          else
+          {
+            metadata += QString( "<td>%1</td>" ).arg( r.yMaximum(), 0, 'f' );
+          }
+
+          // left
+          if ( mLayerExtent.xMinimum() < r.xMinimum() )
+          {
+            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                        .arg( tr( "%n missing column(s)", 0, ( int ) ceil(( r.xMinimum() - mLayerExtent.xMinimum() ) / tw ) ) )
+                        .arg( tr( "Layer's left bound: %1" ).arg( mLayerExtent.xMinimum(), 0, 'f' ) )
+                        .arg( r.xMinimum(), 0, 'f' );
+          }
+          else
+          {
+            metadata += QString( "<td>%1</td>" ).arg( r.xMinimum(), 0, 'f' );
+          }
+
+          // bottom
+          if ( mLayerExtent.yMaximum() > r.yMaximum() )
+          {
+            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                        .arg( tr( "%n missing row(s)", 0, ( int ) ceil(( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ) )
+                        .arg( tr( "Layer's lower bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
+                        .arg( r.yMaximum(), 0, 'f' );
+          }
+          else
+          {
+            metadata += QString( "<td>%1</td>" ).arg( r.yMaximum(), 0, 'f' );
+          }
+
+          // right
+          if ( mLayerExtent.xMaximum() > r.xMaximum() )
+          {
+            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                        .arg( tr( "%n missing column(s)", 0, ( int ) ceil(( mLayerExtent.xMaximum() - r.xMaximum() ) / tw ) ) )
+                        .arg( tr( "Layer's right bound: %1" ).arg( mLayerExtent.xMaximum(), 0, 'f' ) )
+                        .arg( r.xMaximum(), 0, 'f' );
+          }
+          else
+          {
+            metadata += QString( "<td>%1</td>" ).arg( r.xMaximum(), 0, 'f' );
+          }
+
+          metadata += "</tr>";
+        }
+
+        metadata += "</table></td></tr>";
+      }
+
+      const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
+
       metadata += "<tr><th class=\"glossy\">";
       metadata += tr( "Property" );
       metadata += "</th>";
       metadata += "<th class=\"glossy\">";
       metadata += tr( "Value" );
       metadata += "</th></tr>";
-
-      const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
 
       metadata += "<tr><td>";
       metadata += tr( "Hits" );
@@ -2076,7 +2188,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
     QEventLoop loop;
-    connect(mIdentifyReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect( mIdentifyReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
     if ( mIdentifyResultBodies.size() == 0 ) // no result
@@ -2599,7 +2711,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
   connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
 
   QEventLoop loop;
-  connect(mGetLegendGraphicReply, SIGNAL(finished()), &loop, SLOT(quit()));
+  connect( mGetLegendGraphicReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   QgsDebugMsg( "exiting." );
@@ -2724,10 +2836,10 @@ QGISEXTERN bool isProvider()
 // -----------------
 
 QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image )
-  : mProviderUri( providerUri )
-  , mCachedImage( image )
-  , mEventLoop( new QEventLoop )
-  , mNAM( new QgsNetworkAccessManager )
+    : mProviderUri( providerUri )
+    , mCachedImage( image )
+    , mEventLoop( new QEventLoop )
+    , mNAM( new QgsNetworkAccessManager )
 {
   mNAM->setupDefaultProxyAndCache();
 
@@ -2797,7 +2909,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
       p.drawImage( 0, 0, myLocalImage );
     }
     else if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
-       contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
+              contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
     {
       QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
                                  .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
@@ -2864,14 +2976,14 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
 
 
 QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int tileReqNo, const QList<QgsWmsTiledImageDownloadHandler::TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform )
-  : mProviderUri( providerUri )
-  , mAuth( auth )
-  , mCachedImage( cachedImage )
-  , mCachedViewExtent( cachedViewExtent )
-  , mEventLoop( new QEventLoop )
-  , mNAM( new QgsNetworkAccessManager )
-  , mTileReqNo( tileReqNo )
-  , mSmoothPixmapTransform( smoothPixmapTransform )
+    : mProviderUri( providerUri )
+    , mAuth( auth )
+    , mCachedImage( cachedImage )
+    , mCachedViewExtent( cachedViewExtent )
+    , mEventLoop( new QEventLoop )
+    , mNAM( new QgsNetworkAccessManager )
+    , mTileReqNo( tileReqNo )
+    , mSmoothPixmapTransform( smoothPixmapTransform )
 {
   mNAM->setupDefaultProxyAndCache();
 
