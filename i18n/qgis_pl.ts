@@ -70070,7 +70070,20 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja bbox&lt;/h3&gt;
+Zwraca 1 jeśli geometria przecina prostokąt ograniczający (bbox).
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; zwraca 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; zwraca 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
@@ -72278,7 +72291,33 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;wyrażenie CASE&lt;/h3&gt;
+Wyrażenie warunkowe służące do sprawdzenia wielu warunków
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;warunek&lt;/i&gt; THEN &lt;i&gt;wynik&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;wynik2&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] oznacza elementy opcjonalne
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN warunek&lt;/i&gt; - Wyrażenie do sprawdzenia. &lt;br&gt;
+&lt;i&gt;  THEN wynik&lt;/i&gt; - Jeśli &lt;i&gt;warunek&lt;/i&gt; jest prawdą, zwracany jest &lt;i&gt;wynik&lt;/i&gt;. &lt;br&gt;
+&lt;i&gt;  ELSE wynik2&lt;/i&gt; - Jeśli żadne z wcześniejszych warunków nie jest prawdą, zwracany jest &lt;i&gt;wynik2&lt;/i&gt;. &lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
@@ -73010,7 +73049,22 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja randf() &lt;/h3&gt;
+Zwraca pseudolsową liczbę rzeczywistą z zakresu określonego przez minimum i maksimum.
+
+&lt;br&gt;
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - dolne ograniczenie&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - górne ograniczenie
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="162"/>
@@ -73115,7 +73169,20 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;wyrażenie ILIKE&lt;/h3&gt;
+Zwraca 1 jeśli pierwszy parametr odpowiada wzorcowi (wielkość liter nie ma znaczenia). Alternatywą jest wyrażenie LIKE, uwzględniające wielkość liter. Działa również na liczbach.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;tekst/liczba ILIKE wzorzec&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; zwraca 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; zwraca 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; zwraca 0 &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="654"/>
@@ -73133,7 +73200,21 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;wyrażenie LIKE &lt;/h3&gt;
+Zwraca 1 jeśli pierwszy parametr odpowiada wzorcowi (wielkość liter ma znaczenie). Alternatywą jest wyrażenie ILIKE, nie uwzględniające wielkości liter. Działa również na liczbach.
+
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;tekst/liczba LIKE wzorzec&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; zwraca 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; zwraca 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; zwraca 0 &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
