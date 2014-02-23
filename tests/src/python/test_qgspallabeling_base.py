@@ -49,26 +49,29 @@ from utilities import (
     unittest,
     expectedFailure,
     unitTestDataPath,
-    loadTestFont,
+    loadTestFonts,
+    getTestFont,
     openInBrowserTab
 )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
-TESTFONT = loadTestFont()
+FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
 PALREPORTS = {}
 
 
+# noinspection PyPep8Naming,PyShadowingNames
 class TestQgsPalLabeling(TestCase):
 
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
     _PalFeaturesDb = os.path.join(_PalDataDir, 'pal_features_v3.sqlite')
-    _TestFont = TESTFONT
+    _TestFont = getTestFont()  # Roman at 12 pt
     _MapRegistry = None
     _MapRenderer = None
     _Canvas = None
+    _PalEngine = None
 
     @classmethod
     def setUpClass(cls):
@@ -80,12 +83,9 @@ class TestQgsPalLabeling(TestCase):
 
         # verify that spatialite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
+        # noinspection PyArgumentList
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()
         assert res, msg
-
-        # load the FreeSansQGIS labeling test font
-        msg = '\nCould not load test font, SKIPPING TEST SUITE'
-        assert TESTFONT is not None, msg
 
         cls._TestFunction = ''
         cls._TestGroup = ''
@@ -94,16 +94,20 @@ class TestQgsPalLabeling(TestCase):
         cls._TestImage = ''
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
+        # noinspection PyArgumentList
         cls._MapRegistry = QgsMapLayerRegistry.instance()
+        """:type: QgsMapLayerRegistry"""
         # set color to match render test comparisons background
         cls._Canvas.setCanvasColor(QColor(152, 219, 249))
         cls._Map = cls._Canvas.map()
         cls._Map.resize(QSize(600, 400))
         cls._MapRenderer = cls._Canvas.mapRenderer()
+        """:type: QgsMapRenderer"""
         cls._CRS = QgsCoordinateReferenceSystem()
         # default for labeling test data sources: WGS 84 / UTM zone 13N
         cls._CRS.createFromSrid(32613)
         cls._MapRenderer.setDestinationCrs(cls._CRS)
+        cls._MapRenderer.setProjectionsEnabled(False)
         # use platform's native logical output dpi for QgsMapRenderer on launch
 
         cls.setDefaultEngineSettings()
@@ -115,6 +119,7 @@ class TestQgsPalLabeling(TestCase):
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labelling"""
         cls._Pal = QgsPalLabeling()
+        """:type: QgsPalLabeling"""
         cls._MapRenderer.setLabelingEngine(cls._Pal)
         cls._PalEngine = cls._MapRenderer.labelingEngine()
 
@@ -141,7 +146,9 @@ class TestQgsPalLabeling(TestCase):
         vlayer.loadNamedStyle(os.path.join(cls._PalDataDir,
                                            '{0}.qml'.format(table)))
         cls._MapRegistry.addMapLayer(vlayer)
-        cls._MapRenderer.setLayerSet([vlayer.id()])
+        # place new layer on top of render stack
+        render_lyrs = [vlayer.id()] + list(cls._MapRenderer.layerSet())
+        cls._MapRenderer.setLayerSet(render_lyrs)
 
         # zoom to aoi
         cls._MapRenderer.setExtent(cls.aoiExtent())
@@ -182,7 +189,7 @@ class TestQgsPalLabeling(TestCase):
         font = self.getTestFont()
         font.setPointSize(48)
         lyr.textFont = font
-        lyr.textNamedStyle = 'Medium'
+        lyr.textNamedStyle = 'Roman'
         return lyr
 
     @staticmethod
@@ -203,7 +210,10 @@ class TestQgsPalLabeling(TestCase):
         return res
 
     def saveContolImage(self, tmpimg=''):
-        if 'PAL_CONTROL_IMAGE' not in os.environ:
+        # don't save control images for RenderVsOtherOutput (Vs) tests, since
+        # those control images belong to a different test result
+        if ('PAL_CONTROL_IMAGE' not in os.environ
+                or 'Vs' in self._TestGroup):
             return
         testgrpdir = 'expected_' + self._TestGroupPrefix
         testdir = os.path.join(self._TestDataDir, 'control_images',
@@ -221,6 +231,10 @@ class TestQgsPalLabeling(TestCase):
         else:
             self._Map.render()
             self._Canvas.saveAsImage(imgpath)
+            # delete extraneous world file (always generated)
+            wrld_file = imgbasepath + '.PNGw'
+            if os.path.exists(wrld_file):
+                os.remove(wrld_file)
 
     def renderCheck(self, mismatch=0, imgpath='', grpprefix=''):
         """Check rendered map canvas or existing image against control image
@@ -235,6 +249,7 @@ class TestQgsPalLabeling(TestCase):
         chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
         chk.setMapRenderer(self._MapRenderer)
+        # noinspection PyUnusedLocal
         res = False
         if imgpath:
             res = chk.compareImages(self._Test, mismatch, str(imgpath))
@@ -318,13 +333,17 @@ class TestPALConfig(TestQgsPalLabeling):
         self.assertFalse(pal.isShowingPartialsLabels())
 
 
-
+# noinspection PyPep8Naming,PyShadowingNames
 def runSuite(module, tests):
     """This allows for a list of test names to be selectively run.
     Also, ensures unittest verbose output comes at end, after debug output"""
     loader = unittest.defaultTestLoader
-    if 'PAL_SUITE' in os.environ and tests:
-        suite = loader.loadTestsFromNames(tests, module)
+    if 'PAL_SUITE' in os.environ:
+        if tests:
+            suite = loader.loadTestsFromNames(tests, module)
+        else:
+            raise Exception(
+                "\n\n####__ 'PAL_SUITE' set, but no tests specified __####\n")
     else:
         suite = loader.loadTestsFromModule(module)
     verb = 2 if 'PAL_VERBOSE' in os.environ else 0

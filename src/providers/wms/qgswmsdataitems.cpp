@@ -89,25 +89,73 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   }
 
   // Attention: supportedLayers() gives tree leafes, not top level
-  mLayerProperties = caps.supportedLayers();
-
-  QgsWmsCapabilitiesProperty mCapabilitiesProperty = caps.capabilitiesProperty();
-  QgsWmsCapabilityProperty capabilityProperty = mCapabilitiesProperty.capability;
-
-  // Top level layer is present max once
-  // <element name="Capability">
-  //    <element ref="wms:Layer" minOccurs="0"/>  - default maxOccurs=1
-  QgsWmsLayerProperty topLayerProperty = capabilityProperty.layer;
-  foreach ( QgsWmsLayerProperty layerProperty, topLayerProperty.layer )
+  QVector<QgsWmsLayerProperty> layerProperties = caps.supportedLayers();
+  if ( layerProperties.count() )
   {
-    // Attention, the name may be empty
-    QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
-    QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
+    QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
+    const QgsWmsCapabilityProperty& capabilityProperty = capabilitiesProperty.capability;
 
-    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, uri, layerProperty );
+    // Top level layer is present max once
+    // <element name="Capability">
+    //    <element ref="wms:Layer" minOccurs="0"/>  - default maxOccurs=1
+    const QgsWmsLayerProperty &topLayerProperty = capabilityProperty.layer;
+    foreach ( const QgsWmsLayerProperty &layerProperty, topLayerProperty.layer )
+    {
+      // Attention, the name may be empty
+      QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
+      QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
 
-    children.append( layer );
+      QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, capabilitiesProperty, uri, layerProperty );
+
+      children << layer;
+    }
   }
+
+  QList<QgsWmtsTileLayer> tileLayers = caps.supportedTileLayers();
+  if ( tileLayers.count() )
+  {
+    QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = caps.supportedTileMatrixSets();
+
+    foreach ( const QgsWmtsTileLayer &l, tileLayers )
+    {
+      QString title = l.title.isEmpty() ? l.identifier : l.title;
+      QgsDataItem *layerItem = l.styles.size() == 1 ? this : new QgsDataCollectionItem( this, title, mPath + "/" + l.identifier );
+      if ( layerItem != this )
+        addChildItem( layerItem );
+
+      foreach ( const QgsWmtsStyle &style, l.styles )
+      {
+        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, style.title.isEmpty() ? style.identifier : style.title, layerItem->path() + "/" + style.identifier );
+        if ( styleItem != layerItem )
+          layerItem->addChildItem( styleItem );
+
+        foreach ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+        {
+          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, setLink.tileMatrixSet, styleItem->path() + "/" + setLink.tileMatrixSet );
+          if ( linkItem != styleItem )
+            styleItem->addChildItem( linkItem );
+
+          foreach ( QString format, l.formats )
+          {
+            QString name;
+            if ( layerItem == this )
+              name += ( l.title.isEmpty() ? l.identifier : l.title ) + " - ";
+            if ( styleItem == layerItem )
+              name += ( style.title.isEmpty() ? style.identifier : style.title ) + " - ";
+            if ( linkItem == styleItem )
+              name += setLink.tileMatrixSet + " - ";
+            name += format;
+
+            QgsDataItem *layerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + "/" + name, uri,
+                l.identifier, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[ setLink.tileMatrixSet ].crs, title );
+
+            linkItem->addChildItem( layerItem );
+          }
+        }
+      }
+    }
+  }
+
   return children;
 }
 
@@ -162,18 +210,18 @@ void QgsWMSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, QgsWmsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWmsLayerProperty layerProperty )
-    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" ),
-    mCapabilitiesProperty( capabilitiesProperty ),
-    mDataSourceUri( dataSourceUri ),
-    mLayerProperty( layerProperty )
-    //mProviderKey ("wms"),
-    //mLayerType ( QgsLayerItem::Raster )
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" )
+    , mCapabilitiesProperty( capabilitiesProperty )
+    , mDataSourceUri( dataSourceUri )
+    , mLayerProperty( layerProperty )
 {
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
+
   mUri = createUri();
+
   // Populate everything, it costs nothing, all info about layers is collected
-  foreach ( QgsWmsLayerProperty layerProperty, mLayerProperty.layer )
+  foreach ( const QgsWmsLayerProperty &layerProperty, mLayerProperty.layer )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
@@ -182,11 +230,12 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     mChildren.append( layer );
   }
 
-  if ( mChildren.size() == 0 )
+  if ( mChildren.isEmpty() )
   {
     //mIcon = iconRaster();
     mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
   }
+
   mPopulated = true;
 }
 
@@ -206,8 +255,8 @@ QString QgsWMSLayerItem::createUri()
 
   QString format;
   // get first supported by qt and server
-  QVector<QgsWmsSupportedFormat> formats = QgsWmsProvider::supportedFormats();
-  foreach ( QgsWmsSupportedFormat f, formats )
+  QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
+  foreach ( const QgsWmsSupportedFormat &f, formats )
   {
     if ( mCapabilitiesProperty.capability.request.getMap.format.indexOf( f.format ) >= 0 )
     {
@@ -237,6 +286,48 @@ QString QgsWMSLayerItem::createUri()
   //uri = rasterLayerPath + "|layers=" + layers.join( "," ) + "|styles=" + styles.join( "," ) + "|format=" + format + "|crs=" + crs;
 
   return mDataSourceUri.encodedUri();
+}
+
+// ---------------------------------------------------------------------------
+
+QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
+                                    const QString &name,
+                                    const QString &path,
+                                    const QgsDataSourceURI &uri,
+                                    const QString &id,
+                                    const QString &format,
+                                    const QString &style,
+                                    const QString &tileMatrixSet,
+                                    const QString &crs,
+                                    const QString &title )
+    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" )
+    , mDataSourceUri( uri )
+    , mId( id )
+    , mFormat( format )
+    , mStyle( style )
+    , mTileMatrixSet( tileMatrixSet )
+    , mCrs( crs )
+    , mTitle( title )
+{
+  mUri = createUri();
+  mPopulated = true;
+}
+
+QgsWMTSLayerItem::~QgsWMTSLayerItem()
+{
+}
+
+QString QgsWMTSLayerItem::createUri()
+{
+  // TODO dimensions
+
+  QgsDataSourceURI uri( mDataSourceUri );
+  uri.setParam( "layers", mId );
+  uri.setParam( "styles", mStyle );
+  uri.setParam( "format", mFormat );
+  uri.setParam( "crs", mCrs );
+  uri.setParam( "tileMatrixSet", mTileMatrixSet );
+  return uri.encodedUri();
 }
 
 // ---------------------------------------------------------------------------

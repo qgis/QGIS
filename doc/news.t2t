@@ -38,6 +38,46 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= Whats new in Version 2.2.0 'Valmiera'? =
+
+This is the minor release sports a number of great new features:
+
+- You can now define 1:n relations for layers.
+- It is now possible to export your project to DXF format.
+- When pasting a selection, it is now possible to create a new layer on the fly
+  from the pasted features.
+- WMS Legend is now available via a getLegendGraphic request.
+- It is now possible to digitise a new feature as an interior ring of an
+  existing feature.
+- Recent expressions are saved in the expression builder for quick re-use.
+- You can now set the color for the zebra map border style in composer.
+- You can now rotate any element in the print composer.
+- Composer window now has scale in the status bar and improved rulers.
+- Composer output as image can be created with a world file now so that your
+  maps are georeferenced.
+- Numerous enhancements to the atlas let you preview and print each map sheet.
+- It is easier to select overlapped items in the map composer.
+- Support for styling pages and shapes has been improved in the map composer.
+- QGIS Server can now deliver Web Coverage Service (WCS) maps.
+- Gradients can now be used for polygon fills.
+- Classes in paletted rasters can now be labelled.
+- Colour ramps can now be inverted.
+- Rules in the rule based renderer can now be copied and pasted.
+- Support for on-the-fly feature generalisation has been added.
+- For marker layers you can now define the anchor points / origin of the marker.
+- For vector symbology you can now use expressions instead of only a field for
+  the classification.
+- Size and attributes of diagram renderer can now be set using expressions.
+- Polygon outlines can be drawn with an inner stroke (to prevent the stroke
+  being drawn in a neighbouring polygon)
+- The visual style of all our properties dialogs has been improved.
+- The keybindings for the user interface have been updated to make it easier to
+  navigate.
+- QGS now supports multiple datum transformations.
+- 'Processing' now has a script editor.
+- 'Processing' can be used headless in scripts.
+-
+
 = Whats new in Version 2.0.1 'Dufour'? =
 
 This is a small bugfix release to address the missing copyright / credits for

@@ -136,6 +136,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
+    , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
 
 {
@@ -177,7 +178,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
   // Default simplify drawing settings
   QSettings settings;
-  mSimplifyMethod.setSimplifyHints( settings.value( "/qgis/simplifyDrawingHints", mSimplifyMethod.simplifyHints() ).toInt() );
+  mSimplifyMethod.setSimplifyHints( ( QgsVectorSimplifyMethod::SimplifyHints ) settings.value( "/qgis/simplifyDrawingHints", ( int ) mSimplifyMethod.simplifyHints() ).toInt() );
   mSimplifyMethod.setThreshold( settings.value( "/qgis/simplifyDrawingTol", mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( "/qgis/simplifyLocal", mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( "/qgis/simplifyMaxScale", mSimplifyMethod.maximumScale() ).toFloat() );
@@ -405,6 +406,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
   QgsVectorLayerRenderer renderer( this, rendererContext );
   return renderer.render();
+
+
+
 }
 
 void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
@@ -812,14 +816,29 @@ void QgsVectorLayer::setExtent( const QgsRectangle &r )
 
 QgsRectangle QgsVectorLayer::extent()
 {
-  if ( mValidExtent )
-    return QgsMapLayer::extent();
-
   QgsRectangle rect;
   rect.setMinimal();
 
   if ( !hasGeometryType() )
     return rect;
+
+  if ( !mValidExtent && mLazyExtent && mDataProvider )
+  {
+    // get the extent
+    QgsRectangle mbr = mDataProvider->extent();
+
+    // show the extent
+    QString s = mbr.toString();
+
+    QgsDebugMsg( "Extent of layer: " +  s );
+    // store the extent
+    setExtent( mbr );
+
+    mLazyExtent = false;
+  }
+
+  if( mValidExtent )
+    return QgsMapLayer::extent();
 
   if ( !mDataProvider )
   {
@@ -907,7 +926,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const
+bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
   if ( mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
@@ -1335,17 +1354,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       // TODO: Check if the provider has the capability to send fullExtentCalculated
       connect( mDataProvider, SIGNAL( fullExtentCalculated() ), this, SLOT( updateExtents() ) );
 
-#if 0 // allow lazy calculation of extents and give the creator of the vector layer a chance to 'manually' setExtent
-      // get the extent
-      QgsRectangle mbr = mDataProvider->extent();
-
-      // show the extent
-      QString s = mbr.toString();
-      QgsDebugMsg( "Extent of layer: " +  s );
-      // store the extent
-      setExtent( mbr );
-#endif
-
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
 
@@ -1533,7 +1541,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
 
     // get the simplification drawing settings
-    mSimplifyMethod.setSimplifyHints( e.attribute( "simplifyDrawingHints", "1" ).toInt() );
+    mSimplifyMethod.setSimplifyHints( ( QgsVectorSimplifyMethod::SimplifyHints ) e.attribute( "simplifyDrawingHints", "1" ).toInt() );
     mSimplifyMethod.setThreshold( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
     mSimplifyMethod.setForceLocalOptimization( e.attribute( "simplifyLocal", "1" ).toInt() );
     mSimplifyMethod.setMaximumScale( e.attribute( "simplifyMaxScale", "1" ).toFloat() );

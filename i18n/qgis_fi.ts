@@ -4189,7 +4189,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No input files to process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei syöttötiedostoja käsiteltäväksi.</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -9983,7 +9983,7 @@ Se poistetaan käytöstä.</translation>
         <translation>Plugin %1 ei palauttanut hyväksyttävää tyyppiä eikä sitä voida ladata</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="91"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="88"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="243"/>
         <source>Python error</source>
         <translation>Python virhe</translation>
@@ -10415,7 +10415,17 @@ Virhe(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletuksena, BNA tiedostot luodaan monirivi-muodossa. Jokaisen tiedon, ensimmäinen rivi sisältää tunnukset ja koordinaattien tyypin/numeron jota seurataan. Seuraavat rivit sisältävät koordinaattiparit.</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
+        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
+        <translation>Tuleeko monipiste luotaukset jakaa lukuisiin yksipiste luotausominaisuuksiin. Monipiste geometrioita ei käsitellä useissa formaatissa oikein, joten voi olla käyttökelpoisempaa jakaa yksittäiset luotausten lukuisat pisteet useaan yksittäispisteen ominaisuuteen.</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
+        <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
+        <translation>Kontrolloi puhdistetaanko tason ja kenttien nimet helpompaa SQLite käyttöä varten. Puhdistetut nime muunnetaan pieniin kirjaimiin ja eräät erikoismerkit(&apos; - #) muunnetaan alaviivoiksi. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
@@ -10529,7 +10539,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="580"/>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation>Kun luodaan uutta csv tieedostoa käytetään rivinloppumistapana käytettävän laitteiston tapaa (CR/LF windows ympäristössä ja LF kaikissa muissa ympäristöissä). Tämä voidaan ohittaa käyttämällä LINEFORMAT vaihtoehtoa.</translation>
+        <translation>Kun luodaan uutta csv tiedostoa käytetään rivinloppumistapana käytettävän laitteiston tapaa (CR/LF windows ympäristössä ja LF kaikissa muissa ympäristöissä). Tämä voidaan ohittaa käyttämällä LINEFORMAT vaihtoehtoa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="592"/>
@@ -10601,47 +10611,47 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="767"/>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos määritetään YES, laajennetut tiedot kirjoitetaan. Jos perus-skeemasta ei löytynyt tiedon nimeä vastaavaa foo_bar kuviota, katsotaan foo olen nimiavaruuden elelmentti, ja &lt;foo:bar&gt; elementti kirjoitetaan. Muuten elementit kirjoitetaan &lt;ogr:&gt; nimiavaruuteen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="776"/>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos määritellään NO, ainoastaan &lt;entry&gt; tai &lt;item&gt; elementit kirjoitetaan. Käyttäjän tulee huolehtia dokumentin tarkoituksenmukaisista ylä- ja alatunnisteista.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="782"/>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
-        <translation type="unfinished"></translation>
+        <translation>XML sisältö joka sijoitetaan &lt;channel&gt; elementin ja ensimmäisen &lt;item&gt; elementin väliin RSS dokumentissa, tai xml tagin ja ensimmäisen &lt;entry&gt; elementin väliin Atom dokumentissa. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="789"/>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylätunnisteen &lt;title&gt; elementtiin sijoitettava arvo. Jos ei anneta käytetään dummy arvoa elementtiin koska elementti on pakollinen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="795"/>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylätunnisteen &lt;description&gt; elementtiin sijoitettava arvo. Jos ei anneta käytetään dummy arvoa elementtiin koska elementti on pakollinen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="801"/>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylätunnisteen &lt;link&gt; elementtiin sijoitettava arvo. Jos ei anneta käytetään dummy arvoa elementtiin koska elementti on pakollinen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="807"/>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylätunnisteen &lt;updated&gt; elementtiin sijoitettava arvo. Tulee muotoilla XML datetime muotoon. Jos ei anneta käytetään dummy arvoa elementtiin koska elementti on pakollinen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="814"/>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylätunnisteen &lt;authos&gt;&lt;name&gt; elementtiin sijoitettava arvo. Jos ei anneta käytetään dummy arvoa elementtiin koska elementti on pakollinen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="820"/>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylätunnisteen &lt;id&gt; elementtiin sijoitettava arvo. Jos ei anneta käytetään dummy arvoa elementtiin koska elementti on pakollinen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="828"/>
@@ -10653,27 +10663,27 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="841"/>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos annetaan, sijoitetaan tämä URI skeeman sijainniksi. Huomaa ettei OGR todellisuusdessa käytä skeema ttiedostoa, joten on käyttäjän vastuulla että se vastaa OGR:n tuottamaa GML datatiedostoa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="849"/>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä kirjoittaa GML applikaation skeema tiedoston vastaamaan xsd tiedostoa (samalla perusnimellä). Jos käytetään INTERNAL skeema kirjoitetaan GML tiedostoon, mutta tämä on kokeellista eikä todellakaan pätevän XML kukaista. OFF kieltää skeeman luonnin ((ja on ehdotonta jos käytetään XSISCHEMAURI).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="862"/>
         <source>This is the prefix for the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä on etuliite applikaation kohteen nimiavaruudelle.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="867"/>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voidaan asettaa TRUE välttääksesi etuliitteen kirjoittamista applikaation kohteen nimiavaruudelle GML tiedostossa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletus arvolle &apos;http://ogr.maptools.org/&apos;. Tämä on applikaation kohteen nimiavaruus.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="879"/>
@@ -10683,17 +10693,17 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="889"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
-        <translation type="unfinished"></translation>
+        <translation>pätevä ainoastaan kun FORMAT=GML3/GML3Degree/GML3.2) Oletus on YES. Jos YES, SRS EPSG authority kanssa kirjoitetaan etuliitteen &apos;urn:ogc:def:crs:EPSG::&apos; kera. Siinä tapauksessa jos SRS on    geograafinen SRS ilman selkeää AXIS järjestystä, mutta jos sama SRS authority koodi tuodaan ImportFromEPSGA() tulee käsitellä kuten lat/long, silloin funktio huolehtii koordinaattien järjestyksen vaihtamisesta. Jos asetetaan arvoksi NO, SRS, EPSG authority kanssa, kirjoitetaan etuliitteellä &apos;EPSG:&apos; , jopa jos ne ovat lat/long järjestyksessä.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="901"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>pätevä ainoastaan kun FORMAT=GML3/GML3Degree/GML3.2) Oletus on YES. Jos asetetaan arvoon NO,&lt;gml:boundedBy&gt; elementtiä ei kirjoiteta jokaiselle ominaisuudelle.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="908"/>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletuksena YES, Jos YES, tuloste sisennetään välilyönneillä luettavuuden vuoksi mutta tiedostokoon kustannuksella.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="917"/>
@@ -10712,32 +10722,32 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="945"/>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletuksena kirjoitettaessa tasoa, jonka ominaisuudet ovat tyyppiä wkbLineString, GPX ajuri valitsee ne tulostettavaksi reitteinä. Jos FORCE_GPX_TRACK=YES on määritelty tulostetaan ne jälkinä. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="953"/>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletuksena kirjoitettaessa tasoa, jonka ominaisuudet ovat tyyppiä wkbMultiLineString, GPX ajuri valitsee ne tulostettavaksi jälkinä. Jos FORCE_GPX_TRACK=YES on määritelty tulostetaan ne reitteinä, olettaen että multirivit on muodostettu yhdelle ainoalle riville.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="962"/>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos GPX_USE_EXTENSIONS=YES on määritelty, lisätietokentät kirjoitetaan &lt;extensions&gt; tagien sisään.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="968"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytetään ainoastaan jos GPX_USE_EXTENSIONS=YES ja GPX_EXTENSIONS_NS_URL on asetettu. Nimiavaruuden arvo käytetty laajennusten tageille. Oletuksena, &apos;ogr&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="974"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytetään ainoastaan jos GPX_USE_EXTENSIONS=YES ja GPX_EXTENSIONS_NS on asetettu. Nimiavaruuden URI. Oletuksena, &apos;http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="980"/>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Kun luodaan uutta tiedostoa käytetään rivinloppumistapana käytettävän laitteiston tapaa (CR/LF windows ympäristössä ja LF kaikissa muissa ympäristöissä). Tämä voidaan ohittaa käyttämällä LINEFORMAT tason luontivaihtoehtona jossa arvona CRLF (DOS muoto) tai LF (Unix muoto).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="995"/>
@@ -10749,17 +10759,17 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1038"/>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element. </source>
-        <translation type="unfinished"></translation>
+        <translation>Sallii sinun määritellä tiedon käytettäväksi KML &lt;name&gt; elementille.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1043"/>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sallii sinun määritellä tiedon käytettäväksi KML &lt;description&gt; elementille.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1048"/>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sallii sinun määritellä AlttudeModen käytettäväksi KML geometrioille. Tällä on vaikutusta vain 3D geometrioille ja sen tulee olla pätevä KML vaihtoehto.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1060"/>
@@ -10771,7 +10781,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1073"/>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä tätä laittaaksesi &apos;pika spatiaalisen indeksi tilan&apos; päälle. Tässä tilassa tiedostojen kirjottaminen voi olla 5 kertaa nopeampaa, mutta alueelliset kyselyt voivat olla jopa 30 kertaa hitaampia.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1085"/>
@@ -10788,87 +10798,86 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1110"/>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Päättele tulisiko käyttää 2D (seed_2d.dgn) vai 3D (seed_3D.dgn) sieed tiedostoa. Tämä vaihtoehto ohitetaan jos SEED vaohtoehto on annettu.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1116"/>
         <source>Override the seed file to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita käytettävä seed tiedosto.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1121"/>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Osoittaa tuleeko koko seed tiedosto kopioida. Jos ei, niin ainoastaan kolme ensimmäistä elementtiä kopioidaan.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1127"/>
         <source>Indicates whether the color table should be copied from the seed file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Osoittaa kopioidaanko väritaulu seed tiedostosta.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1132"/>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita seed tiedoston master yksikön nimi annetulle yksi- tai kaksi-merkkisellä yksikön nimellä.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1138"/>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita seed tiedoston ala yksikön nimi annetulle yksi- tai kaksi-merkkisellä yksikön nimellä.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1144"/>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita master yksikköön  kuuluvien alayksikköjen lukumäärä. Oletuksena käytetään seed tiedoston arvoa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1150"/>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita UOR (Units of Resolution) lukumäärä alayksikköä kohden. Oletuksena käytetään seed tiedoston arvoa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1156"/>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>ORIGIN=x,y,z: Ohita suunnittelutason alkupiste. Oletusarvona käytetään seed tiedoston alkupisteen arvoa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1192"/>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation type="unfinished"></translation>
+        <translation>Olisiko päivitettävä tiedostot lennossa jotka otetaan osaksi perustietoja.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Tuleeko monipiste luotaukset jakaa lukuisiin yksipiste luotausominaisuuksiin. Monipiste geometrioita ei ole mukava käsitellä useassa formaatissa, joten voi olla käyttökelpoisempaa jakaa yksittäisten luotausten lukuisat pisteet useaan yksittäispisteen ominaisuuteen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1208"/>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuleeko DEPTH attribuutti lisätä SOUNDG ominaisuuteen ja asettaa luotauksen syvyyden arvo. Tämän tulee olla mahdollista ainoastaan kun SPLIT_MULTIPOINT on myöskin mahdollistettu.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1215"/>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Olisiko kaikki matalan tason geometria perusalkiot palautettava erityisinä IsolatedNode, ConnectedNode, Edge ja Face tasoina.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1221"/>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos käytössä, numeeriset attribuutit jotka on annettu tyhjään merkkijonon arvoksi säilytetään erityisenä numeerisena arvona. Tätä vaihtoehtoa ei yleensä tarvita, mutta voi olla käyttökelpoinen kun käännetään S-57 häviöttömään S-57.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1228"/>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pitäisikö LNAM ja LNAM_REFS kentät liittää ominaisuuksiin kaappaamalla ominaisuus-ominaisuus suhteet S-57 tiedoston FFPT ryhmässä.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1234"/>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulisiko lisäattribuutit jotka liittyvät ominaisuuksien geometrioiden perusalkioihin ottaa mukaan. Näitä ovat FSPT ryhmän arvot, ja niitä tarvitaan ensisijaisesti kun suoritetaan S-57 - S-57 käännöksiä.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1241"/>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulisiko attribuuttiarvot koodata uudelleen UTF-8 muotoon S57 DSSI tiedossa määritellystä merkkien koodauksesta.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1266"/>
@@ -10881,44 +10890,43 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1280"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1354"/>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voidaan käyttää kun halutaan välttää geometry_columns ja spatial_ref_sys taulujen luomista uudessa tietokannassa. Oletuksena nämä metadata taulut luodaan samalla kun uusi tietokanta luodaan.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1297"/>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolloi muotoa jota käytetään geometry sarakkeessa. Oletusksena käytetään WKB. Tämä on yleensä tehokas sekä tilan että prosessoinnin kannalta, mutta vaikeampi tutkia tai käyttää yksinkertaisissa sovellutuksissa kuin WKT (Well Known Text).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1375"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolloi tulee tasojen ja tietojen nimet puhdistaa SQLiten helpommaksi käyttämiseksi. Puhdistetut nimet kirjoitetaan pienin kirjaimin ja eräät erikoismerkit (&apos; - #) on korvattu alaviivoin. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1326"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1407"/>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
-        <translation type="unfinished"></translation>
+        <translation>column_name1[,column_name2, ...] Luettelo (String) sarakkeista jotka tulee tiivistää käyttäenZLib DEFLATE algoritmia. Tämä voi olla hyödyllistä tietokannoille joissa on isoja merkkijono blob kenttiä. Kuitenkin, tulee käyttää harkiten, koska muut SQLite työkalut (tai aiemmat OGR versiot) näkevät sellaisten sarakkeiden arvot pakattuna binäärisisältönä. Käytettäessä OGR kun lisätään, muokataan tai suoritetaan kyselyitä pakatuille sarakkeille tehdään pakkaus ja pakkauksen purku läpinäkyvästi. Kuitenkaan tämän kaltaisia sarakkeita ei ole helposti kyseltävissä attribuutti filtterillä tai WHERE lausekkeella. Huomautus: taulun määrityksissä tämän kaltaiset sarakkeet on määrtelty &apos;VARCHAR_deflate&apos; tietotyypeiksi.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1365"/>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää EPSG CSV tiedoston sisällön spatial_ref_sys tauluun. Aseta NO tavallisille SQLite tietokannoille.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1382"/>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos tietokanta on SpatialLite tyyppinen, ja jos OGR on linkattu libspatialiteen, voidaan tällä vaihtoehdolla kontrolloida luodaanko apatiaalinen indeksi.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1389"/>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos geometria BLOBin tyyppi on SpatiaLite tyyppinen, voidaan tällä vaihtoehdolla kontrolloida, tuleeko geometrioiden (LINESTRINGit, POLYGONit) pakattua muotoa käyttää</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1396"/>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytetään pakottamaan SRSään liitetty SDIR numero tasoon. Kun tätä vaihtoehtoa ei ole määritetty ja jos SRS on liitetty tasoon suoritetaan haku spatial_ref_sys tauluun jotta löydettäisiin vastaava SRS ja jos ei löydetä vastaavaa lisätään uusi tieto tälle SRSlle spatial_reef_sys tauluun. Kun SRID vaihtoehto on määritely tätä haku (ja mahdollista uuden tiedon lisäystä) ei tehdä: määriteltyä SRID käytetään sellaisenaan.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1422"/>
@@ -10931,22 +10939,22 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1459"/>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Osoittaa GeoConcept vientitiedoston tyypin. Aiemmat GeoConcept versiot käyttyvät TXT muotoa. Nykyisin käytetään GTX muotoa.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1490"/>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kun tämä vaihtoehto on asetettu, uusi taso tallennetaan nimettyyn FeatureDataset hakemistoon. Jos tätä hakemistoa ei ole olemassa niin se luodaan.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1496"/>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta geometriasarakkeen nimi uudella tasolla. Oletusarvo on &apos;SHAPE&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1501"/>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Luotavan OID sarakkeen nimi. Oletusarvona on &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1508"/>
@@ -11765,7 +11773,7 @@ Haluatko määritellä polun (GISBASE) GRASS asennukseesi?</translation>
         <translation>Ei voida piirtää rasteria</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="89"/>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
         <translation>Lisäliitännäisten polkua &apos;%1&apos; ei ole olemassa !</translation>
     </message>
@@ -11824,27 +11832,27 @@ Haluatko määritellä polun (GISBASE) GRASS asennukseesi?</translation>
         <translation>Python polku:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9762"/>
+        <location filename="../src/app/qgisapp.cpp" line="9783"/>
         <source>minidump written to %1</source>
         <translation>pienoisdumppi kirjoitettiin %1:teen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9766"/>
+        <location filename="../src/app/qgisapp.cpp" line="9787"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation>pienoisdumpin kirjoittaminen %1:teen epäonnistui (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9773"/>
+        <location filename="../src/app/qgisapp.cpp" line="9794"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation>pienoisdumpin luominen %1:teen epäonnistui (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9776"/>
+        <location filename="../src/app/qgisapp.cpp" line="9797"/>
         <source>Crash dumped</source>
         <translation>Ohjelman epäonnistuminen dumppiin</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="599"/>
+        <location filename="../src/app/main.cpp" line="600"/>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
@@ -12572,23 +12580,23 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
         <translation type="obsolete">Saraketta &apos;%1&apos; ei löydy</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4309"/>
         <location filename="../src/core/qgsvectorlayer.cpp" line="4330"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4355"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4351"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4376"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>Ei voida löytää %1 tarjoajaa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4317"/>
         <location filename="../src/core/qgsvectorlayer.cpp" line="4338"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4363"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4359"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4384"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>Tiedontarjoaja %1:llä ei ole metoodia %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4410"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4431"/>
         <source>Loaded from Provider</source>
         <translation>Ladattiin tiedontarjoajalta</translation>
     </message>
@@ -12651,10 +12659,10 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2410"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2898"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2876"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3224"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3287"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3426"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2893"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3241"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3304"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3443"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="140"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5190"/>
         <source>Connection to database failed</source>
@@ -12667,14 +12675,14 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2609"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2999"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3016"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>Lähdetiedon %1 luominen epäonnistui %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2643"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3017"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3034"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Tason %1 lataaminen epäonnistui</translation>
     </message>
@@ -12716,68 +12724,68 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3239"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3267"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3256"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3284"/>
         <source>Unable to delete layer %1: 
 %2</source>
         <translation>Tason %1 poisto epäonnistui: 
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3311"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3328"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Ei kyetä talentamaan tason tyliä. Ei ole mahdollista luoda vastaanottavaa taulua tietokantaan. Tämä voi johtua taulun oikeuksista (käyttäjä=%1). Ota  yhteyttä tietokannan hallintaan</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3359"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3376"/>
         <source>Save style in database</source>
         <translation>Tallenna tyyli tietokantaan</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3360"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3377"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
         <translation>Tyyli nimeltään &quot;%1&quot; on jo olemassa tietokannassa tälle tasolle. Haluatko korvata sen ?</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3364"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3381"/>
         <source>Operation aborted. No changes were made in the database</source>
         <translation>Toiminto keskeytettiin. Tietokannalle ei tehty mitään muutoksia</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3411"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3428"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Ei voida tallentaa tason tyyliä. Ei ole mahdollista lisätä uutta tietoa tyylitauluun. Tämä voi johtua taulun oikeuksista (käyttäjä=%1). Ota  yhteyttä tietokannan hallintaan.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3458"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3527"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3475"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3544"/>
         <source>Connection to database failed using username: %1</source>
         <translation>Yhteys tietokantaan epäonnistui käyttäjänimellä: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3476"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3502"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3543"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3493"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3519"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3560"/>
         <source>Error executing query: %1</source>
         <translation>Virhe suoritettaessa kyselyä: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3477"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3494"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Virhe suoritettaessa valinta kyselyä liittyvistä tyyleistä. Kyselyn tiedot lokiin</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3503"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3520"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Virhe suoritettaessa valinta kyselyä liittymättömistä tyyleistä. Kyselyn tiedot lokiin</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3544"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3561"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Virhe suoritettaessa valinta kyselyä. Kyselyn tiedot lokiin</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3539"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3556"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Johdonmukaisuus virhe taulussa &apos;%1&apos;. Tyylin id tulisi olla yksilöllinen</translation>
     </message>
@@ -12789,14 +12797,14 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1731"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2722"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3053"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3070"/>
         <source>Unsupported type for field %1</source>
         <translation>ei-tuettu tyyppi tiedolle %1</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1745"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2741"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3073"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3090"/>
         <source>Creation of fields failed</source>
         <translation>Tietojen luonti epäonnistui</translation>
     </message>
@@ -13211,7 +13219,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="241"/>
         <source>Infinite filter rectangle specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Ääretön suodatimen suorakulmio määritelty</translation>
     </message>
     <message>
         <source>Trying to fetch geometry on a layer without geometry.</source>
@@ -14527,7 +14535,7 @@ Ota yhteys kehittäjiin.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7227"/>
         <source>http://qgis.org/de/site/forusers/commercial_support.html</source>
-        <translation type="unfinished"></translation>
+        <translation>http://qgis.org/de/site/forusers/commercial_support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7500"/>
@@ -14550,7 +14558,7 @@ Ota yhteys kehittäjiin.
         <translation>Haluatko todella poistua QGIS ohjelmasta?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9516"/>
+        <location filename="../src/app/qgisapp.cpp" line="9527"/>
         <source>
 
 Always ignore these errors?</source>
@@ -14559,7 +14567,7 @@ Always ignore these errors?</source>
 Ohita nämä virheet aina?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="9520"/>
+        <location filename="../src/app/qgisapp.cpp" line="9531"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -15985,12 +15993,12 @@ Ota yhteyttä kehittäjiin.</translation>
         <translation>Todennusta tarvitaan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9489"/>
+        <location filename="../src/app/qgisapp.cpp" line="9500"/>
         <source>Proxy authentication required</source>
         <translation>Proxy todennusta tarvitaan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9500"/>
+        <location filename="../src/app/qgisapp.cpp" line="9511"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL virheitä tapahtui käytettäessä URL %1:</translation>
     </message>
@@ -16028,7 +16036,7 @@ Ota yhteyttä kehittäjiin.</translation>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="131"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Katso listausta yksityishenkilöistä ja instituutioista jotka ovat rahoittaneet QGIS kehitystä ja muita hankkeen kustannuksia osoitteessa &lt;a href=&quot;http://qgis.org/fi/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/fi/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="230"/>
@@ -16333,19 +16341,19 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="233"/>
-        <location filename="../src/core/qgsapplication.cpp" line="237"/>
-        <location filename="../src/core/qgsapplication.cpp" line="241"/>
+        <location filename="../src/core/qgsapplication.cpp" line="234"/>
+        <location filename="../src/core/qgsapplication.cpp" line="238"/>
+        <location filename="../src/core/qgsapplication.cpp" line="242"/>
         <source>Exception</source>
         <translation>Poikkeus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="241"/>
+        <location filename="../src/core/qgsapplication.cpp" line="242"/>
         <source>unknown exception</source>
         <translation>tuntematon keskeytys</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="600"/>
+        <location filename="../src/core/qgsapplication.cpp" line="601"/>
         <source>Application state:
 QGIS_PREFIX_PATH env var:		%1
 Prefix:		%2
@@ -16370,24 +16378,24 @@ Käyttäjän DB Polku:	%9
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="924"/>
+        <location filename="../src/core/qgsapplication.cpp" line="925"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[VIRHE] Ei voida tehdä qgis.db tiedostosta yksityistä kopiota</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="937"/>
+        <location filename="../src/core/qgsapplication.cpp" line="938"/>
         <source>Could not open qgis.db</source>
         <translation>Ei voitu avata qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="967"/>
+        <location filename="../src/core/qgsapplication.cpp" line="968"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>Yksityisen  qgis.db siirto epäonnistui.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1002"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1003"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
         <translation>Näytön päivitys yksityisessä qgis.db epäonnistui.
@@ -16415,7 +16423,7 @@ SVG hakupolku:	%7
 Käyttäjän DB polku:	%8</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="617"/>
+        <location filename="../src/core/qgsapplication.cpp" line="618"/>
         <source>
 		</source>
         <comment>match indentation of application state</comment>
@@ -16426,7 +16434,7 @@ Käyttäjän DB polku:	%8</translation>
 <context>
     <name>QgsAtlasComposition</name>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="714"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="675"/>
         <source>Filename parsing error: %1</source>
         <translation>Tiedostonimen jäsennysvirhe: %1</translation>
     </message>
@@ -16441,17 +16449,17 @@ Käyttäjän DB polku:	%8</translation>
         <translation>Ominaisuus suotimen evaluointi virhe: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="390"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="369"/>
         <source>No matching atlas features</source>
         <translation>Ei vastaavia atlas ominaisuuksia</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="428"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="407"/>
         <source>Atlas feature %1 of %2</source>
         <translation>Atlas ominaisuus %1 kaikkiaan %2</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="737"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="698"/>
         <source>Filename eval error: %1</source>
         <translation>Tiedostonimen evaluointi virhe: %1</translation>
     </message>
@@ -18676,13 +18684,13 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
 <context>
     <name>QgsColorRampComboBox</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="57"/>
-        <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="66"/>
+        <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="58"/>
+        <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="67"/>
         <source>Random colors</source>
         <translation>Satunnaisvärit</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="58"/>
+        <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="59"/>
         <source>New color ramp...</source>
         <translation>Uusi väritys...</translation>
     </message>
@@ -18765,7 +18773,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimikkeen ominaisuudet</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="461"/>
@@ -18782,7 +18790,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3135"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3180"/>
         <source>Set as atlas feature for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta atlas ominaisuuden arvoksi %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1172"/>
@@ -19104,7 +19112,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3143"/>
         <source>Landscape</source>
-        <translation type="unfinished">Vaakasuora</translation>
+        <translation>Vaakasuora</translation>
     </message>
     <message>
         <source>Content of template file is not valid</source>
@@ -20921,7 +20929,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="355"/>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattinen päivitys</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="368"/>
@@ -20943,22 +20951,22 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="386"/>
         <source>Title font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otsikon kirjain...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="393"/>
         <source>Subgroup font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Alaryhmän kirjasinlaji...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="400"/>
         <source>Group font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryhhmän kirjain...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="407"/>
         <source>Item font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Jäsenen kirjain...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="414"/>
@@ -21365,7 +21373,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <translation>Kartta %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="340"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="334"/>
         <source>Map will be printed here</source>
         <translation>Kartta tulostuu tähän</translation>
     </message>
@@ -21783,7 +21791,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="128"/>
         <source>Map rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartan kierto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="380"/>
@@ -22133,7 +22141,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="216"/>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvan rotaatio</translation>
     </message>
     <message>
         <source>Loading SVG previews...</source>
@@ -22886,12 +22894,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="220"/>
         <source>Header font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otsikon kirjain...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="227"/>
         <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sisällön kirjain...</translation>
     </message>
     <message>
         <source>Grid stroke width</source>
@@ -23799,33 +23807,33 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <translation type="obsolete">Kohteena oleva paikkatietojärjestelmä on virheellinen.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="600"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="606"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="605"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="611"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="598"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="603"/>
         <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>Syötteen koordinaattijärjestelmä (CRS) ei ole  kelvollinen. Kordinaatteja ei voida uudellen projektoida. CRS on: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="605"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="610"/>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>Tulosteen koordinaattijärjestelmä (CRS) ei ole  kelvollinen. Kordinaatteja ei voida uudellen projektoida. CRS on: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="660"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="665"/>
         <source>inverse transform</source>
         <translation>Käänteinen muunto</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="660"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="665"/>
         <source>forward transform</source>
         <translation>Muunnos</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="662"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="667"/>
         <source>%1 of
 %2PROJ.4: %3 +to %4
 Error: %5</source>
@@ -27087,7 +27095,7 @@ Jäsentelyvirhe:
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="434"/>
         <source>Run layer action</source>
-        <translation type="unfinished"></translation>
+        <translation>Suorita tason toiminnot</translation>
     </message>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="465"/>
@@ -27577,7 +27585,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="262"/>
         <source>Recent (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimeisin (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="348"/>
@@ -27868,46 +27876,46 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Syntaksivirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="66"/>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="77"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="72"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="83"/>
         <source>Not available for layer</source>
         <translation>Ei käytettävissä tasolle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="156"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="115"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="162"/>
         <source>Evaluation error</source>
         <translation>Evaluointivirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="137"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="143"/>
         <source>Provider error</source>
         <translation>Tarjoajavirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="137"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="143"/>
         <source>Could not add the new field to the provider.</source>
         <translation>Uuden kentän lisääminen ei onnistu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="215"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="221"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="215"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="221"/>
         <source>An error occured while evaluating the calculation string:
 %1</source>
         <translation>Tapahtui virhe evaluoitaessa laskentajonoa:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="316"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="322"/>
         <source>Please enter a field name</source>
         <translation>Ole hyvä ja anna tiedon nimi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldcalculator.cpp" line="323"/>
+        <location filename="../src/app/qgsfieldcalculator.cpp" line="329"/>
         <source>
  The expression is invalid see (more info) for details</source>
         <translation>
@@ -33241,22 +33249,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="137"/>
         <source>Open Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa karttajoukko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="139"/>
         <source>New Mapset</source>
-        <translation type="unfinished">Uusi karttajoukko</translation>
+        <translation>Uusi karttajoukko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="141"/>
         <source>Close Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Sulje karttajoukko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="144"/>
         <source>Add GRASS Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää GRASS vektoritaso</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="146"/>
@@ -33271,7 +33279,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="150"/>
         <source>Open GRASS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa GRASS työkalut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="156"/>
@@ -33291,7 +33299,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="165"/>
         <source>Create New Grass Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Luo uusi GRASS vektori</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="181"/>
@@ -34498,7 +34506,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1332"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ominaisuustietoja muutettu</translation>
     </message>
     <message>
         <source>Attribute changes</source>
@@ -36563,13 +36571,13 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <name>QgsLegend</name>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="225"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="3117"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="3121"/>
         <source>sub-group</source>
         <translation>alajoukko</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="231"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="3122"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="3126"/>
         <source>group</source>
         <translation>ryhmä</translation>
     </message>
@@ -36634,12 +36642,12 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>&amp;Päivitä piirtojärjestys</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2049"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="2053"/>
         <source>Not fully defined drawing order set to legend order.</source>
         <translation>Ei ole täysin määriteltyä piirros järjestysta vaan on asetettu selitteen järjestykseen.</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2049"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="2053"/>
         <source>Legend</source>
         <translation>Selite</translation>
     </message>
@@ -37304,77 +37312,77 @@ not displayed</source>
         <translation type="obsolete">Vektoritasoa ei voida muokata. Käytä &apos;Vaihda muokkausta&apos; saadaksesi muokattavaksi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="101"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="169"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="177"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="104"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="172"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="180"/>
         <source>Wrong editing tool</source>
         <translation>Väärä muokkaustyökalu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="102"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="105"/>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
         <translation>Pisteen kaappaus työkalua ei voi käyttää tällä vektoritasolla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="122"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="194"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="125"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="197"/>
         <source>Coordinate transform error</source>
         <translation>Koordinaatin muunnosvirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="123"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="195"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="126"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="198"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>Pisteen muuntaminen tason koordinaattijärjestelmälle ei onnistunut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="147"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="307"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="150"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="310"/>
         <source>Feature added</source>
         <translation>Kohde lisätty</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="170"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="173"/>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
         <translation>Viivan kaappaus työkalua ei voi käyttää tällä vektoritasolla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="178"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="181"/>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
         <translation>Monikulmion kaappaus työkalua ei voi käyttää tällä vektoritasolla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="237"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="256"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="278"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="286"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="300"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="240"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="259"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="281"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="289"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="303"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="237"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="256"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="240"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="259"/>
         <source>Cannot add feature. Unknown WKB type</source>
         <translation>Kohdetta ei voida lisätä. Tuntematon WKB tyyppi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="278"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="281"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
         <translation>Kohdetta ei voi lisätä. Syy: Leikkaavien monikulmioiden poistaminen muuttaisi geometriatyypin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="286"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="289"/>
         <source>An error was reported during intersection removal</source>
         <translation>Virhe tapahtui leikkauksen poistamisessa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="294"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="297"/>
         <source>The feature cannot be added because it&apos;s geometry is empty</source>
         <translation>Ominaisuutta ei voida lisätä koska sen geometria on tyhjä</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="298"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="301"/>
         <source>The feature cannot be added because it&apos;s geometry collapsed due to intersection avoidance</source>
         <translation>Ominaisuutta ei voida lisätä koska sen geometria romahti risteämien välttämiseksi</translation>
     </message>
@@ -38604,37 +38612,37 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="89"/>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished">Kokonaisluku (smallint - 16bit)</translation>
+        <translation>Kokonaisluku (smallint - 16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="90"/>
         <source>Whole number (integer - 32bit)</source>
-        <translation type="unfinished">Kokonaisluku (integer - 32bit)</translation>
+        <translation>Kokonaisluku (integer - 32bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="91"/>
         <source>Whole number (integer - 64bit)</source>
-        <translation type="unfinished">Kokonaisluku (integer - 64bit)</translation>
+        <translation>Kokonaisluku (integer - 64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="92"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desimaaliluku (numeric)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="93"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desimaaliluku (decimal)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="97"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desimaaliluku (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="100"/>
         <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Teksti, rajoittamaton pituus (text)</translation>
+        <translation>Teksti, rajoittamaton pituus (text)</translation>
     </message>
 </context>
 <context>
@@ -39209,20 +39217,20 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <translation>Sinun tulee valita taulu voidaksesi lisätä tason.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="501"/>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="511"/>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="518"/>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="604"/>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="503"/>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="513"/>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="520"/>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="606"/>
         <source>MSSQL Provider</source>
         <translation>MSSQL palveluntarjoaja</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="583"/>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="585"/>
         <source>Stop</source>
         <translation>Keskeytä</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="629"/>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="631"/>
         <source>Connect</source>
         <translation>Yhdistä</translation>
     </message>
@@ -39426,12 +39434,12 @@ lisäys</translation>
 <context>
     <name>QgsNetworkAccessManager</name>
     <message>
-        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="171"/>
+        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="190"/>
         <source>Network request %1 timed out</source>
         <translation>Verkkokysely %1 ajan ylitys</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="171"/>
+        <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="190"/>
         <source>Network</source>
         <translation>Verkko</translation>
     </message>
@@ -40333,36 +40341,48 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="135"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="159"/>
         <source>OpenStreetMap files (*.osm)</source>
         <translation>OpenStreetMap tiedostot (*.osm)</translation>
     </message>
     <message>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="149"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="173"/>
         <source>Download error</source>
         <translation>Latausvirhe</translation>
     </message>
     <message>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="161"/>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="177"/>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="181"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="111"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="151"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="185"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="201"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="205"/>
         <source>OpenStreetMap download</source>
         <translation>OpenStreetMap lataus</translation>
     </message>
     <message>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="162"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="111"/>
+        <source>Could not transform canvas extent.</source>
+        <translation>Ei voitu muuntaa näyttöalueen laajuutta.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="151"/>
+        <source>Could not transform layer extent.</source>
+        <translation>Ei voitu muuntaa tason laajuutta.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="186"/>
         <source>Would you like to abort download?</source>
         <translation>Haluatko keskeyttää latauksen?</translation>
     </message>
     <message>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="177"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="201"/>
         <source>Download failed.
 %1</source>
         <translation>Lataus epäonnistui.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="181"/>
+        <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="205"/>
         <source>Download has been successful.</source>
         <translation>Lataus onnistui.</translation>
     </message>
@@ -42240,7 +42260,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimi mittakaava jolla taso voidaan yksinkertaistaa (1:1 yksintertaistaa aina): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2427"/>
@@ -42447,7 +42467,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3971"/>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Kysy koordinaattimuunnosta jos oletusta ei ole määritelty</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4140"/>
@@ -43383,15 +43403,15 @@ Joitakin käyttäjäliittymän mallin objekteja puuttuu:</translation>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="212"/>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="232"/>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="243"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="387"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="403"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="427"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="390"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="406"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="430"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="163"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="384"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="387"/>
         <source>SQL:%1
 error:%2
 </source>
@@ -43420,52 +43440,52 @@ virhe:%2</translation>
         <translation>Ei saada luetteloa spatiaalisesti käytössä olevista tietokannan tauluista</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="400"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="403"/>
         <source>Unsupported geometry type %1 in %2.%3.%4 ignored</source>
         <translation>Tukematon geoometria tyyyppi %1   %2.%3.%4 ohitettu</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="425"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="428"/>
         <source>View %1.%2 doesn&apos;t have integer columns for use as keys.</source>
         <translation>Näytössä %1.%2  ei ole kokonaisluku saraketta käytettäväksi avaimena.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="537"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="540"/>
         <source>Point</source>
         <translation>Piste</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="541"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="544"/>
         <source>Multipoint</source>
         <translation>Monipiste</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="545"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="548"/>
         <source>Line</source>
         <translation>Viiva</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="549"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="552"/>
         <source>Multiline</source>
         <translation>Moniviiva</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="553"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="556"/>
         <source>Polygon</source>
         <translation>Monikulmio</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="557"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="560"/>
         <source>Multipolygon</source>
         <translation>Multipolygoni (Monimonikulmio)</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="560"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="563"/>
         <source>No Geometry</source>
         <translation>Ei geometriaa</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="563"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="566"/>
         <source>Unknown Geometry</source>
         <translation>Tuntematon geometria</translation>
     </message>
@@ -45007,7 +45027,7 @@ Virheilmoitus:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only show layers in the layer registries</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä ainoastaan tasot tasorekistereistä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="215"/>
@@ -46602,7 +46622,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Virheelliset liitännäiset&lt;/h3&gt;&lt;p&gt;Tämän luettelon liitännäiset ova joko &lt;b&gt;virheellisiä tai eivät sovi&lt;/b&gt; QGIS ohjelmasi version kanssa.&lt;/p&gt;&lt;p&gt;Klikatessasi yksittäistä liitännäistä; QGIS näyttää Sinulle lisätietoja.&lt;/p&gt;&lt;p&gt;Pääasiallisin syys virheellisiin liitännäisiin on ettei tätä liitännäistä ole tehty tällä QGIS versiolle. Mahdollisesti voit ladata toisen version osoitteesta &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Toinen yleinen syy on että tämä python liitännäinen tarvitsee jotain ulkopuolista python kirjastoa (riippuvuudet). Voit asentaa ne itse, riippuen käyttöjärjestelmästä. Onnistuneen asennuksen jälkeen liitännäisen tulisi toimia.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
@@ -47067,7 +47087,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="217"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="227"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="244"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="311"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="312"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="442"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="496"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="581"/>
@@ -47111,7 +47131,7 @@ p, li { white-space: pre-wrap; }
         <translation>Sinun PostGIS asennuksessa ei ole GEOS tukea. Kohteen valinta ja tunnistus ei toimi oikein. Ole ystävällinen ja asenna PostGIS Geos tuella (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="311"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="312"/>
         <source>SQL:%1
 result:%2
 error:%3
@@ -47315,7 +47335,7 @@ Tulos: %3 (%4)</translation>
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="845"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="862"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -47326,7 +47346,7 @@ Tietokannan virheilmoitus oli:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="903"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="920"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -47354,22 +47374,22 @@ SQL: %3</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="351"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="577"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="735"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="795"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="814"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="820"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="848"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="859"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="907"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="957"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="986"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1066"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1089"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1094"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1099"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1104"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1157"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1470"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2478"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="812"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="831"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="837"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="865"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="876"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="924"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="974"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1003"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1083"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1106"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1111"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1116"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1121"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1174"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1487"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2495"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -47444,27 +47464,27 @@ SQL: %3</translation>
         <translation>VIRHE: Tietoa %1 ei löytynyt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1066"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1083"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>Taulussa ei ole sarakeetta joka soveltuu käytettäväksi avaimena. QGIS tarvitsee primääriavaimen, PostgreSQL oid sarakkeen tai ctid tiedon tauluille.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3114"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3131"/>
         <source>PostgreSQL version: unknown</source>
         <translation>PostgreSQL versio: tuntematon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3115"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3132"/>
         <source>unknown</source>
         <translation>tuntematon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3135"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3152"/>
         <source>PostgreSQL not connected</source>
         <translation>PostgreSQL ei yhdistetty</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3138"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3155"/>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
@@ -47500,22 +47520,22 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="732"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="786"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="803"/>
         <source>unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>odottamaton muotoiltu tietotyyppi &apos;%1&apos; tiedolle %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="795"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="812"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Tieto %1 ohitettu koska se oli tukematonta tyyppiä %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="814"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="831"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
         <translation>Tieto %1 ohitettiin, koska tukematon tyyppi tyyppiä %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="957"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="974"/>
         <source>The custom query is not a select query.</source>
         <translation>Räätälöity kysely ei ole valittava kysely.</translation>
     </message>
@@ -47524,7 +47544,7 @@ Database error: %2</source>
         <translation type="obsolete">Taulussa ei ole sopivaa saraketta käytettäväksi avaimena. Quantum GIS tarvitsee ensisijaisen avaimen, PostgreSQL oid sarakkeen tai ctid tauluille.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1089"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1106"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
         <translation>Ensisijainen avain tieto &apos;%1&apos; näkymälle ei ole yksilöllinen.</translation>
     </message>
@@ -47533,77 +47553,77 @@ Database error: %2</source>
         <translation type="obsolete">Tyyppi &apos;%1&apos; ensisijaisen avain tiedon &apos;%2&apos; näkymässä on virheellinen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1094"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1111"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
         <translation>Avain tietoa &apos;%1&apos; näkymälle ei löytynyt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1099"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1116"/>
         <source>No key field for view given.</source>
         <translation>Näytölle ei ole annettu avain tietoa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1104"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1121"/>
         <source>Unexpected relation type &apos;%1&apos;.</source>
         <translation>Odottamaton relaatiotyyppi &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1157"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1174"/>
         <source>No key field for query given.</source>
         <translation>Kyselylle ei ole annettu avain tietoa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1466"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1483"/>
         <source>Could not find topology of layer %1.%2.%3</source>
         <translation>Ei löydetty topologiaa taululle %1.%2.%3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1793"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1810"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>PostGIS virhe kun lisättiin kohteita: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1850"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1867"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>PostGIS virhe kun poistettiin kohteita: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1913"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1930"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>PostGIS virhe kun lisättiin ominaisuustietoja: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1963"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1980"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>PostGIS virhe kun poistettiin ominaisuustietoja: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2068"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2085"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>PostGIS virhe kun muutettiin ominaisuustietoja: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2270"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2287"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>PostGIS virhe kun muutettiin geometria-arvoja: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2478"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2495"/>
         <source>result of extents query invalid: %1</source>
         <translation>kyselyn tulos alueesta virheellinen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2716"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2733"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>Geometria tyyppi ja srid tyhjälle sarakeelle %1 %2 määrittelemätön.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2744"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2761"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>Kohteen tyyppiä tai srid %1 %2 ei voida määritellä tai ei kysytty.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2767"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2784"/>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation>Muokkaaminen tai lisääminen estetty 2D+ tasolle (%1; %2)</translation>
     </message>
@@ -47630,14 +47650,14 @@ Kohteiden valinta ja tunnistus ei tule toimimaan oikein.
 Ole hyvä ja asenna PostGIS GEOS tuella (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="820"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="837"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Duplikaatti tieto %1 löydetty
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="859"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="876"/>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) slave).
 Write accesses will be denied.</source>
@@ -47646,7 +47666,7 @@ Write accesses will be denied.</source>
 Kirjoitusoikeudet kielletty.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="984"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1001"/>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
@@ -47809,64 +47829,64 @@ Haluatko etsiä puuttuvat tasot?</translation>
         <translation>Rasteri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="734"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1080"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="738"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1089"/>
         <source>Coordinate System Restriction</source>
         <translation>Koordinaattijärjestelmän rajoitus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="734"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="738"/>
         <source>No coordinate systems selected. Disabling restriction.</source>
         <translation>Koordinaattijärjestelmää ei valittu. Poistetaan rajoitukset.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1134"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1143"/>
         <source>Select print composer</source>
         <translation>Valitse tulosteen muodostaja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1134"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1143"/>
         <source>Composer Title</source>
         <translation>Muodostajan otsikko</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1156"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1165"/>
         <source>Select restricted layers and groups</source>
         <translation>Valitse rajoitetut tasot ja ryhmät</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1230"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1239"/>
         <source>Enter scale</source>
         <translation>Anna mittakaava</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1231"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1240"/>
         <source>Scale denominator</source>
         <translation>Mittakaavan nimittäjä</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1255"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1264"/>
         <source>Load scales</source>
         <translation>Lataa mittakaavat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1256"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1282"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1265"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1291"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XML tiedostot (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1281"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1290"/>
         <source>Save scales</source>
         <translation>Talleta mittakaavat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1430"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1439"/>
         <source>Select a valid symbol</source>
         <translation>Valitse oikea symboli</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1436"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1445"/>
         <source>Invalid symbol : </source>
         <translation>Virheellinen symboli : </translation>
     </message>
@@ -47875,20 +47895,20 @@ Haluatko etsiä puuttuvat tasot?</translation>
         <translation type="obsolete">Parametrit:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1482"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1586"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1587"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1491"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1595"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
         <source>Parameters:</source>
         <translation>Parametrit:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1586"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1587"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1595"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
         <translation>Valitse %1 alasvetovalikosta asettaaksesi säteen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1598"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1607"/>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
         <translation>Ellipsoidin laskentaa voidaan käyttää ainoastaan kun CRS muunnos on käytössä</translation>
     </message>
@@ -47898,39 +47918,39 @@ Haluatko etsiä puuttuvat tasot?</translation>
         <translation>Valinnan väri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="889"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="893"/>
         <source>Measure tool (CRS transformation: %1)</source>
         <translation>Mittatyökalu (CRS muunnos: %1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="890"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="894"/>
         <source>Canvas units (CRS transformation: %1)</source>
         <translation>Karttanäytön yksiköt (CRS muunnos: %1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="923"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="924"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="927"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="928"/>
         <source>OFF</source>
         <translation>OFF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="934"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="935"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="938"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="939"/>
         <source>ON</source>
         <translation>ON</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1080"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1089"/>
         <source>CRS %1 was already selected</source>
         <translation>CRS %1 oli jo valittu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1100"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1109"/>
         <source>Coordinate System Restrictions</source>
         <translation>Koordinaattijärjestelmän rajoitukset</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1101"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1110"/>
         <source>The current selection of coordinate systems will be lost.
 Proceed?</source>
         <translation>Nykyinen koordinaattijärjestelmän valita menetetään.
@@ -51826,6 +51846,14 @@ keskihajonta ×</translation>
     </message>
 </context>
 <context>
+    <name>QgsRelReferenceConfigDlg</name>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsrelreferenceconfigdlg.cpp" line="97"/>
+        <source>Preview Expression</source>
+        <translation>Esikatsele lauseketta</translation>
+    </message>
+</context>
+<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="14"/>
@@ -51833,22 +51861,27 @@ keskihajonta ×</translation>
         <translation>Valintaikkuna</translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="20"/>
+        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="23"/>
         <source>Display expression</source>
         <translation>Näytä lauseke</translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="27"/>
+        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="35"/>
+        <source>Expression Builder</source>
+        <translation>Lausekkeeen rakentaja</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="65"/>
         <source>Allow NULL value</source>
         <translation>Salli NULL arvo</translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="34"/>
+        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="51"/>
         <source>Show embedded form</source>
         <translation>Näytä sulautettu lomake</translation>
     </message>
     <message>
-        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="41"/>
+        <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="58"/>
         <source>Relation</source>
         <translation>Relaatio</translation>
     </message>
@@ -52143,7 +52176,7 @@ keskihajonta ×</translation>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="321"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="326"/>
         <source>- expression -</source>
-        <translation type="unfinished"></translation>
+        <translation>- lauseke -</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="239"/>
@@ -54142,12 +54175,12 @@ mutta johtaa parempaan suorituskykyyn jälkeenpäin.</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Error</source>
-        <translation type="unfinished">Virhe</translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida lisätä yhteytta &apos;%1&apos;: samalla nimellä oleva yhteys on jo olemassa.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="441"/>
@@ -55240,7 +55273,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Työskentelemme todella uutterasti tehdäksemme tämän ohjelman Sinulle. Oletko huomannut jo kaikki sen mahtavat ominaisuudet? Tunnetko tyytyväisyyttä käyttäessäsi sitä? QGIS on omistautuneen kehittäjäryhmän rakkauden tuote. Haluamme että kopioit &amp;amp; jaat sitä jotta mahdollisimman moni henkilö saa sen käsiinsä. Jos QGIS säästää rahaasi tai jos pidät työstämme ja Sinulla on taloudellisia mahdollisuuksia auttaa, toivomme Sinun harkitsevan QGISin kehitättämisen tukemista. Käytämme tukijoilta saamamme rahat matkoihin ja kustannuksiin puolivuosittaisin kehittämistapaamisiin, sekä hankkeen yleisiin tavoitteisiin  kuuluviin asioihin.  &lt;br /&gt;&lt;br /&gt;Ole ystävällinen ja katso &lt;/span&gt;&lt;a href=&quot;http://qgis.org/fi/site/getinvolved/governance/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS sponsorointisivu&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; lisätietoja. Sivu &lt;/span&gt;&lt;a href=&quot;http://qgis.org/fi/site/about/sponsors.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsorit&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; näyttää Sinulle hienoja ihmisiä ja yrityksiä jotka ovat tukeneet hankettamme taloudellisesti - todella suuret &apos;kiitokset&apos; kaikille heille!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -56329,17 +56379,17 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="51"/>
         <source>Size</source>
-        <translation type="unfinished">Koko</translation>
+        <translation>Koko</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="58"/>
         <source>area</source>
-        <translation type="unfinished">alue</translation>
+        <translation>alue</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="61"/>
         <source>diameter</source>
-        <translation type="unfinished"></translation>
+        <translation>läpimitta</translation>
     </message>
 </context>
 <context>
@@ -56731,17 +56781,17 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://qgis.org/en/site/about/case_studies/index.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos kirjoitat tieteellisen julkaisun tai muun artikkelin, joka viittaa QGIS ohjelmistoon haluaisimme sisällyttää työsi &lt;a href = &quot;http://www.qgis.org/fi/about/case-studies/index.html&quot; &gt; esimerkkiosaan &lt;/a&gt; QGIS kotisivuilla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Haluatko nähdä QGIS äidinkielelläsi? Etsimme lisää kääntäjä ja pyydän apuanne! Käännös prosessi on melko suoraviivaista - ohjeet löytyvät QGIS wikistä &lt;a href=&quot;http://qgis.org/fi/site/getinvolved/translate.html#howto-translate-gui&quot;&gt; kääntäjän sivu.&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos tarvitset apua QGIS käytössä, on meillä &apos;käyttäjien&apos; lista, jossa käyttäjät auttavat toinen toisiaan ohjelmamme liittyvissä asioissa. Meillä on myös &apos;kehittäjien&apos; postituslista, niille, jotka haluavat apua ja keskustelella asioista jotka liittyvät QGIS ohjelmakoodiin. Tiedot liittymisestä ovat &lt;a href=&quot;http://www.qgis.org/fi/site/forusers/support.html#mailing-lists&quot;&gt; yhteisöosassa&lt;/a&gt; QGIS kotisivuilla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="67"/>
@@ -56905,7 +56955,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos QGIS säästää rahaasi tai pidät työstämme ja Sinulla on taloudellisia mahdollisuuksia auttaa, harkitse QGISin sponsoroimista. Käytämme rahaa sponsoreilta maksaaksemme matka- sekäjoka toinen vuosi pidettäviin kokouksiin, ja yleensä hankettamme tukeviin tavoitteisiin. Katso &lt;a href=&quot;http://qgis.org/fi/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt; QGIS Sponsorointi Web-sivu &lt;/a&gt; saadaksesi lisätietoja.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="185"/>
@@ -57495,12 +57545,12 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation type="obsolete">ei hahmottajaa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2710"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2731"/>
         <source>ERROR: no provider</source>
         <translation>VIRHE: Ei tarjoajaa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2716"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2737"/>
         <source>ERROR: layer not editable</source>
         <translation>VIRHE: Taso ei muokattavissa</translation>
     </message>
@@ -57624,7 +57674,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
   Palveluntarjoajan virheet:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2733"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2754"/>
         <source>Commit errors:
   %1</source>
         <translation>Tehdyt virheet:
@@ -57667,13 +57717,13 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation type="obsolete">Tason koordinaattijärjestelmän yksiköt : </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4078"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4097"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4099"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4118"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4083"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4104"/>
         <source>unknown extent</source>
         <translation>tuntematon alueen laajuus</translation>
     </message>
@@ -57690,7 +57740,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation type="obsolete">Projektin (tulosteen) koordinaattijärjestelmä:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4132"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4153"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Tason alueen muunnos virheellinen)</translation>
     </message>
@@ -57699,118 +57749,128 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
         <translation type="obsolete">Attribuuttitiedon info:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="1108"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="750"/>
+        <source>Simplify transform error caught: %1</source>
+        <translation>Yksinkertaistamisen muunnosvirhe löydettiin : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="750"/>
+        <source>CRS</source>
+        <translation>CRS</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="1125"/>
         <source>Updating feature count for layer %1</source>
         <translation>Päivitetään kohteiden lukumäärä tasolle: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="1108"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="1125"/>
         <source>Abort</source>
         <translation>Keskeytä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3946"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3967"/>
         <source>General</source>
         <translation>Yleistä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3952"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3973"/>
         <source>Layer comment</source>
         <translation>Tason kommentti</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3959"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3980"/>
         <source>Storage type of this layer</source>
         <translation>Tämän kerroksen tallennustyyppi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3967"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3988"/>
         <source>Description of this provider</source>
         <translation>Tämän palveluntarjoajan kuvaus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3974"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3995"/>
         <source>Source for this layer</source>
         <translation>Tämän tason alkuperä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3991"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4012"/>
         <source>Geometry type of the features in this layer</source>
         <translation>Tämän tason ominaisuuksien geometriatyyppi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4000"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4021"/>
         <source>Primary key attributes</source>
         <translation>Primääriavaimen ominaisuustiedot</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4011"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4032"/>
         <source>The number of features in this layer</source>
         <translation>Tämän tason ominaisuuksien lukumäärä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4016"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4037"/>
         <source>Editing capabilities of this layer</source>
         <translation>Tämän tason muokkausvalmiudet</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4025"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4046"/>
         <source>Extents</source>
         <translation>Alueet</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4029"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4050"/>
         <source>In layer spatial reference system units</source>
         <translation>Tason koordinaattijärjestelmän yksiköissä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4095"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4130"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4116"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4151"/>
         <source>In project spatial reference system units</source>
         <translation>Projektin koordinaattijärjestelmän yksiköissä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4108"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4129"/>
         <source>Layer Spatial Reference System</source>
         <translation>Tason koordinaattijärjestelmä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4119"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4140"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>Projektin (tulosteen) koordinaattijärjestelmä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4141"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4162"/>
         <source>Attribute field info</source>
         <translation>Ominaisuustiedon info</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4147"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4168"/>
         <source>Field</source>
         <translation>Kenttä</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4150"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4171"/>
         <source>Type</source>
         <translation>Tyyppi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4153"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4174"/>
         <source>Length</source>
         <translation>Pituus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4156"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4177"/>
         <source>Precision</source>
         <translation>Tarkkuus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4159"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4180"/>
         <source>Comment</source>
         <translation>Kommentti</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4428"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4449"/>
         <source>Error: qgis element could not be found</source>
         <translation>Virhe: qgis elementtiä ei löytynyt</translation>
     </message>
@@ -58710,7 +58770,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="964"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimi mittakaava jolla taso voidaan yksinkertaistaa (1:1 yksintertaistaa aina): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1032"/>
@@ -59181,7 +59241,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
 <context>
     <name>QgsWFSCapabilities</name>
     <message>
-        <location filename="../src/providers/wfs/qgswfscapabilities.cpp" line="213"/>
+        <location filename="../src/providers/wfs/qgswfscapabilities.cpp" line="219"/>
         <source>Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong</source>
         <translation>Joko WFS palvelin ei tue WFS versiota 1.0.0 tai WFS url on virheellinen</translation>
     </message>
@@ -59547,7 +59607,7 @@ Features</source>
         <translation>XML tiedosto (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="393"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="401"/>
         <source>encoding %1 not supported.</source>
         <translation>koodausta %1 ei tueta.</translation>
     </message>
@@ -59560,17 +59620,17 @@ Features</source>
         <translation type="obsolete">WMS salasana %1:lle</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="466"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
         <source>WMS Provider</source>
         <translation>WMS tarjoaja</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="467"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="475"/>
         <source>Could not open the WMS Provider</source>
         <translation>WMS tarjoajan avaaminen epäonnistui</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="901"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="917"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
@@ -59579,12 +59639,12 @@ Features</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="889"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="905"/>
         <source>Select layer(s)</source>
         <translation>Valitse taso(t)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="799"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="815"/>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
         <translation>
@@ -59593,32 +59653,32 @@ Features</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="891"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="907"/>
         <source>Select layer(s) or a tileset</source>
         <translation>Valitse taso(t) tai kuvakejoukko</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="896"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="912"/>
         <source>Select either layer(s) or a tileset</source>
         <translation>Valitse joka taso(t) tai kuvakejoukko</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="908"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="924"/>
         <source>No common CRS for selected layers.</source>
         <translation>Ei yhteistä CRS valituille tasoille.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="913"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="929"/>
         <source>No CRS selected</source>
         <translation>CRS ei valittu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="918"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="934"/>
         <source>No image encoding selected</source>
         <translation>Kuvan koodausta ei valittu</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="923"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="939"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
@@ -59627,7 +59687,7 @@ Features</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="929"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="945"/>
         <source>Tileset selected</source>
         <translation>Kuvakejoukko valittu</translation>
     </message>
@@ -59639,39 +59699,39 @@ Features</source>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1051"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1068"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation>Vastausta ei tunnistettu. Tarjoaja %1 ilmoitti:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1102"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1119"/>
         <source>WMS proxies</source>
         <translation>WMS proxyt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1102"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1119"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Useita WMS palvelimia on lisätty palvelin listaan. Jos olet yhteydessä verkkoon proxyn välityksellä, sinun täytyy asettaa proxy asetukset QGIS asetus dialogissa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1182"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1199"/>
         <source>parse error at row %1, column %2: %3</source>
         <translation>jäsennysvirhe rivillä %1, sarakkeessa %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1187"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1204"/>
         <source>network error: %1</source>
         <translation>verkkovirhe: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1210"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1227"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation>Yhteys nimellä %1 on jo olemassa. Korvaa se?</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1211"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1228"/>
         <source>Confirm Overwrite</source>
         <translation>Vahvista korvaaminen</translation>
     </message>
@@ -59734,8 +59794,9 @@ Features</source>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="155"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="323"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="364"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="415"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="420"/>
         <source>Title</source>
         <translation>Otsikko</translation>
     </message>
@@ -59801,43 +59862,43 @@ Features</source>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="313"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="349"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="354"/>
         <source>Layer</source>
         <translation>Taso</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="318"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="359"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="369"/>
         <source>Style</source>
         <translation>Tyyli</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="369"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="374"/>
         <source>Tileset</source>
         <translation>Kuvakejoukko</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="383"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="388"/>
         <source>Server Search</source>
         <translation>Haku palvelimesta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="392"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="397"/>
         <source>Search</source>
         <translation>Etsi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="425"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="430"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="420"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="425"/>
         <source>Description</source>
         <translation>Kuvaus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="433"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="438"/>
         <source>Add selected row to WMS list</source>
         <translation>Lisää valitut rivit WMS listaan</translation>
     </message>
@@ -59857,7 +59918,7 @@ Features</source>
         <translation>Asetukset</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="446"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="451"/>
         <source>Layer name</source>
         <translation>Tason nimi</translation>
     </message>
@@ -59872,7 +59933,7 @@ Features</source>
         <translation>Muuta...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="327"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="332"/>
         <source>Tilesets</source>
         <translation>Kuvakejoukot</translation>
     </message>
@@ -59885,12 +59946,12 @@ Features</source>
         <translation type="obsolete">Koko</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="354"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="359"/>
         <source>Format</source>
         <translation>Tiedostomuoto</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="374"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="379"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -60384,157 +60445,157 @@ Vastaus oli:
 <context>
     <name>QgsWmsProvider</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1513"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1500"/>
         <source>
 Tried URL: %1</source>
         <translation>
 Yritettiin URL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1570"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1557"/>
         <source>Capabilities request redirected.</source>
         <translation>Valmiuspyyntö ohjattiin uudelleen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1604"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1591"/>
         <source>empty of capabilities: %1</source>
         <translation>tyhjänä ominaisuuksista: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1611"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1598"/>
         <source>Download of capabilities failed: %1</source>
         <translation>Ominaisuuksien lataus epäonnistui: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1638"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1625"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
         <translation>Ominaisuuksien kaikkiaan %2 tavusta %1 ladattu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1645"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1632"/>
         <source>%1 of %2 bytes of map downloaded.</source>
         <translation>Kartan kaikkiaan %2 tavusta %1 ladattu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1671"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1695"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3250"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1658"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1682"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3244"/>
         <source>Dom Exception</source>
         <translation>Dom poikkeus</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3006"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3000"/>
         <source>Generated default style</source>
         <translation>Generoitiin oletustyyli</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3007"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3001"/>
         <source>Style was missing in capabilities</source>
         <translation>Tyyli puuttui valmiuksista</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3317"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3311"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Pyyntö sisältää CRS:n yhdelle tai useammalle tasolle jota palvelin ei tue.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3321"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3315"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Pyyntö sisältää SRS:n yhdelle tai useammalle tasolle jota palvelin ei tue.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3325"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3319"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>GetMap pyyntö on tasolle jota palvelin ei tarjoa, tai GetFeatureInfo pyyntö on tasolle joka ei näy kartalla.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3330"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3324"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Pyyntö on tasolle tyylissä jota palvelin ei tue.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3334"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3328"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>GetFeatureInfo pyyntö kohdistetaan kerrokseen, jota ei ole ilmoitettu käytettäväksi kyselyyn.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3338"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3332"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>GetFeatureInfo pyyntö sisältää virheellisen X tai Y arvon.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3342"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3336"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Arvo (valinnainen) UpdateSequence parametrissa GetCapabilities pyynnössä on sama kuin nykyinen palvelun metadata päivityksen järjestysnumeron arvo.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3347"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3341"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Arvo (valinnainen) UpdateSequence parametrissa GetCapabilities pyynnössä on suurempi kuin nykyinen palvelun metadata päivityksen järjestysnumeron arvo.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3352"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3346"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Pyyntö ei sisällä otoksen mittasuhteiden arvoa, ja palvelin ei ilmoittanut mittasuhteelle oletusarvoa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3357"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3351"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Pyyntö sisältää virheellisen otoksen mittasuhteiden arvon.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3361"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3355"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Pyyntö on valintaiselle operaatiolle jota palvelin ei tue.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3365"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3359"/>
         <source>(No error code was reported)</source>
         <translation>(Virheitä ei raportoitu)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3369"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3363"/>
         <source>(Unknown error code)</source>
         <translation>(Tuntematon virhekoodi)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3372"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3366"/>
         <source>The WMS vendor also reported: </source>
         <translation>WMS palveluntarjoaja raportoi myös:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3582"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3794"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4033"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4100"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3576"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3788"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4027"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4094"/>
         <source>Property</source>
         <translation>Ominaisuus</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3585"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3797"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4036"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4103"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3579"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3791"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4030"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4097"/>
         <source>Value</source>
         <translation>Arvo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3730"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3724"/>
         <source>LegendURLs</source>
         <translation>Selitteen URLit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3802"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3796"/>
         <source>WMS Version</source>
         <translation>WMS Versio</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4587"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuloksen jäsennys epäonnistui. %1 ominaisuustyyppiä arvattiin gml (%2) tiedostosa mutta ainuttakaan ominaisuutta ei jäsennetty.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4930"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4915"/>
         <source>Returned legend image is flawed [URL: %1]</source>
         <translation>Palautettu selitteen kuva on virheellinen [URL: %1]</translation>
     </message>
@@ -60543,12 +60604,12 @@ Yritettiin URL: %1</translation>
         <translation type="obsolete">getLegendGraphic: Ei voida päätellä resoluution uri parameteria [map_resolution | dpi]. Resolutio parameteria ei käytetä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4891"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4876"/>
         <source>GetLegendGraphic request redirected.</source>
         <translation>GetLegendGraphic pyyntö ohhjattu uudelleen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4923"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4908"/>
         <source>GetLegendGraphic request error</source>
         <translation>GetLegendGraphic pyyntö virhe</translation>
     </message>
@@ -60557,19 +60618,19 @@ Yritettiin URL: %1</translation>
         <translation type="obsolete">Palautettu selitteen kuva on virheellinen [URL: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4947"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4932"/>
         <source>Download of GetLegendGraphic failed: %1</source>
         <translation>GetLegendGraphic lataus epäonnistui: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4957"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4942"/>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
         <translation>GetLegendGraphic:ista %1 tavua yhteensä %2 tavusta ladattu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3606"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3712"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3810"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3600"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3706"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3804"/>
         <source>Title</source>
         <translation>Otsikko</translation>
     </message>
@@ -60579,32 +60640,32 @@ Yritettiin URL: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="415"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1092"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1101"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1119"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1137"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1146"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1264"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1272"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1322"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1383"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1405"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1413"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1421"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1439"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1443"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1578"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1612"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4379"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4669"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4899"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4931"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4947"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1079"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1088"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1106"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1251"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1259"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1309"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1370"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1392"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1408"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1426"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1430"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1565"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1599"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4361"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4654"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4884"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4916"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4932"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="753"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="740"/>
         <source>Getting map via WMS.</source>
         <translation>Haetaan karttaa käyttäen WMS.</translation>
     </message>
@@ -60613,8 +60674,8 @@ Yritettiin URL: %1</translation>
         <translation type="obsolete">Haetaan kuvakkeita käyttäen WMS.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1073"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1352"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1060"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1339"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
@@ -60623,8 +60684,8 @@ Yritettiin URL: %1</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1074"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1353"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1061"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1340"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation>
@@ -60633,8 +60694,8 @@ Yritettiin URL: %1</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1075"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1354"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1062"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1341"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation>
@@ -60643,8 +60704,8 @@ Yritettiin URL: %1</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1076"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1355"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1063"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1342"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation>
@@ -60653,12 +60714,12 @@ Yritettiin URL: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1092"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1079"/>
         <source>image is NULL</source>
         <translation>kuva on NULL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1101"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1088"/>
         <source>unexpected image size</source>
         <translation>odottamaton kuvan koko</translation>
     </message>
@@ -60667,12 +60728,12 @@ Yritettiin URL: %1</translation>
         <translation type="obsolete">Palautettu kuva on virheellinen [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1488"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1475"/>
         <source>empty capabilities document</source>
         <translation>tyhjä omianisuus dokumentti</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1673"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1660"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 This is probably due to an incorrect WMS Server URL.
 Response was:
@@ -60685,7 +60746,7 @@ Vastaus oli:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1697"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1684"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
 This might be due to an incorrect WMS Server URL.
 Tag:%3
@@ -60698,7 +60759,7 @@ Vastaus oli:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3252"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3246"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4
 
 Response was:
@@ -60711,7 +60772,7 @@ Vastaus oli:
 %5</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3313"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3307"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Pyyntö sisältää formaatin jota palvelin ei tue.</translation>
     </message>
@@ -60728,20 +60789,20 @@ Vastaus oli:
         <translation type="obsolete">ei alueen laajuutta tasolle</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3614"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3720"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3818"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3608"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3714"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3812"/>
         <source>Abstract</source>
         <translation>Abstrakti</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3672"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3682"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3666"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3676"/>
         <source>Available in CRS</source>
         <translation>Käytettävissä CRS:ssä</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3685"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3679"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation>
@@ -60750,50 +60811,50 @@ Vastaus oli:
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3761"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3785"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3755"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3779"/>
         <source>Server Properties</source>
         <translation>Palvelimen ominaisuudet</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3765"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3975"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3759"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3969"/>
         <source>Selected Layers</source>
         <translation>Valitut tasot</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3767"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3988"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3761"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3982"/>
         <source>Other Layers</source>
         <translation>Muut tasot</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3896"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3890"/>
         <source>Tile Layer Count</source>
         <translation>Kuvaketason lukumäärä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3935"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3929"/>
         <source>GetTileUrl</source>
         <translation>GetTileUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3944"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3938"/>
         <source>Tile templates</source>
         <translation>Kuvakkeen mallit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3956"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3950"/>
         <source>FeatureInfo templates</source>
         <translation>FeatureInfo mallit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4003"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3997"/>
         <source>Tileset Properties</source>
         <translation>Kuvakejoukon ominaisuudet</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3777"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3771"/>
         <source>Cache Stats</source>
         <translation>Välimuistin tilastot</translation>
     </message>
@@ -60833,22 +60894,22 @@ Vastaus oli:
         <translation>Kuvaketasoa tai kuvakematriisijoukkoa ei löydy</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1056"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1043"/>
         <source>Getting tiles.</source>
         <translation>Haetaan kuvakkeita.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1262"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1249"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
         <translation>Kuvakkeen pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1268"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1255"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
         <translation>Kuvakkeen pyyntövirhe (Tila:%1; Sisältötyyppi:%2; Pituus:%3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1321"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1308"/>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
         <translation>Palautettu kuva on virheellinen [Sisältötyyppi:%1; URL: %2]</translation>
     </message>
@@ -60857,54 +60918,54 @@ Vastaus oli:
         <translation type="obsolete">Kuvakkeen pyyntövirhe [virhe:%1 url:%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1119"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1443"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1106"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1430"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1136"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1123"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
         <translation>Laattapyyntöjen max uudelleenyritysten virhe. Epäonnistuminen %1 pyynnössä laatalle %2 laattapyynnössä %3 (url: %4) </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1145"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1132"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
         <translation>toista laattapyyntö %1 laatta %2 (uudelleenyritys %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1380"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1367"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
         <translation>Kartan pyyntövirhe (Tila: %1; Perustelulauseke: %2; URL:%3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1404"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1391"/>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
         <translation>Palautettu kuva on virheellinen [Sisältötyyppi:%1; URL: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1411"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1398"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
         <translation>Kartan pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1417"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1404"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
         <translation>Kartan pyyntövirhe (Tila:%1; Vastaus: %2; Sisältötyyppi:%3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1439"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1426"/>
         <source>Map request failed [error:%1 url:%2]</source>
         <translation>Kartan pyyntövirhe [virhe:%1 url:%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1577"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4898"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1564"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4883"/>
         <source>Redirect loop detected: %1</source>
         <translation>Takaisinohjauksen luuppi havaittu: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3307"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3301"/>
         <source>Service Exception</source>
         <translation>Palvelun poikkeus</translation>
     </message>
@@ -60913,68 +60974,68 @@ Vastaus oli:
         <translation type="obsolete">Tason %1 laajuutta ei löydetty mahdollisuuksista</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3773"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3767"/>
         <source>Tile Layer Properties</source>
         <translation>Kuvaketason ominaisuudet</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3826"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3820"/>
         <source>Keywords</source>
         <translation>Avainsanat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3834"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3828"/>
         <source>Online Resource</source>
         <translation>Online resurssi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3842"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3836"/>
         <source>Contact Person</source>
         <translation>Yhteyshenkilö</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3854"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3848"/>
         <source>Fees</source>
         <translation>Palkkiot</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3862"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3856"/>
         <source>Access Constraints</source>
         <translation>Käytön reunaehdot</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3870"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3864"/>
         <source>Image Formats</source>
         <translation>Kuvien formaatit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3878"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3872"/>
         <source>Identify Formats</source>
         <translation>Tunnista formaatit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3886"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3880"/>
         <source>Layer Count</source>
         <translation>Tasojen lukumäärä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3926"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3920"/>
         <source>GetLegendGraphic</source>
         <translation>Hae selitteen grafiikat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4164"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4158"/>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
         <translation>Sisältö ei ole täysin määritelty (laajuus oli määritelty mutta leveys ja/tai korkeus ei).</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4511"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4586"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4496"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4571"/>
         <source>Cannot identify</source>
         <translation>Ei voida tunnistaa</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4651"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4636"/>
         <source>Cannot parse getfeatureinfo: %1</source>
         <translation>Ei voida jäsentää getfeatureinfo: %1</translation>
     </message>
@@ -60983,74 +61044,74 @@ Vastaus oli:
         <translation type="obsolete">Kuvakejoukon lkm</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3905"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3899"/>
         <source>GetCapabilitiesUrl</source>
         <translation>GetCapabilitiesUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3906"/>
         <source>GetMapUrl</source>
         <translation>GetMapUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3915"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3922"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3929"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3909"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3916"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3923"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(ilmoitettu mutta ohitettu)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3919"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3913"/>
         <source>GetFeatureInfoUrl</source>
         <translation>GetFeatureInfoUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4018"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4012"/>
         <source>WMTS</source>
         <translation>WMTS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4022"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4016"/>
         <source>WMS-C</source>
         <translation>WMS-C</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4049"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4043"/>
         <source>Available Styles</source>
         <translation>Käytettävät tyylit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4076"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4070"/>
         <source>Available Tilesets</source>
         <translation>Käytettävät kuvakejoukot</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4145"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4139"/>
         <source>Format not supported</source>
         <translation>Muoto ei tuettu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4377"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4359"/>
         <source>Get feature info request error (Title:%1; Error:%2; URL: %3)</source>
         <translation>Hae ominaisuusinfo pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4491"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4476"/>
         <source>GML schema is not valid</source>
         <translation>GML skeema virheellinen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4497"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4482"/>
         <source>GML is not valid</source>
         <translation>GML virheellinen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4624"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4609"/>
         <source>identify request redirected.</source>
         <translation>tunnistamispyyntäö uudelleenohjattu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4640"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4625"/>
         <source>Map getfeatureinfo error %1: %2</source>
         <translation>Kartan getfeatureinfo virhe %1: %2</translation>
     </message>
@@ -61059,44 +61120,44 @@ Vastaus oli:
         <translation type="obsolete">VIRHE: GetFeatureInfo epäonnistui</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4667"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4652"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation>Kartan getfeatureinfo virhe: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4040"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4034"/>
         <source>Selected</source>
         <translation>Valitut</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3625"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3633"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3641"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4043"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3619"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3627"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3635"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4037"/>
         <source>Yes</source>
         <translation>Kyllä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3625"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3633"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3641"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4043"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3619"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3627"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3635"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4037"/>
         <source>No</source>
         <translation>Ei</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3598"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3592"/>
         <source>Visibility</source>
         <translation>Näkyvyys</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1246"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1233"/>
         <source>Tile request error</source>
         <translation>Kuvakepyyntö virhe</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1246"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4923"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1233"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4908"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Tila: %1
@@ -61115,42 +61176,42 @@ Syy: %2</translation>
         <translation type="obsolete">Vastaus: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3601"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3595"/>
         <source>Visible</source>
         <translation>Näkyvä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3601"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3595"/>
         <source>Hidden</source>
         <translation>Piilotettu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3622"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3616"/>
         <source>Can Identify</source>
         <translation>Voi identifioida</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3630"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3624"/>
         <source>Can be Transparent</source>
         <translation>Voi olla läpinäkyvä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3638"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3632"/>
         <source>Can Zoom In</source>
         <translation>Voi lähentää</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3646"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3640"/>
         <source>Cascade Count</source>
         <translation>Ylivuotojen määrä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3654"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3648"/>
         <source>Fixed Width</source>
         <translation>Kiinteä leveys</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3662"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3656"/>
         <source>Fixed Height</source>
         <translation>Kiinteä korkeus</translation>
     </message>
@@ -61159,13 +61220,13 @@ Syy: %2</translation>
         <translation type="obsolete">WGS 84 muokkausalue</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3695"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3689"/>
         <source>Available in style</source>
         <translation>Käytettävissä tyyleissä</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3590"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3704"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3584"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3698"/>
         <source>Name</source>
         <translation>Nimi</translation>
     </message>
@@ -61174,12 +61235,12 @@ Syy: %2</translation>
         <translation type="obsolete">Tyylit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4062"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4056"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4069"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4063"/>
         <source>Bounding Box</source>
         <translation>Muokkausalue</translation>
     </message>
@@ -61188,22 +61249,22 @@ Syy: %2</translation>
         <translation type="obsolete">Käytettävissä resoluutiossa</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4092"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4086"/>
         <source>Cache stats</source>
         <translation>Välimuistin tilastot</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4107"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4101"/>
         <source>Hits</source>
         <translation>Osumia</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4113"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4107"/>
         <source>Misses</source>
         <translation>Puuttuu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4119"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4113"/>
         <source>Errors</source>
         <translation>Virhettä</translation>
     </message>
@@ -63710,7 +63771,7 @@ Haluatko lisätä uuden tason Sisällysluetteloon (TOC)?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="272"/>
         <source>Draw line only inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Piirrä viiva ainoastaan monikulmion sisälle</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="220"/>
@@ -64339,7 +64400,7 @@ Tulosikkuna näyttää kaikki ominaisuudet jotka ovat hakutoleranssin rajoissa. 
 &lt;p&gt;
 Hakusäde voidaan asettaa Asetukset ikkunassa &lt;label&gt;Asetukset &gt; Asetukset &gt; Karttatyökalut&lt;/label&gt;, Tunnista kappaleessa, prosentteina kartan leveydestä. Tässä kappaaleessa voit myös asettaa tunnistamistavan &lt;label&gt;Nykyinen taso&lt;/label&gt;,&lt;label&gt;Ylimmästä alaspäin, pysähdy ensimmäiseen tulokseen&lt;/label&gt;, &lt;label&gt;Ylimmästä alaspäin&lt;/label&gt;. &lt;br&gt;
 Voit myös merkitä &lt;label&gt;Avaa ominaisuuslomake, jos yksi ominaisuus on tunnistettu&lt;/label&gt; vaihtoehdon.&lt;br&gt;
-Tunnistettavat taaot voidaan asettaa Projektin ominaisuudet ikkunassa &lt;label&gt;Projekti &gt; Projektin asetukset... &gt; Tunnistettavat tasot&lt;/label&gt; jossa kaikkien tasojen nimet ovat luetteloituina, niiden tyypit (vektori, rasteri, jne.) sekä niiden tunnistamismahdollisuus.
+Tunnistettavat tasot voidaan asettaa Projektin ominaisuudet ikkunassa &lt;label&gt;Projekti &gt; Projektin asetukset... &gt; Tunnistettavat tasot&lt;/label&gt; jossa kaikkien tasojen nimet ovat luetteloituina, niiden tyypit (vektori, rasteri, jne.) sekä niiden tunnistamismahdollisuus.
 &lt;/p&gt;
 </translation>
     </message>
@@ -67052,7 +67113,23 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;lpad() funktio&lt;/h3&gt;
+Palauttaa merkkijonon annetulle pituudella 
+joka on täytetty käyttäen täyttömerkkiä.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;lpad(merkkijono, pituus, täyttömerkki)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;merkkijono&lt;/code&gt; - on string. Merkkijono.
+&lt;br&gt;
+&lt;code&gt;pituus&lt;/code&gt; - on int. Uuden merkkijono pituus.
+&lt;br&gt;
+&lt;code&gt;täyttömerkki&lt;/code&gt; - on char. Merkki jokka täytetään loppu tyhjä tila merkkijonossa. 
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1284"/>
@@ -67069,7 +67146,19 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;symDifference funktio&lt;/h3&gt;
+Palauttaa geometrian joka edustaa tulosta osien a ja b leikkausta..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;symDifference( geometry a, geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; palauttaa LINESTRING(5 5, 8 8)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1856"/>
@@ -67086,7 +67175,19 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;cos() funktio&lt;/h3&gt;
+Palauttaa kulman kosinin.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulma radiaaneina.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1421"/>
@@ -67109,7 +67210,25 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_cmyka() funktio&lt;/h3&gt;
+Palauttaa merkkijonon joka edustaa väriä perustuen sen syaani, purppura, keltainen, musta ja alpha (läpinäkyvyys) komponentteihin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;syaani, purppura, keltainen, musta, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  syaani&lt;/i&gt; &amp;rarr; värin syaani komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  purppura&lt;/i&gt; &amp;rarr; värin purppura komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  keltainen&lt;/i&gt; &amp;rarr; värin keltainen komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  musta&lt;/i&gt; &amp;rarr; värin musta komponentti,prosenttiosuus kokonaisluku 0-100 .&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr;  alpha komponentti kokonaislukuarvona alkaen 0 (täysin läpinäkyvä) päättyen 255 (läpikuultamaton).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1314"/>
@@ -67133,7 +67252,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;day() funktio&lt;/h3&gt;
+Poimii päivän päiväyksestä, tai päivien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; päivämäärärajauksesta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta poimittaan päivä..
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval joka palauttaa päivien lukumäärän..
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="972"/>
@@ -67151,7 +67289,20 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;format() funktio&lt;/h3&gt;
+Muotilee merkkijonon käyttäen annattuja argumentteja. 
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string.  Merkkijono Qt QString paikkamerkeillä.  Käytä %1, %2, jne paikkamerkeille. Paikkamerkkejä voidaan toistaa. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - mitä tahansa tyyppiä. Mikä tahansa määrä argumentteja. 
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;Tämä %1 esimerkki %2&apos;,&apos;on&apos;, &apos;testi&apos;) &amp;rarr; Tämä on esimerkki testi&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1804"/>
@@ -67165,7 +67316,15 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Kentät ja arvot&lt;/h3&gt;
+Sisältää luettelon tason kentistä.  Näytearvoja voi käyttää myös hiiren oikealla klikkauksella.
+&lt;br&gt;&lt;br&gt;
+Valitse tiedon nimi luettelosta ja sitten klikkaa oikealla saadaksesi sisällön valikos jotta voit ladata näytearvot valitusta tiedosta.
+
+&lt;p&gt;&lt;h4&gt;Huomautus:&lt;/h4&gt;
+WFS tason kenttien arvojen lataamista ei ole tuettu, ennenkuin taso on todella ladattu, esimerkiksi kun kyselyt on rakennettu.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1297"/>
@@ -67186,7 +67345,23 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;format_number() funktio&lt;/h3&gt;
+Palautta luvun joka on muotoilu paikallisin tuhansien erotusmerkillä. 
+Lyhentää myös luvun annettuun numeroiden lukumäärään. 
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;format_number(numero,lukumäärä)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;numero&lt;/code&gt; - on number. Luku joka muotoillaan.
+&lt;br&gt;
+&lt;code&gt;lukumäärä&lt;/code&gt; - on int. Desimaalien lukumäärä johon merkkien lukumäärä lyhennetään.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="986"/>
@@ -67209,7 +67384,23 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;rpad() funktio&lt;/h3&gt;
+Palauttaa merkkijonon annetulle pituudella 
+joka on täytetty käyttäen täyttömerkkiä.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;rpad(merkkijono, pituus, täyttömerkki)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;merkkijono&lt;/code&gt; - on string. Merkkijono.
+&lt;br&gt;
+&lt;code&gt;pituus&lt;/code&gt; - on int. Uuden merkkijono pituus.
+&lt;br&gt;
+&lt;code&gt;täyttömerkki&lt;/code&gt; - on char. Merkki jokka täytetään tyhjä tila merkkijonossa. 
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="39"/>
@@ -67223,7 +67414,14 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Kenttä&lt;/h3&gt;
+Kaksoisklikkaa lisätäksesi kentän nimi lausekkaaen merkkijonoon..
+&lt;br&gt;&lt;br&gt;
+Klikkaa oikealla kentän nimeä avataksesi sisältövalikon näytearvojen lataamisen vaihtohdoiksi..
+
+&lt;p&gt;&lt;h4&gt;Huomautus:&lt;/h4&gt;
+WFS tason kenttien arvojen lataamista ei ole tuettu, ennenkuin taso on todella ladattu, esimerkiksi kun kyselyt on rakennettu.
+&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="162"/>
@@ -67240,7 +67438,19 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;convexHull funktio&lt;/h3&gt;
+Palauttaa geometrian konveksin peitteen. Tulos edustaa geometrian pienintä peitettä joka sisältää kaikki joukkoon kuuluvat siihen kuuluvat geometriat.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;convexHull( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; paluttaa POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1158"/>
@@ -67257,7 +67467,19 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;union funktio&lt;/h3&gt;
+Palauttaa geometrian joka esittää pistejoukon geometrioiden unionia..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;union( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; palauttaa MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1082"/>
@@ -67274,7 +67496,19 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;intersection funktio&lt;/h3&gt;
+Palauttaa geometrian, joka edustaa yhteistä geometria a:n ja geometria b:n osaa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;intersection( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; palauttaa LINESTRING(3 3, 4 4)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="945"/>
@@ -67292,7 +67526,20 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ILIKE lauseke&lt;/h3&gt;
+Palauttaa 1 jos ensimmäinen parametri kohdistuu merkkien koosta riippumatta annettuun rakenteeseen. LIKE voidaan käyttää ILIKE sijasta vertailun tekemiseksi merkkiriippivaiseksi.. Toimii myös numeroilla.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;string/number ILIKE pattern&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="654"/>
@@ -67310,7 +67557,20 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;LIKE lauseke&lt;/h3&gt;
+Palauttaa 1 jos ensimmäinen parametri kohdistuu annettuun rakenteeseen. Toimii myös numeroilla.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;string/number ILIKE pattern&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
@@ -67327,7 +67587,19 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;geomFromGML funktio&lt;/h3&gt;
+Palauttaa geometrian GML esityksen mukaisesta geometriasta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;geomFromGML(text)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+text &amp;rarr; GML esityksen mukainen geometria
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; palauttaa geometrian&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1230"/>
@@ -67349,7 +67621,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;strpos() funktio&lt;/h3&gt;
+Palauttaa säännöllisen lausekkeen indeksin merkkijonosta..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     strpos(&lt;i&gt;hienäkasa&lt;/i&gt;, &lt;i&gt;neula&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Palauttaa -1 jos lauseketta ei löydy.
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  heinäkasa&lt;/i&gt; &amp;rarr; on merkkijono.  Merkkijono josta etsitään.&lt;br&gt;
+&lt;i&gt;  neula&lt;/i&gt; &amp;rarr; on merkkijono.  Säännöllinen lauseke jolla etsitään.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="478"/>
@@ -67367,7 +67656,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;combine funktio&lt;/h3&gt;
+Palauttaa geometria a:n ja geometria b:n yhdistelmän.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;combine( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; palauttaa MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; palauttaa LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
@@ -67385,7 +67687,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;intersects funktio&lt;/h3&gt;
+Palauttaa 1 jos geometriat leikkaavat tilassa (jakavat tilassa minkä tahansa pisteen) ja 0 jos ne eivät leikkaa lainkaan.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;intersects( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1774"/>
@@ -67405,7 +67720,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;right() funktio&lt;/h3&gt;
+Palauttaa osamerkkijoukon joka sisältää &lt;i&gt;n&lt;/i&gt; oikean puolimmaista merkkiä merkkijonosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;right(string, lentgh)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string. Merkkijono.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - on int. Merkkien lukumäärä joka oikealta palautetaan.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1251"/>
@@ -67429,7 +67759,25 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;clamp() funktio&lt;/h3&gt;
+Rajoittaa syötettävän arvon määritellylle välille..
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;input&lt;/i&gt;,&lt;i&gt;maximum&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; Pienin arvo &lt;i&gt;input&lt;/i&gt; tiedolle joka hyväksytään.&lt;br&gt;
+&lt;i&gt;  input&lt;/i&gt; &amp;rarr; arvo jota rajoitetaa annetulle alueelle määrittämällä &lt;i&gt;minimum&lt;/i&gt; ja &lt;i&gt;maximum&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; Suurin arvo &lt;i&gt;input&lt;/i&gt; tiedolle joka hyväksytään.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;input&lt;/i&gt; on 1 ja 10 välissä joten se palautetaan muuttumattomana)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;input&lt;/i&gt; on vähemmän kuin minimi arvo 1, joten funktio palauttaa 1)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; on suurempi kuin maksimi arvo 10, joten funktio palautaa 10)&lt;br&gt;
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="61"/>
@@ -67449,7 +67797,22 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;replace() funktio&lt;/h3&gt;
+Palauttaa merkkijonon annetulla merkkijonolla korvattuna..
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     replace(&lt;i&gt;string,before,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono.&lt;br&gt;
+&lt;i&gt;  before&lt;/i&gt; &amp;rarr; on string.  Korvattava merkkijono.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; on string.  Korvaava mmerkkijono&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1211"/>
@@ -67472,7 +67835,25 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;IS lauseke&lt;/h3&gt;
+Palauttaa 1 jos a on sama kuin b.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;a is b&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esemerkki&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; palauttaa 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; palauttaa 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; palauttaa 0, jos geometriasi ei ole NULL&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1197"/>
@@ -67490,7 +67871,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;disjoint funktio&lt;/h3&gt;
+Palauttaa 1 jos geometriat eivät &quot;alueellisesti leikkaa&quot; - jos niillä ei ole lainkaan yhteistä aluetta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1909"/>
@@ -67507,7 +67901,19 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;geomFromWKT funktio&lt;/h3&gt;
+Palauttaa geometrian joka on luotu Well-Known Text (WKT) esitysmuodosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;geomFromWKT(text)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+text &amp;rarr; Well-Known Text (WKT) esitys geometriasta
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; palauttaa geometrian&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1454"/>
@@ -67525,7 +67931,20 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;buffer funktio&lt;/h3&gt;
+Palauttaa geometrian joka esittää kaikkia pisteitä joiden etäisyys tästä geometriasta on vähemmän tai yhtä paljon kuin etäisyys. Laskennat suoritetaan tämän geometrian koordinaatistojärjestelmässä.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;buffer(a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; distance for the buffer
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; palauttaa monikulmion&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="113"/>
@@ -67543,7 +67962,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;crosses funktio&lt;/h3&gt;
+Palauttaa 1 jos annetuilla geometrioilla on joitakin muttei kaikkia yhteisiä pisteitä.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="49"/>
@@ -67559,7 +67991,18 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;geomToWKT funktio&lt;/h3&gt;
+Palauttaa Well-Known Text (WKT) esityksen geometriasta ilman SRID metadataa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="549"/>
@@ -67577,7 +68020,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;touches funktio&lt;/h3&gt;
+Palauttaa 1 jos geometrioilla on vähintäin yksi yhteinen piste mutta niiden alueet eivät leikkaa toisiaan.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;touches( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1882"/>
@@ -67595,7 +68051,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;overlaps funktio&lt;/h3&gt;
+Palauttaa 1 jos geometriat jakavat tilan, ovat samaa muotoa ja kokoa mutteivät sisällytä toisiaan kokonaan.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1896"/>
@@ -67612,7 +68081,19 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;sqrt() funktio&lt;/h3&gt;
+Palauttaa arvon neliöjuuren
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; numero.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1495"/>
@@ -67633,14 +68114,31 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;randf() function&lt;/h3&gt;
+Palauttaa satunnaisen liukuluvun annettujen minimi ja maksimi raja-arvojen väliltä (mukaan lukien rajat).
+&lt;br&gt;
+Tämä funktio tarvitsee kaksi argumenttia.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - liukuluku joka esittää pienintä mahdollista haluttua satunnaislukua.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - liukuluku joka esittää suurinta mahdollista haluttua satunnaislukua..
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1650"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Muunnosten ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktot joilla muunnetaan eri datatyyppejä toisiin, esim. merkkijono numeroksi, numero merkkijonoksi.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1569"/>
@@ -67673,7 +68171,34 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;CASE lauseke&lt;/h3&gt;
+Ehdollinen lauseke jota voidaan käyttää useiden lausekkeiden ratkaisemiseksi ja tuloksen palauttamiseksi.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] merkitsee valinnaiset osat
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - Ehtolauseke joka ratkaistaa. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - Jos &lt;i&gt;condition&lt;/i&gt; ratkotaan todeksi niin &lt;i&gt;result&lt;/i&gt; evaluoidaan ja palautetaan. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - Jos yhtään ehtoa ei ratkota todeksi niin &lt;i&gt;result&lt;/i&gt; evaluodaan ja palautetaan. &lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="819"/>
@@ -67690,7 +68215,18 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;abs() funktio&lt;/h3&gt;
+Palauttaa numeron absoluuttisen arvon.&lt;br&gt;
+
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - numero.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1061"/>
@@ -67715,14 +68251,37 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;round() funktio&lt;/h3&gt;
+Pyöristää numeron annettuihin desimaalinumeroihin.
+&lt;br&gt;
+Tämä funktio voi ottaa yhden tai kaksi argumenttia tarpeen mukaan..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - on decimal. Desimaaliluku joka pyöristetään.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - on int. Luku joka pyöristetään desimallit mukaan luettuna. Luku voi olla negatiivinen..
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+use &lt;code&gt;round(decimal)&lt;/code&gt; pyöristetään lähimpään kokonaislukuun&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="127"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Päiväys ja Aika ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot joilla käsitellään päiväystä ja aika dataa.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1125"/>
@@ -67759,7 +68318,38 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;age() funktio&lt;/h3&gt;
+Palauttaaa kahden päiväyksen erotuksen.
+&lt;br&gt;&lt;br&gt;
+Erotus palautetaan &lt;code&gt;Interval&lt;/code&gt; erona 
+ja sitä tulee käyttää yhdellä seuraavista functioista jotta saataisiin käyttökelpoista tietoa:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;year&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;month&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;day&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hour&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;second&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;age(string,string)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(string,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - ons string. Merkkijono päiväysmuodossa.
+&lt;br&gt;
+&lt;code&gt;datetime&lt;/code&gt; - on date tai datetime.  Date tai datetime tyyppiä.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
+käytä &lt;code&gt;day&lt;/code&gt; saadaksesi päivien lukumäärän&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1554"/>
@@ -67778,14 +68368,29 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;title() funktio&lt;/h3&gt;
+Muuntaa merkkijonon kaikki sanat otsikkomuotoon (kaikki sanat pienistä isoon etukirjaimeen).
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono joka muunnetaan otsikkomuotoon.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ehto ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot joilla operoidaan ehdoilla.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="449"/>
@@ -67818,7 +68423,32 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;scale_exp() funktio&lt;/h3&gt;
+Muuntaa annetun arvon syötettävältä alueelta tulosaluelle käyttäen eksponenttikäyrää. Tätä funktiota voidaan käyttää helpottamaan arvoja sisään ja ulos määritellyltä arvoalueelta.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     scale_exp(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; on arvo syötettävältä alueelta. Funktio palauttaa vastaavasti skaalatun arvon tulosalueella.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; määrittelee syötettävän alueen, pienimmän ja suurimman syötettävän &lt;i&gt;val&lt;/i&gt; joka voidaan käsitellä.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; määrittelee tulosalueen, pienimmän ja suurimman arvon jonka funktio voi tulostaa.&lt;br&gt;
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; positiivinen arvo (suurempi kuin 0), joka määrittelee kuinka arvot sijoitetaa tulosalueelle. Suuret eksponentit saavat tulosarvot &apos;helpottamaan sisään&apos; koska alkavat hitaasti ennenkuin kuin kiihdyttävät kohti tulosalueen maksimia. Pienet eksponentit (pienemmät kuin 1) aiheuttavat tulosarvojen &apos;helpottamisen ulos&apos;, jossaa sijoittaminen alkaa nopeasti mutta hidastuu lähestyttäessä tulosalueen maksimia.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;b&gt;Helpottaminen sisään, käytetään eksponenttia 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Helpottaminen ulos, käytetään eksponenttia 0.5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1869"/>
@@ -67835,7 +68465,19 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;atan() funktio&lt;/h3&gt;
+Palauttaa arcustangentin arvon radiaaneina.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     atan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentta&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulman tan.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="832"/>
@@ -67851,7 +68493,18 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;lower() funktio&lt;/h3&gt;
+Muuntaa merkkijonon pieniiin merkkeihin..
+
+&lt;p&gt;&lt;h4&gt;  Syntaksi&lt;/h4&gt;
+     lower(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Argumentti&lt;/h4&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono jo muunnetaan pieniin merkkeihin.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Esimerkki&lt;/h4&gt;
+     lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="579"/>
@@ -67868,7 +68521,19 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;totime() funktio&lt;/h3&gt;
+Muuntaa merkkijonon Qt aika tyyppiiin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on merkkijono Qt aika tyypissä.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1048"/>
@@ -67885,7 +68550,19 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$page funktio&lt;/h3&gt;
+Palauttaa sivunumeron nykyisessä rakenteessa..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="895"/>
@@ -67904,7 +68581,21 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;regexp_match() funktio&lt;/h3&gt;
+Palauttaa toden jos mikä tahansa merkkijonon osa vastaa annettua säännöllistä lauseketta.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono jota testataan annetulla säännöllisellä lausekkeella.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; on string.  Säännöllinen lauseke jolla testataan. Kenoviiva merkit tulee tuplata (esim &quot;&amp;#92;&amp;#92;s&quot; vastaamaan &quot;white space&quot; merkkiä). Non-greedy säännöllisiä lausekkeita ei tueta.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="77"/>
@@ -67925,7 +68616,23 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;rand() funktio&lt;/h3&gt;
+Palauttaa satunnaisen kokonaisluvun annetujen minimi ja maksimi arvojen rajaukselta (mukaan lukien rajat).
+&lt;br&gt;
+Tämä funktio tarvitsee kaksi argumettia.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - kokonaisluku joka edustaa pienintä mahdollista satunnaislukua jota halutaan.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - kokonaisluku joka edustaa suurinta mahdollista satunnaislukua jota halutaan.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1758"/>
@@ -67945,7 +68652,22 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;regexp_replace() funktio&lt;/h3&gt;
+Palauttaa merkkijonon annetulla säännöllisellä lausekkeella korvattuna.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Syötettävä merkkijono.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; on string.  Säännöllinen lauseke jolla korvataan. Kenoviiva merkit tulee tuplata (esim &quot;&amp;#92;&amp;#92;s&quot; vastaamaan &quot;white space&quot; merkkiä). Non-greedy säännöllisiä lausekkeita ei tueta.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; on string.  Merkkijono joka korvataan millä tahansa annetun säännöllisen lausekkeen esiintymisellä. Kaapattuja ryhmiä voidaan lisätä korvaavaan merkkijonoon käyttäen &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, jne. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="592"/>
@@ -67962,7 +68684,19 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;todate() funktio&lt;/h3&gt;
+Muuntaa merkkijonon Qt päivämäärä tyyppiin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string Qt date muodossa.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="860"/>
@@ -67981,7 +68715,21 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;regexp_substr() funktio&lt;/h3&gt;
+Palauttaa merkkijonon sen osan joka vastaa annettua säännöllistä lauseketta.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; ons string.  Syötettävä merkkijono.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; on string.  Säännöllinen lauseke jolla korvataan. Kenoviiva merkit tulee tuplata (esim &quot;&amp;#92;&amp;#92;s&quot; vastaamaan &quot;white space&quot; merkkiä). Non-greedy säännöllisiä lausekkeita ei tueta &lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="791"/>
@@ -67999,7 +68747,20 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;max() funktio&lt;/h3&gt;
+Palauttaa suurimman arvon arvojoukosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; numero.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="518"/>
@@ -68016,7 +68777,19 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tointerval() funktio&lt;/h3&gt;
+Muuntaa merkkijonon interval tyyypiksi.  Voidaan käyttää ottamaan päiviä, tunteja, kuukausia, jne. päiväyksestä. 
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string. Muoto {n} päiviä {n} tunteja {n} kuukausia
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 päivää 2 tuntia&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1621"/>
@@ -68036,7 +68809,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;left() funktio&lt;/h3&gt;
+Palauttaa osamerkkijoukon joka sisältää &lt;i&gt;n&lt;/i&gt; vasemmanpuoleisinta merkkiä merkkijonosta..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string. Merkkijono.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - on int. Merkkien lukumäärä vasemmalta palautettavaksi.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="422"/>
@@ -68053,7 +68841,19 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$id funktio&lt;/h3&gt;
+Palauttaa nykyisen rivin ominaisuuden id:n.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1005"/>
@@ -68073,7 +68873,22 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;substr() funktio&lt;/h3&gt;
+Palauttaa merkkijonon osan
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     substr(&lt;i&gt;string,startpos,length&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Syötettävä merkkijono.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; on number.  Alkusijainti josta alkaen osa erotellaan.&lt;br&gt;
+&lt;i&gt;  length&lt;/i&gt; &amp;rarr; is number.  Eroteltavan osan pituus.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="668"/>
@@ -68094,7 +68909,23 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsla() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, vaaleuden ja alfa (läpinäkyvyyden) määritteisiin.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; värin vaaleuden prosentuualisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; alpha komponentti kokonaislukuna alkaen 0 (täysin läpinäkyvä) aina 255 (peittävä) saakka.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="778"/>
@@ -68111,14 +68942,27 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$y funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden y koordinaatin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1248"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Tietue ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää toiminnot, jotka toimivat tietuetunnuksilla.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
@@ -68138,7 +68982,23 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;log10() funktio&lt;/h3&gt;
+Palauttaa kymmenkantaisen logaritmin annetulle lausekkeelle.
+&lt;br&gt;
+Tämä funktio tarvitsee yhden argumentin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;log10(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - mikä tahansa positiivinen numero.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="910"/>
@@ -68163,7 +69023,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;hour() funktio&lt;/h3&gt;
+Hakee tunnin joko datetime tai time muodosta, tai tuntien lukumäärän &lt;code&gt;Interval&lt;/code&gt; tyypistä.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on datetime tai time. Päiväys josta tunti haetaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Intervalli josta tuntien lukumäärä haetaan.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1033"/>
@@ -68182,7 +69061,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ceil() funktio&lt;/h3&gt;
+Pyöristää numeron ylöspäin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - numero.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1440"/>
@@ -68200,7 +69093,20 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;bbox funktio&lt;/h3&gt;
+Palauttaa 1 jos geometriat alueellisesti leikkaavat määritellyn rajauslaatikon ja 0 jos ne eivät leikkaa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1481"/>
@@ -68218,7 +69124,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;toreal() funktio&lt;/h3&gt;
+Muuntaa merkkijonon liukuluvuksi (real). Mikään ei muutu jos arvoa ei voida muuntaa (esim &apos;123.56asd&apos; on virheellinen). Numerot pyöristetään muutosten tallennuksen jälkeen jos tarkkuus on pienempi kuin muunnoksen tulos.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono joka muunnetaan liukuluvuksi (real).&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1967"/>
@@ -68234,7 +69153,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;xat() funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden x koordinaatine
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - on int. pisteen indeksi viivalla (indeksi alkavat 0:sta; negatiiviset arvot viittavat viimeiseen indeksiin).
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="196"/>
@@ -68259,7 +69189,26 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ramp_color() funktio&lt;/h3&gt;
+Palauttaa merkkijonon joka esittää väriä väriluiskasta 
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; väriluiskan nimi merkkijonona, esimerkiksi &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; sijainti väriluiskalta josta väri valitaan liukulukuna nollan ja yhden väliltä.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Huomautus:&lt;/h4&gt;
+Väriluiskat vaihtelevat eri QGIS installaatioden välillä.  Tämä funktio
+ei ehkä anna oikaa odotettua lopputulosta jos siirrät QGIS hankettasi.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1113"/>
@@ -68275,7 +69224,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$pi vakio&lt;/h3&gt;
+Palauttaa piin arvon laskutoimituksia varten
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
@@ -68294,7 +69254,20 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;floor() funktio&lt;/h3&gt;
+Pyöristää numeron alaspäin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - numero.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="148"/>
@@ -68312,7 +69285,20 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;AND looginen operaattori&lt;/h3&gt;
+Palauttaa 1 kun ehto a ja b ovat tosia.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt; ehto a AND ehto b &lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1637"/>
@@ -68329,7 +69315,18 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$geometry funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden geometrian. Voidaan käyttää työskennellessä muiden funktioiden kanssa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$geometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1525"/>
@@ -68347,7 +69344,20 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;OR looginen operaattori&lt;/h3&gt;
+Palauttaa 1 kun ehto a tai b on tosi.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt; ehto a OR ehto b &lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 1  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
@@ -68364,7 +69374,19 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;centroid funktio&lt;/h3&gt;
+Palauttaa geometrian geometrisen keskipisteen.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;centroid(a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; centroid($geometry) &amp;rarr; palauttaa keskipisteen geometrian&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1790"/>
@@ -68382,7 +69404,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;within funktio&lt;/h3&gt;
+Palauttaa 1 jos geometria a on kokonaan geometria b:n sisällä
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;within( geometry a , geometry b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="230"/>
@@ -68403,7 +69438,22 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$map funktio&lt;/h3&gt;
+Palauttaa nykyisen kartan id:n jos kartta on piirretty kokoonpanossa tai &quot;karttapohjalla&quot; jos kartta on piirretty QGIS pääikkunassa..
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$map&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;yleiskartta&quot; (kokoonpanon jäsen)&lt;br /&gt;
+$map &amp;rarr; &quot;karttapohja (QGIS pääkarttapohjasta)&lt;/pre&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="847"/>
@@ -68420,7 +69470,19 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;distance funktio&lt;/h3&gt;
+Palauttaa minimietäisyyden (perustuen alueelliseen referenssiin) kahden geometrian välillä perustuen projektoituihin yksiköihin.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;distance( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; palauttaa 4&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1941"/>
@@ -68437,7 +69499,19 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;difference funktio&lt;/h3&gt;
+Palauttaa geometrian joka esittää sitä osaa geometriasta a joka ei leikkaa geometrian b kanssa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;difference( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; palauttaa LINESTRING(4 4, 5 5)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1539"/>
@@ -68456,7 +69530,21 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
+Palauttaa 1 jos a ei ole sama kuin b.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt; a NOT b &lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; palauttaa 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; palauttaa 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; palauttaa 0 &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1843"/>
@@ -68473,7 +69561,19 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;asin() funktio&lt;/h3&gt;
+Palauttaa arcussinin arvon radiaaneina.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     asin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulman sini.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="435"/>
@@ -68491,7 +69591,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;toint() funktio&lt;/h3&gt;
+Muuntaa merkkijonon kokonaisluvuksi. Mitään ei muuteta jos arvoa ei voida muuntaa kokonaisluvuksi. (esim. &apos;123asd&apos; on virheellinen).
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; ons string.  Merkkijono muunnetaan kokonaisluvuksi.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="492"/>
@@ -68508,7 +69621,19 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$perimeter funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden ympärysmitan.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="622"/>
@@ -68524,7 +69649,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;yat() funktio&lt;/h3&gt;
+Hakee nykyisen ominaisuuden y koordinaatin
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - on int. pisteen indeksie (indeksi alkaa nollasta (0); negatiiviset arvot viittaavat viimeiseen indeksiin).
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1334"/>
@@ -68542,7 +69678,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tostring() funktio&lt;/h3&gt;
+Muuntaa numeron merkkijonoksi.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; on kokonaisluku tai liukuluku.  Numero joka muunnetaan merkkijonoksi.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1602"/>
@@ -68562,7 +69711,22 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ln() funktio&lt;/h3&gt;
+Palauttaa luonnollisen logaritmin arvon annetulle lausekkeelle.
+&lt;br&gt;
+Tämä funktio tarvitsee yhden argumentin.
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - mikä tahansa positiivinen luku.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="605"/>
@@ -68583,7 +69747,23 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsva() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, arvon ja alfa (läpinäkyvyyden) määritteisiin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; värin arvo kokonaislukuna väliltä 0 - 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; alpha komponentti kokonaislukuna alkaen 0 (täysin läpinäkyvä) aina 255 (peittävä) saakka.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="505"/>
@@ -68600,7 +69780,19 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$numfeatures funktio&lt;/h3&gt;
+Atlas generoinnissa, palauttaa ominaisuuksien kokonaislukumäärän kattavuustasolla.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="531"/>
@@ -68622,14 +69814,33 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_cmyk() funktio&lt;/h3&gt;
+Palauttaa merkkijonon joka edustaa väriä perustuen sen syaani, purppura, keltainen, ja musta komponentteihin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  syaani&lt;/i&gt; &amp;rarr; värin syaani komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  purppura&lt;/i&gt; &amp;rarr; värin purppura komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  keltainen&lt;/i&gt; &amp;rarr; värin keltainen komponentti, prosenttiosuus kokonaisluku 0-100.&lt;br&gt;
+&lt;i&gt;  musta&lt;/i&gt; &amp;rarr; värin musta komponentti,prosenttiosuus kokonaisluku 0-100 .&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1618"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Matematiikka Ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää matemaattiset funktiot kuten. neliöjuuren, sinin ja kosinin
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="875"/>
@@ -68653,7 +69864,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;year() funktio&lt;/h3&gt;
+Erottelee vuosiosan päiväyksestä, tai vuosien lukumäärän &lt;code&gt;Interval&lt;/code&gt; tyyppisestä tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta vuosi erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan vuosien lukumäärä.
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="685"/>
@@ -68670,7 +69899,19 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$now funktio&lt;/h3&gt;
+Palauttaa tämän hetkisen päiväyksen ja ajan.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2014-02-21T08:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
@@ -68688,7 +69929,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;contains funktio&lt;/h3&gt;
+Palauttaa arvon tosi jos ja ainoastaan jos yhtään ainutta pistettä ei ole a:n ulkopuolella, ja vähintään b:n yksi sisäpuolinen piste  sijaitsee a:n sisäpuolella. 
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;contains( geometry a , geometry a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; palauttaa 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; palauttaa 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="745"/>
@@ -68705,7 +69959,19 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$rownum funktio&lt;/h3&gt;
+Palauttaa nykyisen rivin numeron.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1701"/>
@@ -68729,7 +69995,27 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;coalesce() funktio&lt;/h3&gt;
+Palauttaa ensimmäisen non-NULL arvon lausekkeiden listalta.
+&lt;br&gt;
+Tämä funktio voi käyttää minkä tahansa määrän argumentteja.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;expression&lt;/code&gt; - mikä tahansa kelvollinen lauseke tai arvo huolimatta tyypistä.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; fieldA:n arvo jos ei ole non-NULL
+tai muuten &quot;fallbackField&quot; arvo tai merkkijono &apos;ERROR&apos; jos molemmat ovat NULL&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1184"/>
@@ -68746,7 +70032,20 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;todatetime() funktio&lt;/h3&gt;
+Muuntaa merkkijonon Qt data time tyypiksi.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on merkkijono Qt date time muodossa.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="931"/>
@@ -68764,7 +70063,20 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;min() funkio&lt;/h3&gt;
+Palauttaa pienimmän arvon arvojoukosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a numero.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="97"/>
@@ -68784,14 +70096,31 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsl() funktio&lt;/h3&gt;
+Palauttaa merkkijonon esityksen väristä joka perustuu sen sävyn, kylläisyyden ja vaaleuden attribuutteihin.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; värin vaaleus kokonaislukuna väliltä 0 - 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="634"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Merkkijono ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot joilla operoidaan merkkijonoja esim. korvausta, merkkikoon muuntamista jne.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="698"/>
@@ -68815,7 +70144,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;month() funktio&lt;/h3&gt;
+Erottelee kuukaisiosan päiväyksestä, tai kuukausien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta kuukausi erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan kuukausien lukumäärä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="758"/>
@@ -68839,7 +70187,26 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;scale_linear() funktio&lt;/h3&gt;
+Muuntaa annetun arvon syötettävästä aineistosta tulosalueelle käyttäen lineaarista interpolointia.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; on arvo syötettävästä aineistosta. Funktio palauttaa vastaavan tyyppisen skaalatun arvon tulosrajaukselta.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; määrittelee syötettävän alueen, pienimmän ja suurimman syötettävän &lt;i&gt;val&lt;/i&gt; joka voidaan ottaa huomioon.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; määrittelee tulosalueen, pienimmän ja suurimman arvon jonka funktio palauttaa.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(esim., skaalaus arvojen 0 ja 1 väliltä tulosteeksi kulma väliltä 0 ja 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(esim., skaalaus populatiosta joka vaihtelee 1000 ja 10000 välistä josta tuloksen merkin koko 9 ja 20 välille)&lt;/i&gt;&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1954"/>
@@ -68856,7 +70223,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$area funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden alueen koon.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1095"/>
@@ -68878,7 +70257,23 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_rgba() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen punaisen, vihreän, sinisen ja alfa (läpinäkyvyyden) määritteisiin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_rgba(&lt;i&gt;red, green, blue, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; punainen väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; vihreä väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; sininen väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; alpha komponentti kokonaislukuna alkaen 0 (täysin läpinäkyvä) aina 255 (peittävä) saakka.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1390"/>
@@ -68899,7 +70294,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_rgb() function&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen punaisen, vihreän ja sinisen määritteisiin
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; punainen väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; vihreä väri, kokonaislukuna 0-255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; sininen väri, kokonaislukuna 0-255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1687"/>
@@ -68917,7 +70328,20 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;trim() funktio&lt;/h3&gt;
+Poistaa merkkijonosta kaikki tyhjätilamerkit (välilyönti, tab, jne) alusta ja lopusta.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     trim(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string. Merkkijono joka &quot;trimmataan&quot;.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1741"/>
@@ -68938,7 +70362,23 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;log() funktio&lt;/h3&gt;
+Palauttaa logaritmin arvon annetusta arvosta ja kannasta.
+&lt;br&gt;
+Tämä funktio tarvitsee kaksi argumenttia.
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - mikä tahansa positiivinen numero.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - mikä tahansa positiivinen numero.
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1407"/>
@@ -68956,14 +70396,29 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;upper() funktio&lt;/h3&gt;
+Muuntaa merkkijonon isoiksi kirjaimiksi.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono joka muunnetaan isoiksi merkeiksi.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="844"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ehdollisuuksien ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää toiminnot käsitellä ehdollisia tarkastuksia lausekkeissa.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1653"/>
@@ -68988,7 +70443,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;minute() funktio&lt;/h3&gt;
+Erottelee minuutit datetime tai time tiedosta, tai minuuttien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on datetime tai time. Päiväys josta erotellaan minuutit.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval tieto josta palautetaan minuuttien lukumäärä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
@@ -69005,7 +70480,19 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$x funktio&lt;/h3&gt;
+Palautetaan nykyisen ominaisuuden x koordinaatti.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="175"/>
@@ -69030,7 +70517,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;second() funktio&lt;/h3&gt;
+Erottelee sekuntit datetime tai time tiedosta, tai sekuntien lukumäärän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on datetime tai time. Päiväys josta sekuntit erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan sekuntien lukumäärä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="217"/>
@@ -69047,14 +70554,28 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$feature funktio&lt;/h3&gt;
+Atlas generoinnissa, palauttaa nykyisen ominaisuuden numeron joka on iteroitu kattavuus tasosta.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1938"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Geometria ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot joilla operoidaan geometria objekteja kuten pituus, alue jne.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1171"/>
@@ -69071,7 +70592,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$numpages funktio&lt;/h3&gt;
+Palauttaa sivujen lukumäärän rakenteessa.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1021"/>
@@ -69087,7 +70620,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$length funktio&lt;/h3&gt;
+Palauttaa nykyisen ominaisuuden pituuden.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Argumentti&lt;/h4&gt;
+Ei mitään
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1363"/>
@@ -69104,7 +70648,19 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tan() funktio&lt;/h3&gt;
+Palauttaa kulman tangentin.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulma radiaaneina.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1721"/>
@@ -69128,7 +70684,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;week() funktio&lt;/h3&gt;
+Erottelee viikon numeron päiväyksestä, viikkojen määrän
+ &lt;code&gt;Interval&lt;/code&gt; tiedosta
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - on date tai datetime. Päiväys josta viikko erotellaan.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - on Interval. Interval josta palautetaan viikkojen määrä.
+
+&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="637"/>
@@ -69146,7 +70721,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;length() funktio&lt;/h3&gt;
+Palauttaa merkkijonon pituuden.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono josta pituus lasketaan.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1598"/>
@@ -69154,7 +70742,9 @@ Returns the length of a string.
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Väri ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää funktiot värien käsittelyyn
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1922"/>
@@ -69174,7 +70764,20 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;atan2() funktio&lt;/h3&gt;
+Palauttaa x/y:n arcustangentin käyttäen kahden argumentin 
+etumerkkejä tuloksen neljänneksen päättelyyn.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y-koordinaatti ero&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x-koordinaatti ero&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1814"/>
@@ -69194,7 +70797,22 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsv() funktio&lt;/h3&gt;
+Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, ja arvon määritteisiin
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; värin sävy, kokonaisluku 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; värin kylläisyyden prosenttuaalisuus kokonaislukuna 0 - 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; värin arvo kokonaislukuna väliltä 0 - 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="731"/>
@@ -69212,7 +70830,20 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;concat() function&lt;/h3&gt;
+Kokoaa useita merkkijonoja yhdeksi merkkijonoksi.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     concat(&lt;i&gt;string&lt;i&gt;[,&lt;i&gt;string&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on string.  Merkkijono.&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="959"/>
@@ -69229,7 +70860,19 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;acos() funktio&lt;/h3&gt;
+Palauttaa arvosta arcus kosinin radiaaneissa.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; kulman kosini.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1468"/>
@@ -69246,7 +70889,19 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;exp() funktio&lt;/h3&gt;
+Palauttaa arvon eksopentin.
+
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; numero.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkki&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
@@ -69278,7 +70933,34 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;CASE lauseke&lt;/h3&gt;
+Ehdollinen lauseke jota voidaan käyttää useiden lausekkeiden evaluintiin ja
+tuloksen palauttamiseen.
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] useiden vaihtoehtoisten komponentit
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - Ehdollinen lauseke joka evaluoidaan. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - Jos &lt;i&gt;condition&lt;/i&gt; evaluoidaaan todeksi niin &lt;i&gt;result&lt;/i&gt; käsitellään ja palutetaan. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - Jos mikään edellisistä ehdoista ei evaluoidu todeksi niin &lt;i&gt;result&lt;/i&gt; käsitellään ja palautetaan. &lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="247"/>
@@ -69457,14 +71139,189 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;format_date() funktio&lt;/h3&gt;
+Muotoillee tyypin tai merkkijonon räätälöidyksi merkkijonoksi. Käyttää Qt data time muotisia merkkijonoja.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntaksi&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - on string. Date/Time/DateTime merkkijono.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - on string. Merkkijono malli jota käytetään muotoiltaessa syötettävää merkkijonoa.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Lausekeon&lt;/th&gt;
+
+        &lt;th&gt;Tulosut&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;päivä  numerona ilman etunollia (1 - 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;päivä numerona etunollilla (01 - 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;lyhennetty paikallinen päivän nimi (esim. &apos;Maa&apos; - &apos;Sun&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;pitkä paikallinen päivän nimi (esim. &apos;maanantai&apos; - &apos;sunnuntai&apos;). Uses &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;kuukauden numero ilman etunollia (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;kuukauden numero etunollilla (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;lyhyt paikallinen kuukauden nimi (esim. &apos;tam&apos; - &apos;jou&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;pitkä paikallinen kuukauden nimi (esim. &apos;tammikuu&apos; - &apos;joulukuu&apos;). Uses &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;vuosi kahdella numerolla (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;vuosi neljällä numerolla&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Näitä lausekkeita voidaan käyttää aika osalle mallin merkkijonossaThese expressions may be used for the time part of the format string:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Lausekeon&lt;/th&gt;
+
+        &lt;th&gt;Tulosut&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;tunnit ilman etunollia (0 - 23 tai 1 - 12 jos AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;tunnit etunollilla (00 - 23 tai 01 - 12 jos AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;tunnit ilman etunolliao (0 - 23, myös kun AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;tunnit etunollilla (00 - 23, myös kun AM/PM näyttö)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;minuutit ilman etunollia (0 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;minuutit etunollilla (00 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;sekuntit ilman etunollia (0 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;sekuntit etunollilla (00 - 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;millisekuntit ilman etunollia (0 - 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;millisekuntit etunollilla (000 - 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP or A&lt;/td&gt;
+
+      &lt;td&gt;tulkitse AM/PM ajaksi. &lt;i&gt;AP&lt;/i&gt; tulee olla joko &quot;AM&quot; tai &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;tulkitse AM/PM ajaksi. &lt;i&gt;ap&lt;/i&gt; tulee olla joko &quot;am&quot; tai &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Esimerkki&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="651"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Operaattorien Ryhmä&lt;/h3&gt;
+Tämä ryhmä sisältää operaattorit esim. + - *</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1830"/>

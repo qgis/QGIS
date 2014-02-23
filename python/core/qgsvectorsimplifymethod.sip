@@ -1,5 +1,7 @@
 
-/** This class contains information how to simplify geometries fetched from a vector layer */
+/** This class contains information how to simplify geometries fetched from a vector layer
+ * @note added in 2.2
+ */
 class QgsVectorSimplifyMethod
 {
 %TypeHeaderCode
@@ -12,10 +14,20 @@ class QgsVectorSimplifyMethod
     //! copy constructor
     QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod& rh );
 
+    /** Simplification flags for fast rendering of features */
+    enum SimplifyHint
+    {
+      NoSimplification           = 0, //!< No simplification can be applied
+      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+    };
+    typedef QFlags<QgsVectorSimplifyMethod::SimplifyHint> SimplifyHints;
+
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( int simplifyHints );
+    void setSimplifyHints( QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints );
     /** Gets the simplification hints of the vector layer managed */
-    int simplifyHints() const;
+    QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints() const;
 
     /** Sets the simplification threshold of the vector layer managed */
     void setThreshold( float threshold );
@@ -32,3 +44,5 @@ class QgsVectorSimplifyMethod
     /** Gets the maximum scale at which the layer should be simplified */
     float maximumScale() const;
 };
+
+QFlags<QgsVectorSimplifyMethod::SimplifyHint> operator|( QgsVectorSimplifyMethod::SimplifyHint f1, QFlags<QgsVectorSimplifyMethod::SimplifyHint> f2 );

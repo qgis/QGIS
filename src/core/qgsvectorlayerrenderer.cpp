@@ -5,6 +5,7 @@
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsgeometrycache.h"
+#include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsrendererv2.h"
 #include "qgsrendercontext.h"
@@ -43,7 +44,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   mFeatureBlendMode = layer->featureBlendMode();
 
   mSimplifyMethod = layer->simplifyMethod();
-  mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorLayer::GeometrySimplification );
+  mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
   QSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
@@ -112,7 +113,7 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
-  QgsFeatureRequest& featureRequest = QgsFeatureRequest()
+  QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                       .setFilterRect( mContext.extent() )
                                       .setSubsetOfAttributes( mAttrNames, mFields );
 
@@ -130,22 +131,38 @@ bool QgsVectorLayerRenderer::render()
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
     if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
     {
-      QgsPoint center = mContext.extent().center();
-      double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+      try
+      {
+        QgsPoint center = mContext.extent().center();
+        double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
-      QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
-      QgsRectangle targetRect = ct->transform( sourceRect );
+        QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
+        QgsRectangle targetRect = ct->transform( sourceRect );
 
-      QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
-      QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
-      QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
-      QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
+        QgsDebugMsg( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ) );
+        QgsDebugMsg( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ) );
 
-      double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
-      double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+        if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
+        {
+          QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+          QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+          QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+          QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
-      if ( targetHypothenuse != 0 )
-        map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
+          double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
+          double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+
+          QgsDebugMsg( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ) );
+          QgsDebugMsg( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ) );
+
+          if ( targetHypothenuse != 0 )
+            map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
+        }
+      }
+      catch ( QgsCsException &cse )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Simplify transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+      }
     }
 
     QgsSimplifyMethod simplifyMethod;

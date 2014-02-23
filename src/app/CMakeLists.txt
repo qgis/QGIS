@@ -373,12 +373,9 @@ SET(IMAGE_RCCS ../../images/images.qrc)
 
 QT4_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
-SET(TEST_RCC_SRCS)
-IF (ENABLE_TESTS)
-  # add test resources, e.g. standard test font
-  SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
-  QT4_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
-ENDIF (ENABLE_TESTS)
+# add test resources, e.g. standard test font
+SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
+QT4_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
 QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 

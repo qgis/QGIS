@@ -393,7 +393,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
 
   // get simplify drawing configuration
   const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
-  mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
 
   if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
@@ -558,11 +558,11 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
-  int simplifyHints = QgsVectorLayer::NoSimplification;
+  QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyHints |= QgsVectorLayer::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
+    simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
   QgsVectorSimplifyMethod simplifyMethod = layer->simplifyMethod();
   simplifyMethod.setSimplifyHints( simplifyHints );

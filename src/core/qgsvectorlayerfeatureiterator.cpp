@@ -39,19 +39,19 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
     {
   
       // only copy relevant parts
-      if( L->editBuffer()->addedFeatures().contains( request.filterFid() ) )
-        mAddedFeatures.insert( request.filterFid(), L->editBuffer()->addedFeatures()[ request.filterFid() ] );
+      if ( L->editBuffer()->addedFeatures().contains( request.filterFid() ) )
+        mAddedFeatures.insert( request.filterFid(), L->editBuffer()->addedFeatures()[ request.filterFid()] );
 
-      if( L->editBuffer()->changedGeometries().contains( request.filterFid() ) )
-        mChangedGeometries.insert( request.filterFid(), L->editBuffer()->changedGeometries()[ request.filterFid() ] );
+      if ( L->editBuffer()->changedGeometries().contains( request.filterFid() ) )
+        mChangedGeometries.insert( request.filterFid(), L->editBuffer()->changedGeometries()[ request.filterFid()] );
 
-      if( L->editBuffer()->deletedFeatureIds().contains( request.filterFid() ) )
+      if ( L->editBuffer()->deletedFeatureIds().contains( request.filterFid() ) )
         mDeletedFeatureIds.insert( request.filterFid() );
 
-      if( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
-        mChangedAttributeValues.insert( request.filterFid(), L->editBuffer()->changedAttributeValues()[ request.filterFid() ] );
+      if ( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
+        mChangedAttributeValues.insert( request.filterFid(), L->editBuffer()->changedAttributeValues()[ request.filterFid()] );
 
-      if( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
+      if ( L->editBuffer()->changedAttributeValues().contains( request.filterFid() ) )
         mChangedFeaturesRequest.setFilterFids( QgsFeatureIds() << request.filterFid() );
     }
     else

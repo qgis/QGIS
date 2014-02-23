@@ -3328,10 +3328,9 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   lyr.fieldIndex = layer->fieldNameIndex( lyr.fieldName );
 
   lyr.xform = &mMapSettings->mapToPixel();
+  lyr.ct = 0;
   if ( mMapSettings->hasCrsTransformEnabled() )
     lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
-  else
-    lyr.ct = NULL;
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
@@ -3349,10 +3348,10 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
   l->setArrangementFlags( s->placementFlags );
 
   s->palLayer = l;
+  s->ct = 0;
   if ( mMapSettings->hasCrsTransformEnabled() )
     s->ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
-  else
-    s->ct = NULL;
+
   s->xform = &mMapSettings->mapToPixel();
   mActiveDiagramLayers.insert( layer->id(), *s );
 
@@ -4633,8 +4632,8 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     p->save();
     p->translate( QPointF( component.center().x(), component.center().y() ) );
     p->rotate( component.rotation() );
-    double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits, true );
-    double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits, true );
+    double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits, false );
+    double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits, false );
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset() );
 

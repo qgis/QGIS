@@ -33,7 +33,10 @@ from utilities import (
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from test_qgspallabeling_tests import TestPointBase
+from test_qgspallabeling_tests import (
+    TestPointBase,
+    suiteTests
+)
 
 
 class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
@@ -61,9 +64,9 @@ class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
-    # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
-    suite = [
-        'TestCanvasPoint.test_text_size_map_unit'
-    ]
+    # SEE: test_qgspallabeling_tests.suiteTests() to define suite
+    suite = (
+        ['TestCanvasPoint.' + t for t in suiteTests()['sp_suite']]
+    )
     res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

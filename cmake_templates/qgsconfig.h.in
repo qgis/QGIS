@@ -29,10 +29,13 @@
 #define CMAKE_SOURCE_DIR "${CMAKE_SOURCE_DIR}"
 
 #define QSCINTILLA_VERSION_STR "${QSCINTILLA_VERSION_STR}"
-//used by Mac to find system Qt plugins when bundle is run from build directory
-#define QTPLUGINSDIR "${QT_PLUGINS_DIR}"
 
-//used by Mac to find system Open Scene Graph plugins when bundle is run from build directory
+#if defined( __APPLE__ )
+//used by Mac to find system or bundle resources relative to amount of bundling
+#define QGIS_MACAPP_BUNDLE ${QGIS_MACAPP_BUNDLE}
+#endif
+
+#define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
 #define OSG_PLUGINS_PATH "${OSG_PLUGINS_PATH}"
 
 #cmakedefine USING_NMAKE
@@ -52,8 +55,6 @@
 #cmakedefine HAVE_OSGEARTHQT
 
 #cmakedefine MAPSERVER_SKIP_ECW
-
-#cmakedefine HAVE_MACAPP_BUNDLED_OSG
 
 #endif
 

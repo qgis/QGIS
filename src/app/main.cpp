@@ -35,6 +35,7 @@
 #include <QMessageBox>
 
 #include "qgscustomization.h"
+#include "qgsfontutils.h"
 #include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
@@ -736,14 +737,9 @@ int main( int argc, char *argv[] )
     }
   }
 
-  // load standard test font from testdata.qrc (for unit tests)
-  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
-  if ( testFont.open( QIODevice::ReadOnly ) )
-  {
-    int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
-    Q_UNUSED( fontID );
-    QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( fontID != -1 ? "" : "NOT " ) );
-  } // else app wasn't built with ENABLE_TESTS
+#ifdef QGISDEBUG
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
+#endif
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
@@ -862,9 +858,9 @@ int main( int argc, char *argv[] )
     // Now set the paths inside the bundle
     myPath += "/Contents/Plugins";
     QCoreApplication::addLibraryPath( myPath );
-    if ( QgsApplication::isRunningFromBuildDir() )
+    if ( QgsApplication::isRunningFromBuildDir() || QGIS_MACAPP_BUNDLE == 0 )
     {
-      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
+      QCoreApplication::addLibraryPath( QT_PLUGINS_DIR );
     }
     //next two lines should not be needed, testing only
 #if 0

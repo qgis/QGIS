@@ -547,7 +547,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorLayer::GeometrySimplification ).toInt() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !settings.value( "/qgis/simplifyLocal", true ).toBool() );
 
@@ -1070,13 +1070,13 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // Default simplify drawing configuration
-  int simplifyHints = QgsVectorLayer::NoSimplification;
+  QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyHints |= QgsVectorLayer::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
+    simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
-  settings.setValue( "/qgis/simplifyDrawingHints", simplifyHints );
+  settings.setValue( "/qgis/simplifyDrawingHints", ( int ) simplifyHints );
   settings.setValue( "/qgis/simplifyDrawingTol", mSimplifyDrawingSpinBox->value() );
   settings.setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
   settings.setValue( "/qgis/simplifyMaxScale", 1.0 / mSimplifyMaximumScaleComboBox->scale() );

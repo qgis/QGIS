@@ -81,7 +81,7 @@ if __name__ == '__main__':
         os.path.join(api_src_dir, 'Python-2.7.api'),
         os.path.join(api_src_dir, 'PyQt4-4.7.4.api'),
         os.path.join(api_src_dir, 'OSGeo_GEOS-3.4.2.api'),
-        os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-1.9.1.api')
+        os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-1.10.0.api')
     ]
     # print api_files.__repr__()
     # print pap_file.__repr__()

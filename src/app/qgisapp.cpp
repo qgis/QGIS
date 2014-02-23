@@ -3658,6 +3658,17 @@ bool QgisApp::fileSave()
 
     QgsProject::instance()->setFileName( fullPath.filePath() );
   }
+  else
+  {
+    QFileInfo fi( QgsProject::instance()->fileName() );
+    if ( fi.exists() && ! fi.isWritable() )
+    {
+      messageBar()->pushMessage( tr( "Insufficient permissions" ),
+                                 tr( "The project file is not writable." ),
+                                 QgsMessageBar::WARNING );
+      return false;
+    }
+  }
 
   if ( QgsProject::instance()->write() )
   {
@@ -7094,7 +7105,7 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
       delete layer;
-
+      layer = 0;
     }
     else
     {
@@ -9192,6 +9203,9 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
               username, password,
               tr( "Authentication required" ) );
   if ( !ok )
+    return;
+
+  if ( reply->isFinished() )
     return;
 
   auth->setUser( username );

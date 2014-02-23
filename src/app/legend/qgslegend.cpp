@@ -1057,7 +1057,7 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
           addEmbeddedGroup( childElem.attribute( "name" ), projectFilePath, group );
         }
       }
-      checkLayerOrderUpdate();
+      updateMapCanvasLayerSet();
       return group;
     }
   }

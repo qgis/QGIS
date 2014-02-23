@@ -1,5 +1,7 @@
 
-/** This class contains information about how to simplify geometries fetched from a QgsFeatureIterator */
+/** This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+ * @note added in 2.2
+ */
 class QgsSimplifyMethod
 {
 %TypeHeaderCode

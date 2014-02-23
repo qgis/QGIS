@@ -19,17 +19,26 @@ import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from qgis.core import (
-    QgsPalLayerSettings,
+from qgis.core import *
+
+from utilities import (
+    svgSymbolsPath
 )
 
-
+# noinspection PyPep8Naming
 class TestPointBase(object):
 
     def __init__(self):
         """Dummy assignments, intended to be overriden in subclasses"""
         self.lyr = QgsPalLayerSettings()
-        self._TestFont = QApplication.font()
+        """:type: QgsPalLayerSettings"""
+        # noinspection PyArgumentList
+        self._TestFont = QFont()  # will become a standard test font
+        self.params = dict()
+        self._Pal = None
+        """:type: QgsPalLabeling"""
+        self._Canvas = None
+        """:type: QgsMapCanvas"""
 
     def checkTest(self, **kwargs):
         """Intended to be overriden in subclasses"""
@@ -43,7 +52,7 @@ class TestPointBase(object):
         # Label text size in map units
         self.lyr.fontSizeInMapUnits = True
         font = QFont(self._TestFont)
-        font.setPointSizeF(500)
+        font.setPointSizeF(460)
         self.lyr.textFont = font
         self.checkTest()
 
@@ -52,25 +61,104 @@ class TestPointBase(object):
         self.lyr.textColor = Qt.blue
         self.checkTest()
 
+    def test_background_rect(self):
+        self.lyr.shapeDraw = True
+        self.checkTest()
+
+    def test_background_rect_w_offset(self):
+        # Label rectangular background
+        # verify fix for issues
+        #   http://hub.qgis.org/issues/9057
+        #   http://gis.stackexchange.com/questions/86900
+        self.lyr.fontSizeInMapUnits = True
+        font = QFont(self._TestFont)
+        font.setPointSizeF(460)
+        self.lyr.textFont = font
+
+        self.lyr.shapeDraw = True
+        self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
+        self.lyr.shapeOffset = QPointF(-2900.0, -450.0 )
+        self.checkTest()
+
+    def test_background_svg(self):
+        # Label SVG background
+        # NOTE: this has higher _CheckMismatch (3600) in ComposerVsCanvasPoint
+        self.lyr.fontSizeInMapUnits = True
+        font = QFont(self._TestFont)
+        font.setPointSizeF(460)
+        self.lyr.textFont = font
+
+        self.lyr.shapeDraw = True
+        self.lyr.shapeType = QgsPalLayerSettings.ShapeSVG
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        self.lyr.shapeSVGFile = svg
+        self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
+        self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
+        self.lyr.shapeSize = QPointF(100.0, 0.0)
+        self.checkTest()
+
+    def test_background_svg_w_offset(self):
+        # Label SVG background
+        # NOTE: this has higher _CheckMismatch (3600) in ComposerVsCanvasPoint
+        self.lyr.fontSizeInMapUnits = True
+        font = QFont(self._TestFont)
+        font.setPointSizeF(460)
+        self.lyr.textFont = font
+
+        self.lyr.shapeDraw = True
+        self.lyr.shapeType = QgsPalLayerSettings.ShapeSVG
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        self.lyr.shapeSVGFile = svg
+        self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
+        self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
+        self.lyr.shapeSize = QPointF(100.0, 0.0)
+
+        self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
+        self.lyr.shapeOffset = QPointF(-2850.0, 500.0 )
+        self.checkTest()
+
     def test_partials_labels_enabled(self):
         # Set Big font size
         font = QFont(self._TestFont)
-        font.setPointSizeF(90)
+        font.setPointSizeF(120)
         self.lyr.textFont = font
         # Enable partials labels
-        self._PalEngine.setShowingPartialsLabels(True)
+        self._Pal.setShowingPartialsLabels(True)
+        self._Pal.saveEngineSettings()
         # Check
         self.checkTest()
 
     def test_partials_labels_disabled(self):
         # Set Big font size
         font = QFont(self._TestFont)
-        font.setPointSizeF(90)
+        font.setPointSizeF(120)
         self.lyr.textFont = font
         # Disable partials labels
-        self._PalEngine.setShowingPartialsLabels(False)
+        self._Pal.setShowingPartialsLabels(False)
+        self._Pal.saveEngineSettings()
         # Check
         self.checkTest()
+
+
+# noinspection PyPep8Naming
+def suiteTests():
+    """
+    Use to define which tests are run when PAL_SUITE is set.
+    Use sp_vs_suite comparison of server and composer outputs to canvas
+    """
+    return {
+        'sp_suite': [
+            # 'test_background_svg',
+            'test_background_svg_w_offset',
+        ],
+        'sp_vs_suite': [
+            # 'test_background_svg',
+            'test_background_svg_w_offset',
+            # 'test_background_rect_w_offset',
+        ]
+    }
 
 
 if __name__ == '__main__':

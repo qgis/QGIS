@@ -16,7 +16,11 @@
 #ifndef QGSVECTORSIMPLIFYMETHOD_H
 #define QGSVECTORSIMPLIFYMETHOD_H
 
-/** This class contains information how to simplify geometries fetched from a vector layer */
+#include <QFlags>
+
+/** This class contains information how to simplify geometries fetched from a vector layer
+ * @note added in 2.2
+ */
 class CORE_EXPORT QgsVectorSimplifyMethod
 {
   public:
@@ -27,10 +31,20 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     //! assignment operator
     QgsVectorSimplifyMethod& operator=( const QgsVectorSimplifyMethod& rh );
 
+    /** Simplification flags for fast rendering of features */
+    enum SimplifyHint
+    {
+      NoSimplification           = 0, //!< No simplification can be applied
+      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+    };
+    Q_DECLARE_FLAGS( SimplifyHints, SimplifyHint )
+
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( int simplifyHints ) { mSimplifyHints = simplifyHints; }
+    void setSimplifyHints( SimplifyHints simplifyHints ) { mSimplifyHints = simplifyHints; }
     /** Gets the simplification hints of the vector layer managed */
-    inline int simplifyHints() const { return mSimplifyHints; }
+    inline SimplifyHints simplifyHints() const { return mSimplifyHints; }
 
     /** Sets the simplification threshold of the vector layer managed */
     void setThreshold( float threshold ) { mThreshold = threshold; }
@@ -49,7 +63,7 @@ class CORE_EXPORT QgsVectorSimplifyMethod
 
   private:
     /** Simplification hints for fast rendering of features of the vector layer managed */
-    int mSimplifyHints;
+    SimplifyHints mSimplifyHints;
     /** Simplification threshold */
     float mThreshold;
     /** Simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries */
@@ -57,5 +71,7 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     /** Maximum scale at which the layer should be simplified (Maximum scale at which generalisation should be carried out) */
     float mMaximumScale;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorSimplifyMethod::SimplifyHints )
 
 #endif // QGSVECTORSIMPLIFYMETHOD_H

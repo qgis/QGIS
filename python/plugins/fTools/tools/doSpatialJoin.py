@@ -51,6 +51,10 @@ def myself(L):
             medianVal = L[ (nVal + 1) / 2 - 1]
     return medianVal
 
+def filter_null(vals):
+    """Takes an iterator of values and returns a new iterator returning the same values but skipping any NULL values"""
+    return (v for v in vals if v != NULL)
+
 class Dialog(QDialog, Ui_Dialog):
 
     def __init__(self, iface):
@@ -216,11 +220,27 @@ class Dialog(QDialog, Ui_Dialog):
                     atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
-                            if k == "SUM": atMap.append(sum(numFields[j]))
-                            elif k == "MEAN": atMap.append(sum(numFields[j]) / count)
-                            elif k == "MIN": atMap.append(min(numFields[j]))
-                            elif k == "MED": atMap.append(myself(numFields[j]))
-                            else: atMap.append(max(numFields[j]))
+                            if k == "SUM":
+                                atMap.append(sum(filter_null(numFields[j])))
+                            elif k == "MEAN":
+                                try:
+                                    nn_count = sum( 1 for _ in filter_null(numFields[j]) )
+                                    atMap.append(sum(filter_null(numFields[j])) / nn_count)
+                                except ZeroDivisionError:
+                                    atMap.append(NULL)
+                            elif k == "MIN":
+                                try:
+                                    atMap.append(min(filter_null(numFields[j])))
+                                except ValueError:
+                                    atMap.append(NULL)
+                            elif k == "MED":
+                                atMap.append(myself(numFields[j]))
+                            else:
+                                try:
+                                    atMap.append(max(filter_null(numFields[j])))
+                                except ValueError:
+                                    atMap.append(NULL)
+
                         numFields[j] = []
                     atMap.append(count)
                     atMap = dict(zip(seq, atMap))

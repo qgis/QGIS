@@ -103,7 +103,7 @@ int QgsProjectParser::numberOfLayers() const
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
-  if ( mProjectLayerElements.size() < 1 )
+  if ( mProjectLayerElements.size() < 1 && mLegendGroupElements.size() < 1 )
   {
     return;
   }
@@ -4080,7 +4080,25 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
     return;
   }
 
-  QDomNodeList layerNodeList = doc->elementsByTagName( "legendlayer" );
+  //find requested group
+  QString groupName = groupElem.attribute( "name" );
+  QDomElement embeddedGroupElem; //group element in source project file
+  QDomNodeList groupList = doc->elementsByTagName( "legendgroup" );
+  for ( int i = 0; i < groupList.size(); ++i )
+  {
+    if ( groupList.at( i ).toElement().attribute( "name" ) == groupName )
+    {
+      embeddedGroupElem = groupList.at( i ).toElement();
+      break;
+    }
+  }
+
+  if ( embeddedGroupElem.isNull() ) //group does not exist in project file
+  {
+    return;
+  }
+
+  QDomNodeList layerNodeList = embeddedGroupElem.elementsByTagName( "legendlayer" );
   QDomElement layerElem;
   QStringList layerNames;
   QString layerName;

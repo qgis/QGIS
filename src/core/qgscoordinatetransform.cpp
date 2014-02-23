@@ -127,6 +127,15 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   }
 }
 
+QgsCoordinateTransform* QgsCoordinateTransform::clone() const
+{
+  QgsCoordinateTransform* tr = new QgsCoordinateTransform( sourceCrs(), destCRS() );
+  tr->setSourceDatumTransform( sourceDatumTransform() );
+  tr->setDestinationDatumTransform( destinationDatumTransform() );
+  tr->initialise();
+  return tr;
+}
+
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& theCRS )
 {
   mSourceCRS = theCRS;
@@ -329,14 +338,10 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, Tran
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "Rect projection..." );
-  QgsLogger::debug( "Xmin : ", theRect.xMinimum(), 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "-->", x1, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "Ymin : ", theRect.yMinimum(), 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "-->", y1, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "Xmax : ", theRect.xMaximum(), 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "-->", x2, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "Ymax : ", theRect.yMaximum(), 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "-->", y2, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( theRect.xMinimum() ).arg( x1 ) );
+  QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( theRect.yMinimum() ).arg( y1 ) );
+  QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( theRect.xMaximum() ).arg( x2 ) );
+  QgsDebugMsg( QString( "Ymax : %1 --> %2" ).arg( theRect.yMaximum() ).arg( y2 ) );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }

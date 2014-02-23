@@ -43,6 +43,12 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
 
   connect( builder, SIGNAL( expressionParsed( bool ) ), this, SLOT( setOkButtonState() ) );
 
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( vl->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  builder->setGeomCalculator( myDa );
+
   //default values for field width and precision
   mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
@@ -178,7 +184,7 @@ void QgsFieldCalculator::accept()
 
   bool newField = !mUpdateExistingGroupBox->isChecked();
   QVariant emptyAttribute;
-  if( newField )
+  if ( newField )
     emptyAttribute = QVariant( mVectorLayer->pendingFields()[mAttributeId].type() );
 
   QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );

@@ -31,10 +31,6 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 
     virtual QList<QAction*> actions();
 
-    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QString mConnInfo;
-    QVector<QgsWmsLayerProperty> mLayerProperties;
-
   public slots:
     void editConnection();
     void deleteConnection();
@@ -47,7 +43,9 @@ class QgsWMSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QgsWmsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWmsLayerProperty layerProperties );
+                     const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                     QgsDataSourceURI dataSourceUri,
+                     const QgsWmsLayerProperty &layerProperty );
     ~QgsWMSLayerItem();
 
     QString createUri();
@@ -55,6 +53,30 @@ class QgsWMSLayerItem : public QgsLayerItem
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
     QgsDataSourceURI mDataSourceUri;
     QgsWmsLayerProperty mLayerProperty;
+};
+
+class QgsWMTSLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsWMTSLayerItem( QgsDataItem* parent,
+                      const QString &name,
+                      const QString &path,
+                      const QgsDataSourceURI &dataSourceUri,
+                      const QString &id,
+                      const QString &format,
+                      const QString &style,
+                      const QString &tileMatrixSet,
+                      const QString &crs,
+                      const QString &title );
+    ~QgsWMTSLayerItem();
+
+    QString createUri();
+    QString layerName() const { return mTitle; }
+
+  private:
+    QgsDataSourceURI mDataSourceUri;
+    QString mId, mFormat, mStyle, mTileMatrixSet, mCrs, mTitle;
 };
 
 class QgsWMSRootItem : public QgsDataCollectionItem

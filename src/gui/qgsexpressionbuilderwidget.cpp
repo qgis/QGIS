@@ -317,7 +317,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( !mFeature.isValid() )
     {
-      mLayer->getFeatures( QgsFeatureRequest().setFlags(( mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ).nextFeature( mFeature );
+      mLayer->getFeatures().nextFeature( mFeature );
     }
 
     if ( mFeature.isValid() )

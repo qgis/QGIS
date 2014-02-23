@@ -294,6 +294,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   r->setLabelColor( QgsSymbolLayerV2Utils::decodeColor( symbologyElem.attribute( "labelColor", "" ) ) );
   r->setCircleRadiusAddition( symbologyElem.attribute( "circleRadiusAddition", "0.0" ).toDouble() );
   r->setMaxLabelScaleDenominator( symbologyElem.attribute( "maxLabelScaleDenominator", "-1" ).toDouble() );
+  r->setTolerance( symbologyElem.attribute( "tolerance", "0.00001" ).toDouble() );
 
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( "renderer-v2" );
@@ -322,6 +323,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   rendererElement.setAttribute( "labelColor", QgsSymbolLayerV2Utils::encodeColor( mLabelColor ) );
   rendererElement.setAttribute( "circleRadiusAddition", QString::number( mCircleRadiusAddition ) );
   rendererElement.setAttribute( "maxLabelScaleDenominator", QString::number( mMaxLabelScaleDenominator ) );
+  rendererElement.setAttribute( "tolerance", QString::number( mTolerance ) );
 
   if ( mRenderer )
   {

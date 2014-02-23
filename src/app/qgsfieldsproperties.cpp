@@ -782,7 +782,7 @@ void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
     return;
 
   QFileInfo fi( uifilename );
-  myQSettings.setValue ( "style/lastUIDir", fi.path() );
+  myQSettings.setValue( "style/lastUIDir", fi.path() );
   leEditForm->setText( uifilename );
 }
 

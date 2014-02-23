@@ -1467,7 +1467,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
 
   QString mySql;
 
-  QString proj4String=mProj4;
+  QString proj4String = mProj4;
   if ( proj4String.isEmpty() )
   {
     proj4String = toProj4();

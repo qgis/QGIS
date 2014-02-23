@@ -1198,7 +1198,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   datasetOptions.insert( "SPLIT_MULTIPOINT", new BoolOption(
                            QObject::tr( "Should multipoint soundings be split into many single point sounding features. "
-                                        "Multipoint geometries are not well handle by many formats, "
+                                        "Multipoint geometries are not well handled by many formats, "
                                         "so it can be convenient to split single sounding features with many points "
                                         "into many single point features." )
                            , false  // Default value
@@ -1305,7 +1305,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   layerOptions.insert( "LAUNDER", new BoolOption(
                          QObject::tr( "Controls whether layer and field names will be laundered for easier use "
-                                      "in SQLite. Laundered names will be convered to lower case and some special "
+                                      "in SQLite. Laundered names will be converted to lower case and some special "
                                       "characters(' - #) will be changed to underscores." )
                          , true  // Default value
                        ) );

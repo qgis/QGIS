@@ -566,6 +566,10 @@ void QgsProjectProperties::apply()
   {
     mapUnit = QGis::Feet;
   }
+  else if ( radNMiles->isChecked() )
+  {
+    mapUnit = QGis::NauticalMiles;
+  }
   else
   {
     mapUnit = QGis::Meters;
@@ -1024,11 +1028,16 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
   radDegrees->setChecked( units == QGis::Degrees );
 
   // attempt to reset the projection ellipsoid according to the srs
-  int i;
-  for ( i = 0; i < mEllipsoidList.length() && mEllipsoidList[ i ].description != srs.description(); i++ )
-    ;
-  if ( i < mEllipsoidList.length() )
-    updateEllipsoidUI( i );
+  int myIndex = 0;
+  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  {
+    if ( mEllipsoidList[ i ].acronym == srs.ellipsoidAcronym() )
+    {
+      myIndex = i;
+      break;
+    }
+  }
+  updateEllipsoidUI( myIndex );
 }
 
 /*!

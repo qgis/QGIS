@@ -124,6 +124,8 @@ if errorlevel 1 (echo "could not write to log %LOG%" & goto error)
 
 set >buildenv.log
 
+if exist qgsversion.h del qgsversion.h
+
 if exist CMakeCache.txt goto skipcmake
 
 echo CMAKE: %DATE% %TIME%>>%LOG% 2>&1
@@ -167,7 +169,12 @@ grep -Eq "^(Python not being built|Could not find GRASS)" %LOG%
 if not errorlevel 1 (echo "python or grass not found" & goto error)
 
 :skipcmake
+if exist noclean goto skipclean
+echo CLEAN: %DATE% %TIME%>>%LOG% 2>&1
+%DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Clean %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
+if errorlevel 1 (echo "CLEAN failed" & goto error)
 
+:skipclean
 echo ZERO_CHECK: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ZERO_CHECK /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 (echo "ZERO_CHECK failed" & goto error)

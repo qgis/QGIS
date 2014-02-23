@@ -1475,13 +1475,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
-    // Creates the gml:featureMember only if we have at least one element
-    if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) && featureCounter == 1 )
-    {
-      QDomElement realLayerElement = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
-      layerElement.appendChild( realLayerElement );
-      layerElement = realLayerElement;
-    }
 
     QgsFeatureRendererV2* r2 = layer->rendererV2();
     if ( !r2 )
@@ -1504,7 +1497,9 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       bool withGeom = layer->wkbType() != QGis::WKBNoGeometry;
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
       QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), withGeom, version );
-      layerElement.appendChild( elem );
+      QDomElement featureMemberElem = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
+      featureMemberElem.appendChild( elem );
+      layerElement.appendChild( featureMemberElem );
       continue;
     }
     else
@@ -2005,6 +2000,7 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
          || tokenIt->compare( "AND", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "OR", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "LIKE", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "DMETAPHONE", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "SOUNDEX", Qt::CaseInsensitive ) == 0 )
     {

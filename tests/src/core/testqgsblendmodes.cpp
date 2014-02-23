@@ -57,6 +57,8 @@ class TestQgsBlendModes: public QObject
     QgsRasterLayer* mRasterLayer1;
     QgsRasterLayer* mRasterLayer2;
     QString mTestDataDir;
+    QgsRectangle mExtent;
+    QString mReport;
 };
 
 
@@ -87,7 +89,7 @@ void TestQgsBlendModes::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -115,10 +117,20 @@ void TestQgsBlendModes::initTestCase()
     QList<QgsMapLayer *>() << mRasterLayer1 );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer2 );
+
+  // points extent was not always reliable
+  mExtent = QgsRectangle( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
 }
 void TestQgsBlendModes::cleanupTestCase()
 {
-
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsBlendModes::vectorBlending()
@@ -132,7 +144,7 @@ void TestQgsBlendModes::vectorBlending()
   //Set blending modes for both layers
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
-  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setExtent( mExtent );
   bool res = imageCheck( "vector_blendmodes" );
 
   //Reset layers
@@ -152,7 +164,7 @@ void TestQgsBlendModes::featureBlending()
 
   //Set feature blending modes for point layer
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
-  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setExtent( mExtent );
   bool res = imageCheck( "vector_featureblendmodes" );
 
   //Reset layers
@@ -171,7 +183,7 @@ void TestQgsBlendModes::vectorLayerTransparency()
 
   //Set feature blending modes for point layer
   mpLinesLayer->setLayerTransparency( 50 );
-  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setExtent( mExtent );
   bool res = imageCheck( "vector_layertransparency" );
 
   //Reset layers
@@ -206,6 +218,7 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );
+  mReport += myChecker.report();
   return myResultFlag;
 }
 

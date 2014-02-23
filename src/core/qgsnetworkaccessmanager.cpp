@@ -24,6 +24,7 @@
 #include <qgsapplication.h>
 #include <qgsmessagelog.h>
 #include <qgslogger.h>
+#include <qgis.h>
 
 #include <QUrl>
 #include <QSettings>
@@ -139,7 +140,12 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QSettings s;
 
   QNetworkRequest *pReq(( QNetworkRequest * ) &req ); // hack user agent
-  pReq->setRawHeader( "User-Agent", s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toByteArray() );
+
+  QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
+  if ( !userAgent.isEmpty() )
+    userAgent += " ";
+  userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
+  pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
@@ -186,7 +192,8 @@ void QgsNetworkAccessManager::abortRequest()
 
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
 
-  reply->abort();
+  if ( reply->isRunning() )
+    reply->close();
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )

@@ -6077,7 +6077,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Creates a heatmap raster for the input point vector.</source>
-        <translation>Crea un mapa de calor (Heatmap) de la capa de puntos de entrada.</translation>
+        <translation>Crea un mapa de calor ráster para la capa vectorial de puntos de entrada.</translation>
     </message>
     <message>
         <source>&amp;Heatmap</source>
@@ -6283,7 +6283,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Quartic (biweight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuártica (biponderada)</translation>
     </message>
     <message>
         <source>Triangular</source>
@@ -6295,7 +6295,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Triweight</source>
-        <translation type="unfinished"></translation>
+        <translation>Triponderada</translation>
     </message>
     <message>
         <source>Epanechnikov</source>
@@ -7336,7 +7336,7 @@ Actúa sobre todas las capas editables</translation>
     </message>
     <message>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Estiramiento de corte acumulativo a todo el conjunto de datos</translation>
     </message>
     <message>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
@@ -11520,19 +11520,19 @@ SQL: %1</translation>
     </message>
     <message>
         <source>minidump written to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>minivolcado escrito en %1</translation>
     </message>
     <message>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>la escritura del minivolcado a %1 falló (%2)</translation>
     </message>
     <message>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>la creación del minivolcado a %1 falló (%2)</translation>
     </message>
     <message>
         <source>Crash dumped</source>
-        <translation type="unfinished"></translation>
+        <translation>Volcado fallido</translation>
     </message>
     <message>
         <source>Save style to DB (%1)</source>
@@ -11770,7 +11770,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation>Cuando se crean archivos CVS, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
+        <translation>Cuando se crean archivos CSV, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
     </message>
     <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
@@ -11826,7 +11826,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation>Si se define a NO, sólo se excribirán elementos &lt;entry&gt; o &lt;item&gt;. El usuario tendrá que proporcionar el cabezado y pie de documento adecuados.</translation>
+        <translation>Si se define a NO, sólo se escribirán elementos &lt;entry&gt; o &lt;item&gt;. El usuario tendrá que proporcionar el encabezado y pie de documento adecuados.</translation>
     </message>
     <message>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
@@ -11882,11 +11882,11 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
-        <translation type="unfinished">solo válido cuando FORMATO=GML3/GML3Degree/GML3.2. </translation>
+        <translation>solo válido cuando FORMATO=GML3/GML3Degree/GML3.2) Valor predeterminado SÍ. Si es SÍ, los SRE con autoridad EPSG se escribirán con un prefijo &apos;urn:ogc:def:crs:EPSG::&apos;. En ese caso, si el SRE es geográfico sin un orden de EJE explícito,pero en el que el mismo código de autoridad de SRE importado con ImportFromEPSGA() debería ser tratado como lat/lon, entonces la función cuidará del intercambio de orden de coordenadas. Si se establece a NO, los SRE con autoridad EPSG se escribirán con el prefijo &apos;EPSG&apos;, incluso si están en orden lat/lon.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>sólo válido cuando FORMATO=GML3/GML3Degree/GML3.2). Valor predeterminado SÍ. Si se establece a NO, el elemento &lt;gml:boundedBy&gt; no se escribirá para cada objeto espacial.</translation>
     </message>
     <message>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
@@ -11970,87 +11970,83 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation>Deberían incorporarse los archivos de actualización en la base de datos al vuelo.</translation>
-    </message>
-    <message>
-        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían incorporar los archivos de actualización en la base de datos al vuelo.</translation>
     </message>
     <message>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se debería añadir el atributo DEPTH (profundidad) en entidades SOUNDG y asignar la profundidad del sondeo. Esto sólo se debería habilitar cuando SPLIT_MULTIPOINT tambiéne está activado.</translation>
     </message>
     <message>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían devolver todas las primitivas de geometrías de bajo nivel como capas especiales NodoAislado, NodoConectado, Borde y Cara.</translation>
     </message>
     <message>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se activa, atributos numéricos que tengan asignada una cadena vacía como valor se guardarán como un valor numérico especial. Esta opción normalmente no debería ser necesaria, pero puede ser útil cuando se ha traducido S-57 a S-57 sin pérdida.</translation>
     </message>
     <message>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían adjuntar los campos LNAM y LNAM_REFS a objetos espaciales que capturan la relación objeto a objeto en el grupo FFPT del archivo S-57.</translation>
     </message>
     <message>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían adjuntar los atributos adicionales que relacionan objetos espaciales con sus primitivas geométricas subyacentes. Estos son los valores del grupo FSPT y se necesitan en primer lugar cuando se hacen traducciones S-57 a S-57.</translation>
     </message>
     <message>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían registrar los valores de atributos a UTF-8 desde la codificación de caracteres especificada en el registro S57 DSSI.</translation>
     </message>
     <message>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se puede usar para evitar la creación de geometry_columns (columnas_de_geometría) y tablas spatial_ref_sys (sistema_de_referencia_espacial). Por omisión estas tablas de metadatos se crean cuando se crea una nueva base de datos.</translation>
     </message>
     <message>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla el formato usado para la columna de geometría. El valor predeterminado es WKB. Normalmente esto es más eficiente que WKT (Texto Bien Conocido) en cuanto a espacio y procesamiento, pero más difícil de inspeccionar o usar en aplicaciones sencillas.</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla si los nombres de capas y campos se limpiarán para un uso más fácil en SQLite. Los nombres limpiados se convertirán a minúsculas y algunas caracteres especiales (&apos; - #) se sustituirán por guiones bajos.</translation>
     </message>
     <message>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre_columna1 [, nombre_columna2, ...] Una lista de columnas (cadena) que se debe comprimir con el algoritmo ZLib DEFLATE. Esto puede ser beneficioso para bases de datos que tienen grandes binarios de cadena. Sin embargo, se debe usar con cuidado, ya que el valor de dichas columnas se verá como contenido binario comprimido con otras utilidades de SQLite (o versiones anteriores de OGR). Con OGR al insertar, modificar o consultar columnas comprimidas, la compresión/descompresión se hace de forma transparente. Sin embargo, tales columnas no se pueden consultar (fácilmente) con un filtro de atributos o una sentencia WHERE. Nota: en la definición de la tabla tales columnas tiene un tipo de declaración &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar el contenido de los archivos CSV de EPSG en la tabla spatial_ref_sys (sistema de referencia espacial). Establecer a NO para bases de datos SQLite normales.</translation>
     </message>
     <message>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si la base de datos es de tipo SpatiaLite y si OGR está enlazado contra libspatialite, esta opción se puede usar para controlar si se debe crear un índice espacial.</translation>
     </message>
     <message>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Si el formato del BLOB de la geometría es de tipo SpatiLite, esta opción se puede usar para controlar si se debe usar el formato comprimido para geometrías (LINESTRINGs, POLYGONs)</translation>
     </message>
     <message>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usado para forzar el número de SRID del SRE asociado con la  capa. Cuando esta opción no se especifica y hay un SRE asociado con la capa, se hace una búsqueda en la tabla spatial_ref_sys (Sistema de referencia espacial) para encontrar una coincidencia con el SRE y si no la hay se inserta una nueva entrada en la tabla spatial_ref_sys. Cuando se especifica la opción SRID, esta búsqueda (y la eventual inserción de una nueva entrada) no se hace: se usa el SRID especificado.</translation>
     </message>
     <message>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica la extensión de archivo de exportación de GeoConcept. En versiones anteriores de GeoConcept se usaba TXT. Actualmente se usa GTX.</translation>
     </message>
     <message>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuando se establece esta opción, la nueva capa se creará dentro de la carpeta llamada FeatureDataset. Si la carpeta no existe, se creará.</translation>
     </message>
     <message>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer el nombre de la columna de geometría en la nueva capa. Valor por omisión &apos;SHAPE&apos;.</translation>
     </message>
     <message>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la columna OID a crear. Valor por omisión &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede sobrescribir una capa OGR en lugar</translation>
     </message>
     <message>
         <source>linear</source>
@@ -12074,7 +12070,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>pad</source>
-        <translation type="unfinished"></translation>
+        <translation>rellenar</translation>
     </message>
     <message>
         <source>repeat</source>
@@ -12098,7 +12094,15 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión, los archivos BNA se crean en formato multilínea. Para cada registro la primera línea contiene los identificadores y el tipo/número de coordenadas que siguen. Cada línea siguiente contiene un par de coordenadas.</translation>
+    </message>
+    <message>
+        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
+        <translation>Se deberían dividir los sondeos multipunto en muchas entidades de sondeo de un solo punto. Las geometrías multipunto no son bien manejadas por muchos formatos, por lo que puede ser conveniente dividir entidades de sondeo únicas con muchos puntos en muchas entidades de punto único.</translation>
+    </message>
+    <message>
+        <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
+        <translation>Controla si los nombres de capas y campos se limpiarán para un uso más fácil en SQLite. Los nombres limpiados se convertirán a minúsculas y algunas caracteres especiales (&apos; - #) se sustituirán por guiones bajos.</translation>
     </message>
 </context>
 <context>
@@ -21815,7 +21819,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>World file on</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de mundo activado</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -22530,11 +22534,11 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>Catch</source>
-        <translation type="unfinished"></translation>
+        <translation>Capturar</translation>
     </message>
     <message>
         <source>Switch to catching widgets in main application</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar a controles de captura en la aplicación principal</translation>
     </message>
     <message>
         <source>Save</source>
@@ -22827,7 +22831,7 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>&apos;pad&apos;|&apos;repeat&apos;|&apos;reflect&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;rellenar&apos;|&apos;repetir&apos;|&apos;reflejar&apos;</translation>
     </message>
     <message>
         <source>0 (false)|1 (true)</source>
@@ -22838,7 +22842,7 @@ y el archivo actual es [%3]</translation>
     <name>QgsDatumTransformDialog</name>
     <message>
         <source>Select datum transformations for layer</source>
-        <translation>Seleccionar transformaciones de datum para la capa</translation>
+        <translation>Seleccionar transformaciones de dátum para la capa</translation>
     </message>
     <message>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
@@ -22849,7 +22853,7 @@ y el archivo actual es [%3]</translation>
     <name>QgsDatumTransformDialogBase</name>
     <message>
         <source>Select datum transformations</source>
-        <translation>Seleccionar transformaciones de datum</translation>
+        <translation>Seleccionar transformaciones de dátum</translation>
     </message>
     <message>
         <source>src transform</source>
@@ -23842,7 +23846,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished"></translation>
+        <translation>^.. la expresión necesita grupos de captura</translation>
     </message>
     <message>
         <source>Definition of filename and delimiters is not valid</source>
@@ -24934,7 +24938,7 @@ Error del analizador:
     <name>QgsEditorWidgetRegistry</name>
     <message>
         <source>Unknown attribute editor widget &apos;%1&apos;</source>
-        <translation>Control &apos;%1&apos; del editor de atributos desconcido</translation>
+        <translation>Control &apos;%1&apos; del editor de atributos desconocido</translation>
     </message>
     <message>
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
@@ -27959,7 +27963,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split stereo vertical eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir cartografía estéreo de ojo vertical</translation>
     </message>
     <message>
         <source>Screen height (m)</source>
@@ -27975,7 +27979,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split stereo horizontal eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir cartografía estéreo de ojo horizontal</translation>
     </message>
     <message>
         <source>Map</source>
@@ -32354,7 +32358,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
-        <translation type="unfinished"></translation>
+        <translation>Desmarcar para escribir rotación derivada del motor de etiquetado en anclada y NULO en desanclada</translation>
     </message>
     <message>
         <source>Preserve existing rotation values during label pin/unpin operations</source>
@@ -33991,11 +33995,11 @@ no se muestran</translation>
     </message>
     <message>
         <source>Pinned label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta anclada</translation>
     </message>
     <message>
         <source>Unpinned label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta desanclada</translation>
     </message>
 </context>
 <context>
@@ -35304,7 +35308,7 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     </message>
     <message>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <source>GeoServer</source>
@@ -36058,6 +36062,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Download has been successful.</source>
         <translation>La descarga ha tenido éxito.</translation>
+    </message>
+    <message>
+        <source>Could not transform canvas extent.</source>
+        <translation>No se pudo transformar la extensión del lienzo.</translation>
+    </message>
+    <message>
+        <source>Could not transform layer extent.</source>
+        <translation>No se pudo transformar la extensión de la capa.</translation>
     </message>
 </context>
 <context>
@@ -38254,11 +38266,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation>Mejor rendimiento gráfico a costa de perder la posibilidad de cancelar la representación y dibujado de objetos espaciales incremental</translation>
+        <translation>Mejor rendimiento gráfico a costa de perder la posibilidad de cancelar la representación y dibujado incremental de objetos espaciales</translation>
     </message>
     <message>
         <source>Enable back buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar buffer trasero</translation>
     </message>
     <message>
         <source>Debugging</source>
@@ -38494,7 +38506,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Default datum transformations</source>
-        <translation>Transformaciones de datum predeterminadas</translation>
+        <translation>Transformaciones de dátum predeterminadas</translation>
     </message>
     <message>
         <source>Source CRS</source>
@@ -38506,15 +38518,15 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Source datum transform</source>
-        <translation>Transformar datum de origen</translation>
+        <translation>Transformar dátum de origen</translation>
     </message>
     <message>
         <source>Destination datum transform</source>
-        <translation>Transformar datum de destino</translation>
+        <translation>Transformar dátum de destino</translation>
     </message>
     <message>
         <source>Max retry in case of tile request errors</source>
-        <translation>Máximos reintentos en cado de errores en la solicitud de teselas</translation>
+        <translation>Máximos reintentos en caso de errores en la solicitud de teselas</translation>
     </message>
     <message>
         <source>User-Agent</source>
@@ -38530,7 +38542,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation>Preguntar la transformación de datum cuando no haya una predefinida</translation>
+        <translation>Preguntar la transformación de dátum cuando no haya una predefinida</translation>
     </message>
 </context>
 <context>
@@ -41686,7 +41698,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Nota:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Los complementos en desuso normalmente no son adecuados para uso en producción. Estos complementos no son mantenidos y se deberían considerar herramientas «obsoletas». QGIS no recomienda instalar estos complementos a no ser que aún los necesite y no haya otras alternativas disponibles.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -43149,7 +43165,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Add geometry to feature response</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir geometría a la respuesta del objeto</translation>
     </message>
     <message>
         <source>Relations</source>
@@ -45561,7 +45577,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -46232,6 +46252,13 @@ desviación estándar ×</translation>
     </message>
 </context>
 <context>
+    <name>QgsRelReferenceConfigDlg</name>
+    <message>
+        <source>Preview Expression</source>
+        <translation>Expresión de vista preliminar</translation>
+    </message>
+</context>
+<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
@@ -46247,11 +46274,15 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Show embedded form</source>
-        <translation>Mostrar formularion empotrado</translation>
+        <translation>Mostrar formulario empotrado</translation>
     </message>
     <message>
         <source>Relation</source>
         <translation>Relación</translation>
+    </message>
+    <message>
+        <source>Expression Builder</source>
+        <translation>Constructor de expresiones</translation>
     </message>
 </context>
 <context>
@@ -49322,7 +49353,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Trabajamos realmente duro para hacer este gran software para usted. ¿Ve todas las estupendas funciones que tiene? ¿Tiene una agradable sensación cuando lo usa? QGIS es una labor de amor por un equipo dedicado de desarrolladores. Queremos que lo copie &amp;amp;amp; lo comparta y lo ponga en manos de toda la gente que sea posible. Si QGIS le está ahorrando dinero o le gusta nuestro trabajo y tiene la posibilidad económica de ayudar, por favor considere patrocinar el desarrollo de QGIS. Usamos el dinero de los patrocinadores para pagar viajes y coster relacionados con nuestros encuentros bianuales de desarrollo y para apoyar los objetivos generales del proyecto. &lt;br /&gt;&lt;br /&gt;Por favor, vea la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;página web del patrocinio de QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; para más detalles. En la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Página de patrocinadores&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; puede ver la buena gente y empresas que nos están ayudando económicamente - ¡un gran &apos;gracias&apos; a todos ellos!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -51412,6 +51460,14 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Description of this provider</source>
         <translation>Descripción de este proveedor</translation>
+    </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation>Error de transformación de simplificación capturado: %1</translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation>SRC</translation>
     </message>
 </context>
 <context>
@@ -54450,7 +54506,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Returned legend image is flawed [URL: %1]</source>
-        <translation type="unfinished"></translation>
+        <translation>La imagen de la leyenda devuelta es defectuosa [URL: %1]</translation>
     </message>
     <message>
         <source>Download of GetLegendGraphic failed: %1</source>
@@ -54462,7 +54518,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló el análisis del resultado. Se estimaron %1 tipos de objeto espacial del gml (%2), pero no se analizó ningún objeto espacial.</translation>
     </message>
 </context>
 <context>
@@ -55353,7 +55409,7 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Processing R script (*.rsx)</source>
-        <translation>Procesande script de R (*.rsx)</translation>
+        <translation>Procesando script de R (*.rsx)</translation>
     </message>
     <message>
         <source>Save script</source>
@@ -55653,7 +55709,7 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Typing</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclear</translation>
     </message>
     <message>
         <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
@@ -56251,7 +56307,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Pad</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar</translation>
     </message>
     <message>
         <source>Repeat</source>
@@ -58942,7 +58998,7 @@ Este diálogo le permite seleccionar algunas opciones básicas de QGIS. Hay ocho
 &lt;a name=&quot;general&quot;&gt;
 &lt;h4&gt;General&lt;/h4&gt;
 &lt;/a&gt;
-En esta pestapa puede establecer opciones generales sobre el comportamiento del proyecto al abrirlo y guardarlo, aspecto predeterminado del mapa, su tema de iconos favorito y muchas otras.
+En esta pestaña puede establecer opciones generales sobre el comportamiento del proyecto al abrirlo y guardarlo, aspecto predeterminado del mapa, su tema de iconos favorito y muchas otras.
 &lt;a name=&quot;ren&quot;&gt;
 &lt;h4&gt;Renderizado &amp; SVG&lt;/h4&gt;
 &lt;/a&gt;
@@ -60853,7 +60909,58 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Ayuda del complemento Mapa de calor&lt;/h1&gt;
+&lt;p&gt;El complemento Mapa de calor utiliza Estimacioń de Densidad de Núcleo para crear un ráster de densidad (mapa de calor)
+de una capa vectorial de puntos de entrada. La densidad se calcula en base al número de puntos en cada localización, de
+forma que números más grandes de puntos agrupados dan como resultado valores mas grandes.
+Los mapas de calor permiten una fácil identificación de «puntos calientes» y agrupamiento de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros del diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;La entrada siempre es una capa vectorial de tipo puntos. Todas las capas vectoriales de puntos que estén actualmente cargadas en la vista del mapa se muestran en la lista desplegable. Pulse el botón desplegable y seleccione la capa que desee.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de salida&lt;/h3&gt;
+&lt;p&gt;Se puede establecer la ubicación del ráster de salida y su nombre de archivo haciendo clic en el botón &lt;label&gt;...&lt;/label&gt; que hay junto al cuadro de texto Ráster de salida.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; El formato de archivo se añade automáticamente según el formtato de salida seleccionado, si no se indica explícitamente.&lt;/p&gt;
+
+&lt;h3&gt;Formato de salida&lt;/h3&gt;
+&lt;p&gt;En la lista desplegable están todos los formatos admitidos para escritura por GDAL. Pulse y seleccione el formato de salida requerido para su archivo.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt;Se recomiendan los formatos GeoTiff y ERDAS Imagine .img. Algunos formatos pueden hacer que pete la aplicación. Limítese en lo posible a los formatos recomendados hasta que se solucione el problema o use otros formatos que sepa que GDAL soporta por completo.&lt;/p&gt;
+
+&lt;h3&gt;Radios (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Se usa para especificar el radio de búsqueda del mapa de calor (o ancho de banda del núcleo) en metros o unidades de mapa. El radio especifica la distancia alrededor de un punto a la que se sentirá la influencia
+ del punto. Valores mayores dan como resultado una mayor suavidad, pero valores más pequeños pueden mostrar detalles más finos y la variación en la densidad de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opciones avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Filas y columnas&lt;/h4&gt;
+&lt;p&gt;Se usa para cambiar las dimensiones del archivo ráster de salida. Estos valores también están enlazados con los valores &lt;b&gt;tamaño X de celda&lt;/b&gt; y el &lt;b&gt;tamaño Y de celda&lt;/b&gt;. 
+Aumentar el número de filas y columnas disminuirá el tamaño de celda y aumentará el tamaño del archivo de salida. Los valores en Filas y Columnas también están enlazados, 
+por lo que duplicar el número de filas duplicará automáticamente el número de columnas y reducirá a la mitad el tamaño de celda. El área geográfica del ráster de salida permanecerá igual.&lt;/p&gt;
+
+&lt;h4&gt;Tamaño X e Y de celda&lt;/h4&gt;
+&lt;p&gt;Controla el tamaño geográfico de cada píxel en el ráster de salida. Cambiar estos valores también cambiará el número de filas y columnas del ráster de salida.&lt;/p&gt;
+  
+&lt;h4&gt;Forma del kernel&lt;/h4&gt;
+&lt;p&gt;La forma del kernel controla la tasa a la que la influencia de un punto disminuye a medida que la distancia desde el punto aumenta. Diferentes kernel decaen a 
+diferentes tasas; así, un kernel triponderado da a los objetos espaciales más peso para distancias más próximas al punto que el kernel Epanechnikov. En consecuencia,
+el triponderado da zonas calientes más &quot;afiladas&quot; y el Epanechnikov da zonas calientes más &quot;suaves&quot;.En QGIS hay disponible diversas funciones de kernel estándar,
+las cuales están descritas e ilustradas en la &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Relación de decadencia&lt;/h4&gt;
+&lt;p&gt;Para kernel triangulares, la relación de decadencia define la cantidad de influencia que se aplica a los píxeles más externos en el radio de buffer. Un valor de 0 refleja un kernel triangular estándar, en el que la influencia cae a cero cuando la distancia desde el píxel al punto se aproxima al radio especificado. En contraste, un valor de 1 indica que no hay caída cuando aumenta la distancia desde el punto.&lt;/p&gt;
+
+&lt;h4&gt;Usar radio a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma opcional, el valor de un campo especificado se puede usar para controlar el radio del kernel para cada punto de la capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Usar peso a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma opcional, se puede usar un atributo que contenga los pesos para puntos para dar más peso a unos puntos de la capa de entrada que a otros.&lt;/p&gt;
+
+&lt;h2&gt;Más detalles&lt;/h2&gt;
+&lt;p&gt;Contacte con el autor en aruntheguy arroba gmail puntot com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;style&gt;
@@ -61024,7 +61131,174 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Consola de Python para QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Configuración&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				La consola de Python para QGIS es una terminal para la ejecución de órdenes de python. 
+				También tiene un editor de archivos de Python que le permite editar y guardar sus scripts de Python. 
+				Tanto la consola como el editor están basados en el paquete PyQScintilla2.&lt;br&gt;
+				La consola se divide en dos paneles principales, superior e inferior 
+				cuyo tamaño se puede ajustar usando el separador horizontal. El panel del área de salida es un control de solo lectura que 
+				muestra la salida de las órdenes. Puede arrastrar y soltar o copiar y pegar texto en el área de entrada y 
+				ejecutar porciones de códifo desde el panel de salida seleccionado algo de texto y haciendo clic en la 
+				orden&lt;label&gt;Introducir seleccionado&lt;/label&gt; del menú contextual. 
+				No importa si el texto seleccionado contiene el punto de inserción del intérprete (&gt;&gt;&gt;, ...). El área de entrada es una termina 
+				interactiva de python para las órdenes de entrada.&lt;br&gt;Para acceder al editor de archivos de python use el 
+				botón &lt;label&gt;Mostrar editor&lt;/label&gt; de la barra de herramientas. 
+				El editor permite editar y guardar archivos de python y ofrece una funcionalidad básica  
+				para administrar su código (comentar y descomentar 
+				código, comprobar sintaxis, compartir el código vía codepad.org y mucho más).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Consola&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principales:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Compleción de código, resaltado de sintaxis y calltips para las siguientes API:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Espacio&lt;/label&gt; para ver la lista de autocompleción.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Mayús+Espacio&lt;/label&gt; para ver el historial de órdenes.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Ejecutar porciones de códifo con el órden &lt;label&gt;Introducir seleccionado&lt;/label&gt; del panel de salida.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abrir la documentación de la API de QGIS tecleando &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abrir el Cookbook de PyQGIS tecleando &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Guardar y limpiar el historial de órdenes accediendo desde el menú contextual del panel de entrada. 
+			El historial se guardará en el archivo ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Barra de herramientas:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Limpiar consola de Python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase de procesado&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase de PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Herramienta para importar la clase PyQt4.QtGui&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Ejecutar órden (como la tecla Enter pulsada)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Configuración&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Ayuda&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principales:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Compleción de código, resaltado de sintaxis y calltips para las siguientes API:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Espacio&lt;/label&gt; para ver la lista de autocompleción.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Compartir porciones de código vía codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Comprobación de sintaxis.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Inspector de objetos: un explorador de clases y funciones.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ir a la definicioń de un objeto con un clic del ratón. (desde el inspector de objectos)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ejecutar porciones de código con la orden &lt;label&gt;Introducir seleccionado&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ejecutar el script completo con la orden &lt;label&gt;Ejecutar script&lt;/label&gt; 
+			(esto crea un archivo compilado a bytes con la extensión .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Más ajustes para la consola de python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompleción:&lt;/label&gt; Si está marcado la compleción de código está habilitada. Puede obtener autocompleción
+a partir del documento actual, desde API onstaladas y tanto desde API como desde el documento actual.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Umbral de autocompleción:&lt;/label&gt; Establece el umbral para mostrar la lista de autocompleción (en caracteres tecleados)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Inserción automática de paréntesis:&lt;/label&gt; Si está marcado habilita el cierre automático para los paréntesis.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto guardar script antes de ejecutar:&lt;/label&gt; Le permite guardar automáticamente el
+script a ejecutar para evitar guardarlo después de cualquier modificación.
+Esta acción guardará un archivo temporal en el directorio temporal del equipo 
+que se borrará automáticamente después de ejecutar.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar archivos de API precargados:&lt;/label&gt; Puede elegir si usar el archivo de API precargado o cargar algunos archivos de API guardados en su equipo.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar archivo de API preparado:&lt;/label&gt; Si está marcado el archivo *.pap se usará para la compleción de código. Para generar un archivo de API preparado tiene que cargar al menos un archivo *.api y luego compilarlo haciendo clic en el botón &lt;label&gt;Compilar API...&lt;/label&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Nota:&lt;/b&gt; Para guardar el estado de los controles de la consola tiene que cerrar la Consola de  Python 
+	desde el botón cerrar. Esto le permite guardar la geometría para restaurarla en el próximo inicio.
+&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>

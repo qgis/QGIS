@@ -86,9 +86,6 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   QStringList pluginpaths;
   foreach ( QString p, extraPluginsPaths() )
   {
-#ifdef Q_OS_WIN
-    p = p.replace( '\\', "\\\\" );
-#endif
     if ( !QDir( p ).exists() )
     {
       QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
@@ -96,6 +93,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
       msg->setMessage( QString( QObject::tr( "The extra plugin path '%1' does not exist !" ) ).arg( p ), QgsMessageOutput::MessageText );
       msg->showMessage();
     }
+#ifdef Q_OS_WIN
+    p = p.replace( '\\', "\\\\" );
+#endif
     // we store here paths in unicode strings
     // the str constant will contain utf8 code (through runString)
     // so we call '...'.decode('utf-8') to make a unicode string

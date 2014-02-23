@@ -123,7 +123,10 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
 
     //! Set a simplification method for geometries that will be fetched
+    //! @note added in 2.2
     QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );
+    //! Get simplification method for geometries that will be fetched
+    //! @note added in 2.2
     const QgsSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
 
     /**

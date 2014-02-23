@@ -59,7 +59,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
   for ( ;; )
   {
-    if( mFeatureIterator == mSelectedFeatures.constEnd() )
+    if ( mFeatureIterator == mSelectedFeatures.constEnd() )
       return false;
 
     QgsFeaturePtrMap::const_iterator it = mSource->mFeatures.constFind( *mFeatureIterator );

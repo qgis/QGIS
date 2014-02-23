@@ -65,7 +65,7 @@ class TestQgsBlendModes(TestCase):
         self.mMapRegistry.addMapLayer(self.mPointLayer)
 
         self.mSimplifyMethod = QgsVectorSimplifyMethod() ;
-        self.mSimplifyMethod.setSimplifyHints(QgsVectorLayer.NoSimplification);
+        self.mSimplifyMethod.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification);
 
         # create polygon layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')

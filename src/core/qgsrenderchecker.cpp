@@ -35,6 +35,7 @@ QgsRenderChecker::QgsRenderChecker( ) :
     mRenderedImageFile( "" ),
     mExpectedImageFile( "" ),
     mMismatchCount( 0 ),
+    mColorTolerance( 0 ),
     mElapsedTimeTarget( 0 ),
     mControlPathPrefix( "" )
 {
@@ -104,10 +105,10 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
     QString myAnomalyHash = imageToHash( controlImagePath() + mControlName
                                          + QDir::separator() + myFile );
     QString myHashMessage = QString(
-                              "Checking if anomaly %1 (hash %2)" )
+                              "Checking if anomaly %1 (hash %2)<br>" )
                             .arg( myFile )
                             .arg( myAnomalyHash );
-    myHashMessage += QString( " matches %1 (hash %2)" )
+    myHashMessage += QString( "&nbsp; matches %1 (hash %2)" )
                      .arg( theDiffImageFile )
                      .arg( myImageHash );
     //foo CDash
@@ -246,23 +247,38 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   mReport += "<tr><td colspan=2>";
   mReport += "Test image and result image for " + theTestName + "<br>"
              "Expected size: " + QString::number( myExpectedImage.width() ).toLocal8Bit() + "w x " +
-             QString::number( myExpectedImage.width() ).toLocal8Bit() + "h (" +
+             QString::number( myExpectedImage.height() ).toLocal8Bit() + "h (" +
              QString::number( mMatchTarget ).toLocal8Bit() + " pixels)<br>"
              "Actual   size: " + QString::number( myResultImage.width() ).toLocal8Bit() + "w x " +
-             QString::number( myResultImage.width() ).toLocal8Bit() + "h (" +
+             QString::number( myResultImage.height() ).toLocal8Bit() + "h (" +
              QString::number( myPixelCount ).toLocal8Bit() + " pixels)";
   mReport += "</td></tr>";
   mReport += "<tr><td colspan = 2>\n";
   mReport += "Expected Duration : <= " + QString::number( mElapsedTimeTarget ) +
              "ms (0 indicates not specified)<br>";
   mReport += "Actual Duration :  " + QString::number( mElapsedTime ) + "ms<br>";
+
+  // limit image size in page to something reasonable
+  int imgWidth = 420;
+  int imgHeight = 280;
+  if ( ! myExpectedImage.isNull() )
+  {
+    imgWidth = qMin( myExpectedImage.width(), imgWidth );
+    imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
+  }
   QString myImagesString = "</td></tr>"
                            "<tr><td>Test Result:</td><td>Expected Result:</td><td>Difference (all blue is good, any red is bad)</td></tr>\n"
-                           "<tr><td><img src=\"file://" +
+                           "<tr><td><img width=" + QString::number( imgWidth ) +
+                           " height=" + QString::number( imgHeight ) +
+                           " src=\"file://" +
                            mRenderedImageFile +
-                           "\"></td>\n<td><img src=\"file://" +
+                           "\"></td>\n<td><img width=" + QString::number( imgWidth ) +
+                           " height=" + QString::number( imgHeight ) +
+                           " src=\"file://" +
                            mExpectedImageFile +
-                           "\"></td><td><img src=\"file://" +
+                           "\"></td>\n<td><img width=" + QString::number( imgWidth ) +
+                           " height=" + QString::number( imgHeight ) +
+                           " src=\"file://" +
                            myDiffImageFile  +
                            "\"></td>\n</tr>\n</table>";
   //
@@ -300,16 +316,31 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
 
   mMismatchCount = 0;
+  int colorTolerance = ( int ) mColorTolerance;
   for ( int x = 0; x < myExpectedImage.width(); ++x )
   {
     for ( int y = 0; y < myExpectedImage.height(); ++y )
     {
       QRgb myExpectedPixel = myExpectedImage.pixel( x, y );
       QRgb myActualPixel = myResultImage.pixel( x, y );
-      if ( myExpectedPixel != myActualPixel )
+      if ( mColorTolerance == 0 )
       {
-        ++mMismatchCount;
-        myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+        if ( myExpectedPixel != myActualPixel )
+        {
+          ++mMismatchCount;
+          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+        }
+      }
+      else
+      {
+        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > colorTolerance ||
+             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > colorTolerance ||
+             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > colorTolerance ||
+             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > colorTolerance )
+        {
+          ++mMismatchCount;
+          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+        }
       }
     }
   }
@@ -330,7 +361,9 @@ bool QgsRenderChecker::compareImages( QString theTestName,
              QString::number( mMismatchCount ) + "/" +
              QString::number( mMatchTarget ) +
              " pixels mismatched (allowed threshold: " +
-             QString::number( theMismatchCount ) + ")";
+             QString::number( theMismatchCount ) +
+             ", allowed color component tolerance: " +
+             QString::number( mColorTolerance ) + ")";
   mReport += "</td></tr>";
 
   //
