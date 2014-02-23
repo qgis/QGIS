@@ -1527,7 +1527,21 @@ bool QgsMapCanvas::isFrozen()
 
 QPaintDevice &QgsMapCanvas::canvasPaintDevice()
 {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
   return mMap->paintDevice();
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 }
 
 double QgsMapCanvas::mapUnitsPerPixel() const

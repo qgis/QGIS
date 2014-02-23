@@ -23,7 +23,7 @@
 #include "qgssimplifymethod.h"
 
 
-QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
+QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
 {
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->pendingFields();
@@ -34,10 +34,11 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
   {
-    /* TODO[MD]: after merge
+#if 0
+    // TODO[MD]: after merge
     if ( request.filterType() == QgsFeatureRequest::FilterFid )
     {
-  
+
       // only copy relevant parts
       if ( L->editBuffer()->addedFeatures().contains( request.filterFid() ) )
         mAddedFeatures.insert( request.filterFid(), L->editBuffer()->addedFeatures()[ request.filterFid()] );
@@ -55,14 +56,17 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource(QgsVectorLayer *layer)
         mChangedFeaturesRequest.setFilterFids( QgsFeatureIds() << request.filterFid() );
     }
     else
-    {*/
+    {
+#endif
       mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
       mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
       mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
       mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
       mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
-      mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );        
-    //}
+      mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );
+#if 0
+    }
+#endif
   }
 }
 
@@ -79,9 +83,9 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 }
 
 
-QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator(QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-  : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
-  , mEditGeometrySimplifier( 0 )
+QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
+    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    , mEditGeometrySimplifier( 0 )
 {
 
   // prepare joins: may add more attributes to fetch (in order to allow join)
@@ -516,7 +520,8 @@ bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMeth
 
 bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-  /* TODO[MD]: after merge
+#if 0
+  // TODO[MD]: after merge
   QgsVectorDataProvider* provider = L->dataProvider();
 
   if ( provider && methodType != QgsSimplifyMethod::NoSimplification )
@@ -531,7 +536,8 @@ bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::Meth
     {
       return ( capabilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
     }
-  }*/
+  }
+#endif
   return false;
 }
 

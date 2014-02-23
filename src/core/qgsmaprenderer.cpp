@@ -644,7 +644,23 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
     emit hasCrsTransformEnabled( enabled ); // deprecated
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
     emit hasCrsTransformEnabledChanged( enabled );
   }
 }

@@ -104,7 +104,7 @@ void QgsOSMDownloadDialog::onExtentCanvas()
   {
     QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
 
-    QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs(), dst );
+    QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
     r = ct.transformBoundingBox( r );
     if ( !r.isFinite() )
     {

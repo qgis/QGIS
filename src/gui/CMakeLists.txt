@@ -267,6 +267,10 @@ qgssublayersdialog.h
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
+IF(UNIX)
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_GUI_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(UNIX)
+
 # for installing headers
 
 SET(QGIS_GUI_HDRS

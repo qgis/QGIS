@@ -311,7 +311,6 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 SET(QGIS_CORE_MOC_HDRS
 
   qgsmaprenderercache.h
-  qgsmapsettings.h
   qgsmaprendererjob.h
 
   qgsapplication.h
@@ -386,6 +385,10 @@ IF (QT_MOBILITY_LOCATION_FOUND)
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
+
+IF(UNIX)
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(UNIX)
 
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into

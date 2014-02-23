@@ -568,14 +568,13 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       continue;
     }
 
-    bool split = false;
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
     const QgsCoordinateTransform* ct = 0;
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
       ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mSettings.destinationCrs().authid() );
-      split = reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+      reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
       QgsDebugMsg( "  extent 1: " + r1.toString() );
       QgsDebugMsg( "  extent 2: " + r2.toString() );
       if ( !r1.isFinite() || !r2.isFinite() )

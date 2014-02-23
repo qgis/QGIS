@@ -526,7 +526,7 @@ double GlobePlugin::getSelectedElevation()
 void GlobePlugin::syncExtent()
 {
   QgsMapCanvas* mapCanvas = mQGisIface->mapCanvas();
-  QgsMapRenderer* mapRenderer = mapCanvas->mapRenderer();
+  const QgsMapSettings &mapSettings = mapCanvas->mapSettings();
   QgsRectangle extent = mapCanvas->extent();
 
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
@@ -535,8 +535,8 @@ void GlobePlugin::syncExtent()
 
   QgsDistanceArea dist;
 
-  dist.setSourceCrs( mapRenderer->destinationCrs().srsid() );
-  dist.setEllipsoidalMode( mapRenderer->hasCrsTransformEnabled() );
+  dist.setSourceCrs( mapSettings.destinationCrs().srsid() );
+  dist.setEllipsoidalMode( mapSettings.hasCrsTransformEnabled() );
   dist.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );

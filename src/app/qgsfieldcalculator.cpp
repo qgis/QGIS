@@ -45,7 +45,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   builder->setGeomCalculator( myDa );
 

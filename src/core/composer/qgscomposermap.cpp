@@ -433,7 +433,21 @@ void QgsComposerMap::setCacheUpdated( bool u )
 
 const QgsMapRenderer *QgsComposerMap::mapRenderer() const
 {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
   return mComposition->mapRenderer();
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 }
 
 QStringList QgsComposerMap::layersToRender()
