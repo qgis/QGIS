@@ -263,29 +263,43 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     if ( proxyTypeString == "DefaultProxy" )
     {
       proxyType = QNetworkProxy::DefaultProxy;
+
+#if defined(Q_OS_WIN)
+      QNetworkProxyFactory::setUseSystemConfiguration( true );
+      QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery();
+      if ( !proxies.isEmpty() )
+      {
+        proxy = proxies.first();
+      }
+#endif
+
+      QgsDebugMsg( "setting default proxy" );
     }
-    else if ( proxyTypeString == "Socks5Proxy" )
+    else
     {
-      proxyType = QNetworkProxy::Socks5Proxy;
+      if ( proxyTypeString == "Socks5Proxy" )
+      {
+	proxyType = QNetworkProxy::Socks5Proxy;
+      }
+      else if ( proxyTypeString == "HttpProxy" )
+      {
+	proxyType = QNetworkProxy::HttpProxy;
+      }
+      else if ( proxyTypeString == "HttpCachingProxy" )
+      {
+	proxyType = QNetworkProxy::HttpCachingProxy;
+      }
+      else if ( proxyTypeString == "FtpCachingProxy" )
+      {
+	proxyType = QNetworkProxy::FtpCachingProxy;
+      }
+      QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+	  .arg( proxyType )
+	  .arg( proxyHost ).arg( proxyPort )
+	  .arg( proxyUser ).arg( proxyPassword )
+	  );
+      proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
-    else if ( proxyTypeString == "HttpProxy" )
-    {
-      proxyType = QNetworkProxy::HttpProxy;
-    }
-    else if ( proxyTypeString == "HttpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::HttpCachingProxy;
-    }
-    else if ( proxyTypeString == "FtpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::FtpCachingProxy;
-    }
-    QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
-                 .arg( proxyType )
-                 .arg( proxyHost ).arg( proxyPort )
-                 .arg( proxyUser ).arg( proxyPassword )
-               );
-    proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
   }
 
 #if QT_VERSION >= 0x40500
