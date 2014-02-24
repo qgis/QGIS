@@ -179,7 +179,7 @@ void QgsNetworkAccessManager::connectionProgress()
 
 void QgsNetworkAccessManager::connectionDestroyed( QObject* reply )
 {
-  mActiveRequests.remove( qobject_cast<QNetworkReply*>( reply ) );
+  mActiveRequests.remove( static_cast<QNetworkReply*>( reply ) );
 }
 
 void QgsNetworkAccessManager::abortRequest()
