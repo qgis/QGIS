@@ -52,7 +52,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     stk += s.decode('utf-8', 'replace')
   QgsMessageLog.logMessage(
     "warning:%s\ntraceback:%s" % ( warnings.formatwarning(message, category, filename, lineno), stk),
-    QCoreApplication.translate( "Python", "Python" )
+    QCoreApplication.translate( "Python", "Python warning" )
   )
 warnings.showwarning = showWarning
 
