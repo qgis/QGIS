@@ -697,7 +697,7 @@ bool QgsOracleProvider::loadFields()
     mEnabledCapabilities |= QgsVectorDataProvider::CreateSpatialIndex;
   }
 
-  if ( !exec( qry, QString( "SELECT * FROM %1 WHERE rownum=0" ).arg( mQuery ) ) )
+  if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) ) )
   {
     QgsMessageLog::logMessage( tr( "Retrieving fields from '%1' failed [%2]" ).arg( mQuery ).arg( qry.lastError().text() ), tr( "Oracle" ) );
     return false;
@@ -826,7 +826,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
              .arg( mQuery )
              .arg( quotedIdentifier( alias ) );
 
-    if ( !exec( qry, QString( "SELECT * FROM %1 WHERE rownum=0" ).arg( mQuery ) ) )
+    if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
@@ -1892,7 +1892,7 @@ bool QgsOracleProvider::setSubsetString( QString theSQL, bool updateFeatureCount
     sql += "(" + mSqlWhereClause + ") AND ";
   }
 
-  sql += "rownum=0";
+  sql += "1=0";
 
   QSqlQuery qry( *mConnection );
   if ( !exec( qry, sql ) )
@@ -2060,7 +2060,7 @@ bool QgsOracleProvider::getGeometryDetails()
   QSqlQuery qry( *mConnection );
   if ( mIsQuery )
   {
-    if ( !exec( qry, QString( "SELECT %1 FROM %2 WHERE rownum=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) ) )
+    if ( !exec( qry, QString( "SELECT %1 FROM %2 WHERE 1=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) ) )
     {
       QgsMessageLog::logMessage( tr( "Could not execute query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
