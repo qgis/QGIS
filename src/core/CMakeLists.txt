@@ -432,6 +432,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
+  qgsmapsettings.h
   qgsmaptopixel.h
   qgsmessageoutput.h
   qgsmimedatautils.h
