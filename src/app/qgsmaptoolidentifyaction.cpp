@@ -97,9 +97,10 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 
   if ( !results.isEmpty() )
   {
-    // Show the dialog before items are inserted so that items can resize themselfs
+    // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
-    resultsDialog()->QDialog::show();
+    if( results.size() != 1 || !QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+      resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;
     for ( result = results.begin(); result != results.end(); ++result )
