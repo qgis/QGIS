@@ -137,12 +137,6 @@ class QgsRasterLayer : QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    //! @deprecated since 2.4 - returns empty string
-    QString lastError() /Deprecated/;
-
-    //! @deprecated since 2.4 - returns empty string
-    QString lastErrorTitle() /Deprecated/;
-
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
@@ -190,7 +184,7 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @note - use previewAsImage() for rendering with QGIS>=2.4 */
-    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
+    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */

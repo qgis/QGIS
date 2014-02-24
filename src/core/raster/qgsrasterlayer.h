@@ -295,12 +295,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    //! @deprecated since 2.4 - returns empty string
-    Q_DECL_DEPRECATED QString lastError();
-
-    //! @deprecated since 2.4 - returns empty string
-    Q_DECL_DEPRECATED QString lastErrorTitle();
-
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
@@ -348,7 +342,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @note - use previewAsImage() for rendering with QGIS>=2.4 */
-    QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
+    Q_DECL_DEPRECATED QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */

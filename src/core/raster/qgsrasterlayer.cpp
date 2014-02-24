@@ -304,16 +304,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
 } //end of draw method
 
-QString QgsRasterLayer::lastError()
-{
-  return QString();
-}
-
-QString QgsRasterLayer::lastErrorTitle()
-{
-  return QString();
-}
-
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
@@ -1150,7 +1140,8 @@ QImage QgsRasterLayer::previewAsImage( QSize size, QColor bgColor, QImage::Forma
 {
   QImage myQImage( size, format );
 
-  myQImage.fill( bgColor );  //defaults to white, set to transparent for rendering on a map
+  myQImage.setColor( 0, bgColor.rgba() );
+  myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
 
   QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
 

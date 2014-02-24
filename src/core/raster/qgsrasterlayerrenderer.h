@@ -8,7 +8,7 @@ class QPainter;
 class QgsMapToPixel;
 class QgsRasterLayer;
 class QgsRasterPipe;
-class QgsRasterViewPort;
+struct QgsRasterViewPort;
 class QgsRenderContext;
 
 class QgsRasterLayerRenderer : public QgsMapLayerRenderer
