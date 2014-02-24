@@ -21,12 +21,15 @@
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
-#include <QPushButton>
+#include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
 
+#include <QPushButton>
+#include <QComboBox>
 #include <QLibrary>
 #include <QSettings>
-#include "qgsencodingfiledialog.h"
-#include "qgsproviderregistry.h"
+#include <QFileDialog>
 
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl )
@@ -60,6 +63,21 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
     mFileFormatComboBox->setVisible( false );
     mFileFormatLabel->setVisible( false );
   }
+
+  mFileEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
+
+  // Use default encoding if none supplied
+  QString enc = QSettings().value( "/UI/encoding", "System" ).toString();
+
+  // The specified decoding is added if not existing alread, and then set current.
+  // This should select it.
+  int encindex = mFileEncoding->findText( enc );
+  if ( encindex < 0 )
+  {
+    mFileEncoding->insertItem( 0, enc );
+    encindex = 0;
+  }
+  mFileEncoding->setCurrentIndex( encindex );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
 
@@ -203,6 +221,11 @@ QString QgsNewVectorLayerDialog::selectedFileFormat() const
   return myType;
 }
 
+QString QgsNewVectorLayerDialog::selectedFileEncoding() const
+{
+  return mFileEncoding->currentText();
+}
+
 void QgsNewVectorLayerDialog::nameChanged( QString name )
 {
   mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
@@ -225,50 +248,27 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
 
   QGis::WkbType geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
+  QString enc = geomDialog.selectedFileEncoding();
   int crsId = geomDialog.selectedCrsId();
   QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   QList< QPair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
 
-  QString enc;
-  QString fileName;
-
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
-
-  QgsDebugMsg( "Saving vector file dialog without filters: " );
-
-  QgsEncodingFileDialog* openFileDialog =
-    new QgsEncodingFileDialog( parent, tr( "Save As" ), lastUsedDir, "", QString( "" ) );
-
-  openFileDialog->setFileMode( QFileDialog::AnyFile );
-  openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-  openFileDialog->setConfirmOverwrite( true );
-
-  if ( settings.contains( "/UI/lastVectorFileFilter" ) )
+  QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
+  QString fileName = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), lastUsedDir, filterString );
+  if ( fileName.isNull() )
   {
-    QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter", QVariant( QString::null ) ).toString();
-    openFileDialog->selectFilter( lastUsedFilter );
+    return fileName;
   }
-
-  if ( openFileDialog->exec() == QDialog::Rejected )
-  {
-    delete openFileDialog;
-    return QString();
-  }
-
-  fileName = openFileDialog->selectedFiles().first();
 
   if ( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
     fileName += ".shp";
 
-  enc = openFileDialog->encoding();
-
-  settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
-  settings.setValue( "/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath() );
-
-  delete openFileDialog;
+  settings.setValue( "/UI/lastVectorFileFilterDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( "/UI/encoding", enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
