@@ -188,8 +188,14 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
 
-    /** \brief Draws a preview of the rasterlayer into a pixmap */
+    /** \brief Draws a preview of the rasterlayer into a pixmap
+    @note - use previewAsImage() for rendering with QGIS>=2.4 */
     QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
+
+    /** \brief Draws a preview of the rasterlayer into a QImage
+     @note added in 2.4 */
+    QImage previewAsImage( QSize size, QColor bgColor = QColor( 255, 255, 255 ),
+                           QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();

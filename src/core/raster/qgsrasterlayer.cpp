@@ -1144,6 +1144,57 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
   return myQPixmap;
 }
 
+// this function should be used when rendering with the MTR engine introduced in 2.3, as QPixmap is not thread safe (see bug #9626)
+// note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
+QImage QgsRasterLayer::previewAsImage( QSize size, QColor bgColor, QImage::Format format )
+{
+  QImage myQImage( size, format );
+
+  myQImage.fill( bgColor );  //defaults to white, set to transparent for rendering on a map
+
+  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
+
+  double myMapUnitsPerPixel;
+  double myX = 0.0;
+  double myY = 0.0;
+  QgsRectangle myExtent = mDataProvider->extent();
+  if ( myExtent.width() / myExtent.height() >=  myQImage.width() / myQImage.height() )
+  {
+    myMapUnitsPerPixel = myExtent.width() / myQImage.width();
+    myY = ( myQImage.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
+  }
+  else
+  {
+    myMapUnitsPerPixel = myExtent.height() / myQImage.height();
+    myX = ( myQImage.width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
+  }
+
+  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
+  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
+
+  myRasterViewPort->mTopLeftPoint = QgsPoint( myX, myY );
+  myRasterViewPort->mBottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
+  myRasterViewPort->mWidth = myQImage.width();
+  myRasterViewPort->mHeight = myQImage.height();
+
+  myRasterViewPort->mDrawnExtent = myExtent;
+  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mSrcDatumTransform = -1;
+  myRasterViewPort->mDestDatumTransform = -1;
+
+  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
+
+  QPainter * myQPainter = new QPainter( &myQImage );
+  draw( myQPainter, myRasterViewPort, myMapToPixel );
+  delete myRasterViewPort;
+  delete myMapToPixel;
+  myQPainter->end();
+  delete myQPainter;
+
+  return myQImage;
+}
+
 void QgsRasterLayer::triggerRepaint()
 {
   emit repaintRequested();
