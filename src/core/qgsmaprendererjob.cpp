@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QtConcurrentMap>
+#include <QSettings>
 
 #include "qgscrscache.h"
 #include "qgslogger.h"
@@ -731,6 +732,14 @@ void QgsMapRendererParallelJob::start()
 
   mLayerJobs = prepareJobs( 0, mLabelingEngine );
 
+  // set max thread count
+  QSettings settings;
+  int max_cores = settings.value( "/qgis/max_cores", 0 ).toInt();
+  if ( max_cores <= 0 || max_cores > QThread::idealThreadCount() )
+    max_cores = QThread::idealThreadCount();
+  QThreadPool::globalInstance()->setMaxThreadCount( max_cores );
+  qDebug( "set max thread count to %d", QThreadPool::globalInstance()->maxThreadCount() );
+
   // start async job
 
   connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( renderLayersFinished() ) );
@@ -829,6 +838,10 @@ QImage QgsMapRendererParallelJob::renderedImage()
 
 void QgsMapRendererParallelJob::renderLayersFinished()
 {
+  // restore max thread count
+  QThreadPool::globalInstance()->setMaxThreadCount( QThread::idealThreadCount() );
+  qDebug( "restored max thread count to ideal (%d)", QThreadPool::globalInstance()->maxThreadCount() );
+
   Q_ASSERT( mStatus == RenderingLayers );
 
   // compose final image

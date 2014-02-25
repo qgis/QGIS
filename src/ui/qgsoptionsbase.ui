@@ -1629,11 +1629,45 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="chkParallelRendering">
-                    <property name="text">
-                     <string>Render layers in parallel using all available CPU cores</string>
-                    </property>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_26">
+                    <item>
+                     <widget class="QCheckBox" name="chkParallelRendering">
+                      <property name="text">
+                       <string>Render layers in parallel using many CPU cores</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="Line" name="line_6">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="chkMaxCores">
+                      <property name="text">
+                       <string>Max cores to use:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="spinMaxCores"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_41">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -4595,6 +4629,22 @@
     <hint type="destinationlabel">
      <x>923</x>
      <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkMaxCores</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spinMaxCores</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>589</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>689</x>
+     <y>110</y>
     </hint>
    </hints>
   </connection>
