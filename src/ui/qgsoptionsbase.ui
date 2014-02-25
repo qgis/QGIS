@@ -824,6 +824,13 @@
                    </widget>
                   </item>
                   <item>
+                   <widget class="QCheckBox" name="mLayerDeleteConfirmationChkBx">
+                    <property name="text">
+                     <string>Prompt for confirmation when a layer is to be removed</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QCheckBox" name="chbWarnOldProjectVersion">
                     <property name="text">
                      <string>Warn when opening a project file saved with an older version of QGIS</string>
@@ -1618,7 +1625,7 @@
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_38">
+                     <spacer name="horizontalSpacer_41">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -1656,7 +1663,7 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLabel" name="label_56">
+                      <widget class="QLabel" name="label_65">
                        <property name="text">
                         <string>Simplification threshold (higher values result in more simplification): </string>
                        </property>
@@ -2896,7 +2903,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mOptionsPageComposer">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
+          <layout class="QVBoxLayout" name="verticalLayout_36">
            <property name="margin">
             <number>0</number>
            </property>
@@ -2928,7 +2935,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
                   <item row="1" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <layout class="QHBoxLayout" name="horizontalLayout_39">
                     <item>
                      <widget class="QLabel" name="label_60">
                       <property name="text">
