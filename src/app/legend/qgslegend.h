@@ -206,9 +206,6 @@ class QgsLegend : public QTreeWidget
     /**Updates layer set of map canvas*/
     void updateMapCanvasLayerSet();
 
-    /**Updates overview*/
-    void updateOverview();
-
     /**Show/remove all layer in/from overview*/
     void enableOverviewModeAllLayers( bool isInOverview );
 

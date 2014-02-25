@@ -494,7 +494,6 @@ void QgsLegendLayer::showInOverview()
   setInOverview( ! isInOverview() );
 
   legend()->updateMapCanvasLayerSet();
-  legend()->updateOverview();
 }
 
 QString QgsLegendLayer::nameFromLayer( QgsMapLayer* layer )

@@ -2445,11 +2445,6 @@ void QgsLegend::updateMapCanvasLayerSet()
   mMapCanvas->setLayerSet( layers );
 }
 
-void QgsLegend::updateOverview()
-{
-  mMapCanvas->updateOverview();
-}
-
 void QgsLegend::enableOverviewModeAllLayers( bool isInOverview )
 {
   for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
@@ -2462,7 +2457,6 @@ void QgsLegend::enableOverviewModeAllLayers( bool isInOverview )
 
   }
   updateMapCanvasLayerSet();
-  updateOverview();
 }
 
 QStringList QgsLegend::layerIDs()
