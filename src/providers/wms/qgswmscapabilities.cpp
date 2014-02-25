@@ -1404,8 +1404,18 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
           QgsCoordinateReferenceSystem crs;
           crs.createFromOgcWmsCrs( bb.crs );
           if ( crs.isValid() )
+          {
             bb.crs = crs.authid();
-          l.boundingBoxes << bb;
+
+            bool invert = !mParserSettings.ignoreAxisOrientation && crs.axisInverted();
+            if ( mParserSettings.invertAxisOrientation )
+              invert = !invert;
+
+            if ( invert )
+              bb.box.invert();
+
+            l.boundingBoxes << bb;
+          }
         }
       }
     }
