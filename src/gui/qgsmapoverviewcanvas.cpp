@@ -320,7 +320,12 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 
 void QgsMapOverviewCanvas::updateFullExtent()
 {
-  QgsRectangle rect = mMapCanvas->fullExtent();
+  QgsRectangle rect;
+  if ( mSettings.hasValidSettings() )
+    rect = mSettings.fullExtent();
+  else
+    rect = mMapCanvas->fullExtent();
+
   // expand a bit to keep features on margin
   rect.scale( 1.1 );
 
