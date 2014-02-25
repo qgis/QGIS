@@ -73,6 +73,7 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * paren
 
 QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
+    , mMousePrecisionDecimalPlaces( 0 )
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
     , mIface( theQgisInterface )
     , mLayer( 0 )
