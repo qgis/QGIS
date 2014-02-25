@@ -124,4 +124,46 @@ class QgsSpatiaLiteConnection : public QObject
     QList<TableEntry> mTables;
 };
 
+
+
+class QgsSqliteHandle
+{
+    //
+    // a class allowing to reuse the same sqlite handle for more layers
+    //
+  public:
+    QgsSqliteHandle( sqlite3 * handle, const QString& dbPath, bool shared )
+      : ref( shared ? 1 : -1 ), sqlite_handle( handle ), mDbPath( dbPath )
+    {
+    }
+
+    sqlite3 *handle()
+    {
+      return sqlite_handle;
+    }
+
+    QString dbPath() const
+    {
+      return mDbPath;
+    }
+
+    //
+    // libsqlite3 wrapper
+    //
+    void sqliteClose();
+
+    static QgsSqliteHandle *openDb( const QString & dbPath, bool shared = true );
+    static bool checkMetadata( sqlite3 * handle );
+    static void closeDb( QgsSqliteHandle * &handle );
+    //static void closeDb( QMap < QString, QgsSqliteHandle * >&handlesRO, QgsSqliteHandle * &handle );
+
+  private:
+    int ref;
+    sqlite3 *sqlite_handle;
+    QString mDbPath;
+
+    static QMap < QString, QgsSqliteHandle * > handles;
+};
+
+
 #endif // QGSSPATIALITECONNECTION_H

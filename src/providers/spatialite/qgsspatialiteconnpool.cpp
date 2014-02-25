@@ -1,7 +1,7 @@
 /***************************************************************************
-    qgspostgresconnpool.cpp
+    qgsspatialiteconnpool.cpp
     ---------------------
-    begin                : January 2014
+    begin                : February 2014
     copyright            : (C) 2014 by Martin Dobias
     email                : wonder dot sk at gmail dot com
  ***************************************************************************
@@ -13,16 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspostgresconnpool.h"
+#include "qgsspatialiteconnpool.h"
 
-#include "qgspostgresconn.h"
-
-QgsPostgresConnPool* QgsPostgresConnPool::mInstance = 0;
+QgsSpatiaLiteConnPool* QgsSpatiaLiteConnPool::mInstance = 0;
 
 
-QgsPostgresConnPool* QgsPostgresConnPool::instance()
+QgsSpatiaLiteConnPool* QgsSpatiaLiteConnPool::instance()
 {
   if ( !mInstance )
-    mInstance = new QgsPostgresConnPool;
+    mInstance = new QgsSpatiaLiteConnPool;
   return mInstance;
 }

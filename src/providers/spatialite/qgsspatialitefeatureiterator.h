@@ -23,8 +23,7 @@ extern "C"
 #include <sqlite3.h>
 }
 
-#include "qgsspatialiteprovider.h"
-
+class QgsSqliteHandle;
 class QgsSpatiaLiteProvider;
 
 class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
@@ -47,9 +46,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     QString mPrimaryKey;
     bool spatialIndexRTree;
     bool spatialIndexMbrCache;
-
-    QgsSpatiaLiteProvider::SqliteHandles* handle;
-    sqlite3 *sqliteHandle;
+    QString mSqlitePath;
 
     friend class QgsSpatiaLiteFeatureIterator;
 };
@@ -81,6 +78,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString fieldName( const QgsField& fld );
     QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, const QVariant::Type& type );
     void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
+
+    //! wrapper of the SQLite database connection
+    QgsSqliteHandle* mHandle;
 
     /**
       * SQLite statement handle

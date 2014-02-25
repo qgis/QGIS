@@ -27,6 +27,7 @@ email                : a.furieri@lqt.it
 #include "qgsvectorlayerimport.h"
 
 #include "qgsspatialiteprovider.h"
+#include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
 
 #include <QFileInfo>
@@ -39,7 +40,6 @@ email                : a.furieri@lqt.it
 const QString SPATIALITE_KEY = "spatialite";
 const QString SPATIALITE_DESCRIPTION = "SpatiaLite data provider";
 
-QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >QgsSpatiaLiteProvider::SqliteHandles::handles;
 
 
 
@@ -124,7 +124,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
   // create the table
   {
-    SqliteHandles *handle;
+    QgsSqliteHandle *handle;
     sqlite3 *sqliteHandle = NULL;
     char *errMsg = NULL;
     int toCommit = false;
@@ -132,7 +132,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
     // trying to open the SQLite DB
     spatialite_init( 0 );
-    handle = SqliteHandles::openDb( sqlitePath );
+    handle = QgsSqliteHandle::openDb( sqlitePath );
     if ( handle == NULL )
     {
       QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
@@ -318,11 +318,11 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
       }
 
-      SqliteHandles::closeDb( handle );
+      QgsSqliteHandle::closeDb( handle );
       return QgsVectorLayerImport::ErrCreateLayer;
     }
 
-    SqliteHandles::closeDb( handle );
+    QgsSqliteHandle::closeDb( handle );
     QgsDebugMsg( "layer " + tableName  + " created." );
   }
 
@@ -430,7 +430,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   // trying to open the SQLite DB
   spatialite_init( 0 );
   valid = true;
-  handle = SqliteHandles::openDb( mSqlitePath );
+  handle = QgsSqliteHandle::openDb( mSqlitePath );
   if ( handle == NULL )
   {
     valid = false;
@@ -4050,107 +4050,7 @@ void QgsSpatiaLiteProvider::closeDb()
 // trying to close the SQLite DB
   if ( handle )
   {
-    SqliteHandles::closeDb( handle );
-  }
-}
-
-bool QgsSpatiaLiteProvider::SqliteHandles::checkMetadata( sqlite3 *handle )
-{
-  int ret;
-  int i;
-  char **results;
-  int rows;
-  int columns;
-  int spatial_type = 0;
-  ret = sqlite3_get_table( handle, "SELECT CheckSpatialMetadata()", &results, &rows, &columns, NULL );
-  if ( ret != SQLITE_OK )
-    goto skip;
-  if ( rows < 1 )
-    ;
-  else
-  {
-    for ( i = 1; i <= rows; i++ )
-      spatial_type = atoi( results[( i * columns ) + 0] );
-  }
-  sqlite3_free_table( results );
-skip:
-  if ( spatial_type == 1 || spatial_type == 3 )
-    return true;
-  return false;
-}
-
-QgsSpatiaLiteProvider::SqliteHandles * QgsSpatiaLiteProvider::SqliteHandles::openDb( const QString & dbPath )
-{
-  sqlite3 *sqlite_handle;
-
-  QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >&handles = QgsSpatiaLiteProvider::SqliteHandles::handles;
-
-  if ( handles.contains( dbPath ) )
-  {
-    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
-    handles[dbPath]->ref++;
-    return handles[dbPath];
-  }
-
-  QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
-  if ( sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE, NULL ) )
-  {
-    // failure
-    QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
-                 .arg( dbPath )
-                 .arg( QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
-    return NULL;
-  }
-
-  // checking the DB for sanity
-  if ( !checkMetadata( sqlite_handle ) )
-  {
-    // failure
-    QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
-    sqlite3_close( sqlite_handle );
-    return NULL;
-  }
-  // activating Foreign Key constraints
-  sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
-
-  QgsDebugMsg( "Connection to the database was successful" );
-
-  SqliteHandles *handle = new SqliteHandles( sqlite_handle );
-  handles.insert( dbPath, handle );
-
-  return handle;
-}
-
-void QgsSpatiaLiteProvider::SqliteHandles::closeDb( SqliteHandles * &handle )
-{
-  closeDb( handles, handle );
-}
-
-void QgsSpatiaLiteProvider::SqliteHandles::closeDb( QMap < QString, SqliteHandles * >&handles, SqliteHandles * &handle )
-{
-  QMap < QString, SqliteHandles * >::iterator i;
-  for ( i = handles.begin(); i != handles.end() && i.value() != handle; ++i )
-    ;
-
-  Q_ASSERT( i.value() == handle );
-  Q_ASSERT( i.value()->ref > 0 );
-
-  if ( --i.value()->ref == 0 )
-  {
-    i.value()->sqliteClose();
-    delete i.value();
-    handles.remove( i.key() );
-  }
-
-  handle = NULL;
-}
-
-void QgsSpatiaLiteProvider::SqliteHandles::sqliteClose()
-{
-  if ( sqlite_handle )
-  {
-    sqlite3_close( sqlite_handle );
-    sqlite_handle = NULL;
+    QgsSqliteHandle::closeDb( handle );
   }
 }
 
@@ -5182,7 +5082,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   QgsDebugMsg( "deleting layer " + tableName );
 
   spatialite_init( 0 );
-  QgsSpatiaLiteProvider::SqliteHandles* hndl = QgsSpatiaLiteProvider::SqliteHandles::openDb( dbPath );
+  QgsSqliteHandle* hndl = QgsSqliteHandle::openDb( dbPath );
   if ( !hndl )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -5198,7 +5098,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   {
     // unexpected error
     errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
-    QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+    QgsSqliteHandle::closeDb( hndl );
     return false;
   }
 #else
@@ -5212,7 +5112,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
     errCause = QObject::tr( "Unable to delete table %1:\n" ).arg( tableName );
     errCause += QString::fromUtf8( errMsg );
     sqlite3_free( errMsg );
-    QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+    QgsSqliteHandle::closeDb( hndl );
     return false;
   }
 
@@ -5234,7 +5134,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
     QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
   }
 
-  QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+  QgsSqliteHandle::closeDb( hndl );
 
   return true;
 }

@@ -36,6 +36,7 @@ extern "C"
 class QgsFeature;
 class QgsField;
 
+class QgsSqliteHandle;
 class QgsSpatiaLiteFeatureIterator;
 
 #include "qgsdatasourceuri.h"
@@ -461,39 +462,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     struct SLFieldNotFound {}; //! Exception to throw
 
-    class SqliteHandles
-    {
-        //
-        // a class allowing to reuse the same sqlite handle for more layers
-        //
-      public:
-        SqliteHandles( sqlite3 * handle ):
-            ref( 1 ), sqlite_handle( handle )
-        {
-        }
-
-        sqlite3 *handle()
-        {
-          return sqlite_handle;
-        }
-
-        //
-        // libsqlite3 wrapper
-        //
-        void sqliteClose();
-
-        static SqliteHandles *openDb( const QString & dbPath );
-        static bool checkMetadata( sqlite3 * handle );
-        static void closeDb( SqliteHandles * &handle );
-        static void closeDb( QMap < QString, SqliteHandles * >&handlesRO, SqliteHandles * &handle );
-
-      private:
-        int ref;
-        sqlite3 *sqlite_handle;
-
-        static QMap < QString, SqliteHandles * >handles;
-    };
-
     struct SLException
     {
       SLException( char *msg ) : errMsg( msg )
@@ -522,7 +490,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * sqlite3 handles pointer
      */
-    SqliteHandles *handle;
+    QgsSqliteHandle *handle;
 
     friend class QgsSpatiaLiteFeatureSource;
 };
