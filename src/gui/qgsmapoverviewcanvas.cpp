@@ -257,8 +257,14 @@ void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
 
 void QgsMapOverviewCanvas::refresh()
 {
+  updateFullExtent();
+
   if ( !mSettings.hasValidSettings() )
+  {
+    mPixmap = QPixmap();
+    update();
     return; // makes no sense to render anything
+  }
 
   if ( mJob )
   {

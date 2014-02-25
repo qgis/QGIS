@@ -50,7 +50,7 @@ void QgsMapSettings::updateDerived()
 {
   QgsRectangle extent = mExtent;
 
-  if ( extent.isEmpty() )
+  if ( extent.isEmpty() || !extent.isFinite() )
   {
     mValid = false;
     return;
