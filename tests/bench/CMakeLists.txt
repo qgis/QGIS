@@ -21,6 +21,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/core
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/core/raster
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${GEOS_INCLUDE_DIR}
 #  ${GDAL_INCLUDE_DIR} # remove once raster layer is cleaned up
 )
 
