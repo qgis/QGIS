@@ -63,7 +63,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce
   mMaximumValue = ce.mMaximumValue;
   mRasterDataTypeRange = ce.mRasterDataTypeRange;
 
-  mLookupTableOffset = mMinimumValue * -1;
+  mLookupTableOffset = minimumValuePossible( mRasterDataType ) * -1;
 
   // setContrastEnhancementAlgorithm sets also QgsContrastEnhancementFunction
   setContrastEnhancementAlgorithm( ce.mContrastEnhancementAlgorithm, false );
