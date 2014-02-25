@@ -294,6 +294,7 @@ FOREACH (QFW ${QTLISTQG})
         EXECUTE_PROCESS (COMMAND install_name_tool -id "libqsqlspatialite.dylib" "${QPLUGDIR}/../sqldrivers/libqsqlspatialite.dylib")
     ENDIF ()
     INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
+    INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../phonon_backend/libphonon_qt7.dylib")
     # qt fw
     IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
