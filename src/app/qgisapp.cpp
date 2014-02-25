@@ -4632,8 +4632,9 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
       ct = new QgsCoordinateTransform( vlayer->crs(), destCRS );
 
       //ask user about datum transformation
+      QSettings settings;
       QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( vlayer->crs(), destCRS );
-      if ( dt.size() > 1 )
+      if ( dt.size() > 1 && settings.value( "/Projections/showDatumTransformDialog", false ).toBool() )
       {
         QgsDatumTransformDialog d( vlayer->name(), dt );
         if ( d.exec() == QDialog::Accepted )
