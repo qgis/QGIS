@@ -441,7 +441,7 @@ const QString QgsApplication::translatorsFilePath()
 */
 const QString QgsApplication::licenceFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/LICENCE" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/LICENSE" );
 }
 
 /*!
