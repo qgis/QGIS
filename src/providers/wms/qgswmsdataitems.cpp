@@ -69,7 +69,24 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   }
 
   QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
-  connect( &capDownload, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+
+  QWidget *mainWindow = 0;
+
+  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
+  for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
+  {
+    if (( *it )->objectName() == "QgisApp" )
+    {
+      mainWindow = *it;
+      break;
+    }
+  }
+
+  if ( mainWindow )
+  {
+    connect( &capDownload, SIGNAL( statusChanged( QString ) ), mainWindow, SLOT( showStatusMessage( QString ) ) );
+  }
+
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   bool res = capDownload.downloadCapabilities();
