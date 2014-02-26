@@ -268,13 +268,13 @@ void QgsMapOverviewCanvas::refresh()
 
   if ( mJob )
   {
-    qDebug( "oveview - cancelling old" );
+    QgsDebugMsg( "oveview - cancelling old" );
     mJob->cancel();
-    qDebug( "oveview - deleting old" );
+    QgsDebugMsg( "oveview - deleting old" );
     delete mJob; // get rid of previous job (if any)
   }
 
-  qDebug( "oveview - starting new" );
+  QgsDebugMsg( "oveview - starting new" );
 
   // TODO: setup overview mode
   mJob = new QgsMapRendererSequentialJob( mSettings );
@@ -290,7 +290,7 @@ void QgsMapOverviewCanvas::refresh()
 
 void QgsMapOverviewCanvas::mapRenderingFinished()
 {
-  qDebug( "overview - finished" );
+  QgsDebugMsg( "overview - finished" );
   mPixmap = QPixmap::fromImage( mJob->renderedImage() );
 
   delete mJob;

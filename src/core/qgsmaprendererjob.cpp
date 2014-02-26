@@ -47,18 +47,18 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& 
     , mPainter( 0 )
     , mLabelingResults( 0 )
 {
-  qDebug( "SEQUENTIAL construct" );
+  QgsDebugMsg( "SEQUENTIAL construct" );
 
   mImage = QImage( mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied );
 }
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
 {
-  qDebug( "SEQUENTIAL destruct" );
+  QgsDebugMsg( "SEQUENTIAL destruct" );
   if ( isActive() )
   {
     // still running!
-    qDebug( "SEQUENTIAL destruct -- still running! (cancelling)" );
+    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (cancelling)" );
     cancel();
   }
 
@@ -78,8 +78,7 @@ void QgsMapRendererSequentialJob::start()
 
   mErrors.clear();
 
-  qDebug( "SEQUENTIAL START" );
-  qDebug( "%d,%d", mSettings.outputSize().width(), mSettings.outputSize().height() );
+  QgsDebugMsg( "SEQUENTIAL START" );
 
   Q_ASSERT( mInternalJob == 0  && mPainter == 0 );
 
@@ -99,7 +98,7 @@ void QgsMapRendererSequentialJob::cancel()
   if ( !isActive() )
     return;
 
-  qDebug( "sequential - cancel internal" );
+  QgsDebugMsg( "sequential - cancel internal" );
   mInternalJob->cancel();
 
   Q_ASSERT( mInternalJob == 0 && mPainter == 0 );
@@ -138,7 +137,7 @@ QImage QgsMapRendererSequentialJob::renderedImage()
 
 void QgsMapRendererSequentialJob::internalFinished()
 {
-  qDebug( "SEQUENTIAL finished" );
+  QgsDebugMsg( "SEQUENTIAL finished" );
 
   mPainter->end();
   delete mPainter;
@@ -169,12 +168,12 @@ QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSett
     , mLabelingEngine( 0 )
     , mActive( false )
 {
-  qDebug( "QPAINTER construct" );
+  QgsDebugMsg( "QPAINTER construct" );
 }
 
 QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
 {
-  qDebug( "QPAINTER destruct" );
+  QgsDebugMsg( "QPAINTER destruct" );
   Q_ASSERT( !mFutureWatcher.isRunning() );
   //cancel();
 
@@ -193,7 +192,7 @@ void QgsMapRendererCustomPainterJob::start()
 
   mErrors.clear();
 
-  qDebug( "QPAINTER run!" );
+  QgsDebugMsg( "QPAINTER run!" );
 
   QgsDebugMsg( "Preparing list of layer jobs for rendering" );
   QTime prepareTime;
@@ -243,11 +242,11 @@ void QgsMapRendererCustomPainterJob::cancel()
 {
   if ( !isActive() )
   {
-    qDebug( "QPAINTER not running!" );
+    QgsDebugMsg( "QPAINTER not running!" );
     return;
   }
 
-  qDebug( "QPAINTER cancelling" );
+  QgsDebugMsg( "QPAINTER cancelling" );
   disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( futureFinished() ) );
 
   mLabelingRenderContext.setRenderingStopped( true );
@@ -261,11 +260,11 @@ void QgsMapRendererCustomPainterJob::cancel()
 
   mFutureWatcher.waitForFinished();
 
-  qDebug( "QPAINER cancel waited %f ms", t.elapsed() / 1000.0 );
+  QgsDebugMsg( QString( "QPAINER cancel waited %1 ms" ).arg( t.elapsed() / 1000.0 ) );
 
   futureFinished();
 
-  qDebug( "QPAINTER cancelled" );
+  QgsDebugMsg( "QPAINTER cancelled" );
 }
 
 void QgsMapRendererCustomPainterJob::waitForFinished()
@@ -280,7 +279,7 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
 
   mFutureWatcher.waitForFinished();
 
-  qDebug( "waitForFinished: %f ms", t.elapsed() / 1000.0 );
+  QgsDebugMsg( QString( "waitForFinished: %1 ms" ).arg( t.elapsed() / 1000.0 ) );
 
   futureFinished();
 }
@@ -301,7 +300,7 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
   mRenderingTime = mRenderingStart.elapsed();
-  qDebug( "QPAINTER futureFinished" );
+  QgsDebugMsg( "QPAINTER futureFinished" );
 
   // final cleanup
   cleanupJobs( mLayerJobs );
@@ -357,7 +356,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
 void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter )
 {
-  qDebug( "Draw labeling start" );
+  QgsDebugMsg( "Draw labeling start" );
 
   QTime t;
   t.start();
@@ -375,7 +374,7 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderC
 
   drawNewLabeling( settings, renderContext, labelingEngine );
 
-  qDebug( "Draw labeling took (seconds): %f", t.elapsed() / 1000. );
+  QgsDebugMsg( QString( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
 }
 
 
@@ -534,7 +533,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
   if ( mCache )
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
-    qDebug( "CACHE VALID: %d", cacheValid );
+    QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
   }
 
   mGeometryCaches.clear();
@@ -677,7 +676,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
 
       if ( mCache && !job.cached && !job.context.renderingStopped() )
       {
-        qDebug( "caching image for %s", job.layerId.toAscii().data() );
+        QgsDebugMsg( "caching image for " + job.layerId );
         mCache->setCacheImage( job.layerId, *job.img );
       }
 
@@ -756,7 +755,7 @@ void QgsMapRendererParallelJob::cancel()
   if ( !isActive() )
     return;
 
-  qDebug( "PARALLEL cancel at status %d", mStatus );
+  QgsDebugMsg( QString( "PARALLEL cancel at status %1" ).arg( mStatus ) );
 
   mLabelingRenderContext.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -799,7 +798,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mFutureWatcher.waitForFinished();
 
-    qDebug( "waitForFinished (1): %f ms", t.elapsed() / 1000.0 );
+    QgsDebugMsg( QString( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
 
     renderLayersFinished();
   }
@@ -813,7 +812,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mLabelingFutureWatcher.waitForFinished();
 
-    qDebug( "waitForFinished (2): %f ms", t.elapsed() / 1000.0 );
+    QgsDebugMsg( QString( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
 
     renderingFinished();
   }
@@ -848,7 +847,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
   cleanupJobs( mLayerJobs );
 
-  qDebug( "PARALLEL layers finished" );
+  QgsDebugMsg( "PARALLEL layers finished" );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelingRenderContext.renderingStopped() )
   {
@@ -868,7 +867,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
 void QgsMapRendererParallelJob::renderingFinished()
 {
-  qDebug( "PARALLEL finished" );
+  QgsDebugMsg( "PARALLEL finished" );
 
   mStatus = Idle;
 

@@ -566,25 +566,25 @@ void QgsMapCanvas::refresh()
 {
   if ( !mSettings.hasValidSettings() )
   {
-    qDebug( "CANVAS refresh - invalid settings -> nothing to do" );
+    QgsDebugMsg( "CANVAS refresh - invalid settings -> nothing to do" );
     return;
   }
 
   if ( !mRenderFlag || mFrozen )  // do we really need two flags controlling rendering?
   {
-    qDebug( "CANVAS render flag off" );
+    QgsDebugMsg( "CANVAS render flag off" );
     return;
   }
 
   if ( mRefreshScheduled )
   {
-    qDebug( "CANVAS refresh already scheduled" );
+    QgsDebugMsg( "CANVAS refresh already scheduled" );
     return;
   }
 
   mRefreshScheduled = true;
 
-  qDebug( "CANVAS refresh scheduling" );
+  QgsDebugMsg( "CANVAS refresh scheduling" );
 
   // schedule a refresh
   QTimer::singleShot( 1, this, SLOT( refreshMap() ) );
@@ -648,7 +648,7 @@ void QgsMapCanvas::refreshMap()
 {
   Q_ASSERT( mRefreshScheduled );
 
-  qDebug( "CANVAS refresh!" );
+  QgsDebugMsg( "CANVAS refresh!" );
 
   stopRendering(); // if any...
 
@@ -696,7 +696,7 @@ void QgsMapCanvas::layerRequestedRepaint()
 
 void QgsMapCanvas::rendererJobFinished()
 {
-  qDebug( "CANVAS finish! %d", !mJobCancelled );
+  QgsDebugMsg( QString( "CANVAS finish! %1" ).arg( !mJobCancelled ) );
 
   mMapUpdateTimer.stop();
 
@@ -746,8 +746,6 @@ void QgsMapCanvas::rendererJobFinished()
 
 void QgsMapCanvas::mapUpdateTimeout()
 {
-  qDebug( "CANVAS update timer!" );
-
   mMap->setContent( mJob->renderedImage(), mSettings.visibleExtent() );
 }
 
@@ -756,7 +754,7 @@ void QgsMapCanvas::stopRendering()
 {
   if ( mJob )
   {
-    qDebug( "CANVAS stop rendering!" );
+    QgsDebugMsg( "CANVAS stop rendering!" );
     mJobCancelled = true;
     mJob->cancel();
     Q_ASSERT( mJob == 0 ); // no need to delete here: already deleted in finished()
@@ -1606,17 +1604,11 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
-  qDebug( "start %f,%f", start.x(), start.y() );
-  qDebug( "end %f,%f", end.x(), end.y() );
-
   double dx = qAbs( end.x() - start.x() );
   double dy = qAbs( end.y() - start.y() );
 
   // modify the extent
   QgsRectangle r = mapSettings().visibleExtent();
-
-  qDebug( " -------------XXX diff: %f,%f", dx, dy );
-  qDebug( " ------------oldR: %f,%f", r.xMinimum(), r.yMinimum() );
 
   if ( end.x() < start.x() )
   {
@@ -1645,7 +1637,6 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   setExtent( r );
 
   r = mapSettings().visibleExtent();
-  qDebug( " ------------newR: %f,%f", r.xMinimum(), r.yMinimum() );
 
   refresh();
 }
