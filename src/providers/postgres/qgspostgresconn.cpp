@@ -1373,7 +1373,7 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( QString type )
   {
     return QGis::WKBMultiPolygon;
   }
-  else if ( type == "MULTIPOLYGONM" )
+  else if ( type == "MULTIPOLYGONM" || type == "TIN" || type == "POLYHEDRALSURFACE" )
   {
     return QGis::WKBMultiPolygon25D;
   }
@@ -1385,9 +1385,9 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( QString type )
 
 QGis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 {
-  // polyhedralsurface / TIN / triangle => Polygon
+  // polyhedralsurface / TIN / triangle => MultiPolygon
   if ( wkbType % 100 >= 15 )
-    wkbType = wkbType / 1000 * 1000 + QGis::WKBPolygon;
+    wkbType = wkbType / 1000 * 1000 + QGis::WKBMultiPolygon;
 
   switch ( wkbType / 1000 )
   {
