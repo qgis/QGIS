@@ -3910,15 +3910,6 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
   painter->setRenderHint( QPainter::Antialiasing );
 
-  //dpi ration for QPicture
-  QPicture localPict;
-  QPainter localp;
-  localp.begin( &localPict );
-  double localdpi = ( localp.device()->logicalDpiX() + localp.device()->logicalDpiY() ) / 2;
-  double contextdpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
-  double dpiRatio = localdpi / contextdpi;
-  localp.end();
-
   // draw the labels
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
@@ -4018,15 +4009,15 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( tmpLyr.shapeDraw )
     {
-      drawLabel( *it, context, tmpLyr, LabelShape, dpiRatio );
+      drawLabel( *it, context, tmpLyr, LabelShape );
     }
 
     if ( tmpLyr.bufferDraw )
     {
-      drawLabel( *it, context, tmpLyr, LabelBuffer, dpiRatio );
+      drawLabel( *it, context, tmpLyr, LabelBuffer );
     }
 
-    drawLabel( *it, context, tmpLyr, LabelText, dpiRatio );
+    drawLabel( *it, context, tmpLyr, LabelText );
 
     if ( mResults->mLabelSearchTree )
     {
