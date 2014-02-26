@@ -1643,11 +1643,19 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   }
   else
   {
-    height = qAbs( outputPixelDist / cos( lineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
-    width = qAbs( height / tan( lineAngle * M_PI / 180 ) );
+    height = outputPixelDist / cos( lineAngle * M_PI / 180 ); //keep perpendicular distance between lines constant
+    width = outputPixelDist / sin( lineAngle * M_PI / 180 );
 
     // recalculate real angle and distance after rounding to pixels
-    lineAngle = 180 * qAbs( atan2(( double ) height, ( double ) width ) ) / M_PI;
+    lineAngle = 180 * atan2(( double ) height, ( double ) width ) / M_PI;
+    if ( lineAngle < 0 )
+    {
+      lineAngle += 360.;
+    }
+
+    height = qAbs( height );
+    width = qAbs( width );
+
     outputPixelDist = height * cos( lineAngle * M_PI / 180 );
 
     // Round offset to correspond to one pixel height, otherwise lines may
@@ -1698,27 +1706,49 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     p3 = QPointF( xBuffer + innerWidth, height );
     p4 = QPointF( xBuffer + innerWidth, 0 );
   }
-  else if (( lineAngle > 0 && lineAngle < 90 ) || ( lineAngle > 180 && lineAngle < 270 ) )
+  else if ( lineAngle > 0 && lineAngle < 90 )
   {
     dx = outputPixelDist * cos(( 90 - lineAngle ) * M_PI / 180.0 );
     dy = outputPixelDist * sin(( 90 - lineAngle ) * M_PI / 180.0 );
     p1 = QPointF( 0, height );
     p2 = QPointF( width, 0 );
     p3 = QPointF( -dx, height - dy );
-    p4 = QPointF( width - dx, -dy ); //p4 = QPoint( p3.x() + width, p3.y() - height );
+    p4 = QPointF( width - dx, -dy );
     p5 = QPointF( dx, height + dy );
-    p6 = QPointF( width + dx, dy ); //p6 = QPoint( p5.x() + width, p5.y() - height );
+    p6 = QPointF( width + dx, dy );
   }
-  else if (( lineAngle < 180 ) || ( lineAngle > 270 && lineAngle < 360 ) )
+  else if ( lineAngle > 180 && lineAngle < 270 )
+  {
+    dx = outputPixelDist * cos(( 90 - lineAngle ) * M_PI / 180.0 );
+    dy = outputPixelDist * sin(( 90 - lineAngle ) * M_PI / 180.0 );
+    p1 = QPointF( width, 0 );
+    p2 = QPointF( 0, height );
+    p3 = QPointF( width - dx, -dy );
+    p4 = QPointF( -dx, height - dy );
+    p5 = QPointF( width + dx, dy );
+    p6 = QPointF( dx, height + dy );
+  }
+  else if ( lineAngle > 90 && lineAngle < 180 )
+  {
+    dy = outputPixelDist * cos(( 180 - lineAngle ) * M_PI / 180 );
+    dx = outputPixelDist * sin(( 180 - lineAngle ) * M_PI / 180 );
+    p1 = QPointF( 0, 0 );
+    p2 = QPointF( width, height );
+    p5 = QPointF( dx, -dy );
+    p6 = QPointF( width + dx, height - dy );
+    p3 = QPointF( -dx, dy );
+    p4 = QPointF( width - dx, height + dy );
+  }
+  else if ( lineAngle > 270 && lineAngle < 360 )
   {
     dy = outputPixelDist * cos(( 180 - lineAngle ) * M_PI / 180 );
     dx = outputPixelDist * sin(( 180 - lineAngle ) * M_PI / 180 );
     p1 = QPointF( width, height );
     p2 = QPointF( 0, 0 );
     p5 = QPointF( width + dx, height - dy );
-    p6 = QPointF( p5.x() - width, p5.y() - height ); //p6 = QPoint( dx, -dy );
+    p6 = QPointF( dx, -dy );
     p3 = QPointF( width - dx, height + dy );
-    p4 = QPointF( p3.x() - width, p3.y() - height ); //p4 = QPoint( -dx, dy );
+    p4 = QPointF( -dx, dy );
   }
 
   if ( !qgsDoubleNear( mOffset, 0.0 ) ) //shift everything
