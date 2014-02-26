@@ -255,7 +255,7 @@ def openInBrowserTab(url):
     else:
         # some Linux OS pause execution on webbrowser open, so background it
         cmd = 'import webbrowser;' \
-              'webbrowser.open_new_tab({0})'.format(url)
+              'webbrowser.open_new_tab("{0}")'.format(url)
         subprocess.Popen([sys.executable, "-c", cmd],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
