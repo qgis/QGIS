@@ -4740,7 +4740,8 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
   if ( supportedFormats.contains( "png" ) && supportedFormats.contains( "jpg" ) )
   {
     QgsWmsSupportedFormat g1 = { "image/x-jpegorpng", "JPEG/PNG" }; // used by cubewerx
-    formats << g1;
+    QgsWmsSupportedFormat g2 = { "image/jpgpng", "JPEG/PNG" }; // used by ESRI
+    formats << g1 << g2;
   }
 
   if ( supportedFormats.contains( "gif" ) )
