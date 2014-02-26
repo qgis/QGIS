@@ -51,8 +51,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
 
 QgsMapToolCapture::~QgsMapToolCapture()
 {
-  while ( !mSnappingMarkers.isEmpty() )
-    delete mSnappingMarkers.takeFirst();
+  delete mSnappingMarker;
 
   stopCapturing();
 
@@ -65,8 +64,7 @@ QgsMapToolCapture::~QgsMapToolCapture()
 
 void QgsMapToolCapture::deactivate()
 {
-  while ( !mSnappingMarkers.isEmpty() )
-    delete mSnappingMarkers.takeFirst();
+  delete mSnappingMarker;
 
   QgsMapToolEdit::deactivate();
 }
@@ -107,18 +105,14 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
   QList<QgsSnappingResult> snapResults;
   if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
   {
-    while ( !mSnappingMarkers.isEmpty() )
-      delete mSnappingMarkers.takeFirst();
+    delete mSnappingMarker;
 
-    foreach ( const QgsSnappingResult &r, snapResults )
-    {
-      QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
-      m->setIconType( QgsVertexMarker::ICON_CROSS );
-      m->setColor( Qt::magenta );
-      m->setPenWidth( 3 );
-      m->setCenter( r.snappedVertex );
-      mSnappingMarkers << m;
-    }
+    mSnappingMarker = new QgsVertexMarker( mCanvas );
+    mSnappingMarker->setIconType( QgsVertexMarker::ICON_CROSS );
+    mSnappingMarker->setColor( Qt::magenta );
+    mSnappingMarker->setPenWidth( 3 );
+    mSnappingMarker->setCenter( snapPointFromResults(snapResults,e->pos()) );
+
 
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
