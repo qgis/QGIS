@@ -2343,7 +2343,7 @@ QString QgsExpression::NodeCondition::dump() const
     msg += QString( "WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
   }
   if ( mElseExp )
-    msg += QString( "ELSE %1" ).arg( mElseExp->dump() );
+    msg += QString( " ELSE %1" ).arg( mElseExp->dump() );
   msg += QString( " END" );
   return msg;
 }
