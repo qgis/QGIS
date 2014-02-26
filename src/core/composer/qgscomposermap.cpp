@@ -178,6 +178,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
+  jobMapSettings.setMapUnits( ms.mapUnits() );
 
   //set layers to render
   jobMapSettings.setLayers( layersToRender() );
