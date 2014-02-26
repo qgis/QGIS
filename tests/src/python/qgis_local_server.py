@@ -79,7 +79,7 @@ class ServerProcess(object):
                              stdout=subprocess.PIPE,
                              env=env,
                              close_fds=True)
-        err = p.stderr.read()
+        err = p.communicate()[1]
         if err:
             if p:
                 p.kill()
@@ -218,13 +218,17 @@ class FcgiServerProcess(ServerProcess):
                         init_scr = os.path.join(init_scr_dir,
                                                 'spawn_fcgi_debian.sh')
                         self.set_startcmd([
-                            init_scr, 'start', exe, fcgi_sock, temp_dir])
+                            init_scr, 'start', exe, fcgi_sock,
+                            temp_dir + fcgi_bin, temp_dir])
                         self.set_stopcmd([
-                            init_scr, 'stop', exe, fcgi_sock, temp_dir])
+                            init_scr, 'stop', exe, fcgi_sock,
+                            temp_dir + fcgi_bin, temp_dir])
                         self.set_restartcmd([
-                            init_scr, 'restart', exe, fcgi_sock, temp_dir])
+                            init_scr, 'restart', exe, fcgi_sock,
+                            temp_dir + fcgi_bin, temp_dir])
                         self.set_statuscmd([
-                            init_scr, 'status', exe, fcgi_sock, temp_dir])
+                            init_scr, 'status', exe, fcgi_sock,
+                            temp_dir + fcgi_bin, temp_dir])
                     elif dist == 'fedora' or dist == 'rhel':
                         pass
             else:  # win

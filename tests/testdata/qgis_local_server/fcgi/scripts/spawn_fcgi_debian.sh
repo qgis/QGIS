@@ -6,11 +6,11 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=$2
 NAME=spawn-fcgi
 DESC="$NAME"
-TEMPDIR=$4
+TEMPDIR=$5
 FCGI=qgis_mapserv
 PIDFILE=$TEMPDIR/var/$NAME.pid
 FCGISOCKET=$3
-FCGIBIN=$TEMPDIR/cgi-bin/$FCGI.fcgi
+FCGIBIN=$4
 SCRIPTNAME=$NAME
 
 
@@ -46,8 +46,8 @@ case "$1" in
         fi
         ;;
     restart)
-        $0 stop $2 $3 $4
-        $0 start $2 $3 $4
+        $0 stop $2 $3 $4 $5
+        $0 start $2 $3 $4 $5
         ;;
     status)
 		    status_of_proc -p "$PIDFILE" "$DAEMON" spawn-fcgi && exit 0 || exit $?

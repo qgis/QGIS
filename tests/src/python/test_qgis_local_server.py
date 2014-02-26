@@ -122,7 +122,7 @@ class TestQgisLocalServer(TestCase):
 
         chk = QgsRenderChecker()
         chk.setControlName('expected_' + test_name)
-        chk.setMapRenderer(None)
+        # chk.setMapRenderer(None)
         res = chk.compareImages(test_name, 0, str(img_path))
         if QGIS_TEST_REPORT and not res:  # don't report ok checks
             TESTREPORTS[test_name] = str(chk.report().toLocal8Bit())
