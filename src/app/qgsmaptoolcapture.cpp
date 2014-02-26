@@ -38,6 +38,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
     , mRubberBand( 0 )
     , mTempRubberBand( 0 )
     , mValidator( 0 )
+    , mSnappingMarker( 0 )
 {
   mCaptureModeFromLayer = tool == CaptureNone;
   mCapturing = false;
