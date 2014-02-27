@@ -23,6 +23,9 @@
 #include <QStack>
 #include <QTime>
 #include <QTimer>
+#include <QThread>
+
+#include "qgslogger.h"
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
@@ -55,9 +58,9 @@ class QgsConnectionPoolGroup
     };
 
     QgsConnectionPoolGroup( const QString& ci )
-      : connInfo( ci )
-      , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-      , expirationTimer( 0 )
+        : connInfo( ci )
+        , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
+        , expirationTimer( 0 )
     {
     }
 
@@ -84,7 +87,12 @@ class QgsConnectionPoolGroup
 
           // no need to run if nothing can expire
           if ( conns.isEmpty() )
-            expirationTimer->stop();
+          {
+            if ( QThread::currentThread() == qApp->thread() )
+              expirationTimer->stop();
+            else
+              QgsDebugMsg( "expirationTimer not stopped from thread" );  // TODO use signals in that case?
+          }
 
           return i.c;
         }
@@ -111,7 +119,12 @@ class QgsConnectionPoolGroup
       conns.push( i );
 
       if ( !expirationTimer->isActive() )
-        expirationTimer->start();
+      {
+        if ( QThread::currentThread() == qApp->thread() )
+          expirationTimer->start();
+        else
+          QgsDebugMsg( "expirationTimer not started from thread" );  // TODO use signals in that case?
+      }
 
       connMutex.unlock();
 
