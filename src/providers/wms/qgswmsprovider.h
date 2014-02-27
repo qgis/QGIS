@@ -467,8 +467,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! See if calculateExtents() needs to be called before extent() returns useful data
     bool mExtentDirty;
 
-    //! Base URL for WMS GetFeatureInfo requests
-    QString mGetFeatureInfoUrlBase;
     QString mServiceMetadataURL;
 
     //! tile request number, cache hits and misses

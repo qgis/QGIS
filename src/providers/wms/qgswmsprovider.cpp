@@ -90,7 +90,6 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     , mCachedImage( 0 )
     , mCachedViewExtent( 0 )
     , mExtentDirty( true )
-    , mGetFeatureInfoUrlBase( "" )
     , mTileReqNo( 0 )
     , mTileLayer( 0 )
     , mTileMatrixSet( 0 )
@@ -528,8 +527,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     QgsDebugMsg( QString( "getmap: %1" ).arg( url.toString() ) );
 
     // cache some details for if the user wants to do an identifyAsHtml() later
-
-    mGetFeatureInfoUrlBase = mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl();
 
     emit statusChanged( tr( "Getting map via WMS." ) );
 
@@ -2151,7 +2148,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
     QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
 
-    QUrl requestUrl( mGetFeatureInfoUrlBase );
+    QUrl requestUrl( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
     setQueryItem( requestUrl, "SERVICE", "WMS" );
     setQueryItem( requestUrl, "VERSION", mCaps.mCapabilities.version );
     setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
