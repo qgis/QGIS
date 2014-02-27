@@ -138,34 +138,46 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
       QString title = l.title.isEmpty() ? l.identifier : l.title;
       QgsDataItem *layerItem = l.styles.size() == 1 ? this : new QgsDataCollectionItem( this, title, mPath + "/" + l.identifier );
       if ( layerItem != this )
+      {
+        layerItem->setToolTip( title );
         addChildItem( layerItem );
+      }
 
       foreach ( const QgsWmtsStyle &style, l.styles )
       {
-        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, style.title.isEmpty() ? style.identifier : style.title, layerItem->path() + "/" + style.identifier );
+        QString styleName = style.title.isEmpty() ? style.identifier : style.title;
+        if ( layerItem == this )
+          styleName.prepend( title + " - " );
+
+        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, styleName, layerItem->path() + "/" + style.identifier );
         if ( styleItem != layerItem )
+        {
+          styleItem->setToolTip( styleName );
           layerItem->addChildItem( styleItem );
+        }
 
         foreach ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
-          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, setLink.tileMatrixSet, styleItem->path() + "/" + setLink.tileMatrixSet );
+          QString linkName = setLink.tileMatrixSet;
+          if ( styleItem == layerItem )
+            linkName.prepend( styleName + " - " );
+
+          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, linkName, styleItem->path() + "/" + setLink.tileMatrixSet );
           if ( linkItem != styleItem )
+          {
+            linkItem->setToolTip( linkName );
             styleItem->addChildItem( linkItem );
+          }
 
           foreach ( QString format, l.formats )
           {
-            QString name;
-            if ( layerItem == this )
-              name += ( l.title.isEmpty() ? l.identifier : l.title ) + " - ";
-            if ( styleItem == layerItem )
-              name += ( style.title.isEmpty() ? style.identifier : style.title ) + " - ";
+            QString name = format;
             if ( linkItem == styleItem )
-              name += setLink.tileMatrixSet + " - ";
-            name += format;
+              name.prepend( linkName + " - " );
 
             QgsDataItem *layerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + "/" + name, uri,
                 l.identifier, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[ setLink.tileMatrixSet ].crs, title );
-
+            layerItem->setToolTip( name );
             linkItem->addChildItem( layerItem );
           }
         }
