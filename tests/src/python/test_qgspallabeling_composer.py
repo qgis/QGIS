@@ -58,7 +58,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def get_composer_image(self, width=600, height=400, dpi=72):
         # set up composition and add map
-        comp = QgsComposition(self._MapRenderer)
+        comp = QgsComposition(self._MapSettings)
         """:type: QgsComposition"""
         comp.setPrintResolution(dpi)
         # 600 x 400 px = 211.67 x 141.11 mm @ 72 dpi

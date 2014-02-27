@@ -33,8 +33,10 @@ from qgis.core import (
     QGis,
     QgsCoordinateReferenceSystem,
     QgsDataSourceURI,
+    QgsLabelingEngineInterface,
     QgsMapLayerRegistry,
     QgsMapRenderer,
+    QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
     QgsProject,
@@ -47,7 +49,6 @@ from utilities import (
     getQgisTestApp,
     TestCase,
     unittest,
-    expectedFailure,
     unitTestDataPath,
     loadTestFonts,
     getTestFont,
@@ -68,10 +69,21 @@ class TestQgsPalLabeling(TestCase):
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
     _PalFeaturesDb = os.path.join(_PalDataDir, 'pal_features_v3.sqlite')
     _TestFont = getTestFont()  # Roman at 12 pt
+    """:type: QFont"""
     _MapRegistry = None
+    """:type: QgsMapLayerRegistry"""
     _MapRenderer = None
+    """:type: QgsMapRenderer"""
+    _MapSettings = None
+    """:type: QgsMapSettings"""
     _Canvas = None
+    """:type: QgsMapCanvas"""
+    _Map = None
+    """:type: QgsMapCanvasMap"""
+    _Pal = None
+    """:type: QgsPalLabeling"""
     _PalEngine = None
+    """:type: QgsLabelingEngineInterface"""
 
     @classmethod
     def setUpClass(cls):
@@ -96,19 +108,25 @@ class TestQgsPalLabeling(TestCase):
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
         cls._MapRegistry = QgsMapLayerRegistry.instance()
-        """:type: QgsMapLayerRegistry"""
         # set color to match render test comparisons background
         cls._Canvas.setCanvasColor(QColor(152, 219, 249))
         cls._Map = cls._Canvas.map()
-        cls._Map.resize(QSize(600, 400))
+        cls._Map.resize(QSize(600, 400))  # is this necessary now?
         cls._MapRenderer = cls._Canvas.mapRenderer()
-        """:type: QgsMapRenderer"""
+
+        cls._MapSettings = QgsMapSettings()
         cls._CRS = QgsCoordinateReferenceSystem()
+        """:type: QgsCoordinateReferenceSystem"""
         # default for labeling test data sources: WGS 84 / UTM zone 13N
         cls._CRS.createFromSrid(32613)
-        cls._MapRenderer.setDestinationCrs(cls._CRS)
-        cls._MapRenderer.setProjectionsEnabled(False)
-        # use platform's native logical output dpi for QgsMapRenderer on launch
+        cls._MapSettings.setBackgroundColor(QColor(152, 219, 249))
+        cls._MapSettings.setOutputSize(QSize(600, 400))
+        cls._MapSettings.setOutputDpi(72)
+        cls._MapSettings.setFlag(QgsMapSettings.Antialiasing)
+        cls._MapSettings.setDestinationCrs(cls._CRS)
+        cls._MapSettings.setCrsTransformEnabled(False)
+        cls._MapSettings.setMapUnits(cls._CRS.mapUnits())  # meters
+        cls._MapSettings.setExtent(cls.aoiExtent())
 
         cls.setDefaultEngineSettings()
         msg = ('\nCould not initialize PAL labeling engine, '
@@ -119,7 +137,6 @@ class TestQgsPalLabeling(TestCase):
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labelling"""
         cls._Pal = QgsPalLabeling()
-        """:type: QgsPalLabeling"""
         cls._MapRenderer.setLabelingEngine(cls._Pal)
         cls._PalEngine = cls._MapRenderer.labelingEngine()
 
@@ -147,11 +164,11 @@ class TestQgsPalLabeling(TestCase):
                                            '{0}.qml'.format(table)))
         cls._MapRegistry.addMapLayer(vlayer)
         # place new layer on top of render stack
-        render_lyrs = [vlayer.id()] + list(cls._MapRenderer.layerSet())
-        cls._MapRenderer.setLayerSet(render_lyrs)
+        render_lyrs = [vlayer.id()] + list(cls._MapSettings.layers())
+        cls._MapSettings.setLayers(render_lyrs)
 
         # zoom to aoi
-        cls._MapRenderer.setExtent(cls.aoiExtent())
+        cls._MapSettings.setExtent(cls.aoiExtent())
         cls._Canvas.zoomToFullExtent()
         return vlayer
 
@@ -248,7 +265,7 @@ class TestQgsPalLabeling(TestCase):
         chk = QgsRenderChecker()
         chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
-        chk.setMapRenderer(self._MapRenderer)
+        chk.setMapSettings(self._MapSettings)
         # noinspection PyUnusedLocal
         res = False
         if imgpath:
