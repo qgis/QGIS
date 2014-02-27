@@ -41,6 +41,7 @@ class QgsRasterInterface
 %End
 
   public:
+    //! If you add to this, please also add to capabilitiesString()
     enum Capability
     {
       NoCapabilities,
@@ -52,7 +53,7 @@ class QgsRasterInterface
       IdentifyValue,
       IdentifyText,
       IdentifyHtml,
-      IdentifyFeature
+      IdentifyFeature,
     };
 
     QgsRasterInterface( QgsRasterInterface * input = 0 );

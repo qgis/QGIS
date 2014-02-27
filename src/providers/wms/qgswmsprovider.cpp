@@ -64,6 +64,12 @@
 #include <QTime>
 #include <QThread>
 
+#include <QScriptEngine>
+#include <QScriptValue>
+#include <QScriptValueIterator>
+
+#include <ogr_api.h>
+
 #ifdef QGISDEBUG
 #include <QFile>
 #include <QDir>
@@ -96,7 +102,7 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
 {
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
-  mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml" << "application/vnd.ogc.gml";
+  mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml" << "application/vnd.ogc.gml" << "application/json";
 
   mValid = false;
 
@@ -179,8 +185,7 @@ QgsWmsProvider::~QgsWmsProvider()
 
 QgsRasterInterface * QgsWmsProvider::clone() const
 {
-  QgsWmsProvider * provider = new QgsWmsProvider( dataSourceUri(), mCaps.isValid() ? &mCaps : 0 );
-  return provider;
+  return new QgsWmsProvider( dataSourceUri(), mCaps.isValid() ? &mCaps : 0 );
 }
 
 
@@ -759,6 +764,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           // REST
           QString url = mTileLayer->getTileURLs[ mSettings.mImageMimeType ];
 
+          url.replace( "{layer}", mSettings.mActiveSubLayers[0], Qt::CaseInsensitive );
           url.replace( "{style}", mSettings.mActiveSubStyles[0], Qt::CaseInsensitive );
           url.replace( "{tilematrixset}", mTileMatrixSet->identifier, Qt::CaseInsensitive );
           url.replace( "{tilematrix}", tm->identifier, Qt::CaseInsensitive );
@@ -1264,30 +1270,41 @@ int QgsWmsProvider::capabilities() const
 
   QgsDebugMsg( "entering." );
 
-  // Test for the ability to use the Identify map tool
-  for ( QStringList::const_iterator it = mSettings.mActiveSubLayers.begin();
-        it != mSettings.mActiveSubLayers.end();
-        ++it )
+  if ( mSettings.mTiled && mTileLayer )
   {
-    // Is sublayer visible?
-    if ( mActiveSubLayerVisibility.find( *it ).value() )
+    QgsDebugMsg( "Tiled." );
+    canIdentify = !mTileLayer->getFeatureInfoURLs.isEmpty() || !getFeatureInfoUrl().isNull();
+  }
+  else
+  {
+    QgsDebugMsg( "Not tiled." );
+    // Test for the ability to use the Identify map tool
+    for ( QStringList::const_iterator it = mSettings.mActiveSubLayers.begin();
+          it != mSettings.mActiveSubLayers.end();
+          ++it )
     {
-      // Is sublayer queryable?
-      if ( mCaps.mQueryableForLayer.find( *it ).value() )
+      // Is sublayer visible?
+      if ( mActiveSubLayerVisibility.find( *it ).value() )
       {
-        QgsDebugMsg( "'"  + ( *it )  + "' is queryable." );
-        canIdentify = true;
+        // Is sublayer queryable?
+        if ( mCaps.mQueryableForLayer.find( *it ).value() )
+        {
+          QgsDebugMsg( "'"  + ( *it )  + "' is queryable." );
+          canIdentify = true;
+        }
       }
     }
   }
 
   if ( canIdentify )
   {
-    if ( identifyCapabilities() )
+    capability = identifyCapabilities();
+    if ( capability )
     {
-      capability |= identifyCapabilities() | Identify;
+      capability |= Identify;
     }
   }
+
   QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
   return capability;
 }
@@ -1495,23 +1512,21 @@ QString QgsWmsProvider::metadata()
 
   metadata += "<tr><td>";
 
-  metadata += "<a href=\"#serverproperties\">";
-  metadata += tr( "Server Properties" );
-  metadata += "</a> ";
-
-  metadata += "&nbsp;<a href=\"#selectedlayers\">";
-  metadata += tr( "Selected Layers" );
-  metadata += "</a>&nbsp;<a href=\"#otherlayers\">";
-  metadata += tr( "Other Layers" );
-  metadata += "</a>";
-
-  if ( mCaps.mTileLayersSupported.size() > 0 )
+  if ( !mSettings.mTiled )
   {
-    metadata += "<a href=\"#tilelayerproperties\">";
+    metadata += "&nbsp;<a href=\"#selectedlayers\">";
+    metadata += tr( "Selected Layers" );
+    metadata += "</a>&nbsp;<a href=\"#otherlayers\">";
+    metadata += tr( "Other Layers" );
+    metadata += "</a>";
+  }
+  else
+  {
+    metadata += "&nbsp;<a href=\"#tilesetproperties\">";
     metadata += tr( "Tile Layer Properties" );
     metadata += "</a> ";
 
-    metadata += "<a href=\"#cachestats\">";
+    metadata += "&nbsp;<a href=\"#cachestats\">";
     metadata += tr( "Cache Stats" );
     metadata += "</a> ";
   }
@@ -1603,41 +1618,6 @@ QString QgsWmsProvider::metadata()
   metadata += mCaps.mCapabilities.service.accessConstraints;
   metadata += "</td></tr>";
 
-  // GetMap Request Formats
-  metadata += "<tr><td>";
-  metadata += tr( "Image Formats" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += mCaps.mCapabilities.capability.request.getMap.format.join( "<br />" );
-  metadata += "</td></tr>";
-
-  // GetFeatureInfo Request Formats
-  metadata += "<tr><td>";
-  metadata += tr( "Identify Formats" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += mCaps.mCapabilities.capability.request.getFeatureInfo.format.join( "<br />" );
-  metadata += "</td></tr>";
-
-  // Layer Count (as managed by this provider)
-  metadata += "<tr><td>";
-  metadata += tr( "Layer Count" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += QString::number( mCaps.mLayersSupported.size() );
-  metadata += "</td></tr>";
-
-  // Tileset Count (as managed by this provider)
-  if ( mCaps.mTileLayersSupported.size() > 0 )
-  {
-    metadata += "<tr><td>";
-    metadata += tr( "Tile Layer Count" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += QString::number( mCaps.mTileLayersSupported.size() );
-    metadata += "</td></tr>";
-  }
-
   // Base URL
   metadata += "<tr><td>";
   metadata += tr( "GetCapabilitiesUrl" );
@@ -1669,6 +1649,13 @@ QString QgsWmsProvider::metadata()
 
   if ( mSettings.mTiled )
   {
+    metadata += "<tr><td>";
+    metadata += tr( "Tile Layer Count" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += QString::number( mCaps.mTileLayersSupported.size() );
+    metadata += "</td></tr>";
+
     metadata += "<tr><td>";
     metadata += tr( "GetTileUrl" );
     metadata += "</td>";
@@ -1702,6 +1689,40 @@ QString QgsWmsProvider::metadata()
       }
       metadata += "</td></tr>";
     }
+
+    // GetFeatureInfo Request Formats
+    metadata += "<tr><td>";
+    metadata += tr( "Identify Formats" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += mTileLayer->infoFormats.join( "<br />" );
+    metadata += "</td></tr>";
+  }
+  else
+  {
+    // GetMap Request Formats
+    metadata += "<tr><td>";
+    metadata += tr( "Image Formats" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += mCaps.mCapabilities.capability.request.getMap.format.join( "<br />" );
+    metadata += "</td></tr>";
+
+    // GetFeatureInfo Request Formats
+    metadata += "<tr><td>";
+    metadata += tr( "Identify Formats" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += mCaps.mCapabilities.capability.request.getFeatureInfo.format.join( "<br />" );
+    metadata += "</td></tr>";
+
+    // Layer Count (as managed by this provider)
+    metadata += "<tr><td>";
+    metadata += tr( "Layer Count" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += QString::number( mCaps.mLayersSupported.size() );
+    metadata += "</td></tr>";
   }
 
   // Close the nested table
@@ -1709,44 +1730,58 @@ QString QgsWmsProvider::metadata()
   metadata += "</td></tr>";
 
   // Layer properties
-  metadata += "<tr><th class=\"glossy\"><a name=\"selectedlayers\"></a>";
-  metadata += tr( "Selected Layers" );
-  metadata += "</th></tr>";
-
-  for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
+  if ( !mSettings.mTiled )
   {
-    if ( !mSettings.mTiled && mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
+    metadata += "<tr><th class=\"glossy\"><a name=\"selectedlayers\"></a>";
+    metadata += tr( "Selected Layers" );
+    metadata += "</th></tr>";
+
+    int n = 0;
+    for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
     {
-      metadata += layerMetadata( mCaps.mLayersSupported[i] );
-    }
-  } // for each layer
+      if ( mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
+      {
+        metadata += layerMetadata( mCaps.mLayersSupported[i] );
+        n++;
+      }
+    } // for each layer
 
-  // Layer properties
-  metadata += "<tr><th class=\"glossy\"><a name=\"otherlayers\"></a>";
-  metadata += tr( "Other Layers" );
-  metadata += "</th></tr>";
-
-  for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
-  {
-    if ( !mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
+    // Layer properties
+    if ( n < mCaps.mLayersSupported.size() )
     {
-      metadata += layerMetadata( mCaps.mLayersSupported[i] );
-    }
-  } // for each layer
+      metadata += "<tr><th class=\"glossy\"><a name=\"otherlayers\"></a>";
+      metadata += tr( "Other Layers" );
+      metadata += "</th></tr>";
 
-  // Tileset properties
-  if ( mCaps.mTileLayersSupported.size() > 0 )
+      for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
+      {
+        if ( !mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
+        {
+          metadata += layerMetadata( mCaps.mLayersSupported[i] );
+        }
+      } // for each layer
+    }
+  }
+  else
   {
+    // Tileset properties
     metadata += "<tr><th class=\"glossy\"><a name=\"tilesetproperties\"></a>";
     metadata += tr( "Tileset Properties" );
     metadata += "</th></tr>";
 
     // Iterate through tilesets
     metadata += "<tr><td>";
+
     metadata += "<table width=\"100%\">";
 
     foreach ( const QgsWmtsTileLayer &l, mCaps.mTileLayersSupported )
     {
+      metadata += "<tr><th class=\"glossy\">";
+      metadata += tr( "Identifier" );
+      metadata += "</th><th class=\"glossy\">";
+      metadata += tr( "Tile mode" );
+      metadata += "</th></tr>";
+
       metadata += "<tr><td>";
       metadata += l.identifier;
       metadata += "</td><td class=\"glossy\">";
@@ -1778,7 +1813,7 @@ QString QgsWmsProvider::metadata()
       metadata += tr( "Selected" );
       metadata += "</td>";
       metadata += "<td class=\"glossy\">";
-      metadata += mSettings.mTiled && l.identifier == mSettings.mActiveSubLayers.join( "," ) ? tr( "Yes" ) : tr( "No" );
+      metadata += l.identifier == mSettings.mActiveSubLayers.join( "," ) ? tr( "Yes" ) : tr( "No" );
       metadata += "</td></tr>";
 
       if ( l.styles.size() > 0 )
@@ -1831,160 +1866,156 @@ QString QgsWmsProvider::metadata()
 
     metadata += "</table></td></tr>";
 
-    if ( mSettings.mTiled )
+    if ( mTileMatrixSet )
     {
-      metadata += "<tr><th class=\"glossy\"><a name=\"cachestats\"></a>";
-      metadata += tr( "Cache stats" );
-      metadata += "</th></tr>";
-
       // Iterate through tilesets
-      metadata += "<tr><td>";
-      metadata += "<table width=\"100%\">";
+      metadata += "<tr><td><table width=\"100%\">";
 
-      if ( mTileMatrixSet )
+      metadata += QString( "<tr><th colspan=14 class=\"glossy\">%1 %2</th></tr>"
+                           "<tr>"
+                           "<th rowspan=2 class=\"glossy\">%3</th>"
+                           "<th colspan=2 class=\"glossy\">%4</th>"
+                           "<th colspan=2 class=\"glossy\">%5</th>"
+                           "<th colspan=2 class=\"glossy\">%6</th>"
+                           "<th colspan=2 class=\"glossy\">%7</th>"
+                           "<th colspan=4 class=\"glossy\">%8</th>"
+                           "</tr><tr>"
+                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
+                           "<th class=\"glossy\">%11</th>"
+                           "<th class=\"glossy\">%12</th>"
+                           "<th class=\"glossy\">%13</th>"
+                           "<th class=\"glossy\">%14</th>"
+                           "</tr>" )
+                  .arg( tr( "Selected tile matrix set " ) ).arg( mSettings.mTileMatrixSetId )
+                  .arg( tr( "Scale" ) )
+                  .arg( tr( "Tile size [px]" ) )
+                  .arg( tr( "Tile size [mu]" ) )
+                  .arg( tr( "Matrix size" ) )
+                  .arg( tr( "Matrix extent [mu]" ) )
+                  .arg( tr( "Bounds" ) )
+                  .arg( tr( "Width" ) ).arg( tr( "Height" ) )
+                  .arg( tr( "Top" ) ).arg( tr( "Left" ) )
+                  .arg( tr( "Bottom" ) ).arg( tr( "Right" ) );
+
+      foreach ( QVariant res, property( "resolutions" ).toList() )
       {
-        metadata += "<tr><table width=\"100%\">";
+        double key = res.toDouble();
 
-        metadata += QString( "<tr><th colspan=14 class=\"glossy\">%1 %2</th></tr>"
-                             "<tr>"
-                             "<th rowspan=2 class=\"glossy\">%3</th>"
-                             "<th colspan=2 class=\"glossy\">%4</th>"
-                             "<th colspan=2 class=\"glossy\">%5</th>"
-                             "<th colspan=2 class=\"glossy\">%6</th>"
-                             "<th colspan=2 class=\"glossy\">%7</th>"
-                             "<th colspan=4 class=\"glossy\">%8</th>"
-                             "</tr><tr>"
-                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                             "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                             "<th class=\"glossy\">%11</th>"
-                             "<th class=\"glossy\">%12</th>"
-                             "<th class=\"glossy\">%13</th>"
-                             "<th class=\"glossy\">%14</th>"
-                             "</tr>" )
-                    .arg( tr( "Selected tile matrix set " ) ).arg( mSettings.mTileMatrixSetId )
-                    .arg( tr( "Scale" ) )
-                    .arg( tr( "Tile size [px]" ) )
-                    .arg( tr( "Tile size [mu]" ) )
-                    .arg( tr( "Matrix size" ) )
-                    .arg( tr( "Matrix extent [mu]" ) )
-                    .arg( tr( "Bounds" ) )
-                    .arg( tr( "Width" ) ).arg( tr( "Height" ) )
-                    .arg( tr( "Top" ) ).arg( tr( "Left" ) )
-                    .arg( tr( "Bottom" ) ).arg( tr( "Right" ) );
+        QgsWmtsTileMatrix &tm = mTileMatrixSet->tileMatrices[ key ];
 
-        foreach ( QVariant res, property( "resolutions" ).toList() )
+        double tw = key * tm.tileWidth;
+        double th = key * tm.tileHeight;
+
+        QgsRectangle r( tm.topLeft.x(), tm.topLeft.y() - tw * tm.matrixWidth, tm.topLeft.x() + th * tm.matrixHeight, tm.topLeft.y() );
+
+        metadata += QString( "<tr>"
+                             "<td>%1</td>"
+                             "<td>%2</td><td>%3</td>"
+                             "<td>%4</td><td>%5</td>"
+                             "<td>%6</td><td>%7</td>"
+                             "<td>%8</td><td>%9</td>" )
+                    .arg( tm.scaleDenom )
+                    .arg( tm.tileWidth ).arg( tm.tileHeight )
+                    .arg( tw ).arg( th )
+                    .arg( tm.matrixWidth ).arg( tm.matrixHeight )
+                    .arg( tw * tm.matrixWidth, 0, 'f' )
+                    .arg( th * tm.matrixHeight, 0, 'f' );
+
+        // top
+        if ( mLayerExtent.yMaximum() > r.yMaximum() )
         {
-          double key = res.toDouble();
-
-          QgsWmtsTileMatrix &tm = mTileMatrixSet->tileMatrices[ key ];
-
-          double tw = key * tm.tileWidth;
-          double th = key * tm.tileHeight;
-
-          QgsRectangle r( tm.topLeft.x(), tm.topLeft.y() - tw * tm.matrixWidth, tm.topLeft.x() + th * tm.matrixHeight, tm.topLeft.y() );
-
-          metadata += QString( "<tr>"
-                               "<td>%1</td>"
-                               "<td>%2</td><td>%3</td>"
-                               "<td>%4</td><td>%5</td>"
-                               "<td>%6</td><td>%7</td>"
-                               "<td>%8</td><td>%9</td>" )
-                      .arg( tm.scaleDenom )
-                      .arg( tm.tileWidth ).arg( tm.tileHeight )
-                      .arg( tw ).arg( th )
-                      .arg( tm.matrixWidth ).arg( tm.matrixHeight )
-                      .arg( tw * tm.matrixWidth, 0, 'f' )
-                      .arg( th * tm.matrixHeight, 0, 'f' );
-
-          // top
-          if ( mLayerExtent.yMaximum() > r.yMaximum() )
-          {
-            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                        .arg( tr( "%n missing row(s)", 0, ( int ) ceil(( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ) )
-                        .arg( tr( "Layer's upper bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
-                        .arg( r.yMaximum(), 0, 'f' );
-          }
-          else
-          {
-            metadata += QString( "<td>%1</td>" ).arg( r.yMaximum(), 0, 'f' );
-          }
-
-          // left
-          if ( mLayerExtent.xMinimum() < r.xMinimum() )
-          {
-            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                        .arg( tr( "%n missing column(s)", 0, ( int ) ceil(( r.xMinimum() - mLayerExtent.xMinimum() ) / tw ) ) )
-                        .arg( tr( "Layer's left bound: %1" ).arg( mLayerExtent.xMinimum(), 0, 'f' ) )
-                        .arg( r.xMinimum(), 0, 'f' );
-          }
-          else
-          {
-            metadata += QString( "<td>%1</td>" ).arg( r.xMinimum(), 0, 'f' );
-          }
-
-          // bottom
-          if ( mLayerExtent.yMaximum() > r.yMaximum() )
-          {
-            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                        .arg( tr( "%n missing row(s)", 0, ( int ) ceil(( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ) )
-                        .arg( tr( "Layer's lower bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
-                        .arg( r.yMaximum(), 0, 'f' );
-          }
-          else
-          {
-            metadata += QString( "<td>%1</td>" ).arg( r.yMaximum(), 0, 'f' );
-          }
-
-          // right
-          if ( mLayerExtent.xMaximum() > r.xMaximum() )
-          {
-            metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                        .arg( tr( "%n missing column(s)", 0, ( int ) ceil(( mLayerExtent.xMaximum() - r.xMaximum() ) / tw ) ) )
-                        .arg( tr( "Layer's right bound: %1" ).arg( mLayerExtent.xMaximum(), 0, 'f' ) )
-                        .arg( r.xMaximum(), 0, 'f' );
-          }
-          else
-          {
-            metadata += QString( "<td>%1</td>" ).arg( r.xMaximum(), 0, 'f' );
-          }
-
-          metadata += "</tr>";
+          metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                      .arg( tr( "%n missing row(s)", 0, ( int ) ceil(( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ) )
+                      .arg( tr( "Layer's upper bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
+                      .arg( r.yMaximum(), 0, 'f' );
+        }
+        else
+        {
+          metadata += QString( "<td>%1</td>" ).arg( r.yMaximum(), 0, 'f' );
         }
 
-        metadata += "</table></td></tr>";
+        // left
+        if ( mLayerExtent.xMinimum() < r.xMinimum() )
+        {
+          metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                      .arg( tr( "%n missing column(s)", 0, ( int ) ceil(( r.xMinimum() - mLayerExtent.xMinimum() ) / tw ) ) )
+                      .arg( tr( "Layer's left bound: %1" ).arg( mLayerExtent.xMinimum(), 0, 'f' ) )
+                      .arg( r.xMinimum(), 0, 'f' );
+        }
+        else
+        {
+          metadata += QString( "<td>%1</td>" ).arg( r.xMinimum(), 0, 'f' );
+        }
+
+        // bottom
+        if ( mLayerExtent.yMaximum() > r.yMaximum() )
+        {
+          metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                      .arg( tr( "%n missing row(s)", 0, ( int ) ceil(( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ) )
+                      .arg( tr( "Layer's lower bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
+                      .arg( r.yMaximum(), 0, 'f' );
+        }
+        else
+        {
+          metadata += QString( "<td>%1</td>" ).arg( r.yMaximum(), 0, 'f' );
+        }
+
+        // right
+        if ( mLayerExtent.xMaximum() > r.xMaximum() )
+        {
+          metadata += QString( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
+                      .arg( tr( "%n missing column(s)", 0, ( int ) ceil(( mLayerExtent.xMaximum() - r.xMaximum() ) / tw ) ) )
+                      .arg( tr( "Layer's right bound: %1" ).arg( mLayerExtent.xMaximum(), 0, 'f' ) )
+                      .arg( r.xMaximum(), 0, 'f' );
+        }
+        else
+        {
+          metadata += QString( "<td>%1</td>" ).arg( r.xMaximum(), 0, 'f' );
+        }
+
+        metadata += "</tr>";
       }
-
-      const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
-
-      metadata += "<tr><th class=\"glossy\">";
-      metadata += tr( "Property" );
-      metadata += "</th>";
-      metadata += "<th class=\"glossy\">";
-      metadata += tr( "Value" );
-      metadata += "</th></tr>";
-
-      metadata += "<tr><td>";
-      metadata += tr( "Hits" );
-      metadata += "</td><td>";
-      metadata += QString::number( stat.cacheHits );
-      metadata += "</td></tr>";
-
-      metadata += "<tr><td>";
-      metadata += tr( "Misses" );
-      metadata += "</td><td>";
-      metadata += QString::number( stat.cacheMisses );
-      metadata += "</td></tr>";
-
-      metadata += "<tr><td>";
-      metadata += tr( "Errors" );
-      metadata += "</td><td>";
-      metadata += QString::number( stat.errors );
-      metadata += "</td></tr>";
 
       metadata += "</table></td></tr>";
     }
+
+    const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
+
+    metadata += "<tr><th class=\"glossy\"><a name=\"cachestats\"></a>";
+    metadata += tr( "Cache stats" );
+    metadata += "</th></tr>";
+
+    metadata += "<tr><td><table width=\"100%\">";
+
+    metadata += "<tr><th class=\"glossy\">";
+    metadata += tr( "Property" );
+    metadata += "</th>";
+    metadata += "<th class=\"glossy\">";
+    metadata += tr( "Value" );
+    metadata += "</th></tr>";
+
+    metadata += "<tr><td>";
+    metadata += tr( "Hits" );
+    metadata += "</td><td>";
+    metadata += QString::number( stat.cacheHits );
+    metadata += "</td></tr>";
+
+    metadata += "<tr><td>";
+    metadata += tr( "Misses" );
+    metadata += "</td><td>";
+    metadata += QString::number( stat.cacheMisses );
+    metadata += "</td></tr>";
+
+    metadata += "<tr><td>";
+    metadata += tr( "Errors" );
+    metadata += "</td><td>";
+    metadata += QString::number( stat.errors );
+    metadata += "</td></tr>";
+
+    metadata += "</table></td></tr>";
   }
 
   metadata += "</table>";
@@ -1997,8 +2028,6 @@ QString QgsWmsProvider::metadata()
 QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "theFormat = %1" ).arg( theFormat ) );
-  QStringList resultStrings;
-  QMap<int, QVariant> results;
 
   QString format;
   format = mCaps.mIdentifyFormats.value( theFormat );
@@ -2009,6 +2038,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
   QgsDebugMsg( QString( "theFormat = %1 format = %2" ).arg( theFormat ).arg( format ) );
 
+  QMap<int, QVariant> results;
   if ( !extent().contains( thePoint ) )
   {
     results.insert( 1, "" );
@@ -2082,6 +2112,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     theWidth += 1;
     myExtent.setXMaximum( myExtent.xMaximum() + xRes );
   }
+
   if ( theHeight == 1 )
   {
     theHeight += 1;
@@ -2120,63 +2151,198 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
   //QgsFeatureList featureList;
 
-  int count = -1;
-  // Test for which layers are suitable for querying with
-  for ( QStringList::const_iterator
-        layers = mSettings.mActiveSubLayers.begin(),
-        styles = mSettings.mActiveSubStyles.begin();
-        layers != mSettings.mActiveSubLayers.end();
-        ++layers, ++styles )
+  QList<QUrl> urls;
+  QStringList layerList;
+
+  if ( !mSettings.mTiled )
   {
-    count++;
-
-    // Is sublayer visible?
-    if ( !mActiveSubLayerVisibility.find( *layers ).value() )
+    // Test for which layers are suitable for querying with
+    for ( QStringList::const_iterator
+          layers = mSettings.mActiveSubLayers.begin(),
+          styles = mSettings.mActiveSubStyles.begin();
+          layers != mSettings.mActiveSubLayers.end();
+          ++layers, ++styles )
     {
-      // TODO: something better?
-      // we need to keep all sublayers so that we can get their names in identify tool
-      results.insert( count, false );
-      continue;
+      // Is sublayer visible?
+      if ( !mActiveSubLayerVisibility.find( *layers ).value() )
+      {
+        // TODO: something better?
+        // we need to keep all sublayers so that we can get their names in identify tool
+        results.insert( urls.size(), false );
+        continue;
+      }
+
+
+      // Is sublayer queryable?
+      if ( !mCaps.mQueryableForLayer.find( *layers ).value() )
+      {
+        results.insert( urls.size(), false );
+        continue;
+      }
+
+      QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
+
+      QUrl requestUrl( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
+      setQueryItem( requestUrl, "SERVICE", "WMS" );
+      setQueryItem( requestUrl, "VERSION", mCaps.mCapabilities.version );
+      setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
+      setQueryItem( requestUrl, "BBOX", bbox );
+      setQueryItem( requestUrl, crsKey, mImageCrs );
+      setQueryItem( requestUrl, "WIDTH", QString::number( theWidth ) );
+      setQueryItem( requestUrl, "HEIGHT", QString::number( theHeight ) );
+      setQueryItem( requestUrl, "LAYERS", *layers );
+      setQueryItem( requestUrl, "STYLES", *styles );
+      setQueryItem( requestUrl, "FORMAT", mSettings.mImageMimeType );
+      setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
+      setQueryItem( requestUrl, "INFO_FORMAT", format );
+
+      if ( mCaps.mCapabilities.version == "1.3.0" || mCaps.mCapabilities.version == "1.3" )
+      {
+        setQueryItem( requestUrl, "I", QString::number( point.x() ) );
+        setQueryItem( requestUrl, "J", QString::number( point.y() ) );
+      }
+      else
+      {
+        setQueryItem( requestUrl, "X", QString::number( point.x() ) );
+        setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
+      }
+
+      if ( mSettings.mFeatureCount > 0 )
+      {
+        setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mSettings.mFeatureCount ) );
+      }
+
+      layerList << *layers;
+      urls << requestUrl;
+    }
+  }
+  else if ( mTileLayer && mTileLayer->tileMode == WMTS )
+  {
+    // WMTS FeatureInfo
+    double vres = theExtent.width() / theWidth;
+    double tres = vres;
+
+    const QgsWmtsTileMatrix *tm = 0;
+
+    Q_ASSERT( mTileMatrixSet );
+    Q_ASSERT( mTileMatrixSet->tileMatrices.size() > 0 );
+
+    QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
+
+    // find nearest resolution
+    QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
+    while ( it != m.constEnd() && it.key() < vres )
+    {
+      QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
+      prev = it;
+      it++;
     }
 
-    // Is sublayer queryable?
-    if ( !mCaps.mQueryableForLayer.find( *layers ).value() )
+    if ( it == m.constEnd() ||
+         ( it != m.constBegin() && vres - prev.key() < it.key() - vres ) )
     {
-      results.insert( count, false );
-      continue;
+      QgsDebugMsg( "back to previous res" );
+      it = prev;
     }
 
-    QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
+    tres = it.key();
+    tm = &it.value();
 
-    QUrl requestUrl( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
-    setQueryItem( requestUrl, "SERVICE", "WMS" );
-    setQueryItem( requestUrl, "VERSION", mCaps.mCapabilities.version );
-    setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
-    setQueryItem( requestUrl, "BBOX", bbox );
-    setQueryItem( requestUrl, crsKey, mImageCrs );
-    setQueryItem( requestUrl, "WIDTH", QString::number( theWidth ) );
-    setQueryItem( requestUrl, "HEIGHT", QString::number( theHeight ) );
-    setQueryItem( requestUrl, "LAYERS", *layers );
-    setQueryItem( requestUrl, "STYLES", *styles );
-    setQueryItem( requestUrl, "FORMAT", mSettings.mImageMimeType );
-    setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
-    setQueryItem( requestUrl, "INFO_FORMAT", format );
+    QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
+                 .arg( qgsDoubleToString( mLayerExtent.xMinimum() ) )
+                 .arg( qgsDoubleToString( mLayerExtent.yMinimum() ) )
+                 .arg( mLayerExtent.width() )
+                 .arg( mLayerExtent.height() )
+               );
 
-    if ( mCaps.mCapabilities.version == "1.3.0" || mCaps.mCapabilities.version == "1.3" )
+    QgsDebugMsg( QString( "view extent: %1,%2 %3x%4  res:%5" )
+                 .arg( qgsDoubleToString( theExtent.xMinimum() ) )
+                 .arg( qgsDoubleToString( theExtent.yMinimum() ) )
+                 .arg( theExtent.width() )
+                 .arg( theExtent.height() )
+                 .arg( vres, 0, 'f' )
+               );
+
+    QgsDebugMsg( QString( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7 id:%8" )
+                 .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tres )
+                 .arg( tm->tileWidth ).arg( tm->tileHeight )
+                 .arg( tm->matrixWidth ).arg( tm->matrixHeight )
+                 .arg( tm->identifier )
+               );
+
+    // calculate tile coordinates
+    double twMap = tm->tileWidth * tres;
+    double thMap = tm->tileHeight * tres;
+    QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ) ).arg( qgsDoubleToString( thMap ) ) );
+
+    int col = ( int ) floor(( thePoint.x() - tm->topLeft.x() ) / twMap );
+    int row = ( int ) floor(( tm->topLeft.y() - thePoint.y() ) / thMap );
+    double tx = tm->topLeft.x() + col * twMap;
+    double ty = tm->topLeft.y() - row * thMap;
+    int i   = ( thePoint.x() - tx ) / tres;
+    int j   = ( ty - thePoint.y() ) / tres;
+
+    QgsDebugMsg( QString( "col=%1 row=%2 i=%3 j=%4 tx=%5 ty=%6" ).arg( col ).arg( row ).arg( i ).arg( j ).arg( tx, 0, 'f', 1 ).arg( ty, 0, 'f', 1 ) );
+
+    if ( mTileLayer->getFeatureInfoURLs.contains( format ) )
     {
-      setQueryItem( requestUrl, "I", QString::number( point.x() ) );
-      setQueryItem( requestUrl, "J", QString::number( point.y() ) );
+      // REST
+      QString url = mTileLayer->getFeatureInfoURLs[ format ];
+
+      url.replace( "{layer}", mSettings.mActiveSubLayers[0], Qt::CaseInsensitive );
+      url.replace( "{style}", mSettings.mActiveSubStyles[0], Qt::CaseInsensitive );
+      url.replace( "{tilematrixset}", mTileMatrixSet->identifier, Qt::CaseInsensitive );
+      url.replace( "{tilematrix}", tm->identifier, Qt::CaseInsensitive );
+      url.replace( "{tilerow}", QString::number( row ), Qt::CaseInsensitive );
+      url.replace( "{tilecol}", QString::number( col ), Qt::CaseInsensitive );
+      url.replace( "{i}", QString::number( i ), Qt::CaseInsensitive );
+      url.replace( "{j}", QString::number( j ), Qt::CaseInsensitive );
+
+      for ( QHash<QString, QString>::const_iterator it = mSettings.mTileDimensionValues.constBegin(); it != mSettings.mTileDimensionValues.constEnd(); ++it )
+      {
+        url.replace( "{" + it.key() + "}", it.value(), Qt::CaseInsensitive );
+      }
+
+      urls << QUrl( url );
+      layerList << mSettings.mActiveSubLayers[0];
+    }
+    else if ( !getFeatureInfoUrl().isNull() )
+    {
+      // KVP
+      QUrl url( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
+
+      // compose static request arguments.
+      setQueryItem( url, "SERVICE", "WMTS" );
+      setQueryItem( url, "REQUEST", "GetFeatureInfo" );
+      setQueryItem( url, "VERSION", mCaps.mCapabilities.version );
+      setQueryItem( url, "LAYER", mSettings.mActiveSubLayers[0] );
+      setQueryItem( url, "STYLE", mSettings.mActiveSubStyles[0] );
+      setQueryItem( url, "INFOFORMAT", format );
+      setQueryItem( url, "TILEMATRIXSET", mTileMatrixSet->identifier );
+      setQueryItem( url, "TILEMATRIX", tm->identifier );
+
+      for ( QHash<QString, QString>::const_iterator it = mSettings.mTileDimensionValues.constBegin(); it != mSettings.mTileDimensionValues.constEnd(); ++it )
+      {
+        setQueryItem( url, it.key(), it.value() );
+      }
+
+      setQueryItem( url, "TILEROW", QString::number( row ) );
+      setQueryItem( url, "TILECOL", QString::number( col ) );
+      setQueryItem( url, "I", qgsDoubleToString( i ) );
+      setQueryItem( url, "J", qgsDoubleToString( j ) );
+
+      urls << url;
+      layerList << mSettings.mActiveSubLayers[0];
     }
     else
     {
-      setQueryItem( requestUrl, "X", QString::number( point.x() ) );
-      setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
+      QgsDebugMsg( QString( "No KVP and no feature info url for format %1" ).arg( format ) );
     }
+  }
 
-    if ( mSettings.mFeatureCount > 0 )
-    {
-      setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mSettings.mFeatureCount ) );
-    }
+  for ( int count = 0; count < urls.size(); count++ )
+  {
+    const QUrl &requestUrl = urls[count];
 
     QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
     QNetworkRequest request( requestUrl );
@@ -2233,9 +2399,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
     if ( theFormat == QgsRaster::IdentifyFormatHtml || theFormat == QgsRaster::IdentifyFormatText )
     {
-      //resultStrings << mIdentifyResult;
-      //results.insert( count, mIdentifyResult );
-      results.insert( count, QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
+      results.insert( results.size(), QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
     }
     else if ( theFormat == QgsRaster::IdentifyFormatFeature ) // GML
     {
@@ -2264,9 +2428,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       //    GetFeatureInfo multipart response does not seem to be defined in
       //    OGC specification.
 
-
       int gmlPart = -1;
       int xsdPart = -1;
+      int jsonPart = -1;
       for ( int i = 0; i < mIdentifyResultHeaders.size(); i++ )
       {
         if ( xsdPart == -1 && mIdentifyResultHeaders[i].value( "Content-Disposition" ).contains( ".xsd" ) )
@@ -2277,12 +2441,16 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         {
           gmlPart = i;
         }
+        else if ( jsonPart == -1 && mIdentifyResultHeaders[i].value( "Content-Type" ).contains( "json" ) )
+        {
+          jsonPart = i;
+        }
 
-        if ( gmlPart != -1 && xsdPart != -1 )
+        if ( gmlPart != -1 && xsdPart != -1 && jsonPart != -1 )
           break;
       }
 
-      if ( xsdPart == -1 && gmlPart == -1 )
+      if ( xsdPart == -1 && gmlPart == -1 && jsonPart == -1 )
       {
         if ( mIdentifyResultBodies.size() == 1 ) // GML
         {
@@ -2300,164 +2468,274 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         }
       }
 
-      QByteArray gmlByteArray = mIdentifyResultBodies.value( gmlPart );
-      QgsDebugMsg( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
-
-      // QgsGmlSchema.guessSchema() and QgsGml::getFeatures() are using Expat
-      // which only accepts UTF-8, UTF-16, ISO-8859-1
-      // http://sourceforge.net/p/expat/bugs/498/
-      QDomDocument dom;
-      dom.setContent( gmlByteArray ); // gets XML encoding
-      gmlByteArray.clear();
-      QTextStream stream( &gmlByteArray );
-      stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
-      dom.save( stream, 4, QDomNode::EncodingFromTextStream );
-
-      QgsDebugMsg( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
-
-      QGis::WkbType wkbType;
-      QgsGmlSchema gmlSchema;
-
-      if ( xsdPart >= 0 )  // XSD available
+      if ( jsonPart == -1 && gmlPart == -1 && xsdPart == -1 )
       {
+        QByteArray gmlByteArray = mIdentifyResultBodies.value( gmlPart );
+        QgsDebugMsg( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
+
+        // QgsGmlSchema.guessSchema() and QgsGml::getFeatures() are using Expat
+        // which only accepts UTF-8, UTF-16, ISO-8859-1
+        // http://sourceforge.net/p/expat/bugs/498/
+        QDomDocument dom;
+        dom.setContent( gmlByteArray ); // gets XML encoding
+        gmlByteArray.clear();
+        QTextStream stream( &gmlByteArray );
+        stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+        dom.save( stream, 4, QDomNode::EncodingFromTextStream );
+
+        QgsDebugMsg( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
+
+        QGis::WkbType wkbType;
+        QgsGmlSchema gmlSchema;
+
+        if ( xsdPart >= 0 )  // XSD available
+        {
 #if 0
-        // Validate GML by schema
-        // Loading schema takes ages! It needs to load all XSD referenced in the schema,
-        // for example:
-        // http://schemas.opengis.net/gml/2.1.2/feature.xsd
-        // http://schemas.opengis.net/gml/2.1.2/gml.xsd
-        // http://schemas.opengis.net/gml/2.1.2/geometry.xsd
-        // http://www.w3.org/1999/xlink.xsd
-        // http://www.w3.org/2001/xml.xsd <- this takes 30s to download (2/2013)
+          // Validate GML by schema
+          // Loading schema takes ages! It needs to load all XSD referenced in the schema,
+          // for example:
+          // http://schemas.opengis.net/gml/2.1.2/feature.xsd
+          // http://schemas.opengis.net/gml/2.1.2/gml.xsd
+          // http://schemas.opengis.net/gml/2.1.2/geometry.xsd
+          // http://www.w3.org/1999/xlink.xsd
+          // http://www.w3.org/2001/xml.xsd <- this takes 30s to download (2/2013)
 
-        QXmlSchema schema;
-        schema.load( mIdentifyResultBodies.value( xsdPart ) );
-        // Unfortunately the schema cannot be successfully loaded, it reports error
-        // "Element {http://www.opengis.net/gml}_Feature already defined"
-        // there is probably a bug in QXmlSchema:
-        // https://bugreports.qt-project.org/browse/QTBUG-8394
-        // xmlpatternsvalidator gives the same error on XSD generated by OGR
-        if ( !schema.isValid() )
-        {
-          // TODO: return QgsError
-          results.insert( count, tr( "GML schema is not valid" ) );
-          continue;
-        }
-        QXmlSchemaValidator validator( schema );
-        if ( !validator.validate( mIdentifyResultBodies.value( gmlPart ) ) )
-        {
-          results.insert( count, tr( "GML is not valid" ) );
-          continue;
-        }
+          QXmlSchema schema;
+          schema.load( mIdentifyResultBodies.value( xsdPart ) );
+          // Unfortunately the schema cannot be successfully loaded, it reports error
+          // "Element {http://www.opengis.net/gml}_Feature already defined"
+          // there is probably a bug in QXmlSchema:
+          // https://bugreports.qt-project.org/browse/QTBUG-8394
+          // xmlpatternsvalidator gives the same error on XSD generated by OGR
+          if ( !schema.isValid() )
+          {
+            // TODO: return QgsError
+            results.insert( count, tr( "GML schema is not valid" ) );
+            continue;
+          }
+          QXmlSchemaValidator validator( schema );
+          if ( !validator.validate( mIdentifyResultBodies.value( gmlPart ) ) )
+          {
+            results.insert( count, tr( "GML is not valid" ) );
+            continue;
+          }
 #endif
-        QgsDebugMsg( "GML XSD (first 4000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( xsdPart ).left( 4000 ) ) );
-        gmlSchema.parseXSD( mIdentifyResultBodies.value( xsdPart ) );
-      }
-      else
-      {
-        // guess from GML
-        bool ok = gmlSchema.guessSchema( gmlByteArray );
-        if ( ! ok )
+          QgsDebugMsg( "GML XSD (first 4000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( xsdPart ).left( 4000 ) ) );
+          gmlSchema.parseXSD( mIdentifyResultBodies.value( xsdPart ) );
+        }
+        else
         {
-          QgsError err = gmlSchema.error();
-          err.append( tr( "Cannot identify" ) );
-          QgsDebugMsg( "guess schema error: " +  err.message() );
+          // guess from GML
+          bool ok = gmlSchema.guessSchema( gmlByteArray );
+          if ( ! ok )
+          {
+            QgsError err = gmlSchema.error();
+            err.append( tr( "Cannot identify" ) );
+            QgsDebugMsg( "guess schema error: " + err.message() );
+            return QgsRasterIdentifyResult( err );
+          }
+        }
+
+        QStringList featureTypeNames = gmlSchema.typeNames();
+        QgsDebugMsg( QString( "%1 featureTypeNames found" ).arg( featureTypeNames.size() ) );
+
+        // Each sublayer may have more features of different types, for example
+        // if GROUP of multiple vector layers is used with UMN MapServer
+        // Note: GROUP of layers in UMN MapServer is not queryable by default
+        // (and I could not find a way to force it), it is possible however
+        // to add another RASTER layer with the same name as group which is queryable
+        // and has no DATA defined. Then such a layer may be add to QGIS and both
+        // GetMap and GetFeatureInfo will return data for the group of the same name.
+        // https://github.com/mapserver/mapserver/issues/318#issuecomment-4923208
+        QgsFeatureStoreList featureStoreList;
+        foreach ( QString featureTypeName, featureTypeNames )
+        {
+          QgsDebugMsg( QString( "featureTypeName = %1" ).arg( featureTypeName ) );
+
+          QString geometryAttribute = gmlSchema.geometryAttributes( featureTypeName ).value( 0 );
+          QList<QgsField> fieldList = gmlSchema.fields( featureTypeName );
+          QgsDebugMsg( QString( "%1 fields found" ).arg( fieldList.size() ) );
+          QgsFields fields;
+          for ( int i = 0; i < fieldList.size(); i++ )
+          {
+            fields.append( fieldList[i] );
+          }
+          QgsGml gml( featureTypeName, geometryAttribute, fields );
+          // TODO: avoid converting to string and back
+          int ret = gml.getFeatures( gmlByteArray, &wkbType );
+#ifdef QGISDEBUG
+          QgsDebugMsg( QString( "parsing result = %1" ).arg( ret ) );
+#else
+          Q_UNUSED( ret );
+#endif
+          // TODO: all features coming from this layer should probably have the same CRS
+          // the same as this layer, because layerExtentToOutputExtent() may be used
+          // for results -> verify CRS and reprojects if necessary
+          QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
+          QgsCoordinateReferenceSystem featuresCrs = gml.crs();
+          QgsDebugMsg( QString( "%1 features read, crs: %2 %3" ).arg( features.size() ).arg( featuresCrs.authid() ).arg( featuresCrs.description() ) );
+          QgsCoordinateTransform *coordinateTransform = 0;
+          if ( featuresCrs.isValid() && featuresCrs != crs() )
+          {
+            coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+          }
+          QgsFeatureStore featureStore( fields, crs() );
+          QMap<QString, QVariant> params;
+          params.insert( "sublayer", layerList[count] );
+          params.insert( "featureType", featureTypeName );
+          params.insert( "getFeatureInfoUrl", requestUrl.toString() );
+          featureStore.setParams( params );
+          foreach ( QgsFeatureId id, features.keys() )
+          {
+            QgsFeature * feature = features.value( id );
+
+            QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
+
+            if ( coordinateTransform && feature->geometry() )
+            {
+              feature->geometry()->transform( *coordinateTransform );
+            }
+            featureStore.features().append( QgsFeature( *feature ) );
+          }
+          featureStoreList.append( featureStore );
+          delete coordinateTransform;
+        }
+        // It is suspicious if we guessed feature types from GML but could not get
+        // features from it. Either we geuessed wrong schema or parsing features failed.
+        // Report it as error so that user can switch to another format in results dialog.
+        if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
+        {
+          QgsError err = ERROR( tr( "Cannot identify" ) );
+          err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( "," ) ) );
+          QgsDebugMsg( "parsing GML error: " + err.message() );
           return QgsRasterIdentifyResult( err );
         }
+        results.insert( results.size(), qVariantFromValue( featureStoreList ) );
       }
-
-      QStringList featureTypeNames = gmlSchema.typeNames();
-      QgsDebugMsg( QString( "%1 featureTypeNames found" ).arg( featureTypeNames.size() ) );
-
-      // Each sublayer may have more features of different types, for example
-      // if GROUP of multiple vector layers is used with UMN MapServer
-      // Note: GROUP of layers in UMN MapServer is not queryable by default
-      // (and I could not find a way to force it), it is possible however
-      // to add another RASTER layer with the same name as group which is queryable
-      // and has no DATA defined. Then such a layer may be add to QGIS and both
-      // GetMap and GetFeatureInfo will return data for the group of the same name.
-      // https://github.com/mapserver/mapserver/issues/318#issuecomment-4923208
-      QgsFeatureStoreList featureStoreList;
-      foreach ( QString featureTypeName, featureTypeNames )
+      else if ( jsonPart != -1 )
       {
-        QgsDebugMsg( QString( "featureTypeName = %1" ).arg( featureTypeName ) );
+        QString json = QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) );
+        json.prepend( "(" ).append( ")" );
 
-        QString geometryAttribute = gmlSchema.geometryAttributes( featureTypeName ).value( 0 );
-        QList<QgsField> fieldList = gmlSchema.fields( featureTypeName );
-        QgsDebugMsg( QString( "%1 fields found" ).arg( fieldList.size() ) );
-        QgsFields fields;
-        for ( int i = 0; i < fieldList.size(); i++ )
-        {
-          fields.append( fieldList[i] );
-        }
-        QgsGml gml( featureTypeName, geometryAttribute, fields );
-        // TODO: avoid converting to string and back
-        int ret = gml.getFeatures( gmlByteArray, &wkbType );
-#ifdef QGISDEBUG
-        QgsDebugMsg( QString( "parsing result = %1" ).arg( ret ) );
-#else
-        Q_UNUSED( ret );
-#endif
-        // TODO: all features coming from this layer should probably have the same CRS
-        // the same as this layer, because layerExtentToOutputExtent() may be used
-        // for results -> verify CRS and reprojects if necessary
-        QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
-        QgsCoordinateReferenceSystem featuresCrs = gml.crs();
-        QgsDebugMsg( QString( "%1 features read, crs: %2 %3" ).arg( features.size() ).arg( featuresCrs.authid() ).arg( featuresCrs.description() ) );
+        QScriptEngine engine;
+        engine.evaluate( "function json_stringify(obj) { return JSON.stringify(obj); }" );
+        QScriptValue json_stringify = engine.globalObject().property( "json_stringify" );
+        Q_ASSERT( json_stringify.isFunction() );
+
+        QScriptValue result = engine.evaluate( json );
+
+        QgsFeatureStoreList featureStoreList;
         QgsCoordinateTransform *coordinateTransform = 0;
-        if ( featuresCrs.isValid() && featuresCrs != crs() )
-        {
-          coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
-        }
-        QgsFeatureStore featureStore( fields, crs() );
-        QMap<QString, QVariant> params;
-        params.insert( "sublayer", *layers );
-        params.insert( "featureType", featureTypeName );
-        params.insert( "getFeatureInfoUrl", requestUrl.toString() );
-        featureStore.setParams( params );
-        foreach ( QgsFeatureId id, features.keys() )
-        {
-          QgsFeature * feature = features.value( id );
 
-          QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
+        try
+        {
+          QgsDebugMsg( QString( "result:%1" ).arg( result.toString() ) );
 
-          if ( coordinateTransform && feature->geometry() )
+          if ( !result.isObject() )
+            throw QString( "object expected" );
+
+          if ( result.property( "type" ).toString() != "FeatureCollection" )
+            throw QString( "type FeatureCollection expected: %1" ).arg( result.property( "type" ).toString() );
+
+          QString crsType = result.property( "crs" ).property( "type" ).toString();
+          QString crsText;
+          if ( crsType == "name" )
+            crsText = result.property( "crs" ).property( "name" ).toString();
+          else if ( crsType == "EPSG" )
+            crsText = QString( "%1:%2" ).arg( crsType ).arg( result.property( "crs" ).property( "properties" ).property( "code" ).toString() );
+          else
+            QgsDebugMsg( QString( "crs not supported:%1" ).arg( result.property( "crs" ).toString() ) );
+
+          QgsCoordinateReferenceSystem featuresCrs;
+          featuresCrs.createFromOgcWmsCrs( crsText );
+
+          if ( !featuresCrs.isValid() )
+            throw QString( "CRS %1 invalid" ).arg( crsText );
+
+          if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
-            feature->geometry()->transform( *coordinateTransform );
+            coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
           }
-          featureStore.features().append( QgsFeature( *feature ) );
+
+          QScriptValue fc = result.property( "features" );
+          if ( !fc.isArray() )
+            throw QString( "FeatureCollection array expected" );
+
+          QScriptValue f;
+          for ( int i = 0; f = fc.property( i ), f.isValid(); i++ )
+          {
+            QgsDebugMsg( QString( "feature %1" ).arg( i ) );
+
+            QScriptValue props = f.property( "properties" );
+            if ( !props.isObject() )
+            {
+              QgsDebugMsg( "no properties found" );
+              continue;
+            }
+
+            QgsFields fields;
+            QScriptValueIterator it( props );
+            while ( it.hasNext() )
+            {
+              it.next();
+              fields.append( QgsField( it.name(), QVariant::String ) );
+            }
+
+            QgsFeature feature( fields );
+
+            QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( "geometry" ) );
+            if ( geom.isString() )
+            {
+              OGRGeometryH ogrGeom = OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() );
+              if ( ogrGeom )
+              {
+                size_t wkbSize = OGR_G_WkbSize( ogrGeom );
+                unsigned char *wkb = new unsigned char[ wkbSize ];
+                OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
+                OGR_G_DestroyGeometry( ogrGeom );
+
+                feature.setGeometryAndOwnership( wkb, wkbSize );
+
+                if ( coordinateTransform && feature.geometry() )
+                {
+                  feature.geometry()->transform( *coordinateTransform );
+                }
+              }
+            }
+
+            int j = 0;
+            it.toFront();
+            while ( it.hasNext() )
+            {
+              it.next();
+              feature.setAttribute( j++, it.value().toString() );
+            }
+
+            QgsFeatureStore featureStore( fields, crs() );
+
+            QMap<QString, QVariant> params;
+            params.insert( "sublayer", layerList[count] );
+            params.insert( "featureType", QString( "%1_%2" ).arg( count ).arg( i ) );
+            params.insert( "getFeatureInfoUrl", requestUrl.toString() );
+            featureStore.setParams( params );
+
+            feature.setValid( true );
+            featureStore.features().append( feature );
+
+            featureStoreList.append( featureStore );
+          }
         }
-        featureStoreList.append( featureStore );
+        catch ( const QString &err )
+        {
+          QgsDebugMsg( QString( "JSON error: %1\nResult: %2" ).arg( err ).arg( QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) ) ) );
+        }
+
         delete coordinateTransform;
+
+        results.insert( results.size(), qVariantFromValue( featureStoreList ) );
       }
-      // It is suspicious if we guessed feature types from GML but could not get
-      // features from it. Either we geuessed wrong schema or parsing features failed.
-      // Report it as error so that user can switch to another format in results dialog.
-      if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
-      {
-        QgsError err = ERROR( tr( "Cannot identify" ) );
-        err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( "," ) ) );
-        QgsDebugMsg( "parsing GML error: " +  err.message() );
-        return QgsRasterIdentifyResult( err );
-      }
-      results.insert( count, qVariantFromValue( featureStoreList ) );
     }
   }
-
-#if 0
-  QString str;
-
-  if ( theFormat == QgsRaster::IdentifyFormatHtml )
-  {
-    str = "<table>\n<tr><td>" + resultStrings.join( "</td></tr>\n<tr><td>" ) + "</td></tr>\n</table>";
-    results.insert( 1, str );
-  }
-  else if ( theFormat == QgsRaster::IdentifyFormatText )
-  {
-    str = resultStrings.join( "\n-------------\n" );
-    results.insert( 1, str );
-  }
-#endif
 
   return QgsRasterIdentifyResult( theFormat, results );
 }
@@ -2587,8 +2865,9 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
   if ( supportedFormats.contains( "jpg" ) )
   {
     QgsWmsSupportedFormat j1 = { "image/jpeg", "JPEG" };
-    QgsWmsSupportedFormat j2 = { "jpeg", "JPEG" }; // used by french IGN geoportail
-    formats << j1 << j2;
+    QgsWmsSupportedFormat j2 = { "image/jpg", "JPEG" };
+    QgsWmsSupportedFormat j3 = { "jpeg", "JPEG" }; // used by french IGN geoportail
+    formats << j1 << j2 << j3;
   }
 
   if ( supportedFormats.contains( "png" ) && supportedFormats.contains( "jpg" ) )

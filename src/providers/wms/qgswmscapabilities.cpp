@@ -171,6 +171,8 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, const QgsWms
       format = QgsRaster::IdentifyFormatFeature; // 1.0
     else if ( f == "application/vnd.ogc.gml" )
       format = QgsRaster::IdentifyFormatFeature;
+    else if ( f == "application/json" )
+      format = QgsRaster::IdentifyFormatFeature;
     else if ( f.contains( "gml", Qt::CaseInsensitive ) )
       format = QgsRaster::IdentifyFormatFeature;
 
@@ -349,7 +351,7 @@ void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlin
 {
   QgsDebugMsg( "entering." );
 
-  onlineResourceAttribute.xlinkHref = e.attribute( "xlink:href" );
+  onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( "xlink:href" ).toUtf8() ).toString();
 
   QgsDebugMsg( "exiting." );
 }
@@ -1470,7 +1472,36 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
     for ( QDomElement e1 = e0.firstChildElement( "InfoFormat" ); !e1.isNull(); e1 = e1.nextSiblingElement( "InfoFormat" ) )
     {
+      QString format = e1.text();
+
       l.infoFormats << e1.text();
+
+      QgsRaster::IdentifyFormat fmt = QgsRaster::IdentifyFormatUndefined;
+
+      QgsDebugMsg( QString( "format=%1" ).arg( format ) );
+
+      if ( format == "MIME" )
+        fmt = QgsRaster::IdentifyFormatText; // 1.0
+      else if ( format == "text/plain" )
+        fmt = QgsRaster::IdentifyFormatText;
+      else if ( format == "text/html" )
+        fmt = QgsRaster::IdentifyFormatHtml;
+      else if ( format.startsWith( "GML." ) )
+        fmt = QgsRaster::IdentifyFormatFeature; // 1.0
+      else if ( format == "application/vnd.ogc.gml" )
+        fmt = QgsRaster::IdentifyFormatFeature;
+      else  if ( format.contains( "gml", Qt::CaseInsensitive ) )
+        fmt = QgsRaster::IdentifyFormatFeature;
+      else if ( format == "application/json" )
+        fmt = QgsRaster::IdentifyFormatFeature;
+      else
+      {
+        QgsDebugMsg( QString( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+        continue;
+      }
+
+      QgsDebugMsg( QString( "fmt=%1" ).arg( fmt ) );
+      mIdentifyFormats.insert( fmt, format );
     }
 
     for ( QDomElement e1 = e0.firstChildElement( "Dimension" ); !e1.isNull(); e1 = e1.nextSiblingElement( "Dimension" ) )
@@ -1595,6 +1626,33 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       else if ( resourceType == "FeatureInfo" )
       {
         l.getFeatureInfoURLs.insert( format, tmpl );
+
+        QgsRaster::IdentifyFormat fmt = QgsRaster::IdentifyFormatUndefined;
+
+        QgsDebugMsg( QString( "format=%1" ).arg( format ) );
+
+        if ( format == "MIME" )
+          fmt = QgsRaster::IdentifyFormatText; // 1.0
+        else if ( format == "text/plain" )
+          fmt = QgsRaster::IdentifyFormatText;
+        else if ( format == "text/html" )
+          fmt = QgsRaster::IdentifyFormatHtml;
+        else if ( format.startsWith( "GML." ) )
+          fmt = QgsRaster::IdentifyFormatFeature; // 1.0
+        else if ( format == "application/vnd.ogc.gml" )
+          fmt = QgsRaster::IdentifyFormatFeature;
+        else  if ( format.contains( "gml", Qt::CaseInsensitive ) )
+          fmt = QgsRaster::IdentifyFormatFeature;
+        else if ( format == "application/json" )
+          fmt = QgsRaster::IdentifyFormatFeature;
+        else
+        {
+          QgsDebugMsg( QString( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+          continue;
+        }
+
+        QgsDebugMsg( QString( "fmt=%1" ).arg( fmt ) );
+        mIdentifyFormats.insert( fmt, format );
       }
       else
       {

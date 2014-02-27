@@ -418,14 +418,13 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel )
 {
   QgsDebugMsg( "point = " + point.toString() );
-  if ( !layer ) return false;
+  if ( !layer )
+    return false;
 
   QgsRasterDataProvider *dprovider = layer->dataProvider();
   int capabilities = dprovider->capabilities();
   if ( !dprovider || !( capabilities & QgsRasterDataProvider::Identify ) )
-  {
     return false;
-  }
 
   QgsPoint pointInCanvasCrs = point;
   try
@@ -571,8 +570,6 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             if ( featureType.compare( sublayer, Qt::CaseInsensitive ) != 0 || labels.isEmpty() )
             {
               labels << featureType;
-
-
             }
 
             QMap< QString, QString > derAttributes = derivedAttributes;

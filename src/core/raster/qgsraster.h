@@ -53,11 +53,11 @@ class CORE_EXPORT QgsRaster
 
     enum IdentifyFormat
     {
-      IdentifyFormatUndefined = 0,
-      IdentifyFormatValue     = 1, // numerical pixel value
+      IdentifyFormatUndefined =      0,
+      IdentifyFormatValue     =      1, // numerical pixel value
       IdentifyFormatText      = 1 << 1, // WMS text
       IdentifyFormatHtml      = 1 << 2, // WMS HTML
-      IdentifyFormatFeature   = 1 << 3  // WMS GML -> feature
+      IdentifyFormatFeature   = 1 << 3, // WMS GML/JSON -> feature
     };
 
     // Progress types

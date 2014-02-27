@@ -33,11 +33,11 @@ class QgsRaster
 
     enum IdentifyFormat
     {
-      IdentifyFormatUndefined = 0,
-      IdentifyFormatValue     = 1, // numerical pixel value
-      IdentifyFormatText      = 0x2, // WMS text
-      IdentifyFormatHtml      = 0x4, // WMS HTML
-      IdentifyFormatFeature   = 0x8  // WMS GML -> feature
+      IdentifyFormatUndefined,
+      IdentifyFormatValue,
+      IdentifyFormatText,
+      IdentifyFormatHtml,
+      IdentifyFormatFeature,
     };
 
     // Progress types
