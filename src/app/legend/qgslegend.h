@@ -22,6 +22,7 @@
 #include <QTreeWidget>
 #include <QPair>
 #include <set>
+#include <QUndoCommand>
 
 #include "qgslegenditem.h"
 
@@ -61,6 +62,33 @@ struct LegendLayerAction
   QString id;
   bool allLayers;
   QList<QgsMapLayer*> layers;
+};
+
+class CORE_EXPORT QgsLegendUndoCommand : public QUndoCommand
+{
+  public:
+
+    enum UndoType
+    {
+      Remove
+    };
+
+    QgsLegendUndoCommand( UndoType type = Remove, QList< QTreeWidgetItem *> items = QList< QTreeWidgetItem * >() );
+    ~QgsLegendUndoCommand();
+
+    inline UndoType type() const { return mType; }
+    inline QList< QTreeWidgetItem *> items() { return mItems; }
+    inline QMap< QTreeWidgetItem *, QTreeWidgetItem *> parents() { return mParents; }
+
+    virtual void undo();
+    virtual void redo();
+    virtual int id() const { return -1; }
+    virtual bool mergeWith( QUndoCommand * ) { return false; }
+
+  protected:
+    UndoType mType;
+    QList< QTreeWidgetItem *> mItems;
+    QMap< QTreeWidgetItem *, QTreeWidgetItem *> mParents;
 };
 
 /**
@@ -386,6 +414,9 @@ class QgsLegend : public QTreeWidget
      */
     void updateLegendItemSymbologies();
 
+    void undo( QUndoCommand *cmd );
+    void redo( QUndoCommand *cmd );
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -592,6 +623,10 @@ class QgsLegend : public QTreeWidget
 
     //! popup QFrame containing WMS getLegendGraphic pixmap
     QFrame *mGetLegendGraphicPopup;
+
+    QUndoStack mUndoStack;
+    QAction *mUndoRemoveAction;
+    QAction *mRedoRemoveAction;
 
   signals:
     void itemAdded( QModelIndex index );

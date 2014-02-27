@@ -75,6 +75,44 @@ static QString getUniqueGroupName( QString prefix, QStringList groups )
   return prefix + suffix;
 }
 
+QgsLegendUndoCommand::QgsLegendUndoCommand( UndoType type, QList< QTreeWidgetItem *> items )
+    : QUndoCommand(), mType( type ), mItems( items )
+{
+  if ( type == Remove )
+  {
+    if ( items.count() == 1 )
+      setText( QObject::tr( "Remove layer" ) );
+    else
+      setText( QObject::tr( "Remove %1 layers" ).arg( items.count() ) );
+  }
+
+  foreach ( QTreeWidgetItem *item, items )
+  {
+    if ( item->parent() )
+    {
+      mParents[item] = item->parent();
+    }
+  }
+}
+
+QgsLegendUndoCommand::~QgsLegendUndoCommand()
+{
+}
+
+void QgsLegendUndoCommand::undo()
+{
+  QgsDebugMsg( QString( "%1 items" ).arg( mItems.count() ) );
+  // could also have a member mLegend instead of acessing app legend
+  QgisApp::instance()->legend()->undo( this );
+}
+
+void QgsLegendUndoCommand::redo()
+{
+  QgsDebugMsg( QString( "%1 items" ).arg( mItems.count() ) );
+  QgisApp::instance()->legend()->redo( this );
+}
+
+
 QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
     : QTreeWidget( parent )
     , mMousePressedFlag( false )
@@ -288,6 +326,7 @@ void QgsLegend::removeAll()
 {
   QgsDebugMsg( "Entering." );
 
+  mUndoStack.clear();
   clear();
   mEmbeddedGroups.clear();
   mPixmapWidthValues.clear();
@@ -298,6 +337,8 @@ void QgsLegend::removeAll()
   mUpdateDrawingOrder = true;
   emit updateDrawingOrderChecked( true );
   emit updateDrawingOrderUnchecked( false );
+
+  QgsDebugMsg( "Done" );
 }
 
 void QgsLegend::setLayersVisible( bool visible )
@@ -916,6 +957,16 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
   updateDrawingOrderAction->setCheckable( true );
   updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+
+  // undo/redo - should these always be visible?
+  theMenu.addSeparator();
+  // should text be Undo/Redo remove selected layer(s) / get string from action
+  QString actionText = mUndoStack.canUndo() ? mUndoStack.command( mUndoStack.index() - 1 )->text() : "";
+  mUndoRemoveAction = theMenu.addAction( tr( "Undo" ) + " " + actionText, &mUndoStack, SLOT( undo() ) );
+  mUndoRemoveAction->setEnabled( mUndoStack.canUndo() );
+  actionText = mUndoStack.canRedo() ? mUndoStack.command( mUndoStack.index() )->text() : "";
+  mRedoRemoveAction = theMenu.addAction( tr( "Redo" ) + " " + actionText, &mUndoStack, SLOT( redo() ) );
+  mRedoRemoveAction->setEnabled( mUndoStack.canRedo() );
 
   theMenu.exec( position );
 }
@@ -2944,6 +2995,7 @@ void QgsLegend::refreshCheckStates()
   }
 }
 
+#if 0
 void QgsLegend::removeSelectedLayers()
 {
   // Turn off rendering to improve speed.
@@ -2969,6 +3021,69 @@ void QgsLegend::removeSelectedLayers()
 
   // Turn on rendering (if it was on previously)
   mMapCanvas->freeze( false );
+}
+#else
+void QgsLegend::removeSelectedLayers()
+{
+  // add Undo Remove command, this triggers it's redo command, which calls QgsLegend::redo()
+  mUndoStack.push( new QgsLegendUndoCommand( QgsLegendUndoCommand::Remove, selectedItems() ) );
+}
+#endif
+
+void QgsLegend::undo( QUndoCommand *cmd )
+{
+  if ( ! cmd )
+    return;
+
+  QgsDebugMsg( QString( "undo command: %1" ).arg( cmd->text() ) );
+
+  // Turn off rendering to improve speed.
+  mMapCanvas->freeze();
+
+  QgsLegendUndoCommand *rcmd = dynamic_cast< QgsLegendUndoCommand *>( cmd );
+  if ( rcmd )
+  {
+    foreach ( QTreeWidgetItem *item, rcmd->items() )
+    {
+      QTreeWidgetItem *parent = rcmd->parents().value( item, NULL );
+      if ( ! parent || parent == invisibleRootItem() )
+      {
+        insertTopLevelItem( 0, item );
+      }
+      else
+      {
+        parent->addChild( item );
+      }
+    }
+  }
+
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->freeze( false );
+
+}
+
+void QgsLegend::redo( QUndoCommand *cmd )
+{
+  if ( ! cmd )
+    return;
+
+  QgsDebugMsg( QString( "redo command: %1" ).arg( cmd->text() ) );
+
+  // Turn off rendering to improve speed.
+  mMapCanvas->freeze();
+
+  QgsLegendUndoCommand *rcmd = dynamic_cast< QgsLegendUndoCommand *>( cmd );
+  if ( rcmd )
+  {
+    foreach ( QTreeWidgetItem *item, rcmd->items() )
+    {
+      removeItem( item );
+    }
+  }
+
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->freeze( false );
+
 }
 
 void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs )
