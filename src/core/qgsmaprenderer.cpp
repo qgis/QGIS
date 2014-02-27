@@ -30,7 +30,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-
 #include <QDomDocument>
 #include <QDomNode>
 #include <QMutexLocker>
@@ -645,21 +644,9 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     updateFullExtent();
     mLastExtent.setMinimal();
 
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
+    Q_NOWARN_DEPRECATED_PUSH
     emit hasCrsTransformEnabled( enabled ); // deprecated
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+    Q_NOWARN_DEPRECATED_POP
 
     emit hasCrsTransformEnabledChanged( enabled );
   }

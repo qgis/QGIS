@@ -404,6 +404,23 @@ typedef QMap<QString, QString> QgsStringMap;
  *  KEEP IN SYNC WITH qgssize defined in SIP! */
 typedef unsigned long long qgssize;
 
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#define Q_NOWARN_DEPRECATED_PUSH \
+    _Pragma("GCC diagnostic push") \
+    _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#define Q_NOWARN_DEPRECATED_POP \
+    _Pragma("GCC diagnostic pop")
+#elif defined(_MSC_VER)
+#define Q_NOWARN_DEPRECATED_PUSH \
+    __pragma(warning(push)) \
+    __pragma(warning(disable:4996))
+#define Q_NOWARN_DEPRECATED_POP \
+    __pragma(warning(pop))
+#else
+#define Q_NOWARN_DEPRECATED_PUSH
+#define Q_NOWARN_DEPRECATED_POP
+#endif
+
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32
