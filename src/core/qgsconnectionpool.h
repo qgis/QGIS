@@ -43,6 +43,9 @@
  * - being derived from QObject
  * - calling initTimer( this ) in constructor
  * - having handleConnectionExpired() slot that calls onConnectionExpired()
+ * - having startExpirationTimer(), stopExpirationTimer() slots to start/stop the expiration timer
+ *
+ * For an example on how to use the template class, have a look at the implementation in postgres/spatialite providers.
  */
 template <typename T>
 class QgsConnectionPoolGroup
@@ -88,10 +91,8 @@ class QgsConnectionPoolGroup
           // no need to run if nothing can expire
           if ( conns.isEmpty() )
           {
-            if ( QThread::currentThread() == qApp->thread() )
-              expirationTimer->stop();
-            else
-              QgsDebugMsg( "expirationTimer not stopped from thread" );  // TODO use signals in that case?
+            // will call the slot directly or queue the call (if the object lives in a different thread)
+            QMetaObject::invokeMethod( expirationTimer->parent(), "stopExpirationTimer" );
           }
 
           return i.c;
@@ -120,10 +121,8 @@ class QgsConnectionPoolGroup
 
       if ( !expirationTimer->isActive() )
       {
-        if ( QThread::currentThread() == qApp->thread() )
-          expirationTimer->start();
-        else
-          QgsDebugMsg( "expirationTimer not started from thread" );  // TODO use signals in that case?
+        // will call the slot directly or queue the call (if the object lives in a different thread)
+        QMetaObject::invokeMethod( expirationTimer->parent(), "startExpirationTimer" );
       }
 
       connMutex.unlock();

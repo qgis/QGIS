@@ -46,6 +46,8 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
+    void startExpirationTimer() { expirationTimer->start(); }
+    void stopExpirationTimer() { expirationTimer->stop(); }
 
   protected:
     Q_DISABLE_COPY( QgsPostgresConnPoolGroup )
