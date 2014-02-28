@@ -445,16 +445,17 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
 
   mDiagrams = true;
 
-  QgsDiagramLayerSettings diagSettings = *layer->diagramLayerSettings();
+  const QgsDiagramRendererV2* diagRenderer = layer->diagramRenderer();
+  const QgsDiagramLayerSettings* diagSettings = layer->diagramLayerSettings();
 
-  mContext.labelingEngine()->addDiagramLayer( layer, &diagSettings );
+  mContext.labelingEngine()->addDiagramLayer( layer, diagSettings ); // will make internal copy of diagSettings + initialize it
 
   //add attributes needed by the diagram renderer
-  QList<QString> att = layer->diagramRenderer()->diagramAttributes();
+  QList<QString> att = diagRenderer->diagramAttributes();
   QList<QString>::const_iterator attIt = att.constBegin();
   for ( ; attIt != att.constEnd(); ++attIt )
   {
-    QgsExpression* expression = layer->diagramRenderer()->diagram()->getExpression( *attIt, &mFields );
+    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, &mFields );
     QStringList columns = expression->referencedColumns();
     QStringList::const_iterator columnsIterator = columns.constBegin();
     for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
@@ -469,7 +470,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   {
     if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
     {
-      QgsExpression* expression = layer->diagramRenderer()->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &mFields );
+      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &mFields );
       QStringList columns = expression->referencedColumns();
       QStringList::const_iterator columnsIterator = columns.constBegin();
       for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
@@ -487,8 +488,8 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   }
 
   //and the ones needed for data defined diagram positions
-  if ( diagSettings.xPosColumn != -1 )
-    attributeNames << mFields.at( diagSettings.xPosColumn ).name();
-  if ( diagSettings.yPosColumn != -1 )
-    attributeNames << mFields.at( diagSettings.yPosColumn ).name();
+  if ( diagSettings->xPosColumn != -1 )
+    attributeNames << mFields.at( diagSettings->xPosColumn ).name();
+  if ( diagSettings->yPosColumn != -1 )
+    attributeNames << mFields.at( diagSettings->yPosColumn ).name();
 }

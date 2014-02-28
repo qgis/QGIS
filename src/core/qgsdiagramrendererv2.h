@@ -88,6 +88,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     const QgsCoordinateTransform* ct;
     const QgsMapToPixel* xform;
     QList<QgsPalGeometry*> geometries;
+    QgsFields fields;
 
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)

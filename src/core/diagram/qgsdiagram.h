@@ -54,6 +54,9 @@ class CORE_EXPORT QgsDiagram
     virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
 
   protected:
+    QgsDiagram();
+    QgsDiagram( const QgsDiagram& other );
+
     /** Changes the pen width to match the current settings and rendering context
      *  @param pen The pen to modify
      *  @param s   The settings that specify the pen width

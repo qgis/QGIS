@@ -744,7 +744,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx );
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s );
+    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s );
     //! hook called when drawing for every feature in a layer
     virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );

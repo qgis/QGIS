@@ -3342,20 +3342,25 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   return 1; // init successful
 }
 
-int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s )
+int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s )
 {
   Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), -1, -1, pal::Arrangement( s->placement ), METER, s->priority, s->obstacle, true, true );
   l->setArrangementFlags( s->placementFlags );
 
-  s->palLayer = l;
-  s->ct = 0;
-  if ( mMapSettings->hasCrsTransformEnabled() )
-    s->ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
-
-  s->xform = &mMapSettings->mapToPixel();
   mActiveDiagramLayers.insert( layer->id(), *s );
+  // initialize the local copy
+  QgsDiagramLayerSettings& s2 = mActiveDiagramLayers[layer->id()];
 
-  mActiveDiagramLayers[ layer->id()].renderer = layer->diagramRenderer()->clone();
+  s2.palLayer = l;
+  s2.ct = 0;
+  if ( mMapSettings->hasCrsTransformEnabled() )
+    s2.ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
+
+  s2.xform = &mMapSettings->mapToPixel();
+
+  s2.fields = layer->pendingFields();
+
+  s2.renderer = layer->diagramRenderer()->clone();
 
   return 1;
 }
@@ -3409,7 +3414,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
     }
 
     //append the diagram attributes to lbl
-    lbl->setDiagramAttributes( feat.attributes(), feat.fields() );
+    lbl->setDiagramAttributes( feat.attributes() );
   }
 
   //  feature to the layer
@@ -3934,6 +3939,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       {
         if ( QString( dit.key() + "d" ) == layerName )
         {
+          feature.setFields( &dit.value().fields );
           palGeometry->feature( feature );
           QgsPoint outPt = xform.transform(( *it )->getX(), ( *it )->getY() );
           dit.value().renderer->renderDiagram( feature, context, QPointF( outPt.x(), outPt.y() ) );

@@ -118,13 +118,12 @@ class QgsPalGeometry : public PalGeometry
 
     QFontMetricsF* getLabelFontMetrics() { return mFontMetrics; }
 
-    void setDiagramAttributes( const QgsAttributes& attrs, const QgsFields* fields ) { mDiagramAttributes = attrs; mDiagramFields = fields; }
+    void setDiagramAttributes( const QgsAttributes& attrs ) { mDiagramAttributes = attrs; }
     const QgsAttributes& diagramAttributes() { return mDiagramAttributes; }
 
     void feature( QgsFeature& feature )
     {
       feature.setFeatureId( mId );
-      feature.setFields( mDiagramFields, false );
       feature.setAttributes( mDiagramAttributes );
       feature.setValid( true );
     }
@@ -147,7 +146,6 @@ class QgsPalGeometry : public PalGeometry
 
     /**Stores attribute values for diagram rendering*/
     QgsAttributes mDiagramAttributes;
-    const QgsFields* mDiagramFields;
 };
 
 #endif //QGSPALGEOMETRY_H

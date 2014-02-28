@@ -92,7 +92,7 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! @note: this method was added in version 1.9
     virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
+    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
     //! called for every feature
     virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
