@@ -1015,11 +1015,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
 
   }
-  if ( featureCounter == 0 )
-    startGetFeature( request, format, layerCrs, &searchRect );
 
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  endGetFeature( request, format );
+  if ( featureCounter == 0 )
+    throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
+  else
+    endGetFeature( request, format );
 
   return 0;
 }

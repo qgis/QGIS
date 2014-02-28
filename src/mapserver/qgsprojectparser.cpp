@@ -836,7 +836,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
   }
 }
 
-QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName, bool useCache ) const
+QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& aTypeName, bool useCache ) const
 {
   QList<QgsMapLayer*> layerList;
 
@@ -844,26 +844,36 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName
   {
     return layerList;
   }
-
   QStringList wfsLayersId = wfsLayers();
+
+  QStringList typeNameList;
+  if ( aTypeName != "" )
+  {
+    QStringList typeNameSplit = aTypeName.split( "," );
+    foreach ( const QString &str, typeNameSplit )
+    {
+      if ( str.contains( ":" ) )
+        typeNameList << str.section( ":", 1, 1 );
+      else
+        typeNameList << str;
+    }
+  }
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      QgsMapLayer *mLayer = createLayerFromElement( elem, useCache );
+      QgsMapLayer *mLayer = createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
-      if ( !layer || !wfsLayersId.contains( layer->id() ) )
-        return layerList;
+      if ( !layer )
+        continue;
 
       QString typeName = layer->name();
       typeName = typeName.replace( " ", "_" );
-      if ( tName == typeName )
-      {
+
+      if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
         layerList.push_back( mLayer );
-        return layerList;
-      }
     }
   }
   return layerList;
