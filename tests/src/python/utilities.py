@@ -13,6 +13,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import platform
+import tempfile
 import qgis
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
@@ -220,6 +222,38 @@ def compareWkt(a, b, tol=0.000001):
             return False
 
     return True
+
+
+def getTempfilePath(sufx='png'):
+    """
+    :returns: Path to empty tempfile ending in defined suffix
+    Caller should delete tempfile if not used
+    """
+    tmp = tempfile.NamedTemporaryFile(
+        suffix=".{0}".format(sufx), delete=False)
+    filepath = tmp.name
+    tmp.close()
+    return filepath
+
+
+def getExecutablePath(exe):
+    """
+    :param exe: Name of executable, e.g. lighttpd
+    :returns: Path to executable
+    """
+    exe_exts = []
+    if (platform.system().lower().startswith('win') and
+            "PATHEXT" in os.environ):
+        exe_exts = os.environ["PATHEXT"].split(os.pathsep)
+
+    for path in os.environ["PATH"].split(os.pathsep):
+        exe_path = os.path.join(path, exe)
+        if os.path.exists(exe_path):
+            return exe_path
+        for ext in exe_exts:
+            if os.path.exists(exe_path + ext):
+                return exe_path
+    return ''
 
 
 def getTestFontFamily():

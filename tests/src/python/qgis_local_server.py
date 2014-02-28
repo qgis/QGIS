@@ -26,6 +26,7 @@ import tempfile
 
 from utilities import (
     unitTestDataPath,
+    getExecutablePath,
     openInBrowserTab
 )
 
@@ -268,8 +269,8 @@ class QgisLocalServer(object):
 
         chkd = ''
         for fcgi, web in servers:
-            fcgi_path = self._exe_path(fcgi)
-            web_path = self._exe_path(web)
+            fcgi_path = getExecutablePath(fcgi)
+            web_path = getExecutablePath(web)
             if fcgi_path and web_path:
                 self._fcgiserv_path = fcgi_path
                 self._webserv_path = web_path
