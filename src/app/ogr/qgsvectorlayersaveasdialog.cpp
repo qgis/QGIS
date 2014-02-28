@@ -87,7 +87,6 @@ void QgsVectorLayerSaveAsDialog::setup()
   mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
   mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
   on_mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
-  mOptionsButton->setChecked( settings.value( "/UI/vectorLayerSaveAsOptionsVisible" ).toBool() );
 }
 
 QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( const QMap<QString, QgsVectorFileWriter::Option*>& options )
@@ -170,7 +169,6 @@ void QgsVectorLayerSaveAsDialog::accept()
   settings.setValue( "/UI/lastVectorFileFilterDir", QFileInfo( filename() ).absolutePath() );
   settings.setValue( "/UI/lastVectorFormat", format() );
   settings.setValue( "/UI/encoding", encoding() );
-  settings.setValue( "/UI/vectorLayerSaveAsOptionsVisible", mOptionsButton->isChecked() );
   QDialog::accept();
 }
 
@@ -452,9 +450,4 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   }
   mScaleSpinBox->setEnabled( scaleEnabled );
   mScaleLabel->setEnabled( scaleEnabled );
-}
-
-void QgsVectorLayerSaveAsDialog::on_mOptionsButton_toggled( bool checked )
-{
-  mOptionsGroupBox->setVisible( checked );
 }
