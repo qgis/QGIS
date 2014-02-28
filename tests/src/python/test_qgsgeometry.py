@@ -911,7 +911,7 @@ class TestQgsGeometry(TestCase):
         polygon = QgsGeometry.fromWkt("POLYGON((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))")
 
         assert polygon.deleteVertex(2), "Delete vertex 2 failed"
-        print "FIXME: exportToWkt doesn't put a blanks behind the comma"
+        print "FIXME: exportToWkt doesn't put a blank behind the comma"
         expwkt = "POLYGON((0 0,1 0,2 1,2 2,0 2,0 0))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )

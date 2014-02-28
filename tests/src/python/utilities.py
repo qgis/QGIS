@@ -47,7 +47,6 @@ CANVAS = None
 PARENT = None
 IFACE = None
 GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
-GOOGLECRS = 900913  # constant for EPSG:GOOGLECRS Google Mercator id
 
 FONTSLOADED = False
 
@@ -201,11 +200,12 @@ def writeShape(theMemoryLayer, theFileName):
 
 
 def compareWkt(a, b, tol=0.000001):
-    r = re.compile( "-?\d+(?:\.\d+)?(?:[eE]\d+)?" )
+    r0 = re.compile( "-?\d+(?:\.\d+)?(?:[eE]\d+)?" )
+    r1 = re.compile( "\s*,\s*" )
 
     # compare the structure
-    a0 = r.sub( "#", a )
-    b0 = r.sub( "#", b )
+    a0 = r1.sub( ",", r0.sub( "#", r ) )
+    b0 = r1.sub( ",", r0.sub( "#", b ) )
     if a0 != b0:
         return False
 
