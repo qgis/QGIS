@@ -235,7 +235,7 @@ class FcgiServerProcess(ServerProcess):
                 pass
 
 
-# noinspection PyPep8Naming
+# noinspection PyPep8Naming,PyShadowingNames
 class QgisLocalServer(object):
 
     def __init__(self, fcgi_bin):
@@ -611,6 +611,7 @@ class QgisLocalServer(object):
             subprocess.call([item])
         else:  # ?
             pass
+
 
 # noinspection PyPep8Naming
 def getLocalServer():

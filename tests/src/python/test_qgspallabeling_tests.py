@@ -25,6 +25,7 @@ from utilities import (
     svgSymbolsPath
 )
 
+
 # noinspection PyPep8Naming
 class TestPointBase(object):
 
@@ -77,7 +78,7 @@ class TestPointBase(object):
 
         self.lyr.shapeDraw = True
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
-        self.lyr.shapeOffset = QPointF(-2900.0, -450.0 )
+        self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
         self.checkTest()
 
     def test_background_svg(self):
@@ -116,7 +117,7 @@ class TestPointBase(object):
         self.lyr.shapeSize = QPointF(100.0, 0.0)
 
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
-        self.lyr.shapeOffset = QPointF(-2850.0, 500.0 )
+        self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
         self.checkTest()
 
     def test_partials_labels_enabled(self):
