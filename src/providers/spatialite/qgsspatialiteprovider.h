@@ -154,6 +154,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     bool isValid();
 
+    /**Describes if provider has save and load style support
+       @return true in case saving style to db is supported by this provider*/
+    virtual bool isSaveAndLoadStyleToDBSupported() { return true; }
+
     /**Adds a list of features
       @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist );
