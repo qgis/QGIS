@@ -174,6 +174,51 @@ void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
   Q_UNUSED( context );
 }
 
+void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  QPainter* p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  if ( mDrawInsidePolygon )
+  {
+    //only drawing the line on the interior of the polygon, so set clip path for painter
+    p->save();
+    QPainterPath clipPath;
+    clipPath.addPolygon( points );
+
+    if ( rings != NULL )
+    {
+      //add polygon rings
+      QList<QPolygonF>::const_iterator it = rings->constBegin();
+      for ( ; it != rings->constEnd(); ++it )
+      {
+        QPolygonF ring = *it;
+        clipPath.addPolygon( ring );
+      }
+    }
+
+    //use intersect mode, as a clip path may already exist (eg, for composer maps)
+    p->setClipPath( clipPath, Qt::IntersectClip );
+  }
+
+  renderPolyline( points, context );
+  if ( rings )
+  {
+    foreach ( const QPolygonF& ring, *rings )
+      renderPolyline( ring, context );
+  }
+
+  if ( mDrawInsidePolygon )
+  {
+    //restore painter to reset clip path
+    p->restore();
+  }
+
+}
+
 void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
@@ -196,15 +241,6 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
-  if ( mDrawInsidePolygon )
-  {
-    //only drawing the line on the interior of the polygon, so set clip path for painter
-    p->save();
-    QPainterPath clipPath;
-    clipPath.addPolygon( points );
-    p->setClipPath( clipPath, Qt::IntersectClip );
-  }
-
   if ( offset == 0 )
   {
     p->drawPolyline( points );
@@ -213,12 +249,6 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   {
     double scaledOffset = offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
     p->drawPolyline( ::offsetLine( points, scaledOffset ) );
-  }
-
-  if ( mDrawInsidePolygon )
-  {
-    //restore painter to reset clip path
-    p->restore();
   }
 }
 
