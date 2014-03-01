@@ -62,7 +62,8 @@ class TestServerBase(TestQgsPalLabeling):
 
     @classmethod
     def setUpClass(cls):
-        TestQgsPalLabeling.setUpClass()
+        if not cls._BaseSetup:
+            TestQgsPalLabeling.setUpClass()
         MAPSERV.startup()
         MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qml'))
 
@@ -73,9 +74,8 @@ class TestServerBase(TestQgsPalLabeling):
             os.path.join(MAPSERV.web_dir(), cls._TestProjName))
 
         # the blue background (set via layer style) to match renderchecker's
-        cls._BkgrdLayer = TestQgsPalLabeling.loadFeatureLayer('background')
+        TestQgsPalLabeling.loadFeatureLayer('background', True)
         cls._CheckMismatch = 200  # default for server tests; mismatch expected
-        cls._CheckGroup = ''  # default '' will check against server control
 
         settings = QSettings()
         # noinspection PyArgumentList
@@ -87,7 +87,7 @@ class TestServerBase(TestQgsPalLabeling):
         """Run after all tests"""
         TestQgsPalLabeling.tearDownClass()
         # layers removed, save empty project file
-        cls._TestProj.write()
+        # cls._TestProj.write()
         if "PAL_SERVER_TEMP" in os.environ:
             MAPSERV.stop_processes()
             MAPSERV.open_temp_dir()
@@ -132,16 +132,25 @@ class TestServerBase(TestQgsPalLabeling):
 
 class TestServerPoint(TestServerBase, TestPointBase):
 
+    layer = None
+    """:type: QgsVectorLayer"""
+
     @classmethod
     def setUpClass(cls):
         TestServerBase.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
+    @classmethod
+    def tearDownClass(cls):
+        TestServerBase.tearDownClass()
+        cls._MapRegistry.removeMapLayer(cls.layer.id())
+        cls.layer = None
+
     def setUp(self):
         """Run before each test."""
         self.configTest('pal_server', 'sp')
         TestQgsPalLabeling.setDefaultEngineSettings()
-        self.lyr = self.defaultSettings()
+        self.lyr = self.defaultLayerSettings()
         self.params = self.defaultWmsParams('point')
         self._TestImage = ''
 
@@ -161,18 +170,15 @@ class TestServerPoint(TestServerBase, TestPointBase):
         # print self._TestImage.__repr__()
         self.saveContolImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
-        # gp = kwargs['grpprefix'] if 'grpprefix' in kwargs else ''
         self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
-                                          imgpath=self._TestImage,
-                                          grpprefix=self._CheckGroup))
+                                          imgpath=self._TestImage))
 
 
 class TestServerVsCanvasPoint(TestServerPoint):
 
-    @classmethod
-    def setUpClass(cls):
-        TestServerPoint.setUpClass()
-        cls._CheckGroup = 'pal_canvas'
+    def setUp(self):
+        super(TestServerVsCanvasPoint, self).setUp()
+        self.configTest('pal_canvas', 'sp')
 
 
 if __name__ == '__main__':

@@ -30,7 +30,7 @@ from utilities import (
 class TestPointBase(object):
 
     def __init__(self):
-        """Dummy assignments, intended to be overriden in subclasses"""
+        """Dummy assignments, intended to be overridden in subclasses"""
         self.lyr = QgsPalLayerSettings()
         """:type: QgsPalLayerSettings"""
         # noinspection PyArgumentList
@@ -42,7 +42,7 @@ class TestPointBase(object):
         """:type: QgsMapCanvas"""
 
     def checkTest(self, **kwargs):
-        """Intended to be overriden in subclasses"""
+        """Intended to be overridden in subclasses"""
         pass
 
     def test_default_label(self):
@@ -151,13 +151,26 @@ def suiteTests():
     """
     return {
         'sp_suite': [
+            # 'test_default_label',
+            # 'test_text_size_map_unit',
+            # 'test_text_color',
+            # 'test_background_rect',
+            # 'test_background_rect_w_offset',
             # 'test_background_svg',
-            'test_background_svg_w_offset',
+            # 'test_background_svg_w_offset',
+            # 'test_partials_labels_enabled',
+            # 'test_partials_labels_disabled',
         ],
         'sp_vs_suite': [
-            # 'test_background_svg',
-            'test_background_svg_w_offset',
+            # 'test_default_label',
+            # 'test_text_size_map_unit',
+            # 'test_text_color',
+            # 'test_background_rect',
             # 'test_background_rect_w_offset',
+            # 'test_background_svg',
+            # 'test_background_svg_w_offset',
+            # 'test_partials_labels_enabled',
+            # 'test_partials_labels_disabled',
         ]
     }
 

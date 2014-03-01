@@ -41,20 +41,25 @@ from test_qgspallabeling_tests import (
 
 class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
 
+    layer = None
+
     @classmethod
     def setUpClass(cls):
-        TestQgsPalLabeling.setUpClass()
+        if not cls._BaseSetup:
+            TestQgsPalLabeling.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+    @classmethod
+    def tearDownClass(cls):
+        TestQgsPalLabeling.tearDownClass()
+        cls._MapRegistry.removeMapLayer(cls.layer.id())
+        cls.layer = None
 
     def setUp(self):
         """Run before each test."""
         self.configTest('pal_canvas', 'sp')
         TestQgsPalLabeling.setDefaultEngineSettings()
-        self.lyr = self.defaultSettings()
-
-    def tearDown(self):
-        """Run after each test."""
-        pass
+        self.lyr = self.defaultLayerSettings()
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)

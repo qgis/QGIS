@@ -84,6 +84,7 @@ class TestQgsPalLabeling(TestCase):
     """:type: QgsPalLabeling"""
     _PalEngine = None
     """:type: QgsLabelingEngineInterface"""
+    _BaseSetup = False
 
     @classmethod
     def setUpClass(cls):
@@ -103,6 +104,7 @@ class TestQgsPalLabeling(TestCase):
         cls._TestGroup = ''
         cls._TestGroupPrefix = ''
         cls._TestGroupAbbr = ''
+        cls._TestGroupCanvasAbbr = ''
         cls._TestImage = ''
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
@@ -133,6 +135,8 @@ class TestQgsPalLabeling(TestCase):
                'SKIPPING TEST SUITE')
         assert cls._PalEngine, msg
 
+        cls._BaseSetup = True
+
     @classmethod
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labelling"""
@@ -143,18 +147,22 @@ class TestQgsPalLabeling(TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        cls.removeAllLayers()
+        pass
+        # cls.removeAllLayers()
 
     @classmethod
     def removeAllLayers(cls):
         cls._MapRegistry.removeAllMapLayers()
+        cls._MapSettings.setLayers([])
 
     @classmethod
     def getTestFont(cls):
         return QFont(cls._TestFont)
 
     @classmethod
-    def loadFeatureLayer(cls, table):
+    def loadFeatureLayer(cls, table, chk=False):
+        if chk and cls._MapRegistry.mapLayersByName(table):
+            return
         uri = QgsDataSourceURI()
         uri.setDatabase(cls._PalFeaturesDb)
         uri.setDataSource('', table, 'geometry')
@@ -162,9 +170,12 @@ class TestQgsPalLabeling(TestCase):
         # .qml should contain only style for symbology
         vlayer.loadNamedStyle(os.path.join(cls._PalDataDir,
                                            '{0}.qml'.format(table)))
+        # qDebug('render_lyr = {0}'.format(repr(vlayer)))
         cls._MapRegistry.addMapLayer(vlayer)
         # place new layer on top of render stack
-        render_lyrs = [vlayer.id()] + list(cls._MapSettings.layers())
+        render_lyrs = [vlayer.id()]
+        render_lyrs.extend(cls._MapSettings.layers())
+        # qDebug('render_lyrs = {0}'.format(repr(render_lyrs)))
         cls._MapSettings.setLayers(render_lyrs)
 
         # zoom to aoi
@@ -199,10 +210,10 @@ class TestQgsPalLabeling(TestCase):
         self._Test = '{0}_{1}'.format(self._TestGroupAbbr,
                                       self._TestFunction.replace('test_', ''))
 
-    def defaultSettings(self):
+    def defaultLayerSettings(self):
         lyr = QgsPalLayerSettings()
         lyr.enabled = True
-        lyr.fieldName = 'text'  # default in data sources
+        lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
         font.setPointSize(48)
         lyr.textFont = font
@@ -226,25 +237,31 @@ class TestQgsPalLabeling(TestCase):
                     res[attr] = value
         return res
 
+    def controlImagePath(self, grpprefix=''):
+        if not grpprefix:
+            grpprefix = self._TestGroupPrefix
+        return os.path.join(self._TestDataDir, 'control_images',
+                            'expected_' + grpprefix,
+                            self._Test, self._Test + '.png')
+
     def saveContolImage(self, tmpimg=''):
         # don't save control images for RenderVsOtherOutput (Vs) tests, since
         # those control images belong to a different test result
         if ('PAL_CONTROL_IMAGE' not in os.environ
                 or 'Vs' in self._TestGroup):
             return
-        testgrpdir = 'expected_' + self._TestGroupPrefix
-        testdir = os.path.join(self._TestDataDir, 'control_images',
-                               testgrpdir, self._Test)
+        imgpath = self.controlImagePath()
+        testdir = os.path.dirname(imgpath)
         if not os.path.exists(testdir):
             os.makedirs(testdir)
-        imgbasepath = os.path.join(testdir, self._Test)
-        imgpath = imgbasepath + '.png'
+        imgbasepath = \
+            os.path.join(testdir,
+                         os.path.splitext(os.path.basename(imgpath))[0])
         for f in glob.glob(imgbasepath + '.*'):
             if os.path.exists(f):
                 os.remove(f)
-        if tmpimg:
-            if os.path.exists(tmpimg):
-                shutil.copyfile(tmpimg, imgpath)
+        if tmpimg and os.path.exists(tmpimg):
+            shutil.copyfile(tmpimg, imgpath)
         else:
             self._Map.render()
             self._Canvas.saveAsImage(imgpath)
@@ -262,6 +279,9 @@ class TestQgsPalLabeling(TestCase):
         """
         if not grpprefix:
             grpprefix = self._TestGroupPrefix
+        ctl_path = self.controlImagePath(grpprefix)
+        if not os.path.exists(ctl_path):
+            raise OSError('Missing control image: {0}'.format(ctl_path))
         chk = QgsRenderChecker()
         chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
@@ -310,7 +330,7 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def test_layer_pal_activated(self):
         # Verify, via engine, that PAL labeling can be activated for layer
-        lyr = self.defaultSettings()
+        lyr = self.defaultLayerSettings()
         lyr.writeToLayer(self.layer)
         msg = '\nLayer labeling not activated, as reported by labelingEngine'
         self.assertTrue(self._PalEngine.willUseLayer(self.layer), msg)
@@ -318,7 +338,7 @@ class TestPALConfig(TestQgsPalLabeling):
     def test_write_read_settings(self):
         # Verify written PAL settings are same when read from layer
         # load and write default test settings
-        lyr1 = self.defaultSettings()
+        lyr1 = self.defaultLayerSettings()
         lyr1dict = self.settingsDict(lyr1)
         # print lyr1dict
         lyr1.writeToLayer(self.layer)
