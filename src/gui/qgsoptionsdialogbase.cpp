@@ -22,17 +22,17 @@
 #include <QListWidget>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QSettings>
 #include <QStackedWidget>
 #include <QSplitter>
 #include <QTimer>
 
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl )
+QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl, QSettings* settings )
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )
     , mDialogTitle( "" )
+    , mSettings( settings )
 {
 }
 
@@ -40,15 +40,31 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 {
   if ( mInit )
   {
-    QSettings settings;
-    settings.setValue( QString( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
-    settings.setValue( QString( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
-    settings.setValue( QString( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
+    mSettings->setValue( QString( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
+    mSettings->setValue( QString( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
+    mSettings->setValue( QString( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
   }
+
+  if ( mDelSettings ) // local settings obj to delete
+  {
+    delete mSettings;
+  }
+
+  mSettings = 0; // null the pointer (in case of outside settings obj)
 }
 
 void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
 {
+  // use pointer to app QSettings if no custom QSettings specified
+  // custom QSettings object may be from Python plugin
+  mDelSettings = false;
+
+  if ( !mSettings )
+  {
+    mSettings = new QSettings();
+    mDelSettings = true; // only delete obj created by class
+  }
+
   // save dialog title so it can be used to be concatenated
   // with category title in icon-only mode
   if ( title.isEmpty() )
@@ -76,8 +92,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
     return;
   }
 
-  QSettings settings;
-  int size = settings.value( "/IconSize", 24 ).toInt();
+  int size = mSettings->value( "/IconSize", 24 ).toInt();
   // buffer size to match displayed icon size in toolbars, and expected geometry restore
   // newWidth (above) may need adjusted if you adjust iconBuffer here
   int iconBuffer = 4;
@@ -115,6 +130,17 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
     restoreOptionsBaseUi( mDialogTitle );
 }
 
+void QgsOptionsDialogBase::setSettings( QSettings* settings )
+{
+  if ( mDelSettings ) // local settings obj to delete
+  {
+    delete mSettings;
+  }
+
+  mSettings = settings;
+  mDelSettings = false; // don't delete outside obj
+}
+
 void QgsOptionsDialogBase::restoreOptionsBaseUi( QString title )
 {
   if ( !mInit )
@@ -131,14 +157,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( QString title )
   // re-save original dialog title in case it was changed after dialog initialization
   mDialogTitle = windowTitle();
 
-  QSettings settings;
-  restoreGeometry( settings.value( QString( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+  restoreGeometry( mSettings->value( QString( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
   mOptListWidget->setMaximumWidth(
-    settings.value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
-  mOptSplitter->restoreState( settings.value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
-  int curIndx = settings.value( QString( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
+    mSettings->value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
+  mOptSplitter->restoreState( mSettings->value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+  int curIndx = mSettings->value( QString( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
   if ( mOptStackedWidget->count() < ( curIndx + 1 )
