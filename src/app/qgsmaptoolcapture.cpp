@@ -66,6 +66,7 @@ QgsMapToolCapture::~QgsMapToolCapture()
 void QgsMapToolCapture::deactivate()
 {
   delete mSnappingMarker;
+  mSnappingMarker = 0;
 
   QgsMapToolEdit::deactivate();
 }
