@@ -2052,8 +2052,6 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     insert += map[i].dst;
     values += QString( "%%1" ).arg( i + 1 );
-
-    qWarning( "%d: src=%s dst=%s idx=%d", i, map[i].src, map[i].dst, map[i].idx );
   }
 
   insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ")";
