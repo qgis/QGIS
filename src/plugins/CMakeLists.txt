@@ -16,6 +16,7 @@ ADD_SUBDIRECTORY(georeferencer)
 ADD_SUBDIRECTORY(gps_importer)
 ADD_SUBDIRECTORY(topology)
 ADD_SUBDIRECTORY(offline_editing)
+ADD_SUBDIRECTORY(heatmap)
 
 IF (POSTGRES_FOUND)
   ADD_SUBDIRECTORY(spit)
@@ -38,5 +39,3 @@ IF (QT_MOBILITY_SENSORS_FOUND)
 ENDIF (QT_MOBILITY_SENSORS_FOUND)
 
 # headers installed in qgis_core target
-
-SUBDIRS (heatmap)
