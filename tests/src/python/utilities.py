@@ -204,14 +204,14 @@ def compareWkt(a, b, tol=0.000001):
     r1 = re.compile( "\s*,\s*" )
 
     # compare the structure
-    a0 = r1.sub( ",", r0.sub( "#", r ) )
+    a0 = r1.sub( ",", r0.sub( "#", a ) )
     b0 = r1.sub( ",", r0.sub( "#", b ) )
     if a0 != b0:
         return False
 
     # compare the numbers with given tolerance
-    a0 = r.findall( a )
-    b0 = r.findall( b )
+    a0 = r0.findall( a )
+    b0 = r0.findall( b )
     if len(a0) != len(b0):
         return False
 
