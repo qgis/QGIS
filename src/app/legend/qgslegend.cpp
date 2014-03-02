@@ -34,6 +34,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsclipboard.h"
 #include "qgsmessagelog.h"
+#include "qgsmessagebar.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -83,6 +84,7 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
     , mChanging( false )
     , mUpdateDrawingOrder( true )
     , mGetLegendGraphicPopup( 0 )
+    , mLoadingLayers( false )
 {
   setObjectName( name );
 
@@ -100,6 +102,8 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ),
+           this, SLOT( layerLoaded( int, int ) ) );
 
   // connect map layer registry signal to legend
   connect( QgsMapLayerRegistry::instance(),
@@ -1162,14 +1166,17 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
     updateMapCanvasLayerSet();
     emit itemAdded( indexFromItem( llayer ) );
   }
+
   // first layer?
   if ( myFirstLayerFlag )
   {
     QgsMapLayer * myFirstLayer = theLayerList.at( 0 );
-    if ( !mMapCanvas->mapSettings().hasCrsTransformEnabled() )
+    if ( !mMapCanvas->mapSettings().hasCrsTransformEnabled() && !mLoadingLayers )
     {
       mMapCanvas->setDestinationCrs( myFirstLayer->crs() );
       mMapCanvas->setMapUnits( myFirstLayer->crs().mapUnits() );
+
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Destination CRS set to %1" ).arg( myFirstLayer->crs().authid() ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
     }
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
@@ -1177,7 +1184,8 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
   else
   {
     if ( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() &&
-         !mMapCanvas->mapSettings().hasCrsTransformEnabled() )
+         !mMapCanvas->mapSettings().hasCrsTransformEnabled() &&
+         !mLoadingLayers )
     {
       // Verify if all layers have the same CRS
       foreach ( QgsMapLayer *l, layers() )
@@ -1187,6 +1195,8 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
           // Set to the previous de facto used so that extent does not change
           mMapCanvas->setDestinationCrs( myPreviousCrs );
           mMapCanvas->setCrsTransformEnabled( true );
+
+          QgisApp::instance()->messageBar()->pushMessage( tr( "On the fly reprojection enabled." ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
           break;
         }
       }
@@ -3270,3 +3280,8 @@ QImage QgsLegend::getWmsLegendPixmap( QTreeWidgetItem *item )
   return rasterLayer->dataProvider()->getLegendGraphic( canvas()->scale() );
 }
 
+
+void QgsLegend::layerLoaded( int i, int n )
+{
+  mLoadingLayers = i < n;
+}

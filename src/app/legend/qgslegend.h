@@ -386,6 +386,9 @@ class QgsLegend : public QTreeWidget
      */
     void updateLegendItemSymbologies();
 
+    /** Slot to catch if layers are being loaded */
+    void layerLoaded( int i, int n );
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -592,6 +595,8 @@ class QgsLegend : public QTreeWidget
 
     //! popup QFrame containing WMS getLegendGraphic pixmap
     QFrame *mGetLegendGraphicPopup;
+
+    bool mLoadingLayers;
 
   signals:
     void itemAdded( QModelIndex index );
