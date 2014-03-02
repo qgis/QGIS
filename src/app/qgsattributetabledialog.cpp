@@ -316,6 +316,7 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
+  updateTitle();
 }
 
 void QgsAttributeTableDialog::filterSelected()
