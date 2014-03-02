@@ -197,6 +197,24 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
     double* ptr = ( double* )targetWkb;
     map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
+    // Check whether the LinearRing is really closed.
+    if ( isaLinearRing )
+    {
+      double x1, y1, x2, y2;
+
+      unsigned char* startWkbX = sourceWkb;
+      unsigned char* startWkbY = startWkbX + sizeOfDoubleX;
+      unsigned char* finalWkbX = sourceWkb + (numPoints - 1) * (sizeOfDoubleX + sizeOfDoubleY);
+      unsigned char* finalWkbY = finalWkbX + sizeOfDoubleX;
+
+      memcpy( &x1, startWkbX, sizeof( double ) );
+      memcpy( &y1, startWkbY, sizeof( double ) );
+      memcpy( &x2, finalWkbX, sizeof( double ) );
+      memcpy( &y2, finalWkbY, sizeof( double ) );
+
+      isaLinearRing = x1 == x2 && y1 == y2;
+    }
+
     // Process each vertex...
     for ( int i = 0, numPoints_i = ( isaLinearRing ? numPoints - 1 : numPoints ); i < numPoints_i; ++i )
     {
