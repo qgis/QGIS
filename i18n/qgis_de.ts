@@ -7616,17 +7616,17 @@ Funktioniert auf allen ändernbaren Layern</translation>
         <translation>Es können keine Vektorlayer geladen werden. Bitte QGIS-Installation überprüfen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproviderregistry.cpp" line="266"/>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="267"/>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
         <translation>Keine Datenlieferantenerweiterung verfügbar. Es können keine Vektorlayer geladen werden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproviderregistry.cpp" line="364"/>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="365"/>
         <source>Unable to instantiate the data provider plugin %1</source>
         <translation>Konnte den Datenlieferanten %1 nicht vorbereiten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproviderregistry.cpp" line="350"/>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="351"/>
         <source>Failed to load %1: %2</source>
         <translation>Konnte %1 nicht laden: %2</translation>
     </message>
@@ -10920,13 +10920,13 @@ SQL: %1</translation>
         <translation>Leeres Capabilities-Dokument</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="209"/>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="233"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="235"/>
         <source>Dom Exception</source>
         <translation>DOM-Ausnahme</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="213"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 This is probably due to an incorrect WMS Server URL.
 Response was:
@@ -10939,7 +10939,7 @@ Antwort war:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="235"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="237"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
 This might be due to an incorrect WMS Server URL.
 Tag:%3
@@ -10953,12 +10953,12 @@ Antwort war:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1461"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1463"/>
         <source>Generated default style</source>
         <translation>Erzeugte Vorgabestile</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1462"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1464"/>
         <source>Style was missing in capabilities</source>
         <translation>Stil fehlte in den Capabilities</translation>
     </message>
@@ -31550,7 +31550,7 @@ nicht angezeigt</translation>
     <name>QgsMapToolIdentify</name>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="266"/>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="503"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="502"/>
         <source>(clicked coordinate)</source>
         <translation>(Angeklickte Koordinate)</translation>
     </message>
@@ -31602,18 +31602,18 @@ nicht angezeigt</translation>
         <translation>Umfang</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="516"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="515"/>
         <source>no data</source>
         <translation>Leerwert</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="545"/>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="607"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="544"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="604"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="608"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="605"/>
         <source>Identify error</source>
         <translation>Abfragefehler</translation>
     </message>
@@ -50174,33 +50174,33 @@ Antwort war:
 <context>
     <name>QgsWmsCapabilitiesDownload</name>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1812"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1870"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
         <translation>%1 von %2 Bytes der Eigenschaften heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1826"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1884"/>
         <source>Capabilities request redirected.</source>
         <translation>Eigenschaften-Abfrage umgeleitet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1832"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1890"/>
         <source>Redirect loop detected: %1</source>
         <translation>Umleitungszyklus festgestellt: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1833"/>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1865"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1891"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1923"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1858"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1916"/>
         <source>empty of capabilities: %1</source>
         <translation>Eigenschaften leer: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1864"/>
+        <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1922"/>
         <source>Download of capabilities failed: %1</source>
         <translation>Eigenschaften-Abfrage gescheitert: %1</translation>
     </message>
@@ -50208,47 +50208,47 @@ Antwort war:
 <context>
     <name>QgsWmsImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2888"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3167"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
         <translation>Kartenabfrage-Fehler (Status: %1; Grund:%2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2891"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2913"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2922"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2930"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2952"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2956"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3170"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3192"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3201"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3209"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3231"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3235"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3191"/>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
         <translation>Geladenes Bild ist defekt [Content-Type:%1; URL: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2920"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3199"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
         <translation>Kartenabfrage-Fehler (Titel: %1; Fehler:%2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2926"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3205"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
         <translation>Kartenabfrage-Fehler (Status: %1; Antwort:%2; Content-Type: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2952"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3231"/>
         <source>Map request failed [error:%1 url:%2]</source>
         <translation>Kartenabfrage-Fehler [Fehler:%1; URL: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2956"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3235"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Nicht mehr als 100 Abfragefehler werden protokolliert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2968"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3247"/>
         <source>%1 of %2 bytes of map downloaded.</source>
         <translation>%1 von %2 Bytes der Karte heruntergeladen.</translation>
     </message>
@@ -50256,12 +50256,12 @@ Antwort war:
 <context>
     <name>QgsWmsProvider</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="996"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1002"/>
         <source>Dom Exception</source>
         <translation>DOM-Ausnahme</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="997"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1003"/>
         <source>Could not get WMS Service Exception: %1 at line %2 column %3
 
 Response was:
@@ -50274,88 +50274,88 @@ Antwort war:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1051"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1057"/>
         <source>Service Exception</source>
         <translation>Dienstausnahme</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1060"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1066"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Anfrage verlangt ein CRS für einen oder mehrere Layer, die der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1064"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1070"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Anfrage enthält ein SRS für einen oder mehrere Layer, die der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1068"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1074"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>GetMap-Anfrage für einen Layer, den der Server nicht anbietet oder GetFeature-Anfrage für einen Layer, der nicht auf der Karte angezeigt wird.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1073"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1079"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Anfrage für einen Layer in einem Stil, den der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1077"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1083"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>GetFeatureInfo-Anfrage wird auf einen Layer bezogen, der nicht als abfragbar deklariert ist.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1081"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1087"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>GetFeatureInfo-Anfrage enthält einen ungültigen X- oder Y-Wert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1085"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1091"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage entspricht dem aktuellen Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1090"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1096"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Wert des (optionalen) Aktualisierungssequenenzzählers der GetCapabilities-Anfrage ist größer als der aktuelle Wert des Aktualisierungssequenzzähler in den Dienstmetadaten.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1095"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1101"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Anfrage enthält keinen beispielhaften Dimensionswert, und der Server selbst definiert auch keinen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1100"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1106"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Anfrage enthält einen ungültigen beispielhaften Dimensionswert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1104"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1110"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Anfrage ist für eine optionale Operation, die der Server nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1115"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1121"/>
         <source>The WMS vendor also reported: </source>
         <translation>Der WMS-Betreiber meldete folgendes: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1320"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1532"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1771"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1962"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1337"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1547"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1806"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1994"/>
         <source>Property</source>
         <translation>Eigenschaft</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1323"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1535"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1774"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1965"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1340"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1550"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1809"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1997"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1423"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1440"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation>
@@ -50364,384 +50364,395 @@ Antwort war:
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1503"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1713"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1518"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1736"/>
         <source>Selected Layers</source>
         <translation>Gewählte Layer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1505"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1726"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1520"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1753"/>
         <source>Other Layers</source>
         <translation>Andere Layer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1511"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1526"/>
         <source>Tile Layer Properties</source>
         <translation>Kachellayer-Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1540"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1555"/>
         <source>WMS Version</source>
         <translation>WMS-Version</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2503"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2781"/>
         <source>Cannot parse getfeatureinfo: %1</source>
         <translation>Konnte GetFeatureInfo nicht interpretieren: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1344"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1450"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1548"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1361"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1467"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1563"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1352"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1458"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1556"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1369"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1475"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1571"/>
         <source>Abstract</source>
         <translation>Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1564"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1579"/>
         <source>Keywords</source>
         <translation>Schlüsselworte</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1572"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1587"/>
         <source>Online Resource</source>
         <translation>Online-Quelle</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1580"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1595"/>
         <source>Contact Person</source>
         <translation>Kontaktperson</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1592"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1607"/>
         <source>Fees</source>
         <translation>Gebühren</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1600"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1615"/>
         <source>Access Constraints</source>
         <translation>Zugriffsbeschränkungen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1608"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1705"/>
         <source>Image Formats</source>
         <translation>Bildformate</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1616"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1695"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1713"/>
         <source>Identify Formats</source>
         <translation>Abfrageformate</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1624"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1721"/>
         <source>Layer Count</source>
         <translation>Layeranzahl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1778"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1813"/>
         <source>Selected</source>
         <translation>Ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1363"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1371"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1379"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1781"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1380"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1388"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1396"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1816"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1363"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1371"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1379"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1781"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1380"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1388"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1396"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1816"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1336"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1353"/>
         <source>Visibility</source>
         <translation>Sichtbarkeit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="260"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="265"/>
         <source>Number of layers and styles don&apos;t match</source>
         <translation>Anzahl von Layern und Stilen stimmt nicht überein</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="795"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="801"/>
         <source>Getting tiles.</source>
         <translation>Lade Kacheln.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1339"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1356"/>
         <source>Visible</source>
         <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1339"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1356"/>
         <source>Hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1360"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1377"/>
         <source>Can Identify</source>
         <translation>Kann abgefragt werden</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1368"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1385"/>
         <source>Can be Transparent</source>
         <translation>Kann transparent sein</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1384"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1401"/>
         <source>Cascade Count</source>
         <translation>Kaskadiere Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1392"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1409"/>
         <source>Fixed Width</source>
         <translation>Feste Breite</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1417"/>
         <source>Fixed Height</source>
         <translation>Feste Höhe</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1410"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1420"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1427"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1437"/>
         <source>Available in CRS</source>
         <translation>Verfügbar in KBS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1433"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1450"/>
         <source>Available in style</source>
         <translation>Verfügbar im Stil</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1328"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1442"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1345"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1459"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1821"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1856"/>
         <source>Available Tilesets</source>
         <translation>Verfügbare Kachelsätze</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1837"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1988"/>
         <source>Cache stats</source>
         <translation>Cache-Statistik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="260"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="822"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="831"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2228"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2521"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2738"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2770"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2786"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="265"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="828"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="837"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2394"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2799"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3017"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3049"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3065"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="109"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="115"/>
         <source>Cannot parse URI</source>
         <translation>Konnte URI nicht parsen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="135"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="141"/>
         <source>Cannot calculate extent</source>
         <translation>Konnte Ausdehnung nicht berechnen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="128"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="134"/>
         <source>Cannot set CRS</source>
         <translation>Konnte KBS nicht setzen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="348"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="353"/>
         <source>Number of tile layers must be one</source>
         <translation>Anzahl der Kachellayer muss eins sein</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="355"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="360"/>
         <source>Tile layer not found</source>
         <translation>Kachellayer nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="411"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="416"/>
         <source>Tile layer or tile matrix set not found</source>
         <translation>Kachellayer oder Kachelmatrixsatz nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="531"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="536"/>
         <source>Getting map via WMS.</source>
         <translation>Lade Karte über WMS.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="822"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="828"/>
         <source>image is NULL</source>
         <translation>Bild ist NULL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="831"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="837"/>
         <source>unexpected image size</source>
         <translation>Unerwartete Bildgröße</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2762"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3041"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Status: %1
 Grund: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2737"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3016"/>
         <source>Redirect loop detected: %1</source>
         <translation>Umleitungszyklus festgestellt: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1056"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1062"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Anfrage enthält ein Format, dass der Server nicht anbietet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1468"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1485"/>
         <source>LegendURLs</source>
         <translation>LegendenURLs</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1643"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1623"/>
         <source>GetCapabilitiesUrl</source>
         <translation>GetCapabilities-URL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1650"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1630"/>
         <source>GetMapUrl</source>
         <translation>GetMap-URL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1653"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1660"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1667"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1633"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1640"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1647"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(gemeldet, aber ignoriert)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1664"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1644"/>
         <source>GetLegendGraphic</source>
         <translation>GetLegendGraphic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1756"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1780"/>
+        <source>Identifier</source>
+        <translation>Kennung</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1782"/>
+        <source>Tile mode</source>
+        <translation>Kachelmodus</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1791"/>
         <source>WMTS</source>
         <translation>WMTS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1760"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1795"/>
         <source>WMS-C</source>
         <translation>WMS-C</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1764"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1799"/>
         <source>Invalid tile mode</source>
         <translation>Ungültiger Kachelmodus</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1787"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1822"/>
         <source>Available Styles</source>
         <translation>Verfügbare Stile</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1800"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1805"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1835"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1840"/>
         <source>CRS</source>
         <translation>KBS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1808"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1843"/>
         <source>Bounding Box</source>
         <translation>Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1866"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1892"/>
         <source>Selected tile matrix set </source>
         <translation>Gewählter Kachelmatrixsatz </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1867"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1893"/>
         <source>Scale</source>
         <translation>Maßstab</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1868"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1894"/>
         <source>Tile size [px]</source>
         <translation>Kachengröße [px]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1869"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1895"/>
         <source>Tile size [mu]</source>
         <translation>Kachengröße [KE]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1870"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
         <source>Matrix size</source>
         <translation>Matrixgröße</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1871"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1897"/>
         <source>Matrix extent [mu]</source>
         <translation>Matrixgrenzen [KE]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1898"/>
         <source>Bounds</source>
         <translation>Grenzen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1873"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
         <source>Width</source>
         <translation>Breite</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1873"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
         <source>Height</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1874"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1874"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1875"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1901"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1875"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1901"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1905"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1931"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1957"/>
         <source>%n missing row(s)</source>
         <translation>
             <numerusform>Eine fehlende Zeile</numerusform>
@@ -50749,13 +50760,13 @@ Grund: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1906"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1932"/>
         <source>Layer&apos;s upper bound: %1</source>
         <translation>Obere Begrenzung des Layers: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1918"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1944"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1970"/>
         <source>%n missing column(s)</source>
         <translation>
             <numerusform>Eine fehlende Spalte</numerusform>
@@ -50763,118 +50774,118 @@ Grund: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1919"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1945"/>
         <source>Layer&apos;s left bound: %1</source>
         <translation>Linke Begrenzung des Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1932"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1958"/>
         <source>Layer&apos;s lower bound: %1</source>
         <translation>Untere Begrenzung des Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1945"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1971"/>
         <source>Layer&apos;s right bound: %1</source>
         <translation>Rechte Begrenzung des Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1969"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2001"/>
         <source>Hits</source>
         <translation>Treffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1975"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2007"/>
         <source>Misses</source>
         <translation>Fehlgriffe</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1981"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2013"/>
         <source>Errors</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2007"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2036"/>
         <source>Format not supported</source>
         <translation>Format nicht unterstützt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2026"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2056"/>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
         <translation>Kontext nicht vollständig angegeben (Ausmaß wurde definiert, aber Breite und Höhe nicht).</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2226"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2392"/>
         <source>Get feature info request error (Title:%1; Error:%2; URL: %3)</source>
         <translation>Abfrageanfragefehler (Titel:%1; Fehler: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2343"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2513"/>
         <source>GML schema is not valid</source>
         <translation>GML-Schema ist ungültig</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2349"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2519"/>
         <source>GML is not valid</source>
         <translation>GML ist ungültig</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2363"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2533"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2608"/>
         <source>Cannot identify</source>
         <translation>Abfrage gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2439"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2609"/>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
         <translation>Ergebnisüberprüfung fehlgeschlagen. %1 Objekttypen wurden aus dem gml (%2) geraten aber keine Objekte wurden analysiert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2476"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
         <source>identify request redirected.</source>
         <translation>Identify-Anfrage umgeleitet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2492"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2770"/>
         <source>Map getfeatureinfo error %1: %2</source>
         <translation>GetFeatureInfo-Fehler %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2519"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2797"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation>GetFeatureInfo-Fehler %1 [%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2730"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3009"/>
         <source>GetLegendGraphic request redirected.</source>
         <translation>GetLegendGraphic-Abfrage umgeleitet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2762"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3041"/>
         <source>GetLegendGraphic request error</source>
         <translation>GetLegendGraphic-Abfragefehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2769"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3048"/>
         <source>Returned legend image is flawed [URL: %1]</source>
         <translation>Geladenes Legendenbild ist defekt [URL: %1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2786"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3065"/>
         <source>Download of GetLegendGraphic failed: %1</source>
         <translation>GetLegendGraphic-Abfrage gescheitert: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2796"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3075"/>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
         <translation>%1 von %2 Bytes der Legendengrafik heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1376"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1393"/>
         <source>Can Zoom In</source>
         <translation>Kann herangezoomt werden</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="803"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="809"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
@@ -50883,7 +50894,7 @@ Grund: %2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="804"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="810"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation>
@@ -50892,7 +50903,7 @@ Grund: %2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="805"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="811"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation>
@@ -50901,7 +50912,7 @@ Grund: %2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="806"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="812"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation>
@@ -50910,53 +50921,52 @@ Grund: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1499"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1523"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1538"/>
         <source>Server Properties</source>
         <translation>Server-Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1634"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1653"/>
         <source>Tile Layer Count</source>
         <translation>Kachellayeranzahl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1673"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1660"/>
         <source>GetTileUrl</source>
         <translation>GetTileUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1682"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1669"/>
         <source>Tile templates</source>
         <translation>Kachelvorlagen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1694"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1681"/>
         <source>FeatureInfo templates</source>
         <translation>FeatureInfo-Vorlagen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1741"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1769"/>
         <source>Tileset Properties</source>
         <translation>Tileset-Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1515"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1530"/>
         <source>Cache Stats</source>
         <translation>Cache-Statistik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1657"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1637"/>
         <source>GetFeatureInfoUrl</source>
         <translation>GetFeatureInfoUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1108"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1114"/>
         <source>(No error code was reported)</source>
         <translation>(Kein Fehlercode zurückgegeben)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1112"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1118"/>
         <source>(Unknown error code)</source>
         <translation>(Unbekannter Fehlercode)</translation>
     </message>
@@ -50964,44 +50974,44 @@ Grund: %2</translation>
 <context>
     <name>QgsWmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3108"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3387"/>
         <source>Tile request error</source>
         <translation>Tile-Anfragefehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3108"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3387"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Status: %1
 Grund: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3128"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3407"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
         <translation>Kachelabfrage-Fehler (Titel: %1; Fehler: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3130"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3138"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3191"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3239"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3257"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3266"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3409"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3417"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3470"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3518"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3536"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3545"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3134"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3413"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
         <translation>Kachelabfrage-Fehler (Status: %1; Content-Typ: %2; Länge: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3190"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3469"/>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
         <translation>Geladenes Bild ist defekt [Content-Type:%1; URL: %2]</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3224"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3503"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
@@ -51010,7 +51020,7 @@ Grund: %2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3225"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3504"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation>
@@ -51019,7 +51029,7 @@ Grund: %2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3226"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3505"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation>
@@ -51028,7 +51038,7 @@ Grund: %2</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3227"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3506"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation>
@@ -51037,17 +51047,17 @@ Grund: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3239"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3518"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Nicht mehr als 100 Abfragefehler werden protokolliert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3256"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3535"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
         <translation>Maximale Wiederholungen erreicht. %1 Abfragen der Kachel %2 der Kachelabfrage %3 (url: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3265"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3544"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
         <translation>Wiederhole Kachelabfrage %1, Kachel %2 (Wiederholung %3)</translation>
     </message>
