@@ -111,10 +111,11 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   {
     // OSG_PLUGINS_PATH value set by CMake option
     QString ogsPlugins( OSG_PLUGINS_PATH );
-    if ( QGIS_MACAPP_BUNDLE > 0 && !QgsApplication::isRunningFromBuildDir() )
+    QString bundlePlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+    if ( QFile::exists( bundlePlugins ) )
     {
       // add internal osg plugin path if bundled osg
-      ogsPlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+      ogsPlugins = bundlePlugins;
     }
     if ( QFile::exists( ogsPlugins ) )
     {
