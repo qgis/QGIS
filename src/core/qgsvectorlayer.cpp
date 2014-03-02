@@ -129,6 +129,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
+    , mEditorLayout( GeneratedLayout )
     , mFeatureFormSuppress( SuppressDefault )
     , mCache( new QgsGeometryCache() )
     , mEditBuffer( 0 )
