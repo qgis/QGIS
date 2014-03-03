@@ -5624,23 +5624,23 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     if ( featureIt->geometry() )
     {
       // convert geometry to match destination layer
-      QgsGeometry* newGeometry = featureIt->geometry()->convertToType( pasteVectorLayer->geometryType(), QGis::isMultiType( pasteVectorLayer->wkbType() ) );
-      if ( newGeometry )
+      QGis::GeometryType destType = pasteVectorLayer->geometryType();
+      bool destIsMulti = QGis::isMultiType( pasteVectorLayer->wkbType() );
+      if ( destType != QGis::UnknownGeometry )
       {
-        // avoid intersection if enabled in digitize settings
+        QgsGeometry* newGeometry = featureIt->geometry()->convertToType( destType, destIsMulti );
+        if ( !newGeometry )
+        {
+          featureIt = features.erase( featureIt );
+          continue;
+        }
         featureIt->setGeometry( newGeometry );
-        featureIt->geometry()->avoidIntersections();
-        ++featureIt;
       }
-      else
-      {
-        featureIt = features.erase( featureIt );
-      }
+      // avoid intersection if enabled in digitize settings
+      featureIt->geometry()->avoidIntersections();
     }
-    else
-    {
-      ++featureIt;
-    }
+
+    ++featureIt;
   }
 
   pasteVectorLayer->addFeatures( features );
