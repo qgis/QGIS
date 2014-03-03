@@ -8177,7 +8177,7 @@ void QgisApp::displayMapToolMessage( QString message, QgsMessageBar::MessageLeve
   if ( tool )
   {
     mLastMapToolMessage = new QgsMessageBarItem( tool->toolName(), message, level, messageTimeout() );
-    QgisApp::instance()->messageBar()->pushItem( mLastMapToolMessage );
+    messageBar()->pushItem( mLastMapToolMessage );
   }
 }
 
