@@ -1791,7 +1791,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     bool skipAttributeCreation,
     QString *newFilename,
     SymbologyExport symbologyExport,
-    double symbologyScale )
+    double symbologyScale,
+    const QgsRectangle* filterExtent )
 {
   QgsCoordinateTransform* ct = 0;
   if ( destCRS && layer )
@@ -1800,7 +1801,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
-      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale );
+      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent );
   delete ct;
   return error;
 }
@@ -1812,13 +1813,13 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     const QString& driverName,
     bool onlySelected,
     QString *errorMessage,
-    const QStringList &datasourceOptions,  // added in 1.6
-    const QStringList &layerOptions,  // added in 1.6
-    bool skipAttributeCreation, // added in 1.6
-    QString *newFilename, // added in 1.9
-    SymbologyExport symbologyExport, //added in 2.0
-    double symbologyScale // added in 2.0
-                                                                         )
+    const QStringList &datasourceOptions,
+    const QStringList &layerOptions,
+    bool skipAttributeCreation,
+    QString *newFilename,
+    SymbologyExport symbologyExport,
+    double symbologyScale,
+    const QgsRectangle* filterExtent )
 {
   if ( !layer )
   {
@@ -1960,6 +1961,10 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
         return ErrProjection;
       }
     }
+
+    if ( fet.geometry() && filterExtent && !fet.geometry()->intersects( *filterExtent ) )
+      continue;
+
     if ( allAttr.size() < 1 && skipAttributeCreation )
     {
       fet.initAttributes( 0 );

@@ -4601,7 +4601,9 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     options &= ~QgsVectorLayerSaveAsDialog::Symbology;
   }
 
-  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), options, this );
+  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), vlayer->extent(), options, this );
+
+  dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -4659,6 +4661,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     QgsVectorFileWriter::WriterError error;
     QString errorMessage;
     QString newFilename;
+    QgsRectangle filterExtent = dialog->filterExtent();
     error = QgsVectorFileWriter::writeAsVectorFormat(
               vlayer, vectorFilename, encoding, ct, format,
               saveOnlySelection,
@@ -4667,7 +4670,8 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
               dialog->skipAttributeCreation(),
               &newFilename,
               ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ),
-              dialog->scaleDenominator() );
+              dialog->scaleDenominator(),
+              dialog->hasFilterExtent() ? &filterExtent : 0 );
 
     delete ct;
 

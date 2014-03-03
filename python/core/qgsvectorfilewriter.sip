@@ -123,6 +123,7 @@ class QgsVectorFileWriter
     @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
     @param symbologyExport symbology to export
     @param symbologyScale scale of symbology
+    @param filterExtent if not a null pointer, only features intersecting the extent will be saved
     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
@@ -136,9 +137,11 @@ class QgsVectorFileWriter
                                             bool skipAttributeCreation = false, // added in 1.6
                                             QString *newFilename = 0, // added in 1.9
                                             SymbologyExport symbologyExport = NoSymbology, //added in 2.0
-                                            double symbologyScale = 1.0 // added in 2.0
+                                            double symbologyScale = 1.0, // added in 2.0
+                                            const QgsRectangle* filterExtent = 0 // added in 2.4
                                           );
 
+    //! @note added in v2.2
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
@@ -146,12 +149,13 @@ class QgsVectorFileWriter
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
                                             QString *errorMessage = 0,
-                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
-                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
-                                            bool skipAttributeCreation = false, // added in 1.6
-                                            QString *newFilename = 0, // added in 1.9
-                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
-                                            double symbologyScale = 1.0 // added in 2.0
+                                            const QStringList &datasourceOptions = QStringList(),
+                                            const QStringList &layerOptions = QStringList(),
+                                            bool skipAttributeCreation = false,
+                                            QString *newFilename = 0,
+                                            SymbologyExport symbologyExport = NoSymbology,
+                                            double symbologyScale = 1.0,
+                                            const QgsRectangle* filterExtent = 0 // added in 2.4
                                           );
 
     /** create shapefile and initialize it */

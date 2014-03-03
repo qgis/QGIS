@@ -86,6 +86,7 @@ qgsexpressionbuilderdialog.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionhighlighter.cpp
 qgsexpressionselectiondialog.cpp
+qgsextentgroupbox.cpp
 qgsfeatureselectiondlg.cpp
 qgsfieldvalidator.cpp
 qgsfiledropedit.cpp
@@ -224,6 +225,7 @@ qgserrordialog.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
+qgsextentgroupbox.h
 qgsfeatureselectiondlg.h
 qgsfieldvalidator.h
 qgsfilterlineedit.h

@@ -107,7 +107,7 @@
         <x>0</x>
         <y>0</y>
         <width>562</width>
-        <height>458</height>
+        <height>483</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -182,6 +182,9 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QgsExtentGroupBox" name="mExtentGroupBox"/>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mDatasourceOptionsGroupBox">
@@ -326,6 +329,12 @@
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
