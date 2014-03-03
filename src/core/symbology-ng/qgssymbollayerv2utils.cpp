@@ -648,10 +648,48 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 
 QPolygonF offsetLine( QPolygonF polyline, double dist )
 {
+  if ( polyline.count() < 2 )
+    return polyline;
+
   QPolygonF newLine;
 
-  if ( polyline.count() < 2 )
-    return newLine;
+  // need at least geos 3.3 for OffsetCurve tool
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+
+  unsigned int i, pointCount = polyline.count();
+
+  QgsPolyline tempPolyline( pointCount );
+  QPointF* tempPtr = polyline.data();
+  for ( i = 0; i < pointCount; ++i, tempPtr++ ) tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
+
+  QgsGeometry* tempGeometry = QgsGeometry::fromPolyline( tempPolyline );
+  if ( tempGeometry )
+  {
+    const GEOSGeometry* geosGeom = tempGeometry->asGeos();
+    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+
+    if ( offsetGeom )
+    {
+      tempGeometry->fromGeos( offsetGeom );
+      tempPolyline = tempGeometry->asPolyline();
+
+      pointCount = tempPolyline.count();
+      newLine.resize( pointCount );
+
+      QgsPoint* tempPtr2 = tempPolyline.data();
+      for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+
+      delete tempGeometry;
+      return newLine;
+    }
+    delete tempGeometry;
+  }
+
+  // returns original polyline when 'GEOSOffsetCurve' fails!
+  return polyline;
+
+#else
 
   double angle = 0.0, t_new, t_old = 0;
   QPointF pt_old, pt_new;
@@ -688,6 +726,8 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
   pt_new = offsetPoint( p2, angle + M_PI / 2, dist );
   newLine.append( pt_new );
   return newLine;
+
+#endif
 }
 
 /////
