@@ -2686,7 +2686,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             QgsFeature feature( fields );
 
-            if ( !f.property( "geometry" ).isNull() )
+            if ( f.property( "geometry" ).isValid() )
             {
               QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( "geometry" ) );
               if ( geom.isString() )
