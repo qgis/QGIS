@@ -2637,24 +2637,27 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           if ( result.property( "type" ).toString() != "FeatureCollection" )
             throw QString( "type FeatureCollection expected: %1" ).arg( result.property( "type" ).toString() );
 
-          QString crsType = result.property( "crs" ).property( "type" ).toString();
-          QString crsText;
-          if ( crsType == "name" )
-            crsText = result.property( "crs" ).property( "name" ).toString();
-          else if ( crsType == "EPSG" )
-            crsText = QString( "%1:%2" ).arg( crsType ).arg( result.property( "crs" ).property( "properties" ).property( "code" ).toString() );
-          else
-            QgsDebugMsg( QString( "crs not supported:%1" ).arg( result.property( "crs" ).toString() ) );
-
-          QgsCoordinateReferenceSystem featuresCrs;
-          featuresCrs.createFromOgcWmsCrs( crsText );
-
-          if ( !featuresCrs.isValid() )
-            throw QString( "CRS %1 invalid" ).arg( crsText );
-
-          if ( featuresCrs.isValid() && featuresCrs != crs() )
+          if ( result.property( "crs" ).isValid() )
           {
-            coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+            QString crsType = result.property( "crs" ).property( "type" ).toString();
+            QString crsText;
+            if ( crsType == "name" )
+              crsText = result.property( "crs" ).property( "name" ).toString();
+            else if ( crsType == "EPSG" )
+              crsText = QString( "%1:%2" ).arg( crsType ).arg( result.property( "crs" ).property( "properties" ).property( "code" ).toString() );
+            else
+              QgsDebugMsg( QString( "crs not supported:%1" ).arg( result.property( "crs" ).toString() ) );
+
+            QgsCoordinateReferenceSystem featuresCrs;
+            featuresCrs.createFromOgcWmsCrs( crsText );
+
+            if ( !featuresCrs.isValid() )
+              throw QString( "CRS %1 invalid" ).arg( crsText );
+
+            if ( featuresCrs.isValid() && featuresCrs != crs() )
+            {
+              coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+            }
           }
 
           QScriptValue fc = result.property( "features" );
@@ -2683,22 +2686,25 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             QgsFeature feature( fields );
 
-            QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( "geometry" ) );
-            if ( geom.isString() )
+            if ( !f.property( "geometry" ).isNull() )
             {
-              OGRGeometryH ogrGeom = OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() );
-              if ( ogrGeom )
+              QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( "geometry" ) );
+              if ( geom.isString() )
               {
-                size_t wkbSize = OGR_G_WkbSize( ogrGeom );
-                unsigned char *wkb = new unsigned char[ wkbSize ];
-                OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-                OGR_G_DestroyGeometry( ogrGeom );
-
-                feature.setGeometryAndOwnership( wkb, wkbSize );
-
-                if ( coordinateTransform && feature.geometry() )
+                OGRGeometryH ogrGeom = OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() );
+                if ( ogrGeom )
                 {
-                  feature.geometry()->transform( *coordinateTransform );
+                  size_t wkbSize = OGR_G_WkbSize( ogrGeom );
+                  unsigned char *wkb = new unsigned char[ wkbSize ];
+                  OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
+                  OGR_G_DestroyGeometry( ogrGeom );
+
+                  feature.setGeometryAndOwnership( wkb, wkbSize );
+
+                  if ( coordinateTransform && feature.geometry() )
+                  {
+                    feature.geometry()->transform( *coordinateTransform );
+                  }
                 }
               }
             }
