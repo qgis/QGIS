@@ -6227,9 +6227,10 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
         for ( QgsMultiPolyline::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
         {
           // do not create polygon for a 1 segment line
-          // this does not consider the special case where line has 2 segments with first and last node identical
           if (( *multiLineIt ).count() < 3 )
-            continue;
+            return 0;
+          if (( *multiLineIt ).count() == 3 && ( *multiLineIt ).first() == ( *multiLineIt ).last() )
+            return 0;
 
           // add closing node
           if (( *multiLineIt ).first() != ( *multiLineIt ).last() )
@@ -6256,21 +6257,23 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
         QgsPolyline line = asPolyline();
 
         // do not create polygon for a 1 segment line
-        if ( line.count() >= 3 )
-        {
-          // add closing node
-          if ( line.first() != line.last() )
-            line << line.first();
+        if ( line.count() < 3 )
+          return 0;
+        if ( line.count() == 3 && line.first() == line.last() )
+          return 0;
 
-          // destination is multipart
-          if ( destMultipart )
-          {
-            return fromMultiPolygon( QgsMultiPolygon() << ( QgsPolygon() << line ) );
-          }
-          else
-          {
-            return fromPolygon( QgsPolygon() << line );
-          }
+        // add closing node
+        if ( line.first() != line.last() )
+          line << line.first();
+
+        // destination is multipart
+        if ( destMultipart )
+        {
+          return fromMultiPolygon( QgsMultiPolygon() << ( QgsPolygon() << line ) );
+        }
+        else
+        {
+          return fromPolygon( QgsPolygon() << line );
         }
       }
       return 0;
