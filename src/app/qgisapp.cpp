@@ -5580,6 +5580,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   {
     features = clipboard()->copyOf( pasteVectorLayer->pendingFields() );
   }
+  int nTotalFeatures = features.count();
 
   QHash<int, int> remap;
   const QgsFields &fields = clipboard()->fields();
@@ -5594,10 +5595,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 
   int dstAttrCount = pasteVectorLayer->pendingFields().count();
-  for ( int i = 0; i < features.size(); i++ )
+
+  QgsFeatureList::iterator featureIt = features.begin();
+  while ( featureIt != features.end() )
   {
-    QgsFeature &f = features[i];
-    const QgsAttributes &srcAttr = f.attributes();
+    const QgsAttributes &srcAttr = featureIt->attributes();
     QgsAttributes dstAttr( dstAttrCount );
 
     for ( int src = 0; src < srcAttr.count(); ++src )
@@ -5617,17 +5619,54 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       dstAttr[ dst ] = srcAttr[ src ];
     }
 
-    f.setAttributes( dstAttr );
+    featureIt->setAttributes( dstAttr );
 
-    //avoid intersection if enabled in digitize settings
-    if ( f.geometry() )
+    if ( featureIt->geometry() )
     {
-      f.geometry()->avoidIntersections();
+      // convert geometry to match destination layer
+      QGis::GeometryType destType = pasteVectorLayer->geometryType();
+      bool destIsMulti = QGis::isMultiType( pasteVectorLayer->wkbType() );
+      if ( destType != QGis::UnknownGeometry )
+      {
+        QgsGeometry* newGeometry = featureIt->geometry()->convertToType( destType, destIsMulti );
+        if ( !newGeometry )
+        {
+          featureIt = features.erase( featureIt );
+          continue;
+        }
+        featureIt->setGeometry( newGeometry );
+      }
+      // avoid intersection if enabled in digitize settings
+      featureIt->geometry()->avoidIntersections();
     }
+
+    ++featureIt;
   }
 
   pasteVectorLayer->addFeatures( features );
   pasteVectorLayer->endEditCommand();
+
+  int nCopiedFeatures = features.count();
+  if ( nCopiedFeatures == 0 )
+  {
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "no features could be successfully pasted." ),
+                               QgsMessageBar::WARNING , messageTimeout() );
+
+  }
+  else if ( nCopiedFeatures == nTotalFeatures )
+  {
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "%1 features were successfully pasted." ).arg( nCopiedFeatures ),
+                               QgsMessageBar::INFO , messageTimeout() );
+  }
+  else
+  {
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "%1 of %2 features could be successfully pasted." ).arg( nCopiedFeatures ).arg( nTotalFeatures ),
+                               QgsMessageBar::WARNING , messageTimeout() );
+  }
+
   mMapCanvas->refresh();
 }
 

@@ -1145,5 +1145,150 @@ class TestQgsGeometry(TestCase):
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
+    def testConvertToType(self):
+        # 5-+-4 0-+-9  13-+-+-12
+        # |   | |   |  |       |
+        # | 2-3 1-2 |  + 18-17 +
+        # | |     | |  | |   | |
+        # 0-1     7-8  + 15-16 +
+        #              |       |
+        #              10-+-+-11
+        points = [
+            [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0) ], ],
+            [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0) ], ],
+            [ [ QgsPoint(10,0), QgsPoint(13,0), QgsPoint(13,3), QgsPoint(10,3), QgsPoint(10,0) ], [ QgsPoint(11,1), QgsPoint(12,1), QgsPoint(12,2), QgsPoint(11,2), QgsPoint(11,1) ] ]
+          ]
+        ######## TO POINT ########
+        # POINT TO POINT
+        point = QgsGeometry.fromPoint(QgsPoint(1,1))
+        wkt = point.convertToType(QGis.Point, False).exportToWkt()
+        expWkt = "POINT(1 1)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from point to point. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # POINT TO MULTIPOINT
+        point = QgsGeometry.fromPoint(QgsPoint(1,1))
+        wkt = point.convertToType(QGis.Point, True).exportToWkt()
+        expWkt = "MULTIPOINT(1 1)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from point to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # LINE TO MULTIPOINT
+        line = QgsGeometry.fromPolyline(points[0][0])
+        wkt = line.convertToType(QGis.Point, True).exportToWkt()
+        expWkt = "MULTIPOINT(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from line to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTILINE TO MULTIPOINT
+        multiLine = QgsGeometry.fromMultiPolyline(points[2])
+        wkt = multiLine.convertToType(QGis.Point, True).exportToWkt()
+        expWkt = "MULTIPOINT(10 0, 13 0, 13 3, 10 3, 10 0, 11 1, 12 1, 12 2, 11 2, 11 1)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # POLYGON TO MULTIPOINT
+        polygon = QgsGeometry.fromPolygon(points[0])
+        wkt = polygon.convertToType(QGis.Point, True).exportToWkt()
+        expWkt = "MULTIPOINT(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from poylgon to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTIPOLYGON TO MULTIPOINT
+        multiPolygon = QgsGeometry.fromMultiPolygon(points)
+        wkt = multiPolygon.convertToType(QGis.Point, True).exportToWkt()
+        expWkt = "MULTIPOINT(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0, 4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0, 10 0, 13 0, 13 3, 10 3, 10 0, 11 1, 12 1, 12 2, 11 2, 11 1)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoylgon to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+
+
+        ######## TO LINE ########
+        # POINT TO LINE
+        point = QgsGeometry.fromPoint(QgsPoint(1,1))
+        assert point.convertToType(QGis.Line, False) is None , "convertToType with a point should return a null geometry"
+        # MULTIPOINT TO LINE
+        multipoint = QgsGeometry.fromMultiPoint(points[0][0])
+        wkt = multipoint.convertToType(QGis.Line, False).exportToWkt()
+        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTIPOINT TO MULTILINE
+        multipoint = QgsGeometry.fromMultiPoint(points[0][0])
+        wkt = multipoint.convertToType(QGis.Line, True).exportToWkt()
+        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTILINE (which has a single part) TO LINE
+        multiLine = QgsGeometry.fromMultiPolyline(points[0])
+        wkt = multiLine.convertToType(QGis.Line, False).exportToWkt()
+        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # LINE TO MULTILINE
+        line = QgsGeometry.fromPolyline(points[0][0])
+        wkt = line.convertToType(QGis.Line, True).exportToWkt()
+        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from line to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # POLYGON TO LINE
+        polygon = QgsGeometry.fromPolygon(points[0])
+        wkt = polygon.convertToType(QGis.Line, False).exportToWkt()
+        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # POLYGON TO MULTILINE
+        polygon = QgsGeometry.fromPolygon(points[0])
+        wkt = polygon.convertToType(QGis.Line, True).exportToWkt()
+        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # POLYGON with ring TO MULTILINE
+        polygon = QgsGeometry.fromPolygon(points[2])
+        wkt = polygon.convertToType(QGis.Line, True).exportToWkt()
+        expWkt = "MULTILINESTRING((10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon with ring to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTIPOLYGON (which has a single part) TO LINE
+        multiPolygon = QgsGeometry.fromMultiPolygon([points[0]])
+        wkt = multiPolygon.convertToType(QGis.Line, False).exportToWkt()
+        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipolygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTIPOLYGON TO MULTILINE
+        multiPolygon = QgsGeometry.fromMultiPolygon(points)
+        wkt = multiPolygon.convertToType(QGis.Line, True).exportToWkt()
+        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0), (4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0), (10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipolygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+
+
+        ######## TO POLYGON ########
+         # MULTIPOINT TO POLYGON
+        multipoint = QgsGeometry.fromMultiPoint(points[0][0])
+        wkt = multipoint.convertToType(QGis.Polygon, False).exportToWkt()
+        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTIPOINT TO MULTIPOLYGON
+        multipoint = QgsGeometry.fromMultiPoint(points[0][0])
+        wkt = multipoint.convertToType(QGis.Polygon, True).exportToWkt()
+        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # LINE TO POLYGON
+        line = QgsGeometry.fromPolyline(points[0][0])
+        wkt = line.convertToType(QGis.Polygon, False).exportToWkt()
+        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from line to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # LINE ( 3 vertices, with first = last ) TO POLYGON
+        line = QgsGeometry.fromPolyline([QgsPoint(1,1),QgsPoint(0,0),QgsPoint(1,1)])
+        assert line.convertToType(QGis.Polygon, False) is None , "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry"
+        # MULTILINE ( with a part of 3 vertices, with first = last ) TO MULTIPOLYGON
+        multiline = QgsGeometry.fromMultiPolyline([points[0][0],[QgsPoint(1,1),QgsPoint(0,0),QgsPoint(1,1)]])
+        assert multiline.convertToType(QGis.Polygon, True) is None , "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry"
+        # LINE TO MULTIPOLYGON
+        line = QgsGeometry.fromPolyline(points[0][0])
+        wkt = line.convertToType(QGis.Polygon, True).exportToWkt()
+        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from line to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTILINE (which has a single part) TO POLYGON
+        multiLine = QgsGeometry.fromMultiPolyline(points[0])
+        wkt = multiLine.convertToType(QGis.Polygon, False).exportToWkt()
+        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTILINE TO MULTIPOLYGON
+        multiLine = QgsGeometry.fromMultiPolyline([points[0][0],points[1][0]])
+        wkt = multiLine.convertToType(QGis.Polygon, True).exportToWkt()
+        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # POLYGON TO MULTIPOLYGON
+        polygon = QgsGeometry.fromPolygon(points[0])
+        wkt = polygon.convertToType(QGis.Polygon, True).exportToWkt()
+        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+        # MULTIPOLYGON (which has a single part) TO POLYGON
+        multiPolygon = QgsGeometry.fromMultiPolygon([points[0]])
+        wkt = multiPolygon.convertToType(QGis.Polygon, False).exportToWkt()
+        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+
 if __name__ == '__main__':
     unittest.main()

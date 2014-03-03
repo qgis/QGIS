@@ -4423,6 +4423,24 @@ bool QgsGeometry::exportGeosToWkb() const
   return false;
 }
 
+QgsGeometry* QgsGeometry::convertToType( QGis::GeometryType destType, bool destMultipart )
+{
+  switch ( destType )
+  {
+    case QGis::Point:
+      return convertToPoint( destMultipart );
+
+    case QGis::Line:
+      return convertToLine( destMultipart );
+
+    case QGis::Polygon:
+      return convertToPolygon( destMultipart );
+
+    default:
+      return 0;
+  }
+}
+
 bool QgsGeometry::convertToMultiType()
 {
   // TODO: implement with GEOS
@@ -5975,4 +5993,322 @@ double QgsGeometry::leftOf( double x, double y, double& x1, double& y1, double& 
   double f3 = y - y1;
   double f4 = x2 - x1;
   return f1*f2 - f3*f4;
+}
+
+QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart )
+{
+  switch ( type() )
+  {
+    case QGis::Point:
+    {
+      bool srcIsMultipart = isMultipart();
+
+      if (( destMultipart && srcIsMultipart ) ||
+          ( !destMultipart && !srcIsMultipart ) )
+      {
+        // return a copy of the same geom
+        return new QgsGeometry( *this );
+      }
+      if ( destMultipart )
+      {
+        // layer is multipart => make a multipoint with a single point
+        return fromMultiPoint( QgsMultiPoint() << asPoint() );
+      }
+      else
+      {
+        // destination is singlepart => make a single part if possible
+        QgsMultiPoint multiPoint = asMultiPoint();
+        if ( multiPoint.count() == 1 )
+        {
+          return fromPoint( multiPoint[0] );
+        }
+      }
+      return 0;
+    }
+
+    case QGis::Line:
+    {
+      // only possible if destination is multipart
+      if ( !destMultipart )
+        return 0;
+
+      // input geometry is multipart
+      if ( isMultipart() )
+      {
+        QgsMultiPolyline multiLine = asMultiPolyline();
+        QgsMultiPoint multiPoint;
+        for ( QgsMultiPolyline::const_iterator multiLineIt = multiLine.constBegin(); multiLineIt != multiLine.constEnd(); ++multiLineIt )
+          for ( QgsPolyline::const_iterator lineIt = ( *multiLineIt ).constBegin(); lineIt != ( *multiLineIt ).constEnd(); ++lineIt )
+            multiPoint << *lineIt;
+        return fromMultiPoint( multiPoint );
+      }
+      // input geometry is not multipart: copy directly the line into a multipoint
+      else
+      {
+        QgsPolyline line = asPolyline();
+        if ( !line.isEmpty() )
+          return fromMultiPoint( line );
+      }
+      return 0;
+    }
+
+    case QGis::Polygon:
+    {
+      // can only transfrom if destination is multipoint
+      if ( !destMultipart )
+        return 0;
+
+      // input geometry is multipart: make a multipoint from multipolygon
+      if ( isMultipart() )
+      {
+        QgsMultiPolygon multiPolygon = asMultiPolygon();
+        QgsMultiPoint multiPoint;
+        for ( QgsMultiPolygon::const_iterator polygonIt = multiPolygon.constBegin(); polygonIt != multiPolygon.constEnd(); ++polygonIt )
+          for ( QgsMultiPolyline::const_iterator multiLineIt = ( *polygonIt ).constBegin(); multiLineIt != ( *polygonIt ).constEnd(); ++multiLineIt )
+            for ( QgsPolyline::const_iterator lineIt = ( *multiLineIt ).constBegin(); lineIt != ( *multiLineIt ).constEnd(); ++lineIt )
+              multiPoint << *lineIt;
+        return fromMultiPoint( multiPoint );
+      }
+      // input geometry is not multipart: make a multipoint from polygon
+      else
+      {
+        QgsPolygon polygon = asPolygon();
+        QgsMultiPoint multiPoint;
+        for ( QgsMultiPolyline::const_iterator multiLineIt = polygon.constBegin(); multiLineIt != polygon.constEnd(); ++multiLineIt )
+          for ( QgsPolyline::const_iterator lineIt = ( *multiLineIt ).constBegin(); lineIt != ( *multiLineIt ).constEnd(); ++lineIt )
+            multiPoint << *lineIt;
+        return fromMultiPoint( multiPoint );
+      }
+      return 0;
+    }
+
+    default:
+      return 0;
+  }
+}
+
+QgsGeometry* QgsGeometry::convertToLine( bool destMultipart )
+{
+  switch ( type() )
+  {
+    case QGis::Point:
+    {
+      if ( !isMultipart() )
+        return 0;
+
+      QgsMultiPoint multiPoint = asMultiPoint();
+      if ( multiPoint.count() < 2 )
+        return 0;
+
+      if ( destMultipart )
+        return fromMultiPolyline( QgsMultiPolyline() << multiPoint );
+      else
+        return fromPolyline( multiPoint );
+    }
+
+    case QGis::Line:
+    {
+      bool srcIsMultipart = isMultipart();
+
+      if (( destMultipart && srcIsMultipart ) ||
+          ( !destMultipart && ! srcIsMultipart ) )
+      {
+        // return a copy of the same geom
+        return new QgsGeometry( *this );
+      }
+      if ( destMultipart )
+      {
+        // destination is multipart => makes a multipoint with a single line
+        QgsPolyline line = asPolyline();
+        if ( !line.isEmpty() )
+          return fromMultiPolyline( QgsMultiPolyline() << line );
+      }
+      else
+      {
+        // destination is singlepart => make a single part if possible
+        QgsMultiPolyline multiLine = asMultiPolyline();
+        if ( multiLine.count() == 1 )
+          return fromPolyline( multiLine[0] );
+      }
+      return 0;
+    }
+
+    case QGis::Polygon:
+    {
+      // input geometry is multipolygon
+      if ( isMultipart() )
+      {
+        QgsMultiPolygon multiPolygon = asMultiPolygon();
+        QgsMultiPolyline multiLine;
+        for ( QgsMultiPolygon::const_iterator polygonIt = multiPolygon.constBegin(); polygonIt != multiPolygon.constEnd(); ++polygonIt )
+          for ( QgsMultiPolyline::const_iterator multiLineIt = ( *polygonIt ).constBegin(); multiLineIt != ( *polygonIt ).constEnd(); ++multiLineIt )
+            multiLine << *multiLineIt;
+
+        if ( destMultipart )
+        {
+          // destination is multipart
+          return fromMultiPolyline( multiLine );
+        }
+        else if ( multiLine.count() == 1 )
+        {
+          // destination is singlepart => make a single part if possible
+          return fromPolyline( multiLine[0] );
+        }
+      }
+      // input geometry is single polygon
+      else
+      {
+        QgsPolygon polygon = asPolygon();
+        // if polygon has rings
+        if ( polygon.count() > 1 )
+        {
+          // cannot fit a polygon with rings in a single line layer
+          // TODO: would it be better to remove rings?
+          if ( destMultipart )
+          {
+            QgsPolygon polygon = asPolygon();
+            QgsMultiPolyline multiLine;
+            for ( QgsMultiPolyline::const_iterator multiLineIt = polygon.constBegin(); multiLineIt != polygon.constEnd(); ++multiLineIt )
+              multiLine << *multiLineIt;
+            return fromMultiPolyline( multiLine );
+          }
+        }
+        // no rings
+        else if ( polygon.count() == 1 )
+        {
+          if ( destMultipart )
+          {
+            return fromMultiPolyline( polygon );
+          }
+          else
+          {
+            return fromPolyline( polygon[0] );
+          }
+        }
+      }
+      return 0;
+    }
+
+    default:
+      return 0;
+  }
+}
+
+QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
+{
+  switch ( type() )
+  {
+    case QGis::Point:
+    {
+      if ( !isMultipart() )
+        return 0;
+
+      QgsMultiPoint multiPoint = asMultiPoint();
+      if ( multiPoint.count() < 3 )
+        return 0;
+
+      if ( multiPoint.last() != multiPoint.first() )
+        multiPoint << multiPoint.first();
+
+      QgsPolygon polygon = QgsPolygon() << multiPoint;
+      if ( destMultipart )
+        return fromMultiPolygon( QgsMultiPolygon() << polygon );
+      else
+        return fromPolygon( polygon );
+    }
+
+    case QGis::Line:
+    {
+      // input geometry is multiline
+      if ( isMultipart() )
+      {
+        QgsMultiPolyline multiLine = asMultiPolyline();
+        QgsMultiPolygon multiPolygon;
+        for ( QgsMultiPolyline::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
+        {
+          // do not create polygon for a 1 segment line
+          if (( *multiLineIt ).count() < 3 )
+            return 0;
+          if (( *multiLineIt ).count() == 3 && ( *multiLineIt ).first() == ( *multiLineIt ).last() )
+            return 0;
+
+          // add closing node
+          if (( *multiLineIt ).first() != ( *multiLineIt ).last() )
+            *multiLineIt << ( *multiLineIt ).first();
+          multiPolygon << ( QgsPolygon() << *multiLineIt );
+        }
+        // check that polygons were inserted
+        if ( !multiPolygon.isEmpty() )
+        {
+          if ( destMultipart )
+          {
+            return fromMultiPolygon( multiPolygon );
+          }
+          else if ( multiPolygon.count() == 1 )
+          {
+            // destination is singlepart => make a single part if possible
+            return fromPolygon( multiPolygon[0] );
+          }
+        }
+      }
+      // input geometry is single line
+      else
+      {
+        QgsPolyline line = asPolyline();
+
+        // do not create polygon for a 1 segment line
+        if ( line.count() < 3 )
+          return 0;
+        if ( line.count() == 3 && line.first() == line.last() )
+          return 0;
+
+        // add closing node
+        if ( line.first() != line.last() )
+          line << line.first();
+
+        // destination is multipart
+        if ( destMultipart )
+        {
+          return fromMultiPolygon( QgsMultiPolygon() << ( QgsPolygon() << line ) );
+        }
+        else
+        {
+          return fromPolygon( QgsPolygon() << line );
+        }
+      }
+      return 0;
+    }
+
+    case QGis::Polygon:
+    {
+      bool srcIsMultipart = isMultipart();
+
+      if (( destMultipart && srcIsMultipart ) ||
+          ( !destMultipart && ! srcIsMultipart ) )
+      {
+        // return a copy of the same geom
+        return new QgsGeometry( *this );
+      }
+      if ( destMultipart )
+      {
+        // destination is multipart => makes a multipoint with a single polygon
+        QgsPolygon polygon = asPolygon();
+        if ( !polygon.isEmpty() )
+          return fromMultiPolygon( QgsMultiPolygon() << polygon );
+      }
+      else
+      {
+        QgsMultiPolygon multiPolygon = asMultiPolygon();
+        if ( multiPolygon.count() == 1 )
+        {
+          // destination is singlepart => make a single part if possible
+          return fromPolygon( multiPolygon[0] );
+        }
+      }
+      return 0;
+    }
+
+    default:
+      return 0;
+  }
 }
