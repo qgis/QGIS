@@ -1851,6 +1851,7 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
   }
   else //normal group
   {
+    QMap< int, QDomElement > layerOrderList;
     QDomNodeList groupElemChildren = legendGroupElem.childNodes();
     for ( int i = 0; i < groupElemChildren.size(); ++i )
     {
@@ -1861,8 +1862,22 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
       }
       else if ( elem.tagName() == "legendlayer" )
       {
-        addLayerFromLegendLayer( elem, layerList, useCache );
+        int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+        if ( drawingOrder == -1 )
+        {
+          addLayerFromLegendLayer( elem, layerList, useCache );
+        }
+        else
+        {
+          layerOrderList.insert( drawingOrder, elem );
+        }
       }
+    }
+
+    QMap< int, QDomElement >::const_iterator layerOrderIt = layerOrderList.constBegin();
+    for ( ; layerOrderIt != layerOrderList.constEnd(); ++layerOrderIt )
+    {
+      addLayerFromLegendLayer( layerOrderIt.value(), layerList, useCache );
     }
   }
 }
@@ -4110,15 +4125,17 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
 
   QDomNodeList layerNodeList = embeddedGroupElem.elementsByTagName( "legendlayer" );
   QDomElement layerElem;
-  QStringList layerNames;
+  QMap<int, QString > layerNames;
   QString layerName;
   for ( int i = 0; i < layerNodeList.size(); ++i )
   {
     layerElem = layerNodeList.at( i ).toElement();
     layerName = layerElem.attribute( "name" );
-    if ( useDrawingOrder )
+
+    int layerDrawingOrder = layerElem.attribute( "drawingOrder", "-1" ).toInt();
+    if ( layerDrawingOrder == -1 )
     {
-      layerNames.push_back( layerName );
+      layerNames.insert( layerNames.size(), layerName );
     }
     else
     {
@@ -4128,12 +4145,20 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
 
   if ( useDrawingOrder )
   {
-    for ( int i = layerNames.size() - 1; i >= 0; --i )
+    QMapIterator<int, QString > layerNamesIt( layerNames );
+    layerNamesIt.toBack();
+    while ( layerNamesIt.hasPrevious() )
     {
-      if ( useDrawingOrder )
-      {
-        orderedLayerList.insertMulti( embedDrawingOrder, layerNames.at( i ) );
-      }
+      layerNamesIt.previous();
+      orderedLayerList.insertMulti( embedDrawingOrder, layerNamesIt.value() );
+    }
+  }
+  else
+  {
+    QMap<int, QString >::const_iterator layerNamesIt = layerNames.constBegin();
+    for ( ; layerNamesIt != layerNames.constEnd(); ++layerNamesIt )
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerNamesIt.value() );
     }
   }
 }
