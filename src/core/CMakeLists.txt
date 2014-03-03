@@ -127,7 +127,6 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
-  qgsvectorlayercache.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp

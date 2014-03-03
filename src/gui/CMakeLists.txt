@@ -111,15 +111,12 @@ qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessagebar.cpp
 qgsmessagebaritem.cpp
-qgsmessageviewer.cpp
 qgsmessagelogviewer.cpp
 qgsmessageviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgsoptionsdialogbase.cpp
-qgscredentialdialog.cpp
-qgsattributeeditorcontext.cpp
 qgsowssourceselect.cpp
 qgspluginmanagerinterface.cpp
 qgsprojectbadlayerguihandler.cpp
