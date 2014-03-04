@@ -39,7 +39,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     };
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0,  Qt::WFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, int options = AllOptions, QWidget* parent = 0,  Qt::WFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -62,6 +62,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
 
     bool hasFilterExtent() const;
     QgsRectangle filterExtent() const;
+
+    bool onlySelected() const;
 
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );

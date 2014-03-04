@@ -1070,7 +1070,6 @@ void QgisApp::createActions()
   connect( mActionCancelEdits, SIGNAL( triggered() ), this, SLOT( cancelEdits() ) );
   connect( mActionCancelAllEdits, SIGNAL( triggered() ), this, SLOT( cancelAllEdits() ) );
   connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
-  connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionDuplicateLayer, SIGNAL( triggered() ), this, SLOT( duplicateLayers() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
@@ -4571,16 +4570,11 @@ void QgisApp::saveAsFile()
   }
   else if ( layerType == QgsMapLayer::VectorLayer )
   {
-    saveAsVectorFileGeneral( false );
+    saveAsVectorFileGeneral();
   }
 }
 
-void QgisApp::saveSelectionAsVectorFile()
-{
-  saveAsVectorFileGeneral( true );
-}
-
-void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* vlayer, bool symbologyOption )
+void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOption )
 {
   if ( !mMapLegend )
     return;
@@ -4601,7 +4595,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     options &= ~QgsVectorLayerSaveAsDialog::Symbology;
   }
 
-  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), vlayer->extent(), options, this );
+  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), vlayer->extent(), vlayer->selectedFeatureCount() != 0, options, this );
 
   dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
 
@@ -4664,7 +4658,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     QgsRectangle filterExtent = dialog->filterExtent();
     error = QgsVectorFileWriter::writeAsVectorFormat(
               vlayer, vectorFilename, encoding, ct, format,
-              saveOnlySelection,
+              dialog->onlySelected(),
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation(),
@@ -5681,7 +5675,7 @@ void QgisApp::pasteAsNewVector()
   if ( !layer )
     return;
 
-  saveAsVectorFileGeneral( false, layer, false );
+  saveAsVectorFileGeneral( layer, false );
 
   delete layer;
 }
@@ -8305,7 +8299,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionToggleEditing->setChecked( false );
     mActionSaveLayerEdits->setEnabled( false );
     mActionLayerSaveAs->setEnabled( false );
-    mActionLayerSelectionSaveAs->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
     mActionLayerSubsetString->setEnabled( false );
     mActionAddToOverview->setEnabled( false );
@@ -8402,7 +8395,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectByExpression->setEnabled( true );
     mActionOpenTable->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
-    mActionLayerSelectionSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
     mActionFeatureAction->setEnabled( layerHasActions );
 
@@ -8571,7 +8563,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionLayerSaveAs->setEnabled( true );
-    mActionLayerSelectionSaveAs->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
     mActionAddRing->setEnabled( false );

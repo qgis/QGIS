@@ -476,7 +476,8 @@ class QgisInterface : QObject
     /** @note added in 1.9 */
     virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
-    virtual QAction *actionLayerSelectionSaveAs() = 0;
+    /** @note deprecated in 2.4 - returns null pointer */
+    virtual QAction *actionLayerSelectionSaveAs() = 0 /Deprecated/;
     virtual QAction *actionRemoveLayer() = 0;
     /** @note added in 1.9 */
     virtual QAction *actionDuplicateLayer() = 0;

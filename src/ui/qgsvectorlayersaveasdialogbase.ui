@@ -107,7 +107,7 @@
         <x>0</x>
         <y>0</y>
         <width>562</width>
-        <height>483</height>
+        <height>508</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -127,6 +127,13 @@
           <widget class="QComboBox" name="mEncodingComboBox"/>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mSelectedOnly">
+         <property name="text">
+          <string>Save only selected features</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="mSkipAttributeCreation">

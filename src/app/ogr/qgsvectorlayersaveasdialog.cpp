@@ -32,7 +32,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, int options, QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
     , mLayerExtent( layerExtent )
@@ -45,6 +45,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRec
     mScaleLabel->hide();
     mScaleSpinBox->hide();
   }
+
+  mSelectedOnly->setEnabled( layerHasSelectedFeatures );
 }
 
 void QgsVectorLayerSaveAsDialog::setup()
@@ -480,6 +482,11 @@ bool QgsVectorLayerSaveAsDialog::hasFilterExtent() const
 QgsRectangle QgsVectorLayerSaveAsDialog::filterExtent() const
 {
   return mExtentGroupBox->outputExtent();
+}
+
+bool QgsVectorLayerSaveAsDialog::onlySelected() const
+{
+  return mSelectedOnly->isChecked();
 }
 
 void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString& text )

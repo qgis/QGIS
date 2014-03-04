@@ -436,13 +436,6 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     // save as vector file
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
 
-    // save selection as vector file
-    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
-    if ( vlayer->selectedFeatureCount() == 0 )
-    {
-      saveSelectionAsAction->setEnabled( false );
-    }
-
     if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
       theMenu.addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 

@@ -334,7 +334,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** @note added in 1.9 */
     QAction *actionCancelAllEdits() { return mActionCancelAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
-    QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     /** @note added in 1.9 */
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
@@ -1085,7 +1084,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! save current vector layer
     void saveAsFile();
-    void saveSelectionAsVectorFile();
 
     //! save current raster layer
     void saveAsRasterFile();
@@ -1258,7 +1256,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
 
-    void saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* vlayer = 0, bool symbologyOption = true );
+    void saveAsVectorFileGeneral( QgsVectorLayer* vlayer = 0, bool symbologyOption = true );
 
     /** Paste features from clipboard into a new memory layer.
      *  If no features are in clipboard an empty layer is returned.
