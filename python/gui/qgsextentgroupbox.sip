@@ -1,15 +1,3 @@
-#ifndef QGSEXTENTGROUPBOX_H
-#define QGSEXTENTGROUPBOX_H
-
-#include "qgscollapsiblegroupbox.h"
-
-#include "ui_qgsextentgroupboxwidget.h"
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsrectangle.h"
-
-class QgsCoordinateReferenceSystem;
-
 /**
  * Collapsible group box for configuration of extent, typically for a save operation.
  *
@@ -20,9 +8,11 @@ class QgsCoordinateReferenceSystem;
  *
  * @note added in 2.4
  */
-class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::QgsExtentGroupBoxWidget
+class QgsExtentGroupBox : QgsCollapsibleGroupBox
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include <qgsextentgroupbox.h>
+%End
   public:
     explicit QgsExtentGroupBox( QWidget* parent = 0 );
 
@@ -36,14 +26,14 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Setup original extent - should be called as part of initialization
     void setOriginalExtent( const QgsRectangle& originalExtent, const QgsCoordinateReferenceSystem& originalCrs );
 
-    QgsRectangle originalExtent() const { return mOriginalExtent; }
-    const QgsCoordinateReferenceSystem& originalCrs() const { return mOriginalCrs; }
+    QgsRectangle originalExtent() const;
+    const QgsCoordinateReferenceSystem& originalCrs() const;
 
     //! Setup current extent - should be called as part of initialization (or whenever current extent changes)
     void setCurrentExtent( const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs );
 
-    QgsRectangle currentExtent() const { return mCurrentExtent; }
-    const QgsCoordinateReferenceSystem& currentCrs() const { return mCurrentCrs; }
+    QgsRectangle currentExtent() const;
+    const QgsCoordinateReferenceSystem& currentCrs() const;
 
     //! Set the output CRS - may need to be used for transformation from original/current extent.
     //! Should be called as part of initialization and whenever the the output CRS is changed
@@ -52,7 +42,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Get the resulting extent - in output CRS coordinates
     QgsRectangle outputExtent() const;
 
-    ExtentState extentState() const { return mExtentState; }
+    QgsExtentGroupBox::ExtentState extentState() const;
 
   public slots:
     //! set output extent to be the same as original extent (may be transformed to output CRS)
@@ -70,25 +60,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
   protected slots:
 
-    void on_mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
+    void on_mXMinLineEdit_textEdited( const QString & );
+    void on_mXMaxLineEdit_textEdited( const QString & );
+    void on_mYMinLineEdit_textEdited( const QString & );
+    void on_mYMaxLineEdit_textEdited( const QString & );
 
   protected:
-    void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state );
+    void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, QgsExtentGroupBox::ExtentState state );
     void setOutputExtentFromLineEdit();
     void updateTitle();
-
-    ExtentState mExtentState;
-
-    QgsCoordinateReferenceSystem mOutputCrs;
-
-    QgsRectangle mCurrentExtent;
-    QgsCoordinateReferenceSystem mCurrentCrs;
-
-    QgsRectangle mOriginalExtent;
-    QgsCoordinateReferenceSystem mOriginalCrs;
 };
-
-#endif // QGSEXTENTGROUPBOX_H

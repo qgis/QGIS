@@ -82,6 +82,7 @@
 %Include qgshighlight.sip
 %Include qgsoptionsdialogbase.sip
 %Include qgssvgannotationitem.sip
+%Include qgsextentgroupbox.sip
 
 %Include attributetable/qgsattributetabledelegate.sip
 %Include attributetable/qgsattributetablefiltermodel.sip
