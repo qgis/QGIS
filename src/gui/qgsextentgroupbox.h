@@ -52,6 +52,8 @@ class QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::QgsExtentGr
     //! Get the resulting extent - in output CRS coordinates
     QgsRectangle outputExtent() const;
 
+    ExtentState extentState() const { return mExtentState; }
+
   public slots:
     //! set output extent to be the same as original extent (may be transformed to output CRS)
     void setOutputExtentFromOriginal();
@@ -59,20 +61,24 @@ class QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::QgsExtentGr
     //! set output extent to be the same as current extent (may be transformed to output CRS)
     void setOutputExtentFromCurrent();
 
+    //! set output extent to custom extent (may be transformed to outut CRS)
+    void setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs );
+
   signals:
     //! emitted when extent is changed
     void extentChanged( const QgsRectangle& r );
 
   protected slots:
 
-    void on_mXMinLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; updateExtentStateMsg(); }
-    void on_mXMaxLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; updateExtentStateMsg(); }
-    void on_mYMinLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; updateExtentStateMsg(); }
-    void on_mYMaxLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; updateExtentStateMsg(); }
+    void on_mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
+    void on_mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
+    void on_mYMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
+    void on_mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
 
   protected:
     void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state );
-    void updateExtentStateMsg();
+    void setOutputExtentFromLineEdit();
+    void updateTitle();
 
     ExtentState mExtentState;
 

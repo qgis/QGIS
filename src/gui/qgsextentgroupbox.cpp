@@ -57,13 +57,23 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle& r, const QgsCoordin
 
   mExtentState = state;
 
-  updateExtentStateMsg();
+  updateTitle();
 
   emit extentChanged( extent );
 }
 
 
-void QgsExtentGroupBox::updateExtentStateMsg()
+void QgsExtentGroupBox::setOutputExtentFromLineEdit()
+{
+  mExtentState = UserExtent;
+
+  updateTitle();
+
+  emit extentChanged( outputExtent() );
+}
+
+
+void QgsExtentGroupBox::updateTitle()
 {
   QString msg;
   switch ( mExtentState )
@@ -95,6 +105,12 @@ void QgsExtentGroupBox::setOutputExtentFromCurrent()
 void QgsExtentGroupBox::setOutputExtentFromOriginal()
 {
   setOutputExtent( mOriginalExtent, mOriginalCrs, OriginalExtent );
+}
+
+
+void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs )
+{
+  setOutputExtent( extent, crs, UserExtent );
 }
 
 

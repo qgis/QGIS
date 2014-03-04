@@ -201,8 +201,8 @@ datasets with maximum width and height specified below.</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>549</width>
-        <height>700</height>
+        <width>550</width>
+        <height>618</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -222,7 +222,7 @@ datasets with maximum width and height specified below.</string>
         <number>0</number>
        </property>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -241,146 +241,17 @@ datasets with maximum width and height specified below.</string>
          <property name="checkable">
           <bool>false</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="1" column="0">
-             <widget class="QLabel" name="mXMinLabel">
-              <property name="text">
-               <string>West</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="mXMinLineEdit"/>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="mXMaxLabel">
-              <property name="text">
-               <string>East</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QLineEdit" name="mXMaxLineEdit"/>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="mYMaxLabel">
-              <property name="text">
-               <string>North</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLineEdit" name="mYMaxLineEdit">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="mYMinLabel">
-              <property name="text">
-               <string>South</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLineEdit" name="mYMinLineEdit"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget_2" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="mOriginalExtentButton">
-               <property name="minimumSize">
-                <size>
-                 <width>150</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Layer extent</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="mCurrentExtentButton">
-               <property name="minimumSize">
-                <size>
-                 <width>150</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Map view extent</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2"/>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -395,6 +266,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -465,7 +342,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -480,6 +357,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
@@ -520,7 +403,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -536,6 +419,12 @@ datasets with maximum width and height specified below.</string>
          <property name="checked">
           <bool>false</bool>
          </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
            <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreateOptionsWidget" native="true"/>
@@ -544,7 +433,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -559,6 +448,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="3" column="0">
@@ -628,7 +523,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -646,6 +541,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
@@ -779,6 +680,12 @@ datasets with maximum width and height specified below.</string>
    <class>QgsRasterPyramidsOptionsWidget</class>
    <extends>QWidget</extends>
    <header>qgsrasterpyramidsoptionswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
