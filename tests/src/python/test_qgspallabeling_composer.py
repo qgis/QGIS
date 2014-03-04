@@ -77,9 +77,6 @@ class TestComposerBase(TestQgsPalLabeling):
         cls._CheckMismatch = 0  # mismatch expected for crosscheck
         cls._TestImage = ''
         cls._TestKind = ''  # img|svg|pdf
-        cls._ImgW = 600
-        cls._ImgH = 400
-        cls._ImgDpi = 72
 
     @classmethod
     def tearDownClass(cls):
@@ -93,21 +90,15 @@ class TestComposerBase(TestQgsPalLabeling):
         TestQgsPalLabeling.setDefaultEngineSettings()
         self.lyr = self.defaultLayerSettings()
         self._TestImage = ''
-
-    # noinspection PyUnusedLocal
-    def checkTest(self, **kwargs):
-        self.lyr.writeToLayer(self.layer)
-        res_m, self._TestImage = self.get_composer_output(self._TestKind)
-        self.saveContolImage(self._TestImage)
-        self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
-        self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
-                                          imgpath=self._TestImage))
+        # ensure per test map settings stay encapsulated
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
         # TODO: how to keep embedded map from being anti-aliased twice?
         # self._MapSettings.setFlag(QgsMapSettings.Antialiasing, False)
-        self._c = QgsComposition(self._MapSettings)
+        # self._MapSettings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
+        self._c = QgsComposition(self._TestMapSettings)
         """:type: QgsComposition"""
         self._c.setPrintResolution(dpi)
         # 600 x 400 px = 211.67 x 141.11 mm @ 72 dpi
@@ -120,33 +111,29 @@ class TestComposerBase(TestQgsPalLabeling):
             self._c, 0, 0, self._c.paperWidth(), self._c.paperHeight())
         """:type: QgsComposerMap"""
         self._cmap.setFrameEnabled(False)
-        self._c.addComposerMap(self._cmap)
         self._cmap.setNewExtent(self.aoiExtent())
+        self._c.addComposerMap(self._cmap)
         self._c.setPlotStyle(QgsComposition.Print)
 
     # noinspection PyUnusedLocal
     def _get_composer_image(self, width, height, dpi):
-        # dpi = self._c.printResolution()  # why did I add this before?
-        dpmm = dpi / 25.4
-        img_width = int(dpmm * self._c.paperWidth())
-        img_height = int(dpmm * self._c.paperHeight())
-
-        # create output image and initialize it
-        image = QImage(QSize(img_width, img_height), QImage.Format_ARGB32)
-        image.setDotsPerMeterX(dpmm * 1000)
-        image.setDotsPerMeterY(dpmm * 1000)
+        image = QImage(QSize(width, height), QImage.Format_ARGB32)
         image.fill(QColor(152, 219, 249).rgb())
+        image.setDotsPerMeterX(dpi / 25.4 * 1000)
+        image.setDotsPerMeterY(dpi / 25.4 * 1000)
 
-        # render the composition
         p = QPainter(image)
-        p.setRenderHint(QPainter.HighQualityAntialiasing, False)
-        p.setRenderHint(QPainter.SmoothPixmapTransform, False)
-        p.setRenderHint(QPainter.Antialiasing, False)
-        p.setRenderHint(QPainter.TextAntialiasing, False)
-        src = QRectF(0, 0, self._c.paperWidth(), self._c.paperHeight())
-        trgt = QRectF(0, 0, img_width, img_height)
-        self._c.render(p, trgt, src)
+        p.setRenderHint(QPainter.Antialiasing, True)
+        p.setRenderHint(QPainter.HighQualityAntialiasing, True)
+        self._c.renderPage(p, 0)
         p.end()
+
+        # image = self._c.printPageAsRaster(0)
+        # """:type: QImage"""
+
+        if image.isNull():
+            # something went pear-shaped
+            return False, ''
 
         filepath = getTempfilePath('png')
         res = image.save(filepath, 'png')
@@ -161,17 +148,21 @@ class TestComposerBase(TestQgsPalLabeling):
         # line 1909, near end of function
         svgpath = getTempfilePath('svg')
         temp_size = os.path.getsize(svgpath)
+
         svg_g = QSvgGenerator()
         # noinspection PyArgumentList
         svg_g.setTitle(QgsProject.instance().title())
         svg_g.setFileName(svgpath)
         # width and height in pixels
-        svg_w = int(self._c.paperWidth() * self._c.printResolution() / 25.4)
-        svg_h = int(self._c.paperHeight() * self._c.printResolution() / 25.4)
+        # svg_w = int(self._c.paperWidth() * self._c.printResolution() / 25.4)
+        # svg_h = int(self._c.paperHeight() * self._c.printResolution() / 25.4)
+        svg_w = width
+        svg_h = height
         svg_g.setSize(QSize(svg_w, svg_h))
         svg_g.setViewBox(QRect(0, 0, svg_w, svg_h))
         # because the rendering is done in mm, convert the dpi
-        svg_g.setResolution(self._c.printResolution())
+        # svg_g.setResolution(self._c.printResolution())
+        svg_g.setResolution(dpi)
 
         sp = QPainter(svg_g)
         self._c.renderPage(sp, 0)
@@ -181,11 +172,12 @@ class TestComposerBase(TestQgsPalLabeling):
             # something went pear-shaped
             return False, ''
 
-        svgr = QSvgRenderer(svgpath)
         image = QImage(width, height, QImage.Format_ARGB32)
         image.fill(QColor(152, 219, 249).rgb())
-        image.setDotsPerMeterX(dpi/25.4 * 1000)
-        image.setDotsPerMeterY(dpi/25.4 * 1000)
+        image.setDotsPerMeterX(dpi / 25.4 * 1000)
+        image.setDotsPerMeterY(dpi / 25.4 * 1000)
+
+        svgr = QSvgRenderer(svgpath)
         p = QPainter(image)
         svgr.render(p)
         p.end()
@@ -202,6 +194,7 @@ class TestComposerBase(TestQgsPalLabeling):
     def _get_composer_pdf_image(self, width, height, dpi):
         pdfpath = getTempfilePath('pdf')
         temp_size = os.path.getsize(pdfpath)
+
         p = QPrinter()
         p.setOutputFormat(QPrinter.PdfFormat)
         p.setOutputFileName(pdfpath)
@@ -212,9 +205,10 @@ class TestComposerBase(TestQgsPalLabeling):
         p.setResolution(self._c.printResolution())
 
         pdf_p = QPainter(p)
-        page_mm = p.pageRect(QPrinter.Millimeter)
-        page_px = p.pageRect(QPrinter.DevicePixel)
-        self._c.render(pdf_p, page_px, page_mm)
+        # page_mm = p.pageRect(QPrinter.Millimeter)
+        # page_px = p.pageRect(QPrinter.DevicePixel)
+        # self._c.render(pdf_p, page_px, page_mm)
+        self._c.renderPage(pdf_p, 0)
         pdf_p.end()
 
         if temp_size == os.path.getsize(pdfpath):
@@ -222,26 +216,23 @@ class TestComposerBase(TestQgsPalLabeling):
             return False, ''
 
         filepath = getTempfilePath('png')
-        filebase = os.path.join(os.path.dirname(filepath),
-                                os.path.splitext(os.path.basename(filepath))[0])
         # pdftoppm -singlefile -r 72 -x 0 -y 0 -W 600 -H 400 -png in.pdf pngbase
         # mudraw -o out.png -r 72 -w 600 -h 400 -c rgb[a] in.pdf
         if PDFUTIL == 'pdftoppm':
+            filebase = os.path.join(
+                os.path.dirname(filepath),
+                os.path.splitext(os.path.basename(filepath))[0]
+            )
             call = [
-                'pdftoppm', '-singlefile',
-                '-r', str(dpi),
-                '-x', str(0), '-y', str(0),
-                '-W', str(width), '-H', str(height),
+                'pdftoppm', '-singlefile', '-r', str(dpi),
+                '-x', str(0), '-y', str(0), '-W', str(width), '-H', str(height),
                 '-png', pdfpath, filebase
             ]
         elif PDFUTIL == 'mudraw':
             call = [
-                'mudraw'
-                '-o', filepath,
-                '-c', 'rgba',
-                '-r', str(dpi),
-                '-w', str(width), '-h', str(height),
-                pdfpath
+                'mudraw', '-c', 'rgba',
+                '-r', str(dpi), '-w', str(width), '-h', str(height),
+                '-o', filepath, pdfpath
             ]
         else:
             return False, ''
@@ -255,17 +246,28 @@ class TestComposerBase(TestQgsPalLabeling):
         return res, filepath
 
     def get_composer_output(self, kind):
-        width, height, dpi = self._ImgW, self._ImgH, self._ImgDpi
+        ms = self._TestMapSettings
+        osize = ms.outputSize()
+        width, height, dpi = osize.width(), osize.height(), ms.outputDpi()
         self._set_up_composition(width, height, dpi)
         if kind == OutputKind.Svg:
             return self._get_composer_svg_image(width, height, dpi)
         elif kind == OutputKind.Pdf:
             return self._get_composer_pdf_image(width, height, dpi)
-        else:  # 'img'
+        else:  # OutputKind.Img
             return self._get_composer_image(width, height, dpi)
 
+    # noinspection PyUnusedLocal
+    def checkTest(self, **kwargs):
+        self.lyr.writeToLayer(self.layer)
+        res_m, self._TestImage = self.get_composer_output(self._TestKind)
+        self.saveControlImage(self._TestImage)
+        self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
+        self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
+                                          imgpath=self._TestImage))
 
-class TestComposerPointBase(TestComposerBase, TestPointBase):
+
+class TestComposerPointBase(TestComposerBase):
 
     @classmethod
     def setUpClass(cls):
@@ -273,7 +275,7 @@ class TestComposerPointBase(TestComposerBase, TestPointBase):
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
 
-class TestComposerImagePoint(TestComposerPointBase):
+class TestComposerImagePoint(TestComposerPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
@@ -284,7 +286,7 @@ class TestComposerImagePoint(TestComposerPointBase):
         self._CheckMismatch = 2700  # comment to PAL_REPORT difference
 
 
-class TestComposerImageVsCanvasPoint(TestComposerPointBase):
+class TestComposerImageVsCanvasPoint(TestComposerPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""

@@ -168,7 +168,7 @@ class TestServerPoint(TestServerBase, TestPointBase):
         # print self.params.__repr__()
         res_m, self._TestImage = MAPSERV.get_map(self.params, False)
         # print self._TestImage.__repr__()
-        self.saveContolImage(self._TestImage)
+        self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
         self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
                                           imgpath=self._TestImage))

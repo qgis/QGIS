@@ -63,7 +63,7 @@ class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)
-        self.saveContolImage()
+        self.saveControlImage()
         self.assertTrue(*self.renderCheck())
 
 

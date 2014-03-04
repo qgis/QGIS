@@ -26,20 +26,18 @@ import glob
 import shutil
 import StringIO
 import tempfile
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from qgis.core import (
-    QGis,
     QgsCoordinateReferenceSystem,
     QgsDataSourceURI,
-    QgsLabelingEngineInterface,
     QgsMapLayerRegistry,
     QgsMapRenderer,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
-    QgsProject,
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsRenderChecker
@@ -54,6 +52,7 @@ from utilities import (
     getTestFont,
     openInBrowserTab
 )
+
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 FONTSLOADED = loadTestFonts()
@@ -78,8 +77,6 @@ class TestQgsPalLabeling(TestCase):
     """:type: QgsMapSettings"""
     _Canvas = None
     """:type: QgsMapCanvas"""
-    _Map = None
-    """:type: QgsMapCanvasMap"""
     _Pal = None
     """:type: QgsPalLabeling"""
     _PalEngine = None
@@ -106,29 +103,18 @@ class TestQgsPalLabeling(TestCase):
         cls._TestGroupAbbr = ''
         cls._TestGroupCanvasAbbr = ''
         cls._TestImage = ''
+        cls._TestMapSettings = None
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
         cls._MapRegistry = QgsMapLayerRegistry.instance()
-        # set color to match render test comparisons background
-        cls._Canvas.setCanvasColor(QColor(152, 219, 249))
-        cls._Map = cls._Canvas.map()
-        cls._Map.resize(QSize(600, 400))  # is this necessary now?
         cls._MapRenderer = cls._Canvas.mapRenderer()
 
-        cls._MapSettings = QgsMapSettings()
-        cls._CRS = QgsCoordinateReferenceSystem()
-        """:type: QgsCoordinateReferenceSystem"""
-        # default for labeling test data sources: WGS 84 / UTM zone 13N
-        cls._CRS.createFromSrid(32613)
-        cls._MapSettings.setBackgroundColor(QColor(152, 219, 249))
-        cls._MapSettings.setOutputSize(QSize(600, 400))
-        cls._MapSettings.setOutputDpi(72)
-        cls._MapSettings.setFlag(QgsMapSettings.Antialiasing)
-        cls._MapSettings.setDestinationCrs(cls._CRS)
-        cls._MapSettings.setCrsTransformEnabled(False)
-        cls._MapSettings.setMapUnits(cls._CRS.mapUnits())  # meters
-        cls._MapSettings.setExtent(cls.aoiExtent())
+        cls._MapSettings = cls.getBaseMapSettings()
+        osize = cls._MapSettings.outputSize()
+        cls._Canvas.resize(QSize(osize.width(), osize.height()))  # necessary?
+        # set color to match render test comparisons background
+        cls._Canvas.setCanvasColor(cls._MapSettings.backgroundColor())
 
         cls.setDefaultEngineSettings()
         msg = ('\nCould not initialize PAL labeling engine, '
@@ -138,17 +124,17 @@ class TestQgsPalLabeling(TestCase):
         cls._BaseSetup = True
 
     @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        pass
+        # cls.removeAllLayers()
+
+    @classmethod
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labelling"""
         cls._Pal = QgsPalLabeling()
         cls._MapRenderer.setLabelingEngine(cls._Pal)
         cls._PalEngine = cls._MapRenderer.labelingEngine()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
-        # cls.removeAllLayers()
 
     @classmethod
     def removeAllLayers(cls):
@@ -191,6 +177,44 @@ class TestQgsPalLabeling(TestCase):
         uri.setDataSource('', 'aoi', 'geometry')
         aoilayer = QgsVectorLayer(uri.uri(), 'aoi', 'spatialite')
         return aoilayer.extent()
+
+    @classmethod
+    def getBaseMapSettings(cls):
+        """
+        :rtype: QgsMapSettings
+        """
+        ms = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem()
+        """:type: QgsCoordinateReferenceSystem"""
+        # default for labeling test data: WGS 84 / UTM zone 13N
+        crs.createFromSrid(32613)
+        ms.setBackgroundColor(QColor(152, 219, 249))
+        ms.setOutputSize(QSize(600, 400))
+        ms.setOutputDpi(72)
+        ms.setFlag(QgsMapSettings.Antialiasing)
+        ms.setDestinationCrs(crs)
+        ms.setCrsTransformEnabled(False)
+        ms.setMapUnits(crs.mapUnits())  # meters
+        ms.setExtent(cls.aoiExtent())
+        return ms
+
+    def cloneMapSettings(self, oms):
+        """
+        :param oms: QgsMapSettings
+        :rtype: QgsMapSettings
+        """
+        ms = QgsMapSettings()
+        ms.setBackgroundColor(oms.backgroundColor())
+        ms.setOutputSize(oms.outputSize())
+        ms.setOutputDpi(oms.outputDpi())
+        ms.setFlags(oms.flags())
+        ms.setDestinationCrs(oms.destinationCrs())
+        ms.setCrsTransformEnabled(oms.hasCrsTransformEnabled())
+        ms.setMapUnits(oms.mapUnits())
+        ms.setExtent(oms.extent())
+
+        ms.setLayers(oms.layers())
+        return ms
 
     def configTest(self, prefix, abbr):
         """Call in setUp() function of test subclass"""
@@ -244,13 +268,14 @@ class TestQgsPalLabeling(TestCase):
                             'expected_' + grpprefix,
                             self._Test, self._Test + '.png')
 
-    def saveContolImage(self, tmpimg=''):
+    def saveControlImage(self, tmpimg=''):
         # don't save control images for RenderVsOtherOutput (Vs) tests, since
         # those control images belong to a different test result
         if ('PAL_CONTROL_IMAGE' not in os.environ
                 or 'Vs' in self._TestGroup):
             return
         imgpath = self.controlImagePath()
+        # print "saveControlImage: {0}".format(imgpath)
         testdir = os.path.dirname(imgpath)
         if not os.path.exists(testdir):
             os.makedirs(testdir)
@@ -263,12 +288,68 @@ class TestQgsPalLabeling(TestCase):
         if tmpimg and os.path.exists(tmpimg):
             shutil.copyfile(tmpimg, imgpath)
         else:
-            self._Map.render()
-            self._Canvas.saveAsImage(imgpath)
+            print '\nsaveControlImage.render(): entered'
+            print '{0}.{1}'.format(self._TestGroup, self._TestFunction)
+
+            ms = self._MapSettings  # class settings
+            """:type: QgsMapSettings"""
+            if self._TestMapSettings is not None:
+                ms = self._TestMapSettings  # per test settings
+            print 'self._MapSettings...'
+            print 'ms.layers(): {0}'.format(
+                [self._MapRegistry.mapLayer(i).name() for i in ms.layers()]
+            )
+            print 'ms.outputSize(): {0} x {1}'.format(
+                ms.outputSize().width(), ms.outputSize().height())
+            print 'ms.outputDpi(): {0}'.format(ms.outputDpi())
+            print 'ms.mapUnits(): {0}'.format(ms.mapUnits())
+            print 'ms.extent(): {0}'.format(ms.extent().toString())
+            print 'ms.hasCrsTransformEnabled(): {0}'.format(
+                ms.hasCrsTransformEnabled())
+            print 'ms.destinationCrs(): {0}'.format(
+                ms.destinationCrs().authid())
+
+            # pal = QgsPalLabeling()
+            pal = self._Pal.clone()  # or custom settings are lost
+            pal.init(ms)
+            r = QgsMapRenderer()
+            r.setLabelingEngine(pal)
+
+            # this seems too redundant
+            r.setOutputSize(ms.outputSize(), ms.outputDpi())
+            r.setMapUnits(ms.mapUnits())
+            r.setExtent(ms.extent())
+            r.setProjectionsEnabled(ms.hasCrsTransformEnabled())
+            r.setDestinationCrs(ms.destinationCrs())
+            r.setLayerSet(ms.layers())
+
+            ctx = r.rendererContext()
+            ctx.setDrawEditingInformation(
+                ms.testFlag(QgsMapSettings.DrawEditingInfo))
+            ctx.setForceVectorOutput(
+                ms.testFlag(QgsMapSettings.ForceVectorOutput))
+            ctx.setUseAdvancedEffects(
+                ms.testFlag(QgsMapSettings.UseAdvancedEffects))
+
+            image = QImage(ms.outputSize(), QImage.Format_ARGB32)
+            image.fill(ms.backgroundColor().rgb())
+            image.setDotsPerMeterX(ms.outputDpi() / 25.4 * 1000)
+            image.setDotsPerMeterY(ms.outputDpi() / 25.4 * 1000)
+
+            p = QPainter(image)
+            r.render(p)
+            p.end()
+
+            if not image.save(imgpath, 'png'):
+                os.unlink(imgpath)
+
             # delete extraneous world file (always generated)
-            wrld_file = imgbasepath + '.PNGw'
-            if os.path.exists(wrld_file):
-                os.remove(wrld_file)
+            # wrld_file = imgbasepath + '.PNGw'
+            # if os.path.exists(wrld_file):
+            #     os.remove(wrld_file)
+
+        if not os.path.exists(imgpath):
+            raise OSError('Control image not created: {0}'.format(imgpath))
 
     def renderCheck(self, mismatch=0, imgpath='', grpprefix=''):
         """Check rendered map canvas or existing image against control image
