@@ -1851,6 +1851,7 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
   }
   else //normal group
   {
+    bool updateDrawingOrder = ( legendGroupElem.parentNode().toElement().attribute( "updateDrawingOrder" ) == "true" );
     QMap< int, QDomElement > layerOrderList;
     QDomNodeList groupElemChildren = legendGroupElem.childNodes();
     for ( int i = 0; i < groupElemChildren.size(); ++i )
@@ -1862,7 +1863,7 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
       }
       else if ( elem.tagName() == "legendlayer" )
       {
-        int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+        int drawingOrder = updateDrawingOrder ? -1 : elem.attribute( "drawingOrder", "-1" ).toInt();
         if ( drawingOrder == -1 )
         {
           addLayerFromLegendLayer( elem, layerList, useCache );
@@ -4123,6 +4124,14 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
     return;
   }
 
+  //legend or custom drawing order in embedded project?
+  bool updateDrawingOrder = true;
+  QDomNodeList legendNode = doc->elementsByTagName( "legend" );
+  if ( legendNode.size() > 0 )
+  {
+    updateDrawingOrder = ( legendNode.at( 0 ).toElement().attribute( "updateDrawingOrder" ) == "true" );
+  }
+
   QDomNodeList layerNodeList = embeddedGroupElem.elementsByTagName( "legendlayer" );
   QDomElement layerElem;
   QMap<int, QString > layerNames;
@@ -4132,7 +4141,7 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
     layerElem = layerNodeList.at( i ).toElement();
     layerName = layerElem.attribute( "name" );
 
-    int layerDrawingOrder = layerElem.attribute( "drawingOrder", "-1" ).toInt();
+    int layerDrawingOrder = updateDrawingOrder ? -1 : layerElem.attribute( "drawingOrder", "-1" ).toInt();
     if ( layerDrawingOrder == -1 )
     {
       layerNames.insert( layerNames.size(), layerName );

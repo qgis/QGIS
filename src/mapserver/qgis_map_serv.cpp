@@ -177,6 +177,10 @@ int main( int argc, char * argv[] )
 
   //Default prefix path may be altered by environment variable
   QgsApplication::init();
+#if !defined(Q_OS_WIN)
+  // init QGIS's paths - true means that all path will be inited from prefix
+  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
+#endif
 
 #if defined(MAPSERVER_SKIP_ECW)
   QgsDebugMsg( "Skipping GDAL ECW drivers in server." );

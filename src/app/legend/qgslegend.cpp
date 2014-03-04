@@ -988,11 +988,11 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
   QDomNodeList legendGroupList = legendElem.elementsByTagName( "legendgroup" );
   for ( int i = 0; i < legendGroupList.size(); ++i )
   {
-    QDomElement legendElem = legendGroupList.at( i ).toElement();
-    if ( legendElem.attribute( "name" ) == groupName )
+    QDomElement legendGroupElem = legendGroupList.at( i ).toElement();
+    if ( legendGroupElem.attribute( "name" ) == groupName )
     {
       //embedded groups cannot be embedded again
-      if ( legendElem.attribute( "embedded" ) == "1" )
+      if ( legendGroupElem.attribute( "embedded" ) == "1" )
       {
         mEmbeddedGroups.remove( groupName );
         return 0;
@@ -1017,7 +1017,8 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
       group->setFont( 0, groupFont );
       setCurrentItem( group );
 
-      QDomNodeList groupChildren = legendElem.childNodes();
+      bool updateDrawingOrder = legendElem.attribute( "updateDrawingOrder" ) == "true";
+      QDomNodeList groupChildren = legendGroupElem.childNodes();
       for ( int j = 0; j < groupChildren.size(); ++j )
       {
         QDomElement childElem = groupChildren.at( j ).toElement();
@@ -1040,6 +1041,14 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
 
           if ( cItem )
           {
+            //add drawing order
+            int drawingOrder = ( updateDrawingOrder ? -1 : childElem.attribute( "drawingOrder", "-1" ).toInt() );
+            QgsLegendLayer* llI = dynamic_cast<QgsLegendLayer*>( cItem );
+            if ( llI )
+            {
+              llI->setDrawingOrder( drawingOrder );
+            }
+
             group->insertChild( group->childCount(), cItem );
           }
 
@@ -1474,23 +1483,38 @@ QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
         {
           qSort( groupLayers.begin(), groupLayers.end(), inReverseDrawingOrder );
         }
-        for ( int i = groupLayers.size() - 1; i >= 0; --i )
+
+        QMap<int, QgsMapCanvasLayer > orderedLayers;
+        for ( int i = 0; i < groupLayers.size(); ++i )
         {
           QgsLegendLayer* ll = groupLayers.at( i );
+          int drawingOrder = ll->drawingOrder();
           if ( !ll || embeddedGroupChildren.contains( ll ) )
           {
             continue;
           }
 
-          if ( mUpdateDrawingOrder )
+          if ( drawingOrder == -1 )
           {
-            layers.insertMulti( nEntries, ll->canvasLayer() );
+            orderedLayers.insert( orderedLayers.size(), ll->canvasLayer() );
           }
           else
           {
-            layers.insertMulti( groupDrawingOrder,  ll->canvasLayer() );
+            orderedLayers.insert( drawingOrder, ll->canvasLayer() );
           }
           embeddedGroupChildren.insert( ll );
+        }
+        QMap<int, QgsMapCanvasLayer >::iterator orderedLayersIt = orderedLayers.begin();
+        for ( ; orderedLayersIt != orderedLayers.end(); ++orderedLayersIt )
+        {
+          if ( mUpdateDrawingOrder )
+          {
+            layers.insert( layers.size(), orderedLayersIt.value() );
+          }
+          else
+          {
+            layers.insertMulti( groupDrawingOrder,  orderedLayersIt.value() );
+          }
         }
       }
     }
