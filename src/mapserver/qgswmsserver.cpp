@@ -1496,7 +1496,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
       bool withGeom = layer->wkbType() != QGis::WKBNoGeometry;
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
-      QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), withGeom, version );
+      QDomElement elem = createFeatureGML( &feature, layer, infoDocument, layerCrs, layer->name(), withGeom, version );
       QDomElement featureMemberElem = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
       featureMemberElem.appendChild( elem );
       layerElement.appendChild( featureMemberElem );
@@ -1523,7 +1523,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
-        attributeElement.setAttribute( "value", featureAttributes[i].toString() );
+        attributeElement.setAttribute( "value", QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) );
         featureElement.appendChild( attributeElement );
       }
 
@@ -1607,7 +1607,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
     int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
-    QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), false, version );
+    QDomElement elem = createFeatureGML( &feature, 0, infoDocument, layerCrs, layer->name(), false, version );
     layerElement.appendChild( elem );
   }
   else
@@ -2499,6 +2499,7 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
 
 QDomElement QgsWMSServer::createFeatureGML(
   QgsFeature* feat,
+  QgsVectorLayer* layer,
   QDomDocument& doc,
   QgsCoordinateReferenceSystem& crs,
   QString typeName,
@@ -2560,7 +2561,12 @@ QDomElement QgsWMSServer::createFeatureGML(
   {
     QString attributeName = fields->at( i ).name();
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
-    QDomText fieldText = doc.createTextNode( featureAttributes[i].toString() );
+    QString fieldTextString = featureAttributes[i].toString();
+    if ( layer )
+    {
+      fieldTextString = QgsExpression::replaceExpressionText( fieldTextString, feat, layer );
+    }
+    QDomText fieldText = doc.createTextNode( fieldTextString );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
   }

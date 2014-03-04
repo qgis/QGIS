@@ -226,6 +226,7 @@ class QgsWMSServer
 
     QDomElement createFeatureGML(
       QgsFeature* feat,
+      QgsVectorLayer* layer,
       QDomDocument& doc,
       QgsCoordinateReferenceSystem& crs,
       QString typeName,
