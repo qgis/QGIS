@@ -664,6 +664,8 @@ class QgsWmsCapabilities
      */
     QHash<QString, QgsWmtsTileMatrixSet> mTileMatrixSets;
 
+    //temporarily caches invert axis setting for each crs
+    QHash<QString, bool> mCrsInvertAxis;
 
     friend class QgsWmsProvider;
 };

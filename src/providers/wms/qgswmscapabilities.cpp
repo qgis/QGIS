@@ -696,7 +696,7 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlP
 void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
                                      QgsWmsLayerProperty *parentProperty )
 {
-  QgsDebugMsg( "entering." );
+  //QgsDebugMsg( "entering." );
 
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 //  // enforce WMS non-inheritance rules
@@ -718,7 +718,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
+      //QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
       QString tagName = e1.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -726,7 +726,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
 
       if ( tagName == "Layer" )
       {
-        QgsDebugMsg( "      Nested layer." );
+        //QgsDebugMsg( "      Nested layer." );
 
         QgsWmsLayerProperty subLayerProperty;
 
@@ -944,7 +944,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
     layerProperty.crs.clear();
   }
 
-  QgsDebugMsg( "exiting." );
+  //QgsDebugMsg( "exiting." );
 }
 
 
@@ -1804,12 +1804,22 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
   bool changeXY = false;
   if ( !mParserSettings.ignoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
   {
+    //have we already checked this crs?
+    if ( mCrsInvertAxis.contains( ogcCrs ) )
+    {
+      //if so, return previous result to save time
+      return mCrsInvertAxis[ ogcCrs ];
+    }
+
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;
     if ( theSrs.createFromOgcWmsCrs( ogcCrs ) && theSrs.axisInverted() )
     {
       changeXY = true;
     }
+
+    //cache result to speed up future checks
+    mCrsInvertAxis[ ogcCrs ] = changeXY;
   }
 
   if ( mParserSettings.invertAxisOrientation )
