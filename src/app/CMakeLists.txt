@@ -498,6 +498,18 @@ if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
 
+# disable deprecation warnings for classes re-exporting deprecated methods
+IF(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
+    PROPERTIES COMPILE_FLAGS "-wd4996")
+ELSE(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
+    PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
+ENDIF(MSVC)
+
+
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QWT_LIBRARY}
   ${QT_QTSQL_LIBRARY}

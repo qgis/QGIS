@@ -202,7 +202,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   if ( name.length() == 0 )
     return;  // Section
 
-#ifdef HAVE_OPENPTY
+#if defined(HAVE_OPENPTY) && !defined(Q_OS_WIN)
   QgsGrassShell* sh = 0;
 #endif
 
@@ -211,7 +211,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   QWidget *m;
   if ( name == "shell" )
   {
-#ifdef WIN32
+#ifdef Q_OS_WIN
     QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
@@ -227,7 +227,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
     QMessageBox::warning( 0, tr( "Warning" ), tr( "GRASS Shell is not compiled." ) );
 #endif // HAVE_OPENPTY
 
-#endif // ! WIN32
+#endif // ! Q_OS_WIN
   }
   else
   {
@@ -471,7 +471,7 @@ QgsGrassTools::~QgsGrassTools()
 
 QString QgsGrassTools::appDir( void )
 {
-#if defined(WIN32)
+#if defined(Q_OS_WIN)
   return QgsGrass::shortPath( QgsApplication::applicationDirPath() );
 #else
   return QgsApplication::applicationDirPath();

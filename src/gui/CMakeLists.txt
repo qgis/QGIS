@@ -432,7 +432,7 @@ ELSE(MSVC)
     ${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx
     ${CMAKE_BINARY_DIR}/src/gui/moc_qgsgenericprojectionselector.cxx
     ${CMAKE_BINARY_DIR}/src/gui/moc_qgsprojectionselector.cxx
-    PROPERTIES COMPILE_FLAGS "-w")
+    PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
 ENDIF(MSVC)
 
 #############################################################
