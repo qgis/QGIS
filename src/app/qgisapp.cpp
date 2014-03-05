@@ -423,14 +423,14 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
     authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
     srs.createFromOgcWmsCrs( authid );
     QgsDebugMsg( "Layer srs set from project: " + authid );
-    messageBar()->pushMessage( tr( "Warning" ), tr( "CRS undefined - defaulting to project CRS" ), QgsMessageBar::WARNING, messageTimeout() );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( authid ).arg( srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     authid = mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
     srs.createFromOgcWmsCrs( authid );
     QgsDebugMsg( "Layer srs set from default: " + authid );
-    messageBar()->pushMessage( tr( "Warning" ), tr( "CRS undefined - defaulting to default CRS: %1" ).arg( authid ), QgsMessageBar::WARNING, messageTimeout() );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( authid ).arg( srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
 }
 
