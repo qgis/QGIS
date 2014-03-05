@@ -39,33 +39,47 @@ from test_qgspallabeling_tests import (
 )
 
 
-class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
+class TestCanvasBase(TestQgsPalLabeling):
 
     layer = None
+    """:type: QgsVectorLayer"""
 
     @classmethod
     def setUpClass(cls):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
-        cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
     @classmethod
     def tearDownClass(cls):
         TestQgsPalLabeling.tearDownClass()
-        cls._MapRegistry.removeMapLayer(cls.layer.id())
+        cls.removeMapLayer(cls.layer)
         cls.layer = None
 
     def setUp(self):
         """Run before each test."""
-        self.configTest('pal_canvas', 'sp')
-        TestQgsPalLabeling.setDefaultEngineSettings()
-        self.lyr = self.defaultLayerSettings()
+        super(TestCanvasBase, self).setUp()
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)
         self.saveControlImage()
         self.assertTrue(*self.renderCheck())
 
+
+class TestCanvasBasePoint(TestCanvasBase):
+
+    @classmethod
+    def setUpClass(cls):
+        TestCanvasBase.setUpClass()
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+
+class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestCanvasPoint, self).setUp()
+        self.configTest('pal_canvas', 'sp')
+    
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

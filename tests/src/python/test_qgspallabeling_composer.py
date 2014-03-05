@@ -76,19 +76,18 @@ class TestComposerBase(TestQgsPalLabeling):
         TestQgsPalLabeling.loadFeatureLayer('background', True)
         cls._CheckMismatch = 0  # mismatch expected for crosscheck
         cls._TestImage = ''
-        cls._TestKind = ''  # img|svg|pdf
+        cls._TestKind = 0  # OutputKind.(Img|Svg|Pdf)
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         TestQgsPalLabeling.tearDownClass()
-        cls._MapRegistry.removeMapLayer(cls.layer.id())
+        cls.removeMapLayer(cls.layer)
         cls.layer = None
 
     def setUp(self):
         """Run before each test."""
-        TestQgsPalLabeling.setDefaultEngineSettings()
-        self.lyr = self.defaultLayerSettings()
+        super(TestComposerBase, self).setUp()
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)

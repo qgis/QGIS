@@ -126,8 +126,11 @@ class TestQgsPalLabeling(TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        pass
-        # cls.removeAllLayers()
+
+    def setUp(self):
+        """Run before each test."""
+        TestQgsPalLabeling.setDefaultEngineSettings()
+        self.lyr = self.defaultLayerSettings()
 
     @classmethod
     def setDefaultEngineSettings(cls):
@@ -140,6 +143,18 @@ class TestQgsPalLabeling(TestCase):
     def removeAllLayers(cls):
         cls._MapRegistry.removeAllMapLayers()
         cls._MapSettings.setLayers([])
+
+    @classmethod
+    def removeMapLayer(cls, layer):
+        if layer is None:
+            return
+        lyr_id = layer.id()
+        cls._MapRegistry.removeMapLayer(lyr_id)
+        ms_layers = cls._MapSettings.layers()
+        """:type: QStringList"""
+        if ms_layers.contains(lyr_id):
+            ms_layers.removeAt(ms_layers.indexOf(lyr_id))
+            cls._MapSettings.setLayers(ms_layers)
 
     @classmethod
     def getTestFont(cls):
@@ -378,6 +393,10 @@ class TestQgsPalLabeling(TestCase):
             PALREPORTS[testname] = str(chk.report().toLocal8Bit())
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
+
+    def checkTest(self, **kwargs):
+        """Intended to be overridden in subclasses"""
+        pass
 
 
 class TestPALConfig(TestQgsPalLabeling):

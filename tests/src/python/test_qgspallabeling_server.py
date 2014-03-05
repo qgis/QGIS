@@ -59,6 +59,9 @@ class TestServerBase(TestQgsPalLabeling):
     _TestProj = None
     """:type: QgsProject"""
     _TestProjName = ''
+    layer = None
+    """:type: QgsVectorLayer"""
+    params = dict()
 
     @classmethod
     def setUpClass(cls):
@@ -86,8 +89,10 @@ class TestServerBase(TestQgsPalLabeling):
     def tearDownClass(cls):
         """Run after all tests"""
         TestQgsPalLabeling.tearDownClass()
+        cls.removeMapLayer(cls.layer)
+        cls.layer = None
         # layers removed, save empty project file
-        # cls._TestProj.write()
+        cls._TestProj.write()
         if "PAL_SERVER_TEMP" in os.environ:
             MAPSERV.stop_processes()
             MAPSERV.open_temp_dir()
@@ -99,64 +104,47 @@ class TestServerBase(TestQgsPalLabeling):
         # web server stays up across all tests
         # MAPSERV.fcgi_server_process().stop()
         # self.deleteCache()
+        super(TestServerBase, self).setUp()
+        self._TestImage = ''
+        # ensure per test map settings stay encapsulated
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
 
     # noinspection PyPep8Naming
-    def deleteCache(self):
+    def delete_cache(self):
         for item in os.listdir(self._CacheDir):
             shutil.rmtree(os.path.join(self._CacheDir, item),
                           ignore_errors=True)
 
     # noinspection PyPep8Naming
-    def defaultWmsParams(self, layername):
-        return {
+    def get_wms_params(self):
+        ms = self._TestMapSettings
+        osize = ms.outputSize()
+        dpi = str(ms.outputDpi())
+        lyrs = [str(self._MapRegistry.mapLayer(i).name()) for i in ms.layers()]
+        lyrs.reverse()
+        params = {
             'SERVICE': 'WMS',
             'VERSION': '1.3.0',
             'REQUEST': 'GetMap',
             'MAP': self._TestProjName,
             # layer stacking order for rendering: bottom,to,top
-            'LAYERS': ['background', str(layername).strip()],  # or 'name,name'
+            'LAYERS': lyrs,  # or 'name,name'
             'STYLES': ',',
             # authid str or QgsCoordinateReferenceSystem obj
-            'CRS': 'EPSG:32613',  # self._CRS
-            'BBOX': '606510,4823130,612510,4827130',  # self.aoiExtent(),
+            'CRS': str(ms.destinationCrs().authid()),
+            # self.aoiExtent(),
+            'BBOX': str(ms.extent().toString(True).replace(' : ', ',')),
             'FORMAT': 'image/png',  # or: 'image/png; mode=8bit'
-            'WIDTH': '600',
-            'HEIGHT': '400',
-            'DPI': '72',
-            'MAP_RESOLUTION': '72',
-            'FORMAT_OPTIONS': 'dpi:72',
+            'WIDTH': str(osize.width()),
+            'HEIGHT': str(osize.height()),
+            'DPI': dpi,
+            'MAP_RESOLUTION': dpi,
+            'FORMAT_OPTIONS': 'dpi:{0}'.format(dpi),
             'TRANSPARENT': 'FALSE',
             'IgnoreGetMapUrl': '1'
         }
-
-
-class TestServerPoint(TestServerBase, TestPointBase):
-
-    layer = None
-    """:type: QgsVectorLayer"""
-
-    @classmethod
-    def setUpClass(cls):
-        TestServerBase.setUpClass()
-        cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
-
-    @classmethod
-    def tearDownClass(cls):
-        TestServerBase.tearDownClass()
-        cls._MapRegistry.removeMapLayer(cls.layer.id())
-        cls.layer = None
-
-    def setUp(self):
-        """Run before each test."""
-        self.configTest('pal_server', 'sp')
-        TestQgsPalLabeling.setDefaultEngineSettings()
-        self.lyr = self.defaultLayerSettings()
-        self.params = self.defaultWmsParams('point')
-        self._TestImage = ''
-
-    def tearDown(self):
-        """Run after each test."""
-        pass
+        print params
+        return params
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)
@@ -174,7 +162,27 @@ class TestServerPoint(TestServerBase, TestPointBase):
                                           imgpath=self._TestImage))
 
 
-class TestServerVsCanvasPoint(TestServerPoint):
+class TestServerBasePoint(TestServerBase):
+
+    @classmethod
+    def setUpClass(cls):
+        TestServerBase.setUpClass()
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+    def setUp(self):
+        super(TestServerBasePoint, self).setUp()
+        # self._TestMapSettings defines the params
+        self.params = self.get_wms_params()
+
+
+class TestServerPoint(TestServerBasePoint, TestPointBase):
+
+    def setUp(self):
+        super(TestServerPoint, self).setUp()
+        self.configTest('pal_server', 'sp')
+
+
+class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
 
     def setUp(self):
         super(TestServerVsCanvasPoint, self).setUp()

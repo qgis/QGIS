@@ -41,10 +41,6 @@ class TestPointBase(object):
         self._Canvas = None
         """:type: QgsMapCanvas"""
 
-    def checkTest(self, **kwargs):
-        """Intended to be overridden in subclasses"""
-        pass
-
     def test_default_label(self):
         # Default label placement, with text size in points
         self.checkTest()
