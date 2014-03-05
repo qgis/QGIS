@@ -421,15 +421,16 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
   {
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
     authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
-    QgsDebugMsg( "Layer srs set from project: " + authid );
-    QgisApp::instance()->statusBar()->showMessage( tr( "CRS undefined - defaulting to project CRS" ) );
     srs.createFromOgcWmsCrs( authid );
+    QgsDebugMsg( "Layer srs set from project: " + authid );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( authid ).arg( srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     authid = mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
     srs.createFromOgcWmsCrs( authid );
-    QgisApp::instance()->statusBar()->showMessage( tr( "CRS undefined - defaulting to default CRS: %1" ).arg( authid ) );
+    QgsDebugMsg( "Layer srs set from default: " + authid );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( authid ).arg( srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
 }
 
