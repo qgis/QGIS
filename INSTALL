@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Friday February 07, 2014
+Thursday March 06, 2014
 
 
-Last Updated: Friday February 07, 2014
-Last Change : Friday February 07, 2014
+Last Updated: Thursday March 06, 2014
+Last Change : Thursday March 06, 2014
 
 
   1. Introduction
@@ -318,6 +318,8 @@ First you need to create an changelog entry for your distribution. For example f
 The QGIS packages will be created with:
 
   dpkg-buildpackage -us -uc -b
+
+/!\ Note: Install devscripts to get dch.
 
 /!\ Note: If dpkg-buildpackage complains about unmet build dependencies
 you can install them using apt-get and re-run the command.

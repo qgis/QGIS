@@ -215,6 +215,8 @@ The QGIS packages will be created with:
 dpkg-buildpackage -us -uc -b
 ```
 
+/!\ **Note:** Install ``devscripts`` to get ``dch``.
+
 /!\ **Note:** If ``dpkg-buildpackage`` complains about unmet build dependencies
 you can install them using ``apt-get`` and re-run the command.
 
