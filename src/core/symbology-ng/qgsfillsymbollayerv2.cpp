@@ -31,8 +31,9 @@
 #include <QDomElement>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
-    : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
-    mOffsetUnit( QgsSymbolV2::MM )
+: QgsFillSymbolLayerV2(),
+  mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
+  mOffsetUnit( QgsSymbolV2::MM ), mIsExterior( false )
 {
   mColor = color;
 }
@@ -104,6 +105,9 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
     sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
   if ( props.contains( "offset_unit" ) )
     sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+  if ( props.contains( "exterior_fill" ) ) {
+    sl->setIsExterior( props["exterior_fill"].toInt() == 1 );
+  }
 
   if ( props.contains( "color_expression" ) )
   {
@@ -160,6 +164,45 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
   Q_UNUSED( context );
+
+  if ( mIsExterior && ! mExteriorPath.isEmpty() ) {
+    QPainter* p = context.renderContext().painter();
+    if ( !p )
+    {
+      return;
+    }
+
+    p->setBrush( mBrush );
+    p->setPen( mPen );
+
+    QPointF offset;
+    if ( !mOffset.isNull() )
+    {
+      offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+      offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+      p->translate( offset );
+    }
+
+    // add an exterior rectangle to the painter path
+    QRectF rect( p->viewport() );
+    float rectOffset = mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit );
+
+    rect.translate( -rectOffset, -rectOffset );
+    rect.setHeight( rect.height() + 2 * rectOffset );
+    rect.setWidth( rect.width() + 2 * rectOffset );
+    rect.translate( -offset );
+    mExteriorPath.addRect( rect );
+    // draw it
+    p->drawPath( mExteriorPath );
+
+    // reset the painter path
+    mExteriorPath = QPainterPath();
+
+    if ( !mOffset.isNull() )
+    {
+      p->translate( -offset );
+    }
+  }
 }
 
 void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
@@ -168,6 +211,20 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   if ( !p )
   {
     return;
+  }
+
+  if ( mIsExterior )
+  {
+    mExteriorPath.addPolygon( points );
+    if ( rings ) {
+      for ( QList<QPolygonF>::const_iterator it = rings->constBegin(); it != rings->constEnd(); ++it ) {
+        mExteriorPath.addPolygon( *it );
+      }
+    }
+    if ( ! context.selected() ) {
+      // only continue if the current polygon is selected (draw it with the correct brush)
+      return;
+    }
   }
 
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
@@ -202,6 +259,7 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["border_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["exterior_fill"] = QString::number( isExterior() ? 1 : 0 );
   saveDataDefinedProperties( map );
   return map;
 }
@@ -212,7 +270,9 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   sl->setBorderWidthUnit( mBorderWidthUnit );
+  sl->setIsExterior( isExterior() );
   copyDataDefinedProperties( sl );
+  sl->mExteriorPath = mExteriorPath;
   return sl;
 }
 
@@ -343,7 +403,8 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor
     mReferencePoint2( QPointF( 0.5, 1 ) ),
     mReferencePoint2IsCentroid( false ),
     mAngle( 0 ),
-    mOffsetUnit( QgsSymbolV2::MM )
+    mOffsetUnit( QgsSymbolV2::MM ),
+    mIsExterior( false )
 {
   mColor = color;
   mColor2 = color2;
@@ -411,6 +472,9 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
   sl->setAngle( angle );
   if ( gradientRamp )
     sl->setColorRamp( gradientRamp );
+  if ( props.contains( "exterior_fill" ) ) {
+    sl->setIsExterior( props["exterior_fill"].toInt() == 1 );
+  }
 
   //data defined symbology expressions
   if ( props.contains( "color_expression" ) )
@@ -703,6 +767,58 @@ void QgsGradientFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
   Q_UNUSED( context );
+
+  if ( mIsExterior && ! mExteriorPath.isEmpty() ) {
+    QPainter* p = context.renderContext().painter();
+    if ( !p )
+    {
+      return;
+    }
+
+    QPointF offset;
+    if ( !mOffset.isNull() )
+    {
+      offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+      offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+      p->translate( offset );
+    }
+
+    // add an exterior rectangle to the painter path
+    QRectF rect( p->viewport() );
+    rect.translate( -offset );
+    mExteriorPath.addRect( rect );
+
+    // prepare the gradient
+    QPointF refPoint1, refPoint2;
+    if ( mReferencePoint1IsCentroid ) {
+      refPoint1 = QPointF(0.5,0.5);
+    }
+    else {
+      refPoint1 = mReferencePoint1;
+    }
+    if ( mReferencePoint2IsCentroid ) {
+      refPoint2 = QPointF(0.5,0.5);
+    }
+    else {
+      refPoint2 = mReferencePoint2;
+    }
+    applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp, mGradientType, mCoordinateMode,
+                 mGradientSpread, refPoint1, refPoint2, mAngle );
+
+    p->setBrush( mBrush );
+    p->setPen( QPen( Qt::NoPen ) );
+
+    // draw the painter path
+    p->drawPath( mExteriorPath );
+
+    // reset the painter path
+    mExteriorPath = QPainterPath();
+
+    if ( !mOffset.isNull() )
+    {
+      p->translate( -offset );
+    }
+  }
 }
 
 void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
@@ -711,6 +827,20 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
   if ( !p )
   {
     return;
+  }
+
+  if ( mIsExterior )
+  {
+    mExteriorPath.addPolygon( points );
+    if ( rings ) {
+      for ( QList<QPolygonF>::const_iterator it = rings->constBegin(); it != rings->constEnd(); ++it ) {
+        mExteriorPath.addPolygon( *it );
+      }
+    }
+    if ( ! context.selected() ) {
+      // only continue if the current polygon is selected (draw it with the correct brush)
+      return;
+    }
   }
 
   QPen mSelPen;
@@ -751,6 +881,7 @@ QgsStringMap QgsGradientFillSymbolLayerV2::properties() const
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["exterior_fill"] = QString::number( mIsExterior ? 1 : 0 );
   saveDataDefinedProperties( map );
   if ( mGradientRamp )
   {
@@ -771,6 +902,7 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::clone() const
   sl->setAngle( mAngle );
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
+  sl->setIsExterior( isExterior() );
   copyDataDefinedProperties( sl );
   return sl;
 }

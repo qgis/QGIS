@@ -72,6 +72,9 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void setIsExterior( bool isExterior );
+    bool isExterior() const;
+
     double estimateMaxBleed() const;
 
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
@@ -195,6 +198,8 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
+    void setIsExterior( bool isExterior );
+    bool isExterior() const;
 };
 
 /**Base class for polygon renderers generating texture images*/

@@ -571,6 +571,10 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+  mAsExteriorFillCheckBox->blockSignals( true );
+  mAsExteriorFillCheckBox->setCheckState( mLayer->isExterior() ? Qt::Checked : Qt::Unchecked );
+  mDataDefinedPropertiesButton->setEnabled( mLayer->isExterior() ? Qt::Unchecked : Qt::Checked );
+  mAsExteriorFillCheckBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
@@ -630,6 +634,16 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
+}
+
+void QgsSimpleFillSymbolLayerV2Widget::on_mAsExteriorFillCheckBox_stateChanged( int state )
+{
+  if ( mLayer )
+  {
+    mLayer->setIsExterior( state == Qt::Checked );
+    emit changed();
+  }
+  mDataDefinedPropertiesButton->setEnabled( state == Qt::Unchecked );
 }
 
 void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
@@ -818,6 +832,11 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+
+  mAsExteriorFillCheckBox->blockSignals( true );
+  mAsExteriorFillCheckBox->setCheckState( mLayer->isExterior() ? Qt::Checked : Qt::Unchecked );
+  mDataDefinedPropertiesButton->setEnabled( mLayer->isExterior() ? Qt::Unchecked : Qt::Checked );
+  mAsExteriorFillCheckBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2Widget::symbolLayer()
@@ -963,6 +982,16 @@ void QgsGradientFillSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChan
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
+}
+
+void QgsGradientFillSymbolLayerV2Widget::on_mAsExteriorFillCheckBox_stateChanged( int state )
+{
+  if ( mLayer )
+  {
+    mLayer->setIsExterior( state == Qt::Checked );
+    emit changed();
+  }
+  mDataDefinedPropertiesButton->setEnabled( state == Qt::Unchecked );
 }
 
 void QgsGradientFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()

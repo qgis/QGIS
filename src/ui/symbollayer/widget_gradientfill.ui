@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>474</width>
-    <height>358</height>
+    <width>494</width>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -345,16 +345,10 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Data defined properties...</string>
+      <string>Offset X,Y</string>
      </property>
     </widget>
    </item>
@@ -420,10 +414,23 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_6">
+   <item row="12" column="0" colspan="2">
+    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Offset X,Y</string>
+      <string>Data defined properties...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QCheckBox" name="mAsExteriorFillCheckBox">
+     <property name="text">
+      <string>Use as exterior fill</string>
      </property>
     </widget>
    </item>

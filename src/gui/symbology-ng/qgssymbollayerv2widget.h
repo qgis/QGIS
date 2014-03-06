@@ -152,6 +152,7 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mAsExteriorFillCheckBox_stateChanged( int state );
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;
@@ -190,6 +191,7 @@ class GUI_EXPORT QgsGradientFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void on_mDataDefinedPropertiesButton_clicked();
     void colorModeChanged();
     void on_mSpinAngle_valueChanged( double value );
+    void on_mAsExteriorFillCheckBox_stateChanged( int state );
 
   protected:
     QgsGradientFillSymbolLayerV2* mLayer;
