@@ -104,6 +104,8 @@ class TestQgsPalLabeling(TestCase):
         cls._TestGroupCanvasAbbr = ''
         cls._TestImage = ''
         cls._TestMapSettings = None
+        cls._Mismatch = 0
+        cls._Mismatches = dict()
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList

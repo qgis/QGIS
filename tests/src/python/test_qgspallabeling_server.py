@@ -78,7 +78,6 @@ class TestServerBase(TestQgsPalLabeling):
 
         # the blue background (set via layer style) to match renderchecker's
         TestQgsPalLabeling.loadFeatureLayer('background', True)
-        cls._CheckMismatch = 200  # default for server tests; mismatch expected
 
         settings = QSettings()
         # noinspection PyArgumentList
@@ -108,6 +107,8 @@ class TestServerBase(TestQgsPalLabeling):
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._Mismatches.clear()
+        self._Mismatch = 50  # default for server tests; some mismatch expected
 
     # noinspection PyPep8Naming
     def delete_cache(self):
@@ -143,7 +144,7 @@ class TestServerBase(TestQgsPalLabeling):
             'TRANSPARENT': 'FALSE',
             'IgnoreGetMapUrl': '1'
         }
-        print params
+        # print params
         return params
 
     def checkTest(self, **kwargs):
@@ -158,7 +159,7 @@ class TestServerBase(TestQgsPalLabeling):
         # print self._TestImage.__repr__()
         self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
-        self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
+        self.assertTrue(*self.renderCheck(mismatch=self._Mismatch,
                                           imgpath=self._TestImage))
 
 

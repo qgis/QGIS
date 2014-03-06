@@ -40,9 +40,13 @@ class TestPointBase(object):
         """:type: QgsPalLabeling"""
         self._Canvas = None
         """:type: QgsMapCanvas"""
+        # custom mismatches per group/test (should not mask needed anomaly)
+        # e.g. self._Mismatches['TestClassName'] = 300
+        self._Mismatches = dict()
 
     def test_default_label(self):
         # Default label placement, with text size in points
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2034
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -51,15 +55,18 @@ class TestPointBase(object):
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
         self.lyr.textFont = font
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 1877
         self.checkTest()
 
     def test_text_color(self):
         # Label color change
         self.lyr.textColor = Qt.blue
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2034
         self.checkTest()
 
     def test_background_rect(self):
         self.lyr.shapeDraw = True
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2751
         self.checkTest()
 
     def test_background_rect_w_offset(self):
@@ -75,11 +82,11 @@ class TestPointBase(object):
         self.lyr.shapeDraw = True
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2530
         self.checkTest()
 
     def test_background_svg(self):
         # Label SVG background
-        # NOTE: this has higher _CheckMismatch (3600) in ComposerVsCanvasPoint
         self.lyr.fontSizeInMapUnits = True
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
@@ -93,11 +100,11 @@ class TestPointBase(object):
         self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
         self.lyr.shapeSize = QPointF(100.0, 0.0)
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2882
         self.checkTest()
 
     def test_background_svg_w_offset(self):
         # Label SVG background
-        # NOTE: this has higher _CheckMismatch (3600) in ComposerVsCanvasPoint
         self.lyr.fontSizeInMapUnits = True
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
@@ -114,6 +121,7 @@ class TestPointBase(object):
 
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2901
         self.checkTest()
 
     def test_partials_labels_enabled(self):
@@ -124,7 +132,7 @@ class TestPointBase(object):
         # Enable partials labels
         self._Pal.setShowingPartialsLabels(True)
         self._Pal.saveEngineSettings()
-        # Check
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2250
         self.checkTest()
 
     def test_partials_labels_disabled(self):
@@ -135,7 +143,6 @@ class TestPointBase(object):
         # Disable partials labels
         self._Pal.setShowingPartialsLabels(False)
         self._Pal.saveEngineSettings()
-        # Check
         self.checkTest()
 
 
@@ -145,29 +152,26 @@ def suiteTests():
     Use to define which tests are run when PAL_SUITE is set.
     Use sp_vs_suite comparison of server and composer outputs to canvas
     """
+    sp_suite = [
+        # 'test_default_label',
+        # 'test_text_size_map_unit',
+        # 'test_text_color',
+        # 'test_background_rect',
+        # 'test_background_rect_w_offset',
+        # 'test_background_svg',
+        # 'test_background_svg_w_offset',
+        # 'test_partials_labels_enabled',
+        # 'test_partials_labels_disabled',
+    ]
+    sp_vs_suite = [
+        #'test_something_specific',
+    ]
+    # extended separately for finer control of PAL_SUITE (comment-out undesired)
+    sp_vs_suite.extend(sp_suite)
+
     return {
-        'sp_suite': [
-            # 'test_default_label',
-            # 'test_text_size_map_unit',
-            # 'test_text_color',
-            # 'test_background_rect',
-            # 'test_background_rect_w_offset',
-            # 'test_background_svg',
-            # 'test_background_svg_w_offset',
-            # 'test_partials_labels_enabled',
-            # 'test_partials_labels_disabled',
-        ],
-        'sp_vs_suite': [
-            # 'test_default_label',
-            # 'test_text_size_map_unit',
-            # 'test_text_color',
-            # 'test_background_rect',
-            # 'test_background_rect_w_offset',
-            # 'test_background_svg',
-            # 'test_background_svg_w_offset',
-            # 'test_partials_labels_enabled',
-            # 'test_partials_labels_disabled',
-        ]
+        'sp_suite': sp_suite,
+        'sp_vs_suite': sp_vs_suite
     }
 
 

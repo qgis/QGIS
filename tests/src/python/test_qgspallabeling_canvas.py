@@ -58,6 +58,7 @@ class TestCanvasBase(TestQgsPalLabeling):
     def setUp(self):
         """Run before each test."""
         super(TestCanvasBase, self).setUp()
+        self._Mismatches.clear()
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)

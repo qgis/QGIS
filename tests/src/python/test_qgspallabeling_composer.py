@@ -74,8 +74,6 @@ class TestComposerBase(TestQgsPalLabeling):
             TestQgsPalLabeling.setUpClass()
         # the blue background (set via layer style) to match renderchecker's
         TestQgsPalLabeling.loadFeatureLayer('background', True)
-        cls._CheckMismatch = 0  # mismatch expected for crosscheck
-        cls._TestImage = ''
         cls._TestKind = 0  # OutputKind.(Img|Svg|Pdf)
 
     @classmethod
@@ -91,6 +89,8 @@ class TestComposerBase(TestQgsPalLabeling):
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._Mismatch = 200  # default mismatch for crosscheck
+        self._Mismatches.clear()
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
@@ -262,7 +262,10 @@ class TestComposerBase(TestQgsPalLabeling):
         res_m, self._TestImage = self.get_composer_output(self._TestKind)
         self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
-        self.assertTrue(*self.renderCheck(mismatch=self._CheckMismatch,
+        mismatch = self._Mismatch
+        if self._TestGroup in self._Mismatches:
+            mismatch = self._Mismatches[self._TestGroup]
+        self.assertTrue(*self.renderCheck(mismatch=mismatch,
                                           imgpath=self._TestImage))
 
 
@@ -281,8 +284,6 @@ class TestComposerImagePoint(TestComposerPointBase, TestPointBase):
         super(TestComposerImagePoint, self).setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_composer', 'sp_img')
-        # TODO: due to double antialiasing?
-        self._CheckMismatch = 2700  # comment to PAL_REPORT difference
 
 
 class TestComposerImageVsCanvasPoint(TestComposerPointBase, TestPointBase):
@@ -292,10 +293,6 @@ class TestComposerImageVsCanvasPoint(TestComposerPointBase, TestPointBase):
         super(TestComposerImageVsCanvasPoint, self).setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_canvas', 'sp')
-        # TODO: due to double antialiasing?
-        if 'test_background_svg' in self.id():
-            self._CheckMismatch = 3600
-            # self._CheckMismatch = 0  # uncomment to PAL_REPORT difference
 
 
 if __name__ == '__main__':
