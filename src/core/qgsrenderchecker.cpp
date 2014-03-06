@@ -352,7 +352,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   // Send match result to debug
   //
-  qDebug( "%d/%d pixels mismatched", mMismatchCount, mMatchTarget );
+  qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, theMismatchCount );
 
   //
   // Send match result to report
