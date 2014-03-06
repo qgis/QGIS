@@ -1841,7 +1841,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   // fix invalid polygons
-  if ( QGis::singleType( QGis::flatType( geom->wkbType() ) ) == QGis::WKBPolygon && !geom->isGeosValid() )
+  if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
   {
     geom->fromGeos( GEOSBuffer( geom->asGeos(), 0, 0 ) );
   }
