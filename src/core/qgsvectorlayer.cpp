@@ -139,6 +139,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
+    , mFeatureTitleUseExpression( false )
 
 {
   mActions = new QgsAttributeAction( this );
@@ -1600,6 +1601,18 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   // process the attribute actions
   mActions->readXML( node );
 
+  // feature title
+  QDomNode featureTitleNode = node.namedItem( "featuretitle" );
+  if ( !featureTitleNode.isNull() )
+  {
+    QDomNode useExpressionNode = featureTitleNode.namedItem( "useexpression" );
+    QDomElement useExpressionElement = useExpressionNode.toElement();
+    mFeatureTitleUseExpression = useExpressionElement.text() == "1";
+    QDomNode expressionNode = featureTitleNode.namedItem( "expression" );
+    QDomElement expressionElement = expressionNode.toElement();
+    mFeatureTitleExpression = expressionElement.text();
+  }
+
   mEditTypes.clear();
   QDomNode editTypesNode = node.namedItem( "edittypes" );
   if ( !editTypesNode.isNull() )
@@ -1956,6 +1969,18 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     }
   }
 
+  // feature title
+  QDomElement featureTitleElement = doc.createElement( "featuretitle" );
+  QDomElement useExpression  = doc.createElement( "useexpression" );
+  QDomText useExpressionValue = doc.createTextNode( mFeatureTitleUseExpression ? "1" : "0" );
+  useExpression.appendChild( useExpressionValue );
+  featureTitleElement.appendChild( useExpression );
+  QDomElement expression  = doc.createElement( "expression" );
+  QDomText expressionValue = doc.createTextNode( mFeatureTitleExpression );
+  expression.appendChild( expressionValue );
+  featureTitleElement.appendChild( expression );
+  node.appendChild( featureTitleElement );
+
   //edit types
   if ( mEditTypes.size() > 0 )
   {
@@ -2279,6 +2304,29 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
     }
   }
   return displayName;
+}
+
+QVariant QgsVectorLayer::featureTitle( const QgsFeature &f )
+{
+  if ( !mFeatureTitleUseExpression )
+    return f.id();
+
+  QgsExpression expr( mFeatureTitleExpression );
+  QVariant result = expr.evaluate( f );
+  if ( expr.hasEvalError() )
+    return f.id();
+  else
+    return result;
+}
+
+void QgsVectorLayer::setFeatureTitleUseExpression( bool useExpression )
+{
+  mFeatureTitleUseExpression = useExpression;
+}
+
+void QgsVectorLayer::setFeatureTitleExpression( QString expression )
+{
+  mFeatureTitleExpression = expression;
 }
 
 bool QgsVectorLayer::deleteAttribute( int index )

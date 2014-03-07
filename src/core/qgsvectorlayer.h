@@ -1145,6 +1145,38 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
 
+    /**
+     * @brief featureTitle returns the title of the given feature
+     * @note added in 2.3
+     */
+    QVariant featureTitle( const QgsFeature &f );
+
+    /**
+     * @brief featureTitleUseExpression determines if the feature titles uses the feature id or an expression
+     * @note added in 2.3
+     */
+    bool featureTitleUseExpression() {return mFeatureTitleUseExpression;}
+
+    /**
+     * @brief setFeatureTitleUseExpression set if the feature titles uses the feature id or an expression
+     * @note added in 2.3
+     */
+    void setFeatureTitleUseExpression( bool useExpression );
+
+    /**
+     * @brief featureTitleExpression returns the QgsExpression defined for the layer
+     * @note added in 2.3
+     */
+    QString featureTitleExpression() {return mFeatureTitleExpression;}
+
+    /**
+     * @brief setFeatureTitle sets a QgsExpression to be used as feature title
+     * @note added in 2.3
+     */
+    void setFeatureTitleExpression( QString expression );
+
+
+
     const QSet<QString>& excludeAttributesWMS() const { return mExcludeAttributesWMS; }
     void setExcludeAttributesWMS( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
 
@@ -1686,6 +1718,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QMap<int, QString> mEditorWidgetV2Types;
     QMap<int, QMap<QString, QVariant> > mEditorWidgetV2Configs;
+
+    bool mFeatureTitleUseExpression;
+    QString mFeatureTitleExpression;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
