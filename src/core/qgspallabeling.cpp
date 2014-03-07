@@ -1840,6 +1840,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
+  // fix invalid polygons
+  if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
+  {
+    geom->fromGeos( GEOSBuffer( geom->asGeos(), 0, 0 ) );
+  }
+
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
   bool do_clip = false;
