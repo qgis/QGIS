@@ -426,7 +426,7 @@ void QgsAttributeDialog::init()
       mDialog->setObjectName( "QgsAttributeDialogBase" );
 
     if ( mDialog->windowTitle().isEmpty() )
-      mDialog->setWindowTitle( tr( "Attributes - %1" ).arg( mLayer->name() ) );
+      mDialog->setWindowTitle( tr( "Attributes - %1 - %2" ).arg( mLayer->name() ).arg( mLayer->featureTitle( *mFeature ).toString() ) );
   }
 
   if ( mShowDialogButtons )
