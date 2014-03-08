@@ -76,7 +76,7 @@ class GdalTools:
       if not overrideLocale:
         localeFullName = QLocale.system().name()
       else:
-        localeFullName = QSettings().value( "locale/userLocale", "" )
+        localeFullName = QSettings().value( "locale/userLocale", "", type=str )
 
       if QFileInfo( userPluginPath ).exists():
         translationPath = userPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"
