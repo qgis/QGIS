@@ -1248,6 +1248,11 @@ static QVariant fcnScale( const QVariantList&, const QgsFeature*, QgsExpression*
   return QVariant( parent->scale() );
 }
 
+static QVariant fcnCanvas( const QVariantList&, const QgsFeature*, QgsExpression* parent )
+{
+  return QVariant( parent->canvas() );
+}
+
 static QVariant fcnFormatNumber( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   double value = getDoubleValue( values.at( 0 ), parent );
@@ -1605,6 +1610,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
+    << new StaticFunction( "$canvas", 0, fcnCanvas, "Record" )    
     << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
