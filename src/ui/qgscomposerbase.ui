@@ -836,6 +836,18 @@
     <enum>QAction::PreferencesRole</enum>
    </property>
   </action>
+  <action name="mActionResetUIdefaults">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Reset UI defaults...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
   <action name="mActionShowRulers">
    <property name="text">
     <string>Show Rulers</string>

@@ -837,6 +837,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveWindowState();
     //! Restore the window and toolbar state
     void restoreWindowState();
+    //! Restore the default window and toolbar state
+    void restoreDefaultWindowState();
     //! Save project. Returns true if the user selected a file to save to, false if not.
     bool fileSave();
     //! Save project as

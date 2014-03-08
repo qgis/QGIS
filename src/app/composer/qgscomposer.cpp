@@ -214,22 +214,24 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   composerMenu->addAction( mActionPrint );
   composerMenu->addSeparator();
   composerMenu->addAction( mActionQuit );
-  QObject::connect( mActionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
+  connect( mActionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
 
   //cut/copy/paste actions. Note these are not included in the ui file
   //as ui files have no support for QKeySequence shortcuts
   mActionCut = new QAction( tr( "Cu&t" ), this );
   mActionCut->setShortcuts( QKeySequence::Cut );
   mActionCut->setStatusTip( tr( "Cut" ) );
-  QObject::connect( mActionCut, SIGNAL( triggered() ), this, SLOT( actionCutTriggered() ) );
+  connect( mActionCut, SIGNAL( triggered() ), this, SLOT( actionCutTriggered() ) );
+
   mActionCopy = new QAction( tr( "&Copy" ), this );
   mActionCopy->setShortcuts( QKeySequence::Copy );
   mActionCopy->setStatusTip( tr( "Copy" ) );
-  QObject::connect( mActionCopy, SIGNAL( triggered() ), this, SLOT( actionCopyTriggered() ) );
+  connect( mActionCopy, SIGNAL( triggered() ), this, SLOT( actionCopyTriggered() ) );
+
   mActionPaste = new QAction( tr( "&Paste" ), this );
   mActionPaste->setShortcuts( QKeySequence::Paste );
   mActionPaste->setStatusTip( tr( "Paste" ) );
-  QObject::connect( mActionPaste, SIGNAL( triggered() ), this, SLOT( actionPasteTriggered() ) );
+  connect( mActionPaste, SIGNAL( triggered() ), this, SLOT( actionPasteTriggered() ) );
 
   QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
   editMenu->addAction( mActionUndo );
@@ -337,6 +339,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
   settingsMenu->addAction( mActionOptions );
+  settingsMenu->addAction( mActionResetUIdefaults );
 
 #ifdef Q_WS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
@@ -2496,6 +2499,17 @@ void QgsComposer::restoreWindowState()
   }
 }
 
+void QgsComposer::on_mActionResetUIdefaults_triggered()
+{
+  if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+    return;
+
+  saveWindowState();
+  QSettings settings;
+  settings.remove( "/ComposerUI/state" );
+  restoreWindowState();
+}
+
 void  QgsComposer::writeXML( QDomDocument& doc )
 {
 
@@ -2593,9 +2607,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   //create compositionwidget
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
-  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
-  QObject::connect( this, SIGNAL( printAsRasterChanged( bool ) ), compositionWidget, SLOT( setPrintAsRasterCheckBox( bool ) ) );
-  QObject::connect( compositionWidget, SIGNAL( pageOrientationChanged( QString ) ), this, SLOT( setPrinterPageOrientation( QString ) ) );
+  connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+  connect( this, SIGNAL( printAsRasterChanged( bool ) ), compositionWidget, SLOT( setPrintAsRasterCheckBox( bool ) ) );
+  connect( compositionWidget, SIGNAL( pageOrientationChanged( QString ) ), this, SLOT( setPrinterPageOrientation( QString ) ) );
   mGeneralDock->setWidget( compositionWidget );
 
   //read and restore all the items

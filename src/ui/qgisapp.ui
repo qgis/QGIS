@@ -192,6 +192,7 @@
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
     <addaction name="mActionSnappingOptions"/>
+    <addaction name="mActionResetUIdefaults"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
     <property name="title">
@@ -2154,6 +2155,11 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Fill Ring</string>
+   </property>
+  </action>
+  <action name="mActionResetUIdefaults">
+   <property name="text">
+    <string>Reset UI defaults</string>
    </property>
   </action>
  </widget>

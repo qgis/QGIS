@@ -1097,6 +1097,7 @@ void QgisApp::createActions()
   connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
+  connect( mActionResetUIdefaults, SIGNAL( triggered() ), this, SLOT( restoreDefaultWindowState() ) );
 
 #ifdef Q_WS_MAC
   // Window Menu Items
@@ -2351,7 +2352,7 @@ void QgisApp::saveWindowState()
 
 void QgisApp::restoreWindowState()
 {
-  // restore the toolbar and dock widgets postions using Qt4 settings API
+  // restore the toolbar and dock widgets positions using Qt4 settings API
   QSettings settings;
 
   if ( !restoreState( settings.value( "/UI/state", QByteArray::fromRawData(( char * )defaultUIstate, sizeof defaultUIstate ) ).toByteArray() ) )
@@ -2366,6 +2367,20 @@ void QgisApp::restoreWindowState()
   }
 
 }
+
+void QgisApp::restoreDefaultWindowState()
+{
+  if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+    return;
+
+  saveWindowState();
+
+  QSettings settings;
+  settings.remove( "/UI/state" );
+
+  restoreWindowState();
+}
+
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
 {

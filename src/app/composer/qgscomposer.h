@@ -326,6 +326,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Show options dialog
     void on_mActionOptions_triggered();
 
+    //! Restore the default window and toolbar state
+    void on_mActionResetUIdefaults_triggered();
+
     //!Toggle atlas preview
     void on_mActionAtlasPreview_triggered( bool checked );
 
