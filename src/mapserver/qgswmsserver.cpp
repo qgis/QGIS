@@ -1535,7 +1535,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
 
     QgsCoordinateReferenceSystem outputCrs = layer->crs();
-    if ( hasGeometry && layer->crs() != mapRender->destinationCrs() && mapRender->hasCrsTransformEnabled() )
+    if ( layer->crs() != mapRender->destinationCrs() && mapRender->hasCrsTransformEnabled() )
     {
       outputCrs = mapRender->destinationCrs();
     }
