@@ -217,6 +217,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
 
+    /** Returns the layer as a layer definition document
+        Layer definitions store the data source as well as styling and custom properties.
+
+        Layer definitions can be used to load a layer and styling all from a single file.
+    */
+    QDomDocument asLayerDefinition ( );
+
+    /** Creates a new layer from a layer defininition document
+    */
+    static QgsMapLayer* fromLayerDefinition( QDomDocument& document );
+    static QgsMapLayer* fromLayerDefinitionFile(const QString qlrfile );
+
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
     void setCustomProperty( const QString& key, const QVariant& value );

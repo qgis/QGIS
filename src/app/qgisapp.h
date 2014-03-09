@@ -1019,6 +1019,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void hasCrsTransformEnabled( bool theFlag );
     void destinationCrsChanged();
     //    void debugHook();
+    //! Add a Layer Definition file
+    void addLayerDefinition ();
     //! Add a vector layer to the map
     void addVectorLayer();
     //! Exit Qgis
@@ -1086,6 +1088,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! save current vector layer
     void saveAsFile();
+
+    void saveAsLayerDefinition();
 
     //! save current raster layer
     void saveAsRasterFile();

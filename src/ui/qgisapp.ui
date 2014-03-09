@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1050</width>
-    <height>487</height>
+    <height>506</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -123,6 +123,7 @@
     </widget>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
+    <addaction name="mActionAddLayerDefinition"/>
     <addaction name="mActionAddOgrLayer"/>
     <addaction name="mActionAddRasterLayer"/>
     <addaction name="mActionAddPgLayer"/>
@@ -2160,6 +2161,11 @@ Acts on currently active editable layer</string>
   <action name="mActionResetUIdefaults">
    <property name="text">
     <string>Reset UI defaults</string>
+	   </property>
+     </action>
+  <action name="mActionAddLayerDefinition">
+   <property name="text">
+    <string>Add from Layer Definition File..</string>
    </property>
   </action>
  </widget>

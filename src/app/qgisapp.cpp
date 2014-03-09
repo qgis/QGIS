@@ -1050,6 +1050,7 @@ void QgisApp::createActions()
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
+  connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition () ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
@@ -2454,6 +2455,17 @@ void QgisApp::about()
   abt->show();
   abt->raise();
   abt->activateWindow();
+}
+
+void QgisApp::addLayerDefinition ()
+{
+  QString path = QFileDialog::getOpenFileName( this, "Add Layer Definition File", QDir::home().path(), "*.qlr" );
+  if ( path.isEmpty() )
+    return;
+
+  QgsMapLayer* layer = QgsMapLayer::fromLayerDefinitionFile( path );
+  if ( layer && layer->isValid() )
+    QgsMapLayerRegistry::instance()->addMapLayer( layer );
 }
 
 /**
@@ -4587,6 +4599,26 @@ void QgisApp::saveAsFile()
   else if ( layerType == QgsMapLayer::VectorLayer )
   {
     saveAsVectorFileGeneral();
+  }
+}
+
+void QgisApp::saveAsLayerDefinition()
+{
+  QgsMapLayer* layer = activeLayer();
+  if ( !layer )
+    return;
+
+  QString path = QFileDialog::getSaveFileName( this, "Save as Layer Definition File", QDir::home().path(), "*.qlr" );
+  QgsDebugMsg( path );
+  if ( path.isEmpty() )
+    return;
+
+  QDomDocument doc = layer->asLayerDefinition();
+  QFile file( path );
+  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    QTextStream qlayerstream( &file );
+    doc.save( qlayerstream, 2 );
   }
 }
 

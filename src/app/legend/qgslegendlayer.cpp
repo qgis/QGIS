@@ -435,6 +435,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 
     // save as vector file
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
+    theMenu.addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
     if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
       theMenu.addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
@@ -450,6 +451,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+    theMenu.addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
   }
   else if ( lyr->type() == QgsMapLayer::PluginLayer && legend()->selectedLayers().count() == 1 )
   {
