@@ -68184,7 +68184,20 @@ Nie ma jeszcze możliwości zmiany jej wyglądu, można jedynie dostosować jej 
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Zapisz warstwę wektorową jako...&lt;/h3&gt;
+
+&lt;p&gt;Umożliwia zapis warstwy wektorowej w różnych formatach poprzez bibliotekę GDAL/OGR.
+
+&lt;ul&gt;
+&lt;li&gt;Z listy &lt;label&gt;Format&lt;/label&gt; wybierz format docelowy.
+&lt;li&gt;W polu &lt;label&gt;Zapisz jako&lt;/label&gt; wprowadź nazwę pliku docelowego lub wybierz go używając klawisza &lt;label&gt;Przeglądaj&lt;/label&gt;.
+&lt;li&gt;Wybierz &lt;label&gt;Kodowanie&lt;/label&gt; tabeli atrybutów z listy dostępnych opcji.
+&lt;li&gt;WYbierając &lt;label&gt;Układ współrzędnych&lt;/label&gt; możesz dokonać reprojekcji warstwy docelowej do wybranego ukłądu współrzędnych.
+&lt;li&gt;Biblioteka OGR udostępnia również wiele opcji dla poszczególnych formatów.  Użyj pola &lt;label&gt;źródło danych&lt;/label&gt; oraz &lt;label&gt;layer&lt;/label&gt;, aby dodać dodatkowe opcji. Opcje należy wpisywać w oddzielnych wierszach (np. &lt;code&gt;SPATIALITE=yes&lt;/code&gt; w &lt;label&gt;źródle danych&lt;/label&gt; aby utworzyć warstwę SpatiaLite używając sterownika SQLite).
+&lt;/ul&gt;
+
+Zobacz &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;formaty wektorowe OGR&lt;/a&gt;, aby poznać pełną listę obsługiwanych formatów oraz dostępne opcje.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1457"/>
