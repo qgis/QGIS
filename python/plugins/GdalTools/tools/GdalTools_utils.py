@@ -112,6 +112,10 @@ def setLastUsedEncoding(encoding):
     settings = QSettings()
     settings.setValue( "/UI/encoding", encoding)
 
+# Decodes standard output/error
+def decodeLocal8Bit( byteArray ):
+  return QTextCodec.codecForLocale().toUnicode( byteArray )
+
 def getRasterExtensions():
   formats = FileFilter.allRastersFilter().split( ";;" )
   extensions = []
@@ -802,8 +806,7 @@ class Version:
 def setProcessEnvironment(process):
     envvar_list = {
         "PATH" : getGdalBinPath(),
-        "PYTHONPATH" : getGdalPymodPath(),
-        "GDAL_FILENAME_IS_UTF8" : "NO"
+        "PYTHONPATH" : getGdalPymodPath()
     }
 
     sep = os.pathsep
@@ -823,6 +826,10 @@ def setProcessEnvironment(process):
 
       if envval != None:
         os.putenv( name, envval )
+
+    # non-ASCII path support
+    if platform.system() == "Windows":
+      os.putenv( "GDAL_FILENAME_IS_UTF8", "NO" )
 
 def setMacOSXDefaultEnvironment():
   # fix bug #3170: many GDAL Tools don't work in OS X standalone
