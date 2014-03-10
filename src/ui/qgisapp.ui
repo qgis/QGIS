@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -145,6 +145,7 @@
     <addaction name="mActionAllEdits"/>
     <addaction name="separator"/>
     <addaction name="mActionLayerSaveAs"/>
+    <addaction name="mActionSaveLayerDefinition"/>
     <addaction name="mActionRemoveLayer"/>
     <addaction name="mActionDuplicateLayer"/>
     <addaction name="mActionSetLayerCRS"/>
@@ -2161,11 +2162,16 @@ Acts on currently active editable layer</string>
   <action name="mActionResetUIdefaults">
    <property name="text">
     <string>Reset UI defaults</string>
-	   </property>
-     </action>
+   </property>
+  </action>
   <action name="mActionAddLayerDefinition">
    <property name="text">
     <string>Add from Layer Definition File..</string>
+   </property>
+  </action>
+  <action name="mActionSaveLayerDefinition">
+   <property name="text">
+    <string>Save As Layer Definition File..</string>
    </property>
   </action>
  </widget>

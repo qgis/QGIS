@@ -1072,6 +1072,7 @@ void QgisApp::createActions()
   connect( mActionCancelEdits, SIGNAL( triggered() ), this, SLOT( cancelEdits() ) );
   connect( mActionCancelAllEdits, SIGNAL( triggered() ), this, SLOT( cancelAllEdits() ) );
   connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
+  connect( mActionSaveLayerDefinition, SIGNAL( triggered() ), this, SLOT( saveAsLayerDefinition() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionDuplicateLayer, SIGNAL( triggered() ), this, SLOT( duplicateLayers() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
@@ -8346,6 +8347,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
     mActionSaveLayerEdits->setEnabled( false );
+    mActionSaveLayerDefinition->setEnabled( false );
     mActionLayerSaveAs->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
     mActionLayerSubsetString->setEnabled( false );
@@ -8442,6 +8444,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionIdentify->setEnabled( true );
     mActionSelectByExpression->setEnabled( true );
     mActionOpenTable->setEnabled( true );
+    mActionSaveLayerDefinition->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
     mActionFeatureAction->setEnabled( layerHasActions );
@@ -8610,6 +8613,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mUndoWidget->dockContents()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
+    mActionSaveLayerDefinition->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
     mActionAddFeature->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
