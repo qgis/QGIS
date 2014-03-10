@@ -70,6 +70,8 @@ void QgsExpressionGuiHelper::showExpressionDialog()
 
   QgsExpressionBuilderDialog dlg( mLayer, mFieldcombo->currentText() , mParent );
   dlg.setWindowTitle( mTitle );
+  dlg.setGeomCalculator( mDa );
+
 
   if ( dlg.exec() == QDialog::Accepted )
   {

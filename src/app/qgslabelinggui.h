@@ -27,6 +27,7 @@ class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
 
 #include "qgspallabeling.h"
+#include "qgsexpressionguihelper.h"
 
 class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 {
@@ -45,7 +46,6 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void apply();
     void changeTextColor( const QColor &color );
     void showEngineConfigDialog();
-    void showExpressionDialog();
     void changeBufferColor( const QColor &color );
 
     void updateUi();
@@ -89,7 +89,6 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void populatePlacementMethods();
-    void populateFieldNames();
     void populateDataDefinedButtons( QgsPalLayerSettings& s );
     /**Sets data defined property attribute to map */
     void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
@@ -108,6 +107,8 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QButtonGroup* mPlacePointBtnGrp;
     QButtonGroup* mPlaceLineBtnGrp;
     QButtonGroup* mPlacePolygonBtnGrp;
+
+    QgsExpressionGuiHelper* mExpressionGuiHelper;
 
     // background reference font
     QFont mRefFont;

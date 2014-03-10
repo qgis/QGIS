@@ -96,7 +96,13 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( mLimitLabelChkBox, SIGNAL( toggled( bool ) ), mLimitLabelSpinBox, SLOT( setEnabled( bool ) ) );
 
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
-  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( showExpressionDialog() ) );
+
+  mExpressionGuiHelper = new QgsExpressionGuiHelper( mLayer, cboFieldName, btnExpression, tr( "Expression based label" ), this );
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  mExpressionGuiHelper->setGeomCalculator( myDa );
 
   // set placement methods page based on geometry type
   switch ( layer->geometryType() )
@@ -121,7 +127,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
   mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
 
-  populateFieldNames(); // this is just for label text combo box
   populateFontCapitalsComboBox();
 
   // set up quadrant offset button group
@@ -240,9 +245,9 @@ void QgsLabelingGui::init()
 
   // add the current expression to the bottom of the list
   if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
-    cboFieldName->addItem( lyr.fieldName );
-
-  cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
+    mExpressionGuiHelper->setExpression( lyr.fieldName );
+  else
+    cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
 
   // populate placement options
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
@@ -775,15 +780,6 @@ void QgsLabelingGui::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, 
   lyr.setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
 }
 
-void QgsLabelingGui::populateFieldNames()
-{
-  const QgsFields& fields = mLayer->pendingFields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
-  {
-    cboFieldName->addItem( fields[idx].name() );
-  }
-}
-
 void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 {
   // don't register enable/disable siblings, since visual feedback from data defined buttons should be enough,
@@ -1173,30 +1169,6 @@ void QgsLabelingGui::showEngineConfigDialog()
 {
   QgsLabelEngineConfigDialog dlg( this );
   dlg.exec();
-}
-
-void QgsLabelingGui::showExpressionDialog()
-{
-  QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
-  dlg.setWindowTitle( tr( "Expression based label" ) );
-
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-  dlg.setGeomCalculator( myDa );
-
-  if ( dlg.exec() == QDialog::Accepted )
-  {
-    QString expression =  dlg.expressionText();
-    //Only add the expression if the user has entered some text.
-    if ( !expression.isEmpty() )
-    {
-      cboFieldName->addItem( expression );
-      cboFieldName->setCurrentIndex( cboFieldName->count() - 1 );
-    }
-  }
-  activateWindow(); // set focus back parent
 }
 
 void QgsLabelingGui::syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f )
