@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
+    <width>914</width>
     <height>636</height>
    </rect>
   </property>
@@ -248,7 +248,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -268,8 +268,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>551</width>
+                <height>638</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -931,8 +931,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>577</width>
-                <height>804</height>
+                <width>727</width>
+                <height>856</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1036,6 +1036,42 @@
                       <width>0</width>
                       <height>120</height>
                      </size>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mQSettingsGrpBx">
+                 <property name="title">
+                  <string>QSettings</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_13">
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_42">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QPushButton" name="mRestoreDefaultWindowStateBtn">
+                    <property name="text">
+                     <string>Reset</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mRestoreDefaultWindowStateLbl">
+                    <property name="text">
+                     <string>Reset the User Interface settings, to reset QGIS to it's default view</string>
                     </property>
                    </widget>
                   </item>
@@ -1257,8 +1293,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>538</width>
+                <height>436</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1567,8 +1603,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>621</width>
-                <height>797</height>
+                <width>712</width>
+                <height>814</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1639,14 +1675,14 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0" colspan="2">
+                  <item>
                    <widget class="QLabel" name="textLabel3">
                     <property name="text">
                      <string>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0" colspan="2">
+                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                     <property name="title">
                      <string>Enable feature simplication by default for newly added layers</string>
@@ -2173,8 +2209,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>486</width>
+                <height>358</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2509,8 +2545,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>674</height>
+                <width>663</width>
+                <height>725</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2920,8 +2956,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>499</width>
+                <height>373</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3131,8 +3167,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>598</height>
+                <width>503</width>
+                <height>635</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3622,8 +3658,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>471</width>
+                <height>372</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3752,8 +3788,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>714</height>
+                <width>642</width>
+                <height>718</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4006,8 +4042,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>301</width>
+                <height>224</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4096,8 +4132,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>669</height>
+                <width>528</width>
+                <height>702</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

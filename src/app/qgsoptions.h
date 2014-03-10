@@ -141,6 +141,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /**Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
 
+    /**Slot to flag restoring/delete window state settings upon restart*/
+    void on_mRestoreDefaultWindowStateBtn_clicked();
+
     /** Slot to enable custom environment variables table and buttons
      * @note added in QGIS 1.9
      */
