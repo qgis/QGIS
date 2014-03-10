@@ -2,6 +2,9 @@
  * drawn above all other composer items, while the paper item is drawn below all others.*/
 class QgsPaperGrid : QGraphicsRectItem
 {
+%TypeHeaderCode
+#include <qgspaperitem.h>
+%End
   public:
     QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
     ~QgsPaperGrid();
