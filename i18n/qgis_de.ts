@@ -5779,7 +5779,7 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/ui/qgisapp.ui" line="690"/>
         <source>Split Features</source>
-        <translation>Objekte trennen</translation>
+        <translation>Objekte zerteilen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="702"/>
@@ -26303,7 +26303,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="840"/>
         <source>Split the line</source>
-        <translation>Linie auftrennen</translation>
+        <translation>Linie zerteilen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="840"/>
@@ -31805,7 +31805,7 @@ nicht angezeigt</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="113"/>
         <source>An error occured during feature splitting</source>
-        <translation>Ein Fehler ist bei Objekttrennung aufgetreten</translation>
+        <translation>Ein Fehler ist beim Zerteilen aufgetreten</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
@@ -31813,7 +31813,7 @@ nicht angezeigt</translation>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="103"/>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="112"/>
         <source>No feature split done</source>
-        <translation>Keine Objekttrennung vorgenommen</translation>
+        <translation>Keine Objekte zerteilt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="81"/>
@@ -31823,7 +31823,7 @@ nicht angezeigt</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="88"/>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation>Wenn Objekte ausgewählt sind, wird die Objekttrennung nur auf diese angewendet. Um alle Objekte zu trennen, muss die Auswahl aufgehoben werden</translation>
+        <translation>Wenn Objekte ausgewählt sind, wird nur diese zerteilt. Um alle Objekte zu zerteilen, muss die Auswahl aufgehoben werden</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
@@ -31843,7 +31843,7 @@ nicht angezeigt</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="104"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation>Die Geometrie ist ungültig. Bitte vor der Objekttrennung reparieren.</translation>
+        <translation>Die Geometrie ist ungültig. Bitte vor dem Zerteilen reparieren.</translation>
     </message>
 </context>
 <context>
@@ -31883,7 +31883,7 @@ nicht angezeigt</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="103"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation>Die Geometrie ist ungültig. Bitte vor der Objekttrennung reparieren.</translation>
+        <translation>Die Geometrie ist ungültig. Bitte vor dem Zerteilend reparieren.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="111"/>
@@ -31893,7 +31893,7 @@ nicht angezeigt</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="112"/>
         <source>An error occured during feature splitting</source>
-        <translation>Ein Fehler ist bei Objekttrennung aufgetreten</translation>
+        <translation>Ein Fehler ist beim Zerteilen aufgetreten</translation>
     </message>
 </context>
 <context>
