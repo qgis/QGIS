@@ -405,6 +405,7 @@ void QgsAttributeDialog::init()
         {
           case QVariant::Invalid: text = "NULL"; break;
           case QVariant::Int: text = QString::number( value.toInt() ); break;
+          case QVariant::LongLong: text = QString::number( value.toLongLong() ); break;
           case QVariant::Double: text = QString::number( value.toDouble() ); break;
           case QVariant::String:
           default: text = value.toString();
