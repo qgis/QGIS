@@ -2166,12 +2166,12 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionAddLayerDefinition">
    <property name="text">
-    <string>Add from Layer Definition File..</string>
+    <string>Add from Layer Definition File...</string>
    </property>
   </action>
   <action name="mActionSaveLayerDefinition">
    <property name="text">
-    <string>Save As Layer Definition File..</string>
+    <string>Save As Layer Definition File...</string>
    </property>
   </action>
  </widget>
