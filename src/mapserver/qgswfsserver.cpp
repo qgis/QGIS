@@ -339,22 +339,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
-        if ( layer->vectorJoins().size() > 0 )
-        {
-          QList<QgsMapLayer *> joinLayers;
-          //insert existing join info
-          const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
-          for ( int i = 0; i < joins.size(); ++i )
-          {
-            QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
-            if ( joinLayer )
-            {
-              joinLayers << joinLayer;
-            }
-            QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
-          }
-          layer->updateFields();
-        }
         //is there alias info for this vector layer?
         QMap< int, QString > layerAliasInfo;
         const QMap< QString, QString >& aliasMap = layer->attributeAliases();
@@ -697,22 +681,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
     if ( layer && wfsLayersId.contains( layer->id() ) )
     {
-      if ( layer->vectorJoins().size() > 0 )
-      {
-        QList<QgsMapLayer *> joinLayers;
-        //insert existing join info
-        const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
-        for ( int i = 0; i < joins.size(); ++i )
-        {
-          QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
-          if ( joinLayer )
-          {
-            joinLayers << joinLayer;
-          }
-          QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
-        }
-        layer->updateFields();
-      }
       //is there alias info for this vector layer?
       QMap< int, QString > layerAliasInfo;
       const QMap< QString, QString >& aliasMap = layer->attributeAliases();

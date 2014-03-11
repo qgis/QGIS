@@ -1003,23 +1003,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
 
       if ( vectorLayer )
       {
-        if ( vectorLayer->vectorJoins().size() > 0 )
-        {
-          QList<QgsMapLayer *> joinLayers;
-          //JoinBuffer is based on qgsmaplayerregistry!!!!!
-          //insert existing join info
-          const QList< QgsVectorJoinInfo >& joins = vectorLayer->vectorJoins();
-          for ( int i = 0; i < joins.size(); ++i )
-          {
-            QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
-            if ( joinLayer )
-            {
-              joinLayers << joinLayer;
-            }
-            QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
-          }
-          vectorLayer->updateFields();
-        }
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
                                          version, infoFormat, featuresRect ) != 0 )
         {
@@ -1714,24 +1697,6 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
              ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
         {
           layerKeys.push_front( theMapLayer->id() );
-          //joinVectorLayers
-          QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
-          if ( vectorLayer && vectorLayer->vectorJoins().size() > 0 )
-          {
-            QList<QgsMapLayer *> joinLayers;
-            //insert existing join info
-            const QList< QgsVectorJoinInfo >& joins = vectorLayer->vectorJoins();
-            for ( int i = 0; i < joins.size(); ++i )
-            {
-              QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
-              if ( joinLayer )
-              {
-                joinLayers << joinLayer;
-              }
-              QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
-            }
-            vectorLayer->updateFields();
-          }
           QgsMapLayerRegistry::instance()->addMapLayers(
             QList<QgsMapLayer *>() << theMapLayer, false, false );
         }
@@ -2667,7 +2632,28 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
   else if ( type == QgsVectorLayer::ValueRelation )
   {
     QgsVectorLayer::ValueRelationData vrdata = vl->valueRelation( idx );
-    //todo...
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( vrdata.mLayer ) );
+    if ( !layer )
+    {
+      return attributeVal;
+    }
+
+    int keyId = layer->fieldNameIndex( vrdata.mKey );
+    int valueId = layer->fieldNameIndex( vrdata.mValue );
+    if ( keyId == -1 || valueId == -1 )
+    {
+      return attributeVal;
+    }
+
+    QgsFeatureIterator fIt = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << keyId << valueId ) );
+    QgsFeature f;
+    while ( fIt.nextFeature( f ) )
+    {
+      if ( f.attribute( vrdata.mKey ).toString() == attributeVal )
+      {
+        return f.attribute( vrdata.mValue ).toString();
+      }
+    }
   }
   return attributeVal;
 }

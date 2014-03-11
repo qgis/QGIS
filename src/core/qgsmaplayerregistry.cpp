@@ -125,9 +125,9 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds )
   foreach ( const QString &myId, theLayerIds )
   {
     QgsMapLayer* lyr = mMapLayers[myId];
-    emit layerWillBeRemoved( myId );
     if ( mOwnedLayers.contains( lyr ) )
     {
+      emit layerWillBeRemoved( myId );
       delete lyr;
       mOwnedLayers.remove( lyr );
     }

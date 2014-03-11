@@ -70,7 +70,7 @@ class QgsSLDParser: public QgsConfigParser
     QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool useCache = true ) const;
 
     /**Returns maplayers for a layer Id.*/
-    QgsMapLayer* mapLayerFromLayerId( const QString& ) const { return 0;};
+    QgsMapLayer* mapLayerFromLayerId( const QString& lId, bool useCache = true ) const { Q_UNUSED( lId ); Q_UNUSED( useCache ); return 0; }
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     int layersAndStyles( QStringList& layers, QStringList& styles ) const;

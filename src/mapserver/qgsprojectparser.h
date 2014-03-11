@@ -64,7 +64,7 @@ class QgsProjectParser: public QgsConfigParser
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const;
 
     /**Returns maplayers for a layer Id.*/
-    virtual QgsMapLayer* mapLayerFromLayerId( const QString& lId ) const;
+    virtual QgsMapLayer* mapLayerFromLayerId( const QString& lId, bool useCache = true ) const;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const;
@@ -159,6 +159,11 @@ class QgsProjectParser: public QgsConfigParser
     void loadLabelSettings( QgsLabelingEngineInterface* lbl );
 
     QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+
+    /**Makes sure the join layers needed for a layer are in the layer cache / maplayer registry*/
+    void addJoinLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
+    /**Makes sure the value relation layers are in the layer cache / maplayer registry*/
+    void addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
 
   private:
 

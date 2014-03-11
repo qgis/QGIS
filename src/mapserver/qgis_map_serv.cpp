@@ -245,6 +245,8 @@ int main( int argc, char * argv[] )
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
+
+  //for( int i = 0; i < 2; ++i )
   while ( fcgi_accept() >= 0 )
   {
     printRequestInfos(); //print request infos if in debug mode
