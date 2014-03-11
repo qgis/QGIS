@@ -268,8 +268,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>524</width>
+                <height>706</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -931,8 +931,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>577</width>
-                <height>804</height>
+                <width>645</width>
+                <height>803</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1257,8 +1257,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>529</width>
+                <height>480</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1567,8 +1567,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>621</width>
-                <height>797</height>
+                <width>702</width>
+                <height>890</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1639,17 +1639,17 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0" colspan="2">
+                  <item>
                    <widget class="QLabel" name="textLabel3">
                     <property name="text">
                      <string>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0" colspan="2">
+                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                     <property name="title">
-                     <string>Enable feature simplication by default for newly added layers</string>
+                     <string>Enable feature simplification by default for newly added layers</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -2173,8 +2173,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>480</width>
+                <height>394</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2509,8 +2509,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>674</height>
+                <width>650</width>
+                <height>770</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2920,8 +2920,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>507</width>
+                <height>396</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3131,8 +3131,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>598</height>
+                <width>494</width>
+                <height>691</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3622,8 +3622,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>464</width>
+                <height>386</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3752,8 +3752,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>714</height>
+                <width>635</width>
+                <height>762</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4006,8 +4006,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>586</height>
+                <width>298</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4096,8 +4096,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>669</height>
+                <width>528</width>
+                <height>754</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
