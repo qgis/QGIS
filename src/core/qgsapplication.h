@@ -31,7 +31,7 @@
 typedef void XEvent;
 #endif
 
-class CORE_EXPORT QgsApplication: public QApplication
+class CORE_EXPORT QgsApplication : public QApplication
 {
     Q_OBJECT
   public:

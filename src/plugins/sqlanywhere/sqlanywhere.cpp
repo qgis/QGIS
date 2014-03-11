@@ -61,6 +61,7 @@ static const QString sIcon = ":/sqlanywhere/sqlanywhere.svg";
 SqlAnywhere::SqlAnywhere( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
+    , mActionAddSqlAnywhereLayer( 0 )
 {
 }
 
@@ -78,8 +79,11 @@ SqlAnywhere::~SqlAnywhere()
  */
 void SqlAnywhere::initGui()
 {
+  delete mActionAddSqlAnywhereLayer;
+
   // Create the action for tool
   mActionAddSqlAnywhereLayer = new QAction( QIcon( ":/sqlanywhere/sqlanywhere.svg" ), tr( "Add SQL Anywhere Layer..." ), this );
+  mActionAddSqlAnywhereLayer->setObjectName( "mActionAddSqlAnywhereLayer" );
   mActionAddSqlAnywhereLayer->setWhatsThis( tr( "Store vector layers within a SQL Anywhere database" ) );
   connect( mActionAddSqlAnywhereLayer, SIGNAL( triggered() ), this, SLOT( addSqlAnywhereLayer() ) );
 
@@ -99,10 +103,6 @@ void SqlAnywhere::help()
 void SqlAnywhere::addSqlAnywhereLayer()
 {
   QgsMapCanvas *mMapCanvas = mQGisIface->mapCanvas();
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
 
   // show the data source dialog
   SaSourceSelect *dbs = new SaSourceSelect( mQGisIface->mainWindow() );

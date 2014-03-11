@@ -65,6 +65,8 @@ namespace pal
       : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ),
       quadOffset( false ), offsetPos( false ), fixedRotation( false ), alwaysShow( false )
   {
+    assert( finite( lx ) && finite( ly ) );
+
     uid = new char[strlen( geom_id ) +1];
     strcpy( uid, geom_id );
   }

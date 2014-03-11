@@ -20,13 +20,17 @@
  ***************************************************************************/
 
 #include <qgsnetworkaccessmanager.h>
+
+#include <qgsapplication.h>
 #include <qgsmessagelog.h>
 #include <qgslogger.h>
+#include <qgis.h>
 
 #include <QUrl>
 #include <QSettings>
 #include <QTimer>
 #include <QNetworkReply>
+#include <QNetworkDiskCache>
 
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
@@ -114,6 +118,19 @@ const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const
 
 void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes )
 {
+  QgsDebugMsg( QString( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
+               .arg( proxy.type() == QNetworkProxy::DefaultProxy ? "DefaultProxy" :
+                     proxy.type() == QNetworkProxy::Socks5Proxy ? "Socks5Proxy" :
+                     proxy.type() == QNetworkProxy::NoProxy ? "NoProxy" :
+                     proxy.type() == QNetworkProxy::HttpProxy ? "HttpProxy" :
+                     proxy.type() == QNetworkProxy::HttpCachingProxy ? "HttpCachingProxy" :
+                     proxy.type() == QNetworkProxy::FtpCachingProxy ? "FtpCachingProxy" :
+                     "Undefined" )
+               .arg( proxy.hostName() )
+               .arg( proxy.port() )
+               .arg( proxy.user() )
+               .arg( proxy.password().isEmpty() ? "not set" : "set" ) );
+
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
 }
@@ -123,7 +140,12 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QSettings s;
 
   QNetworkRequest *pReq(( QNetworkRequest * ) &req ); // hack user agent
-  pReq->setRawHeader( "User-Agent", s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toByteArray() );
+
+  QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
+  if ( !userAgent.isEmpty() )
+    userAgent += " ";
+  userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
+  pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
@@ -157,7 +179,7 @@ void QgsNetworkAccessManager::connectionProgress()
 
 void QgsNetworkAccessManager::connectionDestroyed( QObject* reply )
 {
-  mActiveRequests.remove( qobject_cast<QNetworkReply*>( reply ) );
+  mActiveRequests.remove( static_cast<QNetworkReply*>( reply ) );
 }
 
 void QgsNetworkAccessManager::abortRequest()
@@ -170,7 +192,8 @@ void QgsNetworkAccessManager::abortRequest()
 
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
 
-  reply->abort();
+  if ( reply->isRunning() )
+    reply->close();
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
@@ -214,4 +237,90 @@ QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromN
     return QNetworkRequest::AlwaysCache;
   }
   return QNetworkRequest::PreferNetwork;
+}
+
+void QgsNetworkAccessManager::setupDefaultProxyAndCache()
+{
+  QNetworkProxy proxy;
+  QStringList excludes;
+
+  QSettings settings;
+
+  //check if proxy is enabled
+  bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
+  if ( proxyEnabled )
+  {
+    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( "|", QString::SkipEmptyParts );
+
+    //read type, host, port, user, passw from settings
+    QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+    int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+    QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+    QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+
+    QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
+    QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+    if ( proxyTypeString == "DefaultProxy" )
+    {
+      proxyType = QNetworkProxy::DefaultProxy;
+
+#if defined(Q_OS_WIN)
+      QNetworkProxyFactory::setUseSystemConfiguration( true );
+      QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery();
+      if ( !proxies.isEmpty() )
+      {
+        proxy = proxies.first();
+      }
+#endif
+
+      QgsDebugMsg( "setting default proxy" );
+    }
+    else
+    {
+      if ( proxyTypeString == "Socks5Proxy" )
+      {
+	proxyType = QNetworkProxy::Socks5Proxy;
+      }
+      else if ( proxyTypeString == "HttpProxy" )
+      {
+	proxyType = QNetworkProxy::HttpProxy;
+      }
+      else if ( proxyTypeString == "HttpCachingProxy" )
+      {
+	proxyType = QNetworkProxy::HttpCachingProxy;
+      }
+      else if ( proxyTypeString == "FtpCachingProxy" )
+      {
+	proxyType = QNetworkProxy::FtpCachingProxy;
+      }
+      QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+	  .arg( proxyType )
+	  .arg( proxyHost ).arg( proxyPort )
+	  .arg( proxyUser ).arg( proxyPassword )
+	  );
+      proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
+    }
+  }
+
+#if QT_VERSION >= 0x40500
+  setFallbackProxyAndExcludes( proxy, excludes );
+
+  QNetworkDiskCache *newcache = qobject_cast<QNetworkDiskCache*>( cache() );
+  if ( !newcache )
+    newcache = new QNetworkDiskCache( this );
+
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
+  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  newcache->setCacheDirectory( cacheDirectory );
+  newcache->setMaximumCacheSize( cacheSize );
+  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ) );
+  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ) );
+
+  if ( cache() != newcache )
+    setCache( newcache );
+#else
+  setProxy( proxy );
+#endif
 }

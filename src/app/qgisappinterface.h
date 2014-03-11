@@ -24,10 +24,6 @@
 
 class QgisApp;
 
-#ifdef _MSC_VER
-#  pragma warning( push )
-#  pragma warning( disable: 4996 )  // declared deprecated
-#endif
 
 /** \class QgisAppInterface
  * \brief Interface class to provide access to private methods in QgisApp
@@ -157,6 +153,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (<prefix>/share/doc)
      */
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     void openURL( QString url, bool useQgisDocDirectory = true );
 
     /** Return a pointer to the map canvas used by qgisapp */
@@ -503,9 +502,5 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };
-
-#ifdef _MSC_VER
-#  pragma warning( pop )
-#endif
 
 #endif //#define QGISAPPINTERFACE_H

@@ -126,10 +126,10 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   else
   {
     //transform to map crs first, because xdiff,ydiff are in map coordinates
-    QgsMapRenderer* r = mCanvas->mapRenderer();
-    if ( r && r->hasCrsTransformEnabled() )
+    const QgsMapSettings& ms = mCanvas->mapSettings();
+    if ( ms.hasCrsTransformEnabled() )
     {
-      QgsPoint transformedPoint = r->layerToMapCoordinates( vlayer, QgsPoint( xPosOrig, yPosOrig ) );
+      QgsPoint transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPoint( xPosOrig, yPosOrig ) );
       xPosOrig = transformedPoint.x();
       yPosOrig = transformedPoint.y();
     }
@@ -140,10 +140,10 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   //transform back to layer crs
   if ( mCanvas )
   {
-    QgsMapRenderer* r = mCanvas->mapRenderer();
-    if ( r && r->hasCrsTransformEnabled() )
+    const QgsMapSettings& s = mCanvas->mapSettings();
+    if ( s.hasCrsTransformEnabled() )
     {
-      QgsPoint transformedPoint = r->mapToLayerCoordinates( vlayer, QgsPoint( xPosNew, yPosNew ) );
+      QgsPoint transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPoint( xPosNew, yPosNew ) );
       xPosNew = transformedPoint.x();
       yPosNew = transformedPoint.y();
     }

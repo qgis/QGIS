@@ -212,6 +212,11 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
   return new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geomType ) );
 }
 
+void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
+{
+  startRender( context, vlayer->pendingFields() );
+}
+
 
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {

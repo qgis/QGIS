@@ -30,6 +30,11 @@ QgsPieDiagram::~QgsPieDiagram()
 {
 }
 
+QgsDiagram* QgsPieDiagram::clone() const
+{
+  return new QgsPieDiagram( *this );
+}
+
 QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );

@@ -43,6 +43,12 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
 
   connect( builder, SIGNAL( expressionParsed( bool ) ), this, SLOT( setOkButtonState() ) );
 
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( vl->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  builder->setGeomCalculator( myDa );
+
   //default values for field width and precision
   mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
@@ -93,7 +99,7 @@ void QgsFieldCalculator::accept()
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mVectorLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
 
@@ -109,6 +115,8 @@ void QgsFieldCalculator::accept()
     QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
     return;
   }
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
   mVectorLayer->beginEditCommand( "Field calculator" );
 
@@ -148,11 +156,18 @@ void QgsFieldCalculator::accept()
         break;
       }
     }
+
+    if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+    {
+      QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
+      return;
+    }
   }
 
   if ( mAttributeId == -1 )
   {
     mVectorLayer->destroyEditCommand();
+    QApplication::restoreOverrideCursor();
     return;
   }
 
@@ -166,6 +181,11 @@ void QgsFieldCalculator::accept()
 
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
+
+  bool newField = !mUpdateExistingGroupBox->isChecked();
+  QVariant emptyAttribute;
+  if ( newField )
+    emptyAttribute = QVariant( mVectorLayer->pendingFields()[mAttributeId].type() );
 
   QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
   while ( fit.nextFeature( feature ) )
@@ -188,12 +208,13 @@ void QgsFieldCalculator::accept()
     }
     else
     {
-      mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value );
+      mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
     }
 
     rownum++;
   }
 
+  QApplication::restoreOverrideCursor();
 
   if ( !calculationSuccess )
   {

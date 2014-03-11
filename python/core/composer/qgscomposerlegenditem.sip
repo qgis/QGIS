@@ -34,7 +34,7 @@ class QgsComposerLegendItem : QStandardItem
     // Get text defined by user
     virtual QString userText() const;
     // Set text defined by user
-    virtual void  setUserText( const QString & text );
+    virtual void setUserText( const QString & text );
   protected:
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
 };

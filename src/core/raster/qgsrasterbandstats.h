@@ -71,9 +71,6 @@ class CORE_EXPORT QgsRasterBandStats
                s.statsGathered == ( statsGathered & s.statsGathered ) );
     }
 
-    /** \brief The name of the band that these stats belong to. */
-    //QString bandName;
-
     /** \brief The gdal band number (starts at 1)*/
     int bandNumber;
 

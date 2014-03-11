@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
         //! prepare the rule for rendering and its children (build active children array)
-        bool startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+        bool startRender( QgsRenderContext& context, const QgsFields& fields );
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
 

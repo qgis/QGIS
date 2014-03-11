@@ -150,11 +150,11 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     mLineSymbol->startRender( context.renderContext() );
   }
 
-  const QgsVectorLayer* layer = context.layer();
-  if ( layer )
+  const QgsFields* fields = context.fields();
+  if ( fields )
   {
-    mXIndex = layer->fieldNameIndex( mXAttribute );
-    mYIndex = layer->fieldNameIndex( mYAttribute );
+    mXIndex = fields->fieldNameIndex( mXAttribute );
+    mYIndex = fields->fieldNameIndex( mYAttribute );
   }
   else
   {

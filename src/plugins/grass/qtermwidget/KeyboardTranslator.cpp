@@ -75,7 +75,6 @@ void KeyboardTranslatorManager::findTranslators()
   QStringList list = dir.entryList( filters ); //(".keytab"); // = KGlobal::dirs()->findAllResources("data",
   //                                 "konsole/*.keytab",
   //                                 KStandardDirs::NoDuplicates);
-  list = dir.entryList( filters );
   // add the name of each translator to the list and associated
   // the name with a null pointer to indicate that the translator
   // has not yet been loaded from disk

@@ -70,7 +70,7 @@ class OutputTable(Output):
         result of the algorithm. Use this to transparently handle
         output values instead of creating your own method.
 
-        @param fields   a list of QgsField
+        @param fields   a list of field titles
 
         @return writer  instance of the table writer class
         """

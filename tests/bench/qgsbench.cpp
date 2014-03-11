@@ -40,8 +40,10 @@
 #include "qgsbench.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaprendererjob.h"
 #include "qgsproject.h"
-#include "qgspallabeling.h"
+
+const char *pre[] = { "user", "sys", "total", "wall" };
 
 #ifdef Q_OS_WIN
 // slightly adapted from http://anoncvs.postgresql.org/cvsweb.cgi/pgsql/src/port/getrusage.c?rev=1.18;content-type=text%2Fplain
@@ -117,13 +119,16 @@ int getrusage( int who, struct rusage * rusage )
 #endif
 
 QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
-    : QObject(), mWidth( theWidth ), mHeight( theHeight ), mIterations( theIterations ), mSetExtent( false )
+    : QObject()
+    , mWidth( theWidth )
+    , mHeight( theHeight )
+    , mIterations( theIterations )
+    , mSetExtent( false )
+    , mParallel( false )
 {
   QgsDebugMsg( "entered" );
 
   QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
-
-  mMapRenderer = new QgsMapRenderer;
 
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( readProject( const QDomDocument & ) ) );
@@ -153,7 +158,7 @@ void QgsBench::readProject( const QDomDocument &doc )
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
-    mMapRenderer->readXML( node );
+    mMapSettings.readXML( node );
   }
   else
   {
@@ -171,17 +176,17 @@ void QgsBench::render()
 {
   QgsDebugMsg( "entered" );
 
-  QgsDebugMsg( "extent: " +  mMapRenderer->extent().toString() );
+  QgsDebugMsg( "extent: " +  mMapSettings.extent().toString() );
 
   QMap<QString, QgsMapLayer*> layersMap = QgsMapLayerRegistry::instance()->mapLayers();
 
   QStringList layers( layersMap.keys() );
 
-  mMapRenderer->setLayerSet( layers );
+  mMapSettings.setLayers( layers );
 
   if ( mSetExtent )
   {
-    mMapRenderer->setExtent( mExtent );
+    mMapSettings.setExtent( mExtent );
   }
 
   // Maybe in future
@@ -190,26 +195,33 @@ void QgsBench::render()
   //mMapRenderer->setDestinationCrs( outputCRS );
 
   // TODO: this should be probably set according to project
-  mMapRenderer->setProjectionsEnabled( true );
+  mMapSettings.setCrsTransformEnabled( true );
 
   // Enable labeling
-  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
+  mMapSettings.setFlag( QgsMapSettings::DrawLabeling );
 
-  mImage = new QImage( mWidth, mHeight, QImage::Format_ARGB32_Premultiplied );
-  mImage->fill( 0 );
+  mMapSettings.setOutputSize( QSize( mWidth, mHeight ) );
 
-  mMapRenderer->setOutputSize( QSize( mWidth, mHeight ), mImage->logicalDpiX() );
-
-  QPainter painter( mImage );
-
-  painter.setRenderHints( mRendererHints );
+  // TODO: do we need the other QPainter flags?
+  mMapSettings.setFlag( QgsMapSettings::Antialiasing, mRendererHints.testFlag( QPainter::Antialiasing ) );
 
   for ( int i = 0; i < mIterations; i++ )
   {
+    QgsMapRendererQImageJob* job;
+    if ( mParallel )
+      job = new QgsMapRendererParallelJob( mMapSettings );
+    else
+      job = new QgsMapRendererSequentialJob( mMapSettings );
+
     start();
-    mMapRenderer->render( &painter );
+    job->start();
+    job->waitForFinished();
     elapsed();
+
+    mImage = job->renderedImage();
+    delete job;
   }
+
 
   mLogMap.insert( "iterations", mTimes.size() );
   mLogMap.insert( "revision", QGSVERSION );
@@ -247,8 +259,6 @@ void QgsBench::render()
       stdev[t] = sqrt( stdev[t] / mTimes.size() );
     }
 
-    const char *pre[] = { "user", "sys", "total", "wall" };
-
     QMap<QString, QVariant> map;
 
     map.insert( "min", min[t] );
@@ -265,19 +275,30 @@ void QgsBench::render()
 void QgsBench::saveSnapsot( const QString & fileName )
 {
   // If format is 0, QImage will attempt to guess the format by looking at fileName's suffix.
-  mImage->save( fileName );
+  mImage.save( fileName );
 }
 
-void QgsBench::printLog()
+void QgsBench::printLog( const QString& printTime )
 {
   std::cout << "iterations: " << mLogMap["iterations"].toString().toAscii().constData() << std::endl;
 
+  bool validPrintTime = false;
+  for ( int x = 0; x < 4; ++x )
+    if ( printTime == pre[x] )
+      validPrintTime = true;
+
+  if ( !validPrintTime )
+  {
+    std::cout << "invalid --print option: " << printTime.toAscii().data() << std::endl;
+    return;
+  }
+
   QMap<QString, QVariant> timesMap = mLogMap["times"].toMap();
-  QMap<QString, QVariant> totalMap = timesMap["total"].toMap();
+  QMap<QString, QVariant> totalMap = timesMap[printTime].toMap();
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
   {
-    QString s = "total_" + i.key() + ": " + i.value().toString();
+    QString s = printTime + "_" + i.key() + ": " + i.value().toString();
     std::cout << s.toAscii().constData() << std::endl;
     ++i;
   }

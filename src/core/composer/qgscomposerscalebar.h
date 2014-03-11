@@ -129,7 +129,9 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString style() const;
 
     /**Returns the x - positions of the segment borders (in item coordinates) and the width
-     of the segment*/
+     of the segment
+     @note python bindings not available on android
+     */
     void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 
     /**Sets box size suitable to content*/

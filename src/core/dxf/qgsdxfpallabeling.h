@@ -27,7 +27,7 @@ class QgsDxfExport;
 class CORE_EXPORT QgsDxfPalLabeling: public QgsPalLabeling
 {
   public:
-    QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale );
+    QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits );
     ~QgsDxfPalLabeling();
 
     QgsRenderContext& renderContext() { return mRenderContext; }

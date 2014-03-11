@@ -38,7 +38,8 @@ QgsAbout::QgsAbout( QWidget *parent )
 #endif
 {
   setupUi( this );
-  initOptionsBase();
+  QString title = QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize );
+  initOptionsBase( true, title );
   init();
 }
 
@@ -49,8 +50,6 @@ QgsAbout::~QgsAbout()
 void QgsAbout::init()
 {
   setPluginInfo();
-
-  setWindowTitle( QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
 
   // set the 60x60 icon pixmap
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
@@ -131,8 +130,8 @@ void QgsAbout::init()
     QString donorsHTML = ""
                          + tr( "<p>For a list of individuals and institutions who have contributed "
                                "money to fund QGIS development and other project costs see "
-                               "<a href=\"http://qgis.org/en/sponsorship/donors.html\">"
-                               "http://qgis.org/en/sponsorship/donors.html</a></p>" );
+                               "<a href=\"http://qgis.org/en/site/about/sponsorship.html#list-of-donors\">"
+                               "http://qgis.org/en/site/about/sponsorship.html#list-of-donors</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );

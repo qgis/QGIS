@@ -16,17 +16,18 @@ class QgsRasterIterator
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent );
 
-    /**Fetches next part of raster data
+    /**Fetches next part of raster data, caller takes ownership of the block and
+       caller should delete the block.
        @param bandNumber band to read
        @param nCols number of columns on output device
        @param nRows number of rows on output device
-       @param block to return the pointer to raster block
+       @param block address of block pointer
        @param topLeftCol top left column
        @param topLeftRow top left row
        @return false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
                              int& nCols, int& nRows,
-                             QgsRasterBlock** block,
+                             QgsRasterBlock **block,
                              int& topLeftCol, int& topLeftRow );
 
     void stopRasterRead( int bandNumber );

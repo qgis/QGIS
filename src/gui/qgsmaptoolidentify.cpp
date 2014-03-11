@@ -90,11 +90,6 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return results;
-  }
-
   if ( mode == DefaultQgsSetting )
   {
     QSettings settings;
@@ -259,8 +254,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     return false;
 
   if ( layer->hasScaleBasedVisibility() &&
-       ( layer->minimumScale() > mCanvas->mapRenderer()->scale() ||
-         layer->maximumScale() <= mCanvas->mapRenderer()->scale() ) )
+       ( layer->minimumScale() > mCanvas->mapSettings().scale() ||
+         layer->maximumScale() <= mCanvas->mapSettings().scale() ) )
   {
     QgsDebugMsg( "Out of scale limits" );
     return false;
@@ -313,11 +308,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   bool filter = false;
 
+  QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
   QgsFeatureRendererV2* renderer = layer->rendererV2();
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
-    renderer->startRender( *( mCanvas->mapRenderer()->rendererContext() ), layer );
+    renderer->startRender( context, layer->pendingFields() );
     filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
@@ -341,7 +337,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
-    renderer->stopRender( *( mCanvas->mapRenderer()->rendererContext() ) );
+    renderer->stopRender( context );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
@@ -381,12 +377,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     if ( wkbType == QGis::WKBLineString || wkbType == QGis::WKBLineString25D )
     {
       // Add the start and end points in as derived attributes
-      QgsPoint pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, feature->geometry()->asPolyline().first() );
+      QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPolyline().first() );
       str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
       str = QLocale::system().toString( pnt.y(), 'g', 10 );
       derivedAttributes.insert( tr( "firstY" ), str );
-      pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, feature->geometry()->asPolyline().last() );
+      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPolyline().last() );
       str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
       str = QLocale::system().toString( pnt.y(), 'g', 10 );
@@ -409,7 +405,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
             ( wkbType == QGis::WKBPoint || wkbType == QGis::WKBPoint25D ) )
   {
     // Include the x and y coordinates of the point as a derived attribute
-    QgsPoint pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, feature->geometry()->asPoint() );
+    QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPoint() );
     QString str = QLocale::system().toString( pnt.x(), 'g', 10 );
     derivedAttributes.insert( "X", str );
     str = QLocale::system().toString( pnt.y(), 'g', 10 );
@@ -422,15 +418,15 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel )
 {
   QgsDebugMsg( "point = " + point.toString() );
-  if ( !layer ) return false;
+  if ( !layer )
+    return false;
 
   QgsRasterDataProvider *dprovider = layer->dataProvider();
   int capabilities = dprovider->capabilities();
   if ( !dprovider || !( capabilities & QgsRasterDataProvider::Identify ) )
-  {
     return false;
-  }
 
+  QgsPoint pointInCanvasCrs = point;
   try
   {
     point = toLayerCoordinates( layer, point );
@@ -460,12 +456,24 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   }
 
   QgsRasterIdentifyResult identifyResult;
-  // We can only use context (extent, width, height) if layer is not reprojected,
-  // otherwise we don't know source resolution (size).
-  if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
+  // We can only use current map canvas context (extent, width, height) if layer is not reprojected,
+  if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapSettings().destinationCrs() )
   {
-    viewExtent = toLayerCoordinates( layer, viewExtent );
-    identifyResult = dprovider->identify( point, format );
+    // To get some reasonable response for point/line WMS vector layers we must
+    // use a context with approximately a resolution in layer CRS units
+    // corresponding to current map canvas resolution (for examplei UMN Mapserver
+    // in msWMSFeatureInfo() -> msQueryByRect() is using requested pixel
+    // + TOLERANCE (layer param) for feature selection)
+    //
+    QgsRectangle r;
+    r.setXMinimum( pointInCanvasCrs.x() - mapUnitsPerPixel / 2. );
+    r.setXMaximum( pointInCanvasCrs.x() + mapUnitsPerPixel / 2. );
+    r.setYMinimum( pointInCanvasCrs.y() - mapUnitsPerPixel / 2. );
+    r.setYMaximum( pointInCanvasCrs.y() + mapUnitsPerPixel / 2. );
+    r = toLayerCoordinates( layer, r ); // will be a bit larger
+    // Mapserver (6.0.3, for example) does not work with 1x1 pixel box
+    // but that is fixed (the rect is enlarged) in the WMS provider
+    identifyResult = dprovider->identify( point, format, r, 1, 1 );
   }
   else
   {
@@ -562,8 +570,6 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             if ( featureType.compare( sublayer, Qt::CaseInsensitive ) != 0 || labels.isEmpty() )
             {
               labels << featureType;
-
-
             }
 
             QMap< QString, QString > derAttributes = derivedAttributes;

@@ -18,11 +18,31 @@
 #include "qgsfeatureiterator.h"
 
 class QgsWFSProvider;
+class QgsSpatialIndex;
+typedef QMap<QgsFeatureId, QgsFeature*> QgsFeaturePtrMap;
 
-class QgsWFSFeatureIterator: public QgsAbstractFeatureIterator
+
+class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request );
+    QgsWFSFeatureSource( const QgsWFSProvider* p );
+    ~QgsWFSFeatureSource();
+
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  protected:
+
+    QgsFields mFields;
+    QgsFeaturePtrMap mFeatures;
+    QgsSpatialIndex* mSpatialIndex;
+
+    friend class QgsWFSFeatureIterator;
+};
+
+class QgsWFSFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>
+{
+  public:
+    QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
     ~QgsWFSFeatureIterator();
 
     bool rewind();
@@ -31,10 +51,13 @@ class QgsWFSFeatureIterator: public QgsAbstractFeatureIterator
   protected:
     bool fetchFeature( QgsFeature& f );
 
+    /**Copies feature attributes / geometry from f to feature*/
+    void copyFeature( const QgsFeature* f, QgsFeature& feature, bool fetchGeometry );
+
   private:
-    QgsWFSProvider* mProvider;
     QList<QgsFeatureId> mSelectedFeatures;
     QList<QgsFeatureId>::const_iterator mFeatureIterator;
+
 };
 
 #endif // QGSWFSFEATUREITERATOR_H

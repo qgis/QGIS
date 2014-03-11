@@ -48,8 +48,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     // implemented from base classes
 
-
-
     QString layerType() const;
 
     void startRender( QgsSymbolV2RenderContext& context );

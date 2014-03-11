@@ -454,6 +454,7 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
     fclose( psSHP->fpSHP );
     fclose( psSHP->fpSHX );
     free( psSHP );
+    free( pabyBuf );
 
     return( NULL );
   }
@@ -470,6 +471,8 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
     fclose( psSHP->fpSHP );
     fclose( psSHP->fpSHX );
     free( psSHP );
+
+    free( pabyBuf );
 
     return( NULL );
   }
@@ -654,12 +657,21 @@ SHPCreate( const char * pszLayer, int nShapeType )
   sprintf( pszFullname, "%s.shp", pszBasename );
   fpSHP = fopen( pszFullname, "wb" );
   if ( fpSHP == NULL )
-    return( NULL );
+  {
+    free( pszBasename );
+    free( pszFullname );
+    return NULL;
+  }
 
   sprintf( pszFullname, "%s.shx", pszBasename );
   fpSHX = fopen( pszFullname, "wb" );
   if ( fpSHX == NULL )
+  {
+    free( pszBasename );
+    free( pszFullname );
+    fclose( fpSHP );
     return( NULL );
+  }
 
   free( pszFullname );
   free( pszBasename );

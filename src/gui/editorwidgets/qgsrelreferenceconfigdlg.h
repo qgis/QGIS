@@ -30,6 +30,8 @@ class GUI_EXPORT QgsRelReferenceConfigDlg : public QgsEditorConfigWidget, privat
 
   private slots:
     void on_mComboRelation_indexChanged( int idx );
+    void previewExpressionBuilder();
+
 };
 
 #endif // QGSRELREFERENCECONFIGDLGBASE_H

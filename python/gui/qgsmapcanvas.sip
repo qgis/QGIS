@@ -16,7 +16,6 @@ class QgsMapCanvasLayer
     bool isInOverview() const;
 
     QgsMapLayer* layer();
-    //const QgsMapLayer* layer() const;
 };
 
 
@@ -55,21 +54,68 @@ class QgsMapCanvas : QGraphicsView
 
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
+    //! Get access to properties used for map rendering
+    //! @note added in 2.4
+    const QgsMapSettings& mapSettings() const;
+
+    //! sets whether to use projections for this layer set
+    //! @note added in 2.4
+    void setCrsTransformEnabled( bool enabled );
+
+    //! sets destination coordinate reference system
+    //! @note added in 2.4
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    //! Get access to the labeling results (may be null)
+    //! @note added in 2.4
+    const QgsLabelingResults* labelingResults() const;
+
+    //! Set whether to cache images of rendered layers
+    //! @note added in 2.4
+    void setCachingEnabled( bool enabled );
+
+    //! Check whether images of rendered layers are curerently being cached
+    //! @note added in 2.4
+    bool isCachingEnabled() const;
+
+    //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
+    //! @note added in 2.4
+    void clearCache();
+
+    //! Set whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.4
+    void setParallelRenderingEnabled( bool enabled );
+
+    //! Check whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.4
+    bool isParallelRenderingEnabled() const;
+
+    //! Set how often map preview should be updated while it is being rendered (in miliseconds)
+    //! @note added in 2.4
+    void setMapUpdateInterval( int timeMiliseconds );
+
+    //! Find out how often map preview should be updated while it is being rendered (in miliseconds)
+    //! @note added in 2.4
+    int mapUpdateInterval() const;
+
+    //! @deprecated since 2.4 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
-    // KeepReference is necessary because otherwise 
-    // mapRenderer().hasCrsTransformEnabled() was crashing, most probably because 
-    // QgsMapRenderer.hasCrsTransformEnabled() is both signal and function
-    QgsMapRenderer* mapRenderer() /KeepReference/;
+    //! @deprecated since 2.4 - use mapRendererSettings() for anything related to current renderer settings
+    //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
+    //// and in fact there is no transfer of ownership from c++ to python!
+    //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
+    //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
+    QgsMapRenderer* mapRenderer() /Deprecated, KeepReference/;
 
-    //! Accessor for the canvas paint device
-    QPaintDevice &canvasPaintDevice();
+    //! @deprecated since 2.4
+    QPaintDevice &canvasPaintDevice() /Deprecated/;
 
     //! Get the last reported scale of the canvas
     double scale();
 
-    //! Clear the map canvas
-    void clear();
+    //! @deprecated since 2.4 - use refresh() - clear does the same thing
+    void clear() /Deprecated/;
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -121,11 +167,15 @@ class QgsMapCanvas : QGraphicsView
     /** Read property of QColor bgColor. */
     virtual QColor canvasColor() const;
 
+    /** Set color of selected vector features */
+    //! @note added in 2.4
+    void setSelectionColor( const QColor& color );
+
     /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
-    /** Updates the full extent */
-    void updateFullExtent();
+    //! @deprecated since v2.4 - does nothing
+    void updateFullExtent() /Deprecated/;
 
     //! return the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
@@ -146,11 +196,11 @@ class QgsMapCanvas : QGraphicsView
     /*! Accessor for frozen status of canvas */
     bool isFrozen();
 
-    //! Flag the canvas as dirty and needed a refresh
-    void setDirty( bool _dirty );
+    //! @deprecated since 2.4 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
+    void setDirty( bool _dirty ) /Deprecated/;
 
-    //! Return the state of the canvas (dirty or not)
-    bool isDirty() const;
+    //! @deprecated since 2.4 - dirty flag is not kept anymore - always returns false
+    bool isDirty() const /Deprecated/;
 
     //! Set map units (needed by project properties dialog)
     void setMapUnits( QGis::UnitType mapUnits );
@@ -192,8 +242,8 @@ class QgsMapCanvas : QGraphicsView
     //! true if antialising is enabled
     bool antiAliasingEnabled() const;
 
-    //! Select which Qt class to render with
-    void useImageToRender( bool theFlag );
+    //! @deprecated since 2.4 - does nothing because now we always render to QImage
+    void useImageToRender( bool theFlag ) /Deprecated/;
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -228,14 +278,15 @@ class QgsMapCanvas : QGraphicsView
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();
 
-    /** The map units may have changed, so cope with that */
-    void mapUnitsChanged();
+    //! @deprecated in 2.4 - does nothing - kept for API compatibility
+    void updateMap() /Deprecated/;
 
-    /** updates pixmap on render progress */
-    void updateMap();
+    //! stop rendering (if there is any right now)
+    //! @note added in 2.4
+    void stopRendering();
 
-    //! show whatever error is exposed by the QgsMapLayer.
-    void showError( QgsMapLayer * mapLayer );
+    //! @deprecated since 2.4 - does nothing - errors are reported by different means
+    void showError( QgsMapLayer * mapLayer ) /Deprecated/;
 
     //! called to read map canvas settings from project
     void readProject( const QDomDocument & );
@@ -243,9 +294,13 @@ class QgsMapCanvas : QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
+    //! ask user about datum transformation
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+
   signals:
     /** Let the owner know how far we are with render operations */
-    void setProgress( int, int );
+    //! @deprecated since 2.4 - already unused in 2.0 anyway
+    void setProgress( int, int ) /Deprecated/;
 
     /** emits current mouse position
         \note changed in 1.3 */
@@ -265,15 +320,20 @@ class QgsMapCanvas : QGraphicsView
      being rendered onto a pixmap other than the mapCanvas own pixmap member.
 
     */
+    //! TODO: deprecate when decorations are reimplemented as map canvas items
+    //! - anything related to rendering progress is not visible outside of map canvas
+    //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
     void renderComplete( QPainter * );
 
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    void mapCanvasRefreshed();
+    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
+    void mapCanvasRefreshed() /Deprecated/;
 
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    void renderStarting();
+    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
+    void renderStarting() /Deprecated/;
 
     //! Emitted when a new set of layers has been received
     void layersChanged();
@@ -297,6 +357,18 @@ class QgsMapCanvas : QGraphicsView
     //! Emitted when zoom next status changed
     //! @note: this signal was added in version 1.4
     void zoomNextStatusChanged( bool );
+
+    //! Emitted when on-the-fly projection has been turned on/off
+    //! @note added in 2.4
+    void hasCrsTransformEnabledChanged( bool flag );
+
+    //! Emitted when map CRS has changed
+    //! @note added in 2.4
+    void destinationCrsChanged();
+
+    //! Emmitted when map units are changed
+    //! @note added in 2.4
+    void mapUnitsChanged();
 
   protected:
     //! Overridden standard event to be gestures aware

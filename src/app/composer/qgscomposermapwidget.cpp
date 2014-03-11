@@ -296,44 +296,40 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
 {
   if ( mComposerMap )
   {
-    const QgsMapRenderer* renderer = mComposerMap->mapRenderer();
-    if ( renderer )
+    QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
+
+    //Make sure the width/height ratio is the same as in current composer map extent.
+    //This is to keep the map item frame and the page layout fixed
+    QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
+    double currentWidthHeightRatio = currentMapExtent.width() / currentMapExtent.height();
+    double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+    if ( currentWidthHeightRatio < newWidthHeightRatio )
     {
-      QgsRectangle newExtent = renderer->extent();
-
-      //Make sure the width/height ratio is the same as in current composer map extent.
-      //This is to keep the map item frame and the page layout fixed
-      QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
-      double currentWidthHeightRatio = currentMapExtent.width() / currentMapExtent.height();
-      double newWidthHeightRatio = newExtent.width() / newExtent.height();
-
-      if ( currentWidthHeightRatio < newWidthHeightRatio )
-      {
-        //enlarge height of new extent, ensuring the map center stays the same
-        double newHeight = newExtent.width() / currentWidthHeightRatio;
-        double deltaHeight = newHeight - newExtent.height();
-        newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
-        newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
-      }
-      else
-      {
-        //enlarge width of new extent, ensuring the map center stays the same
-        double newWidth = currentWidthHeightRatio * newExtent.height();
-        double deltaWidth = newWidth - newExtent.width();
-        newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
-        newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
-      }
-
-      //fill text into line edits
-      mXMinLineEdit->setText( QString::number( newExtent.xMinimum() ) );
-      mXMaxLineEdit->setText( QString::number( newExtent.xMaximum() ) );
-      mYMinLineEdit->setText( QString::number( newExtent.yMinimum() ) );
-      mYMaxLineEdit->setText( QString::number( newExtent.yMaximum() ) );
-
-      mComposerMap->beginCommand( tr( "Map extent changed" ) );
-      mComposerMap->setNewExtent( newExtent );
-      mComposerMap->endCommand();
+      //enlarge height of new extent, ensuring the map center stays the same
+      double newHeight = newExtent.width() / currentWidthHeightRatio;
+      double deltaHeight = newHeight - newExtent.height();
+      newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
+      newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
     }
+    else
+    {
+      //enlarge width of new extent, ensuring the map center stays the same
+      double newWidth = currentWidthHeightRatio * newExtent.height();
+      double deltaWidth = newWidth - newExtent.width();
+      newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
+      newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+    }
+
+    //fill text into line edits
+    mXMinLineEdit->setText( QString::number( newExtent.xMinimum() ) );
+    mXMaxLineEdit->setText( QString::number( newExtent.xMaximum() ) );
+    mYMinLineEdit->setText( QString::number( newExtent.yMinimum() ) );
+    mYMaxLineEdit->setText( QString::number( newExtent.yMaximum() ) );
+
+    mComposerMap->beginCommand( tr( "Map extent changed" ) );
+    mComposerMap->setNewExtent( newExtent );
+    mComposerMap->endCommand();
   }
 }
 

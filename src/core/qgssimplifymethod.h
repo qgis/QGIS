@@ -20,6 +20,7 @@ class QgsAbstractGeometrySimplifier;
 
 /**
  * This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+ * @note added in 2.2
  */
 class CORE_EXPORT QgsSimplifyMethod
 {
@@ -47,9 +48,6 @@ class CORE_EXPORT QgsSimplifyMethod
     void setTolerance( double tolerance );
     //! Gets the tolerance of simplification
     inline double tolerance() const { return mTolerance; }
-
-    //! Returns the optimal tolerance for Douglas-Peucker simplification algorithms
-    double toleranceForDouglasPeuckerAlgorithms() const;
 
     //! Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization );

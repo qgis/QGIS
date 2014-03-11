@@ -32,6 +32,19 @@
 
 #include <cmath>
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+Q_GUI_EXPORT extern int qt_defaultDpiY();
+
+static void _fixQPictureDPI( QPainter* p )
+{
+  // QPicture makes an assumption that we drawing to it with system DPI.
+  // Then when being drawn, it scales the painter. The following call
+  // negates the effect. There is no way of setting QPicture's DPI.
+  // See QTBUG-20361
+  p->scale(( double )qt_defaultDpiX() / p->device()->logicalDpiX(),
+           ( double )qt_defaultDpiY() / p->device()->logicalDpiY() );
+}
+
 //////
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
@@ -238,7 +251,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
     mSelCache = QImage();
   }
 
-  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
   mAngleExpression = expression( "angle" );
   mNameExpression = expression( "name" );
 
@@ -512,7 +525,6 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
       {
         scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
       }
-      scaledSize *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
       switch ( mScaleMethod )
       {
@@ -522,6 +534,8 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
         case QgsSymbolV2::ScaleDiameter:
           break;
       }
+
+      scaledSize *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
       double half = scaledSize / 2.0;
       transform.scale( half, half );
@@ -756,7 +770,6 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     {
       size = sizeExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
     }
-    size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context->renderContext(), mSizeUnit );
 
     switch ( mScaleMethod )
     {
@@ -766,6 +779,8 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
       case QgsSymbolV2::ScaleDiameter:
         break;
     }
+
+    size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context->renderContext(), mSizeUnit );
   }
   if ( mSizeUnit == QgsSymbolV2::MM )
   {
@@ -1059,7 +1074,7 @@ void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mOrigSize = mSize; // save in case the size would be data defined
   Q_UNUSED( context );
-  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -1081,7 +1096,6 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   {
     size = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
-  size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
   if ( hasDataDefinedSize )
   {
@@ -1094,6 +1108,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
         break;
     }
   }
+  size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
   //don't render symbols with size below one or above 10,000 pixels
   if (( int )size < 1 || 10000.0 < size )
@@ -1187,7 +1202,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
     if ( pct.width() > 1 )
     {
+      p->save();
+      _fixQPictureDPI( p );
       p->drawPicture( 0, 0, pct );
+      p->restore();
       hwRatio = ( double )pct.height() / ( double )pct.width();
     }
   }
@@ -1358,10 +1376,6 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   {
     size = sizeExpression->evaluate( *f ).toDouble();
   }
-  if ( mSizeUnit == QgsSymbolV2::MM )
-  {
-    size *= mmMapUnitScaleFactor;
-  }
 
   if ( hasDataDefinedSize )
   {
@@ -1373,6 +1387,11 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
       case QgsSymbolV2::ScaleDiameter:
         break;
     }
+  }
+
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    size *= mmMapUnitScaleFactor;
   }
 
   double halfSize = size / 2.0;

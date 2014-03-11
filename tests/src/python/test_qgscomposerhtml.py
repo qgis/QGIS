@@ -20,7 +20,8 @@ from PyQt4.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
-                       QgsComposerMultiFrame)
+                       QgsComposerMultiFrame,
+                       QgsMapSettings)
 
 from qgscompositionchecker import QgsCompositionChecker
 
@@ -36,7 +37,8 @@ class TestQgsComposerHtml(TestCase):
 
     def setUp(self):
         """Run before each test."""
-        self.mComposition = QgsComposition(None)
+        self.mapSettings = QgsMapSettings()
+        self.mComposition = QgsComposition(self.mapSettings)
         self.mComposition.setPaperSize(297, 210) #A4 landscape
 
     def tearDown(self):

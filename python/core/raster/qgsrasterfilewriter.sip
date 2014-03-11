@@ -8,6 +8,11 @@ class QgsRasterFileWriter
 #include <qgsrasterdataprovider.h>
 %End
   public:
+    enum Mode
+    {
+      Raw = 0, // Raw data
+      Image = 1 // Rendered image
+    };
     enum WriterError
     {
       NoError = 0,

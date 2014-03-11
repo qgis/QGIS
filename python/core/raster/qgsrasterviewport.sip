@@ -27,4 +27,6 @@ struct QgsRasterViewPort
   /** \brief Target coordinate system */
   QgsCoordinateReferenceSystem mDestCRS;
 
+  int mSrcDatumTransform;
+  int mDestDatumTransform;
 };

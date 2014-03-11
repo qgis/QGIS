@@ -17,6 +17,8 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore
 import sys
 import os
+import glob
+import re
 import time
 # import locale
 import shutil
@@ -35,6 +37,8 @@ class TestPyQgsAppStartup(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.TMP_DIR = tempfile.mkdtemp()
+        # print 'TMP_DIR: ' + cls.TMP_DIR
+        # subprocess.call(['open', cls.TMP_DIR])
 
     @classmethod
     def tearDownClass(cls):
@@ -93,29 +97,32 @@ class TestPyQgsAppStartup(unittest.TestCase):
         if sys.platform[:3] == 'dar':  # Mac
             subdir = 'qgis.org'
         ini = os.path.join(subdir, 'QGIS2.ini')
-        for p in ['test_opts', 'test opts', 'test_optsé€']:
+        for p in ['test_opts', 'test opts', u'test_optsé€']:
             assert self.doTestStartup(option="--optionspath",
                                       testDir=os.path.join(self.TMP_DIR, p),
                                       testFile=ini,
                                       timeOut=5), "options path %s" % p
 
     def testConfigPath(self):
-        for p in ['test_config', 'test config', 'test_configé€']:
+        for p in ['test_config', 'test config', u'test_configé€']:
             assert self.doTestStartup(option="--configpath",
                                       testDir=os.path.join(self.TMP_DIR, p),
                                       testFile="qgis.db",
                                       timeOut=30), "config path %s" % p
 
     def testPluginPath(self):
-        for t in ['test_plugins', 'test plugins', 'test_pluginsé€']:
+        for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
 
             # get a unicode test dir
-            testDir = (os.path.join(self.TMP_DIR, t)).decode('utf-8')
+            testDir = os.path.join(self.TMP_DIR, t)
 
             # copy from testdata
-            shutil.rmtree(testDir, ignore_errors=True)
-            shutil.copytree(os.path.join(TEST_DATA_DIR, 'test_plugin_path'),
-                            testDir)
+            if not os.path.exists(testDir):
+                os.mkdir(testDir)
+            test_plug_dir = os.path.join(TEST_DATA_DIR, 'test_plugin_path')
+            for item in os.listdir(test_plug_dir):
+                shutil.copytree(os.path.join(test_plug_dir, item),
+                                os.path.join(testDir, item))
 
             # we use here a minimal plugin that writes to 'plugin_started.txt'
             # when it is started. if QGIS_PLUGINPATH is correctly parsed, this
@@ -164,13 +171,19 @@ if __name__ == '__main__':
         if os.path.exists(b):
             QGIS_BIN = b
             break
-        b = os.path.abspath(os.path.join(d, 'QGIS.app/Contents/MacOS/QGIS'))
-        if os.path.exists(b):
-            QGIS_BIN = b
-            break
+        if sys.platform[:3] == 'dar':  # Mac
+            # QGIS.app may be QGIS_x.x-dev.app for nightlies
+            # internal binary will match, minus the '.app'
+            found = False
+            for app_path in glob.glob(d + '/QGIS*.app'):
+                m = re.search('/(QGIS(_\d\.\d-dev)?)\.app', app_path)
+                if m:
+                    QGIS_BIN = app_path + '/Contents/MacOS/' + m.group(1)
+                    found = True
+                    break
+            if found:
+                break
 
-    print ''
-    print 'QGIS_BIN: ', QGIS_BIN
-    assert 'qgis' in QGIS_BIN.lower() and os.path.exists(QGIS_BIN), \
-        'QGIS binary not found, skipping test suite'
+    print '\nQGIS_BIN: ', QGIS_BIN
+    assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

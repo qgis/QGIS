@@ -63,7 +63,8 @@ class TestQgsAtlasComposition: public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    QgsMapRenderer* mMapRenderer;
+    //QgsMapRenderer* mMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsAtlasComposition* mAtlas;
     QString mReport;
@@ -81,21 +82,20 @@ void TestQgsAtlasComposition::initTestCase()
                                      "ogr" );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapRenderer = new QgsMapRenderer();
-  mMapRenderer->setLayerSet( QStringList() << mVectorLayer->id() );
-  mMapRenderer->setProjectionsEnabled( true );
+  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings.setCrsTransformEnabled( true );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapRenderer->setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapRenderer );
+  mMapSettings.setDestinationCrs( crs );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
@@ -131,15 +131,15 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel1 );
   mLabel1->setText( "[% \"NAME_1\" %] area" );
-  mLabel1->adjustSizeToText();
-  mLabel1->setItemPosition( 150, 5 );
+  //next to explicetly set width, since expression isn't yet evaulated against
+  //an atlas feature and will be shorter then required
+  mLabel1->setSceneRect( QRectF( 150, 5, 60, 15 ) );
 
   // feature number label
   mLabel2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel2 );
   mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
-  mLabel2->adjustSizeToText();
-  mLabel2->setItemPosition( 150, 200 );
+  mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
   qWarning() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
   qWarning() << "feature number label font: " << mLabel2->font().toString() << " exactMatch:" << mLabel2->font().exactMatch();
@@ -150,7 +150,6 @@ void TestQgsAtlasComposition::initTestCase()
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapRenderer;
   delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";

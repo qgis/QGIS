@@ -318,6 +318,11 @@
            <string>Style</string>
           </property>
          </column>
+         <column>
+          <property name="text">
+           <string>Title</string>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
@@ -356,12 +361,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Style</string>
+           <string>Title</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Title</string>
+           <string>Style</string>
           </property>
          </column>
          <column>

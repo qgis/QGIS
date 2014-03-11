@@ -100,6 +100,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Set tab of the stacked widget (called from the vertical list item)
     void setCurrentTab( int idx );
 
+    //! Update the window title according to the current filters
+    void updateWindowTitle();
+
     //! Handle plugin selection
     void currentPluginChanged( const QModelIndex & theIndex );
 
@@ -160,8 +163,11 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Enable all repositories disabled by "Enable selected repository only"
     void clearRepositoryFilter( );
 
-  private:
+  protected:
+    //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
+    void showEvent( QShowEvent* e );
 
+  private:
     //! Load translated descriptions. Source strings implemented in external qgspluginmanager_texts.cpp
     void initTabDescriptions();
 

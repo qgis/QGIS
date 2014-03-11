@@ -21,11 +21,30 @@ class QgsMemoryProvider;
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
+class QgsSpatialIndex;
 
-class QgsMemoryFeatureIterator : public QgsAbstractFeatureIterator
+
+class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsMemoryFeatureIterator( QgsMemoryProvider* p, const QgsFeatureRequest& request );
+    QgsMemoryFeatureSource( const QgsMemoryProvider* p );
+    ~QgsMemoryFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  protected:
+    QgsFields mFields;
+    QgsFeatureMap mFeatures;
+    QgsSpatialIndex* mSpatialIndex;
+
+    friend class QgsMemoryFeatureIterator;
+};
+
+
+class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>
+{
+  public:
+    QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsMemoryFeatureIterator();
 
@@ -43,13 +62,11 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIterator
     bool nextFeatureUsingList( QgsFeature& feature );
     bool nextFeatureTraverseAll( QgsFeature& feature );
 
-    QgsMemoryProvider* P;
-
     QgsGeometry* mSelectRectGeom;
-    QgsFeatureMap::iterator mSelectIterator;
+    QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList;
     QList<QgsFeatureId> mFeatureIdList;
-    QList<QgsFeatureId>::iterator mFeatureIdListIterator;
+    QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
 
 };
 

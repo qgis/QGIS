@@ -38,7 +38,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL );
+    QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = 0 );
 
     /**
      * The builder widget that is used by the dialog
@@ -86,6 +86,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     virtual void done( int r );
 
   private:
+    void saveRecent();
     QgsVectorLayer* mLayer;
 };
 

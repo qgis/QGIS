@@ -40,7 +40,7 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
-  qDebug( "undo index changed %d", index );
+  QgsDebugMsg( QString( "undo index changed %1" ).arg( index ) );
   Q_UNUSED( index );
   emit layerModified();
 }
@@ -169,7 +169,7 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
 }
 
 
-bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value )
+bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
     return false;
@@ -184,7 +184,7 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
        L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin )
     return false;
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, value ) );
+  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
   return true;
 }
 

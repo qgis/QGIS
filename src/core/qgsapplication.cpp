@@ -91,6 +91,7 @@ void QgsApplication::init( QString customConfigPath )
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+  // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
 
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
@@ -178,6 +179,8 @@ void QgsApplication::init( QString customConfigPath )
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
+  // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
+  QCoreApplication::addLibraryPath( pluginPath() );
 }
 
 QgsApplication::~QgsApplication()
@@ -440,7 +443,7 @@ const QString QgsApplication::translatorsFilePath()
 */
 const QString QgsApplication::licenceFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/LICENCE" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/LICENSE" );
 }
 
 /*!

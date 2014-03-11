@@ -51,6 +51,10 @@ def myself(L):
             medianVal = L[ (nVal + 1) / 2 - 1]
     return medianVal
 
+def filter_null(vals):
+    """Takes an iterator of values and returns a new iterator returning the same values but skipping any NULL values"""
+    return (v for v in vals if v != NULL)
+
 class Dialog(QDialog, Ui_Dialog):
 
     def __init__(self, iface):
@@ -168,6 +172,12 @@ class Dialog(QDialog, Ui_Dialog):
         add = 85.00 / provider1.featureCount()
 
         index = ftools_utils.createIndex(provider2)
+
+        # cache all features from provider2 to avoid huge number of feature requests in the inner loop
+        mapP2 = {}
+        for f in provider2.getFeatures():
+            mapP2[f.id()] = QgsFeature(f)
+
         fit1 = provider1.getFeatures()
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
@@ -192,8 +202,7 @@ class Dialog(QDialog, Ui_Dialog):
             if check == 0:
                 count = 0
                 for i in joinList:
-                    #tempGeom = i.geometry()
-                    provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
+                    inFeatB = mapP2[i]  # cached feature from provider2
                     if inGeom.intersects(inFeatB.geometry()):
                         count = count + 1
                         none = False
@@ -211,11 +220,27 @@ class Dialog(QDialog, Ui_Dialog):
                     atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
-                            if k == "SUM": atMap.append(sum(numFields[j]))
-                            elif k == "MEAN": atMap.append(sum(numFields[j]) / count)
-                            elif k == "MIN": atMap.append(min(numFields[j]))
-                            elif k == "MED": atMap.append(myself(numFields[j]))
-                            else: atMap.append(max(numFields[j]))
+                            if k == "SUM":
+                                atMap.append(sum(filter_null(numFields[j])))
+                            elif k == "MEAN":
+                                try:
+                                    nn_count = sum( 1 for _ in filter_null(numFields[j]) )
+                                    atMap.append(sum(filter_null(numFields[j])) / nn_count)
+                                except ZeroDivisionError:
+                                    atMap.append(NULL)
+                            elif k == "MIN":
+                                try:
+                                    atMap.append(min(filter_null(numFields[j])))
+                                except ValueError:
+                                    atMap.append(NULL)
+                            elif k == "MED":
+                                atMap.append(myself(numFields[j]))
+                            else:
+                                try:
+                                    atMap.append(max(filter_null(numFields[j])))
+                                except ValueError:
+                                    atMap.append(NULL)
+
                         numFields[j] = []
                     atMap.append(count)
                     atMap = dict(zip(seq, atMap))

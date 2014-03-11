@@ -18,6 +18,8 @@
 #define QGSOGRGEOMETRYSIMPLIFIER_H
 
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgspoint.h"
+
 #include <ogr_api.h>
 
 /**
@@ -50,6 +52,8 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
 };
 #endif
 
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 /**
  * OGR implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
@@ -59,18 +63,33 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
 class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsMapToPixelSimplifier
 {
   public:
-    QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol );
+    QgsOgrMapToPixelSimplifier( int simplifyFlags, double tolerance );
     virtual ~QgsOgrMapToPixelSimplifier();
 
   private:
+    //! Point memory buffer for optimize the simplification process
+    QgsPoint* mPointBufferPtr;
+    //! Current Point memory buffer size
+    int mPointBufferCount;
+
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double *xptr, double *yptr, int pointCount, int &pointSimplifiedCount );
+    bool simplifyOgrGeometry( QGis::GeometryType geometryType, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount );
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
     bool simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing );
+
+    //! Returns a point buffer of the specified size
+    QgsPoint* mallocPoints( int numPoints );
+    //! Returns a point buffer of the specified envelope
+    QgsPoint* getEnvelopePoints( const QgsRectangle& envelope, int& numPoints, bool isaLinearRing );
+
+    //! Load a point array to the specified LineString geometry
+    static void setGeometryPoints( OGRGeometryH geometry, QgsPoint* points, int numPoints );
 
   public:
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( OGRGeometryH geometry );
 };
+#endif // GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#endif // defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
 
 #endif // QGSOGRGEOMETRYSIMPLIFIER_H

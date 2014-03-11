@@ -64,7 +64,8 @@ class QgsMapTool : QObject
 %End
 
     //! Called when rendering has finished. Default implementation does nothing.
-    virtual void renderComplete();
+    //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
+    virtual void renderComplete() /Deprecated/;
 
 
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
@@ -84,7 +85,7 @@ class QgsMapTool : QObject
     QAbstractButton* button();
 
     /** Set a user defined cursor */
-    virtual void setCursor(QCursor cursor);
+    virtual void setCursor( QCursor cursor );
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then

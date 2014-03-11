@@ -104,6 +104,34 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 };
 
 
+
+/** helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator */
+template<typename T>
+class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
+{
+  public:
+    QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
+        : QgsAbstractFeatureIterator( request ), mSource( source ), mOwnSource( ownSource )
+    {
+      mSource->iteratorOpened( this );
+    }
+
+    ~QgsAbstractFeatureIteratorFromSource()
+    {
+      if ( mOwnSource )
+        delete mSource;
+    }
+
+  protected:
+    //! to be called by from subclass in close()
+    void iteratorClosed() { mSource->iteratorClosed( this ); }
+
+    T* mSource;
+    bool mOwnSource;
+};
+
+
+
 /**
  * \ingroup core
  * Wrapper for iterator of features from vector data provider or vector layer

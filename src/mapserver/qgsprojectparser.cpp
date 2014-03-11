@@ -103,7 +103,7 @@ int QgsProjectParser::numberOfLayers() const
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
-  if ( mProjectLayerElements.size() < 1 )
+  if ( mProjectLayerElements.size() < 1 && mLegendGroupElements.size() < 1 )
   {
     return;
   }
@@ -836,7 +836,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
   }
 }
 
-QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName, bool useCache ) const
+QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& aTypeName, bool useCache ) const
 {
   QList<QgsMapLayer*> layerList;
 
@@ -844,26 +844,36 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName
   {
     return layerList;
   }
-
   QStringList wfsLayersId = wfsLayers();
+
+  QStringList typeNameList;
+  if ( aTypeName != "" )
+  {
+    QStringList typeNameSplit = aTypeName.split( "," );
+    foreach ( const QString &str, typeNameSplit )
+    {
+      if ( str.contains( ":" ) )
+        typeNameList << str.section( ":", 1, 1 );
+      else
+        typeNameList << str;
+    }
+  }
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      QgsMapLayer *mLayer = createLayerFromElement( elem, useCache );
+      QgsMapLayer *mLayer = createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
-      if ( !layer || !wfsLayersId.contains( layer->id() ) )
-        return layerList;
+      if ( !layer )
+        continue;
 
       QString typeName = layer->name();
       typeName = typeName.replace( " ", "_" );
-      if ( tName == typeName )
-      {
+
+      if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
         layerList.push_back( mLayer );
-        return layerList;
-      }
     }
   }
   return layerList;
@@ -1563,6 +1573,7 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
       QDomElement attributeElem = doc.createElement( "Attribute" );
       attributeElem.setAttribute( "name", vLayer->attributeDisplayName( idx ) );
       attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
+      attributeElem.setAttribute( "typeName", field.typeName() );
 
       //edit type to text
       QgsVectorLayer::EditType typeEnum = vLayer->editType( idx );
@@ -1841,6 +1852,8 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
   }
   else //normal group
   {
+    bool updateDrawingOrder = ( legendGroupElem.parentNode().toElement().attribute( "updateDrawingOrder" ) == "true" );
+    QMap< int, QDomElement > layerOrderList;
     QDomNodeList groupElemChildren = legendGroupElem.childNodes();
     for ( int i = 0; i < groupElemChildren.size(); ++i )
     {
@@ -1851,8 +1864,22 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
       }
       else if ( elem.tagName() == "legendlayer" )
       {
-        addLayerFromLegendLayer( elem, layerList, useCache );
+        int drawingOrder = updateDrawingOrder ? -1 : elem.attribute( "drawingOrder", "-1" ).toInt();
+        if ( drawingOrder == -1 )
+        {
+          addLayerFromLegendLayer( elem, layerList, useCache );
+        }
+        else
+        {
+          layerOrderList.insert( drawingOrder, elem );
+        }
       }
+    }
+
+    QMap< int, QDomElement >::const_iterator layerOrderIt = layerOrderList.constBegin();
+    for ( ; layerOrderIt != layerOrderList.constEnd(); ++layerOrderIt )
+    {
+      addLayerFromLegendLayer( layerOrderIt.value(), layerList, useCache );
     }
   }
 }
@@ -2610,7 +2637,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     return 0;
   }
 
-  QgsComposition* composition = new QgsComposition( mapRenderer ); //set resolution, paper size from composer element attributes
+  QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
   if ( !composition->readXML( compositionElem, *mXMLDoc ) )
   {
     delete composition;
@@ -4080,17 +4107,45 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
     return;
   }
 
-  QDomNodeList layerNodeList = doc->elementsByTagName( "legendlayer" );
+  //find requested group
+  QString groupName = groupElem.attribute( "name" );
+  QDomElement embeddedGroupElem; //group element in source project file
+  QDomNodeList groupList = doc->elementsByTagName( "legendgroup" );
+  for ( int i = 0; i < groupList.size(); ++i )
+  {
+    if ( groupList.at( i ).toElement().attribute( "name" ) == groupName )
+    {
+      embeddedGroupElem = groupList.at( i ).toElement();
+      break;
+    }
+  }
+
+  if ( embeddedGroupElem.isNull() ) //group does not exist in project file
+  {
+    return;
+  }
+
+  //legend or custom drawing order in embedded project?
+  bool updateDrawingOrder = true;
+  QDomNodeList legendNode = doc->elementsByTagName( "legend" );
+  if ( legendNode.size() > 0 )
+  {
+    updateDrawingOrder = ( legendNode.at( 0 ).toElement().attribute( "updateDrawingOrder" ) == "true" );
+  }
+
+  QDomNodeList layerNodeList = embeddedGroupElem.elementsByTagName( "legendlayer" );
   QDomElement layerElem;
-  QStringList layerNames;
+  QMap<int, QString > layerNames;
   QString layerName;
   for ( int i = 0; i < layerNodeList.size(); ++i )
   {
     layerElem = layerNodeList.at( i ).toElement();
     layerName = layerElem.attribute( "name" );
-    if ( useDrawingOrder )
+
+    int layerDrawingOrder = updateDrawingOrder ? -1 : layerElem.attribute( "drawingOrder", "-1" ).toInt();
+    if ( layerDrawingOrder == -1 )
     {
-      layerNames.push_back( layerName );
+      layerNames.insert( layerNames.size(), layerName );
     }
     else
     {
@@ -4100,12 +4155,20 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
 
   if ( useDrawingOrder )
   {
-    for ( int i = layerNames.size() - 1; i >= 0; --i )
+    QMapIterator<int, QString > layerNamesIt( layerNames );
+    layerNamesIt.toBack();
+    while ( layerNamesIt.hasPrevious() )
     {
-      if ( useDrawingOrder )
-      {
-        orderedLayerList.insertMulti( embedDrawingOrder, layerNames.at( i ) );
-      }
+      layerNamesIt.previous();
+      orderedLayerList.insertMulti( embedDrawingOrder, layerNamesIt.value() );
+    }
+  }
+  else
+  {
+    QMap<int, QString >::const_iterator layerNamesIt = layerNames.constBegin();
+    for ( ; layerNamesIt != layerNames.constEnd(); ++layerNamesIt )
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerNamesIt.value() );
     }
   }
 }

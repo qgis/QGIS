@@ -43,7 +43,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
 
@@ -95,8 +95,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! return a list of item text / symbol
-    //! @note: this method was added in version 1.5
-    // virtual QgsLegendSymbolList legendSymbolItems();
+    //! @note this method was added in version 1.5
+    //! @note not available in python bindings
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
@@ -104,13 +105,17 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
 
+    //! @note added in 2.1
+    bool invertedColorRamp();
+    void setInvertedColorRamp( bool inverted );
+
     //! @note added in 1.6
-    void setRotationField( QString fieldName );
+    void setRotationField( QString fieldOrExpression );
     //! @note added in 1.6
     QString rotationField() const;
 
     //! @note added in 1.6
-    void setSizeScaleField( QString fieldName );
+    void setSizeScaleField( QString fieldOrExpression );
     //! @note added in 1.6
     QString sizeScaleField() const;
 
@@ -123,5 +128,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void rebuildHash();
 
     QgsSymbolV2* symbolForValue( QVariant value );
+
+  private:
+    QgsCategorizedSymbolRendererV2( const QgsCategorizedSymbolRendererV2 & );
+    QgsCategorizedSymbolRendererV2 & operator=( const QgsCategorizedSymbolRendererV2 & );
 };
 

@@ -20,6 +20,8 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
+#include "qgssymbollayerv2utils.h"
+
 #include <QApplication>
 #include <QCoreApplication>
 #include <QCursor>
@@ -91,6 +93,7 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
     , mLeastRecentEntry( 0 )
     , mMostRecentEntry( 0 )
 {
+  mMissingSvg = QString( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toAscii();
 }
 
 QgsSvgCache::~QgsSvgCache()
@@ -165,7 +168,10 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
 QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
-  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( file, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
+  // The file may be relative path (e.g. if path is data defined)
+  QString path = QgsSymbolLayerV2Utils::symbolNameToPath( file );
+
+  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
 
   replaceParamsAndCacheSvg( entry );
 
@@ -241,20 +247,20 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     }
     else
     {
-      return QByteArray();
+      return mMissingSvg;
     }
   }
 
   // maybe it's a url...
   if ( !path.contains( "://" ) ) // otherwise short, relative SVG paths might be considered URLs
   {
-    return QByteArray();
+    return mMissingSvg;
   }
 
   QUrl svgUrl( path );
   if ( !svgUrl.isValid() )
   {
-    return QByteArray();
+    return mMissingSvg;
   }
 
   // check whether it's a url pointing to a local file
@@ -270,7 +276,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     }
 
     // not found...
-    return QByteArray();
+    return mMissingSvg;
   }
 
   // the url points to a remote resource, download it!
@@ -326,7 +332,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2]" ).arg( status.toInt() ).arg( phrase.toString() ), tr( "SVG" ) );
 
     reply->deleteLater();
-    return QByteArray();
+    return mMissingSvg;
   }
 
   QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
@@ -334,7 +340,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   if ( !contentType.startsWith( "image/svg+xml", Qt::CaseInsensitive ) )
   {
     reply->deleteLater();
-    return QByteArray();
+    return mMissingSvg;
   }
 
   // read the image data

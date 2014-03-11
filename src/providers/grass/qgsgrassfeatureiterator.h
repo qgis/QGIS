@@ -20,10 +20,36 @@
 
 class QgsGrassProvider;
 
-class QgsGrassFeatureIterator : public QgsAbstractFeatureIterator
+
+class QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsGrassFeatureIterator( QgsGrassProvider* p, const QgsFeatureRequest& request );
+    QgsGrassFeatureSource( const QgsGrassProvider* provider );
+    ~QgsGrassFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  protected:
+    struct Map_info* mMap;
+    int     mLayerType;     // layer type POINT, LINE, ...
+    int     mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
+    int     mLayerId;       // ID used in layers
+    QGis::WkbType mQgisType;// WKBPoint, WKBLineString, ...
+
+    int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
+    int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
+
+    QgsFields mFields;
+    QTextCodec* mEncoding;
+
+    friend class QgsGrassFeatureIterator;
+};
+
+
+class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>
+{
+  public:
+    QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsGrassFeatureIterator();
 
@@ -37,7 +63,6 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIterator
     virtual bool close();
 
   protected:
-    QgsGrassProvider* P;
 
     // create QgsFeatureId from GRASS geometry object id and cat
     static QgsFeatureId makeFeatureId( int grassId, int cat );
@@ -45,6 +70,20 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIterator
     void setSelectionRect( const QgsRectangle& rect, bool useIntersect );
 
     void setFeatureGeometry( QgsFeature& feature, int id, int type );
+
+
+    /*! Set feature attributes.
+     *  @param feature
+     *  @param cat category number
+     */
+    void setFeatureAttributes( int cat, QgsFeature *feature );
+
+    /*! Set feature attributes.
+     *  @param feature
+     *  @param cat category number
+     *  @param attlist a list containing the index number of the fields to set
+     */
+    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist );
 
     struct line_pnts *mPoints; // points structure
     struct line_cats *mCats;   // cats structure

@@ -32,7 +32,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     QDialog( parent, f )
     , mRasterLayer( rasterLayer ), mDataProvider( sourceProvider )
     , mCurrentExtent( currentExtent ), mLayerCrs( layerCrs )
-    , mCurrentCrs( currentCrs ), mExtentState( OriginalExtent )
+    , mCurrentCrs( currentCrs )
     , mResolutionState( OriginalResolution )
 {
   setupUi( this );
@@ -67,9 +67,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
   {
-    //extent
-    setOutputExtent( mDataProvider->extent(), mLayerCrs, OriginalExtent );
-
     if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
     {
       setOriginalResolution();
@@ -133,6 +130,12 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   {
     okButton->setEnabled( false );
   }
+
+  mExtentGroupBox->setOutputCrs( outputCrs() );
+  mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
+  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
+  mExtentGroupBox->setOutputExtentFromOriginal();
+  connect( mExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( extentChanged() ) );
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -143,10 +146,6 @@ void QgsRasterLayerSaveAsDialog::setValidators()
   mRowsLineEdit->setValidator( new QIntValidator( this ) );
   mMaximumSizeXLineEdit->setValidator( new QIntValidator( this ) );
   mMaximumSizeYLineEdit->setValidator( new QIntValidator( this ) );
-  mXMinLineEdit->setValidator( new QDoubleValidator( this ) );
-  mXMaxLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYMinLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
 }
 
 QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
@@ -215,18 +214,6 @@ void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& 
   okButton->setEnabled( QFileInfo( text ).absoluteDir().exists() );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mCurrentExtentButton_clicked()
-{
-  setOutputExtent( mCurrentExtent, mCurrentCrs, CurrentExtent );
-}
-
-void QgsRasterLayerSaveAsDialog::on_mOriginalExtentButton_clicked()
-{
-  if ( mDataProvider )
-  {
-    setOutputExtent( mDataProvider->extent(), mLayerCrs, OriginalExtent );
-  }
-}
 
 void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString & text )
 {
@@ -290,29 +277,7 @@ QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
-  return QgsRectangle( mXMinLineEdit->text().toDouble(), mYMinLineEdit->text().toDouble(), mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
-}
-
-void QgsRasterLayerSaveAsDialog::setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state )
-{
-  QgsRectangle extent;
-  if ( outputCrs() == srcCrs )
-  {
-    extent = r;
-  }
-  else
-  {
-    QgsCoordinateTransform ct( srcCrs, outputCrs() );
-    extent = ct.transformBoundingBox( r );
-  }
-
-  mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
-  mXMaxLineEdit->setText( QgsRasterBlock::printValue( extent.xMaximum() ) );
-  mYMinLineEdit->setText( QgsRasterBlock::printValue( extent.yMinimum() ) );
-  mYMaxLineEdit->setText( QgsRasterBlock::printValue( extent.yMaximum() ) );
-
-  mExtentState = state;
-  extentChanged();
+  return mExtentGroupBox->outputExtent();
 }
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
@@ -451,34 +416,12 @@ void QgsRasterLayerSaveAsDialog::updateResolutionStateMsg()
 
 void QgsRasterLayerSaveAsDialog::extentChanged()
 {
-  updateExtentStateMsg();
   // Whenever extent changes with fixed size, original resolution is lost
   if ( mSizeRadioButton->isChecked() )
   {
     mResolutionState = UserResolution;
   }
   recalcResolutionSize();
-}
-
-void QgsRasterLayerSaveAsDialog::updateExtentStateMsg()
-{
-  QString msg;
-  switch ( mExtentState )
-  {
-    case OriginalExtent:
-      msg = tr( "layer" );
-      break;
-    case CurrentExtent:
-      msg = tr( "map view" );
-      break;
-    case UserExtent:
-      msg = tr( "user defined" );
-      break;
-    default:
-      break;
-  }
-  msg = tr( "Extent (current: %1)" ).arg( msg );
-  mExtentGroupBox->setTitle( msg );
 }
 
 void QgsRasterLayerSaveAsDialog::on_mChangeCrsPushButton_clicked()
@@ -500,27 +443,24 @@ void QgsRasterLayerSaveAsDialog::crsChanged()
   QgsDebugMsg( "Entered" );
   if ( outputCrs() != mPreviousCrs )
   {
+    mExtentGroupBox->setOutputCrs( outputCrs() );
+    QgsExtentGroupBox::ExtentState state = mExtentGroupBox->extentState();
+
     // Reset extent
-    QgsRectangle previousExtent;
-    QgsCoordinateReferenceSystem previousCrs;
     // We could reproject previous but that would add additional space also if
     // it is was not necessary or at leas it could decrease accuracy
-    if ( mExtentState == OriginalExtent )
+    if ( state == QgsExtentGroupBox::OriginalExtent )
     {
-      previousExtent = mDataProvider->extent();
-      previousCrs = mLayerCrs;
+      mExtentGroupBox->setOutputExtentFromOriginal();
     }
-    else if ( mExtentState == CurrentExtent )
+    else if ( state == QgsExtentGroupBox::CurrentExtent )
     {
-      previousExtent = mCurrentExtent;
-      previousCrs = mCurrentCrs;
+      mExtentGroupBox->setOutputExtentFromCurrent();
     }
     else
     {
-      previousExtent = outputRectangle();
-      previousCrs = mPreviousCrs;
+      mExtentGroupBox->setOutputExtentFromUser( mExtentGroupBox->outputExtent(), mPreviousCrs );
     }
-    setOutputExtent( previousExtent, previousCrs, mExtentState );
 
     // Reset resolution
     if ( mResolutionRadioButton->isChecked() )

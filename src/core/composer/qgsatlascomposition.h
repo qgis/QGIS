@@ -111,6 +111,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Prepare the atlas map for the given feature. Sets the extent and context variables */
     void prepareForFeature( int i );
 
+    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
+    void prepareForFeature( QgsFeature * feat );
+
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;
 
@@ -174,6 +177,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
+
   private:
     // value of field that is used for ordering of features
     SorterKeys mFeatureKeys;
@@ -189,7 +193,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QVector<QgsFeatureId> mFeatureIds;
 
     QgsFeature mCurrentFeature;
-    bool mRestoreLayer;
+
     std::auto_ptr<QgsExpression> mFilenameExpr;
 
     // bounding box of the current feature transformed into map crs
@@ -197,6 +201,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //forces all atlas enabled maps to redraw
     void updateAtlasMaps();
+
+    //computes the extent of the current feature, in the crs of the specified map
+    void computeExtent( QgsComposerMap *map );
 };
 
 #endif

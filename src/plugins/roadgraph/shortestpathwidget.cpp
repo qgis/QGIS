@@ -240,8 +240,8 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   }
 
   QgsGraphBuilder builder(
-    mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
-    mPlugin->iface()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled(),
+    mPlugin->iface()->mapCanvas()->mapSettings().destinationCrs(),
+    mPlugin->iface()->mapCanvas()->mapSettings().hasCrsTransformEnabled(),
     mPlugin->topologyToleranceFactor() );
   {
     const QgsGraphDirector *director = mPlugin->director();
@@ -382,7 +382,7 @@ void RgShortestPathWidget::exportPath()
   if ( path == NULL )
     return;
 
-  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
+  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapSettings().destinationCrs(),
                              vl->crs() );
 
   int startVertexIdx = path->findVertex( p1 );

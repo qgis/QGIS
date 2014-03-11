@@ -243,8 +243,11 @@ void QgsCompositionWidget::adjustOrientation()
     setSize( mPaperWidthDoubleSpinBox, height );
     setSize( mPaperHeightDoubleSpinBox, width );
   }
+
   mPaperWidthDoubleSpinBox->setEnabled( lineEditsEnabled );
   mPaperHeightDoubleSpinBox->setEnabled( lineEditsEnabled );
+
+  emit pageOrientationChanged( mPaperOrientationComboBox->currentText() );
 }
 
 void QgsCompositionWidget::setSize( QDoubleSpinBox *spin, double v )

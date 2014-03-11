@@ -52,6 +52,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     // and creates that instance on the first call.
     static QgsNetworkAccessManager *instance();
 
+    QgsNetworkAccessManager( QObject *parent = 0 );
+
     //! destructor
     ~QgsNetworkAccessManager();
 
@@ -79,6 +81,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Get QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
 
+    //! Setup the NAM according to the user's settings
+    void setupDefaultProxyAndCache();
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
@@ -92,7 +97,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
   private:
-    QgsNetworkAccessManager( QObject *parent = 0 );
     QList<QNetworkProxyFactory*> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;

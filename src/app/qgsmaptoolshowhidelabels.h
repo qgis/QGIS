@@ -53,9 +53,6 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
   private:
 
-    //! Pointer to map renderer
-    QgsMapRenderer* mRender;
-
     //! Select valid labels to pin or unpin
     void showHideLabels( QMouseEvent * e );
 

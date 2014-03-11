@@ -59,6 +59,13 @@ void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
   delete mShapeStyleSymbol;
   mShapeStyleSymbol = symbol;
   update();
+  emit frameChanged();
+}
+
+void QgsComposerShape::refreshSymbol()
+{
+  update();
+  emit frameChanged();
 }
 
 void QgsComposerShape::createDefaultShapeStyleSymbol()
@@ -242,6 +249,10 @@ void QgsComposerShape::drawBackground( QPainter* p )
   }
 }
 
+double QgsComposerShape::estimatedFrameBleed() const
+{
+  return QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+}
 
 bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {

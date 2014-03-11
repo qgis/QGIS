@@ -902,9 +902,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     getFeatureInfoElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
     getFeatureInfoElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
     getFeatureInfoElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://qgis.org/gml" );
     getFeatureInfoElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" );
   }
   else
   {
@@ -1052,13 +1052,38 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
 
   if ( featuresRect )
   {
-    QDomElement bBoxElem = result.createElement( "BoundingBox" );
-    bBoxElem.setAttribute( "CRS", mMapRenderer->destinationCrs().authid() );
-    bBoxElem.setAttribute( "minx", QString::number( featuresRect->xMinimum() ) );
-    bBoxElem.setAttribute( "maxx", QString::number( featuresRect->xMaximum() ) );
-    bBoxElem.setAttribute( "miny", QString::number( featuresRect->yMinimum() ) );
-    bBoxElem.setAttribute( "maxy", QString::number( featuresRect->yMaximum() ) );
-    getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
+    if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
+    {
+      QDomElement bBoxElem = result.createElement( "gml:boundedBy" );
+      QDomElement boxElem;
+      int gmlVersion = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
+      if ( gmlVersion < 3 )
+      {
+        boxElem = QgsOgcUtils::rectangleToGMLBox( featuresRect, result );
+      }
+      else
+      {
+        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( featuresRect, result );
+      }
+
+      QgsCoordinateReferenceSystem crs = mMapRenderer->destinationCrs();
+      if ( crs.isValid() )
+      {
+        boxElem.setAttribute( "srsName", crs.authid() );
+      }
+      bBoxElem.appendChild( boxElem );
+      getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
+    }
+    else
+    {
+      QDomElement bBoxElem = result.createElement( "BoundingBox" );
+      bBoxElem.setAttribute( "CRS", mMapRenderer->destinationCrs().authid() );
+      bBoxElem.setAttribute( "minx", QString::number( featuresRect->xMinimum() ) );
+      bBoxElem.setAttribute( "maxx", QString::number( featuresRect->xMaximum() ) );
+      bBoxElem.setAttribute( "miny", QString::number( featuresRect->yMinimum() ) );
+      bBoxElem.setAttribute( "maxy", QString::number( featuresRect->yMaximum() ) );
+      getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
+    }
   }
 
   if ( sia2045 && infoFormat.compare( "text/xml", Qt::CaseInsensitive ) == 0 )
@@ -1460,7 +1485,8 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
 
   QgsFeatureRequest fReq;
-  fReq.setFlags((( addWktGeometry || featureBBox ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
+  bool hasGeometry = addWktGeometry || featureBBox;
+  fReq.setFlags((( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
   if ( !searchRect.isEmpty() )
   {
     fReq.setFilterRect( searchRect );
@@ -1475,13 +1501,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
-    // Creates the gml:featureMember only if we have at least one element
-    if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) && featureCounter == 1 )
-    {
-      QDomElement realLayerElement = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
-      layerElement.appendChild( realLayerElement );
-      layerElement = realLayerElement;
-    }
 
     QgsFeatureRendererV2* r2 = layer->rendererV2();
     if ( !r2 )
@@ -1490,7 +1509,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
 
     //check if feature is rendered at all
-    r2->startRender( renderContext, layer );
+    r2->startRender( renderContext, layer->pendingFields() );
     bool renderV2 = r2->willRenderFeature( feature );
     r2->stopRender( renderContext );
     if ( !renderV2 )
@@ -1498,13 +1517,37 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       continue;
     }
 
+    QgsRectangle box;
+    if ( hasGeometry )
+    {
+      box = mapRender->layerExtentToOutputExtent( layer, feature.geometry()->boundingBox() );
+      if ( featureBBox ) //extend feature info bounding box if requested
+      {
+        if ( featureBBox->isEmpty() )
+        {
+          *featureBBox = box;
+        }
+        else
+        {
+          featureBBox->combineExtentWith( &box );
+        }
+      }
+    }
+
+    QgsCoordinateReferenceSystem outputCrs = layer->crs();
+    if ( layer->crs() != mapRender->destinationCrs() && mapRender->hasCrsTransformEnabled() )
+    {
+      outputCrs = mapRender->destinationCrs();
+    }
+
     if ( infoFormat == "application/vnd.ogc.gml" )
     {
-      QgsCoordinateReferenceSystem layerCrs = layer->crs();
-      bool withGeom = layer->wkbType() != QGis::WKBNoGeometry;
+      bool withGeom = layer->wkbType() != QGis::WKBNoGeometry && addWktGeometry;
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
-      QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), withGeom, version );
-      layerElement.appendChild( elem );
+      QDomElement elem = createFeatureGML( &feature, layer, infoDocument, outputCrs, layer->name(), withGeom, version );
+      QDomElement featureMemberElem = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
+      featureMemberElem.appendChild( elem );
+      layerElement.appendChild( featureMemberElem );
       continue;
     }
     else
@@ -1528,40 +1571,39 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
-        attributeElement.setAttribute( "value", featureAttributes[i].toString() );
+        attributeElement.setAttribute( "value", QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) );
         featureElement.appendChild( attributeElement );
       }
 
-      //also append the wkt geometry as an attribute
-      QgsGeometry* geom = feature.geometry();
-      if ( addWktGeometry && geom )
+      //append feature bounding box to feature info xml
+      if ( hasGeometry && mapRender )
       {
-        QDomElement geometryElement = infoDocument.createElement( "Attribute" );
-        geometryElement.setAttribute( "name", "geometry" );
-        geometryElement.setAttribute( "value", geom->exportToWkt() );
-        geometryElement.setAttribute( "type", "derived" );
-        featureElement.appendChild( geometryElement );
-      }
-      if ( featureBBox && geom && mapRender ) //extend feature info bounding box if requested
-      {
-        QgsRectangle box = mapRender->layerExtentToOutputExtent( layer, geom->boundingBox() );
-        if ( featureBBox->isEmpty() )
-        {
-          *featureBBox = box;
-        }
-        else
-        {
-          featureBBox->combineExtentWith( &box );
-        }
-
-        //append feature bounding box to feature info xml
         QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
-        bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", mapRender->destinationCrs().authid() );
+        bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", outputCrs.authid() );
         bBoxElem.setAttribute( "minx", QString::number( box.xMinimum() ) );
         bBoxElem.setAttribute( "maxx", QString::number( box.xMaximum() ) );
         bBoxElem.setAttribute( "miny", QString::number( box.yMinimum() ) );
         bBoxElem.setAttribute( "maxy", QString::number( box.yMaximum() ) );
         featureElement.appendChild( bBoxElem );
+      }
+
+      //also append the wkt geometry as an attribute
+      if ( addWktGeometry && hasGeometry )
+      {
+         QgsGeometry* geom = feature.geometry();
+        if ( layer->crs() != outputCrs )
+        {
+          const QgsCoordinateTransform *transform = mapRender->transformation( layer );
+          if ( transform )
+          {
+            geom->transform( *transform );
+          }
+        }
+        QDomElement geometryElement = infoDocument.createElement( "Attribute" );
+        geometryElement.setAttribute( "name", "geometry" );
+        geometryElement.setAttribute( "value", geom->exportToWkt() );
+        geometryElement.setAttribute( "type", "derived" );
+        featureElement.appendChild( geometryElement );
       }
     }
   }
@@ -1612,7 +1654,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
     int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
-    QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), false, version );
+    QDomElement elem = createFeatureGML( &feature, 0, infoDocument, layerCrs, layer->name(), false, version );
     layerElement.appendChild( elem );
   }
   else
@@ -2005,6 +2047,7 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
          || tokenIt->compare( "AND", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "OR", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "LIKE", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "DMETAPHONE", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "SOUNDEX", Qt::CaseInsensitive ) == 0 )
     {
@@ -2503,6 +2546,7 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
 
 QDomElement QgsWMSServer::createFeatureGML(
   QgsFeature* feat,
+  QgsVectorLayer* layer,
   QDomDocument& doc,
   QgsCoordinateReferenceSystem& crs,
   QString typeName,
@@ -2513,10 +2557,50 @@ QDomElement QgsWMSServer::createFeatureGML(
   QDomElement typeNameElement = doc.createElement( "qgs:" + typeName /*qgs:%TYPENAME%*/ );
   typeNameElement.setAttribute( "fid", typeName + "." + QString::number( feat->id() ) );
 
-  if ( withGeom )
+  const QgsCoordinateTransform* transform = 0;
+  if ( layer && layer->crs() != crs)
+  {
+    transform = mMapRenderer->transformation( layer );
+  }
+
+  QgsGeometry* geom = feat->geometry();
+
+  // always add bounding box info if feature contains geometry
+  if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry)
+  {
+     QgsRectangle box = feat->geometry()->boundingBox();
+     if ( transform )
+     {
+       box = transform->transformBoundingBox( box );
+     }
+
+     QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+     QDomElement boxElem;
+     if ( version < 3 )
+     {
+       boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
+     }
+     else
+     {
+       boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
+     }
+
+     if ( crs.isValid() )
+     {
+       boxElem.setAttribute( "srsName", crs.authid() );
+     }
+     bbElem.appendChild( boxElem );
+     typeNameElement.appendChild( bbElem );
+  }
+
+  if ( withGeom)
   {
     //add geometry column (as gml)
-    QgsGeometry* geom = feat->geometry();
+
+    if ( transform )
+    {
+      geom->transform( *transform );
+    }
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
@@ -2531,27 +2615,10 @@ QDomElement QgsWMSServer::createFeatureGML(
 
     if ( !gmlElem.isNull() )
     {
-      QgsRectangle box = geom->boundingBox();
-      QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-      QDomElement boxElem;
-      if ( version < 3 )
-      {
-        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
-      }
-      else
-      {
-        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
-      }
-
       if ( crs.isValid() )
       {
-        boxElem.setAttribute( "srsName", crs.authid() );
         gmlElem.setAttribute( "srsName", crs.authid() );
       }
-
-      bbElem.appendChild( boxElem );
-      typeNameElement.appendChild( bbElem );
-
       geomElem.appendChild( gmlElem );
       typeNameElement.appendChild( geomElem );
     }
@@ -2564,7 +2631,12 @@ QDomElement QgsWMSServer::createFeatureGML(
   {
     QString attributeName = fields->at( i ).name();
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
-    QDomText fieldText = doc.createTextNode( featureAttributes[i].toString() );
+    QString fieldTextString = featureAttributes[i].toString();
+    if ( layer )
+    {
+      fieldTextString = QgsExpression::replaceExpressionText( fieldTextString, feat, layer );
+    }
+    QDomText fieldText = doc.createTextNode( fieldTextString );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
   }

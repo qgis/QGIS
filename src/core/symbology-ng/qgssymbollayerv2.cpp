@@ -118,20 +118,19 @@ Qt::PenStyle QgsSymbolLayerV2::dxfPenStyle() const
   return Qt::SolidLine;
 }
 
-void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl, double scale )
+void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
-  if ( !vl )
+  if ( !fields )
   {
     return;
   }
 
-  const QgsFields& fields = vl->pendingFields();
   QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
   for ( ; it != mDataDefinedProperties.end(); ++it )
   {
     if ( it.value() )
     {
-      it.value()->prepare( fields );
+      it.value()->prepare( *fields );
       if ( scale > 0 )
       {
         it.value()->setScale( scale );
@@ -388,13 +387,15 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   }
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
-  if ( points.size() <= 5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+#if 0 // TODO[MD]: after merge
+  if ( points.size() <= 5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( context.renderContext(), QgsVectorSimplifyMethod::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawRect( points.boundingRect() );
     p->setRenderHint( QPainter::Antialiasing, true );
     return;
   }
+#endif
 
   if ( rings == NULL )
   {

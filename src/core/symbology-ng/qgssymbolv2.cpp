@@ -213,12 +213,10 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 }
 
 
-void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* layer )
+void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* fields )
 {
-  mLayer = layer;
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, fields );
 
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
-  symbolContext.setLayer( mLayer );
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->startRender( symbolContext );
@@ -227,7 +225,6 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
-  symbolContext.setLayer( mLayer );
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->stopRender( symbolContext );
@@ -259,7 +256,6 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( painter );
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
-  symbolContext.setLayer( mLayer );
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -384,8 +380,8 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 ////////////////////
 
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
-    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mLayer( 0 )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields )
+    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mFields( fields )
 {
 
 }
@@ -541,7 +537,6 @@ QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
-  symbolContext.setLayer( mLayer );
 
   if ( layer != -1 )
   {
@@ -611,7 +606,6 @@ double QgsLineSymbolV2::width()
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
-  symbolContext.setLayer( mLayer );
 
   if ( layer != -1 )
   {
@@ -648,7 +642,6 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
-  symbolContext.setLayer( mLayer );
 
   if ( layer != -1 )
   {

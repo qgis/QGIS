@@ -90,10 +90,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
 
-#ifdef Q_WS_X11
-  connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
-#endif
-
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
   connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
 
@@ -341,26 +337,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
-  // Set the enable backbuffer state for X11 (linux) systems only
-  // TODO: remove this when threading is implemented
-#ifdef Q_WS_X11
-  chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer", 1 ).toBool() );
-  toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
-#elif defined(Q_WS_MAC)
-  chkEnableBackbuffer->setChecked( true );
-  chkEnableBackbuffer->setEnabled( false );
-  labelUpdateThreshold->setEnabled( false );
-  spinBoxUpdateThreshold->setEnabled( false );
-#else // Q_WS_WIN32
-  chkEnableBackbuffer->setChecked( true );
-  chkEnableBackbuffer->setEnabled( false );
-#endif
-
-  // set the display update threshold
-  spinBoxUpdateThreshold->setSpecialValueText( tr( "All" ) );
-  spinBoxUpdateThreshold->setMinimum( 999 );
-  spinBoxUpdateThreshold->setValue( qMax( 999, settings.value( "/Map/updateThreshold" ).toInt() ) );
-
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() );
 
@@ -404,6 +380,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //default datum transformations
   settings.beginGroup( "/Projections" );
+
+  chkShowDatumTransformDialog->setChecked( settings.value( "showDatumTransformDialog", false ).toBool() );
+
   QStringList projectionKeys = settings.allKeys();
 
   //collect src and dest entries that belong together
@@ -564,15 +543,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //Changed to default to true as of QGIS 1.7
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
+  chkParallelRendering->setChecked( settings.value( "/qgis/parallel_rendering", false ).toBool() );
+  spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorLayer::GeometrySimplification ).toInt() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !settings.value( "/qgis/simplifyLocal", true ).toBool() );
 
+  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  myScalesList.append( "1:1" );
+  mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
+  mSimplifyMaximumScaleComboBox->setScale( 1.0 / settings.value( "/qgis/simplifyMaxScale", 1 ).toFloat() );
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
-  chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
   chkAddedVisibility->setChecked( settings.value( "/qgis/new_layers_visible", true ).toBool() );
   cbxLegendClassifiers->setChecked( settings.value( "/qgis/showLegendClassifiers", false ).toBool() );
   mLegendLayersBoldChkBx->setChecked( settings.value( "/qgis/legendLayersBold", true ).toBool() );
@@ -650,6 +635,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mProjectOnLaunchPushBtn->setEnabled( projOpen == 2 );
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
+  mLayerDeleteConfirmationChkBx->setChecked( settings.value( "qgis/askToDeleteLayers", true ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
   cmbEnableMacros->setCurrentIndex( settings.value( "/qgis/enableMacros", 1 ).toInt() );
 
@@ -956,24 +942,6 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
   }
 }
 
-void QgsOptions::toggleEnableBackbuffer( int state )
-{
-#ifdef Q_WS_X11
-  if ( Qt::Checked == state )
-  {
-    labelUpdateThreshold->setEnabled( false );
-    spinBoxUpdateThreshold->setEnabled( false );
-  }
-  else
-  {
-    labelUpdateThreshold->setEnabled( true );
-    spinBoxUpdateThreshold->setEnabled( true );
-  }
-#else
-  Q_UNUSED( state );
-#endif
-}
-
 QString QgsOptions::theme()
 {
   // returns the current theme (as selected in the cmbTheme combo box)
@@ -1096,27 +1064,30 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
-  settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
+  settings.setValue( "/qgis/parallel_rendering", chkParallelRendering->isChecked() );
+  settings.setValue( "/qgis/map_update_interval", spinMapUpdateInterval->value() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // Default simplify drawing configuration
-  int simplifyHints = QgsVectorLayer::NoSimplification;
+  QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyHints |= QgsVectorLayer::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
+    simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
-  settings.setValue( "/qgis/simplifyDrawingHints", simplifyHints );
+  settings.setValue( "/qgis/simplifyDrawingHints", ( int ) simplifyHints );
   settings.setValue( "/qgis/simplifyDrawingTol", mSimplifyDrawingSpinBox->value() );
   settings.setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
+  settings.setValue( "/qgis/simplifyMaxScale", 1.0 / mSimplifyMaximumScaleComboBox->scale() );
 
   // project
   settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );
   settings.setValue( "/qgis/projOpenAtLaunchPath", mProjectOnLaunchLineEdit->text() );
 
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
+  settings.setValue( "qgis/askToDeleteLayers", mLayerDeleteConfirmationChkBx->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
   if (( settings.value( "/qgis/projectTemplateDir" ).toString() != leTemplateFolder->text() ) ||
       ( settings.value( "/qgis/newProjectDefault" ).toBool() != cbxProjectDefaultNew->isChecked() ) )
@@ -1162,10 +1133,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
   settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
-  settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
-  int threshold = spinBoxUpdateThreshold->value();
-  settings.setValue( "/Map/updateThreshold", threshold < 1000 ? 0 : threshold );
-
   // log rendering events, for userspace debugging
   settings.setValue( "/Map/logCanvasRefreshEvent", mLogCanvasRefreshChkBx->isChecked() );
 
@@ -1190,6 +1157,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/otfTransformAutoEnable", radOtfAuto->isChecked() );
   settings.setValue( "/Projections/otfTransformEnabled", radOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
+
+  settings.setValue( "/Projections/showDatumTransformDialog", chkShowDatumTransformDialog->isChecked() );
 
   if ( radFeet->isChecked() )
   {

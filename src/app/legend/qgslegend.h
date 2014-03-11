@@ -86,17 +86,10 @@ struct LegendLayerAction
                         1 or more files can share the same symbology and properties
                         and be treated as they are one layer for things such as hiding /
                         showing, scale dependent visibility etc.</li>
-   <li>QgsLegendSymbologyGroup - a collabsable node that contains symbology items. Can
-                                only exist inside of a QgsLegendLayer</li>
    <li>QgsLegendSymbologyItem - a class break (vector) or pallette entry (raster) etc.
                                 Double clicking on a symbology item will let you change
                                 the properties for only that specific item. Can only exist
-                                inside a symbology group.</li>
-   <li>QgsLegendPropertyGroup - a collapsable node that shows 1 or more properties. Can
-                                only exist inside of a QgsLegendLayer</li>
-   <li>QgsLegendPropertyItem - A list of properties related to the layer. Double clicking
-                              a property item will invoke a dialog that will let you change
-                              the property settings. Can only exist inside a property group</li>
+                                inside a legend layer.</li>
    </ul>
    @note Additional group types may be defined in the future to accommodate WMS, PostGIS etc layers.
    @author Gary E.Sherman, Tim Sutton, Marco Hugentobler and Jens Oberender
@@ -121,6 +114,9 @@ class QgsLegend : public QTreeWidget
 
     //! Destructor
     ~QgsLegend();
+
+    /** Returns QgsLegendLayer accosiated with given item */
+    QgsLegendLayer* legendLayerForItem( QTreeWidgetItem* item );
 
     /** Returns QgsLegendLayer associated with current layer */
     QgsLegendLayer* currentLegendLayer();
@@ -209,9 +205,6 @@ class QgsLegend : public QTreeWidget
 
     /**Updates layer set of map canvas*/
     void updateMapCanvasLayerSet();
-
-    /**Updates overview*/
-    void updateOverview();
 
     /**Show/remove all layer in/from overview*/
     void enableOverviewModeAllLayers( bool isInOverview );
@@ -393,6 +386,9 @@ class QgsLegend : public QTreeWidget
      */
     void updateLegendItemSymbologies();
 
+    /** Slot to catch if layers are being loaded */
+    void layerLoaded( int i, int n );
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -426,7 +422,7 @@ class QgsLegend : public QTreeWidget
      * <li>Groups can be nested by dropping them into each other,</li>
      * <li>Each group can have one or more layers</li>
      * <li>Layers can be ordered by dragging them above or below another layer.</li>
-     * <li>The order for QgsLegendSymbologyGroup, QgsLegendPropertyGroup and QgsLegendLayerGroup
+     * <li>The order for QgsLegendLayerGroup
      * is predefined to sort in that order.</li>
      * </ul>
      * @note Overrides method of the same name in the QListView class.
@@ -599,6 +595,8 @@ class QgsLegend : public QTreeWidget
 
     //! popup QFrame containing WMS getLegendGraphic pixmap
     QFrame *mGetLegendGraphicPopup;
+
+    bool mLoadingLayers;
 
   signals:
     void itemAdded( QModelIndex index );

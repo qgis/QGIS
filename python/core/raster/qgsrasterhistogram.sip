@@ -21,8 +21,10 @@ class QgsRasterHistogram
     /** \brief Whether histogram includes out of range values (in first and last bin) */
     bool includeOutOfRange;
 
-    /** \brief Store the histogram for a given layer */
-    // TODO: QVector<int> histogramVector;
+    /** \brief Store the histogram for a given layer
+      * @note not available via python binding
+      */
+    // HistogramVector histogramVector;
 
     /** \brief The maximum histogram value. */
     double maximum;

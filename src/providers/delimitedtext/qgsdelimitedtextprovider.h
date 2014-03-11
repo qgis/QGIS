@@ -81,6 +81,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsVectorDataProvider */
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
@@ -225,19 +227,13 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void clearInvalidLines();
     void recordInvalidLine( QString message );
     void reportErrors( QStringList messages = QStringList(), bool showDialog = true );
-    void resetStream();
-    bool recordIsEmpty( QStringList &record );
-    bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, QgsDelimitedTextFeatureIterator *iterator );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
-    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
+    static bool recordIsEmpty( QStringList &record );
     void setUriParameter( QString parameter, QString value );
-    bool setNextFeatureId( qint64 fid ) { return mFile->setNextRecordId(( long ) fid ); }
 
 
-    QgsGeometry *geomFromWkt( QString &sWkt );
-    bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
-    double dmsStringToDouble( const QString &sX, bool *xOk );
+    static QgsGeometry *geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM );
+    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString& decimalPoint, bool xyDms );
+    static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
     bool mLayerValid;
@@ -321,7 +317,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsSpatialIndex *mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
-    QSet< QgsDelimitedTextFeatureIterator* > mActiveIterators;
+    friend class QgsDelimitedTextFeatureSource;
 };
 
 #endif

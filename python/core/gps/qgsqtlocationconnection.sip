@@ -17,14 +17,20 @@ class QgsQtLocationConnection: QgsGPSConnection
     /**Parse available data source content*/
     void parseData();
 
-    /**Called when the position updated.*/
+    /**Called when the position updated.
+      * @note not available in python binding
+      */
     // void positionUpdated( const QGeoPositionInfo &info );
 
 %If (!ANDROID)
-    /**Called when the number of satellites in view is updated.*/
+    /**Called when the number of satellites in view is updated.
+      * @note not available in python bindings on android
+      */
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
 
-    /**Called when the number of satellites in use is updated.*/
+    /**Called when the number of satellites in use is updated.
+      * @note not available in python bindings on android
+      */
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
 %End
 };

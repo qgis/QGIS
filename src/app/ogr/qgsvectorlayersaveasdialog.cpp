@@ -32,9 +32,10 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, int options, QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
+    , mLayerExtent( layerExtent )
 {
   setup();
   if ( !( options & Symbology ) )
@@ -44,6 +45,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, int options,
     mScaleLabel->hide();
     mScaleSpinBox->hide();
   }
+
+  mSelectedOnly->setEnabled( layerHasSelectedFeatures );
 }
 
 void QgsVectorLayerSaveAsDialog::setup()
@@ -87,7 +90,14 @@ void QgsVectorLayerSaveAsDialog::setup()
   mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
   mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
   on_mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
-  mOptionsButton->setChecked( settings.value( "/UI/vectorLayerSaveAsOptionsVisible" ).toBool() );
+
+  // extent group box
+  mExtentGroupBox->setOutputCrs( srs );
+  mExtentGroupBox->setOriginalExtent( mLayerExtent, srs );
+  mExtentGroupBox->setOutputExtentFromOriginal();
+  mExtentGroupBox->setCheckable( true );
+  mExtentGroupBox->setChecked( false );
+  mExtentGroupBox->setCollapsed( true );
 }
 
 QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( const QMap<QString, QgsVectorFileWriter::Option*>& options )
@@ -170,13 +180,27 @@ void QgsVectorLayerSaveAsDialog::accept()
   settings.setValue( "/UI/lastVectorFileFilterDir", QFileInfo( filename() ).absolutePath() );
   settings.setValue( "/UI/lastVectorFormat", format() );
   settings.setValue( "/UI/encoding", encoding() );
-  settings.setValue( "/UI/vectorLayerSaveAsOptionsVisible", mOptionsButton->isChecked() );
   QDialog::accept();
 }
 
 void QgsVectorLayerSaveAsDialog::on_mCRSSelection_currentIndexChanged( int idx )
 {
   leCRS->setEnabled( idx == 2 );
+
+  QgsCoordinateReferenceSystem crs;
+  if ( mCRSSelection->currentIndex() == 0 )
+  {
+    crs = mLayerCrs;
+  }
+  else if ( mCRSSelection->currentIndex() == 1 )
+  {
+    crs = mExtentGroupBox->currentCrs();
+  }
+  else // custom CRS
+  {
+    crs.createFromId( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
+  }
+  mExtentGroupBox->setOutputCrs( crs );
 }
 
 void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx )
@@ -286,6 +310,8 @@ void QgsVectorLayerSaveAsDialog::on_browseCRS_clicked()
     mCRS = srs.srsid();
     leCRS->setText( srs.description() );
     mCRSSelection->setCurrentIndex( 2 );
+
+    mExtentGroupBox->setOutputCrs( srs );
   }
 
   delete mySelector;
@@ -443,6 +469,26 @@ double QgsVectorLayerSaveAsDialog::scaleDenominator() const
   return mScaleSpinBox->value();
 }
 
+void QgsVectorLayerSaveAsDialog::setCanvasExtent( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs )
+{
+  mExtentGroupBox->setCurrentExtent( canvasExtent, canvasCrs );
+}
+
+bool QgsVectorLayerSaveAsDialog::hasFilterExtent() const
+{
+  return mExtentGroupBox->isChecked();
+}
+
+QgsRectangle QgsVectorLayerSaveAsDialog::filterExtent() const
+{
+  return mExtentGroupBox->outputExtent();
+}
+
+bool QgsVectorLayerSaveAsDialog::onlySelected() const
+{
+  return mSelectedOnly->isChecked();
+}
+
 void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString& text )
 {
   bool scaleEnabled = true;
@@ -452,9 +498,4 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   }
   mScaleSpinBox->setEnabled( scaleEnabled );
   mScaleLabel->setEnabled( scaleEnabled );
-}
-
-void QgsVectorLayerSaveAsDialog::on_mOptionsButton_toggled( bool checked )
-{
-  mOptionsGroupBox->setVisible( checked );
 }

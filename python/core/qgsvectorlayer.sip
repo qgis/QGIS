@@ -38,6 +38,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent );
+
     ~QgsAttributeEditorContainer();
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
@@ -52,13 +53,35 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
 %End
-
   public:
     QgsAttributeEditorField( QString name , int idx, QObject *parent );
+
     ~QgsAttributeEditorField();
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
     int idx() const;
+};
+
+/** @note Added in 2.1 */
+class QgsAttributeEditorRelation : QgsAttributeEditorElement
+{
+  public:
+    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent );
+
+    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent );
+
+    ~QgsAttributeEditorRelation();
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    const QgsRelation& relation() const;
+
+    /**
+     * Initializes the relation from the id
+     *
+     * @param relManager The relation manager to use for the initialization
+     * @return true if the relation was found in the relationmanager
+     */
+    bool init( QgsRelationManager *relManager );
 };
 
 /** @note added in 1.7 */
@@ -216,7 +239,7 @@ class QgsVectorLayer : QgsMapLayer
      *                           for this layer
      *  @note added in 2.0
      */
-    void setDisplayExpression( const QString displayExpression );
+    void setDisplayExpression( const QString &displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -234,7 +257,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the data provider in a const-correct manner
         @note not available in python bindings
       */
-    //const QgsVectorDataProvider* dataProvider() const;
+    // const QgsVectorDataProvider* dataProvider() const;
 
     /** Sets the textencoding of the data provider */
     void setProviderEncoding( const QString& encoding );
@@ -352,16 +375,6 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 1.4
      */
     void setRendererV2( QgsFeatureRendererV2* r /Transfer/ );
-
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
@@ -589,8 +602,10 @@ class QgsVectorLayer : QgsMapLayer
      *  @param geom geometry to modify
      *  @param ignoreFeatures list of feature ids where intersections should be ignored
      *  @return 0 in case of success
+     *
+     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
      */
-    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
+    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() ) /Deprecated/;
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
@@ -656,6 +671,11 @@ class QgsVectorLayer : QgsMapLayer
       @note added in version 1.6*/
     virtual void reload();
 
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.4
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
+
     /** Draws the layer
      *  @return false if an error occurred during drawing
      */
@@ -707,11 +727,12 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @param fid   The feature id of the feature to be changed
      * @param field The index of the field to be updated
-     * @param value The value which will be assigned to the field
+     * @param newValue The value which will be assigned to the field
+     * @param oldValue The previous value to restore on undo (will otherwise be retrieved)
      *
      * @return true in case of success
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
@@ -999,21 +1020,20 @@ class QgsVectorLayer : QgsMapLayer
     /** @note not available in python bindings */
     // inline QgsGeometryCache* cache();
 
-    /** Simplification flags for fast rendering of features */
-    enum SimplifyHint
-    {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
-    };
-    /** Set the simplification settings for fast rendering of features  */
+    /** Set the simplification settings for fast rendering of features
+     *  @note added in 2.2
+     */
     void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod );
-    /** Returns the simplification settings for fast rendering of features  */
+    /** Returns the simplification settings for fast rendering of features
+     *  @note added in 2.2
+     */
     const QgsVectorSimplifyMethod& simplifyMethod() const;
 
-    /** Returns whether the VectorLayer can apply the specified simplification hint */
-    bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
+    /** Returns whether the VectorLayer can apply the specified simplification hint
+     *  @note Do not use in 3rd party code - may be removed in future version!
+     *  @note added in 2.2
+     */
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
   public slots:
     /**
@@ -1075,6 +1095,9 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 2.0
      */
     virtual void onCacheImageDelete();
+
+  protected slots:
+    void invalidateSymbolCountedFlag();
 
   signals:
 
@@ -1170,7 +1193,6 @@ class QgsVectorLayer : QgsMapLayer
 
     /** vector layers are not copyable */
     QgsVectorLayer( const QgsVectorLayer & rhs );
-
 
 
 };

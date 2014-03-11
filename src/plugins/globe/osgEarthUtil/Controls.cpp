@@ -431,7 +431,7 @@ Control::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, 
     Q_UNUSED( aa );
     bool handled = false;    
 
-    if ( _eventHandlers.size() > 0 )
+    if ( !_eventHandlers.empty() )
     {    
         handled = true;
 
@@ -1808,10 +1808,10 @@ ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
               _controlNodes.erase( i );
             }
             else
-            {
-                ControlNode::PerViewData& nodeData = node->getData( context._view );
-                byDepth.insert( ControlNodePair(nodeData._screenPos.z(), node) );
-            }
+	    {
+	      ControlNode::PerViewData& nodeData = node->getData( context._view );
+	      byDepth.insert( ControlNodePair(nodeData._screenPos.z(), node) );
+	    }
         }
 
         drawList = &byDepth;
@@ -2154,7 +2154,7 @@ ControlCanvas::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter
         _context._active.pop();
     }
 
-    if ( _context._active.size() > 0 )
+    if ( !_context._active.empty() )
     {
         bool hit = _context._active.front()->intersects( ea.getX(), invY );
         _context._active.front()->setActive( hit );

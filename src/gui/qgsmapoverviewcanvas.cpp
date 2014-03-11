@@ -17,8 +17,8 @@
  ***************************************************************************/
 
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmapoverviewcanvas.h"
+#include "qgsmaprendererjob.h"
 #include "qgsmaptopixel.h"
 
 #include <QPainter>
@@ -68,65 +68,67 @@ class QgsPanningWidget : public QWidget
 
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapCanvas )
-    : QWidget( parent ), mMapCanvas( mapCanvas )
+    : QWidget( parent )
+    , mMapCanvas( mapCanvas )
+    , mJob( 0 )
 {
   setObjectName( "theOverviewCanvas" );
   mPanningWidget = new QgsPanningWidget( this );
 
-  mMapRenderer = new QgsMapRenderer;
-  mMapRenderer->enableOverviewMode();
-
   setBackgroundColor( palette().window().color() );
+
+  mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+
+  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( drawExtentRect() ) );
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
 {
-  delete mMapRenderer;
 }
 
 void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
 {
-  mNewSize = e->size();
+  mPixmap = QPixmap();
+
+  mSettings.setOutputSize( e->size() );
+
+  updateFullExtent();
+
+  refresh();
+
+  QWidget::resizeEvent( e );
 }
 
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
 {
-  if ( mNewSize.isValid() )
+  if ( !mPixmap.isNull() )
   {
-    mPixmap = QPixmap( mNewSize );
-    mMapRenderer->setOutputSize( mNewSize, mPixmap.logicalDpiX() );
-    updateFullExtent();
-    mNewSize = QSize();
-    refresh();
+    QPainter paint( this );
+    paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
   }
-
-  QPainter paint( this );
-  paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
 }
 
 
 void QgsMapOverviewCanvas::drawExtentRect()
 {
-  if ( !mMapCanvas || !mMapRenderer ) return;
+  if ( !mMapCanvas ) return;
 
   const QgsRectangle& extent = mMapCanvas->extent();
 
   // show only when valid extent is set
-  if ( extent.isEmpty() || mMapRenderer->extent().isEmpty() )
+  if ( extent.isEmpty() || mSettings.visibleExtent().isEmpty() )
   {
     mPanningWidget->hide();
     return;
   }
 
-  const QgsMapToPixel* cXf = mMapRenderer->coordinateTransform();
+  const QgsMapToPixel& cXf = mSettings.mapToPixel();
   QgsPoint ll( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ur( extent.xMaximum(), extent.yMaximum() );
-  if ( cXf )
-  {
-    // transform the points before drawing
-    cXf->transform( &ll );
-    cXf->transform( &ur );
-  }
+
+  // transform the points before drawing
+  cXf.transform( &ll );
+  cXf.transform( &ur );
 
 #if 0
   // test whether panning widget should be drawn
@@ -217,10 +219,10 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent * e )
   if ( e->button() == Qt::LeftButton )
   {
     // set new extent
-    const QgsMapToPixel* cXf = mMapRenderer->coordinateTransform();
+    const QgsMapToPixel& cXf = mSettings.mapToPixel();
     QRect rect = mPanningWidget->geometry();
 
-    QgsPoint center = cXf->toMapCoordinates( rect.center() );
+    QgsPoint center = cXf.toMapCoordinates( rect.center() );
     QgsRectangle oldExtent = mMapCanvas->extent();
     QgsRectangle ext;
     ext.setXMinimum( center.x() - oldExtent.width() / 2 );
@@ -253,25 +255,31 @@ void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
   mPanningWidget->move( pos.x() - mPanningCursorOffset.x(), pos.y() - mPanningCursorOffset.y() );
 }
 
-
 void QgsMapOverviewCanvas::refresh()
 {
-  if ( mPixmap.isNull() || mPixmap.paintingActive() )
-    return;
+  updateFullExtent();
 
-  mPixmap.fill( mBgColor ); //palette().color(backgroundRole());
+  if ( !mSettings.hasValidSettings() )
+  {
+    mPixmap = QPixmap();
+    update();
+    return; // makes no sense to render anything
+  }
 
-  QPainter painter;
-  painter.begin( &mPixmap );
+  if ( mJob )
+  {
+    QgsDebugMsg( "oveview - cancelling old" );
+    mJob->cancel();
+    QgsDebugMsg( "oveview - deleting old" );
+    delete mJob; // get rid of previous job (if any)
+  }
 
-  // antialiasing
-  if ( mAntiAliasing )
-    painter.setRenderHint( QPainter::Antialiasing );
+  QgsDebugMsg( "oveview - starting new" );
 
-  // render image
-  mMapRenderer->render( &painter );
-
-  painter.end();
+  // TODO: setup overview mode
+  mJob = new QgsMapRendererSequentialJob( mSettings );
+  connect( mJob, SIGNAL( finished() ), this, SLOT( mapRenderingFinished() ) );
+  mJob->start();
 
   // schedule repaint
   update();
@@ -280,10 +288,22 @@ void QgsMapOverviewCanvas::refresh()
   drawExtentRect();
 }
 
+void QgsMapOverviewCanvas::mapRenderingFinished()
+{
+  QgsDebugMsg( "overview - finished" );
+  mPixmap = QPixmap::fromImage( mJob->renderedImage() );
+
+  delete mJob;
+  mJob = 0;
+
+  // schedule repaint
+  update();
+}
+
 
 void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
 {
-  mBgColor = color;
+  mSettings.setBackgroundColor( color );
 
   // set erase color
   QPalette palette;
@@ -294,38 +314,36 @@ void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
 void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 {
   QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
-  if ( !mMapRenderer ) return;
-  mMapRenderer->setLayerSet( layerSet );
-  mMapRenderer->updateFullExtent();
+  mSettings.setLayers( layerSet );
   updateFullExtent();
 }
 
 void QgsMapOverviewCanvas::updateFullExtent()
 {
-  if ( !mMapRenderer ) return;
   QgsRectangle rect;
-  if ( !mMapRenderer->layerSet().isEmpty() )
-  {
-    rect = mMapRenderer->fullExtent();
-    // expand a bit to keep features on margin
-    rect.scale( 1.1 );
-  }
-  mMapRenderer->setExtent( rect );
+  if ( mSettings.hasValidSettings() )
+    rect = mSettings.fullExtent();
+  else
+    rect = mMapCanvas->fullExtent();
+
+  // expand a bit to keep features on margin
+  rect.scale( 1.1 );
+
+  mSettings.setExtent( rect );
   drawExtentRect();
 }
 
 void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
 {
-  mMapRenderer->setProjectionsEnabled( flag );
+  mSettings.setCrsTransformEnabled( flag );
 }
 
 void QgsMapOverviewCanvas::destinationSrsChanged()
 {
-  const QgsCoordinateReferenceSystem& srs = mMapCanvas->mapRenderer()->destinationCrs();
-  mMapRenderer->setDestinationCrs( srs );
+  mSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
 }
 
-QStringList& QgsMapOverviewCanvas::layerSet()
+QStringList QgsMapOverviewCanvas::layerSet() const
 {
-  return mMapRenderer->layerSet();
+  return mSettings.layers();
 }

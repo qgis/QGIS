@@ -44,6 +44,8 @@ class QgsContrastEnhancement
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
 
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
 
     /*

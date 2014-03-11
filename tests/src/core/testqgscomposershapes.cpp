@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgscomposershape.h"
+#include "qgsmapsettings.h"
 #include "qgssymbolv2.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfillsymbollayerv2.h"
@@ -44,6 +45,7 @@ class TestQgsComposerShapes: public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
+    QgsMapSettings mMapSettings;
     QgsSimpleFillSymbolLayerV2* mSimpleFill;
     QgsFillSymbolV2* mFillSymbol;
     QString mReport;
@@ -55,7 +57,7 @@ void TestQgsComposerShapes::initTestCase()
   QgsApplication::initQgis();
 
   //create composition with two rectangles
-  mComposition = new QgsComposition( 0 );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );

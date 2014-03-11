@@ -33,6 +33,15 @@ class QgsFeature;
 class QgsField;
 class QgsGeometry;
 class QgsOracleFeatureIterator;
+class QgsOracleSharedData;
+
+enum QgsOraclePrimaryKeyType
+{
+  pktUnknown,
+  pktInt,
+  pktRowId,
+  pktFidMap
+};
 
 /**
   \class QgsOracleProvider
@@ -70,6 +79,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     //! Destructor
     virtual ~QgsOracleProvider();
+
+    virtual QgsAbstractFeatureSource* featureSource() const;
 
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
@@ -262,7 +273,6 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
   private:
     QString whereClause( QgsFeatureId featureId ) const;
-    QString whereClause( QgsFeatureIds featureIds ) const;
     QString pkParamWhereClause() const;
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
     void appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry ) const;
@@ -316,7 +326,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**
      * Data type for the primary key
      */
-    enum { pktUnknown, pktInt, pktRowId, pktFidMap } mPrimaryKeyType;
+    QgsOraclePrimaryKeyType mPrimaryKeyType;
 
     /**
      * List of primary key attributes for fetching features.
@@ -380,9 +390,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     void disconnectDb();
 
     static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
-    static QString quotedValue( QVariant value ) { return QgsOracleConn::quotedValue( value ); }
-
-    QgsFeatureId lookupFid( const QVariant &v ); //! lookup existing mapping or add a new one
+    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
@@ -392,8 +400,52 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString mSpatialIndex;                   //! name of spatial index of geometry column
     bool mHasSpatial;                        //! Oracle Spatial is installed
 
+    QSharedPointer<QgsOracleSharedData> mShared;
+
     friend class QgsOracleFeatureIterator;
-    QSet< QgsOracleFeatureIterator * > mActiveIterators;
+    friend class QgsOracleFeatureSource;
 };
+
+
+/** Assorted Oracle utility functions */
+class QgsOracleUtils
+{
+  public:
+    static QString whereClause( QgsFeatureId featureId,
+                                const QgsFields& fields,
+                                QgsOraclePrimaryKeyType primaryKeyType,
+                                const QList<int>& primaryKeyAttrs,
+                                QSharedPointer<QgsOracleSharedData> sharedData );
+
+    static QString whereClause( QgsFeatureIds featureIds,
+                                const QgsFields& fields,
+                                QgsOraclePrimaryKeyType primaryKeyType,
+                                const QList<int>& primaryKeyAttrs,
+                                QSharedPointer<QgsOracleSharedData> sharedData );
+};
+
+
+/** Data shared between provider class and its feature sources. Ideally there should
+ *  be as few members as possible because there could be simultaneous reads/writes
+ *  from different threads and therefore locking has to be involved. */
+class QgsOracleSharedData
+{
+  public:
+    QgsOracleSharedData();
+
+    // FID lookups
+    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QVariant removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariant& k );
+    QVariant lookupKey( QgsFeatureId featureId );
+
+  protected:
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+
+    QgsFeatureId mFidCounter;                    // next feature id if map is used
+    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+};
+
 
 #endif

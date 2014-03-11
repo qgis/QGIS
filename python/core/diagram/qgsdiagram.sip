@@ -5,19 +5,28 @@ class QgsDiagram
 %End
   public:
     virtual ~QgsDiagram();
-    /**Draws the diagram at the given position (in pixel coordinates)*/
+    /** Returns an instance that is equivalent to this one
+     * @note added in 2.4 */
+    virtual QgsDiagram* clone() const = 0;
+    
+    void clearCache();
+    QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
+    /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */
     virtual void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) /Deprecated/;
     /**Draws the diagram at the given position (in pixel coordinates)*/
     virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
     virtual QString diagramName() const = 0;
     /**Returns the size in map units the diagram will use to render.*/
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
-    /**Returns the size in map units the diagram will use to render. Interpolate size*/
+    /** @deprecated `QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )` should be used instead */
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) /Deprecated/;
     /**Returns the size in map units the diagram will use to render. Interpolate size*/
     virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
 
   protected:
+    QgsDiagram();
+    QgsDiagram( const QgsDiagram& other );
+
     /** Changes the pen width to match the current settings and rendering context
      *  @param pen The pen to modify
      *  @param s   The settings that specify the pen width

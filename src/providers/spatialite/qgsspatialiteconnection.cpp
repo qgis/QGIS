@@ -18,6 +18,8 @@
 #include <QSettings>
 #include <stdlib.h> // atoi
 
+#include "qgslogger.h"
+
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
@@ -691,3 +693,119 @@ error:
   }
   return false;
 }
+
+
+
+
+
+
+
+
+QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::handles;
+
+
+bool QgsSqliteHandle::checkMetadata( sqlite3 *handle )
+{
+  int ret;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+  int spatial_type = 0;
+  ret = sqlite3_get_table( handle, "SELECT CheckSpatialMetadata()", &results, &rows, &columns, NULL );
+  if ( ret != SQLITE_OK )
+    goto skip;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    for ( i = 1; i <= rows; i++ )
+      spatial_type = atoi( results[( i * columns ) + 0] );
+  }
+  sqlite3_free_table( results );
+skip:
+  if ( spatial_type == 1 || spatial_type == 3 )
+    return true;
+  return false;
+}
+
+QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
+{
+  sqlite3 *sqlite_handle;
+
+  //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
+
+  if ( shared && handles.contains( dbPath ) )
+  {
+    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
+    handles[dbPath]->ref++;
+    return handles[dbPath];
+  }
+
+  QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
+  if ( sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL ) )
+  {
+    // failure
+    QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
+                 .arg( dbPath )
+                 .arg( QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
+    return NULL;
+  }
+
+  // checking the DB for sanity
+  if ( !checkMetadata( sqlite_handle ) )
+  {
+    // failure
+    QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
+    sqlite3_close( sqlite_handle );
+    return NULL;
+  }
+  // activating Foreign Key constraints
+  sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
+
+  QgsDebugMsg( "Connection to the database was successful" );
+
+  QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, dbPath, shared );
+  if ( shared )
+    handles.insert( dbPath, handle );
+
+  return handle;
+}
+
+void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
+{
+  if ( handle->ref == -1 )
+  {
+    // not shared
+    handle->sqliteClose();
+    delete handle;
+  }
+  else
+  {
+    QMap < QString, QgsSqliteHandle * >::iterator i;
+    for ( i = handles.begin(); i != handles.end() && i.value() != handle; ++i )
+      ;
+
+    Q_ASSERT( i.value() == handle );
+    Q_ASSERT( i.value()->ref > 0 );
+
+    if ( --i.value()->ref == 0 )
+    {
+      i.value()->sqliteClose();
+      delete i.value();
+      handles.remove( i.key() );
+    }
+  }
+
+  handle = NULL;
+}
+
+void QgsSqliteHandle::sqliteClose()
+{
+  if ( sqlite_handle )
+  {
+    sqlite3_close( sqlite_handle );
+    sqlite_handle = NULL;
+  }
+}
+

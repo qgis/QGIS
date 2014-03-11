@@ -5,6 +5,7 @@ class QgsDualView : QStackedWidget
 %End
 
   public:
+
     /**
      * The view modes, in which this widget can present information.
      * Relates to the QStackedWidget stacks.
@@ -30,6 +31,17 @@ class QgsDualView : QStackedWidget
      */
     explicit QgsDualView( QWidget* parent = 0 );
     virtual ~QgsDualView();
+
+    /**
+     * Has to be called to initialize the dual view.
+     *
+     * @param layer      The layer which should be used to fetch features
+     * @param mapCanvas  The mapCanvas (used for the FilterMode
+     *                   {@link QgsAttributeTableFilterModel::ShowVisible}
+     * @param request    Use a modified request to limit the shown features
+     * @param context    The context in which this view is shown
+     */
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), QgsAttributeEditorContext context = QgsAttributeEditorContext() );
 
     /**
      * Change the current view mode.
@@ -83,6 +95,10 @@ class QgsDualView : QStackedWidget
      */
     QgsAttributeTableModel* masterModel() const;
 
+    void setRequest( const QgsFeatureRequest& request );
+
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
   protected:
     /**
      * Initializes widgets which depend on the attributes of this layer
@@ -102,9 +118,17 @@ class QgsDualView : QStackedWidget
 
     /**
      * @brief saveEditChanges
+     *
+     * @return true if the saving was ok. false is possible due to connected
+     *         validation logic.
      */
+    bool saveEditChanges();
 
-    void saveEditChanges();
+    /**
+     * Update the shown feature if an attribute changed
+     */
+    void reloadAttribute( const int& attribute );
+
 
   signals:
     /**
@@ -131,4 +155,18 @@ class QgsAttributeTableAction : QAction
   public slots:
     void execute();
     void featureForm();
+};
+
+class QgsAttributeTableMapLayerAction : QAction
+{
+%TypeHeaderCode
+#include <qgsdualview.h>
+%End
+
+  public:
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx );
+
+  public slots:
+    void execute();
+
 };

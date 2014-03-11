@@ -35,6 +35,7 @@
 #include <QMessageBox>
 
 #include "qgscustomization.h"
+#include "qgsfontutils.h"
 #include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
@@ -736,14 +737,9 @@ int main( int argc, char *argv[] )
     }
   }
 
-  // load standard test font from testdata.qrc (for unit tests)
-  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
-  if ( testFont.open( QIODevice::ReadOnly ) )
-  {
-    int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
-    Q_UNUSED( fontID );
-    QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( fontID != -1 ? "" : "NOT " ) );
-  } // else app wasn't built with ENABLE_TESTS
+#ifdef QGISDEBUG
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
+#endif
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
@@ -790,29 +786,62 @@ int main( int argc, char *argv[] )
   }
 
   QTranslator qgistor( 0 );
-  if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
+  QTranslator qttor( 0 );
+  if ( myTranslationCode != "C" )
   {
-    myApp.installTranslator( &qgistor );
-  }
-  else
-  {
-    qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
+    {
+      myApp.installTranslator( &qgistor );
+    }
+    else
+    {
+      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    }
+
+    /* Translation file for Qt.
+     * The strings from the QMenuBar context section are used by Qt/Mac to shift
+     * the About, Preferences and Quit items to the Mac Application menu.
+     * These items must be translated identically in both qt_ and qgis_ files.
+     */
+    if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    {
+      myApp.installTranslator( &qttor );
+    }
+    else
+    {
+      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    }
   }
 
-  /* Translation file for Qt.
-   * The strings from the QMenuBar context section are used by Qt/Mac to shift
-   * the About, Preferences and Quit items to the Mac Application menu.
-   * These items must be translated identically in both qt_ and qgis_ files.
-   */
-  QTranslator qttor( 0 );
-  if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+  // For non static builds on mac and win (static builds are not supported)
+  // we need to be sure we can find the qt image
+  // plugins. In mac be sure to look in the
+  // application bundle...
+#ifdef Q_WS_WIN
+  QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
+                                    + QDir::separator() + "qtplugins" );
+#endif
+#ifdef Q_OS_MACX
+  // IMPORTANT: do before Qt uses any plugins, e.g. before loading splash screen
+  QString  myPath( QCoreApplication::applicationDirPath().append( "/../PlugIns" ) );
+  // Check if it contains a standard Qt-specific plugin subdirectory
+  if ( !QFile::exists( myPath + "/imageformats" ) )
   {
-    myApp.installTranslator( &qttor );
+    // We are either running from build dir bundle, or launching binary directly.
+    // Use system Qt plugins, since they are not bundled.
+    // An app bundled with QGIS_MACAPP_BUNDLE=0 will still have Plugins/qgis in it
+    myPath = QT_PLUGINS_DIR;
   }
-  else
-  {
-    qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
-  }
+
+  // First clear the plugin search paths so we can be sure only plugins we define
+  // are being used. Note: this strips QgsApplication::pluginPath()
+  QStringList myPathList;
+  QCoreApplication::setLibraryPaths( myPathList );
+
+  QgsDebugMsg( QString( "Adding Mac QGIS and Qt plugins dirs to search path: %1" ).arg( myPath ) );
+  QCoreApplication::addLibraryPath( QgsApplication::pluginPath() );
+  QCoreApplication::addLibraryPath( myPath );
+#endif
 
   //set up splash screen
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
@@ -828,58 +857,6 @@ int main( int argc, char *argv[] )
     mypSplash->setMask( myPixmap.mask() );
     mypSplash->show();
   }
-
-  // For non static builds on mac and win (static builds are not supported)
-  // we need to be sure we can find the qt image
-  // plugins. In mac be sure to look in the
-  // application bundle...
-#ifdef Q_WS_WIN
-  QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
-                                    + QDir::separator() + "qtplugins" );
-#endif
-#ifdef Q_OS_MACX
-  //qDebug("Adding qt image plugins to plugin search path...");
-  CFURLRef myBundleRef = CFBundleCopyBundleURL( CFBundleGetMainBundle() );
-  CFStringRef myMacPath = CFURLCopyFileSystemPath( myBundleRef, kCFURLPOSIXPathStyle );
-  const char *mypPathPtr = CFStringGetCStringPtr( myMacPath, CFStringGetSystemEncoding() );
-  CFRelease( myBundleRef );
-  CFRelease( myMacPath );
-  QString myPath( mypPathPtr );
-  // if we are not in a bundle assume that the app is built
-  // as a non bundle app and that image plugins will be
-  // in system Qt frameworks. If the app is a bundle
-  // lets try to set the qt plugin search path...
-  QFileInfo myInfo( myPath );
-  if ( myInfo.isBundle() )
-  {
-    // First clear the plugin search paths so we can be sure
-    // only plugins from the bundle are being used
-    QStringList myPathList;
-    QCoreApplication::setLibraryPaths( myPathList );
-    // Now set the paths inside the bundle
-    myPath += "/Contents/Plugins";
-    QCoreApplication::addLibraryPath( myPath );
-    if ( QgsApplication::isRunningFromBuildDir() )
-    {
-      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
-    }
-    //next two lines should not be needed, testing only
-#if 0
-    QCoreApplication::addLibraryPath( myPath + "/imageformats" );
-    QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
-    foreach ( myPath, myApp.libraryPaths() )
-    {
-      qDebug( "Path:" + myPath.toLocal8Bit() );
-    }
-    qDebug( "Added %s to plugin search path", qPrintable( myPath ) );
-    QList<QByteArray> myFormats = QImageReader::supportedImageFormats();
-    for ( int x = 0; x < myFormats.count(); ++x )
-    {
-      qDebug( "Format: " + myFormats[x] );
-    }
-#endif
-  }
-#endif
 
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );

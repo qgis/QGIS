@@ -16,8 +16,8 @@
 #include "qgsexpressionbuilderdialog.h"
 #include <QSettings>
 
-QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText, QWidget* parent )
-    : QDialog( parent )
+QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText, QWidget* parent, QString key )
+    : QDialog( parent ), mRecentKey( key )
 {
   setupUi( this );
 
@@ -27,6 +27,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, Q
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->loadFieldNames();
+  builder->loadRecent( mRecentKey );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ExpressionBuilderDialog/geometry" ).toByteArray() );
@@ -53,6 +54,12 @@ void QgsExpressionBuilderDialog::done( int r )
 
   QSettings settings;
   settings.setValue( "/Windows/ExpressionBuilderDialog/geometry", saveGeometry() );
+}
+
+void QgsExpressionBuilderDialog::accept()
+{
+  builder->saveToRecent( mRecentKey );
+  QDialog::accept();
 }
 
 void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea & da )

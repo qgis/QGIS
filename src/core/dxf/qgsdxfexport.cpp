@@ -466,6 +466,11 @@ void QgsDxfExport::writeTables()
   QList< QgsMapLayer* >::const_iterator layerIt = mLayers.constBegin();
   for ( ; layerIt != mLayers.constEnd(); ++layerIt )
   {
+    if ( !layerIsScaleBasedVisible(( *layerIt ) ) )
+    {
+      continue;
+    }
+
     writeGroup( 0, "LAYER" );
     QString layerName = *layerIt ? ( *layerIt )->name() : "";
     writeGroup( 2, dxfLayerName( layerName ) );
@@ -559,7 +564,7 @@ void QgsDxfExport::writeEntities()
   writeGroup( 2, "ENTITIES" );
 
   //label engine
-  QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator );
+  QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator, mMapUnits );
   QgsRenderContext& ctx = labelEngine.renderContext();
 
   //iterate through the maplayers
@@ -567,33 +572,24 @@ void QgsDxfExport::writeEntities()
   for ( ; layerIt != mLayers.end(); ++layerIt )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( *layerIt );
-    if ( !vl )
+    if ( !vl || !layerIsScaleBasedVisible( vl ) )
     {
       continue;
     }
 
     QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
-    renderer->startRender( ctx, vl );
+    renderer->startRender( ctx, vl->pendingFields() );
 
-    //todo: call mLabeling.prepareLayer(...)
-    QSet<int> attrIndex;
-    bool labelLayer = ( labelEngine.prepareLayer( vl, attrIndex, ctx ) != 0 );
+    QStringList attributes = renderer->usedAttributes();
+
+    bool labelLayer = ( labelEngine.prepareLayer( vl, attributes, ctx ) != 0 );
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology && renderer->usingSymbolLevels() )
     {
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
       continue;
-    }
-
-    //combine renderer and label attributes
-    const QgsFields& fields = vl->pendingFields();
-    QList<QString> attributes = renderer->usedAttributes();
-    QSet<int>::const_iterator attrIndexIt = attrIndex.constBegin();
-    for ( ; attrIndexIt != attrIndex.constEnd(); ++attrIndexIt )
-    {
-      attributes.append( fields.at( *attrIndexIt ).name() );
     }
 
     QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes(
@@ -648,7 +644,7 @@ void QgsDxfExport::writeEntities()
 
         if ( labelLayer )
         {
-          labelEngine.registerFeature( vl, fet, ctx );
+          labelEngine.registerFeature( vl->id(), fet, ctx );
         }
       }
     }
@@ -676,7 +672,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
 
   QgsRenderContext ctx = renderContext();
   QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
-  renderer->startRender( ctx, layer );
+  renderer->startRender( ctx, layer->pendingFields() );
 
   //get iterator
   QgsFeatureRequest req;
@@ -830,8 +826,11 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 66, 1 );
   int type = polygon ? 1 : 0;
   writeGroup( 70, type );
-  writeGroup( 40, width );
-  writeGroup( 41, width );
+  if ( width > 0 ) //width -1: use default width
+  {
+    writeGroup( 40, width );
+    writeGroup( 41, width );
+  }
 
   QgsPolyline::const_iterator lineIt = line.constBegin();
   for ( ; lineIt != line.constEnd(); ++lineIt )
@@ -951,7 +950,11 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
     {
       c = colorFromSymbolLayer( symbolLayer, ctx );
     }
-    double width = symbolLayer->dxfWidth( *this, ctx );
+    double width = -1;
+    if ( mSymbologyExport != NoSymbology && symbolLayer )
+    {
+      width = symbolLayer->dxfWidth( *this, ctx );
+    }
     QString lineStyleName = "CONTINUOUS";
     if ( mSymbologyExport != NoSymbology )
     {
@@ -1338,6 +1341,22 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
     }
   }
   return layerName;
+}
+
+bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
+{
+  if ( !layer )
+  {
+    return false;
+  }
+
+  if ( mSymbologyExport == QgsDxfExport::NoSymbology || !layer->hasScaleBasedVisibility() )
+  {
+    return true;
+  }
+
+  return ( layer->minimumScale() < mSymbologyScaleDenominator &&
+           layer->maximumScale() > mSymbologyScaleDenominator );
 }
 
 /******************************************************Test with AC_1018 methods***************************************************************/

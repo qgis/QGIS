@@ -122,6 +122,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     virtual ~QgsGrassProvider();
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
       */
@@ -491,7 +493,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
 
 
-  private:
     // Layer type (layerType)
     enum    TYPE     // layer name:
     {
@@ -508,6 +509,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
       TOPO_NODE    // topology nodes
     };
 
+  private:
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
@@ -629,26 +631,13 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static char *attribute( int layerId, int cat, int column );
 
-    /*! Set feature attributes.
-     *  @param layerId
-     *  @param feature
-     *  @param cat category number
-     */
-    void setFeatureAttributes( int layerId, int cat, QgsFeature *feature );
-
-    /*! Set feature attributes.
-     *  @param layerId
-     *  @param feature
-     *  @param cat category number
-     *  @param attlist a list containing the index number of the fields to set
-     */
-    void setFeatureAttributes( int layerId, int cat, QgsFeature *feature, const QgsAttributeList & attlist );
-
     /** check if provider is outdated and update if necessary */
     void ensureUpdated();
 
     /** check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
     bool isTopoType() const;
+
+    static bool isTopoType( int layerType );
 
     void setTopoFields();
 
@@ -662,8 +651,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Fields used for topo layers */
     QgsFields mTopoFields;
 
+    friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;
-    QSet< QgsGrassFeatureIterator *> mActiveIterators;
+
+    static int cmpAtt( const void *a, const void *b );
 };
 
 #endif // QGSGRASSPROVIDER_H

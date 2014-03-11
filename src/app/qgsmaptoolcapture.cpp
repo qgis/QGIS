@@ -38,6 +38,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
     , mRubberBand( 0 )
     , mTempRubberBand( 0 )
     , mValidator( 0 )
+    , mSnappingMarker( 0 )
 {
   mCaptureModeFromLayer = tool == CaptureNone;
   mCapturing = false;
@@ -51,8 +52,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
 
 QgsMapToolCapture::~QgsMapToolCapture()
 {
-  while ( !mSnappingMarkers.isEmpty() )
-    delete mSnappingMarkers.takeFirst();
+  delete mSnappingMarker;
 
   stopCapturing();
 
@@ -65,8 +65,8 @@ QgsMapToolCapture::~QgsMapToolCapture()
 
 void QgsMapToolCapture::deactivate()
 {
-  while ( !mSnappingMarkers.isEmpty() )
-    delete mSnappingMarkers.takeFirst();
+  delete mSnappingMarker;
+  mSnappingMarker = 0;
 
   QgsMapToolEdit::deactivate();
 }
@@ -107,18 +107,14 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
   QList<QgsSnappingResult> snapResults;
   if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
   {
-    while ( !mSnappingMarkers.isEmpty() )
-      delete mSnappingMarkers.takeFirst();
+    delete mSnappingMarker;
 
-    foreach ( const QgsSnappingResult &r, snapResults )
-    {
-      QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
-      m->setIconType( QgsVertexMarker::ICON_CROSS );
-      m->setColor( Qt::magenta );
-      m->setPenWidth( 3 );
-      m->setCenter( r.snappedVertex );
-      mSnappingMarkers << m;
-    }
+    mSnappingMarker = new QgsVertexMarker( mCanvas );
+    mSnappingMarker->setIconType( QgsVertexMarker::ICON_CROSS );
+    mSnappingMarker->setColor( Qt::magenta );
+    mSnappingMarker->setPenWidth( 3 );
+    mSnappingMarker->setCenter( snapPointFromResults(snapResults,e->pos()) );
+
 
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
@@ -135,10 +131,6 @@ void QgsMapToolCapture::canvasPressEvent( QMouseEvent *e )
   // nothing to be done
 }
 
-
-void QgsMapToolCapture::renderComplete()
-{
-}
 
 int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint )
 {
@@ -390,7 +382,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
   if ( e.hasWhere() )
   {
     QgsVertexMarker *vm =  new QgsVertexMarker( mCanvas );
-    vm->setCenter( mCanvas->mapRenderer()->layerToMapCoordinates( vlayer, e.where() ) );
+    vm->setCenter( mCanvas->mapSettings().layerToMapCoordinates( vlayer, e.where() ) );
     vm->setIconType( QgsVertexMarker::ICON_X );
     vm->setPenWidth( 2 );
     vm->setToolTip( e.what() );

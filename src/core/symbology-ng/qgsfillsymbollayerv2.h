@@ -416,9 +416,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double lineAngle() const { return mLineAngle; }
     void setDistance( double d ) { mDistance = d; }
     double distance() const { return mDistance; }
-    void setLineWidth( double w ) { mLineWidth = w; }
+    void setLineWidth( double w );
     double lineWidth() const { return mLineWidth; }
-    void setColor( const QColor& c ) { mColor = c; }
+    void setColor( const QColor& c );
     QColor color() const { return mColor; }
     void setOffset( double offset ) { mOffset = offset; }
     double offset() const { return mOffset; }
@@ -515,6 +515,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    virtual QSet<QString> usedAttributes() const;
 
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;

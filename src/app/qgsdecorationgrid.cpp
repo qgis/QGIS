@@ -63,7 +63,7 @@ QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
   mMarkerSymbol = 0;
   projectRead();
 
-  connect( QgisApp::instance()->mapCanvas()->mapRenderer(), SIGNAL( mapUnitsChanged() ),
+  connect( QgisApp::instance()->mapCanvas(), SIGNAL( mapUnitsChanged() ),
            this, SLOT( checkMapUnitsChanged() ) );
 }
 
@@ -751,7 +751,7 @@ void QgsDecorationGrid::checkMapUnitsChanged()
   // this is to avoid problems when CRS changes to/from geographic and projected
   // a better solution would be to change the grid interval, but this is a little tricky
   // note: we could be less picky (e.g. from degrees to DMS)
-  QGis::UnitType mapUnits = QgisApp::instance()->mapCanvas()->mapRenderer()->mapUnits();
+  QGis::UnitType mapUnits = QgisApp::instance()->mapCanvas()->mapSettings().mapUnits();
   if ( mEnabled && ( mMapUnits != mapUnits ) )
   {
     mEnabled = false;
@@ -768,7 +768,7 @@ bool QgsDecorationGrid::isDirty()
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
   if ( mMapUnits == QGis::UnknownUnit ||
-       mMapUnits != QgisApp::instance()->mapCanvas()->mapRenderer()->mapUnits() ||
+       mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
        mGridIntervalX == 0 || mGridIntervalY == 0 )
     return true;
   return false;
@@ -782,7 +782,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
   }
   else
   {
-    mMapUnits = QgisApp::instance()->mapCanvas()->mapRenderer()->mapUnits();
+    mMapUnits = QgisApp::instance()->mapCanvas()->mapSettings().mapUnits();
   }
 }
 
@@ -837,7 +837,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
   }
   const QgsCoordinateReferenceSystem& layerCRS = layer->crs();
   const QgsCoordinateReferenceSystem& mapCRS =
-    QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs();
+    QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
   // is this the best way to compare CRS? should we also make sure map has OTF enabled?
   // TODO calculate transformed values if necessary
   if ( layerCRS != mapCRS )

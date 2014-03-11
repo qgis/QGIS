@@ -81,6 +81,7 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
     void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
+    //! @note not available in python bindungs
     void setFeatureCounts( QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> theCountMap );
     void clearFeatureCounts();
 

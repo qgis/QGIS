@@ -131,12 +131,11 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   QgsRectangle selectionRect;
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
-    selectionRect = mComposerMap->extent();
-    if ( mVectorLayer && mComposerMap->mapRenderer()
-         && mComposerMap->mapRenderer()->hasCrsTransformEnabled() )
+    selectionRect = *mComposerMap->currentMapExtent();
+    if ( mVectorLayer && mComposition->mapSettings().hasCrsTransformEnabled() )
     {
       //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( mVectorLayer->crs(), mComposerMap->mapRenderer()->destinationCrs() );
+      QgsCoordinateTransform coordTransform( mVectorLayer->crs(), mComposition->mapSettings().destinationCrs() );
       try
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );

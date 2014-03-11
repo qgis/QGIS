@@ -134,9 +134,6 @@ SET(QGIS_APP_SRCS
   legend/qgsapplegendinterface.cpp
   legend/qgslegenditem.cpp
   legend/qgslegendlayer.cpp
-  legend/qgslegendpropertygroup.cpp
-  legend/qgslegendpropertyitem.cpp
-  legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
   legend/qgslayerorder.cpp
 
@@ -376,12 +373,9 @@ SET(IMAGE_RCCS ../../images/images.qrc)
 
 QT4_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
-SET(TEST_RCC_SRCS)
-IF (ENABLE_TESTS)
-  # add test resources, e.g. standard test font
-  SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
-  QT4_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
-ENDIF (ENABLE_TESTS)
+# add test resources, e.g. standard test font
+SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
+QT4_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
 QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 
@@ -466,6 +460,11 @@ ELSE (ANDROID)
   ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
+
+QT4_WRAP_CPP(tst_moc_srcs maprenderertest.h)
+ADD_EXECUTABLE(maprenderertest maprenderertest.cpp ${tst_moc_srcs})
+TARGET_LINK_LIBRARIES(maprenderertest   qgis_core qgis_gui)
+
 IF (WIN32)
   IF (MSVC)
     ADD_DEFINITIONS("-DAPP_EXPORT=${DLLEXPORT}")
@@ -498,6 +497,18 @@ ENDIF(APPLE)
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+# disable deprecation warnings for classes re-exporting deprecated methods
+IF(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
+    PROPERTIES COMPILE_FLAGS "-wd4996")
+ELSE(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
+    PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
+ENDIF(MSVC)
+
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QWT_LIBRARY}

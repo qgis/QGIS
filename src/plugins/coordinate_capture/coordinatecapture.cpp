@@ -85,7 +85,7 @@ void CoordinateCapture::initGui()
 {
   mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
 
-  connect( mQGisIface->mapCanvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setSourceCrs() ) );
+  connect( mQGisIface->mapCanvas(), SIGNAL( destinationCrsChanged() ), this, SLOT( setSourceCrs() ) );
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   setSourceCrs(); //set up the source CRS
@@ -100,6 +100,7 @@ void CoordinateCapture::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mQActionPointer->setCheckable( true );
   mQActionPointer->setChecked( mpDockWidget->isVisible() );
   // Set the what's this text
@@ -188,8 +189,8 @@ void CoordinateCapture::setCRS()
 
 void CoordinateCapture::setSourceCrs()
 {
-  mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs() );
-  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
+  mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapSettings().destinationCrs() );
+  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
 void CoordinateCapture::mouseClicked( QgsPoint thePoint )

@@ -380,7 +380,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     // some feature already selected
     QgsPoint layerCoordPoint = toLayerCoordinates( vlayer, e->pos() );
 
-    double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapRenderer() );
+    double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
 
     // get geometry and find if snapping is near it
     int atVertex, beforeVertex, afterVertex;
@@ -673,7 +673,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 
   QList<QgsSnappingResult> snapResults;
   mMoving = false;
-  double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapRenderer() );
+  double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment, tol );
   if ( snapResults.size() < 1 ||
        snapResults.first().snappedAtGeometry != mSelectedFeature->featureId() ||
@@ -741,7 +741,6 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
 
     mSelectedFeature->deselectAllVertexes();
     safeSelectVertex( firstSelectedIndex - 1 );
-    mCanvas->refresh();
   }
   else if ( mSelectedFeature && ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period ) )
   {
@@ -751,7 +750,6 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
 
     mSelectedFeature->deselectAllVertexes();
     safeSelectVertex( firstSelectedIndex + 1 );
-    mCanvas->refresh();
   }
 }
 

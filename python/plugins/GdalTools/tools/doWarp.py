@@ -186,6 +186,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def getArguments(self):
       arguments = []
+      if not self.isBatchEnabled():
+        arguments.append("-overwrite")
       if self.sourceSRSCheck.isChecked() and self.sourceSRSEdit.text():
         arguments.append("-s_srs")
         arguments.append(self.sourceSRSEdit.text())

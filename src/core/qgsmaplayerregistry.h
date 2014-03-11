@@ -73,6 +73,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      * @note Added in QGIS 1.8
+     * @note takeOwner not available in python binding - always takes ownership
      */
     QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
                                        bool addToLegend = true,
@@ -101,6 +102,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      * @note Use addMapLayers if adding more than one layer at a time
+     * @note takeOwner not available in python binding - always takes ownership
      */
     QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer, bool addToLegend = true, bool takeOwnership = true );
 
@@ -150,7 +152,8 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note Added in QGIS 1.4
      */
-    void clearAllLayerCaches();
+    //! @deprecated since 2.4 - does nothing
+    Q_DECL_DEPRECATED void clearAllLayerCaches();
 
     /**
      * Reload all provider data caches (currently used for WFS and WMS providers)

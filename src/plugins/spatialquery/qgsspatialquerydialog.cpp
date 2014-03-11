@@ -683,13 +683,13 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   }
   // Set system reference
   QgsCoordinateReferenceSystem srsSource = lyr->dataProvider()->crs();
-  QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapRenderer()->destinationCrs();
+  QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapSettings().destinationCrs();
   if ( ! srsSource.isValid() )
   {
     if ( hasMsg )
     {
       QString crsMapcanvas = srcMapcanvas.authid();
-      bool isFly = mIface->mapCanvas()->mapRenderer()->hasCrsTransformEnabled();
+      bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();
       QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
       QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
       msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas ).arg( msgFly ) );

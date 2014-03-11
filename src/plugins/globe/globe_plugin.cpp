@@ -86,16 +86,17 @@ static const QString sExperimental = QString( "true" );
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( NULL )
-    , mQActionSettingsPointer( NULL )
+    , mQActionPointer( 0 )
+    , mQActionSettingsPointer( 0 )
+    , mQActionUnload( 0 )
     , mOsgViewer( 0 )
     , mViewerWidget( 0 )
     , mMapNode( 0 )
     , mBaseLayer( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
-    , mElevationManager( NULL )
-    , mObjectPlacer( NULL )
+    , mElevationManager( 0 )
+    , mObjectPlacer( 0 )
 {
   mIsGlobeRunning = false;
   //needed to be "seen" by other plugins by doing
@@ -110,13 +111,12 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   {
     // OSG_PLUGINS_PATH value set by CMake option
     QString ogsPlugins( OSG_PLUGINS_PATH );
-#ifdef HAVE_MACAPP_BUNDLED_OSG
-    if ( !QgsApplication::isRunningFromBuildDir() )
+    QString bundlePlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+    if ( QFile::exists( bundlePlugins ) )
     {
       // add internal osg plugin path if bundled osg
-      ogsPlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+      ogsPlugins = bundlePlugins;
     }
-#endif
     if ( QFile::exists( ogsPlugins ) )
     {
       osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( ogsPlugins ).toStdString() );
@@ -213,10 +213,17 @@ private:
 
 void GlobePlugin::initGui()
 {
+  delete mQActionPointer;
+  delete mQActionSettingsPointer;
+  delete mQActionUnload;
+
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
+  mQActionSettingsPointer->setObjectName( "mQActionSettingsPointer" );
   mQActionUnload = new QAction( tr( "Unload Globe" ), this );
+  mQActionUnload->setObjectName( "mQActionUnload" );
 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );
@@ -520,7 +527,7 @@ double GlobePlugin::getSelectedElevation()
 void GlobePlugin::syncExtent()
 {
   QgsMapCanvas* mapCanvas = mQGisIface->mapCanvas();
-  QgsMapRenderer* mapRenderer = mapCanvas->mapRenderer();
+  const QgsMapSettings &mapSettings = mapCanvas->mapSettings();
   QgsRectangle extent = mapCanvas->extent();
 
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
@@ -529,8 +536,8 @@ void GlobePlugin::syncExtent()
 
   QgsDistanceArea dist;
 
-  dist.setSourceCrs( mapRenderer->destinationCrs().srsid() );
-  dist.setEllipsoidalMode( mapRenderer->hasCrsTransformEnabled() );
+  dist.setSourceCrs( mapSettings.destinationCrs().srsid() );
+  dist.setEllipsoidalMode( mapSettings.hasCrsTransformEnabled() );
   dist.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );

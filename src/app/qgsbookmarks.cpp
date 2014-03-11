@@ -168,7 +168,7 @@ void QgsBookmarks::addClicked()
   query.bindValue( ":ymin", canvas->extent().yMinimum() );
   query.bindValue( ":xmax", canvas->extent().xMaximum() );
   query.bindValue( ":ymax", canvas->extent().yMaximum() );
-  query.bindValue( ":projection_srid", QVariant::fromValue( canvas->mapRenderer()->destinationCrs().srsid() ) );
+  query.bindValue( ":projection_srid", QVariant::fromValue( canvas->mapSettings().destinationCrs().srsid() ) );
   if ( query.exec() )
   {
     model->setSort( 0, Qt::AscendingOrder );
@@ -235,10 +235,10 @@ void QgsBookmarks::zoomToBookmark()
 
   // backwards compatibility, older version had -1 in the srid column
   if ( srid > 0 &&
-       srid != QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().srsid() )
+       srid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() )
   {
     QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( srid, QgsCoordinateReferenceSystem::InternalCrsId ),
-                               QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs() );
+                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
     {

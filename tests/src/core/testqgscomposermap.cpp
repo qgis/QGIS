@@ -47,7 +47,7 @@ class TestQgsComposerMap: public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
-    QgsMapRenderer* mMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
@@ -67,10 +67,9 @@ void TestQgsComposerMap::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapRenderer = new QgsMapRenderer();
-  mMapRenderer->setLayerSet( QStringList() << mRasterLayer->id() );
-  mMapRenderer->setProjectionsEnabled( false );
-  mComposition = new QgsComposition( mMapRenderer );
+  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings.setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -82,7 +81,6 @@ void TestQgsComposerMap::initTestCase()
 void TestQgsComposerMap::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapRenderer;
   delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
@@ -118,9 +116,12 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridEnabled( true );
   mComposerMap->setGridIntervalX( 2000 );
   mComposerMap->setGridIntervalY( 2000 );
-  mComposerMap->setShowGridAnnotation( true );
+  // Anotation is disabled because fonts are different on each platform
+  // TODO: ship a test font with QGIS and use it here
+  //mComposerMap->setShowGridAnnotation( true );
   mComposerMap->setGridPenWidth( 0.5 );
   mComposerMap->setGridPenColor( QColor( 0, 255, 0 ) );
+  /*
   mComposerMap->setGridAnnotationPrecision( 0 );
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::Disabled, QgsComposerMap::Left );
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, QgsComposerMap::Right );
@@ -129,6 +130,7 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Right );
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
   mComposerMap->setAnnotationFontColor( QColor( 255, 0, 0, 150 ) );
+  */
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_Overlay );
   qWarning() << "grid annotation font: " << mComposerMap->gridAnnotationFont().toString() << " exactMatch:" << mComposerMap->gridAnnotationFont().exactMatch();
   QgsCompositionChecker checker( "composermap_grid", mComposition );

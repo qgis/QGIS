@@ -48,39 +48,60 @@
 #include <QSettings>
 #include <QDir>
 
+#include <limits>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     : QGraphicsScene( 0 )
     , mMapRenderer( mapRenderer )
-    , mPlotStyle( QgsComposition::Preview )
-    , mPageWidth( 297 )
-    , mPageHeight( 210 )
-    , mSpaceBetweenPages( 10 )
-    , mPageStyleSymbol( 0 )
-    , mPrintAsRaster( false )
-    , mGenerateWorldFile( false )
-    , mWorldFileMap( 0 )
-    , mUseAdvancedEffects( true )
-    , mSnapToGrid( false )
-    , mGridVisible( false )
-    , mSnapGridResolution( 0 )
-    , mSnapGridTolerance( 0 )
-    , mSnapGridOffsetX( 0 )
-    , mSnapGridOffsetY( 0 )
-    , mAlignmentSnap( true )
-    , mGuidesVisible( true )
-    , mSmartGuides( true )
-    , mAlignmentSnapTolerance( 0 )
-    , mSelectionHandles( 0 )
-    , mActiveItemCommand( 0 )
-    , mActiveMultiFrameCommand( 0 )
+    , mMapSettings( mapRenderer->mapSettings() )
     , mAtlasComposition( this )
-    , mAtlasMode( QgsComposition::AtlasOff )
-    , mPreventCursorChange( false )
 {
+  init();
+}
+
+QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
+    : QGraphicsScene( 0 )
+    , mMapRenderer( 0 )
+    , mMapSettings( mapSettings )
+    , mAtlasComposition( this )
+{
+  init();
+}
+
+void QgsComposition::init()
+{
+  // these members should be ideally in constructor's initialization list, but now we have two constructors...
+  mPlotStyle = QgsComposition::Preview;
+  mPageWidth = 297;
+  mPageHeight = 210;
+  mSpaceBetweenPages = 10;
+  mPageStyleSymbol = 0;
+  mPrintAsRaster = false;
+  mGenerateWorldFile = false;
+  mWorldFileMap = 0;
+  mUseAdvancedEffects = true;
+  mSnapToGrid = false;
+  mGridVisible = false;
+  mSnapGridResolution = 0;
+  mSnapGridTolerance = 0;
+  mSnapGridOffsetX = 0;
+  mSnapGridOffsetY = 0;
+  mAlignmentSnap = true;
+  mGuidesVisible = true;
+  mSmartGuides = true;
+  mAlignmentSnapTolerance = 0;
+  mSelectionHandles = 0;
+  mActiveItemCommand = 0;
+  mActiveMultiFrameCommand = 0;
+  mAtlasMode = QgsComposition::AtlasOff;
+  mPreventCursorChange = false;
+
   setBackgroundBrush( QColor( 215, 215, 215 ) );
   createDefaultPageStyleSymbol();
+
   addPaperItem();
+
+  updateBounds();
 
   //add mouse selection handles to composition, and initially hide
   mSelectionHandles = new QgsComposerMouseHandles( this );
@@ -95,6 +116,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
   loadSettings();
 }
 
+
+/*
 QgsComposition::QgsComposition()
     : QGraphicsScene( 0 ),
     mMapRenderer( 0 ),
@@ -127,7 +150,7 @@ QgsComposition::QgsComposition()
   //load default composition settings
   loadDefaults();
   loadSettings();
-}
+}*/
 
 QgsComposition::~QgsComposition()
 {
@@ -153,6 +176,36 @@ void QgsComposition::loadDefaults()
   mAlignmentSnapTolerance = settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble();
 }
 
+void QgsComposition::updateBounds()
+{
+  setSceneRect( compositionBounds() );
+}
+
+QRectF QgsComposition::compositionBounds() const
+{
+  //start with an empty rectangle
+  QRectF bounds = QRectF( 0, 0, 0, 0 );
+
+  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* composerItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    const QgsPaperItem* paperItem = dynamic_cast<const QgsPaperItem*>( *itemIt );
+    if (( composerItem || paperItem ) )
+    {
+      //expand bounds with current item's bounds
+      bounds = bounds.united(( *itemIt )->sceneBoundingRect() );
+    }
+  }
+
+  //finally, expand bounds out by 5% page size to give a bit of a margin
+  bounds.adjust( -mPageWidth * 0.05, -mPageWidth * 0.05, mPageWidth * 0.05, mPageWidth * 0.05 );
+
+  return bounds;
+}
+
 void QgsComposition::setPaperSize( double width, double height )
 {
   mPageWidth = width;
@@ -163,6 +216,7 @@ void QgsComposition::setPaperSize( double width, double height )
     mPages.at( i )->setSceneRect( QRectF( 0, currentY, width, height ) );
     currentY += ( height + mSpaceBetweenPages );
   }
+  updateBounds();
   emit paperSizeChanged();
 }
 
@@ -197,8 +251,10 @@ void QgsComposition::setNumPages( int pages )
     }
   }
 
-  // update the corresponding variable
+  //update the corresponding variable
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
+
+  updateBounds();
 
   emit nPagesChanged();
 }
@@ -603,22 +659,9 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   }
 
   //snapping
-  if ( compositionElem.attribute( "snapping" ) == "0" )
-  {
-    mSnapToGrid = false;
-  }
-  else
-  {
-    mSnapToGrid = true;
-  }
-  if ( compositionElem.attribute( "gridVisible" ) == "0" )
-  {
-    mGridVisible = false;
-  }
-  else
-  {
-    mGridVisible = true;
-  }
+  mSnapToGrid = compositionElem.attribute( "snapping", "0" ).toInt() == 0 ? false : true;
+  mGridVisible = compositionElem.attribute( "gridVisible", "0" ).toInt() == 0 ? false : true;
+
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
@@ -648,6 +691,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mGenerateWorldFile = compositionElem.attribute( "generateWorldFile", "0" ).toInt() == 1 ? true : false;
 
   updatePaperItems();
+
+  updateBounds();
 
   return true;
 }
@@ -730,10 +775,61 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   return true;
 }
 
+QPointF QgsComposition::minPointFromXml( const QDomElement& elem ) const
+{
+  double minX = std::numeric_limits<double>::max();
+  double minY = std::numeric_limits<double>::max();
+  QDomNodeList composerItemList = elem.elementsByTagName( "ComposerItem" );
+  for ( int i = 0; i < composerItemList.size(); ++i )
+  {
+    QDomElement currentComposerItemElem = composerItemList.at( i ).toElement();
+    double x, y;
+    bool xOk, yOk;
+    x = currentComposerItemElem.attribute( "x" ).toDouble( &xOk );
+    y = currentComposerItemElem.attribute( "y" ).toDouble( &yOk );
+    if ( !xOk || !yOk )
+    {
+      continue;
+    }
+    minX = qMin( minX, x );
+    minY = qMin( minY, y );
+  }
+  if ( minX < std::numeric_limits<double>::max() )
+  {
+    return QPointF( minX, minY );
+  }
+  else
+  {
+    return QPointF( 0, 0 );
+  }
+}
+
 void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
   QPointF* pasteInPlacePt = 0;
+
+  //if we are adding items to a composition which already contains items, we need to make sure
+  //these items are placed at the top of the composition and that zValues are not duplicated
+  //so, calculate an offset which needs to be added to the zValue of created items
+  int zOrderOffset = mItemZList.size();
+
+  QPointF pasteShiftPos;
+  QgsComposerItem* lastPastedItem = 0;
+  if ( pos )
+  {
+    //If we are placing items relative to a certain point, then calculate how much we need
+    //to shift the items by so that they are placed at this point
+    //First, calculate the minimum position from the xml
+    QPointF minItemPos = minPointFromXml( elem );
+    //next, calculate how much each item needs to be shifted from its original position
+    //so that it's placed at the correct relative position
+    pasteShiftPos = *pos - minItemPos;
+
+    //since we are pasting items, clear the existing selection
+    clearSelection();
+  }
+
   if ( pasteInPlace )
   {
     pasteInPlacePt = new QPointF( 0, pageNumberAt( *pos ) * ( mPageHeight + mSpaceBetweenPages ) );
@@ -753,10 +849,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newLabel->setItemPosition( pos->x(), pos->y() );
+        newLabel->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newLabel->setSelected( true );
+      lastPastedItem = newLabel;
     }
     addComposerLabel( newLabel );
+    newLabel->setZValue( newLabel->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newLabel, tr( "Label added" ) );
@@ -777,7 +876,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newMap->setPreviewMode( QgsComposerMap::Rectangle );
     }
     addComposerMap( newMap, false );
-
+    newMap->setZValue( newMap->zValue() + zOrderOffset );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -787,8 +886,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newMap->setItemPosition( pos->x(), pos->y() );
+        newMap->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newMap->setSelected( true );
+      lastPastedItem = newMap;
     }
 
     if ( addUndoCommands )
@@ -827,10 +928,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newArrow->setItemPosition( pos->x(), pos->y() );
+        newArrow->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newArrow->setSelected( true );
+      lastPastedItem = newArrow;
     }
     addComposerArrow( newArrow );
+    newArrow->setZValue( newArrow->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newArrow, tr( "Arrow added" ) );
@@ -852,10 +956,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newScaleBar->setItemPosition( pos->x(), pos->y() );
+        newScaleBar->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newScaleBar->setSelected( true );
+      lastPastedItem = newScaleBar;
     }
     addComposerScaleBar( newScaleBar );
+    newScaleBar->setZValue( newScaleBar->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
@@ -879,10 +986,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newShape->setItemPosition( pos->x(), pos->y() );
+        newShape->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newShape->setSelected( true );
+      lastPastedItem = newShape;
     }
     addComposerShape( newShape );
+    newShape->setZValue( newShape->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newShape, tr( "Shape added" ) );
@@ -904,10 +1014,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newPicture->setItemPosition( pos->x(), pos->y() );
+        newPicture->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newPicture->setSelected( true );
+      lastPastedItem = newPicture;
     }
     addComposerPicture( newPicture );
+    newPicture->setZValue( newPicture->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
@@ -929,10 +1042,13 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newLegend->setItemPosition( pos->x(), pos->y() );
+        newLegend->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newLegend->setSelected( true );
+      lastPastedItem = newLegend;
     }
     addComposerLegend( newLegend );
+    newLegend->setZValue( newLegend->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
@@ -954,16 +1070,20 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newTable->setItemPosition( pos->x(), pos->y() );
+        newTable->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newTable->setSelected( true );
+      lastPastedItem = newTable;
     }
     addComposerTable( newTable );
+    newTable->setZValue( newTable->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newTable, tr( "Table added" ) );
     }
   }
   // html
+  //TODO - fix this. pasting html items has no effect
   QDomNodeList composerHtmlList = elem.elementsByTagName( "ComposerHtml" );
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
@@ -972,10 +1092,19 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newHtml->readXML( currentHtmlElem, doc );
     newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
+
+    //offset z values for frames
+    //TODO - fix this after fixing html item paste
+    /*for ( int frameIdx = 0; frameIdx < newHtml->frameCount(); ++frameIdx )
+    {
+      QgsComposerFrame * frame = newHtml->frame( frameIdx );
+      frame->setZValue( frame->zValue() + zOrderOffset );
+    }*/
   }
 
-
   // groups (must be last as it references uuids of above items)
+  //TODO - pasted groups lose group properties, since the uuids of group items
+  //changes
   QDomNodeList groupList = elem.elementsByTagName( "ComposerItemGroup" );
   for ( int i = 0; i < groupList.size(); ++i )
   {
@@ -984,6 +1113,20 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newGroup->readXML( groupElem, doc );
     addItem( newGroup );
   }
+
+  //Since this function adds items grouped by type, and each item is added to end of
+  //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
+  //Make sure z order list matches the actual order of items in the scene.
+  refreshZList();
+
+  if ( lastPastedItem )
+  {
+    emit selectedItemChanged( lastPastedItem );
+  }
+
+  delete pasteInPlacePt;
+  pasteInPlacePt = 0;
+
 }
 
 void QgsComposition::addItemToZList( QgsComposerItem* item )
@@ -1398,26 +1541,40 @@ void QgsComposition::unlockAllItems()
   mUndoStack.push( parentCommand );
 }
 
-void QgsComposition::updateZValues()
+void QgsComposition::updateZValues( bool addUndoCommands )
 {
   int counter = 1;
   QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
   QgsComposerItem* currentItem = 0;
 
-  QUndoCommand* parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
+  QUndoCommand* parentCommand = 0;
+  if ( addUndoCommands )
+  {
+    parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
+  }
   for ( ; it != mItemZList.end(); ++it )
   {
     currentItem = *it;
     if ( currentItem )
     {
-      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *it, "", parentCommand );
-      subcommand->savePreviousState();
+      QgsComposerItemCommand* subcommand = 0;
+      if ( addUndoCommands )
+      {
+        subcommand = new QgsComposerItemCommand( *it, "", parentCommand );
+        subcommand->savePreviousState();
+      }
       currentItem->setZValue( counter );
-      subcommand->saveAfterState();
+      if ( addUndoCommands )
+      {
+        subcommand->saveAfterState();
+      }
     }
     ++counter;
   }
-  mUndoStack.push( parentCommand );
+  if ( addUndoCommands )
+  {
+    mUndoStack.push( parentCommand );
+  }
 }
 
 void QgsComposition::sortZList()
@@ -1444,6 +1601,35 @@ void QgsComposition::sortZList()
   }
 
   mItemZList = sortedList;
+}
+
+void QgsComposition::refreshZList()
+{
+  QLinkedList<QgsComposerItem*> sortedList;
+
+  //rebuild the item z order list based on the current zValues of items in the scene
+
+  //get items in descending zValue order
+  QList<QGraphicsItem*> itemList = items();
+  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+    if ( composerItem )
+    {
+      if ( composerItem->type() != QgsComposerItem::ComposerPaper && composerItem->type() != QgsComposerItem::ComposerFrame )
+      {
+        //since the z order list is in ascending zValue order (opposite order to itemList), we prepend each item
+        sortedList.prepend( composerItem );
+      }
+    }
+  }
+
+  mItemZList = sortedList;
+
+  //Finally, rebuild the zValue of all items to remove any duplicate zValues and make sure there's
+  //no missing zValues.
+  updateZValues( false );
 }
 
 QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
@@ -1819,29 +2005,35 @@ void QgsComposition::endMultiFrameCommand()
 void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.insert( multiFrame );
+
+  updateBounds();
 }
 
 void QgsComposition::removeMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.remove( multiFrame );
+
+  updateBounds();
 }
 
 void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
 {
   addItem( arrow );
+
+  updateBounds();
+  connect( arrow, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerArrowAdded( arrow );
-  clearSelection();
-  arrow->setSelected( true );
-  emit selectedItemChanged( arrow );
 }
 
 void QgsComposition::addComposerLabel( QgsComposerLabel* label )
 {
   addItem( label );
+
+  updateBounds();
+  connect( label, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerLabelAdded( label );
-  clearSelection();
-  label->setSelected( true );
-  emit selectedItemChanged( label );
 }
 
 void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreviewStyle )
@@ -1858,70 +2050,70 @@ void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreview
     map->cache();
   }
 
+  updateBounds();
+  connect( map, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerMapAdded( map );
-  clearSelection();
-  map->setSelected( true );
-  emit selectedItemChanged( map );
 }
 
 void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 {
   addItem( scaleBar );
+
+  updateBounds();
+  connect( scaleBar, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerScaleBarAdded( scaleBar );
-  clearSelection();
-  scaleBar->setSelected( true );
-  emit selectedItemChanged( scaleBar );
 }
 
 void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
 {
-  //take first available map
-  QList<const QgsComposerMap*> mapItemList = composerMapItems();
-  if ( mapItemList.size() > 0 )
-  {
-    legend->setComposerMap( mapItemList.at( 0 ) );
-  }
   addItem( legend );
+
+  updateBounds();
+  connect( legend, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerLegendAdded( legend );
-  clearSelection();
-  legend->setSelected( true );
-  emit selectedItemChanged( legend );
 }
 
 void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
 {
   addItem( picture );
+
+  updateBounds();
+  connect( picture, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerPictureAdded( picture );
-  clearSelection();
-  picture->setSelected( true );
-  emit selectedItemChanged( picture );
 }
 
 void QgsComposition::addComposerShape( QgsComposerShape* shape )
 {
   addItem( shape );
+
+  updateBounds();
+  connect( shape, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerShapeAdded( shape );
-  clearSelection();
-  shape->setSelected( true );
-  emit selectedItemChanged( shape );
 }
 
 void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
 {
   addItem( table );
+
+  updateBounds();
+  connect( table, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerTableAdded( table );
-  clearSelection();
-  table->setSelected( true );
-  emit selectedItemChanged( table );
 }
 
 void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
 {
   addItem( frame );
+
+  updateBounds();
+  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
   emit composerHtmlFrameAdded( html, frame );
-  clearSelection();
-  frame->setSelected( true );
-  emit selectedItemChanged( frame );
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createCommand )
@@ -1994,6 +2186,8 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createComma
       }
     }
   }
+
+  updateBounds();
 }
 
 void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state )
@@ -2277,10 +2471,10 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
     return;
   }
 
-  QRectF brect = mWorldFileMap->boundingRect();
-  QgsRectangle extent = mWorldFileMap->extent();
+  QRectF brect = mWorldFileMap->mapRectToScene( mWorldFileMap->rect() );
+  QgsRectangle extent = *mWorldFileMap->currentMapExtent();
 
-  double alpha = mWorldFileMap->rotation() / 180 * M_PI;
+  double alpha = mWorldFileMap->mapRotation() / 180 * M_PI;
 
   double xr = extent.width() / brect.width();
   double yr = extent.height() / brect.height();

@@ -24,18 +24,15 @@
 
 using namespace pal;
 
-QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale ): QgsPalLabeling(), mDxfExport( dxf )
+QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits ): QgsPalLabeling(), mDxfExport( dxf )
 {
   mMapRenderer.setExtent( bbox );
 
-  //todo: adapt to other map units than meters
   int dpi = 96;
-  double factor = 1000 * dpi / scale / 25.4;
+  double factor = 1000 * dpi / scale / 25.4 * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters );
   mMapRenderer.setOutputSize( QSizeF( bbox.width() * factor, bbox.height() * factor ), dpi );
   mMapRenderer.setScale( scale );
   mMapRenderer.setOutputUnits( QgsMapRenderer::Pixels );
-
-  //mMapRenderer.setLayer necessary?
   init( &mMapRenderer );
 
   mImage = new QImage( 10, 10, QImage::Format_ARGB32_Premultiplied );
@@ -46,6 +43,7 @@ QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbo
   mRenderContext.setRendererScale( scale );
   mRenderContext.setExtent( bbox );
   mRenderContext.setScaleFactor( 96.0 / 25.4 );
+  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
 }
 
 QgsDxfPalLabeling::~QgsDxfPalLabeling()

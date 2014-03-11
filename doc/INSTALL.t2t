@@ -76,7 +76,7 @@ QGIS. The software and hardware descriptions named in this
 document are in most cases registered trademarks and are therefore subject 
 to the legal requirements. QGIS is subject to the GNU General Public 
 License. Find more information on the QGIS Homepage:
-http://www.qgis.org
+http://qgis.org
 
 The details, that are given in this document have been written and verified 
 to the best of knowledge and responsibility of the editors. Nevertheless, 
@@ -86,13 +86,13 @@ any responsibility or liability for failures and their consequences. You are
 always welcome for indicating possible mistakes.
 
 You can download this document as part of the QGIS 'User and 
-Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
+Installation Guide' in HTML and PDF format via http://qgis.org. A current 
 version is also available at:
 http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html
 
 Translations of this document can also be downloaded at the documentation area 
-of the QGIS project at http://www.qgis.org. More information is 
-available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
+of the QGIS project at http://qgis.org. More information is 
+available via http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources. 
 
 Please visit http://qgis.org for information on joining our mailing lists 
 and getting involved in the project further.

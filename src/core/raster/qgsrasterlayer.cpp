@@ -31,6 +31,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterlayerrenderer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterrendererregistry.h"
@@ -251,6 +252,11 @@ void QgsRasterLayer::reload()
   }
 }
 
+QgsMapLayerRenderer *QgsRasterLayer::createMapRenderer( QgsRenderContext& rendererContext )
+{
+  return new QgsRasterLayerRenderer( this, rendererContext );
+}
+
 bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "entered. (renderContext)" );
@@ -263,148 +269,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     return false;
   }
 
-  const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-
-  QgsRectangle myProjectedViewExtent;
-  QgsRectangle myProjectedLayerExtent;
-
-  if ( rendererContext.coordinateTransform() )
-  {
-    QgsDebugMsg( "coordinateTransform set -> project extents." );
-    try
-    {
-      myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
-    }
-    catch ( QgsCsException &cs )
-    {
-      QgsMessageLog::logMessage( tr( "Could not reproject view extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
-      myProjectedViewExtent.setMinimal();
-    }
-
-    try
-    {
-      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( extent() );
-    }
-    catch ( QgsCsException &cs )
-    {
-      QgsMessageLog::logMessage( tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
-      myProjectedViewExtent.setMinimal();
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "coordinateTransform not set" );
-    myProjectedViewExtent = rendererContext.extent();
-    myProjectedLayerExtent = extent();
-  }
-
-  QPainter* theQPainter = rendererContext.painter();
-
-  if ( !theQPainter )
-  {
-    return false;
-  }
-
-  // clip raster extent to view extent
-  QgsRectangle myRasterExtent = myProjectedViewExtent.intersect( &myProjectedLayerExtent );
-  if ( myRasterExtent.isEmpty() )
-  {
-    QgsDebugMsg( "draw request outside view extent." );
-    // nothing to do
-    return true;
-  }
-
-  QgsDebugMsg( "theViewExtent is " + rendererContext.extent().toString() );
-  QgsDebugMsg( "myProjectedViewExtent is " + myProjectedViewExtent.toString() );
-  QgsDebugMsg( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString() );
-  QgsDebugMsg( "myRasterExtent is " + myRasterExtent.toString() );
-
-  //
-  // The first thing we do is set up the QgsRasterViewPort. This struct stores all the settings
-  // relating to the size (in pixels and coordinate system units) of the raster part that is
-  // in view in the map window. It also stores the origin.
-  //
-  //this is not a class level member because every time the user pans or zooms
-  //the contents of the rasterViewPort will change
-  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
-
-  myRasterViewPort->mDrawnExtent = myRasterExtent;
-  if ( rendererContext.coordinateTransform() )
-  {
-    myRasterViewPort->mSrcCRS = crs();
-    myRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destCRS();
-    myRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform()->sourceDatumTransform();
-    myRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform()->destinationDatumTransform();
-  }
-  else
-  {
-    myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
-    myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
-    myRasterViewPort->mSrcDatumTransform = -1;
-    myRasterViewPort->mDestDatumTransform = -1;
-  }
-
-  // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-  myRasterViewPort->mTopLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
-  myRasterViewPort->mBottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
-
-  // align to output device grid, i.e. floor/ceil to integers
-  // TODO: this should only be done if paint device is raster - screen, image
-  // for other devices (pdf) it can have floating point origin
-  // we could use floating point for raster devices as well, but respecting the
-  // output device grid should make it more effective as the resampling is done in
-  // the provider anyway
-  myRasterViewPort->mTopLeftPoint.setX( floor( myRasterViewPort->mTopLeftPoint.x() ) );
-  myRasterViewPort->mTopLeftPoint.setY( floor( myRasterViewPort->mTopLeftPoint.y() ) );
-  myRasterViewPort->mBottomRightPoint.setX( ceil( myRasterViewPort->mBottomRightPoint.x() ) );
-  myRasterViewPort->mBottomRightPoint.setY( ceil( myRasterViewPort->mBottomRightPoint.y() ) );
-  // recalc myRasterExtent to aligned values
-  myRasterExtent.set(
-    theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mTopLeftPoint.x(),
-                                        myRasterViewPort->mBottomRightPoint.y() ),
-    theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mBottomRightPoint.x(),
-                                        myRasterViewPort->mTopLeftPoint.y() )
-  );
-
-  //raster viewport top left / bottom right are already rounded to int
-  myRasterViewPort->mWidth = static_cast<int>( myRasterViewPort->mBottomRightPoint.x() - myRasterViewPort->mTopLeftPoint.x() );
-  myRasterViewPort->mHeight = static_cast<int>( myRasterViewPort->mBottomRightPoint.y() - myRasterViewPort->mTopLeftPoint.y() );
-
-
-  //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
-  //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,
-  //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
-
-  QgsDebugMsgLevel( QString( "mapUnitsPerPixel = %1" ).arg( theQgsMapToPixel.mapUnitsPerPixel() ), 3 );
-  QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( width() ), 3 );
-  QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( height() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ), 3 );
-
-  QgsDebugMsgLevel( QString( "mTopLeftPoint.x() = %1" ).arg( myRasterViewPort->mTopLeftPoint.x() ), 3 );
-  QgsDebugMsgLevel( QString( "mBottomRightPoint.x() = %1" ).arg( myRasterViewPort->mBottomRightPoint.x() ), 3 );
-  QgsDebugMsgLevel( QString( "mTopLeftPoint.y() = %1" ).arg( myRasterViewPort->mTopLeftPoint.y() ), 3 );
-  QgsDebugMsgLevel( QString( "mBottomRightPoint.y() = %1" ).arg( myRasterViewPort->mBottomRightPoint.y() ), 3 );
-
-  QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( myRasterViewPort->mWidth ), 3 );
-  QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( myRasterViewPort->mHeight ), 3 );
-
-  // /\/\/\ - added to handle zoomed-in rasters
-
-  mLastViewPort = *myRasterViewPort;
-
-  // TODO: is it necessary? Probably WMS only?
-  mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
-
-  draw( theQPainter, myRasterViewPort, &theQgsMapToPixel );
-
-  delete myRasterViewPort;
-  QgsDebugMsg( "exiting." );
-
-  return true;
-
+  QgsRasterLayerRenderer renderer( this, rendererContext );
+  return renderer.render();
 }
 
 void QgsRasterLayer::draw( QPainter * theQPainter,
@@ -437,16 +303,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
   QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
 } //end of draw method
-
-QString QgsRasterLayer::lastError()
-{
-  return mError;
-}
-
-QString QgsRasterLayer::lastErrorTitle()
-{
-  return mErrorCaption;
-}
 
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 {
@@ -1065,6 +921,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     if ( myEnhancements.value( 1 ) ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.value( 1 ) );
     if ( myEnhancements.value( 2 ) ) myMultiBandRenderer->setBlueContrastEnhancement( myEnhancements.value( 2 ) );
   }
+
+  emit repaintRequested();
 }
 
 void QgsRasterLayer::setDefaultContrastEnhancement()
@@ -1276,6 +1134,58 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
   return myQPixmap;
 }
 
+// this function should be used when rendering with the MTR engine introduced in 2.3, as QPixmap is not thread safe (see bug #9626)
+// note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
+QImage QgsRasterLayer::previewAsImage( QSize size, QColor bgColor, QImage::Format format )
+{
+  QImage myQImage( size, format );
+
+  myQImage.setColor( 0, bgColor.rgba() );
+  myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
+
+  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
+
+  double myMapUnitsPerPixel;
+  double myX = 0.0;
+  double myY = 0.0;
+  QgsRectangle myExtent = mDataProvider->extent();
+  if ( myExtent.width() / myExtent.height() >=  myQImage.width() / myQImage.height() )
+  {
+    myMapUnitsPerPixel = myExtent.width() / myQImage.width();
+    myY = ( myQImage.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
+  }
+  else
+  {
+    myMapUnitsPerPixel = myExtent.height() / myQImage.height();
+    myX = ( myQImage.width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
+  }
+
+  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
+  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
+
+  myRasterViewPort->mTopLeftPoint = QgsPoint( myX, myY );
+  myRasterViewPort->mBottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
+  myRasterViewPort->mWidth = myQImage.width();
+  myRasterViewPort->mHeight = myQImage.height();
+
+  myRasterViewPort->mDrawnExtent = myExtent;
+  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mSrcDatumTransform = -1;
+  myRasterViewPort->mDestDatumTransform = -1;
+
+  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
+
+  QPainter * myQPainter = new QPainter( &myQImage );
+  draw( myQPainter, myRasterViewPort, myMapToPixel );
+  delete myRasterViewPort;
+  delete myMapToPixel;
+  myQPainter->end();
+  delete myQPainter;
+
+  return myQImage;
+}
+
 void QgsRasterLayer::triggerRepaint()
 {
   emit repaintRequested();
@@ -1283,8 +1193,8 @@ void QgsRasterLayer::triggerRepaint()
 
 void QgsRasterLayer::updateProgress( int theProgress, int theMax )
 {
-  //simply propogate it on!
-  emit drawingProgress( theProgress, theMax );
+  Q_UNUSED( theProgress );
+  Q_UNUSED( theMax );
 }
 
 void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMessage )

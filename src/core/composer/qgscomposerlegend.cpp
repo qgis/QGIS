@@ -526,11 +526,7 @@ QStringList QgsComposerLegend::layerIdList() const
   //take layer list from map renderer (to have legend order)
   if ( mComposition )
   {
-    QgsMapRenderer* r = mComposition->mapRenderer();
-    if ( r )
-    {
-      return r->layerSet();
-    }
+    return mComposition->mapSettings().layers();
   }
   return QStringList();
 }
@@ -829,13 +825,12 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
           // append to layer atom
           // the width is not correct at this moment, we must align all symbol labels
           atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
-          //if ( currentLegendItem->rowCount() > 1 )
-          //if ( currentLegendItem->style() != QgsComposerLegendStyle::Hidden )
-          //{
-          //atom.size.rheight() += mSymbolSpace;
-          // TODO: for now we keep Symbol and SymbolLabel Top margin in sync
-          atom.size.rheight() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
-          //}
+          // Add symbol space only if there is already title or another item above
+          if ( atom.nucleons.size() > 0 )
+          {
+            // TODO: for now we keep Symbol and SymbolLabel Top margin in sync
+            atom.size.rheight() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
+          }
           atom.size.rheight() += symbolNucleon.size.height();
           atom.nucleons.append( symbolNucleon );
         }

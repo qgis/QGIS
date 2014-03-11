@@ -33,7 +33,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsPalLabeling *lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
+    QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
@@ -96,7 +96,6 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updateFont( QFont font );
 
   private:
-    QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
     QFontDatabase mFontDB;

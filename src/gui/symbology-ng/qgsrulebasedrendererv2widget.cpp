@@ -501,7 +501,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
-  mRenderer->startRender( renderContext, mLayer );
+  mRenderer->startRender( renderContext, mLayer->pendingFields() );
 
   int nFeatures = mLayer->pendingFeatureCount();
   QProgressDialog p( tr( "Calculating feature count." ), tr( "Abort" ), 0, nFeatures );

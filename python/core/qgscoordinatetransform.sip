@@ -1,6 +1,6 @@
 
-/*! \class QgsCoordinateTransform
-* \brief Class for doing transforms between two map coordinate systems.
+/** \ingroup core
+* Class for doing transforms between two map coordinate systems.
 *
 * This class can convert map coordinates to a different coordinate reference system.
 * It is normally associated with a map layer and is used to transform between the
@@ -121,6 +121,12 @@ class QgsCoordinateTransform : QObject
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform) const throw (QgsCsException);
 
+    //! @note not available in python bindings
+    // void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
+    //                        TransformDirection direction = ForwardTransform ) const;
+
+    void transformPolygon( QPolygonF& poly, TransformDirection direction = ForwardTransform ) const;
+
     // TODO: argument not supported
     // void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
     //                        TransformDirection direction = ForwardTransform ) const;
@@ -167,6 +173,20 @@ class QgsCoordinateTransform : QObject
     * to check if short circuiting is needed or not etc.
     * @param theCRSID -  A long representing the srsid of the srs to be used */
     void setDestCRSID( long theCRSID );
+
+    /**Returns list of datum transformations for the given src and dest CRS
+     * @note not available in python bindings
+     */
+    // static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS );
+    static QString datumTransformString( int datumTransform );
+    /**Gets name of source and dest geographical CRS (to show in a tooltip)
+        @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
+    static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
+
+    int sourceDatumTransform() const;
+    void setSourceDatumTransform( int dt );
+    int destinationDatumTransform() const;
+    void setDestinationDatumTransform( int dt );
 
   public slots:
     //!initialise is used to actually create the Transformer instance

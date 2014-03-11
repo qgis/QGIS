@@ -62,9 +62,11 @@ static const QString icon_ = ":/gps_importer.png";
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace ):
-    QgisPlugin( name_, description_, category_, version_, type_ ),
-    mQGisInterface( theQgisInterFace )
+QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace )
+    : QgisPlugin( name_, description_, category_, version_, type_ )
+    , mQGisInterface( theQgisInterFace )
+    , mQActionPointer( 0 )
+    , mCreateGPXAction( 0 )
 {
   setupBabel();
 }
@@ -85,9 +87,14 @@ QgsGPSPlugin::~QgsGPSPlugin()
  */
 void QgsGPSPlugin::initGui()
 {
+  delete mQActionPointer;
+  delete mCreateGPXAction;
+
   // add an action to the toolbar
   mQActionPointer = new QAction( QIcon(), tr( "&GPS Tools" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
+  mCreateGPXAction->setObjectName( "mCreateGPXAction" );
   setCurrentTheme( "" );
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );

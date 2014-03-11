@@ -196,9 +196,7 @@ void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   }
 
   mItem->beginCommand( tr( "Item outline width" ), QgsComposerMergeCommand::ItemOutlineWidth );
-  QPen itemPen = mItem->pen();
-  itemPen.setWidthF( d );
-  mItem->setPen( itemPen );
+  mItem->setFrameOutlineWidth( d );
   mItem->endCommand();
 }
 
@@ -337,7 +335,6 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
-  mItemUuidLineEdit->blockSignals( true );
   mBlendModeCombo->blockSignals( true );
   mTransparencySlider->blockSignals( true );
   mTransparencySpnBx->blockSignals( true );
@@ -353,7 +350,6 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
-  mItemUuidLineEdit->setText( mItem->uuid() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
@@ -367,7 +363,6 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
-  mItemUuidLineEdit->blockSignals( false );
   mBlendModeCombo->blockSignals( false );
   mTransparencySlider->blockSignals( false );
   mTransparencySpnBx->blockSignals( false );

@@ -136,8 +136,11 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
 
 void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
 {
-  disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  }
   mComposerMap = map;
 
   if ( !map )
@@ -154,6 +157,11 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
 
 void QgsComposerScaleBar::invalidateCurrentMap()
 {
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
   disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
   mComposerMap = 0;
@@ -189,8 +197,8 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setEllipsoidalMode( mComposerMap->mapRenderer()->hasCrsTransformEnabled() );
-    da.setSourceCrs( mComposerMap->mapRenderer()->destinationCrs().srsid() );
+    da.setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+    da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
@@ -234,6 +242,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mHeight = 3;
 
   mPen = QPen( QColor( 0, 0, 0 ) );
+  mPen.setJoinStyle( Qt::MiterJoin );
   mPen.setWidthF( 1.0 );
 
   mBrush.setColor( QColor( 0, 0, 0 ) );

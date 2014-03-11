@@ -40,7 +40,7 @@ class TestQgsComposerEffects: public QObject
     QgsComposition* mComposition;
     QgsComposerShape* mComposerRect1;
     QgsComposerShape* mComposerRect2;
-    QgsMapRenderer* mMapRenderer;
+    QgsMapSettings mMapSettings;
     QString mReport;
 };
 
@@ -50,9 +50,8 @@ void TestQgsComposerEffects::initTestCase()
   QgsApplication::initQgis();
 
   //create composition with two rectangles
-  mMapRenderer = new QgsMapRenderer();
 
-  mComposition = new QgsComposition( mMapRenderer );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerRect1 = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerRect1->setShapeType( QgsComposerShape::Rectangle );

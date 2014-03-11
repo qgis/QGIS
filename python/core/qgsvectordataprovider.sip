@@ -13,21 +13,39 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     enum Capability
     {
-      NoCapabilities =               0,
-      AddFeatures =                  1,
+      /** provider has no capabilities */
+      NoCapabilities =                     0,
+      /** allows adding features */
+      AddFeatures =                        1,
+      /** allows deletion of features */
       DeleteFeatures =               2,
+      /** allows modification of attribute values */
       ChangeAttributeValues =        4,
+      /** allows addition of new attributes (fields) */
       AddAttributes =                8,
+      /** allows deletion of attributes (fields) */
       DeleteAttributes =             16,
+      /** DEPRECATED - do not use */
       SaveAsShapefile =              32,
+      /** allows creation of spatial index */
       CreateSpatialIndex =           64,
+      /** fast access to features using their ID */
       SelectAtId =                   128,
+      /** allows modifications of geometries */
       ChangeGeometries =             256,
+      /** DEPRECATED - do not use */
       SelectGeometryAtId =           512,
+      /** DEPRECATED - do not use */
       RandomSelectGeometryAtId =     1024,
+      /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId = 2048,
       CreateAttributeIndex =         4096,
+      /** allows user to select encoding */
       SelectEncoding =               8192,
+      /** supports simplification of geometries on provider side according to a distance tolerance */
+      SimplifyGeometries =           32768,
+      /** supports topological simplification of geometries on provider side according to a distance tolerance */
+      SimplifyGeometriesWithTopologicalValidation = 65536,
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -43,6 +61,24 @@ class QgsVectorDataProvider : QgsDataProvider
      * Destructor
      */
     virtual ~QgsVectorDataProvider();
+
+    /**
+     * Return feature source object that can be used for querying provider's data. The returned feature source
+     * is independent from provider - any changes to provider's state (e.g. change of subset string) will not be
+     * reflected in the feature source, therefore it can be safely used for processing in background without
+     * having to care about possible changes within provider that may happen concurrently. Also, even in the case
+     * of provider being deleted, any feature source obtained from the provider will be kept alive and working
+     * (they are independent and owned by the caller).
+     *
+     * Sometimes there are cases when some data needs to be shared between vector data provider and its feature source.
+     * In such cases, the implementation must ensure that the data is not susceptible to run condition. For example,
+     * if it is possible that both feature source and provider may need reading/writing to some shared data at the
+     * same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
+     *
+     * @note added in 2.4
+     * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
+     */
+    virtual QgsAbstractFeatureSource* featureSource() const /Factory/;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -109,11 +145,13 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 );
 
-    /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
-      or if the given attribute is not an enum type.
+    /**
+     * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
+     * or if the given attribute is not an enum type.
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
-      @note: added in version 1.2*/
+     * @note: added in version 1.2
+     */
     virtual void enumValues( int index, QStringList& enumList /Out/ );
 
     /**
@@ -201,7 +239,9 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
-    /**Return a map where the key is the name of the field and the value is its index*/
+    /**
+     * Return a map where the key is the name of the field and the value is its index
+     */
     QMap<QString, int> fieldNameMap() const;
 
     /**
@@ -253,17 +293,20 @@ class QgsVectorDataProvider : QgsDataProvider
     /** Returns a list of available encodings */
     static const QStringList &availableEncodings();
 
-    /* provider has errors to report
+    /**
+     * Provider has errors to report
      * @note added in 1.7
      */
     bool hasErrors();
 
-    /* clear recorded errors
+    /**
+     * Clear recorded errors
      * @note added in 1.7
      */
     void clearErrors();
 
-    /* get recorded errors
+    /**
+     * Get recorded errors
      * @note added in 1.7
      */
     QStringList errors();
@@ -275,9 +318,9 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported();
 
-  protected:
-    QVariant convertValue( QVariant::Type type, QString value );
+    static QVariant convertValue( QVariant::Type type, QString value );
 
+protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
 

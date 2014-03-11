@@ -25,7 +25,7 @@
 #include <QFont>
 #include <QSet>
 
-class QgsVectorLayer;
+class QgsSpatialIndex;
 
 /**A renderer that automatically displaces points with the same position*/
 class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
 
@@ -67,7 +67,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsFeatureRendererV2* embeddedRenderer() { return mRenderer;}
 
     //! not available in python bindings
-    void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
+    //! @deprecated since 2.4
+    Q_DECL_DEPRECATED void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list ) { Q_UNUSED( list ); }
 
     void setLabelFont( const QFont& f ) { mLabelFont = f; }
     QFont labelFont() const { return mLabelFont;}
@@ -125,13 +126,16 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /**Maximum scale denominator for label display. Negative number means no scale limitation*/
     double mMaxLabelScaleDenominator;
 
+    typedef QMap<QgsFeatureId, QgsFeature> DisplacementGroup;
     /**Groups of features that have the same position*/
-    QList<QMap<QgsFeatureId, QgsFeature> > mDisplacementGroups;
-    /**Set that contains all the ids the display groups (for quicker lookup)*/
-    QSet<QgsFeatureId> mDisplacementIds;
+    QList<DisplacementGroup> mDisplacementGroups;
+    /**Mapping from feature ID to its group index*/
+    QMap<QgsFeatureId, int> mGroupIndex;
+    /**Spatial index for fast lookup of close points*/
+    QgsSpatialIndex* mSpatialIndex;
+    /** keeps trask which features are selected */
+    QSet<QgsFeatureId> mSelectedFeatures;
 
-    /**Create the displacement groups efficiently using a spatial index*/
-    void createDisplacementGroups( QgsVectorLayer *vlayer, const QgsRectangle& viewExtent );
     /**Creates a search rectangle with mTolerance*/
     QgsRectangle searchRect( const QgsPoint& p ) const;
     /**This is a debugging function to check the entries in the displacement groups*/
@@ -146,8 +150,9 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     //helper functions
     void calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts ) const;
+    void drawGroup( const DisplacementGroup& group, QgsRenderContext& context );
     void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, const QPointF& centerPoint, int nSymbols );
-    void drawSymbols( QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
+    void drawSymbols( const QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
     void drawLabels( const QPointF& centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
     /**Returns first symbol for feature or 0 if none*/
     QgsSymbolV2* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f );

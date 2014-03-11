@@ -270,17 +270,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
     return;
   }
 
-  //get reference to current render context
-  QgsMapRenderer* mapRenderer = mCanvas->mapRenderer();
-  if ( !mapRenderer )
-  {
-    return;
-  }
-  QgsRenderContext* renderContext = mCanvas->mapRenderer()->rendererContext();
-  if ( !renderContext )
-  {
-    return;
-  }
+  QgsRenderContext renderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
 
   //get the image that is used for that symbol, but without point rotation
   QImage pointImage;
@@ -289,14 +279,14 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
   {
     QgsFeatureRendererV2* rv2 = mActiveLayer->rendererV2()->clone();
     rv2->setRotationField( "" );
-    rv2->startRender( *renderContext, mActiveLayer );
+    rv2->startRender( renderContext, mActiveLayer->pendingFields() );
 
     QgsSymbolV2* symbolV2 = rv2->symbolForFeature( f );
     if ( symbolV2 )
     {
       pointImage = symbolV2->bigSymbolPreviewImage();
     }
-    rv2->stopRender( *renderContext );
+    rv2->stopRender( renderContext );
     delete rv2;
   }
 

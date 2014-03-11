@@ -277,6 +277,7 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
     mIsValidFlag = srs.mIsValidFlag;
     mValidationHint = srs.mValidationHint;
     mWkt = srs.mWkt;
+    mProj4 = srs.mProj4;
     if ( mIsValidFlag )
     {
       OSRDestroySpatialReference( mCRS );
@@ -368,7 +369,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
                                        myPreparedStatement, 1 ) );
     mProjectionAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) );
     mEllipsoidAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 3 ) );
-    QString toProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
+    mProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
     mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
     mAuthId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) );
     mGeoFlag = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt() != 0;
@@ -388,7 +389,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
 
     if ( !mIsValidFlag )
     {
-      setProj4String( toProj4 );
+      setProj4String( mProj4 );
     }
   }
   else
@@ -430,6 +431,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
 {
   mIsValidFlag = false;
   mWkt.clear();
+  mProj4.clear();
 
   if ( theWkt.isEmpty() )
   {
@@ -874,14 +876,16 @@ QString QgsCoordinateReferenceSystem::toProj4() const
   if ( !mIsValidFlag )
     return "";
 
-  QString toProj4;
-  char *proj4src = NULL;
-  OSRExportToProj4( mCRS, &proj4src );
-  toProj4 = proj4src;
-  CPLFree( proj4src );
-
+  if ( mProj4.isEmpty() )
+  {
+    QString toProj4;
+    char *proj4src = NULL;
+    OSRExportToProj4( mCRS, &proj4src );
+    mProj4 = proj4src;
+    CPLFree( proj4src );
+  }
   // Stray spaces at the end?
-  return toProj4.trimmed();
+  return mProj4.trimmed();
 }
 
 bool QgsCoordinateReferenceSystem::geographicFlag() const
@@ -916,6 +920,7 @@ void QgsCoordinateReferenceSystem::setDescription( QString theDescription )
 }
 void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 {
+  mProj4 = theProj4String;
   char *oldlocale = setlocale( LC_NUMERIC, NULL );
   /* the next setlocale() invalides the return of previous setlocale() */
   if ( oldlocale )
@@ -1462,6 +1467,12 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
 
   QString mySql;
 
+  QString proj4String = mProj4;
+  if ( proj4String.isEmpty() )
+  {
+    proj4String = toProj4();
+  }
+
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumering
   //this was done to support sqlite 3.0 as it does not yet support
@@ -1997,7 +2008,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   int n = CSLCount( fieldnames );
 
-  int idxid = -1, idxrx = -1, idxry = -1, idxrz = -1;
+  int idxid = -1, idxrx = -1, idxry = -1, idxrz = -1, idxmcode = -1;
   for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
   {
     bool last = i == sizeof( map ) / sizeof( *map ) - 1;
@@ -2019,6 +2030,8 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
       idxry = i;
     if ( strcmp( map[i].src, "RZ" ) == 0 )
       idxrz = i;
+    if ( strcmp( map[i].src, "COORD_OP_METHOD_CODE" ) == 0 )
+      idxmcode = i;
 
     if ( i > 0 )
     {
@@ -2039,8 +2052,6 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     insert += map[i].dst;
     values += QString( "%%1" ).arg( i + 1 );
-
-    qWarning( "%d: src=%s dst=%s idx=%d", i, map[i].src, map[i].dst, map[i].idx );
   }
 
   insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ")";
@@ -2095,12 +2106,12 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     }
 
     //switch sign of rotation parameters. See http://trac.osgeo.org/proj/wiki/GenParms#towgs84-DatumtransformationtoWGS84
-    if ( v[ idxid ] == "9607" )
+    if ( v.at( idxmcode ).compare( QString( "'9607'" ) ) == 0 )
     {
-      v[ idxid ] = "9606";
-      v[ idxrx ] = qgsDoubleToString( -v[ idxrx ].toDouble() );
-      v[ idxry ] = qgsDoubleToString( -v[ idxry ].toDouble() );
-      v[ idxrz ] = qgsDoubleToString( -v[ idxrz ].toDouble() );
+      v[ idxmcode ] = "'9606'";
+      v[ idxrx ] = "'" + qgsDoubleToString( -( v[ idxrx ].remove( "'" ).toDouble() ) ) + "'";
+      v[ idxry ] = "'" + qgsDoubleToString( -( v[ idxry ].remove( "'" ).toDouble() ) ) + "'";
+      v[ idxrz ] = "'" + qgsDoubleToString( -( v[ idxrz ].remove( "'" ).toDouble() ) ) + "'";
     }
 
     //entry already in db?

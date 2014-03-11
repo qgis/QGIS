@@ -22,6 +22,11 @@
 #include <QPainter>
 
 
+QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
+{
+  delete renderer;
+}
+
 void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   Q_UNUSED( layer )
@@ -264,6 +269,11 @@ void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
   mDiagram = d;
 }
 
+QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
+    : mDiagram( other.mDiagram ? other.mDiagram->clone() : 0 )
+{
+}
+
 void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos )
 {
   if ( !mDiagram )
@@ -364,6 +374,11 @@ QgsSingleCategoryDiagramRenderer::~QgsSingleCategoryDiagramRenderer()
 {
 }
 
+QgsDiagramRendererV2* QgsSingleCategoryDiagramRenderer::clone() const
+{
+  return new QgsSingleCategoryDiagramRenderer( *this );
+}
+
 bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s )
 {
   Q_UNUSED( c );
@@ -411,6 +426,11 @@ QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
 
 QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer()
 {
+}
+
+QgsDiagramRendererV2 *QgsLinearlyInterpolatedDiagramRenderer::clone() const
+{
+  return new QgsLinearlyInterpolatedDiagramRenderer( *this );
 }
 
 QList<QgsDiagramSettings> QgsLinearlyInterpolatedDiagramRenderer::diagramSettings() const

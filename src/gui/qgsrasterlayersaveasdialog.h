@@ -39,12 +39,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       CurrentCrs,
       UserCrs
     };
-    enum ExtentState
-    {
-      OriginalExtent,
-      CurrentExtent,
-      UserExtent,
-    };
     enum ResolutionState
     {
       OriginalResolution,
@@ -75,10 +69,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QList< int > pyramidsList() const;
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
     QString pyramidsResamplingMethod() const { return mPyramidsOptionsWidget->resamplingMethod(); }
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const
-    { return mPyramidsOptionsWidget->pyramidsFormat(); }
-    QStringList pyramidsConfigOptions() const
-    { return mPyramidsOptionsWidget->configOptions(); }
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsOptionsWidget->pyramidsFormat(); }
+    QStringList pyramidsConfigOptions() const { return mPyramidsOptionsWidget->configOptions(); }
 
     void hideFormat();
     void hideOutput();
@@ -90,8 +82,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mRawModeRadioButton_toggled( bool );
     void on_mBrowseButton_clicked();
     void on_mSaveAsLineEdit_textChanged( const QString& text );
-    void on_mCurrentExtentButton_clicked();
-    void on_mOriginalExtentButton_clicked();
     void on_mFormatComboBox_currentIndexChanged( const QString& text );
     void on_mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
     void on_mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
@@ -101,11 +91,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mOriginalSizePushButton_clicked() { setOriginalSize(); }
     void on_mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
     void on_mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
-
-    void on_mXMinLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
-    void on_mXMaxLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
-    void on_mYMinLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
-    void on_mYMaxLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
 
     void on_mChangeCrsPushButton_clicked();
 
@@ -119,6 +104,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mTileModeCheckBox_toggled( bool toggled );
     void on_mPyramidsGroupBox_toggled( bool toggled );
     void populatePyramidsLevels();
+    void extentChanged();
 
   private:
     QgsRasterLayer* mRasterLayer;
@@ -128,14 +114,10 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsCoordinateReferenceSystem mCurrentCrs;
     QgsCoordinateReferenceSystem mUserCrs;
     QgsCoordinateReferenceSystem mPreviousCrs;
-    ExtentState mExtentState;
     ResolutionState mResolutionState;
     QVector<bool> mNoDataToEdited;
 
     void setValidators();
-    void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state );
-    void extentChanged();
-    void updateExtentStateMsg();
     void toggleResolutionSize();
     void setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem& srcCrs );
     void setOriginalResolution();

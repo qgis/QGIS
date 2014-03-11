@@ -34,7 +34,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     Q_OBJECT
 
   public:
-    explicit QgsRelationManager( QgsProject* project );
+    explicit QgsRelationManager( QgsProject *project );
 
     void setRelations( const QList<QgsRelation>& relations );
     const QMap<QString, QgsRelation>& relations() const;
@@ -44,8 +44,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
     QgsRelation relation( const QString& id ) const;
     void clear();
 
-    QList<QgsRelation> referencingRelations( QgsVectorLayer* layer = NULL, int fieldIdx = -2 ) const;
-    QList<QgsRelation> referencedRelations( QgsVectorLayer* layer = NULL ) const;
+    QList<QgsRelation> referencingRelations( QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
+    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
 
   signals:
     void relationsLoaded();

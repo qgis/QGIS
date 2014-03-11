@@ -39,7 +39,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     };
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0,  Qt::WFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( long srsid, int options = AllOptions, QWidget* parent = 0,  Qt::WFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -57,6 +57,14 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     int symbologyExport() const;
     double scaleDenominator() const;
 
+    //! setup canvas extent - for the use in extent group box
+    void setCanvasExtent( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
+
+    bool hasFilterExtent() const;
+    QgsRectangle filterExtent() const;
+
+    bool onlySelected() const;
+
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );
     void on_mCRSSelection_currentIndexChanged( int idx );
@@ -64,7 +72,6 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     void on_browseCRS_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
-    void on_mOptionsButton_toggled( bool checked );
     void accept();
 
   private:
@@ -72,6 +79,9 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QList< QPair< QLabel*, QWidget* > > createControls( const QMap<QString, QgsVectorFileWriter::Option*>& options );
 
     long mCRS;
+
+    QgsRectangle mLayerExtent;
+    QgsCoordinateReferenceSystem mLayerCrs;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

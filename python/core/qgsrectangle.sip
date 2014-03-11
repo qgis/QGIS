@@ -17,17 +17,17 @@ class QgsRectangle
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPoint & p1, const QgsPoint & p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
-    //@note added in 2.0
+    //! @note added in 2.0
     QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
     //! Destructor
     ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
-    //normalised after construction.
+    //! normalised after construction.
     void set( const QgsPoint& p1, const QgsPoint& p2 );
     //! Set the rectangle from four points. The rectangle is
-    //  normalised after construction.
+    //! normalised after construction.
     void set( double xmin, double ymin, double xmax, double ymax );
     //! Set the minimum x value
     void setXMinimum( double x );
@@ -38,7 +38,7 @@ class QgsRectangle
     //! Set the maximum y value
     void setYMaximum( double y );
     //! Set a rectangle so that min corner is at max
-    // and max corner is at min. It is NOT normalized.
+    //! and max corner is at min. It is NOT normalized.
     void setMinimal();
     //! Get the x maximum value (right side of rectangle)
     double xMaximum() const;
@@ -57,12 +57,11 @@ class QgsRectangle
     //! Center point of the rectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
-    void scale( double, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, const QgsPoint *c = 0 );
     void scale( double scaleFactor, double centerX, double centerY );
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
     QgsRectangle buffer( double width );
-    //! Expand the rectangle to support zoom out scaling
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle
@@ -82,10 +81,10 @@ class QgsRectangle
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
     //! returns string representation as WKT Polygon
-    //@note added in 2.0
+    //! @note added in 2.0
     QString asWktPolygon() const;
     //! returns a QRectF with same coordinates.
-    //@note added in 2.0
+    //! @note added in 2.0
     QRectF toRectF() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;
@@ -101,8 +100,13 @@ class QgsRectangle
     @return False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
-    //! updates rectangle to include passed argument
+    /** updates rectangle to include passed argument */
     void unionRect( const QgsRectangle& rect );
+
+    /** Returns true if the rectangle has finite boundaries. Will
+        return false if any of the rectangle boundaries are NaN or Inf. */
+    bool isFinite() const;
+
     //! swap x/y
     //! @note added in 1.9
     void invert();

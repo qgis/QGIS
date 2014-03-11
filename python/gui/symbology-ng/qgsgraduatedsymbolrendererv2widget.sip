@@ -14,6 +14,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
   public slots:
     void changeGraduatedSymbol();
     void graduatedColumnChanged();
+    void setExpression();
     void classifyGraduated();
     void reapplyColorRamp();
     void rangesDoubleClicked( const QModelIndex & idx );
@@ -42,6 +43,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     //! return a list of indexes for the classes under selection
     QList<int> selectedClasses();
+    QgsRangeList selectedRanges();
 
     //! populate column combos in categorized and graduated page
     void populateColumns();
@@ -54,4 +56,6 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     QList<QgsSymbolV2*> selectedSymbols();
     QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
     void refreshSymbolView();
+
+    void keyPressEvent( QKeyEvent* event );
 };

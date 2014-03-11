@@ -14,6 +14,9 @@
  ***************************************************************************/
 
 #include <typeinfo>
+
+#include <QImage>
+
 #include "qgsmarkersymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 
@@ -63,8 +66,9 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsFeature& feature, 
 
 void QgsHighlight::init()
 {
-  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
+    // TODO[MD]: after merge - should not use mapRenderer()
     const QgsCoordinateTransform* ct = mMapCanvas->mapRenderer()->transformation( mLayer );
     if ( ct )
     {
@@ -120,7 +124,20 @@ void QgsHighlight::setSymbolColor( QgsSymbolV2* symbol, const QColor & color )
 {
   if ( !symbol ) return;
 
-  QColor fillColor( color.red(), color.green(), color.blue(), 63 );
+  // Temporary fill color must be similar to outline color (antialiasing between
+  // outline and temporary fill) but also different enough to be distinguishable
+  // so that it can be replaced by transparent fill.
+  // Unfortunately the result of the transparent fill rendered over the original
+  // (not highlighted) feature color may be either lighter or darker.
+  if ( color.lightness() < 200 )
+  {
+    mTemporaryFillColor = color.lighter( 120 );
+  }
+  else
+  {
+    mTemporaryFillColor = color.darker( 120 );
+  }
+  mTemporaryFillColor.setAlpha( 255 );
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
@@ -133,14 +150,12 @@ void QgsHighlight::setSymbolColor( QgsSymbolV2* symbol, const QColor & color )
     }
     else
     {
-      // We must insert additional highlight symbol layer above each original layer
-      // otherwise lower layers would become visible through transparent fill color.
-      QgsSymbolLayerV2* highlightLayer = symbolLayer->clone();
+      symbolLayer->setColor( color ); // line symbology layers
+      symbolLayer->setOutlineColor( color ); // marker and fill symbology layers
+      symbolLayer->setFillColor( mTemporaryFillColor ); // marker and fill symbology layers
 
-      highlightLayer->setColor( color ); // line symbology layers
-      highlightLayer->setOutlineColor( color ); // marker and fill symbology layers
-      highlightLayer->setFillColor( fillColor ); // marker and fill symbology layers
-      symbol->insertSymbolLayer( i + 1, highlightLayer );
+      symbolLayer->removeDataDefinedProperty( "color" );
+      symbolLayer->removeDataDefinedProperty( "color_border" );
     }
   }
 }
@@ -300,17 +315,54 @@ void QgsHighlight::paint( QPainter* p )
         updateRect();
         return; // it will be repainted after updateRect()
       }
-      double height = toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMinimum() ) ).y() - toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMaximum() ) ).y();
+
+
+      QPointF ll = toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMinimum() ) );
+      QPointF ur = toCanvasCoordinates( QgsPoint( extent.xMaximum(), extent.yMaximum() ) );
+      double height = ll.y() - ur.y();
+      double width = ur.x() - ll.x();
+
+      // Because lower level outlines must be covered by upper level fill color
+      // we render first with temporary opaque color, which is then replaced
+      // by final transparent fill color.
+      QImage image = QImage(( int )width, ( int )height, QImage::Format_ARGB32 );
+      image.fill( 0 );
+      QPainter *imagePainter = new QPainter( &image );
+      imagePainter->setRenderHint( QPainter::Antialiasing, true );
 
       QgsMapToPixel mapToPixel = QgsMapToPixel( mMapCanvas->mapUnitsPerPixel(),
                                  height, extent.yMinimum(), extent.xMinimum() );
       context.setMapToPixel( mapToPixel );
       context.setExtent( extent );
       context.setCoordinateTransform( 0 ); // we reprojected geometry in init()
-      context.setPainter( p );
+      context.setPainter( imagePainter );
+
       mRenderer->startRender( context, layer );
       mRenderer->renderFeature( mFeature, context );
       mRenderer->stopRender( context );
+
+      imagePainter->end();
+
+      QRgb temporaryRgb = mTemporaryFillColor.rgba();
+      QColor color = QColor( mBrush.color() );
+      color.setAlpha( 63 );
+      QRgb colorRgb = color.rgba();
+
+      for ( int r = 0; r < image.height(); r++ )
+      {
+        QRgb *line = ( QRgb * ) image.scanLine( r );
+        for ( int c = 0; c < image.width(); c++ )
+        {
+          if ( line[c] == temporaryRgb )
+          {
+            line[c] = colorRgb;
+          }
+        }
+      }
+
+      p->drawImage( 0, 0, image );
+
+      delete imagePainter;
     }
   }
 }

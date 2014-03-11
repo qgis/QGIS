@@ -56,6 +56,7 @@ void QgsDatumTransformDialog::load()
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
     bool itemDisabled = false;
+    bool itemHidden = false;
 
     for ( int i = 0; i < 2 && i < it->size(); ++i )
     {
@@ -74,9 +75,16 @@ void QgsDatumTransformDialog::load()
         continue;
 
       if ( mHideDeprecatedCheckBox->isChecked() && deprecated )
-        continue;
+      {
+        itemHidden = true;
+      }
 
       QString toolTipString;
+      if ( gridShiftTransformation( item->text( i ) ) )
+      {
+        toolTipString.append( QString( "<p><b>NTv2</b></p>" ) );
+      }
+
       if ( epsgNr > 0 )
         toolTipString.append( QString( "<p><b>EPSG Transformations Code:</b> %1</p>" ).arg( epsgNr ) );
 
@@ -98,8 +106,16 @@ void QgsDatumTransformDialog::load()
         itemDisabled = true;
       }
     }
-    item->setDisabled( itemDisabled );
-    mDatumTransformTreeWidget->addTopLevelItem( item );
+
+    if ( !itemHidden )
+    {
+      item->setDisabled( itemDisabled );
+      mDatumTransformTreeWidget->addTopLevelItem( item );
+    }
+    else
+    {
+      delete item;
+    }
   }
 }
 
@@ -181,7 +197,11 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
     QStringList::const_iterator fileIt = fileList.constBegin();
     for ( ; fileIt != fileList.constEnd(); ++fileIt )
     {
-      if ( *fileIt == filename )
+#if defined(Q_OS_WIN)
+      if ( fileIt->compare( filename, Qt::CaseInsensitive ) == 0 )
+#else
+      if ( fileIt->compare( filename ) == 0 )
+#endif //Q_OS_WIN
       {
         return true;
       }

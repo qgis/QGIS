@@ -73,6 +73,7 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * paren
 
 QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
+    , mMousePrecisionDecimalPlaces( 0 )
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
     , mIface( theQgisInterface )
     , mLayer( 0 )
@@ -633,16 +634,14 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
 void QgsGeorefPluginGui::fullHistogramStretch()
 {
   mLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum );
-  mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::localHistogramStretch()
 {
-  QgsRectangle rectangle = mIface->mapCanvas()->mapRenderer()->outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
+  QgsRectangle rectangle = mIface->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
 
   mLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax, rectangle );
-  mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }
 
@@ -968,10 +967,12 @@ void QgsGeorefPluginGui::createMenus()
     QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, 0, this ) );
 
   mPanelMenu = new QMenu( tr( "Panels" ) );
+  mPanelMenu->setObjectName( "mPanelMenu" );
   mPanelMenu->addAction( dockWidgetGCPpoints->toggleViewAction() );
   //  mPanelMenu->addAction(dockWidgetLogView->toggleViewAction());
 
   mToolbarMenu = new QMenu( tr( "Toolbars" ) );
+  mToolbarMenu->setObjectName( "mToolbarMenu" );
   mToolbarMenu->addAction( toolBarFile->toggleViewAction() );
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );
@@ -1443,12 +1444,6 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
     return false;
   }
 
-  QgsMapRenderer* canvasRenderer = mCanvas->mapRenderer();
-  if ( !canvasRenderer )
-  {
-    return false;
-  }
-
   QgsRasterLayer *rlayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
   if ( !rlayer )
   {
@@ -1465,7 +1460,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   double paperHeight = s.value( "/Plugin-GeoReferencer/Config/HeightPDFMap" ).toDouble();
 
   //create composition
-  QgsComposition* composition = new QgsComposition( mCanvas->mapRenderer() );
+  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
   if ( mapRatio >= 1 )
   {
     composition->setPaperSize( paperHeight, paperWidth );
@@ -1487,7 +1482,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
   composerMap->setKeepLayerSet( true );
   QStringList list;
-  list.append( canvasRenderer->layerSet()[0] );
+  list.append( mCanvas->mapSettings().layers()[0] );
   composerMap->setLayerSet( list );
 
   double xcenter = rlayer->extent().center().x();
@@ -1547,18 +1542,12 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     return false;
   }
 
-  QgsMapRenderer* canvasRenderer = mCanvas->mapRenderer();
-  if ( !canvasRenderer )
-  {
-    return false;
-  }
-
   QPrinter printer;
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( fileName );
 
   //create composition A4 with 300 dpi
-  QgsComposition* composition = new QgsComposition( mCanvas->mapRenderer() );
+  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
   composition->setPaperSize( 210, 297 ); //A4
   composition->setPrintResolution( 300 );
   printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );
@@ -1605,7 +1594,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   }
 
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM );
-  composerMap->setLayerSet( canvasRenderer->layerSet() );
+  composerMap->setLayerSet( mCanvas->mapSettings().layers() );
   composerMap->setNewExtent( mCanvas->extent() );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );

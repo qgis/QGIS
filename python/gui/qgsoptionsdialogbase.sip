@@ -14,13 +14,22 @@ class QgsOptionsDialogBase : QDialog
 
     /** Set up the base ui connections for vertical tabs.
      * @param restoreUi Whether to restore the base ui at this time.
+     * @param title the window title
      */
-    void initOptionsBase( bool restoreUi = true );
+    void initOptionsBase( bool restoreUi = true, QString title = QString() );
+
+    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QSettings* settings );
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
+     * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
-    void restoreOptionsBaseUi();
+    void restoreOptionsBaseUi( QString title = QString() );
+
+    /** determine if the options list is in icon only mode
+     */
+    bool iconOnly();
 
   protected slots:
     void updateOptionsListVerticalTabs();
@@ -31,4 +40,6 @@ class QgsOptionsDialogBase : QDialog
   protected:
     void showEvent( QShowEvent* e );
     void paintEvent( QPaintEvent* e );
+
+    virtual void updateWindowTitle();
 };

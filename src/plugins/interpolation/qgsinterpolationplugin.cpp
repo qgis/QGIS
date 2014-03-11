@@ -43,6 +43,7 @@ void QgsInterpolationPlugin::initGui()
   if ( mIface )
   {
     mInterpolationAction = new QAction( QIcon( ":/raster-interpolate.png" ), tr( "&Interpolation" ), 0 );
+    mInterpolationAction->setObjectName( "mInterpolationAction" );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addRasterToolBarIcon( mInterpolationAction );
     mIface->addPluginToRasterMenu( tr( "&Interpolation" ), mInterpolationAction );

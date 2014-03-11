@@ -62,6 +62,7 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
+    QgsHelmertGeorefTransform() {}
     struct HelmertParameters
     {
       QgsPoint origin;

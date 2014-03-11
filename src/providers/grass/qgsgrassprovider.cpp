@@ -277,14 +277,13 @@ QgsGrassProvider::~QgsGrassProvider()
 {
   QgsDebugMsg( "entered." );
 
-  while ( !mActiveIterators.empty() )
-  {
-    QgsGrassFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   closeLayer( mLayerId );
+}
+
+
+QgsAbstractFeatureSource* QgsGrassProvider::featureSource() const
+{
+  return new QgsGrassFeatureSource( this );
 }
 
 
@@ -300,7 +299,10 @@ QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& reque
   if ( isEdited() || isFrozen() || !mValid )
     return QgsFeatureIterator();
 
-  return QgsFeatureIterator( new QgsGrassFeatureIterator( this, request ) );
+  // check if outdated and update if necessary
+  ensureUpdated();
+
+  return QgsFeatureIterator( new QgsGrassFeatureIterator( new QgsGrassFeatureSource( this ), true, request ) );
 }
 
 
@@ -376,7 +378,7 @@ bool QgsGrassProvider::isValid()
 
 // ------------------------------------------------------------------------------------------------------
 // Compare categories in GATT
-static int cmpAtt( const void *a, const void *b )
+int QgsGrassProvider::cmpAtt( const void *a, const void *b )
 {
   GATT *p1 = ( GATT * ) a;
   GATT *p2 = ( GATT * ) b;
@@ -1029,78 +1031,6 @@ void QgsGrassProvider::ensureUpdated()
   }
 }
 
-
-/** Set feature attributes */
-void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *feature )
-{
-#if QGISDEBUG > 3
-  QgsDebugMsg( QString( "setFeatureAttributes cat = %1" ).arg( cat ) );
-#endif
-  if ( mLayers[layerId].nColumns > 0 )
-  {
-    // find cat
-    GATT key;
-    key.cat = cat;
-
-    GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
-                                    sizeof( GATT ), cmpAtt );
-
-    feature->initAttributes( mLayers[layerId].nColumns );
-
-    for ( int i = 0; i < mLayers[layerId].nColumns; i++ )
-    {
-      if ( att != NULL )
-      {
-        QByteArray cstr( att->values[i] );
-        feature->setAttribute( i, convertValue( mLayers[mLayerId].fields[i].type(), mEncoding->toUnicode( cstr ) ) );
-      }
-      else   /* it may happen that attributes are missing -> set to empty string */
-      {
-        feature->setAttribute( i, QVariant() );
-      }
-    }
-  }
-  else
-  {
-    feature->initAttributes( 1 );
-    feature->setAttribute( 0, QVariant( cat ) );
-  }
-}
-
-void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *feature, const QgsAttributeList& attlist )
-{
-#if QGISDEBUG > 3
-  QgsDebugMsg( QString( "setFeatureAttributes cat = %1" ).arg( cat ) );
-#endif
-  if ( mLayers[layerId].nColumns > 0 )
-  {
-    // find cat
-    GATT key;
-    key.cat = cat;
-    GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
-                                    sizeof( GATT ), cmpAtt );
-
-    feature->initAttributes( mLayers[layerId].nColumns );
-
-    for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
-    {
-      if ( att != NULL )
-      {
-        QByteArray cstr( att->values[*iter] );
-        feature->setAttribute( *iter, convertValue( mLayers[mLayerId].fields[*iter].type(), mEncoding->toUnicode( cstr ) ) );
-      }
-      else   /* it may happen that attributes are missing -> set to empty string */
-      {
-        feature->setAttribute( *iter, QVariant() );
-      }
-    }
-  }
-  else
-  {
-    feature->initAttributes( 1 );
-    feature->setAttribute( 0, QVariant( cat ) );
-  }
-}
 
 /** Get pointer to map */
 struct Map_info *QgsGrassProvider::layerMap( int layerId )
@@ -2146,7 +2076,12 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
 
 bool QgsGrassProvider::isTopoType() const
 {
-  return mLayerType == TOPO_POINT || mLayerType == TOPO_LINE || mLayerType == TOPO_NODE;
+  return isTopoType( mLayerType );
+}
+
+bool QgsGrassProvider::isTopoType( int layerType )
+{
+  return layerType == TOPO_POINT || layerType == TOPO_LINE || layerType == TOPO_NODE;
 }
 
 void QgsGrassProvider::setTopoFields()

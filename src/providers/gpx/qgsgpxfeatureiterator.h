@@ -18,13 +18,34 @@
 #include "qgsfeatureiterator.h"
 
 #include "gpsdata.h"
+#include "qgsgpxprovider.h"
 
 class QgsGPXProvider;
 
-class QgsGPXFeatureIterator : public QgsAbstractFeatureIterator
+
+class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsGPXFeatureIterator( QgsGPXProvider* p, const QgsFeatureRequest& request );
+    QgsGPXFeatureSource( const QgsGPXProvider* p );
+    ~QgsGPXFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  protected:
+    QString mFileName;
+    QgsGPXProvider::DataType mFeatureType;
+    QgsGPSData* data;
+    QVector<int> indexToAttr;
+    QgsFields mFields;
+
+    friend class QgsGPXFeatureIterator;
+};
+
+
+class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>
+{
+  public:
+    QgsGPXFeatureIterator( QgsGPXFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsGPXFeatureIterator();
 
@@ -54,7 +75,6 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIterator
     void readAttributes( QgsFeature& feature, const QgsTrack& trk );
 
   protected:
-    QgsGPXProvider* P;
 
     //! Current waypoint iterator
     QgsGPSData::WaypointIterator mWptIter;

@@ -72,11 +72,7 @@ void TestVectorLayerCache::initTestCase()
 
   foreach ( QString f, backupFiles )
   {
-    QTemporaryFile* tmpFile = new QTemporaryFile();
-    tmpFile->open();
-    QString tmpFileName = tmpFile->fileName();
-    tmpFile->remove();
-
+    QString tmpFileName = QDir::tempPath() + QDir::separator() + f + "_" + QString::number( qApp->applicationPid() );
     QString origFileName = myTestDataDir + f;
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
@@ -137,7 +133,11 @@ void TestVectorLayerCache::cleanupTestCase()
     qDebug() << "Copy " << tmpFileName << " " << origFileName;
     QFile( origFileName ).remove();
     qDebug() << QFile::copy( tmpFileName, origFileName );
+    QFile::remove( tmpFileName );
   }
+
+  // also clean up newly created .qix file
+  QFile::remove( QString( TEST_DATA_DIR ) + QDir::separator() + "points.qix" );
 }
 
 void TestVectorLayerCache::testCacheOverflow()

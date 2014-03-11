@@ -29,8 +29,14 @@ class QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const;
 
+    //! Whether the action is runable on the current platform
     bool runable() const;
 };
+
+/*! \class QgsAttributeAction
+ * \brief Storage and management of actions associated with Qgis layer
+ * attributes.
+ */
 
 class QgsAttributeAction
 {
@@ -54,31 +60,25 @@ class QgsAttributeAction
     //! Remove an action at given index
     void removeAction( int index );
 
-     /*! Does the given values. defaultValueIndex is the index of the
+    /*! Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note added in 1.9
-     *  @note not available in python bindings
+     *  @note available in python bindings as doActionFeature
      */
-    void doActionFeature( int index,
-                          QgsFeature &feat,
-                          int defaultValueIndex = 0 );
-%MethodCode
-      sipCpp->doAction( a0, *a1, a2 );
-%End
+    void doAction( int index,
+                   QgsFeature &feat,
+                   int defaultValueIndex = 0 ) /PyName=doActionFeature/;
 
     /*! Does the action using the expression builder to expand it
      *  and getting values from the passed feature attribute map.
      *  substitutionMap is used to pass custom substitutions, to replace
      *  each key in the map with the associated value
      *  @note added in 1.9
-     *  @note available in python bindings as doActionFeatureSubstitution
+     *  @note available in python bindings as doActionFeatureWithSubstitution
      */
-    void doActionFeatureWithSubstitution( int index,
-                                          QgsFeature &feat,
-                                          const QMap<QString, QVariant> *substitutionMap = 0 );
-%MethodCode
-      sipCpp->doAction( a0, *a1, a2 );
-%End
+    void doAction( int index,
+                   QgsFeature &feat,
+                   const QMap<QString, QVariant> *substitutionMap = 0 ) /PyName=doActionFeatureWithSubstitution/;
 
     //! Removes all actions
     void clearActions();

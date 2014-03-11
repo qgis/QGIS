@@ -3,6 +3,13 @@
 
 SET(QGIS_CORE_SRCS
 
+  qgsmaprenderercache.cpp
+  qgsxmlutils.cpp
+  qgsmapsettings.cpp
+  qgsmaprendererjob.cpp
+  qgsvectorlayerrenderer.cpp
+  raster/qgsrasterlayerrenderer.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -120,7 +127,6 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
-  qgsvectorlayercache.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
@@ -302,6 +308,10 @@ ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
+
+  qgsmaprenderercache.h
+  qgsmaprendererjob.h
+
   qgsapplication.h
   qgsbrowsermodel.h
   qgscontexthelp.h
@@ -375,6 +385,10 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
+IF(UNIX)
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(UNIX)
+
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
@@ -417,6 +431,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
+  qgsmapsettings.h
   qgsmaptopixel.h
   qgsmessageoutput.h
   qgsmimedatautils.h

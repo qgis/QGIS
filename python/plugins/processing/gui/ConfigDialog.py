@@ -123,6 +123,8 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                     self.items[setting] = SettingItem(setting)
                     groupItem.insertRow(0, [labelItem, self.items[setting]])
 
+            emptyItem = QStandardItem()
+            emptyItem.setEditable(False)
             providersItem.appendRow([groupItem, emptyItem])
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)
@@ -275,6 +277,7 @@ class FileDirectorySelector(QWidget):
             return
 
         self.lineEdit.setText(selectedPath)
+        self.canFocusOut = True
 
     def text(self):
         return self.lineEdit.text()

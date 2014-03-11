@@ -1,8 +1,0 @@
-#!/bin/sh
-# Use this as a ./run script with daemontools or runit
-# You should replace xxx with the user you want rails to run as (and www-data with the user lighty runs as)
-# /path-to-rails should be replaced with the correct path too :)
-
-exec 2>&1
-RAILS_ENV="production" \
-exec /usr/bin/spawn-fcgi -n -s /var/run/lighttpd/rails-xxx.sock -u xxx -U www-data -- /path-to-rails/public/dispatch.fcgi

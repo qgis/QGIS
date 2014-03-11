@@ -47,6 +47,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     /* Inherited from QgsVectorDataProvider */
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     QGis::WkbType geometryType() const;
@@ -127,8 +129,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
   private:
     bool mNetworkRequestFinished;
-    friend class QgsWFSFeatureIterator;
-    QSet< QgsWFSFeatureIterator * > mActiveIterators;
+    friend class QgsWFSFeatureSource;
 
   protected:
     /**Thematic attributes*/
@@ -188,9 +189,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
     int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const;
-
-    /**Copies feature attributes / geometry from f to feature*/
-    void copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry );
 
     //GML2 specific methods
     int getExtentFromGML2( QgsRectangle* extent, const QDomElement& wfsCollectionElement ) const;

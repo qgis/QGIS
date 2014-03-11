@@ -23,14 +23,13 @@
 #include "qgspallabeling.h"
 #include <QDialog>
 
-class QgsMapRenderer;
 
 /**A dialog to enter data defined label attributes*/
 class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
     /**Returns properties changed by the user*/
@@ -85,8 +84,6 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     /**Insert changed value into mChangedProperties*/
     void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value );
-
-    QgsMapRenderer* mMapRenderer;
 
     QgsAttributeMap mChangedProperties;
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > mDataDefinedProperties;

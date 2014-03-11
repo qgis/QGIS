@@ -15,6 +15,7 @@
 #include "qgswfscapabilities.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogcutils.h"
 #include <QDomDocument>
@@ -104,7 +105,12 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
     {
       //if not, if must be a QGIS expression
       QgsExpression filterExpression( filter );
-      QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( filterExpression, filterDoc );
+      QString errorMsg;
+      QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( filterExpression, filterDoc, &errorMsg );
+      if ( !errorMsg.isEmpty() )
+      {
+        QgsMessageLog::logMessage( "Expression to OGC Filter error: " + errorMsg, "WFS" );
+      }
       if ( !filterElem.isNull() )
       {
         filterDoc.appendChild( filterElem );

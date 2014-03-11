@@ -53,7 +53,7 @@
         <x>0</x>
         <y>0</y>
         <width>310</width>
-        <height>553</height>
+        <height>549</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -213,7 +213,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="title">
-          <string>Image Rotation</string>
+          <string>Image rotation</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>

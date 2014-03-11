@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QDir>
 
+PyThreadState* _mainState;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 {
@@ -52,6 +53,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 {
   // initialize python
   Py_Initialize();
+
+  // initialize threading AND acquire GIL
+  PyEval_InitThreads();
 
   mPythonEnabled = true;
 
@@ -82,9 +86,6 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   QStringList pluginpaths;
   foreach ( QString p, extraPluginsPaths() )
   {
-#ifdef Q_OS_WIN
-    p = p.replace( '\\', "\\\\" );
-#endif
     if ( !QDir( p ).exists() )
     {
       QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
@@ -92,6 +93,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
       msg->setMessage( QString( QObject::tr( "The extra plugin path '%1' does not exist !" ) ).arg( p ), QgsMessageOutput::MessageText );
       msg->showMessage();
     }
+#ifdef Q_OS_WIN
+    p = p.replace( '\\', "\\\\" );
+#endif
     // we store here paths in unicode strings
     // the str constant will contain utf8 code (through runString)
     // so we call '...'.decode('utf-8') to make a unicode string
@@ -167,6 +171,13 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   QString startuppath = homePythonPath() + " + \"/startup.py\"";
   runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
+
+  // release GIL!
+  // Later on, we acquire GIL just before doing some Python calls and
+  // release GIL again when the work with Python API is done.
+  // (i.e. there must be PyGILState_Ensure + PyGILState_Release pair
+  // around any calls to Python API, otherwise we may segfault!)
+  _mainState = PyEval_SaveThread();
 }
 
 void QgsPythonUtilsImpl::exitPython()

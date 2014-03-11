@@ -270,19 +270,6 @@ bool QgsAtlasComposition::beginRender()
     return false;
   }
 
-  mRestoreLayer = false;
-  QStringList& layerSet = mComposition->mapRenderer()->layerSet();
-  if ( mHideCoverage )
-  {
-    // look for the layer in the renderer's set
-    int removeAt = layerSet.indexOf( mCoverageLayer->id() );
-    if ( removeAt != -1 )
-    {
-      mRestoreLayer = true;
-      layerSet.removeAt( removeAt );
-    }
-  }
-
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
@@ -303,14 +290,6 @@ void QgsAtlasComposition::endRender()
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
     ( *lit )->setExpressionContext( 0, 0 );
-  }
-
-  // restore the coverage visibility
-  if ( mRestoreLayer )
-  {
-    QStringList& layerSet = mComposition->mapRenderer()->layerSet();
-
-    layerSet.push_back( mCoverageLayer->id() );
   }
 
   updateAtlasMaps();
@@ -370,6 +349,12 @@ void QgsAtlasComposition::lastFeature()
 {
   mCurrentFeatureNo = mFeatureIds.size() - 1;
   prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::prepareForFeature( QgsFeature * feat )
+{
+  int featureI = mFeatureIds.indexOf( feat->id() );
+  prepareForFeature( featureI );
 }
 
 void QgsAtlasComposition::prepareForFeature( int featureI )
@@ -437,32 +422,19 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
     atlasMaps << currentMap;
   }
 
+  //clear the transformed bounds of the previous feature
+  mTransformedFeatureBounds = QgsRectangle();
+
   if ( atlasMaps.isEmpty() )
   {
     //no atlas enabled maps
     return;
   }
 
-  //
-  // compute the new extent
-  // keep the original aspect ratio
-  // and apply a margin
-
-  const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
-  // transformation needed for feature geometries. This should be set on a per-atlas map basis,
+  // compute extent of current feature in the map CRS. This should be set on a per-atlas map basis,
   // but given that it's not currently possible to have maps with different CRSes we can just
   // calculate it once based on the first atlas maps' CRS.
-  const QgsCoordinateReferenceSystem& destination_crs = atlasMaps[0]->mapRenderer()->destinationCrs();
-  mTransform.setSourceCrs( coverage_crs );
-  mTransform.setDestCRS( destination_crs );
-
-  // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
-  // We have to transform the grometry to the destination CRS and ask for the bounding box
-  // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-
-  QgsGeometry tgeom( *mCurrentFeature.geometry() );
-  tgeom.transform( mTransform );
-  mTransformedFeatureBounds = tgeom.boundingBox();
+  computeExtent( atlasMaps[0] );
 
   //update atlas bounds of every atlas enabled composer map
   for ( QList<QgsComposerMap*>::iterator mit = atlasMaps.begin(); mit != atlasMaps.end(); ++mit )
@@ -471,11 +443,36 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   }
 }
 
+void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
+{
+  // compute the extent of the current feature, in the crs of the specified map
+
+  const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
+  // transformation needed for feature geometries
+  const QgsCoordinateReferenceSystem& destination_crs = map->composition()->mapSettings().destinationCrs();
+  mTransform.setSourceCrs( coverage_crs );
+  mTransform.setDestCRS( destination_crs );
+
+  // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
+  // We have to transform the grometry to the destination CRS and ask for the bounding box
+  // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
+  QgsGeometry tgeom( *mCurrentFeature.geometry() );
+  tgeom.transform( mTransform );
+  mTransformedFeatureBounds = tgeom.boundingBox();
+}
+
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
 {
   if ( !map->atlasDriven() )
   {
     return;
+  }
+
+  if ( mTransformedFeatureBounds.isEmpty() )
+  {
+    //transformed extent of current feature hasn't been calculated yet. This can happen if
+    //a map has been set to be atlas controlled after prepare feature was called
+    computeExtent( map );
   }
 
   double xa1 = mTransformedFeatureBounds.xMinimum();
@@ -597,9 +594,9 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     }
   }
   //look for stored composer map, to upgrade pre 2.1 projects
-  int composerMapNo = atlasElem.attribute( "composerMap", "0" ).toInt();
+  int composerMapNo = atlasElem.attribute( "composerMap", "-1" ).toInt();
   QgsComposerMap * composerMap = 0;
-  if ( composerMapNo != 0 )
+  if ( composerMapNo != -1 )
   {
     QList<QgsComposerMap*> maps;
     mComposition->composerItems( maps );
@@ -607,7 +604,8 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     {
       if (( *it )->id() == composerMapNo )
       {
-        ( *it )->setAtlasDriven( true );
+        composerMap = ( *it );
+        composerMap->setAtlasDriven( true );
         break;
       }
     }
@@ -651,25 +649,6 @@ void QgsAtlasComposition::setHideCoverage( bool hide )
   if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //an atlas preview is enabled, so reflect changes in coverage layer visibility immediately
-    QStringList& layerSet = mComposition->mapRenderer()->layerSet();
-    if ( hide )
-    {
-      // look for the layer in the renderer's set
-      int removeAt = layerSet.indexOf( mCoverageLayer->id() );
-      if ( removeAt != -1 )
-      {
-        mRestoreLayer = true;
-        layerSet.removeAt( removeAt );
-      }
-    }
-    else
-    {
-      if ( mRestoreLayer )
-      {
-        layerSet.push_back( mCoverageLayer->id() );
-        mRestoreLayer = false;
-      }
-    }
     updateAtlasMaps();
     mComposition->update();
   }

@@ -38,6 +38,7 @@
 #include <QUrl>
 
 class QgsCoordinateTransform;
+class QgsNetworkAccessManager;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
@@ -45,6 +46,27 @@ class QNetworkRequest;
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
 #include "cpl_conv.h"
+
+// TODO: merge with QgsWmsAuthorization?
+struct QgsWcsAuthorization
+{
+  QgsWcsAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+
+  //! set authorization header
+  void setAuthorization( QNetworkRequest &request ) const
+  {
+    if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+    }
+  }
+
+  //! Username for basic http authentication
+  QString mUserName;
+
+  //! Password for basic http authentication
+  QString mPassword;
+};
 
 /**
 
@@ -158,6 +180,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     static QMap<QString, QString> supportedMimes();
 
+    /**
+     * \brief parse the full WCS ServiceExceptionReport XML document
+     *
+     * \note errorTitle and errorText are updated to suit the results of this function.
+     */
+    static bool parseServiceExceptionReportDom( QByteArray const &xml, const QString& wcsVersion, QString& errorTitle, QString& errorText );
+
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -168,25 +198,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     void dataChanged();
 
-  private slots:
-    void cacheReplyFinished();
-    void cacheReplyProgress( qint64, qint64 );
-
   private:
     void showMessageBox( const QString& title, const QString& text );
 
     // case insensitive attribute value lookup
     static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
 
-    /**
-     * \brief parse the full WCS ServiceExceptionReport XML document
-     *
-     * \note mErrorCaption and mError are updated to suit the results of this function.
-     */
-    bool parseServiceExceptionReportDom( QByteArray const &xml );
-
     //! parse the WCS ServiceException XML element
-    void parseServiceException( QDomElement const &e );
+    static void parseServiceException( QDomElement const &e, const QString& wcsVersion, QString& errorTitle, QString& errorText );
 
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
@@ -217,9 +236,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );
-
-    //! set authorization header
-    void setAuthorization( QNetworkRequest &request ) const;
 
     //! Release cache resources
     void clearCache();
@@ -293,11 +309,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QList< QList<QgsColorRampShader::ColorRampItem> > mColorTables;
 
     /**
-     * Last Service Exception Report from the WCS
-     */
-    QDomDocument mServiceExceptionReportDom;
-
-    /**
      * extents per layer (in WCS CRS:84 datum)
      */
     QMap<QString, QgsRectangle> mExtentForLayer;
@@ -316,9 +327,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Coverage CRS used for requests in Auth */
     // TODO: use QgsCoordinateReferenceSystem ?
     QString mCoverageCrs;
-
-    /** The reply to the on going request to fill the cache */
-    QNetworkReply *mCacheReply;
 
     /** Cached data */
     QByteArray mCachedData;
@@ -372,17 +380,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //QMap<int, int> mLayerParents;
     //QMap<int, QStringList> mLayerParentNames;
 
-    //! flag set while provider is fetching tiles synchronously
-    bool mWaiting;
-
     //! Errors counter
     int mErrors;
 
-    //! Username for basic http authentication
-    QString mUserName;
-
-    //! Password for basic http authentication
-    QString mPassword;
+    //! http authorization details
+    QgsWcsAuthorization mAuth;
 
     //! whether to use hrefs from GetCapabilities (default) or
     // the given base urls for GetMap and GetFeatureInfo
@@ -399,6 +401,36 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool mFixRotate;
 
     QNetworkRequest::CacheLoadControl mCacheLoadControl;
+
+};
+
+/** Handler for downloading of coverage data - output is written to mCachedData */
+class QgsWcsDownloadHandler : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError );
+    ~QgsWcsDownloadHandler();
+
+    void blockingDownload();
+
+  protected slots:
+    void cacheReplyFinished();
+    void cacheReplyProgress( qint64, qint64 );
+
+  protected:
+    void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+
+    QgsNetworkAccessManager* mNAM;
+    QEventLoop* mEventLoop;
+
+    QNetworkReply* mCacheReply;
+
+    QByteArray& mCachedData;
+    QString mWcsVersion;
+    QgsError& mCachedError;
+
+    static int sErrors; // this should be ideally per-provider...?
 };
 
 

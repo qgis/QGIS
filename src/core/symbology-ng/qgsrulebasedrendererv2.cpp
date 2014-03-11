@@ -345,7 +345,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
   }
 }
 
-bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
+bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   mActiveChildren.clear();
 
@@ -355,16 +355,16 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
 
   // init this rule
   if ( mFilter )
-    mFilter->prepare( vlayer->pendingFields() );
+    mFilter->prepare( fields );
   if ( mSymbol )
-    mSymbol->startRender( context, vlayer );
+    mSymbol->startRender( context, &fields );
 
   // init children
   // build temporary list of active rules (usable with this scale)
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
     Rule* rule = *it;
-    if ( rule->startRender( context, vlayer ) )
+    if ( rule->startRender( context, fields ) )
     {
       // only add those which are active with current scale
       mActiveChildren.append( rule );
@@ -726,10 +726,10 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 }
 
 
-void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
+void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   // prepare active children
-  mRootRule->startRender( context, vlayer );
+  mRootRule->startRender( context, fields );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
   QList<int> symbolZLevels = symbolZLevelsSet.toList();

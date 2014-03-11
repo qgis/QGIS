@@ -43,7 +43,28 @@
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 
-
+QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryName )
+{
+  QString label = entryName;
+  if ( entryName == "size" )
+  {
+    label = tr( "Size" );
+    QgsMarkerSymbolLayerV2 * layer = dynamic_cast<QgsMarkerSymbolLayerV2 *>( symbolLayer() );
+    if ( layer )
+    {
+      switch ( layer->scaleMethod() )
+      {
+        case QgsSymbolV2::ScaleArea:
+          label += " (" + tr( "area" ) + ")";
+          break;
+        case QgsSymbolV2::ScaleDiameter:
+          label += " (" + tr( "diameter" ) + ")";
+          break;
+      }
+    }
+  }
+  return label;
+}
 
 QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
@@ -51,6 +72,12 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   mLayer = NULL;
 
   setupUi( this );
+
+  if ( vl && vl->geometryType() != QGis::Polygon )
+  {
+    //draw inside polygon checkbox only makes sense for polygon layers
+    mDrawInsideCheckBox->hide();
+  }
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
@@ -104,6 +131,13 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mCustomCheckBox->blockSignals( true );
   mCustomCheckBox->setCheckState( useCustomDashPattern ? Qt::Checked : Qt::Unchecked );
   mCustomCheckBox->blockSignals( false );
+
+  //draw inside polygon?
+  bool drawInsidePolygon = mLayer->drawInsidePolygon();
+  mDrawInsideCheckBox->blockSignals( true );
+  mDrawInsideCheckBox->setCheckState( drawInsidePolygon ? Qt::Checked : Qt::Unchecked );
+  mDrawInsideCheckBox->blockSignals( false );
+
   updatePatternIcon();
 }
 
@@ -186,6 +220,13 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitComboBox_currentIndexC
   {
     mLayer->setCustomDashPatternUnit(( QgsSymbolV2::OutputUnit )index );
   }
+  emit changed();
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int state )
+{
+  bool checked = ( state == Qt::Checked );
+  mLayer->setDrawInsidePolygon( checked );
   emit changed();
 }
 
@@ -435,7 +476,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
       QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_width", tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", tr( "Size" ), mLayer->dataDefinedPropertyString( "size" ),
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", dataDefinedPropertyLabel( "size" ), mLayer->dataDefinedPropertyString( "size" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
@@ -1536,7 +1577,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
   }
 
   QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", tr( "Size" ), mLayer->dataDefinedPropertyString( "size" ),
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", dataDefinedPropertyLabel( "size" ), mLayer->dataDefinedPropertyString( "size" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline-width", tr( "Border width" ), mLayer->dataDefinedPropertyString( "outline-width" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
@@ -1872,18 +1913,12 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
     mLayer = patternLayer;
     mAngleSpinBox->setValue( mLayer->lineAngle() );
     mDistanceSpinBox->setValue( mLayer->distance() );
-    mLineWidthSpinBox->setValue( mLayer->lineWidth() );
     mOffsetSpinBox->setValue( mLayer->offset() );
-    mColorPushButton->setColor( mLayer->color() );
-    mColorPushButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     //units
     mDistanceUnitComboBox->blockSignals( true );
     mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
     mDistanceUnitComboBox->blockSignals( false );
-    mLineWidthUnitComboBox->blockSignals( true );
-    mLineWidthUnitComboBox->setCurrentIndex( mLayer->lineWidthUnit() );
-    mLineWidthUnitComboBox->blockSignals( false );
     mOffsetUnitComboBox->blockSignals( true );
     mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
     mOffsetUnitComboBox->blockSignals( false );
@@ -1913,15 +1948,6 @@ void QgsLinePatternFillSymbolLayerWidget::on_mDistanceSpinBox_valueChanged( doub
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthSpinBox_valueChanged( double d )
-{
-  if ( mLayer )
-  {
-    mLayer->setLineWidth( d );
-    emit changed();
-  }
-}
-
 void QgsLinePatternFillSymbolLayerWidget::on_mOffsetSpinBox_valueChanged( double d )
 {
   if ( mLayer )
@@ -1931,31 +1957,11 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetSpinBox_valueChanged( double
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_colorChanged( const QColor& color )
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  mLayer->setColor( color );
-  emit changed();
-}
-
 void QgsLinePatternFillSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {
     mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
-    emit changed();
-  }
-}
-
-void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthUnitComboBox_currentIndexChanged( int index )
-{
-  if ( mLayer )
-  {
-    mLayer->setLineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }

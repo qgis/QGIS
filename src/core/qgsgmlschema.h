@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList mGeometryAttributes;
 };
 
-class CORE_EXPORT QgsGmlSchema: public QObject
+class CORE_EXPORT QgsGmlSchema : public QObject
 {
     Q_OBJECT
   public:
@@ -108,6 +108,7 @@ class CORE_EXPORT QgsGmlSchema: public QObject
     {
       none,
       boundingBox,
+      featureMembers, // gml:featureMembers
       featureMember, // gml:featureMember
       feature,  // feature element containint attrs and geo (inside gml:featureMember)
       attribute,

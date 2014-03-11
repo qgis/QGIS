@@ -109,6 +109,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     QPen gridPen;
     gridPen.setWidthF( mGridStrokeWidth );
     gridPen.setColor( mGridColor );
+    gridPen.setJoinStyle( Qt::MiterJoin );
     painter->setPen( gridPen );
     drawHorizontalGridLines( painter, attributeMaps.size() );
     drawVerticalGridLines( painter, maxColumnWidthMap );

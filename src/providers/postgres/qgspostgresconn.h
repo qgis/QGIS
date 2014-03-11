@@ -41,6 +41,15 @@ enum QgsPostgresGeometryColumnType
   sctTopoGeometry
 };
 
+enum QgsPostgresPrimaryKeyType
+{
+  pktUnknown,
+  pktInt,
+  pktTid,
+  pktOid,
+  pktFidMap
+};
+
 /** Layer Property structure */
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
@@ -146,11 +155,12 @@ class QgsPostgresResult
     PGresult *mRes;
 };
 
+
 class QgsPostgresConn : public QObject
 {
     Q_OBJECT;
   public:
-    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly );
+    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true );
     void disconnect();
 
     //! get postgis version string
@@ -186,6 +196,8 @@ class QgsPostgresConn : public QObject
     //! cursor handling
     bool openCursor( QString cursorName, QString declare );
     bool closeCursor( QString cursorName );
+
+    QString uniqueCursorName();
 
 #if 0
     PGconn *pgConnection() { return mConn; }
@@ -246,6 +258,7 @@ class QgsPostgresConn : public QObject
     static QString postgisTypeFilter( QString geomCol, QGis::WkbType wkbType, bool isGeography );
 
     static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
+    static QGis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
 
     static QStringList connectionList();
     static QString selectedConnection();
@@ -258,7 +271,7 @@ class QgsPostgresConn : public QObject
     static void deleteConnection( QString theConnName );
 
   private:
-    QgsPostgresConn( QString conninfo, bool readOnly );
+    QgsPostgresConn( QString conninfo, bool readOnly, bool shared );
     ~QgsPostgresConn();
 
     int mRef;
@@ -319,6 +332,11 @@ class QgsPostgresConn : public QObject
      */
     bool mSwapEndian;
     void deduceEndian();
+
+    int mNextCursorId;
+
+    bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
 };
+
 
 #endif

@@ -36,9 +36,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgspluginlayer.h"
 #include "qgsproviderregistry.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
@@ -73,16 +76,11 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
-  mpCacheImage = 0;
 }
 
 QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
-  if ( mpCacheImage )
-  {
-    delete mpCacheImage;
-  }
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -579,6 +577,63 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
 } // bool QgsMapLayer::writeXML
 
+QDomDocument QgsMapLayer::asLayerDefinition ()
+{
+  QDomDocument doc( "qgis-layer-definition");
+  QDomElement maplayer = doc.createElement( "maplayer" );
+  this->writeLayerXML( maplayer, doc );
+  maplayer.removeChild( maplayer.firstChildElement( "id" ) );
+  doc.appendChild( maplayer );
+  return doc;
+}
+
+QgsMapLayer* QgsMapLayer::fromLayerDefinition( QDomDocument& document )
+{
+  QDomNode layernode = document.elementsByTagName( "maplayer" ).at(0);
+  QDomElement layerElem = layernode.toElement();
+
+  QString type = layerElem.attribute( "type" );
+  QgsDebugMsg(type);
+  QgsMapLayer *layer = NULL;
+
+  if ( type == "vector" )
+  {
+    layer = new QgsVectorLayer;
+  }
+  else if ( type == "raster" )
+  {
+    layer = new QgsRasterLayer;
+  }
+  else if ( type == "plugin" )
+  {
+    QString typeName = layerElem.attribute( "name" );
+    layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+  }
+
+  bool ok = layer->readLayerXML( layerElem );
+  if ( ok )
+    return layer;
+}
+
+QgsMapLayer* QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
+{
+  QFile file( qlrfile );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg("Can't open file");
+    return 0;
+  }
+
+  QDomDocument doc;
+  if ( !doc.setContent( &file ) )
+  {
+    QgsDebugMsg("Can't set content");
+    return 0;
+  }
+
+  return QgsMapLayer::fromLayerDefinition( doc );
+}
+
 
 bool QgsMapLayer::writeXml( QDomNode & layer_node, QDomDocument & document )
 {
@@ -628,7 +683,7 @@ void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
   mScaleBasedVisibility = theVisibilityFlag;
 }
 
-bool QgsMapLayer::hasScaleBasedVisibility()
+bool QgsMapLayer::hasScaleBasedVisibility() const
 {
   return mScaleBasedVisibility;
 }
@@ -638,7 +693,7 @@ void QgsMapLayer::setMinimumScale( float theMinScale )
   mMinScale = theMinScale;
 }
 
-float QgsMapLayer::minimumScale()
+float QgsMapLayer::minimumScale() const
 {
   return mMinScale;
 }
@@ -649,7 +704,7 @@ void QgsMapLayer::setMaximumScale( float theMaxScale )
   mMaxScale = theMaxScale;
 }
 
-float QgsMapLayer::maximumScale()
+float QgsMapLayer::maximumScale() const
 {
   return mMaxScale;
 }
@@ -1334,20 +1389,6 @@ void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & do
   layerNode.appendChild( propsElement );
 }
 
-void QgsMapLayer::setCacheImage( QImage * thepImage )
-{
-  QgsDebugMsg( "cache Image set!" );
-  if ( mpCacheImage == thepImage )
-    return;
-
-  if ( mpCacheImage )
-  {
-    onCacheImageDelete();
-    delete mpCacheImage;
-  }
-  mpCacheImage = thepImage;
-}
-
 bool QgsMapLayer::isEditable() const
 {
   return false;
@@ -1360,7 +1401,6 @@ void QgsMapLayer::setValid( bool valid )
 
 void QgsMapLayer::clearCacheImage()
 {
-  setCacheImage( 0 );
 }
 
 QString QgsMapLayer::metadata()

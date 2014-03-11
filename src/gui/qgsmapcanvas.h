@@ -32,6 +32,8 @@
 #include <QGraphicsView>
 #include <QtCore>
 
+#include "qgsmapsettings.h" // TEMPORARY
+
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #endif
@@ -56,7 +58,11 @@ class QgsLegendView;
 class QgsHighlight;
 class QgsVectorLayer;
 
+class QgsLabelingResults;
 class QgsMapRenderer;
+class QgsMapRendererCache;
+class QgsMapRendererQImageJob;
+class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
@@ -114,22 +120,72 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void setCurrentLayer( QgsMapLayer* layer );
 
+    // ### QGIS 3: make QgsMapCanvas independent from overview
     void updateOverview();
 
+    // ### QGIS 3: make QgsMapCanvas independent from overview
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
+    //! Get access to properties used for map rendering
+    //! @note added in 2.4
+    const QgsMapSettings& mapSettings() const;
+
+    //! sets whether to use projections for this layer set
+    //! @note added in 2.4
+    void setCrsTransformEnabled( bool enabled );
+
+    //! sets destination coordinate reference system
+    //! @note added in 2.4
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    //! Get access to the labeling results (may be null)
+    //! @note added in 2.4
+    const QgsLabelingResults* labelingResults() const;
+
+    //! Set whether to cache images of rendered layers
+    //! @note added in 2.4
+    void setCachingEnabled( bool enabled );
+
+    //! Check whether images of rendered layers are curerently being cached
+    //! @note added in 2.4
+    bool isCachingEnabled() const;
+
+    //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
+    //! @note added in 2.4
+    void clearCache();
+
+    //! Set whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.4
+    void setParallelRenderingEnabled( bool enabled );
+
+    //! Check whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.4
+    bool isParallelRenderingEnabled() const;
+
+    //! Set how often map preview should be updated while it is being rendered (in miliseconds)
+    //! @note added in 2.4
+    void setMapUpdateInterval( int timeMiliseconds );
+
+    //! Find out how often map preview should be updated while it is being rendered (in miliseconds)
+    //! @note added in 2.4
+    int mapUpdateInterval() const;
+
+    //! @deprecated since 2.4 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
-    QgsMapRenderer* mapRenderer();
+    //! @deprecated since 2.4 - use mapRendererSettings() for anything related to current renderer settings
+    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas paint device
-    QPaintDevice &canvasPaintDevice();
+    //! @deprecated since 2.4
+    Q_DECL_DEPRECATED QPaintDevice &canvasPaintDevice();
 
     //! Get the last reported scale of the canvas
     double scale();
 
     //! Clear the map canvas
-    void clear();
+    //! @deprecated since 2.4 - use refresh() - clear does the same thing
+    Q_DECL_DEPRECATED void clear();
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -181,11 +237,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Read property of QColor bgColor. */
     virtual QColor canvasColor() const;
 
+    /** Set color of selected vector features */
+    //! @note added in 2.4
+    void setSelectionColor( const QColor& color );
+
     /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
     /** Updates the full extent */
-    void updateFullExtent();
+    //! @deprecated since v2.4 - does nothing
+    Q_DECL_DEPRECATED void updateFullExtent() {}
 
     //! return the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
@@ -207,10 +268,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
-    void setDirty( bool _dirty );
+    //! @deprecated since 2.4 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
+    Q_DECL_DEPRECATED void setDirty( bool _dirty );
 
     //! Return the state of the canvas (dirty or not)
-    bool isDirty() const;
+    //! @deprecated since 2.4 - dirty flag is not kept anymore - always returns false
+    Q_DECL_DEPRECATED bool isDirty() const;
 
     //! Set map units (needed by project properties dialog)
     void setMapUnits( QGis::UnitType mapUnits );
@@ -221,7 +284,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
 
-    //! true if canvas currently drawing
+    //! Find out whether rendering is in progress
     bool isDrawing();
 
     //! returns current layer (set by legend widget)
@@ -250,10 +313,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void enableAntiAliasing( bool theFlag );
 
     //! true if antialising is enabled
-    bool antiAliasingEnabled() const { return mAntiAliasing; }
+    bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! Select which Qt class to render with
-    void useImageToRender( bool theFlag );
+    //! @deprecated since 2.4 - does nothing because now we always render to QImage
+    Q_DECL_DEPRECATED void useImageToRender( bool theFlag );
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -288,14 +352,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();
 
-    /** The map units may have changed, so cope with that */
-    void mapUnitsChanged();
+    //! @deprecated in 2.4 - does nothing - kept for API compatibility
+    Q_DECL_DEPRECATED void updateMap();
 
-    /** updates pixmap on render progress */
-    void updateMap();
+    //! stop rendering (if there is any right now)
+    //! @note added in 2.4
+    void stopRendering();
 
-    //! show whatever error is exposed by the QgsMapLayer.
-    void showError( QgsMapLayer * mapLayer );
+    //! @deprecated since 2.4 - does nothing - errors are reported by different means
+    Q_DECL_DEPRECATED void showError( QgsMapLayer * mapLayer );
 
     //! called to read map canvas settings from project
     void readProject( const QDomDocument & );
@@ -310,9 +375,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when current maptool is destroyed
     void mapToolDestroyed();
 
+    //! called when a renderer job has finished successfully or when it was cancelled
+    void rendererJobFinished();
+
+    void mapUpdateTimeout();
+
+    void refreshMap();
+
+    //! Layer says something has changed that affects its appearance
+    void layerRequestedRepaint();
+
   signals:
     /** Let the owner know how far we are with render operations */
-    void setProgress( int, int );
+    //! @deprecated since 2.4 - already unused in 2.0 anyway
+    Q_DECL_DEPRECATED void setProgress( int, int );
 
     /** emits current mouse position
         \note changed in 1.3 */
@@ -332,15 +408,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      being rendered onto a pixmap other than the mapCanvas own pixmap member.
 
     */
+    //! TODO: deprecate when decorations are reimplemented as map canvas items
+    //! - anything related to rendering progress is not visible outside of map canvas
+    //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
     void renderComplete( QPainter * );
 
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    void mapCanvasRefreshed();
+    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
+    Q_DECL_DEPRECATED void mapCanvasRefreshed();
 
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    void renderStarting();
+    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
+    Q_DECL_DEPRECATED void renderStarting();
 
     //! Emitted when a new set of layers has been received
     void layersChanged();
@@ -354,6 +435,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool *tool );
 
+    // ### QGIS 3: remove the signal
     //! Emitted when selection in any layer gets changed
     void selectionChanged( QgsMapLayer * layer );
 
@@ -364,6 +446,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when zoom next status changed
     //! @note: this signal was added in version 1.4
     void zoomNextStatusChanged( bool );
+
+    //! Emitted when on-the-fly projection has been turned on/off
+    //! @note added in 2.4
+    void hasCrsTransformEnabledChanged( bool flag );
+
+    //! Emitted when map CRS has changed
+    //! @note added in 2.4
+    void destinationCrsChanged();
+
+    //! Emmitted when map units are changed
+    //! @note added in 2.4
+    void mapUnitsChanged();
 
   protected:
 #ifdef HAVE_TOUCH
@@ -418,9 +512,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     void connectNotify( const char * signal );
 
-  private slots:
-    void crsTransformEnabled( bool );
-
   private:
     /// this class is non-copyable
     /**
@@ -431,6 +522,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsMapCanvas( QgsMapCanvas const & );
 
+    //! encompases all map settings necessary for map rendering
+    QgsMapSettings mSettings;
+
     //! all map rendering is done in this class
     QgsMapRenderer* mMapRenderer;
 
@@ -440,32 +534,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! map overview widget - it's controlled by QgsMapCanvas
     QgsMapOverviewCanvas* mMapOverview;
 
-    //! If backbuffering is currently enabled
-    bool mBackbufferEnabled;
-    //! Flag indicating a map refresh is in progress
-    bool mDrawing;
-
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen;
 
-    /*! \brief Flag to track the state of the Map canvas.
-     *
-     * The canvas is
-     * flagged as dirty by any operation that changes the state of
-     * the layers or the view extent. If the canvas is not dirty, paint
-     * events are handled by bit-blitting the stored canvas bitmap to
-     * the canvas. This improves performance by not reading the data source
-     * when no real change has occurred
-     */
-    bool mDirty;
+    //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
+    bool mRefreshScheduled;
 
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
-
-    /**Resize events that have been ignored because the canvas is busy with
-       rendering may put their sizes into this list. The canvas then picks up
-       the last entry in case a lot of resize events arrive in short time*/
-    QList< QPair<int, int> > mResizeQueue;
 
     //! current layer in legend
     QgsMapLayer* mCurrentLayer;
@@ -489,15 +565,66 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Mouse wheel action
     WheelAction mWheelAction;
 
-    //! resize canvas size
-    QSize mNewSize;
+    //! Timer that periodically fires while map rendering is in progress to update the visible map
+    QTimer mMapUpdateTimer;
 
-    //! currently in paint event
-    bool mPainting;
+    //! Job that takes care of map rendering in background
+    QgsMapRendererQImageJob* mJob;
 
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
+    //! Flag determining whether the active job has been cancelled
+    bool mJobCancelled;
+
+    //! Labeling results from the recently rendered map
+    QgsLabelingResults* mLabelingResults;
+
+    //! Whether layers are rendered sequentially or in parallel
+    bool mUseParallelRendering;
+
+    //! Whether to add rendering stats to the rendered image
+    bool mDrawRenderingStats;
+
+    //! Optionally use cache with rendered map layers for the current map settings
+    QgsMapRendererCache* mCache;
+
+
+    QTimer *mResizeTimer;
 }; // class QgsMapCanvas
+
+
+
+
+/** Class that does synchronization between QgsMapCanvas and its associated QgsMapRenderer:
+ *   - changes done in map canvas settings are pushed to map renderer
+ *   - changes done in map renderer are pushed to map canvas settings
+ *
+ * This class can be removed within API cleanup when QgsMapRenderer will not be accessible from canvas API anymore.
+ * Added in 2.4. This class is not a part of public API!
+ */
+class QgsMapCanvasRendererSync : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer );
+
+  protected slots:
+    void onExtentC2R();
+    void onExtentR2C();
+
+    void onMapUnitsC2R();
+    void onMapUnitsR2C();
+
+    void onCrsTransformC2R();
+    void onCrsTransformR2C();
+
+    void onDestCrsC2R();
+    void onDestCrsR2C();
+
+    void onLayersC2R();
+
+  protected:
+    QgsMapCanvas* mCanvas;
+    QgsMapRenderer* mRenderer;
+};
 
 
 #endif

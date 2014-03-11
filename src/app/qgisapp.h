@@ -52,7 +52,6 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
-class QgsPalLabeling;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -178,9 +177,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Return the messageBar object which allows to display unobtrusive messages to the user.*/
     QgsMessageBar* messageBar();
-
-    /** Get the mapcanvas object from the app */
-    QgsPalLabeling *palLabeling();
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
@@ -338,7 +334,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** @note added in 1.9 */
     QAction *actionCancelAllEdits() { return mActionCancelAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
-    QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     /** @note added in 1.9 */
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
@@ -447,6 +442,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
+
+    /** @note added in 2.1 */
+    static QString normalizedMenuName( const QString & name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
 
 #ifdef Q_OS_WIN
     //! ugly hack
@@ -622,6 +620,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Opens the options dialog
     void showOptionsDialog( QWidget *parent = 0, QString currentPage = QString() );
 
+    /** Refreshes the state of the layer actions toolbar action
+      * @note added in 2.1 */
+    void refreshActionFeatureAction();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -686,7 +688,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to handle user center input;
     void userCenter();
     //! Remove a layer from the map and legend
-    void removeLayer( bool promptConfirmation = true );
+    void removeLayer();
     /** Duplicate map layer(s) in legend
      * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
@@ -835,6 +837,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveWindowState();
     //! Restore the window and toolbar state
     void restoreWindowState();
+    //! Restore the default window and toolbar state
+    void restoreDefaultWindowState();
     //! Save project. Returns true if the user selected a file to save to, false if not.
     bool fileSave();
     //! Save project as
@@ -1013,8 +1017,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showStatusMessage( QString theMessage );
     void updateMouseCoordinatePrecision();
     void hasCrsTransformEnabled( bool theFlag );
-    void destinationSrsChanged();
+    void destinationCrsChanged();
     //    void debugHook();
+    //! Add a Layer Definition file
+    void addLayerDefinition ();
     //! Add a vector layer to the map
     void addVectorLayer();
     //! Exit Qgis
@@ -1082,7 +1088,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! save current vector layer
     void saveAsFile();
-    void saveSelectionAsVectorFile();
+
+    void saveAsLayerDefinition();
 
     //! save current raster layer
     void saveAsRasterFile();
@@ -1255,7 +1262,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
 
-    void saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* vlayer = 0, bool symbologyOption = true );
+    void saveAsVectorFileGeneral( QgsVectorLayer* vlayer = 0, bool symbologyOption = true );
 
     /** Paste features from clipboard into a new memory layer.
      *  If no features are in clipboard an empty layer is returned.
@@ -1404,8 +1411,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QCheckBox * mRenderSuppressionCBox;
     //! A toggle to switch between mouse coords and view extents display
     QToolButton * mToggleExtentsViewButton;
-    //! Button used to stop rendering
-    QToolButton* mStopRenderButton;
     //! Widget in status bar used to show current project CRS
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
@@ -1436,7 +1441,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QRect *mMapWindow;
     //! The previously selected non zoom map tool.
     int mPreviousNonZoomMapTool;
-    //QCursor *mCursorZoomIn; //doesnt seem to be used anymore (TS)
     QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
     QString mFullPathName;
@@ -1450,9 +1454,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QStringList mRecentProjectPaths;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
-    //! How to determine the number of decimal places used to
-    //! display the mouse position
-    bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
     /** QGIS-internal vector feature clipboard */
@@ -1522,8 +1523,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGPSInformationWidget * mpGpsWidget;
 
     QgsMessageLogViewer *mLogViewer;
-
-    QgsPalLabeling* mLBL;
 
     //! project changed
     void projectChanged( const QDomDocument & );

@@ -16,7 +16,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
 
@@ -29,6 +29,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    //! @note not available in python bindings
     // QgsLegendSymbolList legendSymbolItems();
 
     void setLabelAttributeName( const QString& name );
@@ -38,6 +39,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
     QgsFeatureRendererV2* embeddedRenderer();
 
+    //! not available in python bindings
     // void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
 
     void setLabelFont( const QFont& f );
@@ -65,4 +67,8 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     void setTolerance( double t );
     double tolerance() const;
+
+  private:
+    QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
+    QgsPointDisplacementRenderer & operator=( const QgsPointDisplacementRenderer & );
 };

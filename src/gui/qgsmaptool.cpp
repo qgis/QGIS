@@ -47,17 +47,17 @@ QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QPoint& point
 
 QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point )
 {
-  return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, point );
+  return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
 }
 
 QgsPoint QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point )
 {
-  return mCanvas->mapRenderer()->layerToMapCoordinates( layer, point );
+  return mCanvas->mapSettings().layerToMapCoordinates( layer, point );
 }
 
 QgsRectangle QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect )
 {
-  return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, rect );
+  return mCanvas->mapSettings().mapToLayerCoordinates( layer, rect );
 }
 
 QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint& point )

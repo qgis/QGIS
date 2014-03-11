@@ -27,9 +27,11 @@
 #include <QPixmap>
 
 class QgsMapCanvas;
-class QgsMapRenderer;
 class QgsPanningWidget; // defined in .cpp
 class QgsRectangle;
+
+class QgsMapRendererQImageJob;
+#include "qgsmapsettings.h"
 
 /** \ingroup gui
  * A widget that displays an overview map.
@@ -43,9 +45,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     ~QgsMapOverviewCanvas();
 
-    //! used for overview canvas to reflect changed extent in main map canvas
-    void drawExtentRect();
-
     //! renders overview and updates panning widget
     void refresh();
 
@@ -55,17 +54,26 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! updates layer set for overview
     void setLayerSet( const QStringList& layerSet );
 
-    QStringList& layerSet();
+    QStringList layerSet() const;
 
-    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+    void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
 
     void updateFullExtent();
 
   public slots:
 
+    // ### QGIS 3: make protected
+    //! used for overview canvas to reflect changed extent in main map canvas
+    void drawExtentRect();
+
+    // ### QGIS 3: rename so it does not look like getter, make protected
     void hasCrsTransformEnabled( bool flag );
 
+    // ### QGIS 3: rename Srs to Crs, make protected
     void destinationSrsChanged();
+
+  protected slots:
+    void mapRenderingFinished();
 
   protected:
 
@@ -96,20 +104,14 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! main map canvas - used to get/set extent
     QgsMapCanvas* mMapCanvas;
 
-    //! for rendering overview
-    QgsMapRenderer* mMapRenderer;
-
     //! pixmap where the map is stored
     QPixmap mPixmap;
 
-    //! background color
-    QColor mBgColor;
+    //! map settings used for rendering of the overview map
+    QgsMapSettings mSettings;
 
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
-
-    //! resized canvas size
-    QSize mNewSize;
+    //! for rendering overview
+    QgsMapRendererQImageJob* mJob;
 };
 
 #endif

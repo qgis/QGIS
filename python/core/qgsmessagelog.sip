@@ -15,7 +15,7 @@ class QgsMessageLog : QObject
     };
 
     //! add a message to the instance (and create it if necessary)
-    static void logMessage( QString message, QString tag = QString::null, MessageLevel level = WARNING);
+    static void logMessage( QString message, QString tag = QString::null, MessageLevel level = WARNING );
 
   signals:
     void messageReceived( QString message, QString tag, MessageLevel level );

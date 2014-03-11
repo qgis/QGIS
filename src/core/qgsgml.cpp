@@ -44,6 +44,7 @@ QgsGml::QgsGml(
     , mCurrentFeature( 0 )
     , mFeatureCount( 0 )
     , mCurrentWKBSize( 0 )
+    , mEpsg( 0 )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
@@ -207,6 +208,7 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
   {
     mParseModeStack.push( QgsGml::coordinate );
+    mCoorMode = QgsGml::coordinate;
     mStringCash.clear();
     mCoordinateSeparator = readAttribute( "cs", attr );
     if ( mCoordinateSeparator.isEmpty() )
@@ -217,6 +219,20 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
     if ( mTupleSeparator.isEmpty() )
     {
       mTupleSeparator = " ";
+    }
+  }
+  if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "pos"
+       || elementName == GML_NAMESPACE + NS_SEPARATOR + "posList" )
+  {
+    mParseModeStack.push( QgsGml::posList );
+    mCoorMode = QgsGml::posList;
+    mStringCash.clear();
+    QString dimension = readAttribute( "srsDimension", attr );
+    bool ok;
+    mDimension = dimension.toInt( &ok );
+    if ( dimension.isEmpty() || !ok )
+    {
+      mDimension = 2;
     }
   }
   else if ( localName == mGeometryAttribute )
@@ -276,6 +292,21 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
     mAttributeName = localName;
     mStringCash.clear();
   }
+
+
+  if ( mEpsg == 0 && ( localName == "Point" || localName == "MultiPoint" ||
+                       localName == "LineString" || localName == "MultiLineString" ||
+                       localName == "Polygon" || localName == "MultiPolygon" ) )
+  {
+    if ( readEpsgFromAttribute( mEpsg, attr ) != 0 )
+    {
+      QgsDebugMsg( "error, could not get epsg id" );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "mEpsg = %1" ).arg( mEpsg ) );
+    }
+  }
 }
 
 void QgsGml::endElement( const XML_Char* el )
@@ -286,7 +317,10 @@ void QgsGml::endElement( const XML_Char* el )
   QString localName = splitName.last();
   QString ns = splitName.size() > 1 ? splitName.first() : "";
 
-  if ( theParseMode == coordinate && elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
+  if (( theParseMode == coordinate && elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
+      || ( theParseMode == posList && (
+             elementName == GML_NAMESPACE + NS_SEPARATOR + "posList"
+             || elementName == GML_NAMESPACE + NS_SEPARATOR + "posList" ) ) )
   {
     mParseModeStack.pop();
   }
@@ -361,7 +395,7 @@ void QgsGml::endElement( const XML_Char* el )
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Point" )
   {
     QList<QgsPoint> pointList;
-    if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
+    if ( pointsFromString( pointList, mStringCash ) != 0 )
     {
       //error
     }
@@ -405,7 +439,7 @@ void QgsGml::endElement( const XML_Char* el )
     //add WKB point to the feature
 
     QList<QgsPoint> pointList;
-    if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
+    if ( pointsFromString( pointList, mStringCash ) != 0 )
     {
       //error
     }
@@ -445,7 +479,7 @@ void QgsGml::endElement( const XML_Char* el )
   else if (( theParseMode == geometry || theParseMode == multiPolygon ) && elementName == GML_NAMESPACE + NS_SEPARATOR + "LinearRing" )
   {
     QList<QgsPoint> pointList;
-    if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
+    if ( pointsFromString( pointList, mStringCash ) != 0 )
     {
       //error
     }
@@ -506,7 +540,7 @@ void QgsGml::characters( const XML_Char* chars, int len )
   }
 
   QgsGml::ParseMode theParseMode = mParseModeStack.top();
-  if ( theParseMode == QgsGml::attribute || theParseMode == QgsGml::coordinate )
+  if ( theParseMode == QgsGml::attribute || theParseMode == QgsGml::coordinate || theParseMode == QgsGml::posList )
   {
     mStringCash.append( QString::fromUtf8( chars, len ) );
   }
@@ -604,6 +638,48 @@ int QgsGml::pointsFromCoordinateString( QList<QgsPoint>& points, const QString& 
     points.push_back( QgsPoint( x, y ) );
   }
   return 0;
+}
+
+int QgsGml::pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const
+{
+  // coordinates separated by spaces
+  QStringList coordinates = coordString.split( " ", QString::SkipEmptyParts );
+
+  if ( coordinates.size() % dimension != 0 )
+  {
+    QgsDebugMsg( "Wrong number of coordinates" );
+  }
+
+  int ncoor = coordinates.size() / dimension;
+  for ( int i = 0; i < ncoor; i++ )
+  {
+    bool conversionSuccess;
+    double x = coordinates.value( i * dimension ).toDouble( &conversionSuccess );
+    if ( !conversionSuccess )
+    {
+      continue;
+    }
+    double y = coordinates.value( i * dimension + 1 ).toDouble( &conversionSuccess );
+    if ( !conversionSuccess )
+    {
+      continue;
+    }
+    points.append( QgsPoint( x, y ) );
+  }
+  return 0;
+}
+
+int QgsGml::pointsFromString( QList<QgsPoint>& points, const QString& coordString ) const
+{
+  if ( mCoorMode == QgsGml::coordinate )
+  {
+    return pointsFromCoordinateString( points, coordString );
+  }
+  else if ( mCoorMode == QgsGml::posList )
+  {
+    return pointsFromPosListString( points, coordString, mDimension );
+  }
+  return 1;
 }
 
 int QgsGml::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& point ) const
@@ -883,4 +959,14 @@ void QgsGml::calculateExtentFromFeatures()
       }
     }
   }
+}
+
+QgsCoordinateReferenceSystem QgsGml::crs() const
+{
+  QgsCoordinateReferenceSystem crs;
+  if ( mEpsg != 0 )
+  {
+    crs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( mEpsg ) );
+  }
+  return crs;
 }

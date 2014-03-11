@@ -34,4 +34,5 @@ class QgsRasterPyramidsOptionsWidget: QWidget
 
   signals:
     void overviewListChanged();
+    void someValueChanged(); /* emitted when any other setting changes */
 };

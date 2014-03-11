@@ -15,5 +15,7 @@ class QgsNewHttpConnection : QDialog
 
     void on_txtName_textChanged( const QString & );
 
+    void on_txtUrl_textChanged( const QString & );
+
     void on_buttonBox_helpRequested();
 };

@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -134,7 +125,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="mMapRotationLabel">
             <property name="text">
-             <string>Map Rotation</string>
+             <string>Map rotation</string>
             </property>
            </widget>
           </item>
@@ -376,7 +367,7 @@
                  <string>X </string>
                 </property>
                 <property name="decimals">
-                 <number>5</number>
+                 <number>12</number>
                 </property>
                 <property name="maximum">
                  <double>9999999.000000000000000</double>
@@ -389,7 +380,7 @@
                  <string>Y </string>
                 </property>
                 <property name="decimals">
-                 <number>5</number>
+                 <number>12</number>
                 </property>
                 <property name="maximum">
                  <double>9999999.000000000000000</double>
@@ -419,7 +410,7 @@
                  <string>X </string>
                 </property>
                 <property name="decimals">
-                 <number>5</number>
+                 <number>12</number>
                 </property>
                 <property name="maximum">
                  <double>9999999.000000000000000</double>
@@ -432,7 +423,7 @@
                  <string>Y </string>
                 </property>
                 <property name="decimals">
-                 <number>5</number>
+                 <number>12</number>
                 </property>
                 <property name="maximum">
                  <double>9999999.000000000000000</double>

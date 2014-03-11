@@ -239,6 +239,42 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
+void QgsExpressionBuilderWidget::saveToRecent( QString key )
+{
+  QSettings settings;
+  QString location = QString( "/expressions/recent/%1" ).arg( key );
+  QStringList expressions = settings.value( location ).toStringList();
+  expressions.removeAll( this->expressionText() );
+
+  expressions.prepend( this->expressionText() );
+
+  while ( expressions.count() > 20 )
+  {
+    expressions.pop_back();
+  }
+
+  settings.setValue( location, expressions );
+  this->loadRecent( key );
+}
+
+void QgsExpressionBuilderWidget::loadRecent( QString key )
+{
+  QString name = tr( "Recent (%1)" ).arg( key );
+  if ( mExpressionGroups.contains( name ) )
+  {
+    QgsExpressionItem* node = mExpressionGroups.value( name );
+    node->removeRows( 0, node->rowCount() );
+  }
+
+  QSettings settings;
+  QString location = QString( "/expressions/recent/%1" ).arg( key );
+  QStringList expressions = settings.value( location ).toStringList();
+  foreach ( QString expression, expressions )
+  {
+    this->registerItem( name, expression, expression, expression );
+  }
+}
+
 void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 {
   mDa = da;
@@ -281,7 +317,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( !mFeature.isValid() )
     {
-      mLayer->getFeatures( QgsFeatureRequest().setFlags(( mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ).nextFeature( mFeature );
+      mLayer->getFeatures().nextFeature( mFeature );
     }
 
     if ( mFeature.isValid() )

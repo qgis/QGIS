@@ -40,11 +40,19 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QColor borderColor() const;
     void setBorderColor( QColor borderColor );
 
-    virtual QColor outlineColor() const;
-    virtual void setOutlineColor( const QColor& color );
-    
-    virtual QColor fillColor() const;
-    virtual void setFillColor( const QColor& color );
+    /** Get outline color.
+     * @note added in 2.1 */
+    QColor outlineColor() const;
+    /** Set outline color.
+     * @note added in 2.1 */
+    void setOutlineColor( const QColor& color );
+
+    /** Get fill color.
+     * @note added in 2.1 */
+    QColor fillColor() const;
+    /** Set fill color.
+     * @note added in 2.1 */
+    void setFillColor( const QColor& color );
 
     Qt::PenStyle borderStyle() const;
     void setBorderStyle( Qt::PenStyle borderStyle );
@@ -63,6 +71,12 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    double estimateMaxBleed() const;
+
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    Qt::PenStyle dxfPenStyle() const;
 };
 
 class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
@@ -106,6 +120,9 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
                                   GradientCoordinateMode coordinateMode = Feature,
                                   GradientSpread gradientSpread = Pad
                                 );
+
+    virtual ~QgsGradientFillSymbolLayerV2();
+
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
@@ -123,6 +140,8 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const /Factory/;
+
+    double estimateMaxBleed() const;
 
     /**Type of gradient, eg linear or radial*/
     GradientType gradientType() const;
@@ -195,6 +214,12 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+
+    virtual double estimateMaxBleed() const;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 };
 
 /**A class for svg fill patterns. The class automatically scales the pattern to
@@ -276,6 +301,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    double estimateMaxBleed() const;
+
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     //getters and setters
@@ -301,6 +328,10 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    bool setSubSymbol( QgsSymbolV2* symbol );
+    QgsSymbolV2* subSymbol();
+
 };
 
 class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
@@ -326,6 +357,8 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     QgsSymbolLayerV2* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    double estimateMaxBleed() const;
 
     //getters and setters
     double distanceX() const;
@@ -357,6 +390,8 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    virtual QSet<QString> usedAttributes() const;
 
   protected:
     void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
@@ -400,4 +435,6 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    virtual QSet<QString> usedAttributes() const;
 };

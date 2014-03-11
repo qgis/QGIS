@@ -20,6 +20,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgsapplication.h"
 #include "qgscapabilitiescache.h"
 #include "qgsconfigcache.h"
+#include "qgsfontutils.h"
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
 #include "qgssoaprequesthandler.h"
@@ -175,17 +176,10 @@ int main( int argc, char * argv[] )
   QgsApplication qgsapp( argc, argv, getenv( "DISPLAY" ) );
 
   //Default prefix path may be altered by environment variable
-  char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
-  if ( prefixPath )
-  {
-    QgsApplication::setPrefixPath( prefixPath, TRUE );
-  }
+  QgsApplication::init();
 #if !defined(Q_OS_WIN)
-  else
-  {
-    // init QGIS's paths - true means that all path will be inited from prefix
-    QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
-  }
+  // init QGIS's paths - true means that all path will be inited from prefix
+  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
 #endif
 
 #if defined(MAPSERVER_SKIP_ECW)
@@ -248,22 +242,12 @@ int main( int argc, char * argv[] )
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef QGSMSDEBUG
-  // load standard test font from testdata.qrc (for unit tests)
-  bool testFontLoaded = false;
-  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
-  if ( testFont.open( QIODevice::ReadOnly ) )
-  {
-    int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
-    testFontLoaded = ( fontID != -1 );
-  } // else app wasn't built with ENABLE_TESTS or not GUI app
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
   while ( fcgi_accept() >= 0 )
   {
     printRequestInfos(); //print request infos if in debug mode
-#ifdef QGSMSDEBUG
-    QgsDebugMsg( QString( "Test font %1 loaded from testdata.qrc" ).arg( testFontLoaded ? "" : "NOT " ) );
-#endif
 
     //use QgsGetRequestHandler in case of HTTP GET and QgsSOAPRequestHandler in case of HTTP POST
     QgsRequestHandler* theRequestHandler = 0;

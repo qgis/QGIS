@@ -139,7 +139,7 @@ class DL_Extrusion
     /**
      * Copies extrusion (deep copies) from another extrusion object.
      */
-    DL_Extrusion operator = ( const DL_Extrusion& extru )
+    DL_Extrusion &operator= ( const DL_Extrusion& extru )
     {
       setDirection( extru.direction[0], extru.direction[1], extru.direction[2] );
       setElevation( extru.elevation );

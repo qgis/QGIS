@@ -225,8 +225,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                                  .arg( pyramidSentence2 ).arg( pyramidSentence3 )
                                  .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
 
-  setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
-
   tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
 
@@ -402,7 +400,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
 
-  restoreOptionsBaseUi();
+  QString title = QString( tr( "Layer Properties - %1" ) ).arg( lyr->name() );
+  restoreOptionsBaseUi( title );
 } // QgsRasterLayerProperties ctor
 
 
@@ -520,7 +519,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
     {
       QgsDebugMsg( "renderer has widgetCreateFunction" );
       // Current canvas extent (used to calc min/max) in layer CRS
-      QgsRectangle myExtent = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer, myExtent );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
@@ -929,9 +928,6 @@ void QgsRasterLayerProperties::apply()
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );
-
-  //no need to delete the old one, maplayer will do it if needed
-  mRasterLayer->setCacheImage( 0 );
 
   //make sure the layer is redrawn
   mRasterLayer->triggerRepaint();
@@ -1461,9 +1457,10 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   {
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
 
-    QgsPoint myPoint = mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint );
+    const QgsMapSettings& ms = mMapCanvas->mapSettings();
+    QgsPoint myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
 
-    QgsRectangle myExtent = mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
+    QgsRectangle myExtent = ms.mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
     double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();
     int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
     int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;
@@ -1717,12 +1714,12 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 
 void QgsRasterLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
 {
-  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsRasterLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 {
-  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()

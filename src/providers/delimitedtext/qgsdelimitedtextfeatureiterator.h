@@ -19,9 +19,42 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 
-class QgsDelimitedTextProvider;
+#include "qgsdelimitedtextprovider.h"
 
-class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
+class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
+{
+  public:
+    QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
+    ~QgsDelimitedTextFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  protected:
+    QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
+    QgsExpression *mSubsetExpression;
+    QgsRectangle mExtent;
+    bool mUseSpatialIndex;
+    QgsSpatialIndex *mSpatialIndex;
+    bool mUseSubsetIndex;
+    QList<quintptr> mSubsetIndex;
+    QgsDelimitedTextFile *mFile;
+    QgsFields mFields;
+    int mFieldCount;  // Note: this includes field count for wkt field
+    int mXFieldIndex;
+    int mYFieldIndex;
+    int mWktFieldIndex;
+    bool mWktHasZM;
+    bool mWktHasPrefix;
+    QGis::GeometryType mGeometryType;
+    QString mDecimalPoint;
+    bool mXyDms;
+    QList<int> attributeColumns;
+
+    friend class QgsDelimitedTextFeatureIterator;
+};
+
+
+class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
 {
     enum IteratorMode
     {
@@ -30,7 +63,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
       FeatureIds
     };
   public:
-    QgsDelimitedTextFeatureIterator( QgsDelimitedTextProvider* p, const QgsFeatureRequest& request );
+    QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsDelimitedTextFeatureIterator();
 
@@ -40,16 +73,6 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close();
 
-    // Flags used by nextFeature function of QgsDelimitedTextProvider
-    bool testSubset() const { return mTestSubset; }
-    bool testGeometry() const { return mTestGeometry; }
-    bool loadGeometry() const { return mLoadGeometry; }
-    bool loadSubsetOfAttributes() const { return ! mTestSubset && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;}
-    bool scanningFile() const { return mMode == FileScan; }
-
-    // Pass through attribute subset
-    const QgsAttributeList &subsetOfAttributes() const { return mRequest.subsetOfAttributes(); }
-
     // Tests whether the geometry is required, given that testGeometry is true.
     bool wantGeometry( const QgsPoint & point ) const;
     bool wantGeometry( QgsGeometry *geom ) const;
@@ -58,7 +81,13 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
 
-    QgsDelimitedTextProvider* P;
+    bool setNextFeatureId( qint64 fid );
+
+    bool nextFeatureInternal( QgsFeature& feature );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens );
+    QgsGeometry* loadGeometryXY( const QStringList& tokens );
+    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
+
     QList<QgsFeatureId> mFeatureIds;
     IteratorMode mMode;
     long mNextId;

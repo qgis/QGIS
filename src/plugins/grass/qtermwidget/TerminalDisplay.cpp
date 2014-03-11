@@ -1567,13 +1567,12 @@ void TerminalDisplay::mousePressEvent( QMouseEvent* ev )
 
     emit isBusySelecting( true ); // Keep it steady...
     // Drag only when the Control key is hold
-    bool selected = false;
 
     // The receiver of the testIsSelected() signal will adjust
     // 'selected' accordingly.
     //emit testIsSelected(pos.x(), pos.y(), selected);
 
-    selected =  _screenWindow->isSelected( pos.x(), pos.y() );
+    bool selected =  _screenWindow->isSelected( pos.x(), pos.y() );
 
     if (( !_ctrlDrag || ev->modifiers() & Qt::ControlModifier ) && selected )
     {

@@ -18,63 +18,63 @@
 
 #include <QGraphicsRectItem>
 #include <QPixmap>
+#include <QTimer>
 
 #include <qgis.h>
+#include <qgsmaptopixel.h>
 
-class QgsMapRenderer;
+#include <qgsmapcanvasitem.h>
+
+class QgsMapSettings;
 class QgsMapCanvas;
 
 /** \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
  */
-class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
+class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, public QGraphicsRectItem
 {
   public:
 
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas* canvas );
 
-    //! resize canvas item and pixmap
-    void resize( QSize size );
+    ~QgsMapCanvasMap();
 
-    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+    //! @note added in 2.4
+    void setContent( const QImage& image, const QgsRectangle& rect );
 
-    void useImageToRender( bool flag ) { mUseQImageToRender = flag; }
+    //! @note added in 2.4
+    QImage contentImage() const { return mImage; }
 
-    //! renders map using QgsMapRenderer to mPixmap
-    void render();
+    virtual void paint( QPainter * painter );
 
-    void setBackgroundColor( const QColor& color ) { mBgColor = color; }
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void refresh() {}
 
-    void setPanningOffset( const QPoint& point );
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void resize( QSize size ) { Q_UNUSED( size ); }
 
-    QPaintDevice& paintDevice();
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void enableAntiAliasing( bool flag ) { Q_UNUSED( flag ); }
 
-    void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void render() {}
 
-    QRectF boundingRect() const;
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void setBackgroundColor( const QColor& color ) { Q_UNUSED( color ); }
 
-    //! Update contents - can be called while drawing to show the status.
-    //! Added in version 1.2
-    void updateContents();
+    //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
+    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point ) { Q_UNUSED( point ); }
+
+    //! @deprecated in 2.4
+    Q_DECL_DEPRECATED QPaintDevice& paintDevice();
+
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void updateContents() {}
 
   private:
 
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
-
-    //! Whether to use a QPixmap or a QImage for the rendering
-    bool mUseQImageToRender;
-
-    QPixmap mPixmap;
     QImage mImage;
-
-    //QgsMapRenderer* mRender;
-    QgsMapCanvas* mCanvas;
-
-    QColor mBgColor;
-
-    QPoint mOffset;
 };
 
 #endif

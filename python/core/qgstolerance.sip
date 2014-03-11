@@ -20,14 +20,40 @@ class QgsTolerance
     * The value is read from settings and transformed if necessary.
     * @return value of vertex tolerance in map units
     */
-    static double vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* renderer );
+    static double vertexSearchRadius( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
+
+    /**
+    * Static function to get vertex tolerance value for a layer.
+    * The value is read from settings and transformed if necessary.
+    * @return value of vertex tolerance in map units
+    */
+    //! @deprecated since 2.4 - use override with QgsMapSettings
+    static double vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* renderer ) /Deprecated/;
 
     /**
     * Static function to get default tolerance value for a layer.
     * The value is read from settings and transformed if necessary.
     * @return value of default tolerance in map units
     */
-    static double defaultTolerance( QgsMapLayer* layer, QgsMapRenderer* renderer );
+    static double defaultTolerance( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
+
+    /**
+    * Static function to get default tolerance value for a layer.
+    * The value is read from settings and transformed if necessary.
+    * @return value of default tolerance in map units
+    */
+    //! @deprecated since 2.4 - use override with QgsMapSettings
+    static double defaultTolerance( QgsMapLayer* layer, QgsMapRenderer* renderer ) /Deprecated/;
+
+    /**
+    * Static function to translate tolerance value into current map unit value
+    * @param tolerance tolerance value to be translated
+    * @param layer reference layer
+    * @param mapSettings settings of the map
+    * @param units type of units to be translated
+    * @return value of tolerance in map units
+    */
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, UnitType units = MapUnits );
 
     /**
     * Static function to translate tolerance value into current map unit value
@@ -37,6 +63,6 @@ class QgsTolerance
     * @param units type of units to be translated
     * @return value of tolerance in map units
     */
-    static double toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units = MapUnits );
-
+    //! @deprecated since 2.4 - use the override with QgsMapSettings
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units = MapUnits ) /Deprecated/;
 };

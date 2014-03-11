@@ -44,7 +44,7 @@ class QgsComposerMultiFrame: QObject
     void deleteFrames();
 
     /** Return the number of frames associated with this multiframeset.
-       @note added in 2.0, replaces nFrames
+    @note added in 2.0, replaces nFrames
     **/
     int frameCount() const;
     QgsComposerFrame* frame( int i );

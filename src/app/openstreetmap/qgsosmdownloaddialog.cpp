@@ -19,11 +19,13 @@
 #include <QMessageBox>
 #include <QPushButton>
 
+#include "qgis.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatetransform.h"
 
 #include "qgsosmdownload.h"
 
@@ -96,7 +98,22 @@ void QgsOSMDownloadDialog::setRectReadOnly( bool readonly )
 
 void QgsOSMDownloadDialog::onExtentCanvas()
 {
-  setRect( QgisApp::instance()->mapCanvas()->extent() );  // TODO: transform to WGS84
+  QgsRectangle r( QgisApp::instance()->mapCanvas()->extent() );
+
+  if ( QgisApp::instance()->mapCanvas()->hasCrsTransformEnabled() )
+  {
+    QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
+
+    QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
+    r = ct.transformBoundingBox( r );
+    if ( !r.isFinite() )
+    {
+      QMessageBox::information( this, tr( "OpenStreetMap download" ), tr( "Could not transform canvas extent." ) );
+      return;
+    }
+  }
+
+  setRect( r );
   setRectReadOnly( true );
   cboLayers->setEnabled( false );
 }
@@ -124,7 +141,14 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
   if ( !layer )
     return;
 
-  setRect( layer->extent() ); // TODO: transform to WGS84
+  QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
+
+  QgsCoordinateTransform ct( layer->crs(), dst );
+  QgsRectangle rect( ct.transformBoundingBox( layer->extent() ) );
+  if ( rect.isFinite() )
+    setRect( rect );
+  else
+    QMessageBox::information( this, tr( "OpenStreetMap download" ), tr( "Could not transform layer extent." ) );
 }
 
 void QgsOSMDownloadDialog::onBrowseClicked()

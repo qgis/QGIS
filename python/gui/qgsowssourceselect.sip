@@ -135,6 +135,7 @@ class QgsOWSSourceSelect : QDialog
     virtual void populateLayerList( );
 
     //! create an item including possible parents
+    //! @note not available in python bindings
     /*
     QgsNumericSortTreeWidgetItem *createItem( int id,
         const QStringList &names,

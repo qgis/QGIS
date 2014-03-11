@@ -112,35 +112,14 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
   {
     return false;
   }
-  QgsMapRenderer* mapRenderer = mMapCanvas->mapRenderer();
-  if ( !mapRenderer )
-  {
-    return false;
-  }
+  const QgsMapSettings& ms = mMapCanvas->mapSettings();
 
   context.setPainter( p );
   context.setRendererScale( mMapCanvas->scale() );
+  context.setScaleFactor( ms.outputDpi() / 25.4 );
+  context.setRasterScaleFactor( 1.0 );
 
-  int dpi = mapRenderer->outputDpi();
-  int painterDpi = p->device()->logicalDpiX();
-  double scaleFactor = 1.0;
-  double rasterScaleFactor = 1.0;
-
-  //little trick to find out if painting origines from composer or main map canvas
-  if ( data( 1 ).toString() == "composer" )
-  {
-    rasterScaleFactor = painterDpi / 25.4;
-    scaleFactor = dpi / 25.4;
-  }
-  else
-  {
-    if ( mapRenderer->outputUnits() == QgsMapRenderer::Millimeters )
-    {
-      scaleFactor = dpi / 25.4;
-    }
-  }
-  context.setScaleFactor( scaleFactor );
-  context.setRasterScaleFactor( rasterScaleFactor );
+  context.setForceVectorOutput( true );
   return true;
 }
 

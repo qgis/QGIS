@@ -34,6 +34,14 @@ class CORE_EXPORT QgsFontUtils
      */
     static bool fontFamilyOnSystem( const QString& family );
 
+    /** Check whether font family on system has specific style
+     * @param family The family to test
+     * @param style The style to test for
+     * @returns Whether family has style
+     * @note Added in QGIS 2.1
+     */
+    static bool fontFamilyHasStyle( const QString& family, const QString& style );
+
     /** Check whether font family is on system
      * @param family The family to test
      * @param chosen The actual family (possibly from different foundry) returned by system
@@ -51,6 +59,26 @@ class CORE_EXPORT QgsFontUtils
      */
     static bool updateFontViaStyle( QFont& f, const QString& fontstyle, bool fallback = false );
 
+    /** Get standard test font family
+     * @note Added in QGIS 2.1
+     */
+    static QString standardTestFontFamily();
+
+    /** Loads standard test fonts from filesystem or qrc resource
+     * @param loadstyles List of styles to load, e.g. All, Roman, Oblique, Bold, Bold Oblique
+     * @returns Whether any font was loaded
+     * @note Done by default on debug app/server startup to ensure fonts available for unit tests (Roman and Bold)
+     * @note Added in QGIS 2.1
+     */
+    static bool loadStandardTestFonts( QStringList loadstyles );
+
+    /** Get standard test font with specific style
+     * @param style Style to load, e.g. Roman, Oblique, Bold, Bold Oblique
+     * @param pointsize Font point size to set
+     * @returns QFont
+     * @note Added in QGIS 2.1
+     */
+    static QFont getStandardTestFont( const QString& style = "Roman", int pointsize = 12 );
 };
 
 #endif // QGSFONTUTILS_H

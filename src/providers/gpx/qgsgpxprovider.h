@@ -17,6 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSGPXPROVIDER_H
+#define QGSGPXPROVIDER_H
 
 #include "qgsvectordataprovider.h"
 #include "gpsdata.h"
@@ -46,6 +48,8 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual ~QgsGPXProvider();
 
     /* Functions inherited from QgsVectorDataProvider */
+
+    virtual QgsAbstractFeatureSource* featureSource() const;
 
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
@@ -127,8 +131,6 @@ class QgsGPXProvider : public QgsVectorDataProvider
     bool addFeature( QgsFeature& f );
 
 
-  private:
-
     enum DataType
     {
       WaypointType = 1,
@@ -143,6 +145,8 @@ class QgsGPXProvider : public QgsVectorDataProvider
     enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
                      CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
                  };
+
+  private:
 
     QgsGPSData* data;
 
@@ -172,6 +176,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     };
     wkbPoint mWKBpt;
 
-    friend class QgsGPXFeatureIterator;
-    QSet< QgsGPXFeatureIterator * > mActiveIterators;
+    friend class QgsGPXFeatureSource;
 };
+
+#endif

@@ -18,50 +18,64 @@
 #include <QPoint>
 #include <cmath>
 
-double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units )
+double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
 {
   if ( units == MapUnits )
   {
     return tolerance;
   }
-  double mapUnitsPerPixel = computeMapUnitPerPixel( layer, renderer );
+  double mapUnitsPerPixel = computeMapUnitPerPixel( layer, mapSettings );
   return tolerance * mapUnitsPerPixel;
 }
 
+double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units )
+{
+  return toleranceInMapUnits( tolerance, layer, renderer->mapSettings(), units );
+}
 
-double QgsTolerance::vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* renderer )
+double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   QSettings settings;
   double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
   UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
-  return toleranceInMapUnits( tolerance, layer, renderer, units );
+  return toleranceInMapUnits( tolerance, layer, mapSettings, units );
+}
+
+double QgsTolerance::vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* renderer )
+{
+  return vertexSearchRadius( layer, renderer->mapSettings() );
+}
+
+double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings& mapSettings )
+{
+  QSettings settings;
+  double tolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
+  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
+  return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
 
 double QgsTolerance::defaultTolerance( QgsMapLayer* layer, QgsMapRenderer* renderer )
 {
-  QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
-  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
-  return toleranceInMapUnits( tolerance, layer, renderer, units );
+  return defaultTolerance( layer, renderer->mapSettings() );
 }
 
 
-double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, QgsMapRenderer* renderer )
+double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSettings& mapSettings )
 {
-  if ( ! renderer->hasCrsTransformEnabled() )
+  if ( ! mapSettings.hasCrsTransformEnabled() )
   {
     // if the on-the-fly projections are not enabled, layer units pre pixel are the same as map units per pixel
-    return renderer->mapUnitsPerPixel();
+    return mapSettings.mapUnitsPerPixel();
   }
 
   // the layer is projected. Find out how many pixels are in one map unit - either horizontal and vertical direction
   // this check might not work correctly in some cases
   // (on a large area the pixels projected around "0,0" can have different properties from the actual point)
-  QgsPoint p1 = toLayerCoordinates( layer, renderer, QPoint( 0, 1 ) );
-  QgsPoint p2 = toLayerCoordinates( layer, renderer, QPoint( 0, 2 ) );
-  QgsPoint p3 = toLayerCoordinates( layer, renderer, QPoint( 1, 0 ) );
-  QgsPoint p4 = toLayerCoordinates( layer, renderer, QPoint( 2, 0 ) );
+  QgsPoint p1 = toLayerCoordinates( layer, mapSettings, QPoint( 0, 1 ) );
+  QgsPoint p2 = toLayerCoordinates( layer, mapSettings, QPoint( 0, 2 ) );
+  QgsPoint p3 = toLayerCoordinates( layer, mapSettings, QPoint( 1, 0 ) );
+  QgsPoint p4 = toLayerCoordinates( layer, mapSettings, QPoint( 2, 0 ) );
   double x = p1.sqrDist( p2 );
   double y = p3.sqrDist( p4 );
   if ( x > y )
@@ -75,8 +89,8 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, QgsMapRenderer*
 }
 
 
-QgsPoint QgsTolerance::toLayerCoordinates( QgsMapLayer* layer, QgsMapRenderer* renderer, const QPoint& point )
+QgsPoint QgsTolerance::toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, const QPoint& point )
 {
-  QgsPoint pt = renderer->coordinateTransform()->toMapCoordinates( point );
-  return renderer->mapToLayerCoordinates( layer, pt );
+  QgsPoint pt = mapSettings.mapToPixel().toMapCoordinates( point );
+  return mapSettings.mapToLayerCoordinates( layer, pt );
 }

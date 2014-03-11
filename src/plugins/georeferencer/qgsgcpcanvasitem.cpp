@@ -186,20 +186,17 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
   double mapUnitsPerScreenPixel = mMapCanvas->mapUnitsPerPixel();
   double mapUnitsPerRasterPixel = 1.0;
 
-  if ( mMapCanvas->mapRenderer() )
+  QStringList canvasLayers = mMapCanvas->mapSettings().layers();
+  if ( canvasLayers.size() > 0 )
   {
-    QStringList canvasLayers = mMapCanvas->mapRenderer()->layerSet();
-    if ( canvasLayers.size() > 0 )
+    QString layerId = canvasLayers.at( 0 );
+    QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    if ( mapLayer )
     {
-      QString layerId = canvasLayers.at( 0 );
-      QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-      if ( mapLayer )
+      QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( mapLayer );
+      if ( rasterLayer )
       {
-        QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( mapLayer );
-        if ( rasterLayer )
-        {
-          mapUnitsPerRasterPixel = rasterLayer->rasterUnitsPerPixelX();
-        }
+        mapUnitsPerRasterPixel = rasterLayer->rasterUnitsPerPixelX();
       }
     }
   }

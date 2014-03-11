@@ -32,7 +32,6 @@
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
 {
-  mRender = 0;
   mRubberBand = 0;
   mShowPinned = false;
 
@@ -145,13 +144,14 @@ void QgsMapToolPinLabels::highlightLabel( QgsVectorLayer* vlayer,
 {
   QgsRectangle rect = labelpos.labelRect;
 
-  if ( vlayer->crs().isValid() && mRender->destinationCrs().isValid() )
+  const QgsMapSettings& ms = mCanvas->mapSettings();
+  if ( vlayer->crs().isValid() && ms.destinationCrs().isValid() )
   {
     // if label's layer is on-fly transformed, reverse-transform label rect
     // QgsHighlight will convert it, yet again, to the correct map coords
-    if ( vlayer->crs() != mRender->destinationCrs() )
+    if ( vlayer->crs() != ms.destinationCrs() )
     {
-      rect = mRender->mapToLayerCoordinates( vlayer, rect );
+      rect = ms.mapToLayerCoordinates( vlayer, rect );
       QgsDebugMsg( QString( "Reverse transform needed for highlight rectangle" ) );
     }
   }
@@ -178,21 +178,11 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
     return;
   }
 
-  if ( mCanvas )
-  {
-    mRender = mCanvas->mapRenderer();
-    if ( !mRender )
-    {
-      QgsDebugMsg( QString( "Failed to acquire map renderer" ) );
-      return;
-    }
-  }
-
   QgsDebugMsg( QString( "Highlighting pinned labels" ) );
 
   // get list of all drawn labels from all layers within given extent
-  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mRender->labelingEngine() );
-  if ( !labelEngine )
+  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  if ( !labelingResults )
   {
     QgsDebugMsg( QString( "No labeling engine" ) );
     return;
@@ -201,7 +191,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   QgsRectangle ext = mCanvas->extent();
   QgsDebugMsg( QString( "Getting labels from canvas extent" ) );
 
-  QList<QgsLabelPosition> labelPosList = labelEngine->labelsWithinRect( ext );
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QList<QgsLabelPosition>::const_iterator it;
@@ -262,24 +252,14 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
 
-  if ( mCanvas )
-  {
-    mRender = mCanvas->mapRenderer();
-    if ( !mRender )
-    {
-      QgsDebugMsg( QString( "Failed to acquire map renderer" ) );
-      return;
-    }
-  }
-
-  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mRender->labelingEngine() );
-  if ( !labelEngine )
+  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  if ( !labelingResults )
   {
     QgsDebugMsg( QString( "No labeling engine" ) );
     return;
   }
 
-  QList<QgsLabelPosition> labelPosList = labelEngine->labelsWithinRect( ext );
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
@@ -410,9 +390,9 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
     double labelR = labelpos.rotation * 180 / M_PI;
 
     // transform back to layer crs, if on-fly on
-    if ( mRender->hasCrsTransformEnabled() )
+    if ( mCanvas->mapSettings().hasCrsTransformEnabled() )
     {
-      QgsPoint transformedPoint = mRender->mapToLayerCoordinates( vlayer, referencePoint );
+      QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
       labelX = transformedPoint.x();
       labelY = transformedPoint.y();
     }

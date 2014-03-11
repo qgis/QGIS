@@ -151,12 +151,22 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
       char** driverMetadata = GDALGetMetadata( driver, NULL );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
       {
-        mOutputFormatComboBox->addItem( GDALGetDriverLongName( driver ), QVariant( GDALGetDriverShortName( driver ) ) );
+        QString driverShortName = GDALGetDriverShortName( driver );
+        QString driverLongName = GDALGetDriverLongName( driver );
+        if ( driverShortName == "MEM" )
+        {
+          // in memory rasters are not (yet) supported because the GDAL dataset handle
+          // would need to be passed directly to QgsRasterLayer (it is not possible to
+          // close it in raster calculator and reopen the dataset again in raster layer)
+          continue;
+        }
+
+        mOutputFormatComboBox->addItem( driverLongName, driverShortName );
 
         //store the driver shortnames and the corresponding extensions
         //(just in case the user does not give an extension for the output file name)
         QString driverExtension = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSION, NULL );
-        mDriverExtensionMap.insert( QString( GDALGetDriverShortName( driver ) ), driverExtension );
+        mDriverExtensionMap.insert( driverShortName, driverExtension );
       }
     }
   }

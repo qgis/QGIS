@@ -1,5 +1,6 @@
 usr/share/qgis/svg/*
 usr/share/qgis/resources/qgis.db
-usr/share/qgis/resources/srs.db
+usr/share/qgis/resources/srs-template.db
+usr/share/qgis/resources/customization.xml
 usr/share/qgis/resources/symbology-ng-style.db
 usr/share/qgis/resources/cpt-city-qgis-min/*

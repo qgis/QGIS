@@ -67,12 +67,9 @@ QT4_WRAP_CPP (qgis_mapserv_MOC_SRCS  ${qgis_mapserv_MOC_HDRS})
 
 QT4_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
 
-SET(qgis_mapserv_TESTRCC_SRCS)
-IF (ENABLE_TESTS)
-  # add test resources, e.g. standard test font
-  SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
-  QT4_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
-ENDIF(ENABLE_TESTS)
+# add test resources, e.g. standard test font
+SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
+QT4_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
 
 ADD_EXECUTABLE(qgis_mapserv.fcgi
   ${qgis_mapserv_SRCS} 

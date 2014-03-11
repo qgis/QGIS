@@ -648,10 +648,48 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 
 QPolygonF offsetLine( QPolygonF polyline, double dist )
 {
+  if ( polyline.count() < 2 )
+    return polyline;
+
   QPolygonF newLine;
 
-  if ( polyline.count() < 2 )
-    return newLine;
+  // need at least geos 3.3 for OffsetCurve tool
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+
+  unsigned int i, pointCount = polyline.count();
+
+  QgsPolyline tempPolyline( pointCount );
+  QPointF* tempPtr = polyline.data();
+  for ( i = 0; i < pointCount; ++i, tempPtr++ ) tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
+
+  QgsGeometry* tempGeometry = QgsGeometry::fromPolyline( tempPolyline );
+  if ( tempGeometry )
+  {
+    const GEOSGeometry* geosGeom = tempGeometry->asGeos();
+    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+
+    if ( offsetGeom )
+    {
+      tempGeometry->fromGeos( offsetGeom );
+      tempPolyline = tempGeometry->asPolyline();
+
+      pointCount = tempPolyline.count();
+      newLine.resize( pointCount );
+
+      QgsPoint* tempPtr2 = tempPolyline.data();
+      for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+
+      delete tempGeometry;
+      return newLine;
+    }
+    delete tempGeometry;
+  }
+
+  // returns original polyline when 'GEOSOffsetCurve' fails!
+  return polyline;
+
+#else
 
   double angle = 0.0, t_new, t_old = 0;
   QPointF pt_old, pt_new;
@@ -688,6 +726,8 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
   pt_new = offsetPoint( p2, angle + M_PI / 2, dist );
   newLine.append( pt_new );
   return newLine;
+
+#endif
 }
 
 /////
@@ -2301,18 +2341,11 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
-  QString relpath = symbolPathToName( path );
-
-  // convert image path to url
-  QUrl url( relpath );
-  if ( !url.isValid() || url.scheme().isEmpty() )
-  {
-    url.setUrl( QUrl::fromLocalFile( relpath ).toString() );
-  }
-
+  // get resource url or relative path
+  QString url = symbolPathToName( path );
   QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
-  onlineResourceElem.setAttribute( "xlink:href", url.toString() );
+  onlineResourceElem.setAttribute( "xlink:href", url );
   element.appendChild( onlineResourceElem );
 
   QDomElement formatElem = doc.createElement( "se:Format" );
@@ -2945,7 +2978,7 @@ QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
 
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
-      path = path.mid( dir.size() );
+      path = path.mid( dir.size() + 1 );
       isInSvgPathes = true;
       break;
     }
@@ -2979,3 +3012,28 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
 }
 
 
+QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
+{
+  if ( fieldOrExpression.isEmpty() )
+    return 0;
+
+  QgsExpression* expr = new QgsExpression( fieldOrExpression );
+  if ( !expr->hasParserError() )
+    return expr;
+
+  // now try with quoted field name
+  delete expr;
+  QgsExpression* expr2 = new QgsExpression( QgsExpression::quotedColumnRef( fieldOrExpression ) );
+  Q_ASSERT( !expr2->hasParserError() );
+  return expr2;
+}
+
+QString QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( QgsExpression* expression )
+{
+  const QgsExpression::Node* n = expression->rootNode();
+
+  if ( n && n->nodeType() == QgsExpression::ntColumnRef )
+    return static_cast<const QgsExpression::NodeColumnRef*>( n )->name();
+
+  return expression->expression();
+}

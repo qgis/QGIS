@@ -260,14 +260,16 @@ QByteArray* QgsWCSServer::getCoverage()
   {
     mErrors << QString( "The CRS is mandatory" );
   }
-  QgsCoordinateReferenceSystem outputCRS = QgsCRSCache::instance()->crsByAuthId( crs );
-  if ( !outputCRS.isValid() )
-  {
-    mErrors << QString( "Could not create output CRS" );
-  }
 
   if ( mErrors.count() != 0 )
   {
+    throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
+  }
+
+  QgsCoordinateReferenceSystem requestCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+  if ( !requestCRS.isValid() )
+  {
+    mErrors << QString( "Could not create request CRS" );
     throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
   }
 
@@ -277,6 +279,25 @@ QByteArray* QgsWCSServer::getCoverage()
   QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
   if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
   {
+    // RESPONSE_CRS
+    QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
+    crs = mParameterMap.value( "RESPONSE_CRS", "" );
+    if ( crs != "" )
+    {
+      responseCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+      if ( !responseCRS.isValid() )
+      {
+        responseCRS = rLayer->crs();
+      }
+    }
+
+    // transform rect
+    if ( requestCRS != rLayer->crs() )
+    {
+      QgsCoordinateTransform t( requestCRS, rLayer->crs() );
+      rect = t.transformBoundingBox( rect );
+    }
+
     QTemporaryFile tempFile;
     tempFile.open();
     QgsRasterFileWriter fileWriter( tempFile.fileName() );
@@ -290,10 +311,10 @@ QByteArray* QgsWCSServer::getCoverage()
     }
 
     // add projector if necessary
-    if ( outputCRS != rLayer->crs() )
+    if ( responseCRS != rLayer->crs() )
     {
       QgsRasterProjector * projector = new QgsRasterProjector;
-      projector->setCRS( rLayer->crs(), outputCRS );
+      projector->setCRS( rLayer->crs(), responseCRS );
       if ( !pipe->insert( 2, projector ) )
       {
         mErrors << QString( "Cannot set pipe projector" );
@@ -301,7 +322,7 @@ QByteArray* QgsWCSServer::getCoverage()
       }
     }
 
-    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe, width, height, rect, outputCRS );
+    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe, width, height, rect, responseCRS );
     if ( err != QgsRasterFileWriter::NoError )
     {
       mErrors << QString( "Cannot write raster error code: %1" ).arg( err );

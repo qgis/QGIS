@@ -435,13 +435,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 
     // save as vector file
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
-
-    // save selection as vector file
-    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
-    if ( vlayer->selectedFeatureCount() == 0 )
-    {
-      saveSelectionAsAction->setEnabled( false );
-    }
+    theMenu.addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
     if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
       theMenu.addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
@@ -457,6 +451,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+    theMenu.addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
   }
   else if ( lyr->type() == QgsMapLayer::PluginLayer && legend()->selectedLayers().count() == 1 )
   {
@@ -494,7 +489,6 @@ void QgsLegendLayer::showInOverview()
   setInOverview( ! isInOverview() );
 
   legend()->updateMapCanvasLayerSet();
-  legend()->updateOverview();
 }
 
 QString QgsLegendLayer::nameFromLayer( QgsMapLayer* layer )

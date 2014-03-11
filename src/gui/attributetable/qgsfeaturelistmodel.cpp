@@ -132,7 +132,7 @@ QString QgsFeatureListModel::parserErrorString()
   return mParserErrorString;
 }
 
-const QString QgsFeatureListModel::displayExpression() const
+QString QgsFeatureListModel::displayExpression() const
 {
   return mExpression->expression();
 }

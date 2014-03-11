@@ -92,7 +92,7 @@ class CORE_EXPORT QGis
         case WKBPoint25D:      return WKBMultiPoint25D;
         case WKBLineString25D: return WKBMultiLineString25D;
         case WKBPolygon25D:    return WKBMultiPolygon25D;
-        default:                    return type;
+        default:               return type;
       }
     }
 
@@ -184,7 +184,8 @@ class CORE_EXPORT QGis
         case WKBPoint:              return "WKBPoint";
         case WKBLineString:         return "WKBLineString";
         case WKBPolygon:            return "WKBPolygon";
-        case WKBMultiPoint:         return "WKBMultiLineString";
+        case WKBMultiPoint:         return "WKBMultiPoint";
+        case WKBMultiLineString:    return "WKBMultiLineString";
         case WKBMultiPolygon:       return "WKBMultiPolygon";
         case WKBNoGeometry:         return "WKBNoGeometry";
         case WKBPoint25D:           return "WKBPoint25D";
@@ -403,6 +404,23 @@ typedef QMap<QString, QString> QgsStringMap;
  *  KEEP IN SYNC WITH qgssize defined in SIP! */
 typedef unsigned long long qgssize;
 
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#define Q_NOWARN_DEPRECATED_PUSH \
+    _Pragma("GCC diagnostic push") \
+    _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#define Q_NOWARN_DEPRECATED_POP \
+    _Pragma("GCC diagnostic pop")
+#elif defined(_MSC_VER)
+#define Q_NOWARN_DEPRECATED_PUSH \
+    __pragma(warning(push)) \
+    __pragma(warning(disable:4996))
+#define Q_NOWARN_DEPRECATED_POP \
+    __pragma(warning(pop))
+#else
+#define Q_NOWARN_DEPRECATED_PUSH
+#define Q_NOWARN_DEPRECATED_POP
+#endif
+
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32
@@ -415,5 +433,4 @@ typedef unsigned long long qgssize;
 #  define QGISEXTERN extern "C"
 #endif
 #endif
-
 #endif

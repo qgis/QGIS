@@ -113,14 +113,12 @@ QgsGPXProvider::QgsGPXProvider( QString uri )
 
 QgsGPXProvider::~QgsGPXProvider()
 {
-  while ( !mActiveIterators.empty() )
-  {
-    QgsGPXFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   QgsGPSData::releaseData( mFileName );
+}
+
+QgsAbstractFeatureSource* QgsGPXProvider::featureSource() const
+{
+  return new QgsGPXFeatureSource( this );
 }
 
 
@@ -190,7 +188,7 @@ bool QgsGPXProvider::isValid()
 
 QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  return QgsFeatureIterator( new QgsGPXFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsGPXFeatureIterator( new QgsGPXFeatureSource( this ), true, request ) );
 }
 
 

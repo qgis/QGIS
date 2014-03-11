@@ -45,6 +45,12 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
   //default to a 10 point font size
   mFont.setPointSizeF( 10 );
 
+  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    //a label added while atlas preview is enabled needs to have the expression context set,
+    //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
+    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+  }
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -66,17 +72,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
-  QString textToDraw;
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    //render text with expressions evaluated
-    textToDraw = displayText();
-  }
-  else
-  {
-    //not outputing or using an atlas preview, so render text without expressions evaluated
-    textToDraw = mText;
-  }
+  QString textToDraw = displayText();
 
   if ( mHtmlState )
   {

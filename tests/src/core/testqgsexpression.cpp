@@ -315,6 +315,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
       QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
+      QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',13)" << false << QVariant( "university of\nqgis" );
+      QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',13,' ')" << false << QVariant( "university of\nqgis" );
+      QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',-3)" << false << QVariant( "university\nof qgis" );
+      QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',-3,' ')" << false << QVariant( "university\nof qgis" );
+      QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis\nsupports many multiline',-5,' ')" << false << QVariant( "university\nof qgis\nsupports\nmany multiline" );
       QTest::newRow( "format" ) << "format('%1 %2 %3 %1', 'One', 'Two', 'Three')" << false << QVariant( "One Two Three One" );
 
       // implicit conversions
@@ -838,6 +843,19 @@ class TestQgsExpression: public QObject
 
       QgsExpression::unsetSpecialColumn( "$var1" );
     }
+
+    void expression_from_expression()
+    {
+      {
+        QgsExpression e( "my_column" );
+        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+      }
+      {
+        QgsExpression e( "\"my column\"" );
+        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+      }
+    }
+
 
 };
 

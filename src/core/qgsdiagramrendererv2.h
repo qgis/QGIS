@@ -73,19 +73,22 @@ class CORE_EXPORT QgsDiagramLayerSettings
     {
     }
 
+    ~QgsDiagramLayerSettings();
+
     //pal placement properties
     Placement placement;
     LinePlacementFlags placementFlags;
     int priority; // 0 = low, 10 = high
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
-    QgsDiagramRendererV2* renderer;
+    QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
 
     //assigned when layer gets prepared
     pal::Layer* palLayer;
     const QgsCoordinateTransform* ct;
     const QgsMapToPixel* xform;
     QList<QgsPalGeometry*> geometries;
+    QgsFields fields;
 
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
@@ -169,6 +172,10 @@ class CORE_EXPORT QgsDiagramRendererV2
     QgsDiagramRendererV2();
     virtual ~QgsDiagramRendererV2();
 
+    /** Returns new instance that is equivalent to this one
+     * @note added in 2.4 */
+    virtual QgsDiagramRendererV2* clone() const = 0;
+
     /**Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c );
 
@@ -189,6 +196,7 @@ class CORE_EXPORT QgsDiagramRendererV2
     virtual void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
   protected:
+    QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
 
     /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
@@ -221,6 +229,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
+    QgsDiagramRendererV2* clone() const;
+
     QString rendererName() const { return "SingleCategory"; }
 
     QList<QString> diagramAttributes() const { return mSettings.categoryAttributes; }
@@ -246,6 +256,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
+
+    QgsDiagramRendererV2* clone() const;
 
     /**Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const;

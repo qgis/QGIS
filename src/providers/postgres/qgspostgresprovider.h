@@ -29,6 +29,7 @@ class QgsField;
 class QgsGeometry;
 
 class QgsPostgresFeatureIterator;
+class QgsPostgresSharedData;
 
 #include "qgsdatasourceuri.h"
 
@@ -69,6 +70,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! Destructor
     virtual ~QgsPostgresProvider();
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
       */
@@ -107,7 +110,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Return a string representation of the endian-ness for the layer
      */
-    QString endianString();
+    static QString endianString();
 
     /**
      * Changes the stored extent for this layer to the supplied extent.
@@ -372,7 +375,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Data type for the primary key
      */
-    enum { pktUnknown, pktInt, pktTid, pktOid, pktFidMap } mPrimaryKeyType;
+    QgsPostgresPrimaryKeyType mPrimaryKeyType;
 
     /**
      * Data type for the spatial column
@@ -387,12 +390,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString mGeometryColumn;          //! name of the geometry column
     QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;    //! Number of features in the layer
 
     QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
     QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
+
+    QSharedPointer<QgsPostgresSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
     bool getGeometryDetails();
 
@@ -471,16 +475,56 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
-    static int sProviderIds;
+    friend class QgsPostgresFeatureSource;
+};
 
+
+/** Assorted Postgres utility functions */
+class QgsPostgresUtils
+{
+  public:
+    static QString whereClause( QgsFeatureId featureId,
+                                const QgsFields& fields,
+                                QgsPostgresConn* conn,
+                                QgsPostgresPrimaryKeyType pkType,
+                                const QList<int>& pkAttrs,
+                                QSharedPointer<QgsPostgresSharedData> sharedData );
+
+    static QString whereClause( QgsFeatureIds featureIds,
+                                const QgsFields& fields,
+                                QgsPostgresConn* conn,
+                                QgsPostgresPrimaryKeyType pkType,
+                                const QList<int>& pkAttrs,
+                                QSharedPointer<QgsPostgresSharedData> sharedData );
+};
+
+/** Data shared between provider class and its feature sources. Ideally there should
+ *  be as few members as possible because there could be simultaneous reads/writes
+ *  from different threads and therefore locking has to be involved. */
+class QgsPostgresSharedData
+{
+  public:
+    QgsPostgresSharedData();
+
+    long featuresCounted();
+    void setFeaturesCounted( long count );
+    void addFeaturesCounted( long diff );
+    void ensureFeaturesCountedAtLeast( long fetched );
+
+    // FID lookups
+    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QVariant removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariant& k );
+    QVariant lookupKey( QgsFeatureId featureId );
+
+  protected:
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+
+    long mFeaturesCounted;    //! Number of features in the layer
+
+    QgsFeatureId mFidCounter;                    // next feature id if map is used
     QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
-    QgsFeatureId mFidCounter;                    // next feature id if map is used
-    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
-    int mIteratorCounter;                        // iterator counter
-
-    friend class QgsPostgresFeatureIterator;
-    QSet< QgsPostgresFeatureIterator * > mActiveIterators;
 };
 
 #endif

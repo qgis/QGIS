@@ -62,7 +62,7 @@ void QgsGeometryValidator::checkRingIntersections(
         if ( d >= 0 && d <= v.length() )
         {
           d = -distLine2Point( ring1[j], w.perpVector(), s );
-          if ( d >= 0 && d <= w.length() )
+          if ( d > 0 && d < w.length() )
           {
             QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7" )
                           .arg( i0 ).arg( i ).arg( p0 )
@@ -150,7 +150,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
         continue;
 
       d = -distLine2Point( line[k], w.perpVector(), s );
-      if ( d < 0 || d > w.length() )
+      if ( d <= 0 || d >= w.length() )
         continue;
 
       QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4" ).arg( j ).arg( k ).arg( i ).arg( s.toString() );

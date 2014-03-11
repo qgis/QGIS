@@ -9,6 +9,7 @@ SET(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
+  qgsspatialiteconnpool.cpp
   qgsspatialitefeatureiterator.cpp
   qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp
@@ -16,6 +17,7 @@ SET(SPATIALITE_SRCS
 
 SET(SPATIALITE_MOC_HDRS
   qgsspatialiteprovider.h
+  qgsspatialiteconnpool.h
   qgsspatialitedataitems.h
   qgsspatialitesourceselect.h
   qgsspatialitetablemodel.h

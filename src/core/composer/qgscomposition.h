@@ -90,6 +90,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ZValueAbove
     };
 
+    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
+    Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
+    explicit QgsComposition( const QgsMapSettings& mapSettings );
+
     /**Composition atlas modes*/
     enum AtlasMode
     {
@@ -98,7 +102,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ExportAtlas   // The composition is being exported as an atlas
     };
 
-    QgsComposition( QgsMapRenderer* mapRenderer );
     ~QgsComposition();
 
     /**Changes size of paper item*/
@@ -257,7 +260,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setUseAdvancedEffects( bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
-    QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
+    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+
+    //! Return setting of QGIS map canvas
+    //! @note added in 2.4
+    const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
     void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
@@ -332,6 +340,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      after reading all the items from xml file*/
     void sortZList();
+
+    /**Rebuilds the z order list based on current order of items in scene*/
+    void refreshZList();
 
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
@@ -444,9 +455,19 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
 
+    /**Updates the scene bounds of the composition
+    @note added in version 2.2*/
+    void updateBounds();
+
+  protected:
+    void init();
+
+
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
+    const QgsMapSettings& mMapSettings;
+
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
     double mPageHeight;
@@ -510,8 +531,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     QgsComposition(); //default constructor is forbidden
 
+    /**Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles*/
+    QRectF compositionBounds() const;
+
     /**Reset z-values of items based on position in z list*/
-    void updateZValues();
+    void updateZValues( bool addUndoCommands = true );
 
     /**Returns the bounding rectangle of the selected items in scene coordinates
      @return 0 in case of success*/
@@ -522,6 +546,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Loads composer settings which may change, eg grid color*/
     void loadSettings();
+
+    /**Calculates the item minimum position from an xml string*/
+    QPointF minPointFromXml( const QDomElement& elem ) const;
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 

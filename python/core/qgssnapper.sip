@@ -69,7 +69,11 @@ class QgsSnapper
       QgsTolerance::UnitType mUnitType;
     };
 
-    QgsSnapper( QgsMapRenderer* mapRender );
+    //!@ deprecated since 2.4 - use constructor with QgsMapSettings
+    QgsSnapper( QgsMapRenderer* mapRender ) /Deprecated/;
+
+    explicit QgsSnapper( const QgsMapSettings& mapSettings );
+
     ~QgsSnapper();
     /**Does the snapping operation
      @param startPoint the start point for snapping (in pixel coordinates)

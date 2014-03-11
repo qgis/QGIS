@@ -54,7 +54,8 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
     delete ramp;
   }
 
-  addItem( tr( "Random colors" ) );
+  if ( !mShowGradientOnly )
+    addItem( tr( "Random colors" ) );
   addItem( tr( "New color ramp..." ) );
   connect( this, SIGNAL( activated( int ) ), SLOT( colorRampChanged( int ) ) );
 }

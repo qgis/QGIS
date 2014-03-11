@@ -11,7 +11,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
 
@@ -21,12 +21,12 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     void setSymbol( QgsSymbolV2* s /Transfer/ );
 
     //! @note added in 1.5
-    void setRotationField( QString fieldName );
+    void setRotationField( QString fieldOrExpression );
     //! @note added in 1.5
     QString rotationField() const;
 
     //! @note added in 1.5
-    void setSizeScaleField( QString fieldName );
+    void setSizeScaleField( QString fieldOrExpression );
     //! @note added in 1.5
     QString sizeScaleField() const;
 
@@ -59,5 +59,10 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
-    // virtual QgsLegendSymbolList legendSymbolItems();
+    //! @note not available in python bindings
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
+
+  private:
+    QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );
+    QgsSingleSymbolRendererV2 & operator=( const QgsSingleSymbolRendererV2 & );
 };

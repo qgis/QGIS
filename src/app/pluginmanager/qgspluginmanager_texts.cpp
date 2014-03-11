@@ -101,7 +101,7 @@ Click on an individual plugin; if possible QGIS shows you more information.\
 \
 <p>\
 The main reasons to have invalid plugins is that this plugin is not build \
-for this version of QGIS. Maybe you can download an other version from <a href=\"http://plugins.qgis.org\">plugins.qgis.org</a>.\
+for this version of QGIS. Maybe you can download another version from <a href=\"http://plugins.qgis.org\">plugins.qgis.org</a>.\
 </p>\
 \
 <p>\

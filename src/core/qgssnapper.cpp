@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssnapper.h"
+#include "qgsmapsettings.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
@@ -24,14 +25,15 @@
 #include <cmath>
 
 
-QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer ): mMapRenderer( mapRenderer )
+QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer )
+    : mMapSettings( mapRenderer->mapSettings() )
 {
 
 }
 
-QgsSnapper::QgsSnapper()
+QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
+    : mMapSettings( mapSettings )
 {
-
 }
 
 QgsSnapper::~QgsSnapper()
@@ -47,17 +49,20 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
   QMultiMap<double, QgsSnappingResult> currentResultList; //snapping results of examined layer
 
   //start point in (output) map coordinates
-  QgsPoint mapCoordPoint = mMapRenderer->coordinateTransform()->toMapCoordinates( startPoint.x(), startPoint.y() );
+  QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
   QgsPoint layerCoordPoint; //start point in layer coordinates
   QgsSnappingResult newResult;
 
   QList<QgsSnapper::SnapLayer>::iterator snapLayerIt;
   for ( snapLayerIt = mSnapLayers.begin(); snapLayerIt != mSnapLayers.end(); ++snapLayerIt )
   {
-    //transform point from map coordinates to layer coordinates
-    layerCoordPoint = mMapRenderer->mapToLayerCoordinates( snapLayerIt->mLayer, mapCoordPoint );
+    if ( !snapLayerIt->mLayer->hasGeometryType() )
+      continue;
 
-    double tolerance = QgsTolerance::toleranceInMapUnits( snapLayerIt->mTolerance, snapLayerIt->mLayer, mMapRenderer, snapLayerIt->mUnitType );
+    //transform point from map coordinates to layer coordinates
+    layerCoordPoint = mMapSettings.mapToLayerCoordinates( snapLayerIt->mLayer, mapCoordPoint );
+
+    double tolerance = QgsTolerance::toleranceInMapUnits( snapLayerIt->mTolerance, snapLayerIt->mLayer, mMapSettings, snapLayerIt->mUnitType );
     if ( snapLayerIt->mLayer->snapWithContext( layerCoordPoint, tolerance,
          currentResultList, snapLayerIt->mSnapTo ) != 0 )
     {
@@ -71,9 +76,9 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
       //for each snapping result: transform start point, snap point and other points into map coordinates to find out distance
       //store results in snapping result list
       newResult = currentResultIt.value();
-      newResult.snappedVertex = mMapRenderer->layerToMapCoordinates( snapLayerIt->mLayer, currentResultIt.value().snappedVertex );
-      newResult.beforeVertex = mMapRenderer->layerToMapCoordinates( snapLayerIt->mLayer, currentResultIt.value().beforeVertex );
-      newResult.afterVertex = mMapRenderer->layerToMapCoordinates( snapLayerIt->mLayer, currentResultIt.value().afterVertex );
+      newResult.snappedVertex = mMapSettings.layerToMapCoordinates( snapLayerIt->mLayer, currentResultIt.value().snappedVertex );
+      newResult.beforeVertex = mMapSettings.layerToMapCoordinates( snapLayerIt->mLayer, currentResultIt.value().beforeVertex );
+      newResult.afterVertex = mMapSettings.layerToMapCoordinates( snapLayerIt->mLayer, currentResultIt.value().afterVertex );
       snappingResultList.insert( sqrt( newResult.snappedVertex.sqrDist( mapCoordPoint ) ), newResult );
     }
   }

@@ -198,7 +198,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
   // If no layers are added or shown, we can't get any direction
   if ( mapCanvas->layerCount() > 0 && ! extent.isEmpty() )
   {
-    QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapRenderer()->destinationCrs();
+    QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapSettings().destinationCrs();
 
     if ( outputCRS.isValid() && !outputCRS.geographicFlag() )
     {

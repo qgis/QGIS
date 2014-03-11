@@ -35,7 +35,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from osgeo import gdal, ogr
+from osgeo import gdal, ogr, osr
 from osgeo.gdalconst import *
 
 import os
@@ -59,8 +59,8 @@ def escapeAndJoin(strList):
 # Retrieves last used dir from persistent settings
 def getLastUsedDir():
     settings = QSettings()
-    lastProjectDir = settings.value( "/UI/lastProjectDir", ".", type=str )
-    return settings.value( "/GdalTools/lastUsedDir", lastProjectDir, type=str )
+    lastProjectDir = settings.value( "/UI/lastProjectDir", u".", type=unicode )
+    return settings.value( "/GdalTools/lastUsedDir", lastProjectDir, type=unicode )
 
 # Stores last used dir in persistent settings
 def setLastUsedDir(filePath):
@@ -75,7 +75,7 @@ def setLastUsedDir(filePath):
 # Retrieves GDAL binaries location
 def getGdalBinPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/gdalPath", u"" )
+  return settings.value( "/GdalTools/gdalPath", u"", type=unicode )
 
 # Stores GDAL binaries location
 def setGdalBinPath( path ):
@@ -85,7 +85,7 @@ def setGdalBinPath( path ):
 # Retrieves GDAL python modules location
 def getGdalPymodPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/gdalPymodPath", u"" )
+  return settings.value( "/GdalTools/gdalPymodPath", u"", type=unicode )
 
 # Stores GDAL python modules location
 def setGdalPymodPath( path ):
@@ -95,7 +95,7 @@ def setGdalPymodPath( path ):
 # Retrieves GDAL help files location
 def getHelpPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/helpPath", u"" )
+  return settings.value( "/GdalTools/helpPath", u"", type=unicode )
 
 # Stores GDAL help files location
 def setHelpPath( path ):
@@ -105,7 +105,7 @@ def setHelpPath( path ):
 # Retrieves last used encoding from persistent settings
 def getLastUsedEncoding():
     settings = QSettings()
-    return settings.value( "/UI/encoding", u"System" )
+    return settings.value( "/UI/encoding", u"System", type=unicode )
 
 # Stores last used encoding in persistent settings
 def setLastUsedEncoding(encoding):
@@ -287,56 +287,45 @@ def getVectorFields(vectorFile):
 
 # get raster SRS if possible
 def getRasterSRS( parent, fileName ):
-    processSRS = QProcess( parent )
-    processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
-    arr = ''
-    if processSRS.waitForFinished():
-      arr = str(processSRS.readAllStandardOutput())
-      processSRS.close()
+    ds = gdal.Open(fileName)
+    if ds is None:
+        return ''
 
-    if arr == '':
+    proj = ds.GetProjectionRef()
+    if proj is None:
       return ''
 
-    info = arr.splitlines()
-    if len(info) == 0:
-      return ''
+    sr = osr.SpatialReference()
+    if sr.ImportFromWkt(proj) != gdal.CE_None:
+        return ''
 
-    for elem in info:
-        m = re.match("^\s*AUTHORITY\[\"([a-z]*[A-Z]*)\",\"(\d*)\"\]", elem)
-        if m and len(m.groups()) == 2:
-            return '%s:%s' % (m.group(1), m.group(2))
+    name = sr.GetAuthorityName(None)
+    code = sr.GetAuthorityCode(None)
+    if name is not None and code is not None:
+        return '%s:%s' % (name,code)
 
     return ''
 
+# get raster extent using python API - replaces old method which parsed gdalinfo output
 def getRasterExtent(parent, fileName):
-    processSRS = QProcess( parent )
-    processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
-    arr = ''
-    if processSRS.waitForFinished():
-      arr = str(processSRS.readAllStandardOutput())
-      processSRS.close()
+    ds = gdal.Open(fileName)
+    if ds is None:
+        return
 
-    if arr == '':
-      return
+    x = ds.RasterXSize
+    y = ds.RasterYSize
 
-    ulCoord = lrCoord = ''
-    xUL = yLR = xLR = yUL = 0
-    info = arr.splitlines()
-    for elem in info:
-        m = re.match("^Upper\sLeft.*", elem)
-        if m:
-            ulCoord = m.group(0).strip()
-            ulCoord = ulCoord[string.find(ulCoord,"(") + 1 : string.find(ulCoord,")") - 1].split( "," )
-            xUL = float(ulCoord[0])
-            yUL = float(ulCoord[1])
-            continue
-        m = re.match("^Lower\sRight.*", elem)
-        if m:
-            lrCoord = m.group(0).strip()
-            lrCoord = lrCoord[string.find(lrCoord,"(") + 1 : string.find(lrCoord,")") - 1].split( "," )
-            xLR = float(lrCoord[0])
-            yLR = float(lrCoord[1])
-            continue
+    gt = ds.GetGeoTransform()
+    if gt is None:
+        xUL = 0
+        yUL = 0
+        xLR = x
+        yLR = y
+    else:
+        xUL = gt[0]
+        yUL = gt[3]
+        xLR = gt[0] + gt[1]*x + gt[2]*y
+        yLR = gt[3] + gt[4]*x + gt[5]*y
 
     return QgsRectangle( xUL, yLR, xLR, yUL )
 
@@ -358,7 +347,7 @@ class FileDialog:
     dialog.setFileMode(fileMode)
     dialog.setAcceptMode(acceptMode)
 
-    if selectedFilter != None:
+    if selectedFilter is not None:
       dialog.selectNameFilter(selectedFilter[0])
 
     if not dialog.exec_():
@@ -367,7 +356,7 @@ class FileDialog:
       return ''
 
     # change the selected filter value
-    if selectedFilter != None:
+    if selectedFilter is not None:
       selectedFilter[0] = dialog.selectedNameFilter()
 
     # save the last used dir and return the selected files
@@ -420,7 +409,7 @@ class FileFilter:
   @classmethod
   def getFilter(self, typeName):
       settings = QSettings()
-      return settings.value( "/GdalTools/" + typeName + "FileFilter", u"" )
+      return settings.value( "/GdalTools/" + typeName + "FileFilter", u"", type=unicode )
 
   @classmethod
   def setFilter(self, typeName, aFilter):

@@ -64,8 +64,6 @@ class QgsComposerLabel : QgsComposerItem
         @note: this function was added in version 1.4*/
     QColor fontColor() const;
 
-    void setSceneRect( const QRectF& rectangle );
-
     /** stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc document

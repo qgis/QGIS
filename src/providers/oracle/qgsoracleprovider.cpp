@@ -48,8 +48,8 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
     , mPrimaryKeyType( pktUnknown )
     , mDetectedGeomType( QGis::WKBUnknown )
     , mRequestedGeomType( QGis::WKBUnknown )
-    , mFidCounter( 0 )
     , mSpatialIndex( QString::null )
+    , mShared( new QgsOracleSharedData )
 {
   static int geomMetaType = -1;
   if ( geomMetaType < 0 )
@@ -197,14 +197,12 @@ QgsOracleProvider::~QgsOracleProvider()
 {
   QgsDebugMsg( "deconstructing." );
 
-  while ( !mActiveIterators.empty() )
-  {
-    QgsOracleFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   disconnectDb();
+}
+
+QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
+{
+  return new QgsOracleFeatureSource( this );
 }
 
 void QgsOracleProvider::disconnectDb()
@@ -313,20 +311,6 @@ static bool operator<( const QVariant &a, const QVariant &b )
   return a.canConvert( QVariant::String ) && b.canConvert( QVariant::String ) && a.toString() < b.toString();
 }
 
-QgsFeatureId QgsOracleProvider::lookupFid( const QVariant &v )
-{
-  QMap<QVariant, QgsFeatureId>::const_iterator it = mKeyToFid.find( v );
-
-  if ( it != mKeyToFid.constEnd() )
-  {
-    return it.value();
-  }
-
-  mFidToKey.insert( ++mFidCounter, v );
-  mKeyToFid.insert( v, mFidCounter );
-
-  return mFidCounter;
-}
 
 QString QgsOracleProvider::pkParamWhereClause() const
 {
@@ -384,10 +368,10 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
     case pktRowId:
     case pktFidMap:
     {
-      QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( fid );
-      if ( it != mFidToKey.constEnd() )
+      QVariant pkValsVariant = mShared->lookupKey( fid );
+      if ( !pkValsVariant.isNull() )
       {
-        foreach ( const QVariant &v, it.value().toList() )
+        foreach ( const QVariant &v, pkValsVariant.toList() )
         {
           QgsDebugMsgLevel( QString( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
           qry.addBindValue( v );
@@ -412,42 +396,43 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
   }
 }
 
-QString QgsOracleProvider::whereClause( QgsFeatureId featureId ) const
+
+QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int>& primaryKeyAttrs, QSharedPointer<QgsOracleSharedData> sharedData )
 {
   QString whereClause;
 
-  switch ( mPrimaryKeyType )
+  switch ( primaryKeyType )
   {
     case pktInt:
-      Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
-      whereClause = QString( "%1=%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( featureId );
+      Q_ASSERT( primaryKeyAttrs.size() == 1 );
+      whereClause = QString( "%1=%2" ).arg( QgsOracleConn::quotedIdentifier( fields[ primaryKeyAttrs[0] ].name() ) ).arg( featureId );
       break;
 
     case pktRowId:
     case pktFidMap:
     {
-      QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( featureId );
-      if ( it != mFidToKey.constEnd() )
+      QVariant pkValsVariant = sharedData->lookupKey( featureId );
+      if ( !pkValsVariant.isNull() )
       {
-        QList<QVariant> pkVals = it.value().toList();
+        QList<QVariant> pkVals = pkValsVariant.toList();
 
-        if ( mPrimaryKeyType == pktFidMap )
+        if ( primaryKeyType == pktFidMap )
         {
-          Q_ASSERT( pkVals.size() == mPrimaryKeyAttrs.size() );
+          Q_ASSERT( pkVals.size() == primaryKeyAttrs.size() );
 
           QString delim = "";
-          for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
+          for ( int i = 0; i < primaryKeyAttrs.size(); i++ )
           {
-            int idx = mPrimaryKeyAttrs[i];
-            const QgsField &fld = field( idx );
+            int idx = primaryKeyAttrs[i];
+            const QgsField &fld = fields[ idx ];
 
-            whereClause += delim + QString( "%1=%2" ).arg( mConnection->fieldExpression( fld ) ).arg( quotedValue( pkVals[i].toString() ) );
+            whereClause += delim + QString( "%1=%2" ).arg( QgsOracleConn::fieldExpression( fld ) ).arg( QgsOracleConn::quotedValue( pkVals[i], fld.type() ) );
             delim = " AND ";
           }
         }
         else
         {
-          whereClause += QString( "ROWID=%1" ).arg( quotedValue( pkVals[0].toString() ) );
+          whereClause += QString( "ROWID=%1" ).arg( QgsOracleConn::quotedValue( pkVals[0].toString() ) );
         }
       }
       else
@@ -467,14 +452,20 @@ QString QgsOracleProvider::whereClause( QgsFeatureId featureId ) const
   return whereClause;
 }
 
-QString QgsOracleProvider::whereClause( QgsFeatureIds featureIds ) const
+QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, QSharedPointer<QgsOracleSharedData> sharedData )
 {
   QStringList whereClauses;
   foreach ( const QgsFeatureId featureId, featureIds )
   {
-    whereClauses << whereClause( featureId );
+    whereClauses << whereClause( featureId, fields, primaryKeyType, primaryKeyAttrs, sharedData );
   }
   return whereClauses.join( " AND " );
+}
+
+
+QString QgsOracleProvider::whereClause( QgsFeatureId featureId ) const
+{
+  return QgsOracleUtils::whereClause( featureId, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, mShared );
 }
 
 void QgsOracleProvider::setExtent( QgsRectangle& newExtent )
@@ -512,7 +503,7 @@ QgsFeatureIterator QgsOracleProvider::getFeatures( const QgsFeatureRequest& requ
     return QgsFeatureIterator();
   }
 
-  return QgsFeatureIterator( new QgsOracleFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsOracleFeatureIterator( new QgsOracleFeatureSource( this ), true, request ) );
 }
 
 /**
@@ -706,7 +697,7 @@ bool QgsOracleProvider::loadFields()
     mEnabledCapabilities |= QgsVectorDataProvider::CreateSpatialIndex;
   }
 
-  if ( !exec( qry, QString( "SELECT * FROM %1 WHERE rownum=0" ).arg( mQuery ) ) )
+  if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) ) )
   {
     QgsMessageLog::logMessage( tr( "Retrieving fields from '%1' failed [%2]" ).arg( mQuery ).arg( qry.lastError().text() ), tr( "Oracle" ) );
     return false;
@@ -835,7 +826,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
              .arg( mQuery )
              .arg( quotedIdentifier( alias ) );
 
-    if ( !exec( qry, QString( "SELECT * FROM %1 WHERE rownum=0" ).arg( mQuery ) ) )
+    if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
@@ -1222,12 +1213,11 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( fieldId.contains( idx ) )
         continue;
 
-      QString fieldname = mAttributeFields[idx].name();
-      QString fieldTypeName = mAttributeFields[idx].typeName();
+      const QgsField &fld = mAttributeFields[idx];
 
-      QgsDebugMsg( "Checking field against: " + fieldname );
+      QgsDebugMsg( "Checking field against: " + fld.name() );
 
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
+      if ( fld.name().isEmpty() || fld.name() == mGeometryColumn )
         continue;
 
       int i;
@@ -1243,7 +1233,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
           break;
       }
 
-      insert += delim + quotedIdentifier( fieldname );
+      insert += delim + quotedIdentifier( fld.name() );
 
       QString defVal = defaultValue( idx ).toString();
 
@@ -1260,13 +1250,13 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             values += delim + defVal;
           }
         }
-        else if ( fieldTypeName == "MDSYS.SDO_GEOMETRY" )
+        else if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
         {
           values += delim + "?";
         }
         else
         {
-          values += delim + quotedValue( v.toString() );
+          values += delim + quotedValue( v, mAttributeFields[idx].type() );
         }
       }
       else
@@ -1330,7 +1320,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       if ( mPrimaryKeyType == pktRowId )
       {
-        features->setFeatureId( lookupFid( QList<QVariant>() << QVariant( qry.lastInsertId() ) ) );
+        features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( qry.lastInsertId() ) ) );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
@@ -1362,7 +1352,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             primaryKeyVals << attributevec[ idx ];
           }
 
-          features->setFeatureId( lookupFid( QVariant( primaryKeyVals ) ) );
+          features->setFeatureId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
         }
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
@@ -1411,9 +1401,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds & id )
       if ( !exec( qry, sql ) )
         throw OracleException( tr( "Deletion of feature %1 failed" ).arg( *it ), qry );
 
-      QVariant v = mFidToKey[ *it ];
-      mFidToKey.remove( *it );
-      mKeyToFid.remove( v );
+      mShared->removeFid( *it );
     }
 
     qry.finish();
@@ -1620,7 +1608,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
           }
           else
           {
-            sql += quotedValue( siter->toString() );
+            sql += quotedValue( *siter, fld.type() );
           }
         }
         catch ( OracleFieldNotFound )
@@ -1639,9 +1627,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
       {
-        QVariant v = mFidToKey[ fid ];
-        mFidToKey.remove( fid );
-        mKeyToFid.remove( v );
+        QVariant v = mShared->removeFid( fid );
 
         QList<QVariant> k = v.toList();
 
@@ -1654,8 +1640,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
           k[i] = attrs[ idx ];
         }
 
-        mFidToKey.insert( fid, k );
-        mKeyToFid.insert( k, fid );
+        mShared->insertFid( fid, k );
       }
     }
 
@@ -1907,7 +1892,7 @@ bool QgsOracleProvider::setSubsetString( QString theSQL, bool updateFeatureCount
     sql += "(" + mSqlWhereClause + ") AND ";
   }
 
-  sql += "rownum=0";
+  sql += "1=0";
 
   QSqlQuery qry( *mConnection );
   if ( !exec( qry, sql ) )
@@ -2075,7 +2060,7 @@ bool QgsOracleProvider::getGeometryDetails()
   QSqlQuery qry( *mConnection );
   if ( mIsQuery )
   {
-    if ( !exec( qry, QString( "SELECT %1 FROM %2 WHERE rownum=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) ) )
+    if ( !exec( qry, QString( "SELECT %1 FROM %2 WHERE 1=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) ) )
     {
       QgsMessageLog::logMessage( tr( "Could not execute query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
@@ -2975,3 +2960,57 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
 }
 
 // vim: set sw=2 :
+
+
+// ----------
+
+
+QgsOracleSharedData::QgsOracleSharedData()
+    : mFidCounter( 0 )
+{
+}
+
+QgsFeatureId QgsOracleSharedData::lookupFid( const QVariant &v )
+{
+  QMutexLocker locker( &mMutex );
+
+  QMap<QVariant, QgsFeatureId>::const_iterator it = mKeyToFid.find( v );
+
+  if ( it != mKeyToFid.constEnd() )
+  {
+    return it.value();
+  }
+
+  mFidToKey.insert( ++mFidCounter, v );
+  mKeyToFid.insert( v, mFidCounter );
+
+  return mFidCounter;
+}
+
+QVariant QgsOracleSharedData::removeFid( QgsFeatureId fid )
+{
+  QMutexLocker locker( &mMutex );
+
+  QVariant v = mFidToKey[ fid ];
+  mFidToKey.remove( fid );
+  mKeyToFid.remove( v );
+  return v;
+}
+
+void QgsOracleSharedData::insertFid( QgsFeatureId fid, const QVariant& k )
+{
+  QMutexLocker locker( &mMutex );
+
+  mFidToKey.insert( fid, k );
+  mKeyToFid.insert( k, fid );
+}
+
+QVariant QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
+{
+  QMutexLocker locker( &mMutex );
+
+  QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( featureId );
+  if ( it != mFidToKey.constEnd() )
+    return it.value();
+  return QVariant();
+}

@@ -151,16 +151,9 @@ void QgsMapLayerRegistry::removeAllMapLayers()
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
-//Added in QGIS 1.4
 void QgsMapLayerRegistry::clearAllLayerCaches()
 {
-  QMap<QString, QgsMapLayer *>::iterator it;
-  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
-  {
-    //the map layer will take care of deleting the QImage
-    it.value()->setCacheImage( 0 );
-  }
-} // QgsMapLayerRegistry::clearAllLayerCaches()
+}
 
 void QgsMapLayerRegistry::reloadAllLayers()
 {

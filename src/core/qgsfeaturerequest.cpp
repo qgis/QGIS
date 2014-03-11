@@ -126,10 +126,11 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  foreach ( const QString& attrName, attrNames )
   {
-    if ( attrNames.contains( fields[idx].name() ) )
-      mAttrs.append( idx );
+    int attrNum = fields.fieldNameIndex( attrName );
+    if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
+      mAttrs.append( attrNum );
   }
 
   return *this;
@@ -180,3 +181,28 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
 
   return true;
 }
+
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+
+QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
+{
+  while ( !mActiveIterators.empty() )
+  {
+    QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+}
+
+void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator* it )
+{
+  mActiveIterators.insert( it );
+}
+
+void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator* it )
+{
+  mActiveIterators.remove( it );
+}
+
+

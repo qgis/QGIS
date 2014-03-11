@@ -28,8 +28,8 @@
 #include <QSettings>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mMapRenderer( renderer ), mLabelFont( labelFont ), mCurLabelField( -1 )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
+    QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
   fillHaliComboBox();
@@ -48,11 +48,6 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 
 void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const QString& labelText )
 {
-  if ( !mMapRenderer )
-  {
-    return;
-  }
-
   //get feature attributes
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
   if ( !vlayer )
@@ -67,15 +62,10 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   const QgsAttributes& attributeValues = mCurLabelFeat.attributes();
 
   //get layerproperties. Problem: only for pallabeling...
-  QgsPalLabeling* lbl = dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
-  if ( !lbl )
-  {
-    return;
-  }
 
   blockElementSignals( true );
 
-  QgsPalLayerSettings& layerSettings = lbl->layer( layerId );
+  QgsPalLayerSettings layerSettings = QgsPalLayerSettings::fromLayer( vlayer );
 
   //get label field and fill line edit
   if ( layerSettings.isExpression && !labelText.isNull() )

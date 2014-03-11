@@ -38,7 +38,7 @@ class QgsComposerPicture: QgsComposerItem
       */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /**Returns the rotation used for drawing the picture within the composer item    
+    /**Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead
      */
     double rotation() const;
@@ -69,7 +69,7 @@ class QgsComposerPicture: QgsComposerItem
     * instead
     */
     void sizeChangedByRotation( double& width, double& height );
-    
+
   public slots:
     /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,
       only the way the picture is drawn within the item.
@@ -81,8 +81,8 @@ class QgsComposerPicture: QgsComposerItem
       only the way the picture is drawn within the item.
       @note this function was added in version 2.1*/
     virtual void setPictureRotation( double r );
-    
+
   signals:
     /**Is emitted on picture rotation change*/
-    void pictureRotationChanged( double newRotation );    
+    void pictureRotationChanged( double newRotation );
 };

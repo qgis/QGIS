@@ -65,6 +65,10 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     /**Sets Print as raster checkbox value*/
     void setPrintAsRasterCheckBox( bool state );
 
+  signals:
+    /**Is emitted when page orientation changes*/
+    void pageOrientationChanged( QString orientation );
+
   private slots:
     /* when a new map is added */
     void onComposerMapAdded( QgsComposerMap* );

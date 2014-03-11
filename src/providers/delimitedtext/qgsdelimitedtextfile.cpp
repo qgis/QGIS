@@ -111,7 +111,7 @@ bool QgsDelimitedTextFile::open()
       }
       if ( mUseWatcher )
       {
-        mWatcher = new QFileSystemWatcher( this );
+        mWatcher = new QFileSystemWatcher();
         mWatcher->addPath( mFileName );
         connect( mWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateFile() ) );
       }
@@ -142,7 +142,7 @@ bool QgsDelimitedTextFile::setFromUrl( QString url )
 }
 
 // Extract the provider definition from the url
-bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
+bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
 {
   // Close any existing definition
   resetDefinition();
@@ -504,7 +504,8 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
 
 bool QgsDelimitedTextFile::setNextRecordId( long nextRecordId )
 {
-  if ( ! mFile ) return false;
+  if ( ! mFile ) reset();
+
   mHoldCurrentRecord = nextRecordId == mRecordLineNumber;
   if ( mHoldCurrentRecord ) return true;
   return setNextLineNumber( nextRecordId );

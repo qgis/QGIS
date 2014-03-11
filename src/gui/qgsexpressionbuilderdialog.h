@@ -26,7 +26,7 @@
 class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
 {
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL );
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL, QString key = "generic" );
 
     /** The builder widget that is used by the dialog */
     QgsExpressionBuilderWidget* expressionBuilder();
@@ -48,6 +48,11 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * @param r result value (unused)
      */
     virtual void done( int r );
+
+    virtual void accept();
+
+  private:
+    QString mRecentKey;
 };
 
 #endif

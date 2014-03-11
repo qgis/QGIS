@@ -13,7 +13,7 @@ class QgsPythonRunner
     static bool run( QString command, QString messageOnError = QString() );
 
     /** Eval a python statement */
-    static bool eval( QString command, QString& result);
+    static bool eval( QString command, QString& result );
 
     /** assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.

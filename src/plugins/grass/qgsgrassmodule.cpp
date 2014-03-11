@@ -1021,7 +1021,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     // TODO: warn if outside region
     if ( mCanvas->hasCrsTransformEnabled() )
     {
-      crs = mCanvas->mapRenderer()->destinationCrs();
+      crs = mCanvas->mapSettings().destinationCrs();
     }
     else
     {
@@ -1034,8 +1034,8 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     window->south = rect.yMinimum();
     window->east = rect.xMaximum();
     window->north = rect.yMaximum();
-    window->rows = ( int ) mCanvas->mapRenderer()->outputSize().height();
-    window->cols = ( int ) mCanvas->mapRenderer()->outputSize().width();
+    window->rows = ( int ) mCanvas->mapSettings().outputSize().height();
+    window->cols = ( int ) mCanvas->mapSettings().outputSize().width();
 
     char* err = G_adjust_Cell_head( window, 1, 1 );
     if ( err )

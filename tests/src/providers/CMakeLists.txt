@@ -23,7 +23,9 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
 
-SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
+# Temporarily set to old version until server is reconfigured 
+#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
+SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
 ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
 
 #############################################################

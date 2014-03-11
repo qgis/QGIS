@@ -87,13 +87,14 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
   int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
   QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+  QVariant oldValue = model->data( index, Qt::EditRole );
 
-  QVariant value;
-  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx, value ) )
+  QVariant newValue;
+  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx, newValue ) )
     return;
 
   vl->beginEditCommand( tr( "Attribute changed" ) );
-  vl->changeAttributeValue( fid, fieldIdx, value );
+  vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
   vl->endEditCommand();
 }
 

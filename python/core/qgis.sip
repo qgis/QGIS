@@ -59,6 +59,12 @@ class QGis
       WKBMultiPolygon25D,
     };
 
+    static WkbType singleType( WkbType type );
+    static WkbType multiType( WkbType type );
+    static WkbType flatType( WkbType type );
+    static bool isSingleType( WkbType type );
+    static bool isMultiType( WkbType type );
+    static int wkbDimensions( WkbType type );
     enum GeometryType
     {
       Point,
@@ -68,11 +74,11 @@ class QGis
       NoGeometry
     };
 
-    // TODO: String representation of geometry types (set in qgis.cpp)
-    // static const char *qgisVectorGeometryType[];
+    //! description strings for geometry types
+    static const char *vectorGeometryType( GeometryType type );
 
     //! description strings for feature types
-    // static const char *qgisFeatureTypes[];
+    static const char *featureType( WkbType type );
 
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.
@@ -97,6 +103,7 @@ class QGis
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
     };
 
+
     /** Map units that qgis supports
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
      * @note and QGIS >1.8 returns to that
@@ -112,6 +119,7 @@ class QGis
       DecimalDegrees = 2,         // was 2
       DegreesMinutesSeconds = 2,  // was 4
       DegreesDecimalMinutes = 2,  // was 5
+      NauticalMiles = 7
     };
 
     //! Provides the canonical name of the type value
@@ -123,6 +131,8 @@ class QGis
     //! Provides translated version of the type value
     // Added in version 2.0
     static QString tr( QGis::UnitType unit );
+    //! Returns the conversion factor between the specified units
+    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     //! User defined event types
     enum UserEvent
@@ -137,6 +147,9 @@ class QGis
     };
 
     static const double DEFAULT_IDENTIFY_RADIUS;
+
+    //! Default threshold between map coordinates and device coordinates for map2pixel simplification
+    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 };
 
 
@@ -144,7 +157,6 @@ class QGis
  * @note added in 1.8 to replace GEOWkt
  */
 const QString GEOWKT;
-
 const QString PROJECT_SCALES;
 
 /** PROJ4 string that represents a geographic coord sys */
@@ -184,6 +196,11 @@ const double DEFAULT_LINE_WIDTH;
 /** default snapping tolerance for segments (@note added in 1.8) */
 const double DEFAULT_SEGMENT_EPSILON;
 
-/** KEEP IN SYNC WITH qgssize defined in qgis.h! */
+/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+ *  by SIP, and it would be hard to define size_t correctly in SIP.
+ *  Currently used "unsigned long long" was introduced in C++11 (2011)
+ *  but it was supported already before C++11 on common platforms.
+ *  "unsigned long long int" gives syntax error in SIP.
+ *  KEEP IN SYNC WITH qgssize defined in SIP! */
 typedef unsigned long long qgssize;
 

@@ -279,6 +279,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
   QFileInfo myFI( myFile );
   QString myPath = myFI.path();
   QString myName = myFI.fileName();
+  QString baseKey = "/SpatiaLite/connections/";
 
   // TODO: keep the test
   //handle = openSpatiaLiteDb( myFI.canonicalFilePath() );
@@ -287,13 +288,19 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
   // OK, this one is a valid SpatiaLite DB
   //closeSpatiaLiteDb( handle );
 
+  // if there is already a connection with this name, warn user (#9404) and do nothing
+  // ideally, user should be able to change item name so that several sqlite files with same name can co-exist
+  if ( ! settings.value( baseKey + myName + "/sqlitepath", "" ).toString().isEmpty() )
+  {
+    QMessageBox::critical( parent, tr( "Error" ), tr( "Cannot add connection '%1' : a connection with the same name already exists." ).arg( myName ) );
+    return false;
+  }
+
   // Persist last used SpatiaLite dir
   settings.setValue( "/UI/lastSpatiaLiteDir", myPath );
   // inserting this SQLite DB path
-  QString baseKey = "/SpatiaLite/connections/";
   settings.setValue( baseKey + "selected", myName );
-  baseKey += myName;
-  settings.setValue( baseKey + "/sqlitepath", myFI.canonicalFilePath() );
+  settings.setValue( baseKey + myName + "/sqlitepath", myFI.canonicalFilePath() );
   return true;
 }
 

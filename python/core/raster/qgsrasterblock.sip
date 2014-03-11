@@ -12,12 +12,36 @@ class QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
+     *  @note not available in python bindings (use variant with theNoDataValue)
+     */
+    // QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
+
+    /** \brief Constructor which allocates data block in memory
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
      *  @param theNoDataValue the value representing no data (NULL)
      */
     QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
 
+    /** \brief Reset block
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @return true on success
+     *  @note not available in python bindings (use variant with theNoDataValue)
+     */
+    // bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
+
+    /** \brief Reset block
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @param theNoDataValue the value representing no data (NULL)
+     *  @return true on success
+     */
     bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
@@ -59,7 +83,7 @@ class QgsRasterBlock
      * @return true if the block has no data value */
     bool hasNoDataValue() const;
 
-    /** Returns true if thee block may contain no data. It does not guarantee
+    /** Returns true if the block may contain no data. It does not guarantee
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
      * @return true if the block may contain no data */
@@ -85,7 +109,7 @@ class QgsRasterBlock
 
     /** \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return value */
     double value( qgssize index ) const;
 
@@ -96,7 +120,7 @@ class QgsRasterBlock
     QRgb color( int row, int column ) const;
 
     /** \brief Read a single value
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return color */
     QRgb color( qgssize index ) const;
 
@@ -107,7 +131,7 @@ class QgsRasterBlock
     bool isNoData( int row, int column );
 
     /** \brief Check if value at position is no data
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return true if value is no data */
     bool isNoData( qgssize index );
 
@@ -119,7 +143,7 @@ class QgsRasterBlock
     bool setValue( int row, int column, double value );
 
     /** \brief Set value on index (indexed line by line)
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @param value the value to be set
      *  @return true on success */
     bool setValue( qgssize index, double value );
@@ -132,7 +156,7 @@ class QgsRasterBlock
     bool setColor( int row, int column, QRgb color );
 
     /** \brief Set color on index (indexed line by line)
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( qgssize index, QRgb color );
@@ -144,7 +168,7 @@ class QgsRasterBlock
     bool setIsNoData( int row, int column );
 
     /** \brief Set no data on pixel
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return true on success */
     bool setIsNoData( qgssize index );
 
@@ -196,6 +220,12 @@ class QgsRasterBlock
      *  @param image image
      *  @return true on success */
     bool setImage( const QImage * image );
+
+    // @note not available in python bindings
+    // inline static double readValue( void *data, QGis::DataType type, qgssize index );
+
+    // @note not available in python bindings
+    // inline static void writeValue( void *data, QGis::DataType type, qgssize index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
 

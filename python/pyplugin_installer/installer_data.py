@@ -393,7 +393,9 @@ class Repositories(QObject):
         self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
     else:
       reposXML = QDomDocument()
-      reposXML.setContent(reply.readAll())
+      content = reply.readAll()
+      # Fix lonely ampersands in metadata
+      reposXML.setContent(content.replace("& ", "&amp; "))
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):

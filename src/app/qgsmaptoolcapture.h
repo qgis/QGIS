@@ -61,9 +61,6 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 
     virtual void keyPressEvent( QKeyEvent* e );
 
-    //! Resize rubber band
-    virtual void renderComplete();
-
     //! deactive the tool
     virtual void deactivate();
 
@@ -119,7 +116,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 
     bool mCaptureModeFromLayer;
 
-    QList<QgsVertexMarker *> mSnappingMarkers;
+    QgsVertexMarker* mSnappingMarker;
 };
 
 #endif

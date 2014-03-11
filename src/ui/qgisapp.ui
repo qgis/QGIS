@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1050</width>
-    <height>487</height>
+    <height>506</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -123,6 +123,7 @@
     </widget>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
+    <addaction name="mActionAddLayerDefinition"/>
     <addaction name="mActionAddOgrLayer"/>
     <addaction name="mActionAddRasterLayer"/>
     <addaction name="mActionAddPgLayer"/>
@@ -144,7 +145,7 @@
     <addaction name="mActionAllEdits"/>
     <addaction name="separator"/>
     <addaction name="mActionLayerSaveAs"/>
-    <addaction name="mActionLayerSelectionSaveAs"/>
+    <addaction name="mActionSaveLayerDefinition"/>
     <addaction name="mActionRemoveLayer"/>
     <addaction name="mActionDuplicateLayer"/>
     <addaction name="mActionSetLayerCRS"/>
@@ -193,6 +194,7 @@
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
     <addaction name="mActionSnappingOptions"/>
+    <addaction name="mActionResetUIdefaults"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
     <property name="title">
@@ -1306,11 +1308,6 @@
     <string>Save As...</string>
    </property>
   </action>
-  <action name="mActionLayerSelectionSaveAs">
-   <property name="text">
-    <string>Save Selection as Vector File...</string>
-   </property>
-  </action>
   <action name="mActionRemoveLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2152,7 +2149,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset>
      <normaloff>:/images/themes/default/mActionFillRing.png</normaloff>:/images/themes/default/mActionFillRing.png</iconset>
    </property>
    <property name="text">
@@ -2160,6 +2157,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Fill Ring</string>
+   </property>
+  </action>
+  <action name="mActionResetUIdefaults">
+   <property name="text">
+    <string>Reset UI defaults</string>
+   </property>
+  </action>
+  <action name="mActionAddLayerDefinition">
+   <property name="text">
+    <string>Add from Layer Definition File..</string>
+   </property>
+  </action>
+  <action name="mActionSaveLayerDefinition">
+   <property name="text">
+    <string>Save As Layer Definition File..</string>
    </property>
   </action>
  </widget>

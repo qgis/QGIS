@@ -45,7 +45,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
 
   mRecentSnappingResults.clear();
   //do snap -> new recent snapping results
-  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SnapToVertex ) != 0 )
+  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SnapToVertexAndSegment ) != 0 )
   {
     //error
   }
@@ -84,7 +84,12 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      deletePart( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer );
+      if ( sr_it->snappedVertexNr != -1 )
+        deletePart( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer );
+      else if ( sr_it->beforeVertexNr != -1 )
+        deletePart( sr_it->snappedAtGeometry, sr_it->beforeVertexNr, vlayer );
+      else if ( sr_it->afterVertexNr != -1 )
+        deletePart( sr_it->snappedAtGeometry, sr_it->afterVertexNr, vlayer );
     }
   }
 

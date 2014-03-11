@@ -55,9 +55,12 @@ class QgsGeometry
     static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly ) /Factory/;
     /** construct geometry from a rectangle */
     static QgsGeometry* fromRect( const QgsRectangle& rect ) /Factory/;
-
-
-
+    /**
+      Set the geometry, feeding in a geometry in GEOS format.
+      This class will take ownership of the buffer.
+      @note not available in python bindings
+     */
+    // void fromGeos( GEOSGeometry* geos );
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
@@ -83,6 +86,12 @@ class QgsGeometry
      * Returns the size of the WKB in asWkb().
      */
     size_t wkbSize() const;
+
+    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
+        @note this method was added in version 1.1
+        @note not available in python bindings
+      */
+    // const GEOSGeometry* asGeos() const;
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
     QGis::WkbType wkbType() const;
@@ -126,7 +135,6 @@ class QgsGeometry
     */
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ );
 
-
     /**
        Returns the indexes of the vertices before and after the given vertex index.
 
@@ -140,7 +148,6 @@ class QgsGeometry
           skip equal vertex positions).
     */
     void adjacentVertices( int atVertex, int& beforeVertex /Out/, int& afterVertex /Out/ );
-
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
@@ -207,7 +214,7 @@ class QgsGeometry
      * @param epsilon epsilon for segment snapping (added in 1.8)
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& beforeVertex /Out/ );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& afterVertex /Out/ );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -217,7 +224,21 @@ class QgsGeometry
     /**Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
-    int addPart( const QList<QgsPoint> &points );
+    int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+
+    /**Adds a new island polygon to a multipolygon feature
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     not disjoint with existing polygons of the feature
+     @note not available in python bindings
+     */
+    // int addPart( GEOSGeometry *newPart );
+
+    /**Adds a new island polygon to a multipolygon feature
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     not disjoint with existing polygons of the feature
+     @note available in python bindings as addPartGeometry (added in 2.1)
+     */
+    int addPart( QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -261,31 +282,31 @@ class QgsGeometry
     /** Test for containment of a point (uses GEOS) */
     bool contains( const QgsPoint* p ) const;
 
-    /** Test for if geometry is contained in an other (uses GEOS)
+    /** Test for if geometry is contained in another (uses GEOS)
      *  @note added in 1.5 */
     bool contains( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry is disjoint of an other (uses GEOS)
+    /** Test for if geometry is disjoint of another (uses GEOS)
      *  @note added in 1.5 */
     bool disjoint( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry equals an other (uses GEOS)
+    /** Test for if geometry equals another (uses GEOS)
      *  @note added in 1.5 */
     bool equals( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry touch an other (uses GEOS)
+    /** Test for if geometry touch another (uses GEOS)
      *  @note added in 1.5 */
     bool touches( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry overlaps an other (uses GEOS)
+    /** Test for if geometry overlaps another (uses GEOS)
      *  @note added in 1.5 */
     bool overlaps( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry is within an other (uses GEOS)
+    /** Test for if geometry is within another (uses GEOS)
      *  @note added in 1.5 */
     bool within( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry crosses an other (uses GEOS)
+    /** Test for if geometry crosses another (uses GEOS)
      *  @note added in 1.5 */
     bool crosses( const QgsGeometry* geometry ) const;
 
@@ -334,6 +355,14 @@ class QgsGeometry
      *  @note python binding added in 1.9
      */
     QString exportToGeoJSON() const;
+
+    /** try to convert the geometry to the requested type
+     * @param destType the geometry type to be converted to
+     * @param destMultipart determines if the output geometry will be multipart or not
+     * @return the converted geometry or NULL pointer if the conversion fails.
+     * @note added in 2.2
+     */
+    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) /Factory/;
 
     /* Accessor functions for getting geometry data */
 
@@ -394,6 +423,7 @@ class QgsGeometry
     class Error
     {
       public:
+        Error();
         Error( QString m );
         Error( QString m, QgsPoint p );
 

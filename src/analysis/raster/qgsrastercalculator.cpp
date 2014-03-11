@@ -52,6 +52,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( !calcNode )
   {
     //error
+    return 4;
   }
 
   double targetGeoTransform[6];

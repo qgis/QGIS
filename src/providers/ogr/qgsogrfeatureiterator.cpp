@@ -33,9 +33,8 @@
 // - mEncoding
 
 
-QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request )
-    , P( p )
+QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
+    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
     , ogrDataSource( 0 )
     , ogrLayer( 0 )
     , mSubsetStringSet( false )
@@ -43,24 +42,27 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 {
   mFeatureFetched = false;
 
-  ogrDataSource = OGROpen( TO8F( P->filePath() ), false, NULL );
+  ogrDataSource = OGROpen( TO8F( mSource->mFilePath ), false, NULL );
 
-  if ( P->layerName().isNull() )
+  if ( mSource->mLayerName.isNull() )
   {
-    ogrLayer = OGR_DS_GetLayer( ogrDataSource, P->layerIndex() );
+    ogrLayer = OGR_DS_GetLayer( ogrDataSource, mSource->mLayerIndex );
   }
   else
   {
-    ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( p->layerName() ) );
+    ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mSource->mLayerName ) );
   }
 
-  if ( !P->subsetString().isEmpty() )
+  if ( !mSource->mSubsetString.isEmpty() )
   {
-    ogrLayer = P->setSubsetString( ogrLayer, ogrDataSource );
+    ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, ogrDataSource, mSource->mEncoding, mSource->mSubsetString );
     mSubsetStringSet = true;
   }
 
-  ensureRelevantFields();
+  // make sure we fetch just relevant fields
+  mFetchGeometry = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
+  QgsOgrUtils::setRelevantFields( ogrLayer, mSource->mFields.count(), mFetchGeometry, attrs );
 
   // spatial query to select features
   if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
@@ -92,14 +94,6 @@ QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
   close();
 }
 
-void QgsOgrFeatureIterator::ensureRelevantFields()
-{
-  mFetchGeometry = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
-  QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : P->attributeIndexes();
-  P->setRelevantFields( ogrLayer, mFetchGeometry, attrs );
-  P->mRelevantFieldsForNextFeature = true;
-}
-
 bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
   delete mGeometrySimplifier;
@@ -109,31 +103,49 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+    Q_UNUSED( methodType );
 
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
     if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
     {
       int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
       mGeometrySimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
       return true;
     }
+#endif
+#endif
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
-    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    if ( methodType == QgsSimplifyMethod::PreserveTopology )
     {
       mGeometrySimplifier = new QgsOgrTopologyPreservingSimplifier( simplifyMethod.tolerance() );
       return true;
     }
 #endif
-    else
-    {
-      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
-    }
+
+    QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
   }
   return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
 }
 
 bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-  return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+  if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+  {
+    return true;
+  }
+#endif
+#endif
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+  if ( methodType == QgsSimplifyMethod::PreserveTopology )
+  {
+    return true;
+  }
+#endif
+
+  return false;
 }
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
@@ -142,9 +154,6 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 
   if ( mClosed )
     return false;
-
-  if ( !P->mRelevantFieldsForNextFeature )
-    ensureRelevantFields();
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
@@ -177,8 +186,6 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 
   } // while
 
-  QgsDebugMsg( "Feature is null" );
-
   close();
   return false;
 }
@@ -200,7 +207,7 @@ bool QgsOgrFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  P->mActiveIterators.remove( this );
+  iteratorClosed();
 
   if ( mSubsetStringSet )
   {
@@ -229,9 +236,9 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
   if ( OGR_F_IsFieldSet( ogrFet, attindex ) )
   {
-    switch ( P->mAttributeFields[attindex].type() )
+    switch ( mSource->mFields[attindex].type() )
     {
-      case QVariant::String: value = QVariant( P->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
+      case QVariant::String: value = QVariant( mSource->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
       case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
       case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
       case QVariant::Date:
@@ -240,7 +247,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
         int year, month, day, hour, minute, second, tzf;
 
         OGR_F_GetFieldAsDateTime( ogrFet, attindex, &year, &month, &day, &hour, &minute, &second, &tzf );
-        if ( P->mAttributeFields[attindex].type() == QVariant::Date )
+        if ( mSource->mFields[attindex].type() == QVariant::Date )
           value = QDate( year, month, day );
         else
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
@@ -262,11 +269,11 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
-  feature.initAttributes( P->fields().count() );
-  feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
+  feature.initAttributes( mSource->mFields.count() );
+  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
 
   bool useIntersect = mRequest.flags() & QgsFeatureRequest::ExactIntersect;
-  bool geometryTypeFilter = P->mOgrGeometryTypeFilter != wkbUnknown;
+  bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;
   if ( mFetchGeometry || useIntersect || geometryTypeFilter )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
@@ -285,7 +292,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       if ( !geometry ) feature.setGeometryAndOwnership( wkb, memorySize ); else geometry->fromWkb( wkb, memorySize );
     }
     if (( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
-        || ( geometryTypeFilter && ( !feature.geometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry()->wkbType() ) != P->mOgrGeometryTypeFilter ) ) )
+        || ( geometryTypeFilter && ( !feature.geometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry()->wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
@@ -309,11 +316,28 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
   else
   {
     // all attributes
-    for ( int idx = 0; idx < P->mAttributeFields.count(); ++idx )
+    for ( int idx = 0; idx < mSource->mFields.count(); ++idx )
     {
       getFeatureAttribute( fet, feature, idx );
     }
   }
 
   return true;
+}
+
+
+QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
+{
+  mFilePath = p->filePath();
+  mLayerName = p->layerName();
+  mLayerIndex = p->layerIndex();
+  mSubsetString = p->mSubsetString;
+  mEncoding = p->mEncoding; // no copying - this is a borrowed pointer from Qt
+  mFields = p->mAttributeFields;
+  mOgrGeometryTypeFilter = p->mOgrGeometryTypeFilter;
+}
+
+QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest& request )
+{
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, false, request ) );
 }

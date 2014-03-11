@@ -26,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include <QDialog>
 #include <QMenu>
@@ -334,14 +335,22 @@ bool QgsDualView::saveEditChanges()
           return false;
         }
 
+        // avoid empty command
+        int i = 0;
+        for ( ; i < dst.count() && dst[i] == src[i]; ++i )
+          ;
+
+        if ( i == dst.count() )
+          return true;
+
         mLayerCache->layer()->beginEditCommand( tr( "Attributes changed" ) );
 
-        for ( int i = 0; i < dst.count(); ++i )
+        for ( ; i < dst.count(); ++i )
         {
-          if ( dst[i] != src[i] )
-          {
-            mLayerCache->layer()->changeAttributeValue( fid, i, dst[i] );
-          }
+          if ( dst[i] == src[i] )
+            continue;
+
+          mLayerCache->layer()->changeAttributeValue( fid, i, dst[i], src[i] );
         }
 
         mLayerCache->layer()->endEditCommand();
@@ -418,10 +427,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 {
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
+  //add user-defined actions to context menu
   if ( mLayerCache->layer()->actions()->size() != 0 )
   {
 
-    QAction *a = menu->addAction( tr( "Run action" ) );
+    QAction *a = menu->addAction( tr( "Run layer action" ) );
     a->setEnabled( false );
 
     for ( int i = 0; i < mLayerCache->layer()->actions()->size(); i++ )
@@ -436,6 +446,22 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
     }
   }
 
+  //add actions from QgsMapLayerActionRegistry to context menu
+  QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayerCache->layer() );
+  if ( registeredActions.size() > 0 )
+  {
+    //add a seperator between user defined and standard actions
+    menu->addSeparator();
+
+    QList<QgsMapLayerAction*>::iterator actionIt;
+    for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+    {
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction(( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
+      menu->addAction(( *actionIt )->text(), a, SLOT( execute() ) );
+    }
+  }
+
+  menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
@@ -611,4 +637,13 @@ void QgsAttributeTableAction::featureForm()
   editedIds << mDualView->masterModel()->rowToId( mFieldIdx.row() );
   mDualView->setCurrentEditSelection( editedIds );
   mDualView->setView( QgsDualView::AttributeEditor );
+}
+
+/*
+ * QgsAttributeTableMapLayerAction
+ */
+
+void QgsAttributeTableMapLayerAction::execute()
+{
+  mDualView->masterModel()->executeMapLayerAction( mAction, mFieldIdx );
 }

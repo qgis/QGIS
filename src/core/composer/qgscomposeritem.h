@@ -128,17 +128,24 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
 
     /**Zoom content of item. Does nothing per default (but implemented in composer map)
-     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
-    @param x x-position of mouse cursor (in item coordinates)
-    @param y y-position of mouse cursor (in item coordinates)*/
+      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
+      @param x x-position of mouse cursor (in item coordinates)
+      @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets item position and width / height in one go
+      @param x item position x
+      @param y item position y
+      @param width item width
+      @param height item height
+      @param itemPoint item position mode
+      @param posIncludesFrame set to true if the position and size arguments include the item's frame border
+
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
@@ -180,8 +187,33 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @note introduced in 1.8
      * @see hasFrame
      */
-    void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
+    void setFrameEnabled( bool drawFrame );
 
+    /** Sets frame outline width
+     * @param outlineWidth new width for outline frame
+     * @returns nothing
+     * @note introduced in 2.2
+     * @see setFrameEnabled
+     */
+    virtual void setFrameOutlineWidth( double outlineWidth );
+
+    /** Returns the estimated amount the item's frame bleeds outside the item's
+     *  actual rectangle. For instance, if the item has a 2mm frame outline, then
+     *  1mm of this frame is drawn outside the item's rect. In this case the
+     *  return value will be 1.0
+     * @note introduced in 2.2
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /** Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     *  The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     *  more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     *  function, as rect() makes no allowances for the portion of outlines which are drawn
+     *  outside of the item.
+     * @note introduced in 2.2
+     * @see estimatedFrameBleed
+     */
+    virtual QRectF rectWithFrame() const;
 
     /** Whether this item has a Background or not.
      * @returns true if there is a Background around this item, otherwise false.
@@ -456,6 +488,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void itemChanged();
     /**Emitted if the rectangle changes*/
     void sizeChanged();
+    /**Emitted if the item's frame style changes
+     * @note: this function was introduced in version 2.2
+    */
+    void frameChanged();
   private:
     // id (not unique)
     QString mId;

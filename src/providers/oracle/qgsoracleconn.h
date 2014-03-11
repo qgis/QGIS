@@ -96,7 +96,7 @@ struct QgsOracleLayerProperty
 #endif
 };
 
-class QgsOracleConn : public QThread
+class QgsOracleConn : public QObject
 {
     Q_OBJECT;
   public:
@@ -109,7 +109,7 @@ class QgsOracleConn : public QThread
 
     /** Quote a value for placement in a SQL string.
      */
-    static QString quotedValue( QVariant value );
+    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
     //! Get the list of supported layers
     bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,
@@ -125,7 +125,7 @@ class QgsOracleConn : public QThread
     /** get primary key candidates (all int4 columns) */
     QStringList pkCandidates( QString ownerName, QString viewName );
 
-    QString fieldExpression( const QgsField &fld );
+    static QString fieldExpression( const QgsField &fld );
 
     QString connInfo();
 

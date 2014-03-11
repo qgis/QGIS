@@ -25,6 +25,7 @@
 
 #include <QSettings>
 #include <QSqlError>
+#include <QDateTime>
 
 QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
@@ -257,25 +258,56 @@ QString QgsOracleConn::quotedIdentifier( QString ident )
   return ident;
 }
 
-QString QgsOracleConn::quotedValue( QVariant value )
+QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
 {
   if ( value.isNull() )
     return "NULL";
 
-  switch ( value.type() )
-  {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
-      return value.toString();
+  if ( type == QVariant::Invalid )
+    type = value.type();
 
-    default:
-    case QVariant::String:
-      QString v = value.toString();
-      v.replace( "'", "''" );
-      v.replace( "\\\"", "\\\\\"" );
-      return v.prepend( "'" ).append( "'" );
+  if ( value.canConvert( type ) )
+  {
+    switch ( type )
+    {
+      case QVariant::Int:
+      case QVariant::LongLong:
+      case QVariant::Double:
+        return value.toString();
+
+      case QVariant::DateTime:
+      {
+        QDateTime datetime( value.toDateTime() );
+        if ( datetime.isValid() )
+          return QString( "TO_DATE('%1','YYYY-MM-DD HH24:MI:SS')" ).arg( datetime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+        break;
+      }
+
+      case QVariant::Date:
+      {
+        QDate date( value.toDate() );
+        if ( date.isValid() )
+          return QString( "TO_DATE('%1','YYYY-MM-DD')" ).arg( date.toString( "yyyy-MM-dd" ) );
+        break;
+      }
+
+      case QVariant::Time:
+      {
+        QDateTime datetime( value.toDateTime() );
+        if ( datetime.isValid() )
+          return QString( "TO_DATE('%1','HH24:MI:SS')" ).arg( datetime.toString( "hh:mm:ss" ) );
+        break;
+      }
+
+      default:
+        break;
+    }
   }
+
+  QString v = value.toString();
+  v.replace( "'", "''" );
+  v.replace( "\\\"", "\\\\\"" );
+  return v.prepend( "'" ).append( "'" );
 }
 
 QString QgsOracleConn::fieldExpression( const QgsField &fld )

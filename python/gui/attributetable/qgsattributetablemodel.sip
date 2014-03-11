@@ -2,13 +2,14 @@ class QgsAttributeTableModel : QAbstractTableModel
 {
 %TypeHeaderCode
 #include <qgsattributetablemodel.h>
+#include <qgsmaplayeractionregistry.h>
 %End
   public:
     enum Role
     {
       SortRole,
       FeatureIdRole,
-      FieldIndexRole,
+      FieldIndexRole
     };
 
   public:
@@ -134,6 +135,11 @@ class QgsAttributeTableModel : QAbstractTableModel
     void executeAction( int action, const QModelIndex &idx ) const;
 
     /**
+     * Execute a QgsMapLayerAction
+     */
+    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const;
+
+    /**
      * Return the feature attributes at given model index
      * @return feature attributes at given model index
      */
@@ -147,6 +153,8 @@ class QgsAttributeTableModel : QAbstractTableModel
      * @param column The column index of the field to catch
      */
     void prefetchColumnData( int column );
+
+    void setRequest( const QgsFeatureRequest& request );
 
   signals:
     /**

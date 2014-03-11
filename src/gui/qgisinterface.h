@@ -43,10 +43,6 @@ class QgsVectorLayerTools;
 
 #include <qgis.h>
 
-#ifdef _MSC_VER
-#  pragma warning( push )
-#  pragma warning( disable: 4996 )  // was declared deprecated
-#endif
 
 /** \ingroup gui
  * QgisInterface
@@ -530,6 +526,10 @@ class GUI_EXPORT QgisInterface : public QObject
     /** @note added in 1.9 */
     virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
+    /** @note deprecated in 2.4 - returns null pointer */
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
     /** @note added in 1.9 */
@@ -623,11 +623,6 @@ class GUI_EXPORT QgisInterface : public QObject
       */
     void newProjectCreated();
 };
-
-#ifdef _MSC_VER
-#  pragma warning( pop )
-#  pragma warning( disable: 4190 )
-#endif
 
 // FIXME: also in core/qgis.h
 #ifndef QGISEXTERN

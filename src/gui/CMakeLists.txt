@@ -86,6 +86,7 @@ qgsexpressionbuilderdialog.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionhighlighter.cpp
 qgsexpressionselectiondialog.cpp
+qgsextentgroupbox.cpp
 qgsfeatureselectiondlg.cpp
 qgsfieldvalidator.cpp
 qgsfiledropedit.cpp
@@ -101,6 +102,7 @@ qgsmapcanvas.cpp
 qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
 qgsmapcanvassnapper.cpp
+qgsmaplayeractionregistry.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptip.cpp
 qgsmaptool.cpp
@@ -110,15 +112,12 @@ qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessagebar.cpp
 qgsmessagebaritem.cpp
-qgsmessageviewer.cpp
 qgsmessagelogviewer.cpp
 qgsmessageviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgsoptionsdialogbase.cpp
-qgscredentialdialog.cpp
-qgsattributeeditorcontext.cpp
 qgsowssourceselect.cpp
 qgspluginmanagerinterface.cpp
 qgsprojectbadlayerguihandler.cpp
@@ -217,6 +216,7 @@ qgscomposerruler.h
 qgscomposerview.h
 qgscredentialdialog.h
 qgsdatadefinedbutton.h
+qgsdatumtransformdialog.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgsdialog.h
@@ -225,6 +225,7 @@ qgserrordialog.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
+qgsextentgroupbox.h
 qgsfeatureselectiondlg.h
 qgsfieldvalidator.h
 qgsfilterlineedit.h
@@ -236,6 +237,7 @@ qgslonglongvalidator.h
 qgsludialog.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
+qgsmaplayeractionregistry.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
@@ -263,6 +265,10 @@ qgssublayersdialog.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
+
+IF(UNIX)
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_GUI_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(UNIX)
 
 # for installing headers
 
@@ -426,7 +432,7 @@ ELSE(MSVC)
     ${CMAKE_BINARY_DIR}/src/gui/moc_qgisinterface.cxx
     ${CMAKE_BINARY_DIR}/src/gui/moc_qgsgenericprojectionselector.cxx
     ${CMAKE_BINARY_DIR}/src/gui/moc_qgsprojectionselector.cxx
-    PROPERTIES COMPILE_FLAGS "-w")
+    PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
 ENDIF(MSVC)
 
 #############################################################

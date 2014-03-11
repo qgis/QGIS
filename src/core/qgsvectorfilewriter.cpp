@@ -525,8 +525,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( "MULTILINE", new BoolOption(
                            QObject::tr( "By default, BNA files are created in multi-line format. "
                                         "For each record, the first line contains the identifiers and the "
-                                        "type/number of coordinates to follow. The following lines contains "
-                                        "a pair of coordinates)." )
+                                        "type/number of coordinates to follow. Each following line contains "
+                                        "a pair of coordinates." )
                            , true  // Default value
                          ) );
 
@@ -1198,7 +1198,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   datasetOptions.insert( "SPLIT_MULTIPOINT", new BoolOption(
                            QObject::tr( "Should multipoint soundings be split into many single point sounding features. "
-                                        "Multipoint geometries are not well handle by many formats, "
+                                        "Multipoint geometries are not well handled by many formats, "
                                         "so it can be convenient to split single sounding features with many points "
                                         "into many single point features." )
                            , false  // Default value
@@ -1305,7 +1305,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   layerOptions.insert( "LAUNDER", new BoolOption(
                          QObject::tr( "Controls whether layer and field names will be laundered for easier use "
-                                      "in SQLite. Laundered names will be convered to lower case and some special "
+                                      "in SQLite. Laundered names will be converted to lower case and some special "
                                       "characters(' - #) will be changed to underscores." )
                          , true  // Default value
                        ) );
@@ -1791,7 +1791,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     bool skipAttributeCreation,
     QString *newFilename,
     SymbologyExport symbologyExport,
-    double symbologyScale )
+    double symbologyScale,
+    const QgsRectangle* filterExtent )
 {
   QgsCoordinateTransform* ct = 0;
   if ( destCRS && layer )
@@ -1800,7 +1801,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
-      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale );
+      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent );
   delete ct;
   return error;
 }
@@ -1812,13 +1813,13 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     const QString& driverName,
     bool onlySelected,
     QString *errorMessage,
-    const QStringList &datasourceOptions,  // added in 1.6
-    const QStringList &layerOptions,  // added in 1.6
-    bool skipAttributeCreation, // added in 1.6
-    QString *newFilename, // added in 1.9
-    SymbologyExport symbologyExport, //added in 2.0
-    double symbologyScale // added in 2.0
-                                                                         )
+    const QStringList &datasourceOptions,
+    const QStringList &layerOptions,
+    bool skipAttributeCreation,
+    QString *newFilename,
+    SymbologyExport symbologyExport,
+    double symbologyScale,
+    const QgsRectangle* filterExtent )
 {
   if ( !layer )
   {
@@ -1960,6 +1961,10 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
         return ErrProjection;
       }
     }
+
+    if ( fet.geometry() && filterExtent && !fet.geometry()->intersects( *filterExtent ) )
+      continue;
+
     if ( allAttr.size() < 1 && skipAttributeCreation )
     {
       fet.initAttributes( 0 );
@@ -2597,7 +2602,7 @@ void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
   }
 
   QgsRenderContext ctx = renderContext();
-  renderer->startRender( ctx, vl );
+  renderer->startRender( ctx, vl->pendingFields() );
 }
 
 void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const

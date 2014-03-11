@@ -27,7 +27,7 @@
 #include <QVariant>
 #include <QVector>
 
-#include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 
 class QgsBench :  public QObject
 {
@@ -44,7 +44,7 @@ class QgsBench :  public QObject
 
     void render();
 
-    void printLog();
+    void printLog( const QString& printTime );
 
     bool openProject( const QString & fileName );
 
@@ -57,6 +57,8 @@ class QgsBench :  public QObject
     QString serialize( QMap<QString, QVariant> theMap, int level = 0 );
 
     void  setRenderHints( QPainter::RenderHints hints ) { mRendererHints = hints; }
+
+    void setParallel( bool enabled ) { mParallel = enabled; }
 
   public slots:
     void readProject( const QDomDocument &doc );
@@ -87,9 +89,11 @@ class QgsBench :  public QObject
     // user, sys, total times
     QVector<double*> mTimes;
 
-    QImage* mImage;
+    QImage mImage;
 
-    QgsMapRenderer *mMapRenderer;
+    QgsMapSettings mMapSettings;
+
+    bool mParallel;
 };
 
 #endif // QGSBENCH_H

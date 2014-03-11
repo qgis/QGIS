@@ -26,6 +26,7 @@
 #include "qgsfield.h"
 #include "qgsmaptoolidentify.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include <QWidget>
 #include <QList>
@@ -81,6 +82,8 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
     QgsIdentifyResultsWebViewItem( QTreeWidget *treeWidget = 0 );
     QgsIdentifyResultsWebView *webView() { return mWebView; }
     void setHtml( const QString &html );
+    /** @note added in 2.1 */
+    void setContent( const QByteArray & data, const QString & mimeType = QString(), const QUrl & baseUrl = QUrl() );
 
   public slots:
     void loadFinished( bool ok );
@@ -199,6 +202,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsMapCanvas *mCanvas;
     QList<QgsFeature> mFeatures;
 
+    QList< QgsMapLayerAction* > mMapLayerActions;
+
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
@@ -218,7 +223,27 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void doAction( QTreeWidgetItem *item, int action );
 
+    void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
+
     QDockWidget *mDock;
+};
+
+class QgsIdentifyResultsDialogMapLayerAction : public QAction
+{
+    Q_OBJECT
+
+  public:
+    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction* action, QgsMapLayer* layer, QgsFeature * f ) :
+        QAction( name, parent ), mAction( action ), mFeature( f ), mLayer( layer )
+    {}
+
+  public slots:
+    void execute();
+
+  private:
+    QgsMapLayerAction* mAction;
+    QgsFeature* mFeature;
+    QgsMapLayer* mLayer;
 };
 
 #endif

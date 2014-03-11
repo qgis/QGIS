@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class QgsComposerItem: QObject, QGraphicsRectItem
+class QgsComposerItem : QObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
@@ -154,7 +154,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     virtual void setSelected( bool s );
 
     /** \brief Is selected */
-    virtual bool selected();
+    virtual bool selected() const;
 
     /** stores state in project */
     virtual bool writeSettings();
@@ -183,8 +183,9 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets item position and width / height in one go
+     * @param posIncludesFrame set to true if the position and size arguments include the item's frame border
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
@@ -218,7 +219,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      * @note introduced since 1.8
      * @see hasFrame
      */
-    bool hasFrame();
+    bool hasFrame() const;
 
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
@@ -228,6 +229,31 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      */
     void setFrameEnabled( bool drawFrame );
 
+    /** Sets frame outline width
+     * @param outlineWidth new width for outline frame
+     * @returns nothing
+     * @note introduced in 2.2
+     * @see setFrameEnabled
+     */
+    virtual void setFrameOutlineWidth( double outlineWidth );
+
+    /** Returns the estimated amount the item's frame bleeds outside the item's
+     *  actual rectangle. For instance, if the item has a 2mm frame outline, then
+     *  1mm of this frame is drawn outside the item's rect. In this case the
+     *  return value will be 1.0
+     * @note introduced in 2.2
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /** Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     *  The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     *  more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     *  function, as rect() makes no allowances for the portion of outlines which are drawn
+     *  outside of the item.
+     * @note introduced in 2.2
+     * @see estimatedFrameBleed
+     */
+    virtual QRectF rectWithFrame() const;
 
     /** Whether this item has a Background or not.
      * @returns true if there is a Background around this item, otherwise false.
@@ -339,7 +365,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
      *             instead
-     */    
+     */
     double rotation() const;
 
     /**Updates item, with the possibility to do custom update for subclasses*/
@@ -361,13 +387,17 @@ class QgsComposerItem: QObject, QGraphicsRectItem
   public slots:
     /**Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
-     */   
+     */
     virtual void setRotation( double r );
 
     /**Sets the item rotation
+      @param r item rotation in degrees
+      @param adjustPosition set to true if item should be shifted so that rotation occurs
+       around item center. If false, rotation occurs around item origin
       @note this method was added in version 2.1
     */
-    virtual void setItemRotation( double r );
+    virtual void setItemRotation( double r, bool adjustPosition = false );
+
     void repaint();
 
   protected:
@@ -416,22 +446,31 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      * instead
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const;
-    
+
+    /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
+     * a specified amount
+        @param originalRect QRectF to be rotated and scaled
+        @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+        @param rotation the rotation in degrees to be applied to the rectangle
+    */
+    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
     /**Calculates corner point after rotation and scaling
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
-     */    
+     */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
     void sizeChangedByRotation( double& width, double& height, double rotation );
-     /**Calculates width / height of the bounding box of a rotated rectangle
-     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
-     * instead
-     */      
+    /**Calculates width / height of the bounding box of a rotated rectangle
+    * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
+    * instead
+    */
     void sizeChangedByRotation( double& width, double& height );
+
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise
         @param x in/out: x coordinate before / after the rotation
@@ -447,10 +486,15 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     void deleteAlignItems();
 
   signals:
-    /**Is emitted on rotation change to notify north arrow pictures*/
+    /**Is emitted on item rotation change*/
     void itemRotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
     /**Emitted if the rectangle changes*/
     void sizeChanged();
+    /**Emitted if the item's frame style changes
+     * @note: this function was introduced in version 2.2
+    */
+    void frameChanged();
+
 };

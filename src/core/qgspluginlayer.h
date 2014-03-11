@@ -46,6 +46,17 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     //! @note Added in v2.1
     virtual QgsLegendSymbologyList legendSymbologyItems( const QSize& iconSize );
 
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     *
+     * The default implementation returns map layer renderer which just calls draw().
+     * This may work, but it is unsafe for multi-threaded rendering because of the run
+     * conditions that may happen (e.g. something is changed in the layer while it is
+     * being rendered).
+     *
+     * @note added in 2.4
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
+
   protected:
     QString mPluginLayerType;
 };

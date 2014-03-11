@@ -16,10 +16,12 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
+#include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
 
 #include "qgssymbollevelsv2dialog.h"
+#include "qgsexpressionbuilderdialog.h"
 
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
@@ -179,8 +181,8 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 #include "qgsfield.h"
 #include <QMenu>
 
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFields& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
-    : QObject( menu ), mFlds( flds )
+QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
+    : QObject( menu ), mLayer( layer )
 {
   mRotationMenu = new QMenu( tr( "Rotation field" ) );
   mSizeScaleMenu = new QMenu( tr( "Size scale field" ) );
@@ -189,8 +191,8 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const
   mSizeAttributeActionGroup = new QActionGroup( mSizeScaleMenu );
   mSizeMethodActionGroup = new QActionGroup( mSizeScaleMenu );
 
-  populateMenu( mRotationMenu, SLOT( rotationFieldSelected( QAction* a ) ), rotationField, mRotationAttributeActionGroup );
-  populateMenu( mSizeScaleMenu, SLOT( sizeScaleFieldSelected( QAction* a ) ), sizeScaleField, mSizeAttributeActionGroup );
+  populateMenu( mRotationMenu, rotationField, mRotationAttributeActionGroup );
+  populateMenu( mSizeScaleMenu, sizeScaleField, mSizeAttributeActionGroup );
 
   mSizeScaleMenu->addSeparator();
 
@@ -213,6 +215,10 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const
 
   menu->addMenu( mRotationMenu );
   menu->addMenu( mSizeScaleMenu );
+
+  connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
+  connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
+  connect( mSizeAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( sizeScaleFieldSelected( QAction* ) ) );
 }
 
 QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
@@ -224,19 +230,23 @@ QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
   delete mSizeScaleMenu;
 }
 
-void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup )
+void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup )
 {
-  Q_UNUSED( slot );
+  QAction* aExpr = new QAction( tr( "- expression -" ), actionGroup );
+  aExpr->setCheckable( true );
+  menu->addAction( aExpr );
+  menu->addSeparator();
   QAction* aNo = new QAction( tr( "- no field -" ), actionGroup );
   aNo->setCheckable( true );
   menu->addAction( aNo );
   menu->addSeparator();
 
   bool hasField = false;
+  const QgsFields & flds = mLayer->pendingFields();
   //const QgsFieldMap& flds = mLayer->pendingFields();
-  for ( int idx = 0; idx < mFlds.count(); ++idx )
+  for ( int idx = 0; idx < flds.count(); ++idx )
   {
-    const QgsField& fld = mFlds[idx];
+    const QgsField& fld = flds[idx];
     if ( fld.type() == QVariant::Int || fld.type() == QVariant::Double )
     {
       QAction* a = new QAction( fld.name(), actionGroup );
@@ -252,12 +262,17 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot,
 
   if ( !hasField )
   {
-    aNo->setChecked( true );
+    if ( fieldName.isEmpty() )
+    {
+      aNo->setChecked( true );
+    }
+    else
+    {
+      aExpr->setChecked( true );
+      aExpr->setText( tr( "- expression -" ) + fieldName );
+    }
   }
 
-  connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
-  connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
-  connect( mSizeAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( sizeScaleFieldSelected( QAction* ) ) );
 }
 
 void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
@@ -270,7 +285,19 @@ void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
   updateMenu( mRotationAttributeActionGroup, fldName );
 #endif
   if ( fldName == tr( "- no field -" ) )
+  {
     fldName = QString();
+  }
+  else if ( fldName.startsWith( tr( "- expression -" ) ) )
+  {
+    QString expr( fldName );
+    expr.replace( 0, tr( "- expression -" ).length(), "" );
+    QgsExpressionBuilderDialog dialog( mLayer, expr );
+    if ( !dialog.exec() ) return;
+    fldName = dialog.expressionText();
+    Q_ASSERT( !QgsExpression( fldName ).hasParserError() );
+    a->setText( tr( "- expression -" ) + fldName );
+  }
 
   emit rotationFieldChanged( fldName );
 }
@@ -285,7 +312,19 @@ void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
   updateMenu( mSizeAttributeActionGroup, fldName );
 #endif
   if ( fldName == tr( "- no field -" ) )
+  {
     fldName = QString();
+  }
+  else if ( fldName.startsWith( tr( "- expression -" ) ) )
+  {
+    QString expr( fldName );
+    expr.replace( 0, tr( "- expression -" ).length(), "" );
+    QgsExpressionBuilderDialog dialog( mLayer, expr );
+    if ( !dialog.exec() ) return;
+    fldName = dialog.expressionText();
+    Q_ASSERT( !QgsExpression( fldName ).hasParserError() );
+    a->setText( tr( "- expression -" ) + fldName );
+  }
 
   emit sizeScaleFieldChanged( fldName );
 }

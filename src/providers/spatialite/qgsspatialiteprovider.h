@@ -14,6 +14,9 @@ email                : a.furieri@lqt.it
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSSPATIALITEPROVIDER_H
+#define QGSSPATIALITEPROVIDER_H
+
 extern "C"
 {
 #include <sys/types.h>
@@ -33,6 +36,7 @@ extern "C"
 class QgsFeature;
 class QgsField;
 
+class QgsSqliteHandle;
 class QgsSpatiaLiteFeatureIterator;
 
 #include "qgsdatasourceuri.h"
@@ -69,6 +73,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! Destructor
     virtual ~ QgsSpatiaLiteProvider();
+
+    virtual QgsAbstractFeatureSource* featureSource() const;
 
     /**
         *   Returns the permanent storage type for this layer as a friendly name.
@@ -409,8 +415,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
-    void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
-                           unsigned char **wkb, size_t *geom_size );
+  public:
+    // static functions
+
+    static void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
+                                  unsigned char **wkb, size_t *geom_size );
+    static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
+                                      int endian_arch );
+  private:
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
                                    int little_endian,
                                    int endian_arch );
@@ -423,8 +435,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void convertFromGeosWKB3D( const unsigned char *blob, size_t blob_size,
                                unsigned char *wkb, size_t geom_size,
                                int nDims, int little_endian, int endian_arch );
-    int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
-                               int endian_arch );
     void convertFromGeosWKB( const unsigned char *blob, size_t blob_size,
                              unsigned char **wkb, size_t *geom_size,
                              int dims );
@@ -446,44 +456,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
 
-    struct SLFieldNotFound {}; //! Exception to throw
-
   public:
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
-    class SqliteHandles
-    {
-        //
-        // a class allowing to reuse the same sqlite handle for more layers
-        //
-      public:
-        SqliteHandles( sqlite3 * handle ):
-            ref( 1 ), sqlite_handle( handle )
-        {
-        }
-
-        sqlite3 *handle()
-        {
-          return sqlite_handle;
-        }
-
-        //
-        // libsqlite3 wrapper
-        //
-        void sqliteClose();
-
-        static SqliteHandles *openDb( const QString & dbPath );
-        static bool checkMetadata( sqlite3 * handle );
-        static void closeDb( SqliteHandles * &handle );
-        static void closeDb( QMap < QString, SqliteHandles * >&handlesRO, SqliteHandles * &handle );
-
-      private:
-        int ref;
-        sqlite3 *sqlite_handle;
-
-        static QMap < QString, SqliteHandles * >handles;
-    };
+    struct SLFieldNotFound {}; //! Exception to throw
 
     struct SLException
     {
@@ -513,8 +490,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * sqlite3 handles pointer
      */
-    SqliteHandles *handle;
+    QgsSqliteHandle *handle;
 
-    friend class QgsSpatiaLiteFeatureIterator;
-    QSet< QgsSpatiaLiteFeatureIterator * > mActiveIterators;
+    friend class QgsSpatiaLiteFeatureSource;
 };
+
+#endif

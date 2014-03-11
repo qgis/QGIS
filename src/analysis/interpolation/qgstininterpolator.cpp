@@ -200,7 +200,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  const unsigned char* currentWkbPtr = g->asWkb();
+  QgsConstWkbPtr currentWkbPtr( g->asWkb() + 1 + sizeof( int ) );
   //maybe a structure or break line
   Line3D* line = 0;
 
@@ -211,14 +211,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       hasZValue = true;
     case QGis::WKBPoint:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      x = *(( double * )( currentWkbPtr ) );
-      currentWkbPtr += sizeof( double );
-      y = *(( double * )( currentWkbPtr ) );
+      currentWkbPtr >> x >> y;
       if ( zCoord && hasZValue )
       {
-        currentWkbPtr += sizeof( double );
-        z = *(( double * )( currentWkbPtr ) );
+        currentWkbPtr >> z;
       }
       else
       {
@@ -235,20 +231,15 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       hasZValue = true;
     case QGis::WKBMultiPoint:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npoints = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npoints; ++index )
+      int nPoints;
+      currentWkbPtr >> nPoints;
+      for ( int index = 0; index < nPoints; ++index )
       {
-        currentWkbPtr += ( 1 + sizeof( int ) ); //skip endian and point type
-        x = *(( double* )currentWkbPtr );
-        currentWkbPtr += sizeof( double );
-        y = *(( double* )currentWkbPtr );
-        currentWkbPtr += sizeof( double );
+        currentWkbPtr += 1 + sizeof( int );
+        currentWkbPtr >> x >> y;
         if ( hasZValue ) //skip z-coordinate for 25D geometries
         {
-          z = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
+          currentWkbPtr >> z;
         }
         else
         {
@@ -265,26 +256,18 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       {
         line = new Line3D();
       }
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npoints = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npoints; ++index )
+      int nPoints;
+      currentWkbPtr >> nPoints;
+      for ( int index = 0; index < nPoints; ++index )
       {
-        x = *(( double * )( currentWkbPtr ) );
-        currentWkbPtr += sizeof( double );
-        y = *(( double * )( currentWkbPtr ) );
-        currentWkbPtr += sizeof( double );
+        currentWkbPtr >> x >> y;
         if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
         {
-          z = *(( double * )( currentWkbPtr ) );
+          currentWkbPtr >> z;
         }
         else
         {
           z = attributeValue;
-        }
-        if ( hasZValue )
-        {
-          currentWkbPtr += sizeof( double );
         }
 
         if ( type == POINTS )
@@ -308,30 +291,22 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       hasZValue = true;
     case QGis::WKBMultiLineString:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* nlines = ( int* )currentWkbPtr;
-      int* npoints = 0;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *nlines; ++index )
+      int nLines;
+      currentWkbPtr >> nLines;
+      for ( int index = 0; index < nLines; ++index )
       {
         if ( type != POINTS )
         {
           line = new Line3D();
         }
-        currentWkbPtr += ( sizeof( int ) + 1 );
-        npoints = ( int* )currentWkbPtr;
-        currentWkbPtr += sizeof( int );
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
+        int nPoints;
+        currentWkbPtr >> nPoints;
+        for ( int index2 = 0; index2 < nPoints; ++index2 )
         {
-          x = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-          y = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-
+          currentWkbPtr >> x >> y;
           if ( hasZValue ) //skip z-coordinate for 25D geometries
           {
-            z = *(( double* ) currentWkbPtr );
-            currentWkbPtr += sizeof( double );
+            currentWkbPtr >> z;
           }
           else
           {
@@ -359,29 +334,23 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       hasZValue = true;
     case QGis::WKBPolygon:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* nrings = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      int* npoints;
-      for ( int index = 0; index < *nrings; ++index )
+      int nRings;
+      currentWkbPtr >> nRings;
+      for ( int index = 0; index < nRings; ++index )
       {
         if ( type != POINTS )
         {
           line = new Line3D();
         }
 
-        npoints = ( int* )currentWkbPtr;
-        currentWkbPtr += sizeof( int );
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
+        int nPoints;
+        currentWkbPtr >> nPoints;
+        for ( int index2 = 0; index2 < nPoints; ++index2 )
         {
-          x = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-          y = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
+          currentWkbPtr >> x >> y;
           if ( hasZValue ) //skip z-coordinate for 25D geometries
           {
-            z = *(( double* )currentWkbPtr );;
-            currentWkbPtr += sizeof( double );
+            currentWkbPtr >> z;
           }
           else
           {
@@ -410,34 +379,27 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       hasZValue = true;
     case QGis::WKBMultiPolygon:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npolys = ( int* )currentWkbPtr;
-      int* nrings;
-      int* npoints;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npolys; ++index )
+      int nPolys;
+      currentWkbPtr >> nPolys;
+      for ( int index = 0; index < nPolys; ++index )
       {
-        currentWkbPtr += ( 1 + sizeof( int ) ); //skip endian and polygon type
-        nrings = ( int* )currentWkbPtr;
-        currentWkbPtr += sizeof( int );
-        for ( int index2 = 0; index2 < *nrings; ++index2 )
+        currentWkbPtr += 1 + sizeof( int );
+        int nRings;
+        currentWkbPtr >> nRings;
+        for ( int index2 = 0; index2 < nRings; ++index2 )
         {
           if ( type != POINTS )
           {
             line = new Line3D();
           }
-          npoints = ( int* )currentWkbPtr;
-          currentWkbPtr += sizeof( int );
-          for ( int index3 = 0; index3 < *npoints; ++index3 )
+          int nPoints;
+          currentWkbPtr >> nPoints;
+          for ( int index3 = 0; index3 < nPoints; ++index3 )
           {
-            x = *(( double* )currentWkbPtr );
-            currentWkbPtr += sizeof( double );
-            y = *(( double* )currentWkbPtr );
-            currentWkbPtr += sizeof( double );
+            currentWkbPtr >> x >> y;
             if ( hasZValue ) //skip z-coordinate for 25D geometries
             {
-              z = *(( double* )currentWkbPtr );
-              currentWkbPtr += sizeof( double );
+              currentWkbPtr >> z;
             }
             else
             {

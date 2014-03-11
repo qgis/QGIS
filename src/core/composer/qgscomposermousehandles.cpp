@@ -22,6 +22,7 @@
 #include "qgscomposermousehandles.h"
 #include "qgscomposeritem.h"
 #include "qgscomposition.h"
+#include "qgspaperitem.h"
 #include "qgis.h"
 #include "qgslogger.h"
 
@@ -152,7 +153,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     {
       //if currently dragging, draw selected item bounds relative to current mouse position
       //first, get bounds of current item in scene coordinates
-      QPolygonF itemSceneBounds = ( *itemIter )->mapToScene(( *itemIter )->rect() );
+      QPolygonF itemSceneBounds = ( *itemIter )->mapToScene(( *itemIter )->rectWithFrame() );
       //now, translate it by the current movement amount
       //IMPORTANT - this is done in scene coordinates, since we don't want any rotation/non-translation transforms to affect the movement
       itemSceneBounds.translate( transform().dx(), transform().dy() );
@@ -165,7 +166,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
       if ( selectedItems.size() > 1 )
       {
         //get item bounds in mouse handle item's coordinate system
-        QRectF itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
+        QRectF itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
         //now, resize it relative to the current resized dimensions of the mouse handles
         QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
         itemBounds = QPolygonF( itemRect );
@@ -179,7 +180,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     else
     {
       //not resizing or moving, so just map from scene bounds
-      itemBounds = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
+      itemBounds = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
     }
     painter->drawPolygon( itemBounds );
   }
@@ -188,7 +189,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
 
 void QgsComposerMouseHandles::selectionChanged()
 {
-  //listen out for selected items' sizeChanged signal
+  //listen out for selected items' size and rotation changed signals
   QList<QGraphicsItem *> itemList = composition()->items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
@@ -200,10 +201,13 @@ void QgsComposerMouseHandles::selectionChanged()
       {
         QObject::connect( item, SIGNAL( sizeChanged() ), this, SLOT( selectedItemSizeChanged() ) );
         QObject::connect( item, SIGNAL( itemRotationChanged( double ) ), this, SLOT( selectedItemRotationChanged() ) );
+        QObject::connect( item, SIGNAL( frameChanged( ) ), this, SLOT( selectedItemSizeChanged() ) );
       }
       else
       {
         QObject::disconnect( item, SIGNAL( sizeChanged() ), this, 0 );
+        QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, 0 );
+        QObject::disconnect( item, SIGNAL( frameChanged( ) ), this, 0 );
       }
     }
   }
@@ -278,12 +282,12 @@ QRectF QgsComposerMouseHandles::selectionBounds() const
   QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
 
   //start with handle bounds of first selected item
-  QRectF bounds = mapFromItem(( *itemIter ), ( *itemIter )->rect() ).boundingRect();
+  QRectF bounds = mapFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() ).boundingRect();
 
   //iterate through remaining items, expanding the bounds as required
   for ( ++itemIter; itemIter != selectedItems.end(); ++itemIter )
   {
-    bounds = bounds.united( mapFromItem(( *itemIter ), ( *itemIter )->rect() ).boundingRect() );
+    bounds = bounds.united( mapFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() ).boundingRect() );
   }
 
   return bounds;
@@ -626,19 +630,19 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       QRectF itemRect;
       if ( selectedItems.size() == 1 )
       {
-        //only a single item is selected, so set it's size to the final resized mouse handle size
+        //only a single item is selected, so set its size to the final resized mouse handle size
         itemRect = mResizeRect;
       }
       else
       {
         //multiple items selected, so each needs to be scaled relatively to the final size of the mouse handles
-        itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
+        itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
         QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       }
 
       itemRect = itemRect.normalized();
       QPointF newPos = mapToScene( itemRect.topLeft() );
-      ( *itemIter )->setItemPosition( newPos.x(), newPos.y(), itemRect.width(), itemRect.height() );
+      ( *itemIter )->setItemPosition( newPos.x(), newPos.y(), itemRect.width(), itemRect.height(), QgsComposerItem::UpperLeft, true );
 
       subcommand->saveAfterState();
     }
@@ -704,15 +708,59 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
 
   if ( mCurrentMouseMoveAction == QgsComposerMouseHandles::MoveItem )
   {
+    //moving items
     mIsDragging = true;
   }
   else if ( mCurrentMouseMoveAction != QgsComposerMouseHandles::SelectItem &&
             mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
+    //resizing items
     mIsResizing = true;
     mResizeRect = QRectF( 0, 0, mBeginHandleWidth, mBeginHandleHeight );
     mResizeMoveX = 0;
     mResizeMoveY = 0;
+    mCursorOffset = calcCursorEdgeOffset( mMouseMoveStartPos );
+
+  }
+
+}
+
+QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( const QPointF &cursorPos )
+{
+  //find offset between cursor position and actual edge of item
+  QPointF sceneMousePos = mapFromScene( cursorPos );
+
+  switch ( mCurrentMouseMoveAction )
+  {
+      //vertical resize
+    case QgsComposerMouseHandles::ResizeUp:
+      return QSizeF( 0, sceneMousePos.y() );
+
+    case QgsComposerMouseHandles::ResizeDown:
+      return QSizeF( 0, sceneMousePos.y() - rect().height() );
+
+      //horizontal resize
+    case QgsComposerMouseHandles::ResizeLeft:
+      return QSizeF( sceneMousePos.x(), 0 );
+
+    case QgsComposerMouseHandles::ResizeRight:
+      return QSizeF( sceneMousePos.x() - rect().width(), 0 );
+
+      //diagonal resize
+    case QgsComposerMouseHandles::ResizeLeftUp:
+      return QSizeF( sceneMousePos.x(), sceneMousePos.y() );
+
+    case QgsComposerMouseHandles::ResizeRightDown:
+      return QSizeF( sceneMousePos.x() - rect().width(), sceneMousePos.y() - rect().height() );
+
+    case QgsComposerMouseHandles::ResizeRightUp:
+      return QSizeF( sceneMousePos.x() - rect().width(), sceneMousePos.y() );
+
+    case QgsComposerMouseHandles::ResizeLeftDown:
+      return QSizeF( sceneMousePos.x(), sceneMousePos.y() - rect().height() );
+
+    default:
+      return QSizeF( 0, 0 );
   }
 
 }
@@ -732,7 +780,8 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   QPointF upperLeftPoint( mBeginHandlePos.x() + moveX, mBeginHandlePos.y() + moveY );
 
   QPointF snappedLeftPoint;
-  if ( !preventSnap )
+  //no snapping for rotated items for now
+  if ( !preventSnap && rotation() == 0 )
   {
     //snap to grid and guides
     snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
@@ -778,18 +827,29 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
     return;
   }
 
-  QPointF beginMousePos = mapFromScene( mBeginMouseEventPos );
-
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
-  QPointF snappedPosition = snapPoint( currentPosition, QgsComposerMouseHandles::Point );
 
-  //QPointF currentPosHandle = mapFromScene( currentPosition );
-  snappedPosition = mapFromScene( snappedPosition );
-  double diffX = 0;
-  double diffY = 0;
+  QPointF beginMousePos;
+  QPointF finalPosition;
+  if ( rotation() == 0 )
+  {
+    //snapping only occurs if handles are not rotated for now
 
-  diffX = snappedPosition.x() - beginMousePos.x();
-  diffY = snappedPosition.y() - beginMousePos.y();
+    //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
+    //rather then cursor position
+    beginMousePos = mapFromScene( QPointF( mBeginMouseEventPos.x() - mCursorOffset.width(), mBeginMouseEventPos.y() - mCursorOffset.height() ) );
+    QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsComposerMouseHandles::Point );
+    finalPosition = mapFromScene( snappedPosition );
+  }
+  else
+  {
+    //no snapping for rotated items for now
+    beginMousePos = mapFromScene( mBeginMouseEventPos );
+    finalPosition = mapFromScene( currentPosition );
+  }
+
+  double diffX = finalPosition.x() - beginMousePos.x();
+  double diffY = finalPosition.y() - beginMousePos.y();
 
   double ratio = 0;
   if ( lockRatio && mBeginHandleHeight != 0 )
@@ -801,7 +861,7 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
   {
       //vertical resize
     case QgsComposerMouseHandles::ResizeUp:
-      //diffY = snappedPosition.y() - beginMousePos.y();
+    {
       if ( ratio )
       {
         diffX = (( mBeginHandleHeight - diffY ) * ratio ) - mBeginHandleWidth;
@@ -812,9 +872,10 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
         mx = 0; my = diffY; rx = 0; ry = -diffY;
       }
       break;
+    }
 
     case QgsComposerMouseHandles::ResizeDown:
-      //diffY = snappedPosition.y() - beginMousePos.y();
+    {
       if ( ratio )
       {
         diffX = (( mBeginHandleHeight + diffY ) * ratio ) - mBeginHandleWidth;
@@ -825,10 +886,11 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
         mx = 0; my = 0; rx = 0; ry = diffY;
       }
       break;
+    }
 
-      //horizontal resize
+    //horizontal resize
     case QgsComposerMouseHandles::ResizeLeft:
-      //diffX = snappedPosition.x() - beginMousePos.x();
+    {
       if ( ratio )
       {
         diffY = (( mBeginHandleWidth - diffX ) / ratio ) - mBeginHandleHeight;
@@ -839,9 +901,10 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
         mx = diffX, my = 0; rx = -diffX; ry = 0;
       }
       break;
+    }
 
     case QgsComposerMouseHandles::ResizeRight:
-      //diffX = snappedPosition.x() - ( beginMousePos.x() + mBeginHandleWidth );
+    {
       if ( ratio )
       {
         diffY = (( mBeginHandleWidth + diffX ) / ratio ) - mBeginHandleHeight;
@@ -852,11 +915,11 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
         mx = 0; my = 0; rx = diffX, ry = 0;
       }
       break;
+    }
 
-      //diagonal resize
+    //diagonal resize
     case QgsComposerMouseHandles::ResizeLeftUp:
-      //diffX = snappedPosition.x() - beginMousePos.x();
-      diffY = snappedPosition.y() - beginMousePos.y();
+    {
       if ( ratio )
       {
         //ratio locked resize
@@ -871,10 +934,10 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       }
       mx = diffX, my = diffY; rx = -diffX; ry = -diffY;
       break;
+    }
 
     case QgsComposerMouseHandles::ResizeRightDown:
-      //diffX = snappedPosition.x() - ( beginMousePos.x() + mBeginHandleWidth );
-      //diffY = snappedPosition.y() - ( beginMousePos.y() + mBeginHandleHeight );
+    {
       if ( ratio )
       {
         //ratio locked resize
@@ -889,10 +952,10 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       }
       mx = 0; my = 0; rx = diffX, ry = diffY;
       break;
+    }
 
     case QgsComposerMouseHandles::ResizeRightUp:
-      //diffX = snappedPosition.x() - ( beginMousePos.x() + mBeginHandleWidth );
-      //diffY = snappedPosition.y() - beginMousePos.y();
+    {
       if ( ratio )
       {
         //ratio locked resize
@@ -907,10 +970,10 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       }
       mx = 0; my = diffY, rx = diffX, ry = -diffY;
       break;
+    }
 
     case QgsComposerMouseHandles::ResizeLeftDown:
-      //diffX = snappedPosition.x() - beginMousePos.x();
-      //diffY = snappedPosition.y() - ( beginMousePos.y() + mBeginHandleHeight );
+    {
       if ( ratio )
       {
         //ratio locked resize
@@ -925,6 +988,7 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       }
       mx = diffX, my = 0; rx = -diffX; ry = diffY;
       break;
+    }
 
     case QgsComposerMouseHandles::MoveItem:
     case QgsComposerMouseHandles::SelectItem:
@@ -1185,7 +1249,17 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       {
         continue;
       }
-      QRectF itemRect = currentItem->sceneBoundingRect();
+      QRectF itemRect;
+      if ( dynamic_cast<const QgsPaperItem *>( *itemIt ) )
+      {
+        //if snapping to paper use the paper item's rect rather then the bounding rect,
+        //since we want to snap to the page edge and not any outlines drawn around the page
+        itemRect = currentItem->rect();
+      }
+      else
+      {
+        itemRect = currentItem->mapRectToScene( currentItem->rectWithFrame() );
+      }
       alignCoordsX.insert( itemRect.left(), currentItem );
       alignCoordsX.insert( itemRect.right(), currentItem );
       alignCoordsX.insert( itemRect.center().x(), currentItem );

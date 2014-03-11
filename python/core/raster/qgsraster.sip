@@ -30,13 +30,14 @@ class QgsRaster
       /*! Cr Chroma */                                      YCbCr_CrBand = 16,
       /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17
     };
+
     enum IdentifyFormat
     {
-      IdentifyFormatUndefined = 0,
-      IdentifyFormatValue     = 1, // numerical pixel value
-      IdentifyFormatText      = 0x2, // WMS text
-      IdentifyFormatHtml      = 0x4, // WMS HTML
-      IdentifyFormatFeature   = 0x8  // WMS GML -> feature
+      IdentifyFormatUndefined,
+      IdentifyFormatValue,
+      IdentifyFormatText,
+      IdentifyFormatHtml,
+      IdentifyFormatFeature,
     };
 
     // Progress types
@@ -89,5 +90,11 @@ class QgsRaster
     static QString contrastEnhancementLimitsAsString( QgsRaster::ContrastEnhancementLimits theLimits );
     static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
 
+    /** Get value representable by given data type.
+     * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
+     * @param value
+     * @param dataType
+     * @note added in version 2.1 */
+    static double representableValue( double value, QGis::DataType dataType );
 };
 

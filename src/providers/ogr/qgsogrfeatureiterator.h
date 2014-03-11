@@ -19,13 +19,33 @@
 
 #include <ogr_api.h>
 
+class QgsOgrFeatureIterator;
 class QgsOgrProvider;
 class QgsOgrAbstractGeometrySimplifier;
 
-class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
+class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request );
+    QgsOgrFeatureSource( const QgsOgrProvider* p );
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  protected:
+    QString mFilePath;
+    QString mLayerName;
+    int mLayerIndex;
+    QString mSubsetString;
+    QTextCodec* mEncoding;
+    QgsFields mFields;
+    OGRwkbGeometryType mOgrGeometryTypeFilter;
+
+    friend class QgsOgrFeatureIterator;
+};
+
+class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
+{
+  public:
+    QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsOgrFeatureIterator();
 
@@ -42,9 +62,6 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
 
-    QgsOgrProvider* P;
-
-    void ensureRelevantFields();
 
     bool readFeature( OGRFeatureH fet, QgsFeature& feature );
 

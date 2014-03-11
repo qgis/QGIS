@@ -51,10 +51,6 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief The destructor */
     ~QgsRasterLayer();
 
-
-    //
-    // Enums, structs and typedefs
-    //
     /** \brief This enumerator describes the types of shading that can be used */
     enum ColorShadingAlgorithm
     {
@@ -74,10 +70,6 @@ class QgsRasterLayer : QgsMapLayer
       ColorLayer
     };
 
-    //
-    // Static methods:
-    //
-
     /** This helper checks to see whether the file name appears to be a valid
      *  raster file name.  If the file name looks like it could be valid,
      *  but some sort of error occurs in processing the file, the error is
@@ -89,33 +81,17 @@ class QgsRasterLayer : QgsMapLayer
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
-    //
-    // Non Static inline methods
-    //
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
 
-    /** \brief Accessor for drawing style */
-    //DrawingStyle drawingStyle();
-
-    /** \brief Accessor that returns the width of the (unclipped) raster  */
-    int width();
-
-    /** \brief Accessor that returns the height of the (unclipped) raster */
-    int height();
-
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType();
-
-    /** \brief Mutator for drawing style */
-    //void setDrawingStyle( const DrawingStyle &  theDrawingStyle );
 
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer /Transfer/ );
     QgsRasterRenderer* renderer() const;
 
     /**Set raster resample filter. Takes ownership of the resample filter object*/
-    //void setResampleFilter( QgsRasterResampleFilter* resampleFilter /Transfer/ );
     QgsRasterResampleFilter * resampleFilter() const;
 
     QgsBrightnessContrastFilter * brightnessFilter() const;
@@ -124,11 +100,14 @@ class QgsRasterLayer : QgsMapLayer
     /** Get raster pipe */
     QgsRasterPipe * pipe();
 
-    //
-    // Non Static methods
-    //
+    /** \brief Accessor that returns the width of the (unclipped) raster  */
+    int width() const;
+
+    /** \brief Accessor that returns the height of the (unclipped) raster */
+    int height() const;
+
     /** \brief Get the number of bands in this layer  */
-    unsigned int bandCount() const;
+    int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
     const  QString bandName( int theBandNoInt );
@@ -136,15 +115,19 @@ class QgsRasterLayer : QgsMapLayer
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
 
-    /** Returns the data provider in a const-correct manner */
-    const QgsRasterDataProvider* constDataProvider() const;
-%MethodCode
-      sipRes = sipCpp->dataProvider();
-%End
+    /** Returns the data provider in a const-correct manner
+      @note available in python bindings as constDataProvider()
+     */
+    const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
 
     /**Synchronises with changes in the datasource
     @note added in version 1.6*/
     virtual void reload();
+
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.4
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
 
     /** \brief This is called when the view on the raster layer needs to be redrawn */
     bool draw( QgsRenderContext& rendererContext );
@@ -153,12 +136,6 @@ class QgsRasterLayer : QgsMapLayer
     void draw( QPainter * theQPainter,
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
-
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure  */
-    QString lastError();
-
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure */
-    QString lastErrorTitle();
 
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
@@ -179,7 +156,7 @@ class QgsRasterLayer : QgsMapLayer
     double rasterUnitsPerPixelX();
     double rasterUnitsPerPixelY();
 
-    /** \brief Mutator for contrast enhancement algorithm
+    /** \brief Set contrast enhancement algorithm
      *  @param theAlgorithm Contrast enhancement algorithm
      *  @param theLimits Limits
      *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
@@ -188,10 +165,10 @@ class QgsRasterLayer : QgsMapLayer
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                          QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
-                                          QgsRectangle theExtent = QgsRectangle(),
-                                          int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
-                                          bool theGenerateLookupTableFlag = true );
+                                 QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
+                                 QgsRectangle theExtent = QgsRectangle(),
+                                 int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
+                                 bool theGenerateLookupTableFlag = true );
 
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
@@ -205,15 +182,18 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
 
-    /** \brief Draws a preview of the rasterlayer into a pixmap */
-    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
+    /** \brief Draws a preview of the rasterlayer into a pixmap
+    @note - use previewAsImage() for rendering with QGIS>=2.4 */
+    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
+
+    /** \brief Draws a preview of the rasterlayer into a QImage
+     @note added in 2.4 */
+    QImage previewAsImage( QSize size, QColor bgColor = QColor( 255, 255, 255 ),
+                           QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
 
-    //
-    // Virtual methods
-    //
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
      *
@@ -233,8 +213,8 @@ class QgsRasterLayer : QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    /** \brief Propagate progress updates from GDAL up to the parent app */
-    void updateProgress( int, int );
+    //! @deprecated since 2.4 - does nothing
+    void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );
@@ -253,7 +233,6 @@ class QgsRasterLayer : QgsMapLayer
     void rendererChanged();
 
   protected:
-
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 

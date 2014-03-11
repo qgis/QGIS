@@ -106,7 +106,9 @@ class QgsComposerScaleBar: QgsComposerItem
     QString style() const;
 
     /**Returns the x - positions of the segment borders (in item coordinates) and the width
-     of the segment*/
+     of the segment
+     @note python bindings not available on android
+     */
 %If (!ANDROID)
     void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 %End
@@ -144,6 +146,6 @@ class QgsComposerScaleBar: QgsComposerItem
     /**Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
     void refreshSegmentMillimeters();
 
-    /**Returns diagonal of composer map in selected units (map units / meters / feet)*/
+    /**Returns diagonal of composer map in selected units (map units / meters / feet / nautical miles)*/
     double mapWidth() const;
 };

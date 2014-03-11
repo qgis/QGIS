@@ -1,6 +1,7 @@
 class QgsRasterLayerSaveAsDialog : QDialog
 {
 %TypeHeaderCode
+#include <qgsextentgroupbox.h>
 #include <qgsrasterlayersaveasdialog.h>
 %End
   public:
@@ -14,12 +15,6 @@ class QgsRasterLayerSaveAsDialog : QDialog
       OriginalCrs,
       CurrentCrs,
       UserCrs
-    };
-    enum ExtentState
-    {
-      OriginalExtent,
-      CurrentExtent,
-      UserExtent,
     };
     enum ResolutionState
     {

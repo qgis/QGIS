@@ -25,10 +25,10 @@
 #include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmapsettings.h"
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -116,6 +116,8 @@ bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
   mExtent = extent;
   if ( !extent.isEmpty() )
     adjustExtentToSize();
+
+  emit extentsChanged();
   return true;
 }
 
@@ -221,11 +223,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   //Lock render method for concurrent threads (e.g. from globe)
   QMutexLocker renderLock( &mRenderMutex );
 
-  //flag to see if the render context has changed
-  //since the last time we rendered. If it hasnt changed we can
-  //take some shortcuts with rendering
-  bool mySameAsLastFlag = true;
-
   QgsDebugMsg( "========== Rendering ==========" );
 
   if ( mExtent.isEmpty() )
@@ -306,40 +303,24 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
   {
     mRenderContext.setRasterScaleFactor( rasterScaleFactor );
-    mySameAsLastFlag = false;
   }
   if ( mRenderContext.scaleFactor() != scaleFactor )
   {
     mRenderContext.setScaleFactor( scaleFactor );
-    mySameAsLastFlag = false;
   }
   if ( mRenderContext.rendererScale() != mScale )
   {
     //add map scale to render context
     mRenderContext.setRendererScale( mScale );
-    mySameAsLastFlag = false;
   }
   if ( mLastExtent != mExtent )
   {
     mLastExtent = mExtent;
-    mySameAsLastFlag = false;
   }
 
   mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )
-    mLabelingEngine->init( this );
-
-  // know we know if this render is just a repeat of the last time, we
-  // can clear caches if it has changed
-  if ( !mySameAsLastFlag )
-  {
-    //clear the cache pixmap if we changed resolution / extent
-    QSettings mySettings;
-    if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-    {
-      QgsMapLayerRegistry::instance()->clearAllLayerCaches();
-    }
-  }
+    mLabelingEngine->init( mapSettings() );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
@@ -439,58 +420,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         scaleRaster = true;
       }
 
-      // Force render of layers that are being edited
-      // or if there's a labeling engine that needs the layer to register features
-      if ( ml->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if ( vl->isEditable() ||
-             ( mRenderContext.labelingEngine() && mRenderContext.labelingEngine()->willUseLayer( vl ) ) )
-        {
-          ml->setCacheImage( 0 );
-        }
-      }
-
       QSettings mySettings;
-      bool useRenderCaching = false;
-      if ( ! split )//render caching does not yet cater for split extents
-      {
-        if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-        {
-          useRenderCaching = true;
-          if ( !mySameAsLastFlag || ml->cacheImage() == 0 )
-          {
-            QgsDebugMsg( "Caching enabled but layer redraw forced by extent change or empty cache" );
-            QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(),
-                                            mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
-            if ( mypImage->isNull() )
-            {
-              QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
-              emit drawError( ml );
-              painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
-              return;
-            }
-            mypImage->fill( 0 );
-            ml->setCacheImage( mypImage ); //no need to delete the old one, maplayer does it for you
-            QPainter * mypPainter = new QPainter( ml->cacheImage() );
-            // Changed to enable anti aliasing by default in QGIS 1.7
-            if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
-            {
-              mypPainter->setRenderHint( QPainter::Antialiasing );
-            }
-            mRenderContext.setPainter( mypPainter );
-          }
-          else if ( mySameAsLastFlag )
-          {
-            //draw from cached image
-            QgsDebugMsg( "Caching enabled --- drawing layer from cached image" );
-            mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-            disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
-            //short circuit as there is nothing else to do...
-            continue;
-          }
-        }
-      }
 
       // If we are drawing with an alternative blending mode then we need to render to a separate image
       // before compositing this on the map. This effectively flattens the layer and prevents
@@ -500,10 +430,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if (( !useRenderCaching )
-            && (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
-                || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-                || ( vl->layerTransparency() != 0 ) ) )
+        if ((( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+             || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+             || ( vl->layerTransparency() != 0 ) ) )
         {
           flattenedLayer = true;
           mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),
@@ -589,17 +518,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         }
       }
 
-      if ( useRenderCaching )
-      {
-        // composite the cached image into our view and then clean up from caching
-        // by reinstating the painter as it was swapped out for caching renders
-        delete mRenderContext.painter();
-        mRenderContext.setPainter( mypContextPainter );
-        //draw from cached image that we created further up
-        if ( ml->cacheImage() )
-          mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-      }
-      else if ( flattenedLayer )
+      if ( flattenedLayer )
       {
         // If we flattened this layer for alternate blend modes, composite it now
         delete mRenderContext.painter();
@@ -713,9 +632,6 @@ void QgsMapRenderer::onDrawingProgress( int current, int total )
 {
   Q_UNUSED( current );
   Q_UNUSED( total );
-  // TODO: emit signal with progress
-// QgsDebugMsg(QString("onDrawingProgress: %1 / %2").arg(current).arg(total));
-  emit updateMap();
 }
 
 void QgsMapRenderer::setProjectionsEnabled( bool enabled )
@@ -727,7 +643,11 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
+
+    Q_NOWARN_DEPRECATED_PUSH
     emit hasCrsTransformEnabled( enabled ); // deprecated
+    Q_NOWARN_DEPRECATED_POP
+
     emit hasCrsTransformEnabledChanged( enabled );
   }
 }
@@ -1071,45 +991,11 @@ QStringList& QgsMapRenderer::layerSet()
   return mLayerSet;
 }
 
+
 bool QgsMapRenderer::readXML( QDomNode & theNode )
 {
-  QDomNode myNode = theNode.namedItem( "units" );
-  QDomElement element = myNode.toElement();
-
-  // set units
-  QGis::UnitType units;
-  if ( "meters" == element.text() )
-  {
-    units = QGis::Meters;
-  }
-  else if ( "feet" == element.text() )
-  {
-    units = QGis::Feet;
-  }
-  else if ( "nautical miles" == element.text() )
-  {
-    units = QGis::NauticalMiles;
-  }
-  else if ( "degrees" == element.text() )
-  {
-    units = QGis::Degrees;
-  }
-  else if ( "unknown" == element.text() )
-  {
-    units = QGis::UnknownUnit;
-  }
-  else
-  {
-    QgsDebugMsg( "Unknown map unit type " + element.text() );
-    units = QGis::Degrees;
-  }
-  setMapUnits( units );
-
-  // set projections flag
-  QDomNode projNode = theNode.namedItem( "projections" );
-  element = projNode.toElement();
-  setProjectionsEnabled( element.text().toInt() );
-
+  QgsMapSettings tmpSettings;
+  tmpSettings.readXML( theNode );
   //load coordinate transform into
   mLayerCoordinateTransformInfo.clear();
   QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
@@ -1135,111 +1021,27 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
     }
   }
 
-  // set destination CRS
-  QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
-  srs.readXML( srsNode );
-  setDestinationCrs( srs, false );
 
-  // set extent
-  QgsRectangle aoi;
-  QDomNode extentNode = theNode.namedItem( "extent" );
+  setMapUnits( tmpSettings.mapUnits() );
+  setExtent( tmpSettings.extent() );
+  setProjectionsEnabled( tmpSettings.hasCrsTransformEnabled() );
+  setDestinationCrs( tmpSettings.destinationCrs() );
 
-  QDomNode xminNode = extentNode.namedItem( "xmin" );
-  QDomNode yminNode = extentNode.namedItem( "ymin" );
-  QDomNode xmaxNode = extentNode.namedItem( "xmax" );
-  QDomNode ymaxNode = extentNode.namedItem( "ymax" );
-
-  QDomElement exElement = xminNode.toElement();
-  double xmin = exElement.text().toDouble();
-  aoi.setXMinimum( xmin );
-
-  exElement = yminNode.toElement();
-  double ymin = exElement.text().toDouble();
-  aoi.setYMinimum( ymin );
-
-  exElement = xmaxNode.toElement();
-  double xmax = exElement.text().toDouble();
-  aoi.setXMaximum( xmax );
-
-  exElement = ymaxNode.toElement();
-  double ymax = exElement.text().toDouble();
-  aoi.setYMaximum( ymax );
-
-  setExtent( aoi );
 
   return true;
 }
 
 bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 {
-  // units
+  QgsMapSettings tmpSettings;
+  tmpSettings.setOutputDpi( outputDpi() );
+  tmpSettings.setOutputSize( outputSize() );
+  tmpSettings.setMapUnits( mapUnits() );
+  tmpSettings.setExtent( extent() );
+  tmpSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
+  tmpSettings.setDestinationCrs( destinationCrs() );
 
-  QDomElement unitsNode = theDoc.createElement( "units" );
-  theNode.appendChild( unitsNode );
-
-  QString unitsString;
-
-  switch ( mapUnits() )
-  {
-    case QGis::Meters:
-      unitsString = "meters";
-      break;
-    case QGis::Feet:
-      unitsString = "feet";
-      break;
-    case QGis::NauticalMiles:
-      unitsString = "nautical miles";
-      break;
-    case QGis::Degrees:
-      unitsString = "degrees";
-      break;
-    case QGis::UnknownUnit:
-    default:
-      unitsString = "unknown";
-      break;
-  }
-  QDomText unitsText = theDoc.createTextNode( unitsString );
-  unitsNode.appendChild( unitsText );
-
-
-  // Write current view extents
-  QDomElement extentNode = theDoc.createElement( "extent" );
-  theNode.appendChild( extentNode );
-
-  QDomElement xMin = theDoc.createElement( "xmin" );
-  QDomElement yMin = theDoc.createElement( "ymin" );
-  QDomElement xMax = theDoc.createElement( "xmax" );
-  QDomElement yMax = theDoc.createElement( "ymax" );
-
-  QgsRectangle r = extent();
-  QDomText xMinText = theDoc.createTextNode( qgsDoubleToString( r.xMinimum() ) );
-  QDomText yMinText = theDoc.createTextNode( qgsDoubleToString( r.yMinimum() ) );
-  QDomText xMaxText = theDoc.createTextNode( qgsDoubleToString( r.xMaximum() ) );
-  QDomText yMaxText = theDoc.createTextNode( qgsDoubleToString( r.yMaximum() ) );
-
-  xMin.appendChild( xMinText );
-  yMin.appendChild( yMinText );
-  xMax.appendChild( xMaxText );
-  yMax.appendChild( yMaxText );
-
-  extentNode.appendChild( xMin );
-  extentNode.appendChild( yMin );
-  extentNode.appendChild( xMax );
-  extentNode.appendChild( yMax );
-
-  // projections enabled
-  QDomElement projNode = theDoc.createElement( "projections" );
-  theNode.appendChild( projNode );
-
-  QDomText projText = theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) );
-  projNode.appendChild( projText );
-
-  // destination CRS
-  QDomElement srsNode = theDoc.createElement( "destinationsrs" );
-  theNode.appendChild( srsNode );
-  destinationCrs().writeXML( srsNode, theDoc );
-
+  tmpSettings.writeXML( theNode, theDoc );
   // layer coordinate transform infos
   QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
   QHash< QString, QgsLayerCoordinateTransform >::const_iterator coordIt = mLayerCoordinateTransformInfo.constBegin();
@@ -1373,6 +1175,21 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::Comp
     default:
       return QgsMapRenderer::BlendNormal;
   }
+}
+
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+
+const QgsMapSettings& QgsMapRenderer::mapSettings()
+{
+  // make sure the settings object is up-to-date
+  mMapSettings.setExtent( extent() );
+  mMapSettings.setOutputSize( outputSize() );
+  mMapSettings.setOutputDpi( outputDpi() != 0 ? outputDpi() : qt_defaultDpiX() );
+  mMapSettings.setLayers( layerSet() );
+  mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
+  mMapSettings.setDestinationCrs( destinationCrs() );
+  mMapSettings.setMapUnits( mapUnits() );
+  return mMapSettings;
 }
 
 void QgsMapRenderer::addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )

@@ -47,7 +47,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
         , mIdx( idx )
     {}
     /**
-     * Creates or prepares a attributre editor widget
+     * Creates or prepares a attribute editor widget
      * @param parent The parent object
      * @param editor The widget to prepare. Set to null if it should be generated
      * @param vl The vector layer to use as data source
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     static QWidget* createAttributeEditor( QWidget* parent, QWidget* editor, QgsVectorLayer* vl, int idx, const QVariant &value, QMap<int, QWidget*>& proxyWidgets );
 
     /**
-     * Creates or prepares a attributre editor widget
+     * Creates or prepares a attribute editor widget
      * @param parent The parent object
      * @param editor The widget to prepare. Set to null if it should be generated
      * @param vl The vector layer to use as data source
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
      */
     static QWidget* createAttributeEditor( QWidget* parent, QWidget* editor, QgsVectorLayer* vl, int idx, const QVariant& value );
     /**
-     * Creates or prepares a attributre editor widget
+     * Creates or prepares a attribute editor widget
      * @param parent The parent object
      * @param editor The widget to prepare. Set to null if it should be generated
      * @param vl The vector layer to use as data source

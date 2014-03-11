@@ -124,7 +124,7 @@ class CORE_EXPORT QgsRasterBlock
     }
 
     // Data type in bytes
-    int dataTypeSize( ) const
+    int dataTypeSize() const
     {
       return typeSize( mDataType );
     }

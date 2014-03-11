@@ -38,6 +38,9 @@ class QgsComposerItemGroup: QgsComposerItem
   signals:
     void childItemDeleted( QgsComposerItem* item );
 
+  public slots:
+    void itemDestroyed();
+
   protected:
     void drawFrame( QPainter* p );
 };

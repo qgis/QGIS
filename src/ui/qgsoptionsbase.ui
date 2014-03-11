@@ -248,7 +248,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -268,8 +268,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>632</width>
-                <height>612</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -594,6 +594,17 @@
                       </property>
                      </widget>
                     </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_31">
+                    <item>
+                     <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
+                      <property name="text">
+                       <string>Use live-updating color chooser dialogs</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <widget class="Line" name="line_5">
                       <property name="minimumSize">
@@ -611,17 +622,6 @@
                      <widget class="QCheckBox" name="mCustomSideBarSide">
                       <property name="text">
                        <string>Custom side bar style</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_31">
-                    <item>
-                     <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
-                      <property name="text">
-                       <string>Use live-updating color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
@@ -824,6 +824,13 @@
                    </widget>
                   </item>
                   <item>
+                   <widget class="QCheckBox" name="mLayerDeleteConfirmationChkBx">
+                    <property name="text">
+                     <string>Prompt for confirmation when a layer is to be removed</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QCheckBox" name="chbWarnOldProjectVersion">
                     <property name="text">
                      <string>Warn when opening a project file saved with an older version of QGIS</string>
@@ -923,9 +930,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-133</y>
-                <width>655</width>
-                <height>787</height>
+                <y>0</y>
+                <width>577</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1251,7 +1258,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>627</width>
-                <height>585</height>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1559,9 +1566,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-175</y>
-                <width>704</width>
-                <height>813</height>
+                <y>0</y>
+                <width>621</width>
+                <height>797</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1570,58 +1577,65 @@
                  <property name="title">
                   <string>Rendering behavior</string>
                  </property>
-                 <layout class="QGridLayout" name="_4">
-                  <item row="1" column="0">
-                   <widget class="QCheckBox" name="chkEnableBackbuffer">
-                    <property name="toolTip">
-                     <string>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</string>
-                    </property>
-                    <property name="text">
-                     <string>Enable back buffer</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_9">
+                  <item>
                    <widget class="QCheckBox" name="chkAddedVisibility">
                     <property name="text">
                      <string>By default new la&amp;yers added to the map should be displayed</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="2">
+                  <item>
                    <widget class="QCheckBox" name="chkUseRenderCaching">
                     <property name="text">
                      <string>Use render caching where possible to speed up redraws</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_26">
+                  <item>
+                   <widget class="QCheckBox" name="chkParallelRendering">
+                    <property name="text">
+                     <string>Render layers in parallel using all available CPU cores</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_4">
                     <item>
-                     <widget class="QLabel" name="labelUpdateThreshold">
+                     <widget class="QLabel" name="label_56">
                       <property name="text">
-                       <string>Number of features to draw before updating the display</string>
+                       <string>Map update interval</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="spinBoxUpdateThreshold">
-                      <property name="maximumSize">
-                       <size>
-                        <width>200</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="toolTip">
-                       <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
+                     <widget class="QSpinBox" name="spinMapUpdateInterval">
+                      <property name="suffix">
+                       <string> ms</string>
                       </property>
                       <property name="maximum">
-                       <number>1000000</number>
+                       <number>999999</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>50</number>
                       </property>
                       <property name="value">
-                       <number>1000</number>
+                       <number>250</number>
                       </property>
                      </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_41">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -1649,7 +1663,7 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLabel" name="label_56">
+                      <widget class="QLabel" name="label_65">
                        <property name="text">
                         <string>Simplification threshold (higher values result in more simplification): </string>
                        </property>
@@ -1710,6 +1724,26 @@
                        </property>
                       </widget>
                      </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="mSimplifyMaxScaleLabel">
+                       <property name="text">
+                        <string>Maximum scale at which the layer should be simplified (1:1 always simplifies): </string>
+                       </property>
+                       <property name="margin">
+                        <number>2</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox" native="true">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
                    </widget>
                   </item>
@@ -1729,13 +1763,6 @@
                    <widget class="QCheckBox" name="chkAntiAliasing">
                     <property name="text">
                      <string>Make lines appear less jagged at the expense of some drawing performance</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="chkUseQPixmap">
-                    <property name="text">
-                     <string>Fix problems with incorrectly filled polygons</string>
                     </property>
                    </widget>
                   </item>
@@ -2146,8 +2173,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>654</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2481,9 +2508,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-30</y>
-                <width>658</width>
-                <height>684</height>
+                <y>0</y>
+                <width>611</width>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2876,7 +2903,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mOptionsPageComposer">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
+          <layout class="QVBoxLayout" name="verticalLayout_36">
            <property name="margin">
             <number>0</number>
            </property>
@@ -2893,8 +2920,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>654</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -2908,7 +2935,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
                   <item row="1" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <layout class="QHBoxLayout" name="horizontalLayout_39">
                     <item>
                      <widget class="QLabel" name="label_60">
                       <property name="text">
@@ -3104,8 +3131,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>654</height>
+                <width>611</width>
+                <height>598</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3596,7 +3623,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>627</width>
-                <height>585</height>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3725,8 +3752,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>679</height>
+                <width>611</width>
+                <height>714</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3882,7 +3909,7 @@
                   <string>Default datum transformations</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_10">
-                  <item row="0" column="0">
+                  <item row="1" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_38">
                     <item>
                      <widget class="QPushButton" name="mAddDefaultTransformButton">
@@ -3921,7 +3948,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <widget class="QTreeWidget" name="mDefaultDatumTransformTreeWidget">
                     <column>
                      <property name="text">
@@ -3943,6 +3970,13 @@
                       <string>Destination datum transform</string>
                      </property>
                     </column>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="chkShowDatumTransformDialog">
+                    <property name="text">
+                     <string>Ask for datum transformation when no default is defined</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -3973,7 +4007,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>627</width>
-                <height>585</height>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4063,7 +4097,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>611</width>
-                <height>685</height>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4423,6 +4457,11 @@
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -30,6 +30,8 @@ class QgsRectangle;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
 
+class QgsMapSettings;
+
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>
@@ -64,6 +66,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPalLayerSettings();
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
     ~QgsPalLayerSettings();
+
+    //! @note added in 2.4
+    static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
 
     enum Placement
     {
@@ -407,7 +412,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0 );
 
     // implementation of register feature hook
-    void registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context );
+    void registerFeature( QgsFeature& f, const QgsRenderContext& context );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -563,7 +568,8 @@ class CORE_EXPORT QgsLabelCandidate
 class CORE_EXPORT QgsLabelComponent
 {
   public:
-    QgsLabelComponent(): mText( QString() )
+    QgsLabelComponent()
+        : mText( QString() )
         , mOrigin( QgsPoint() )
         , mUseOrigin( false )
         , mRotation( 0.0 )
@@ -650,6 +656,32 @@ class CORE_EXPORT QgsLabelComponent
     double mDpiRatio;
 };
 
+
+
+/**
+ * Class that stores computed placement from labeling engine.
+ * @note added in 2.4
+ */
+class CORE_EXPORT QgsLabelingResults
+{
+  public:
+    QgsLabelingResults();
+    ~QgsLabelingResults();
+
+    //! return infos about labels at a given (map) position
+    QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) const;
+    //! return infos about labels within a given (map) rectangle
+    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
+
+  private:
+    QgsLabelingResults( const QgsLabelingResults& ) {} // no copying allowed
+
+    QgsLabelSearchTree* mLabelSearchTree;
+
+    friend class QgsPalLabeling;
+};
+
+
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
@@ -691,30 +723,45 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    virtual void init( QgsMapRenderer* mr );
+    //! @deprecated since 2.4 - use override with QgsMapSettings
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr );
+    //! called when we're going to start with rendering
+    virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
+
+    //! called to find out whether the layer is used for labeling
+    //! @note added in 2.4
+    static bool staticWillUseLayer( QgsVectorLayer* layer );
+    static bool staticWillUseLayer( const QString& layerID );
+
     //! clears all PAL layer settings for registered layers
     //! @note: this method was added in version 1.9
     virtual void clearActiveLayers();
     //! clears data defined objects from PAL layer settings for a registered layer
     //! @note: this method was added in version 1.9
-    virtual void clearActiveLayer( QgsVectorLayer* layer );
+    virtual void clearActiveLayer( const QString& layerID );
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx );
+    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx );
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s );
+    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s );
     //! hook called when drawing for every feature in a layer
-    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
-    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
     //! return infos about labels at a given (map) position
-    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
     //! return infos about labels within a given (map) rectangle
-    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+
+    //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
+    //! @note added in 2.4
+    QgsLabelingResults* takeResults();
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
@@ -742,8 +789,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();
-    bool isStoredWithProject() const { return mSavedWithProject; }
-    void setStoredWithProject( bool store ) { mSavedWithProject = store; }
+    //! @deprecated since 2.4 - settings are always stored in project
+    Q_DECL_DEPRECATED bool isStoredWithProject() const { return true; }
+    //! @deprecated since 2.4 - settings are always stored in project
+    Q_DECL_DEPRECATED void setStoredWithProject( bool store ) { Q_UNUSED( store ); }
 
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
@@ -766,13 +815,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
                                 const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
-    // hashtable of layer settings, being filled during labeling
-    QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
-    // hashtable of active diagram layers
-    QHash<QgsVectorLayer*, QgsDiagramLayerSettings> mActiveDiagramLayers;
+    void deleteTemporaryData();
+
+    // hashtable of layer settings, being filled during labeling (key = layer ID)
+    QHash<QString, QgsPalLayerSettings> mActiveLayers;
+    // hashtable of active diagram layers (key = layer ID)
+    QHash<QString, QgsDiagramLayerSettings> mActiveDiagramLayers;
     QgsPalLayerSettings mInvalidLayerSettings;
 
-    QgsMapRenderer* mMapRenderer;
+    const QgsMapSettings* mMapSettings;
     int mCandPoint, mCandLine, mCandPolygon;
     Search mSearch;
 
@@ -782,11 +833,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QList<QgsLabelCandidate> mCandidates;
     bool mShowingCandidates;
     bool mShowingAllLabels; // whether to avoid collisions or not
-    bool mSavedWithProject; // whether engine settings have been read from project file
     bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
     bool mShowingPartialsLabels; // whether to avoid partials labels or not
 
-    QgsLabelSearchTree* mLabelSearchTree;
+    QgsLabelingResults* mResults;
 };
 
 #endif // QGSPALLABELING_H

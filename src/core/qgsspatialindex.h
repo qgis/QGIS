@@ -35,8 +35,11 @@ class QgsRectangle;
 class QgsPoint;
 
 #include <QList>
+#include <QSharedDataPointer>
 
 #include "qgsfeature.h"
+
+class QgsSpatialIndexData;
 
 class CORE_EXPORT QgsSpatialIndex
 {
@@ -48,44 +51,47 @@ class CORE_EXPORT QgsSpatialIndex
     /** constructor - creates R-tree */
     QgsSpatialIndex();
 
+    /** copy constructor */
+    QgsSpatialIndex( const QgsSpatialIndex& other );
+
     /** destructor finalizes work with spatial index */
     ~QgsSpatialIndex();
+
+    /** implement assignment operator */
+    QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
 
 
     /* operations */
 
     /** add feature to index */
-    bool insertFeature( QgsFeature& f );
+    bool insertFeature( const QgsFeature& f );
 
     /** remove feature from index */
-    bool deleteFeature( QgsFeature& f );
+    bool deleteFeature( const QgsFeature& f );
 
 
     /* queries */
 
     /** returns features that intersect the specified rectangle */
-    QList<QgsFeatureId> intersects( QgsRectangle rect );
+    QList<QgsFeatureId> intersects( QgsRectangle rect ) const;
 
     /** returns nearest neighbors (their count is specified by second parameter) */
-    QList<QgsFeatureId> nearestNeighbor( QgsPoint point, int neighbors );
+    QList<QgsFeatureId> nearestNeighbor( QgsPoint point, int neighbors ) const;
 
+    /* debugging */
+
+    //! get reference count - just for debugging!
+    int refs() const;
 
   protected:
     // @note not available in python bindings
-    SpatialIndex::Region rectToRegion( QgsRectangle rect );
+    static SpatialIndex::Region rectToRegion( QgsRectangle rect );
     // @note not available in python bindings
-    bool featureInfo( QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+    bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
 
   private:
 
-    /** storage manager */
-    SpatialIndex::IStorageManager* mStorageManager;
-
-    /** buffer for index data */
-    SpatialIndex::StorageManager::IBuffer* mStorage;
-
-    /** R-tree containing spatial index */
-    SpatialIndex::ISpatialIndex* mRTree;
+    QSharedDataPointer<QgsSpatialIndexData> d;
 
 };
 

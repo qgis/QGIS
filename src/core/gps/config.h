@@ -45,10 +45,6 @@
 #   define  NMEA_UNI
 #endif
 
-#if defined(NMEA_WIN) && (_MSC_VER >= 1400)
-# pragma warning(disable: 4996) /* declared deprecated */
-#endif
-
 #if defined(_MSC_VER)
 # define NMEA_POSIX(x)  _##x
 # define NMEA_INLINE    __inline

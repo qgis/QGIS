@@ -29,7 +29,7 @@ QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTo
 {
   mSnapper.setMapCanvas( canvas );
 
-  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+  connect( canvas, SIGNAL( destinationCrsChanged() ),
            this, SLOT( updateSettings() ) );
 }
 
@@ -182,17 +182,9 @@ void QgsMapToolMeasureAngle::updateSettings()
 
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
-  QSettings settings;
   QString ellipsoidId = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE );
-  mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
+  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
-  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() )
-  {
-    mDa.setEllipsoidalMode( true );
-  }
-  else
-  {
-    mDa.setEllipsoidalMode( false );
-  }
+  mDa.setEllipsoidalMode( mCanvas->mapSettings().hasCrsTransformEnabled() );
 }

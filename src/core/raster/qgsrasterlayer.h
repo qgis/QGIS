@@ -245,12 +245,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType() { return mRasterType; }
 
-    /** \brief Accessor for drawing style */
-    //DrawingStyle drawingStyle() { return mDrawingStyle; }
-
-    /** \brief Mutator for drawing style */
-    //void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
-
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer );
     QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
@@ -288,6 +282,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     @note added in version 1.6*/
     virtual void reload();
 
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.4
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
+
     /** \brief This is called when the view on the raster layer needs to be redrawn */
     bool draw( QgsRenderContext& rendererContext );
 
@@ -295,12 +294,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void draw( QPainter * theQPainter,
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
-
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure  */
-    QString lastError();
-
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure */
-    QString lastErrorTitle();
 
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
@@ -347,8 +340,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
 
-    /** \brief Draws a preview of the rasterlayer into a pixmap */
-    QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
+    /** \brief Draws a preview of the rasterlayer into a pixmap
+    @note - use previewAsImage() for rendering with QGIS>=2.4 */
+    Q_DECL_DEPRECATED QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
+
+    /** \brief Draws a preview of the rasterlayer into a QImage
+     @note added in 2.4 */
+    QImage previewAsImage( QSize size, QColor bgColor = Qt::white,
+                           QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
@@ -372,8 +371,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    /** \brief Propagate progress updates from GDAL up to the parent app */
-    void updateProgress( int, int );
+    //! @deprecated in 2.4 - does nothing
+    Q_DECL_DEPRECATED void updateProgress( int, int );
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );
@@ -425,12 +424,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterDataProvider* mDataProvider;
 
     //DrawingStyle mDrawingStyle;
-
-    /** [ data provider interface ]The error message associated with the last error */
-    QString mError;
-
-    /** [ data provider interface ] The error caption associated with the last error */
-    QString mErrorCaption;
 
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;

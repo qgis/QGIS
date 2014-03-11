@@ -151,7 +151,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relManager The relation manager to use for the initialization
      * @return true if the relation was found in the relationmanager
      */
-    bool init( QgsRelationManager* relManager );
+    bool init( QgsRelationManager *relManager );
 
   private:
     QString mRelationId;
@@ -727,16 +727,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void setRendererV2( QgsFeatureRendererV2* r );
 
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
 
@@ -963,8 +953,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @param geom geometry to modify
      *  @param ignoreFeatures list of feature ids where intersections should be ignored
      *  @return 0 in case of success
+     *
+     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
      */
-    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
+    Q_DECL_DEPRECATED int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
@@ -1030,6 +1022,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.6*/
     virtual void reload();
 
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.4
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
+
     /** Draws the layer
      *  @return false if an error occurred during drawing
      */
@@ -1081,11 +1078,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @param fid   The feature id of the feature to be changed
      * @param field The index of the field to be updated
-     * @param value The value which will be assigned to the field
+     * @param newValue The value which will be assigned to the field
+     * @param oldValue The previous value to restore on undo (will otherwise be retrieved)
      *
      * @return true in case of success
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
@@ -1373,21 +1371,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }
 
-    /** Simplification flags for fast rendering of features */
-    enum SimplifyHint
-    {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
-    };
-    /** Set the simplification settings for fast rendering of features  */
+    /** Set the simplification settings for fast rendering of features
+     *  @note added in 2.2
+     */
     void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mSimplifyMethod = simplifyMethod; }
-    /** Returns the simplification settings for fast rendering of features  */
+    /** Returns the simplification settings for fast rendering of features
+     *  @note added in 2.2
+     */
     inline const QgsVectorSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
 
-    /** Returns whether the VectorLayer can apply the specified simplification hint */
-    bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
+    /** Returns whether the VectorLayer can apply the specified simplification hint
+     *  @note Do not use in 3rd party code - may be removed in future version!
+     *  @note added in 2.2
+     */
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
   public slots:
     /**
@@ -1443,12 +1440,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Check if there is a join with a layer that will be removed
       @note added in 1.7 */
     void checkJoinLayerRemove( QString theLayerId );
-
-    /**
-     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
-     * @note added in 2.0
-     */
-    virtual void onCacheImageDelete();
 
   protected slots:
     void invalidateSymbolCountedFlag();
@@ -1539,6 +1530,27 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
 
+    /**
+     * Signal emitted when a new edit command has been started
+     *
+     * @param text Description for this edit command
+     */
+    void editCommandStarted( const QString& text );
+
+    /**
+     * Signal emitted, when an edit command successfully ended
+     * @note This does not mean it is also committed, only that it is written
+     * to the edit buffer. See {@link beforeCommitChanges()}
+     */
+    void editCommandEnded();
+
+    /**
+     * Signal emitted, whan an edit command is destroyed
+     * @note This is not a rollback, it is only related to the current edit command.
+     * See {@link beforeRollBack()}
+     */
+    void editCommandDestroyed();
+
   private slots:
     void onRelationsLoaded();
 
@@ -1578,41 +1590,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                          QMultiMap<double, QgsSnappingResult>& snappingResults,
                          QgsSnapper::SnappingType snap_to ) const;
 
-    /**Reads vertex marker type from settings*/
-    static QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
-
-    /**Reads vertex marker size from settings*/
-    static int currentVertexMarkerSize();
-
     /** Add joined attributes to a feature */
     //void addJoinedAttributes( QgsFeature& f, bool all = false );
 
-    /** Stop version 2 renderer and selected renderer (if required) */
-    void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
-
-    /**Registers label and diagram layer
-      @param rendererContext render context
-      @param attributes attributes needed for labeling and diagrams will be added to the list
-      @param labeling out: true if there will be labeling (ng) for this layer*/
-    void prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling );
+    /** Read labeling from SLD */
+    void readSldLabeling( const QDomNode& node );
 
   private:                       // Private attributes
 
-    /** Update threshold for drawing features as they are read. A value of zero indicates
-     *  that no features will be drawn until all have been read
-     */
-    int mUpdateThreshold;
-
-    /** Enables backbuffering for the map window. This improves graphics performance,
-     *  but the possibility to cancel rendering and incremental feature drawing will be lost.
-     *
-     */
-    bool mEnableBackbuffer;
-
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
-
-    QgsFeatureIterator mProviderIterator;
 
     /** index of the primary label field */
     QString mDisplayField;
@@ -1729,6 +1716,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
     bool mValidExtent;
+    bool mLazyExtent;
 
     // Features in renderer classes counted
     bool mSymbolFeatureCounted;
@@ -1736,9 +1724,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
 
-    QgsRenderContext *mCurrentRendererContext;
-
-    friend class QgsVectorLayerFeatureIterator;
+    friend class QgsVectorLayerFeatureSource;
 };
 
 #endif
