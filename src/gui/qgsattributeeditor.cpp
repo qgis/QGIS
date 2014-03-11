@@ -1207,7 +1207,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::SliderRange:
     case QgsVectorLayer::EditRange:
     {
-      if ( myFieldType == QVariant::Int )
+      if ( myFieldType == QVariant::Int || myFieldType == QVariant::LongLong )
       {
         if ( editType == QgsVectorLayer::EditRange )
         {
