@@ -6924,7 +6924,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="971"/>
         <source>Measure Area</source>
-        <translation>Calcola l&apos;area</translation>
+        <translation>Misura area</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="974"/>
@@ -6934,7 +6934,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="986"/>
         <source>Measure Angle</source>
-        <translation>Misura angoli</translation>
+        <translation>Misura angolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="995"/>
@@ -13356,7 +13356,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2183"/>
         <source>Control rendering order</source>
-        <translation>Controllo ordine di rendering</translation>
+        <translation>Controllo ordine di disegno</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2200"/>
@@ -15022,7 +15022,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
         <source>Fixed map position</source>
-        <translation>Posizione fissa sulla mappa</translation>
+        <translation>Marcatore sulla mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="36"/>
@@ -16877,7 +16877,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="319"/>
         <source>Remove favourite</source>
-        <translation>Rimuovi dai favoriti</translation>
+        <translation>Rimuovi dai preferiti</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="329"/>
@@ -23635,7 +23635,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="57"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="145"/>
         <source>Horizontal and Vertical</source>
-        <translation>Orizzontale e verticale</translation>
+        <translation>Perpendicolare al bordo</translation>
     </message>
 </context>
 <context>
