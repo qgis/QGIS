@@ -64,6 +64,7 @@
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2.h"
 #include "qgssymbologyv2conversion.h"
+#include "qgsexpressionguihelper.h"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
@@ -91,6 +92,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
+
+  // feature title
+  connect( mFeatureTitleExprRadio, SIGNAL( toggled( bool ) ), mFeatureTitleComboBox, SLOT( setEnabled( bool ) ) );
+  connect( mFeatureTitleExprRadio, SIGNAL( toggled( bool ) ), mFeatureTitleButton, SLOT( setEnabled( bool ) ) );
+  mFeatureTitleHelper = new QgsExpressionGuiHelper( layer, mFeatureTitleComboBox, mFeatureTitleButton, tr( "Expression based feature title" ), this );
 
   // connections for Map Tip display
   connect( htmlRadio, SIGNAL( toggled( bool ) ), htmlMapTip, SLOT( setEnabled( bool ) ) );
@@ -205,6 +211,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       mDataSourceEncodingFrame->hide();
     }
   }
+
+  // feature title
+  mFeatureTitleExprRadio->setChecked( layer->featureTitleUseExpression() );
+  mFeatureTitleHelper->setExpression( layer->featureTitleExpression() );
 
   leSpatialRefSys->setText( layer->crs().authid() + " - " + layer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
@@ -498,6 +508,10 @@ void QgsVectorLayerProperties::apply()
   layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   layer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
   layer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
+
+  // feature title
+  layer->setFeatureTitleUseExpression( mFeatureTitleExprRadio->isChecked() );
+  layer->setFeatureTitleExpression( mFeatureTitleComboBox->currentText() );
 
   // provider-specific options
   if ( layer->dataProvider() )

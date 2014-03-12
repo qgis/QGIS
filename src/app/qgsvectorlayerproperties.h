@@ -30,6 +30,7 @@
 #include "qgsmapcanvas.h"
 #include "qgscontexthelp.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressionguihelper.h"
 
 class QgsMapLayer;
 
@@ -176,6 +177,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     /**Adds a new join to mJoinTreeWidget*/
     void addJoinToTreeWidget( const QgsVectorJoinInfo& join );
+
+    QgsExpressionGuiHelper* mFeatureTitleHelper;
+
 };
 
 inline QString QgsVectorLayerProperties::displayName()

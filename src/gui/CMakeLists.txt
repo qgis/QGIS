@@ -84,6 +84,7 @@ qgsencodingfiledialog.cpp
 qgserrordialog.cpp
 qgsexpressionbuilderdialog.cpp
 qgsexpressionbuilderwidget.cpp
+qgsexpressionguihelper.cpp
 qgsexpressionhighlighter.cpp
 qgsexpressionselectiondialog.cpp
 qgsextentgroupbox.cpp
@@ -223,6 +224,7 @@ qgsdialog.h
 qgsencodingfiledialog.h
 qgserrordialog.h
 qgsexpressionbuilderwidget.h
+qgsexpressionguihelper.h
 qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
 qgsextentgroupbox.h
@@ -288,6 +290,7 @@ qgsdatadefinedbutton.h
 qgsencodingfiledialog.h
 qgsexpressionbuilderdialog.h
 qgsexpressionbuilderwidget.h
+qgsexpressionguihelper.h
 qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
 qgsfeatureselectiondlg.h
