@@ -23,7 +23,7 @@
 #include "qgslegend.h"
 #include "qgscoordinatetransform.h"
 
-class QgsHighlight;
+class QgsRubberBand;
 class QgsLabelPosition;
 
 /**A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation*/
@@ -64,7 +64,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
   protected:
 
     //! Mapping of feature ids of layers that have been highlighted
-    QMap<QString, QgsHighlight*> mHighlights;
+    QMap<QString, QgsRubberBand*> mHighlights;
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
@@ -80,8 +80,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
   private:
 
     //! Highlights a given label relative to whether its pinned and editable
-    void highlightLabel( QgsVectorLayer* vlayer,
-                         const QgsLabelPosition& labelpos,
+    void highlightLabel( const QgsLabelPosition& labelpos,
                          const QString& id,
                          const QColor& color );
 
