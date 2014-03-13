@@ -368,6 +368,7 @@ void QgsLabelPropertyDialog::fillValiComboBox()
 {
   mValiComboBox->addItem( "Bottom" );
   mValiComboBox->addItem( "Base" );
+  mValiComboBox->addItem( "Cap" );
   mValiComboBox->addItem( "Half" );
   mValiComboBox->addItem( "Top" );
 }

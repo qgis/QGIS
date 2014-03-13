@@ -397,14 +397,19 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
   }
   else
   {
-    double descentRatio = 1 / labelFontMetrics.ascent() / labelFontMetrics.height();
+    double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
+    double capHeightRatio = ( labelFontMetrics.boundingRect( 'H' ).height() + 1 + labelFontMetrics.descent() ) / labelFontMetrics.height();
     if ( valiString.compare( "Base", Qt::CaseInsensitive ) == 0 )
     {
       ydiff = labelSizeY * descentRatio;
     }
+    else if ( valiString.compare( "Cap", Qt::CaseInsensitive ) == 0 )
+    {
+      ydiff = labelSizeY * capHeightRatio;
+    }
     else if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
     {
-      ydiff = labelSizeY * 0.5 * ( 1 - descentRatio );
+      ydiff = labelSizeY / 2.0;
     }
   }
 

@@ -2082,18 +2082,18 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
             else
             {
               double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
+              double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
               if ( valiString.compare( "Base", Qt::CaseInsensitive ) == 0 )
               {
                 ydiff -= labelY * descentRatio;
               }
-              else //'Cap' or 'Half'
+              else if ( valiString.compare( "Cap", Qt::CaseInsensitive ) == 0 )
               {
-                double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
                 ydiff -= labelY * capHeightRatio;
-                if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
-                {
-                  ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
-                }
+              }
+              else if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
+              {
+                ydiff -= labelY / 2.0;
               }
             }
           }
