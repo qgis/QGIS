@@ -37,6 +37,7 @@
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgeometrysimplifier.sip
+%Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
 %Include qgshttptransaction.sip
