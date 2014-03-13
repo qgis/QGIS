@@ -1588,7 +1588,7 @@ Colonnes</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="98"/>
         <source>Standard (N x T) distance matrix</source>
-        <translation>Matrice de distance standarde (N x T)</translation>
+        <translation>Matrice de distance standard (N x T)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="105"/>
@@ -1621,7 +1621,7 @@ Colonnes</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="14"/>
         <source>Count Points In Polygons</source>
-        <translation>COmpter les points dans les polygones</translation>
+        <translation>Compter les points dans les polygones</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="22"/>
@@ -77084,7 +77084,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation>Quelle colonne contient les coordonnées en Z ? Si 0, la coordonnée E ne sera pas utilisée</translation>
+        <translation>Quelle colonne contient les coordonnées en Z ? Si 0, la coordonnée Z ne sera pas utilisée</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
@@ -77136,7 +77136,7 @@ None
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="100"/>
         <source>Add Rule</source>
-        <translation>Ajouter une régle</translation>
+        <translation>Ajouter une règle</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>
@@ -77254,7 +77254,7 @@ None
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation>Echec de l&apos;importation de la seoncde géométrie dans GEOS au test de chevauchements.</translation>
+        <translation>Echec de l&apos;importation de la seconde géométrie dans GEOS au test de chevauchements.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
@@ -77338,7 +77338,7 @@ None
     </message>
     <message>
         <source>StdDev:</source>
-        <translation>Écart type :</translation>
+        <translation>Écart-type :</translation>
     </message>
     <message>
         <source>Sum:</source>
