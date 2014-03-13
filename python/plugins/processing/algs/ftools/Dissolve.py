@@ -85,8 +85,8 @@ class Dissolve(GeoAlgorithm):
                     except:
                         raise GeoAlgorithmExecutionException(
                                 'Geometry exception while dissolving')
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
+            outFeat.setAttributes(attrs)
+            writer.addFeature(outFeat)
         else:
             unique = vector.getUniqueValues(vlayerA, int(field))
             nFeat = nFeat * len(unique)
@@ -125,7 +125,8 @@ class Dissolve(GeoAlgorithm):
         self.name = 'Dissolve'
         self.group = 'Vector geometry tools'
         self.addParameter(ParameterVector(Dissolve.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+                          [ParameterVector.VECTOR_TYPE_POLYGON,
+                          ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
                           'Dissolve all (do not use field)', True))
         self.addParameter(ParameterTableField(Dissolve.FIELD, 'Unique ID field'
