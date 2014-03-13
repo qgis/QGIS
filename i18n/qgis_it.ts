@@ -62043,12 +62043,12 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="211"/>
         <source>Counterclockwise from east</source>
-        <translation>Al contrario del senso dell&apos;orologio, da est</translation>
+        <translation>Antiorario da est</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="204"/>
         <source>Clockwise from north</source>
-        <translation>Nel senso dell&apos;orologio, da nord</translation>
+        <translation>Orario da nord</translation>
     </message>
     <message>
         <source>LineStyle</source>
