@@ -3389,6 +3389,9 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
 
+  // force the location of the centroid inside of polygons
+  l->setCentroidInside( true );
+
   // set how to show upside-down labels
   Layer::UpsideDownLabels upsdnlabels;
   switch ( lyr.upsidedownLabels )

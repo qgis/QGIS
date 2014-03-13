@@ -160,7 +160,7 @@ namespace pal
 
       //double getDistInside(double px, double py);
 
-      void getCentroid( double &px, double &py );
+      void getCentroid( double &px, double &py, bool forceInside = false );
 
 
       int getGeosType() const { return type; }
