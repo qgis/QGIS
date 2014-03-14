@@ -2179,9 +2179,57 @@ bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression* parent, const Qg
   return resL && resR;
 }
 
+int QgsExpression::NodeBinaryOperator::precedence() const
+{
+  // see left/right in qgsexpressionparser.yy
+  switch ( mOp )
+  {
+    case boOr:
+      return 1;
+
+    case boAnd:
+      return 2;
+
+    case boEQ:
+    case boNE:
+    case boLE:
+    case boGE:
+    case boLT:
+    case boGT:
+    case boRegexp:
+    case boLike:
+    case boIs:
+    case boIsNot:
+      return 3;
+
+    case boPlus:
+    case boMinus:
+      return 4;
+
+    case boMul:
+    case boDiv:
+    case boMod:
+      return 5;
+
+    case boPow:
+      return 6;
+
+    case boConcat:
+      return 7;
+  }
+}
+
 QString QgsExpression::NodeBinaryOperator::dump() const
 {
-  return QString( "%1 %2 %3" ).arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
+  QgsExpression::NodeBinaryOperator *lOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpLeft );
+  QgsExpression::NodeBinaryOperator *rOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpRight );
+
+  QString fmt;
+  fmt += lOp && lOp->precedence() < precedence() ? "(%1)" : "%1";
+  fmt += " %2 ";
+  fmt += rOp && rOp->precedence() < precedence() ? "(%3)" : "%3";
+
+  return fmt.arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
 }
 
 //

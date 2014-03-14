@@ -1,6 +1,7 @@
 #include "qgsdatadefinedsymboldialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QPushButton>
@@ -104,7 +105,7 @@ QMap< QString, QString > QgsDataDefinedSymbolDialog::dataDefinedProperties() con
 
 void QgsDataDefinedSymbolDialog::expressionButtonClicked()
 {
-  qWarning( "Expression button clicked" );
+  QgsDebugMsg( "Expression button clicked" );
 
   //find out row
   QObject* senderObj = sender();
