@@ -147,6 +147,11 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
   bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
   bool result = false;
 
+  // Save initial WKB settings to use when the simplification creates invalid geometries
+  unsigned char* sourcePrevWkb = sourceWkb;
+  unsigned char* targetPrevWkb = targetWkb;
+  size_t targetWkbPrevSize = targetWkbSize;
+
   // Can replace the geometry by its BBOX ?
   if (( simplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && ( envelope.xMaximum() - envelope.xMinimum() ) < map2pixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < map2pixelTol )
   {
@@ -181,6 +186,11 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
   {
     double x, y, lastX = 0, lastY = 0;
 
+    double xmin =  std::numeric_limits<double>::max();
+    double ymin =  std::numeric_limits<double>::max();
+    double xmax = -std::numeric_limits<double>::max();
+    double ymax = -std::numeric_limits<double>::max();
+
     int sizeOfDoubleX = sizeof( double );
     int sizeOfDoubleY = QGis::wkbDimensions( wkbType ) == 3 /*hasZValue*/ ? 2 * sizeof( double ) : sizeof( double );
 
@@ -197,6 +207,24 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
     double* ptr = ( double* )targetWkb;
     map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
+    // Check whether the LinearRing is really closed.
+    if ( isaLinearRing )
+    {
+      double x1, y1, x2, y2;
+
+      unsigned char* startWkbX = sourceWkb;
+      unsigned char* startWkbY = startWkbX + sizeOfDoubleX;
+      unsigned char* finalWkbX = sourceWkb + ( numPoints - 1 ) * ( sizeOfDoubleX + sizeOfDoubleY );
+      unsigned char* finalWkbY = finalWkbX + sizeOfDoubleX;
+
+      memcpy( &x1, startWkbX, sizeof( double ) );
+      memcpy( &y1, startWkbY, sizeof( double ) );
+      memcpy( &x2, finalWkbX, sizeof( double ) );
+      memcpy( &y2, finalWkbY, sizeof( double ) );
+
+      isaLinearRing = ( x1 == x2 ) && ( y1 == y2 );
+    }
+
     // Process each vertex...
     for ( int i = 0, numPoints_i = ( isaLinearRing ? numPoints - 1 : numPoints ); i < numPoints_i; ++i )
     {
@@ -209,10 +237,21 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
         memcpy( ptr, &y, sizeof( double ) ); lastY = y; ptr++;
         numTargetPoints++;
       }
+      if ( xmin > x ) xmin = x;
+      if ( ymin > y ) ymin = y;
+      if ( xmax < x ) xmax = x;
+      if ( ymax < y ) ymax = y;
     }
     targetWkb = wkb2 + 4;
 
     // Fix the topology of the geometry
+    if ( numTargetPoints <= ( isaLinearRing ? 2 : 1 ) )
+    {
+      sourceWkb = sourcePrevWkb;
+      targetWkb = targetPrevWkb;
+      targetWkbSize = targetWkbPrevSize;
+      return generalizeWkbGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, QgsRectangle( xmin, ymin, xmax, ymax ), writeHeader );
+    }
     if ( isaLinearRing )
     {
       memcpy( &x, targetWkb + 0, sizeof( double ) );
