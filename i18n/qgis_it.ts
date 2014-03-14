@@ -39,7 +39,7 @@
     </message>
     <message>
         <source>Providers</source>
-        <translation>Sorgenti dati</translation>
+        <translation>Programmi</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -38485,7 +38485,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="151"/>
         <source>Could not transform layer extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile trasformare l&apos;estensione del layer.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="186"/>
@@ -55829,12 +55829,12 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Intercettato errore di semplificazione: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SR</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3962"/>
