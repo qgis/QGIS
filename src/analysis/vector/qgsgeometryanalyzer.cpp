@@ -917,12 +917,12 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
 
   //create line field / id map for line layer
-  QMultiHash< QString, QgsFeatureId > lineLayerIdMap; //1:n possible (e.g. several linear reference geometries for one feature in the event layer)
-  QgsFeatureIterator fit = lineLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << lineField ) );
+  QMultiHash< QString, QgsFeature > lineLayerIdMap; //1:n possible (e.g. several linear reference geometries for one feature in the event layer)
+  QgsFeatureIterator fit = lineLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << lineField ) );
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    lineLayerIdMap.insert( fet.attribute( lineField ).toString(), fet.id() );
+    lineLayerIdMap.insert( fet.attribute( lineField ).toString(), fet );
   }
 
   //create output datasource or attributes in memory provider
@@ -989,22 +989,17 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       measure2 = fet.attribute( locationField2 ).toDouble();
     }
 
-    QList<QgsFeatureId> featureIdList = lineLayerIdMap.values( fet.attribute( eventField ).toString() );
-    QList<QgsFeatureId>::const_iterator featureIdIt = featureIdList.constBegin();
+    QList<QgsFeature> featureIdList = lineLayerIdMap.values( fet.attribute( eventField ).toString() );
+    QList<QgsFeature>::const_iterator featureIdIt = featureIdList.constBegin();
     for ( ; featureIdIt != featureIdList.constEnd(); ++featureIdIt )
     {
-      if ( !lineLayer->getFeatures( QgsFeatureRequest().setFilterFid( *featureIdIt ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( lineFeature ) )
-      {
-        continue;
-      }
-
       if ( locationField2 == -1 )
       {
-        lrsGeom = locateAlongMeasure( measure1, lineFeature.geometry() );
+        lrsGeom = locateAlongMeasure( measure1, featureIdIt->geometry() );
       }
       else
       {
-        lrsGeom = locateBetweenMeasures( measure1, measure2, lineFeature.geometry() );
+        lrsGeom = locateBetweenMeasures( measure1, measure2, featureIdIt->geometry() );
       }
 
       if ( lrsGeom )
