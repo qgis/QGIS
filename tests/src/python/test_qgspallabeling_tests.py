@@ -15,7 +15,6 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -44,9 +43,14 @@ class TestPointBase(object):
         # e.g. self._Mismatches['TestClassName'] = 300
         self._Mismatches = dict()
 
+    # noinspection PyMethodMayBeStatic
+    def checkTest(self, **kwargs):
+        """Intended to be overridden in subclasses"""
+        pass
+
     def test_default_label(self):
         # Default label placement, with text size in points
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2034
+        self._Mismatches['TestComposerSvgVsComposerPoint'] = 500
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -55,18 +59,17 @@ class TestPointBase(object):
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
         self.lyr.textFont = font
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 1877
         self.checkTest()
 
     def test_text_color(self):
         # Label color change
         self.lyr.textColor = Qt.blue
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2034
+        self._Mismatches['TestComposerSvgVsComposerPoint'] = 500
         self.checkTest()
 
     def test_background_rect(self):
         self.lyr.shapeDraw = True
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2751
+        self._Mismatches['TestComposerSvgVsComposerPoint'] = 1100
         self.checkTest()
 
     def test_background_rect_w_offset(self):
@@ -82,7 +85,7 @@ class TestPointBase(object):
         self.lyr.shapeDraw = True
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2530
+        self._Mismatches['TestComposerSvgVsComposerPoint'] = 750
         self.checkTest()
 
     def test_background_svg(self):
@@ -100,7 +103,6 @@ class TestPointBase(object):
         self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
         self.lyr.shapeSize = QPointF(100.0, 0.0)
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2882
         self.checkTest()
 
     def test_background_svg_w_offset(self):
@@ -121,7 +123,6 @@ class TestPointBase(object):
 
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2901
         self.checkTest()
 
     def test_partials_labels_enabled(self):
@@ -132,7 +133,7 @@ class TestPointBase(object):
         # Enable partials labels
         self._Pal.setShowingPartialsLabels(True)
         self._Pal.saveEngineSettings()
-        self._Mismatches['TestComposerImageVsCanvasPoint'] = 2250
+        self._Mismatches['TestComposerSvgVsComposerPoint'] = 600
         self.checkTest()
 
     def test_partials_labels_disabled(self):
