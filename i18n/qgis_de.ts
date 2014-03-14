@@ -12119,7 +12119,7 @@ Diese Fehler immer ignorieren?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3552"/>
         <source>Loading project: %1</source>
-        <translation>Projektladen: %1</translation>
+        <translation>Lade Projekt: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3621"/>
