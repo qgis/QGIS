@@ -65,10 +65,13 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 
   // Grab the first feature so that user can use it to test the style in rules.
-  QgsFeature fet;
-  layer->getFeatures().nextFeature( fet );
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
+  if( layer )
+  {
+    QgsFeature fet;
+    layer->getFeatures().nextFeature( fet );
+    QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
+    QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
+  }
 
   emit coverageLayerChanged( layer );
 }
@@ -663,6 +666,9 @@ void QgsAtlasComposition::setFilenamePattern( const QString& pattern )
 
 void QgsAtlasComposition::updateFilenameExpression()
 {
+  if ( !mCoverageLayer )
+    return;
+
   const QgsFields& fields = mCoverageLayer->pendingFields();
 
   if ( !mSingleFile && mFilenamePattern.size() > 0 )
