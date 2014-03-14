@@ -90,7 +90,7 @@ class QgsGeometryAnalyzer
       @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
       @param p progress dialog or 0 if no progress dialog should be shown
     */
-    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds /Out/, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
