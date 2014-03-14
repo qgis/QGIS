@@ -132,10 +132,9 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
     if ( !vl )
       continue;
-    if ( vl->wkbType() != QGis::WKBLineString
-         || vl->wkbType() != QGis::WKBMultiLineString )
-      continue;
-    mcbLayers->insertItem( 0, vl->name() );
+    if ( vl->wkbType() == QGis::WKBLineString
+         || vl->wkbType() == QGis::WKBMultiLineString )
+      mcbLayers->insertItem( 0, vl->name() );
   }
 
   //sets current settings
