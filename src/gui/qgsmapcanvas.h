@@ -173,7 +173,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @deprecated since 2.4 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
-    //! @deprecated since 2.4 - use mapRendererSettings() for anything related to current renderer settings
+    //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
     Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas paint device
