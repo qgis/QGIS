@@ -1003,23 +1003,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
 
       if ( vectorLayer )
       {
-        if ( vectorLayer->vectorJoins().size() > 0 )
-        {
-          QList<QgsMapLayer *> joinLayers;
-          //JoinBuffer is based on qgsmaplayerregistry!!!!!
-          //insert existing join info
-          const QList< QgsVectorJoinInfo >& joins = vectorLayer->vectorJoins();
-          for ( int i = 0; i < joins.size(); ++i )
-          {
-            QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
-            if ( joinLayer )
-            {
-              joinLayers << joinLayer;
-            }
-            QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
-          }
-          vectorLayer->updateFields();
-        }
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
                                          version, infoFormat, featuresRect ) != 0 )
         {
@@ -1571,7 +1554,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
-        attributeElement.setAttribute( "value", QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) );
+        attributeElement.setAttribute( "value", replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) ) );
         featureElement.appendChild( attributeElement );
       }
 
@@ -1590,7 +1573,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       //also append the wkt geometry as an attribute
       if ( addWktGeometry && hasGeometry )
       {
-         QgsGeometry* geom = feature.geometry();
+        QgsGeometry* geom = feature.geometry();
         if ( layer->crs() != outputCrs )
         {
           const QgsCoordinateTransform *transform = mapRender->transformation( layer );
@@ -1714,24 +1697,6 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
              ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
         {
           layerKeys.push_front( theMapLayer->id() );
-          //joinVectorLayers
-          QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
-          if ( vectorLayer && vectorLayer->vectorJoins().size() > 0 )
-          {
-            QList<QgsMapLayer *> joinLayers;
-            //insert existing join info
-            const QList< QgsVectorJoinInfo >& joins = vectorLayer->vectorJoins();
-            for ( int i = 0; i < joins.size(); ++i )
-            {
-              QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
-              if ( joinLayer )
-              {
-                joinLayers << joinLayer;
-              }
-              QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
-            }
-            vectorLayer->updateFields();
-          }
           QgsMapLayerRegistry::instance()->addMapLayers(
             QList<QgsMapLayer *>() << theMapLayer, false, false );
         }
@@ -2558,7 +2523,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   typeNameElement.setAttribute( "fid", typeName + "." + QString::number( feat->id() ) );
 
   const QgsCoordinateTransform* transform = 0;
-  if ( layer && layer->crs() != crs)
+  if ( layer && layer->crs() != crs )
   {
     transform = mMapRenderer->transformation( layer );
   }
@@ -2566,34 +2531,34 @@ QDomElement QgsWMSServer::createFeatureGML(
   QgsGeometry* geom = feat->geometry();
 
   // always add bounding box info if feature contains geometry
-  if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry)
+  if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry )
   {
-     QgsRectangle box = feat->geometry()->boundingBox();
-     if ( transform )
-     {
-       box = transform->transformBoundingBox( box );
-     }
+    QgsRectangle box = feat->geometry()->boundingBox();
+    if ( transform )
+    {
+      box = transform->transformBoundingBox( box );
+    }
 
-     QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-     QDomElement boxElem;
-     if ( version < 3 )
-     {
-       boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
-     }
-     else
-     {
-       boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
-     }
+    QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+    QDomElement boxElem;
+    if ( version < 3 )
+    {
+      boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
+    }
+    else
+    {
+      boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
+    }
 
-     if ( crs.isValid() )
-     {
-       boxElem.setAttribute( "srsName", crs.authid() );
-     }
-     bbElem.appendChild( boxElem );
-     typeNameElement.appendChild( bbElem );
+    if ( crs.isValid() )
+    {
+      boxElem.setAttribute( "srsName", crs.authid() );
+    }
+    bbElem.appendChild( boxElem );
+    typeNameElement.appendChild( bbElem );
   }
 
-  if ( withGeom)
+  if ( withGeom )
   {
     //add geometry column (as gml)
 
@@ -2634,7 +2599,7 @@ QDomElement QgsWMSServer::createFeatureGML(
     QString fieldTextString = featureAttributes[i].toString();
     if ( layer )
     {
-      fieldTextString = QgsExpression::replaceExpressionText( fieldTextString, feat, layer );
+      fieldTextString = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( fieldTextString, feat, layer ) );
     }
     QDomText fieldText = doc.createTextNode( fieldTextString );
     fieldElem.appendChild( fieldText );
@@ -2642,4 +2607,53 @@ QDomElement QgsWMSServer::createFeatureGML(
   }
 
   return typeNameElement;
+}
+
+QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal )
+{
+  if ( !vl )
+  {
+    return attributeVal;
+  }
+
+  QgsVectorLayer::EditType type = vl->editType( idx );
+  if ( type == QgsVectorLayer::ValueMap )
+  {
+    QMap<QString, QVariant> valueMap = vl->valueMap( idx );
+    QMap<QString, QVariant>::const_iterator vmapIt = valueMap.constBegin();
+    for ( ; vmapIt != valueMap.constEnd(); ++vmapIt )
+    {
+      if ( vmapIt.value().toString() == attributeVal )
+      {
+        return vmapIt.key();
+      }
+    }
+  }
+  else if ( type == QgsVectorLayer::ValueRelation )
+  {
+    QgsVectorLayer::ValueRelationData vrdata = vl->valueRelation( idx );
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( vrdata.mLayer ) );
+    if ( !layer )
+    {
+      return attributeVal;
+    }
+
+    int keyId = layer->fieldNameIndex( vrdata.mKey );
+    int valueId = layer->fieldNameIndex( vrdata.mValue );
+    if ( keyId == -1 || valueId == -1 )
+    {
+      return attributeVal;
+    }
+
+    QgsFeatureIterator fIt = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << keyId << valueId ) );
+    QgsFeature f;
+    while ( fIt.nextFeature( f ) )
+    {
+      if ( f.attribute( vrdata.mKey ).toString() == attributeVal )
+      {
+        return f.attribute( vrdata.mValue ).toString();
+      }
+    }
+  }
+  return attributeVal;
 }

@@ -68,7 +68,7 @@ class QgsConfigParser
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool useCache = true ) const = 0;
 
     /**Returns maplayers for a layer Id.*/
-    virtual QgsMapLayer* mapLayerFromLayerId( const QString& lId ) const = 0;
+    virtual QgsMapLayer* mapLayerFromLayerId( const QString& lId, bool useCache = true ) const = 0;
 
     /**Returns number of layers in configuration*/
     virtual int numberOfLayers() const = 0;

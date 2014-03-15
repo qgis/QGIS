@@ -68,7 +68,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   if ( !mRendererV2 )
     return;
 
-  QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
+  QgsDebugMsg( "rendering v2:\n  " + mRendererV2->dump() );
 
   if ( mDrawVertexMarkers )
   {

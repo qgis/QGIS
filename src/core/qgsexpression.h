@@ -441,6 +441,8 @@ class CORE_EXPORT QgsExpression
         virtual bool needsGeometry() const { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
         virtual void accept( Visitor& v ) const { v.visit( *this ); }
 
+        int precedence() const;
+
       protected:
         bool compare( double diff );
         int computeInt( int x, int y );

@@ -232,6 +232,9 @@ class QgsWMSServer
       QString typeName,
       bool withGeom,
       int version ) const;
+
+    /**Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
+    static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );
 };
 
 #endif

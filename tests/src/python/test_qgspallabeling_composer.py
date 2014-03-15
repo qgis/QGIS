@@ -94,44 +94,50 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
-        # TODO: how to keep embedded map from being anti-aliased twice?
-        # self._MapSettings.setFlag(QgsMapSettings.Antialiasing, False)
-        # self._MapSettings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
+        self._TestMapSettings.setFlag(QgsMapSettings.Antialiasing, True)
+        self._TestMapSettings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
+        self._TestMapSettings.setFlag(QgsMapSettings.ForceVectorOutput, True)
         self._c = QgsComposition(self._TestMapSettings)
         """:type: QgsComposition"""
+        # self._c.setUseAdvancedEffects(False)
         self._c.setPrintResolution(dpi)
         # 600 x 400 px = 211.67 x 141.11 mm @ 72 dpi
-        # TODO: figure out why this doesn't work and needs fudging
-        #       probably need sets of fudgyness per dpi group (72, 150, 300)?
-        paperw = round((width * 25.4 / dpi) + 0.05, 0)
-        paperh = round((height * 25.4 / dpi) + 0.05, 1)
+        paperw = width * 25.4 / dpi
+        paperh = height * 25.4 / dpi
         self._c.setPaperSize(paperw, paperh)
-        self._cmap = QgsComposerMap(
-            self._c, 0, 0, self._c.paperWidth(), self._c.paperHeight())
+        # NOTE: do not use QgsComposerMap(self._c, 0, 0, paperw, paperh) since
+        # it only takes integers as parameters and the composition will grow
+        # larger based upon union of item scene rectangles and a slight buffer
+        #   see end of QgsComposition::compositionBounds()
+        # add map as small graphics item first, then set its scene QRectF later
+        self._cmap = QgsComposerMap(self._c, 10, 10, 10, 10)
         """:type: QgsComposerMap"""
+        self._cmap.setPreviewMode(QgsComposerMap.Render)
         self._cmap.setFrameEnabled(False)
-        self._cmap.setNewExtent(self.aoiExtent())
         self._c.addComposerMap(self._cmap)
+        # now expand map to fill page and set its extent
+        self._cmap.setSceneRect(QRectF(0, 0, paperw, paperw))
+        self._cmap.setNewExtent(self.aoiExtent())
+        # self._cmap.updateCachedImage()
         self._c.setPlotStyle(QgsComposition.Print)
 
     # noinspection PyUnusedLocal
     def _get_composer_image(self, width, height, dpi):
-        image = QImage(QSize(width, height), QImage.Format_ARGB32)
-        image.fill(QColor(152, 219, 249).rgb())
-        image.setDotsPerMeterX(dpi / 25.4 * 1000)
-        image.setDotsPerMeterY(dpi / 25.4 * 1000)
+        # image = QImage(QSize(width, height), QImage.Format_ARGB32)
+        # image.fill(QColor(152, 219, 249).rgb())
+        # image.setDotsPerMeterX(dpi / 25.4 * 1000)
+        # image.setDotsPerMeterY(dpi / 25.4 * 1000)
+        #
+        # p = QPainter(image)
+        # p.setRenderHint(QPainter.Antialiasing, False)
+        # p.setRenderHint(QPainter.HighQualityAntialiasing, False)
+        # self._c.renderPage(p, 0)
+        # p.end()
 
-        p = QPainter(image)
-        p.setRenderHint(QPainter.Antialiasing, True)
-        p.setRenderHint(QPainter.HighQualityAntialiasing, True)
-        self._c.renderPage(p, 0)
-        p.end()
-
-        # image = self._c.printPageAsRaster(0)
-        # """:type: QImage"""
+        image = self._c.printPageAsRaster(0)
+        """:type: QImage"""
 
         if image.isNull():
-            # something went pear-shaped
             return False, ''
 
         filepath = getTempfilePath('png')
@@ -144,7 +150,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _get_composer_svg_image(self, width, height, dpi):
         # from qgscomposer.cpp, QgsComposer::on_mActionExportAsSVG_triggered,
-        # line 1909, near end of function
+        # near end of function
         svgpath = getTempfilePath('svg')
         temp_size = os.path.getsize(svgpath)
 
@@ -152,15 +158,8 @@ class TestComposerBase(TestQgsPalLabeling):
         # noinspection PyArgumentList
         svg_g.setTitle(QgsProject.instance().title())
         svg_g.setFileName(svgpath)
-        # width and height in pixels
-        # svg_w = int(self._c.paperWidth() * self._c.printResolution() / 25.4)
-        # svg_h = int(self._c.paperHeight() * self._c.printResolution() / 25.4)
-        svg_w = width
-        svg_h = height
-        svg_g.setSize(QSize(svg_w, svg_h))
-        svg_g.setViewBox(QRect(0, 0, svg_w, svg_h))
-        # because the rendering is done in mm, convert the dpi
-        # svg_g.setResolution(self._c.printResolution())
+        svg_g.setSize(QSize(width, height))
+        svg_g.setViewBox(QRect(0, 0, width, height))
         svg_g.setResolution(dpi)
 
         sp = QPainter(svg_g)
@@ -168,7 +167,6 @@ class TestComposerBase(TestQgsPalLabeling):
         sp.end()
 
         if temp_size == os.path.getsize(svgpath):
-            # something went pear-shaped
             return False, ''
 
         image = QImage(width, height, QImage.Format_ARGB32)
@@ -211,7 +209,6 @@ class TestComposerBase(TestQgsPalLabeling):
         pdf_p.end()
 
         if temp_size == os.path.getsize(pdfpath):
-            # something went pear-shaped
             return False, ''
 
         filepath = getTempfilePath('png')
@@ -260,10 +257,11 @@ class TestComposerBase(TestQgsPalLabeling):
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)
         res_m, self._TestImage = self.get_composer_output(self._TestKind)
-        self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
+        self.saveControlImage(self._TestImage)
         mismatch = self._Mismatch
-        if self._TestGroup in self._Mismatches:
+        if (self._TestGroup in self._Mismatches
+                and 'PAL_NO_MISMATCH' not in os.environ):
             mismatch = self._Mismatches[self._TestGroup]
         self.assertTrue(*self.renderCheck(mismatch=mismatch,
                                           imgpath=self._TestImage))
@@ -295,15 +293,39 @@ class TestComposerImageVsCanvasPoint(TestComposerPointBase, TestPointBase):
         self.configTest('pal_canvas', 'sp')
 
 
+class TestComposerSvgPoint(TestComposerPointBase, TestPointBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerSvgPoint, self).setUp()
+        self._TestKind = OutputKind.Svg
+        self.configTest('pal_composer', 'sp_svg')
+
+
+class TestComposerSvgVsComposerPoint(TestComposerPointBase, TestPointBase):
+    """
+    Compare only to composer image, which is already compared to canvas point
+    """
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerSvgVsComposerPoint, self).setUp()
+        self._TestKind = OutputKind.Svg
+        self.configTest('pal_composer', 'sp_img')
+
+
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
     st = suiteTests()
     sp_i = ['TestComposerImagePoint.' + t for t in st['sp_suite']]
     sp_ivs = ['TestComposerImageVsCanvasPoint.' + t for t in st['sp_vs_suite']]
+    sp_s = ['TestComposerSvgPoint.' + t for t in st['sp_suite']]
+    sp_svs = ['TestComposerSvgVsComposerPoint.' + t for t in st['sp_vs_suite']]
     suite = []
     # extended separately for finer control of PAL_SUITE (comment-out undesired)
     suite.extend(sp_i)
     suite.extend(sp_ivs)
+    suite.extend(sp_s)
+    suite.extend(sp_svs)
     res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

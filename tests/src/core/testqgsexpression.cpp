@@ -432,6 +432,18 @@ class TestQgsExpression: public QObject
       }
     }
 
+    void eval_precedence()
+    {
+      QgsExpression e0( "1+2*3" );
+      QCOMPARE( e0.evaluate().toInt(), 7 );
+
+      QgsExpression e1( "(1+2)*(3+4)" );
+      QCOMPARE( e1.evaluate().toInt(), 21 );
+
+      QgsExpression e2( e1.dump() );
+      QCOMPARE( e2.evaluate().toInt(), 21 );
+    }
+
     void eval_columns()
     {
       QgsFields fields;

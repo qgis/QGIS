@@ -708,6 +708,11 @@ void QgsMapCanvas::rendererJobFinished()
 
   if ( !mJobCancelled )
   {
+    // take labeling results before emitting renderComplete, so labeling map tools
+    // connected to signal work with correct results
+    delete mLabelingResults;
+    mLabelingResults = mJob->takeLabelingResults();
+
     QImage img = mJob->renderedImage();
 
     // emit renderComplete to get our decorations drawn
@@ -733,9 +738,6 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, mSettings.visibleExtent() );
-
-    delete mLabelingResults;
-    mLabelingResults = mJob->takeLabelingResults();
   }
 
   // now we are in a slot called from mJob - do not delete it immediately

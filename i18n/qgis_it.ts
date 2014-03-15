@@ -39,7 +39,7 @@
     </message>
     <message>
         <source>Providers</source>
-        <translation>Sorgenti dati</translation>
+        <translation>Programmi</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -6924,7 +6924,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="971"/>
         <source>Measure Area</source>
-        <translation>Calcola l&apos;area</translation>
+        <translation>Misura area</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="974"/>
@@ -6934,7 +6934,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="986"/>
         <source>Measure Angle</source>
-        <translation>Misura angoli</translation>
+        <translation>Misura angolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="995"/>
@@ -13356,7 +13356,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2183"/>
         <source>Control rendering order</source>
-        <translation>Controllo ordine di rendering</translation>
+        <translation>Controllo ordine di disegno</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2200"/>
@@ -15022,7 +15022,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
         <source>Fixed map position</source>
-        <translation>Posizione fissa sulla mappa</translation>
+        <translation>Marcatore sulla mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="36"/>
@@ -16877,7 +16877,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="319"/>
         <source>Remove favourite</source>
-        <translation>Rimuovi dai favoriti</translation>
+        <translation>Rimuovi dai preferiti</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="329"/>
@@ -23635,7 +23635,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="57"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="145"/>
         <source>Horizontal and Vertical</source>
-        <translation>Orizzontale e verticale</translation>
+        <translation>Perpendicolare al bordo</translation>
     </message>
 </context>
 <context>
@@ -34330,7 +34330,7 @@ In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi 
         <location filename="../src/ui/qgslabelingguibase.ui" line="4650"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5332"/>
         <source>Data defined</source>
-        <translation>Dati definiti</translation>
+        <translation>Definito in funzione dei dati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4676"/>
@@ -38480,12 +38480,12 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="111"/>
         <source>Could not transform canvas extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile trasformare l&apos;estensione della mappa.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="151"/>
         <source>Could not transform layer extent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile trasformare l&apos;estensione del layer.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="186"/>
@@ -55107,7 +55107,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="33"/>
         <source>Polynomial 1</source>
-        <translation>Polynomiale 1</translation>
+        <translation>Polinomiale 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="38"/>
@@ -55829,12 +55829,12 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Intercettato errore di semplificazione: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="749"/>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SR</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3962"/>
@@ -56655,7 +56655,7 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1645"/>
         <source>Load Style ...</source>
-        <translation>Caricamento stile ...</translation>
+        <translation>Carica stile ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1666"/>
@@ -62043,12 +62043,12 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="211"/>
         <source>Counterclockwise from east</source>
-        <translation>Al contrario del senso dell&apos;orologio, da est</translation>
+        <translation>Antiorario da est</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="204"/>
         <source>Clockwise from north</source>
-        <translation>Nel senso dell&apos;orologio, da nord</translation>
+        <translation>Orario da nord</translation>
     </message>
     <message>
         <source>LineStyle</source>

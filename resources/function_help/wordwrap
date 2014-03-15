@@ -2,7 +2,7 @@
 Returns a string wrapped to a maximum/minimum number of characters.
 
 <p><h4>Syntax</h4>
-     replace(<i>string,wrap_length[,delimiter_string]</i>)</p>
+     wordwrap(<i>string,wrap_length[,delimiter_string]</i>)</p>
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
