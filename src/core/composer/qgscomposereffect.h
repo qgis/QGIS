@@ -18,8 +18,8 @@
 #ifndef QGSCOMPOSEREFFECT_H
 #define QGSCOMPOSEREFFECT_H
 
-#include <QtGui>
 #include <QGraphicsEffect>
+#include <QPainter>
 
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 {

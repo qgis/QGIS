@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QGraphicsView>
+#include <QGraphicsSceneHoverEvent>
 #include <QPainter>
 #include <QWidget>
 

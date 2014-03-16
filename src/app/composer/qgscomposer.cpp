@@ -82,6 +82,7 @@
 #include <QPaintEngine>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QShortcut>
 
 
 // sort function for QList<QAction*>, e.g. menu listings

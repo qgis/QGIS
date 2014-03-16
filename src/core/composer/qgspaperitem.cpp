@@ -20,6 +20,7 @@
 #include "qgsstylev2.h"
 #include "qgslogger.h"
 #include <QGraphicsRectItem>
+#include <QGraphicsView>
 #include <QPainter>
 
 //QgsPaperGrid

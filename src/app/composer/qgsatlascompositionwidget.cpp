@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMessageBox>
+
 #include "qgsatlascompositionwidget.h"
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"

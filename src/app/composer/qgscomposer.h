@@ -48,6 +48,8 @@ class QResizeEvent;
 class QFile;
 class QSizeGrip;
 class QUndoView;
+class QComboBox;
+class QLabel;
 
 /** \ingroup MapComposer
  * \brief A gui for composing a printable map.

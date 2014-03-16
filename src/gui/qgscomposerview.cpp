@@ -22,6 +22,8 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QGridLayout>
+#include <QScrollBar>
+#include <QDesktopWidget>
 
 #include "qgsapplication.h"
 #include "qgscomposerview.h"

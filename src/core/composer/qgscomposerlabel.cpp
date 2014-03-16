@@ -22,6 +22,8 @@
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
+#include <QSettings>
+#include <QTimer>
 #include <QWebFrame>
 #include <QWebPage>
 #include <QEventLoop>
