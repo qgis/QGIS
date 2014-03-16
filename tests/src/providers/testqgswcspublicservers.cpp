@@ -982,7 +982,7 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QString myCacheDirPath = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind] ) ).absoluteFilePath() ) ;
+  QString myCacheDirPath = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind] ) ).absoluteFilePath() ) ;
 
   QgsDebugMsg( "myCacheDirPath = " + myCacheDirPath );
 

@@ -49,7 +49,7 @@ namespace QgisGui
 
       if ( !lastUsedFilter.isEmpty() )
       {
-        openFileDialog->selectFilter( lastUsedFilter );
+        openFileDialog->selectNameFilter( lastUsedFilter );
       }
       openFileDialog->addCancelAll();
       if ( openFileDialog->exec() == QDialog::Accepted )
@@ -146,7 +146,7 @@ namespace QgisGui
 
     if ( !lastUsedFilter.isEmpty() )     // set the filter to the last one used
     {
-      fileDialog->selectFilter( lastUsedFilter );
+      fileDialog->selectNameFilter( lastUsedFilter );
     }
 
     //prompt the user for a fileName
