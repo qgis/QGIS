@@ -239,6 +239,7 @@ qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmaplayeractionregistry.h
 qgsmapoverviewcanvas.h
+qgsmaptool.h
 qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
 qgsmessagebaritem.h

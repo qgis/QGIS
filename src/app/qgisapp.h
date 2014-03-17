@@ -92,6 +92,7 @@ class QgsTileScaleWidget;
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
 #include "qgspluginmanager.h"
+#include "qgsmessagebar.h"
 
 #include "ui_qgisapp.h"
 
@@ -999,7 +1000,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerSubsetString();
 
     //! map tool changed
-    void mapToolChanged( QgsMapTool *tool );
+    void mapToolChanged( QgsMapTool *newTool , QgsMapTool* oldTool );
 
     /** Called when some layer's editing mode was toggled on/off
      * @note added in 1.9 */
@@ -1015,6 +1016,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentsViewToggled( bool theFlag );
     void showExtents();
     void showStatusMessage( QString theMessage );
+    void displayMapToolMessage( QString message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
+    void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
     void hasCrsTransformEnabled( bool theFlag );
     void destinationCrsChanged();
@@ -1522,6 +1525,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Persistent GPS toolbox
     QgsGPSInformationWidget * mpGpsWidget;
 
+    QgsMessageBarItem* mLastMapToolMessage;
+
     QgsMessageLogViewer *mLogViewer;
 
     //! project changed
@@ -1541,7 +1546,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 #endif
-
 };
 
 #ifdef ANDROID
