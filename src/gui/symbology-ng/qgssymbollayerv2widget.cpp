@@ -538,6 +538,7 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVec
   connect( btnChangeBorderColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setBorderColor( const QColor& ) ) );
   connect( spinBorderWidth, SIGNAL( valueChanged( double ) ), this, SLOT( borderWidthChanged() ) );
   connect( cboBorderStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( borderStyleChanged() ) );
+  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( borderStyleChanged() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
 }
@@ -558,6 +559,9 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   btnChangeBorderColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   cboBorderStyle->setPenStyle( mLayer->borderStyle() );
   spinBorderWidth->setValue( mLayer->borderWidth() );
+  cboJoinStyle->blockSignals( true );
+  cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
+  cboJoinStyle->blockSignals( false );
   spinOffsetX->blockSignals( true );
   spinOffsetX->setValue( mLayer->offset().x() );
   spinOffsetX->blockSignals( false );
@@ -605,6 +609,7 @@ void QgsSimpleFillSymbolLayerV2Widget::borderWidthChanged()
 void QgsSimpleFillSymbolLayerV2Widget::borderStyleChanged()
 {
   mLayer->setBorderStyle( cboBorderStyle->penStyle() );
+  mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
   emit changed();
 }
 
