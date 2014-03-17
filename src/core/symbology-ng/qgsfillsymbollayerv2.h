@@ -23,6 +23,7 @@
 #define DEFAULT_SIMPLEFILL_BORDERCOLOR  QColor(0,0,0)
 #define DEFAULT_SIMPLEFILL_BORDERSTYLE  Qt::SolidLine
 #define DEFAULT_SIMPLEFILL_BORDERWIDTH  DEFAULT_LINE_WIDTH
+#define DEFAULT_SIMPLEFILL_JOINSTYLE    Qt::BevelJoin
 
 #include <QPen>
 #include <QBrush>
@@ -34,7 +35,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
                                 Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
                                 QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                                 Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
-                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH );
+                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
+                                Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
+                              );
 
     // static stuff
 
@@ -85,6 +88,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     double borderWidth() const { return mBorderWidth; }
     void setBorderWidth( double borderWidth ) { mBorderWidth = borderWidth; }
 
+    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
@@ -111,6 +117,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     Qt::PenStyle mBorderStyle;
     double mBorderWidth;
     QgsSymbolV2::OutputUnit mBorderWidthUnit;
+    Qt::PenJoinStyle mPenJoinStyle;
     QPen mPen;
     QPen mSelPen;
 
