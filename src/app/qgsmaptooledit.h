@@ -36,9 +36,6 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapTool
      and applies it to the map canvas*/
     QgsMapCanvasSnapper mSnapper;
 
-    /**keeps trace of last displayed message*/
-    QgsMessageBarItem* mMessageItem;
-
     /**Inserts vertices to the snapped segments of the editing layer.
      This is useful for topological editing if snap to segment is enabled.
      @param snapResults results collected from the snapping operation

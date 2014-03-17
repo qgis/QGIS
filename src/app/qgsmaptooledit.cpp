@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptooledit.h"
-#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
