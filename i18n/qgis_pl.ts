@@ -70460,7 +70460,21 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja regexp_match()&lt;/h3&gt;
+Zwraca TRUE jeśli jakaś część tekstu spełnia warunek wyrażenia regularnego.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     regexp_match(&lt;i&gt;tekst,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; jest tekstem.  Tekst do przeszukiwania wyrażeniem regularnym.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; jest tekstem.  Wyrażenie regularne. lewy ukośnik (backslash) musi być poprzedzony podwójnym znakiem ucieczki (eg &quot;&amp;#92;&amp;#92;s&quot; ). Leniwe kwantyfikatory nie są jeszcze obsługiwane.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1758"/>
@@ -70480,7 +70494,22 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja regexp_replace()&lt;/h3&gt;
+Zwraca tekst zamieniony w oparciu o wyrażenie regularne.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;tekst,regex,nowy&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; jest tekstem.  Tekst bazowy.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; jest tekstem.  Wyrażenie regularne. lewy ukośnik (backslash) musi być poprzedzony podwójnym znakiem ucieczki (eg &quot;&amp;#92;&amp;#92;s&quot; ). Leniwe kwantyfikatory nie są jeszcze obsługiwane.&lt;br&gt;
+&lt;i&gt;  nowy&lt;/i&gt; &amp;rarr; jest tekstem.  Tekst, który zostanie wstawiony w miejsce zgodne z wzorcem wyrażenia regularnego. Grupy tekstu mogą być wstawiane używając &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, itd. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="860"/>
@@ -70499,7 +70528,21 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja regexp_substr()&lt;/h3&gt;
+Zwraca fragment tekstu zgodny z wyrażeniem regularnym.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;tekst,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; jest tekstem.  Tekst bazowy.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; jest tekstem.  Wyrażenie regularne. lewy ukośnik (backslash) musi być poprzedzony podwójnym znakiem ucieczki (eg &quot;&amp;#92;&amp;#92;s&quot; ). Leniwe kwantyfikatory nie są jeszcze obsługiwane.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1125"/>
