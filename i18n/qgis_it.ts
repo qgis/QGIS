@@ -18019,7 +18019,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="270"/>
         <source>Add new legend</source>
-        <translation>Aggiungi nuova legenda</translation>
+        <translation>Aggiungi legenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="408"/>
