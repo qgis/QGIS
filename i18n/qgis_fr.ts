@@ -75001,7 +75001,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
         <source>Calculate univariate statistics from raster based on vector objects</source>
-        <translation>Calculer les statistiques invariées depuis un raster en se basant sur des objets vectoriels</translation>
+        <translation>Calculer les statistiques univariées depuis un raster en se basant sur des objets vectoriels</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
@@ -75163,7 +75163,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
         <source>Convert boundaries to lines</source>
-        <translation>COnvertir les limites en lignes</translation>
+        <translation>Convertir les limites en lignes</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
@@ -75308,7 +75308,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
-        <translation>Créer une nouvelle couche avec des valeurs de catégories basérs sur une reclassification de l&apos;utilisateur des catégories du raster existant</translation>
+        <translation>Créer une nouvelle couche avec des valeurs de catégories basées sur une reclassification de l&apos;utilisateur des catégories du raster existant</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
@@ -75557,22 +75557,22 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
         <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
-        <translation>Afficher les informations de projection depuis le un fichier géoréférencé et créer une nouvelle localisation en se basant dessus</translation>
+        <translation>Afficher les informations de projection depuis un fichier géoréférencé et créer une nouvelle localisation en se basant dessus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
-        <translation>Afficher les informations de projection depuisun fichier ASCII géoréférencé contenant une description WKT</translation>
+        <translation>Afficher les informations de projection depuis un fichier ASCII géoréférencé contenant une description WKT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
-        <translation>Afficher les informations de projection depuisun fichier ASCII géoréférencé et créer une nouvelle localisant en se basant dessus</translation>
+        <translation>Afficher les informations de projection depuis un fichier ASCII géoréférencé et créer une nouvelle localisant en se basant dessus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
         <source>Display projection information from georeferenced file (raster, vector or image)</source>
-        <translation>Afficher les informations de projection depuis le un fichier géoréférencé</translation>
+        <translation>Afficher les informations de projection depuis un fichier géoréférencé</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
@@ -75768,7 +75768,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export vector table from GRASS to database format</source>
-        <translation>Exporter une table de vecteur depuis vers une base de données</translation>
+        <translation>Exporter une table de vecteur depuis GRASS vers une base de données</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
@@ -75812,7 +75812,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>Export vector to VTK-ASCII</source>
-        <translation>Exporter un rvecteur en fichier VTK ASCII</translation>
+        <translation>Exporter un vecteur en VTK ASCII</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
@@ -75871,7 +75871,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
         <source>Fill lake from seed point at given level</source>
-        <translation>Remplir un lac depuis unpoint source jusqu&apos;à un certain niveau</translation>
+        <translation>Remplir un lac depuis un point source jusqu&apos;à un certain niveau</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
@@ -76344,7 +76344,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
         <source>Name for new vector file (specify file extension)</source>
-        <translation>Nom pour un nouveau fichier vecteur (spécifier l&apos;extension)</translation>
+        <translation>Nom du nouveau fichier vecteur (spécifier l&apos;extension)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
@@ -76724,7 +76724,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
         <source>Save the current region as a named region</source>
-        <translation>Enreigstrer la région courante en tant que région nommée</translation>
+        <translation>Enregistrer la région courante en tant que région nommée</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
@@ -76739,7 +76739,7 @@ None
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Separator (| , 	 etc.)</source>
-        <translation>Séparateurr (| , 	 etc.)</translation>
+        <translation>Séparateur (| , 	 etc.)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
@@ -77224,7 +77224,7 @@ None
     </message>
     <message>
         <source>First geometry invalid in line test.</source>
-        <translation type="obsolete">Première géométrie invalide dans le test de ligne</translation>
+        <translation type="obsolete">Première géométrie invalide dans le test de ligne.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
@@ -77297,17 +77297,17 @@ None
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1558"/>
         <source>Missing geometry in multipart check.</source>
-        <translation>Géométrie manquante dnas la vérification de multiples parties.</translation>
+        <translation>Géométrie manquante dans la vérification de multiples parties.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1677"/>
         <source>First layer not found in registry.</source>
-        <translation>La première couche n&apos;a pas été rouvée dans le registre.</translation>
+        <translation>La première couche n&apos;a pas été trouvée dans le registre.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1683"/>
         <source>Second layer not found in registry.</source>
-        <translation>La seconde couche n&apos;a pas été rouvée dans le registre.</translation>
+        <translation>La seconde couche n&apos;a pas été trouvée dans le registre.</translation>
     </message>
 </context>
 <context>
