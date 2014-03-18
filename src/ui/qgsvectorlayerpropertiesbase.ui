@@ -266,7 +266,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>739</width>
+                <width>427</width>
                 <height>525</height>
                </rect>
               </property>
@@ -695,8 +695,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>452</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -769,8 +769,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>452</height>
+                <width>121</width>
+                <height>38</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -833,8 +833,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>452</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -875,8 +875,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>452</height>
+                <width>702</width>
+                <height>171</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1018,8 +1018,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>452</height>
+                <width>476</width>
+                <height>182</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1238,7 +1238,7 @@
                <item>
                 <widget class="QTreeWidget" name="mJoinTreeWidget">
                  <property name="columnCount">
-                  <number>3</number>
+                  <number>4</number>
                  </property>
                  <column>
                   <property name="text">
@@ -1253,6 +1253,11 @@
                  <column>
                   <property name="text">
                    <string>Target field</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Memory cache</string>
                   </property>
                  </column>
                 </widget>
@@ -1320,8 +1325,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>452</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1362,7 +1367,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>739</width>
+                <width>375</width>
                 <height>519</height>
                </rect>
               </property>
