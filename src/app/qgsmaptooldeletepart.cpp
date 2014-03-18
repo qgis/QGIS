@@ -26,7 +26,7 @@
 #include <QMessageBox>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas ), mCross( 0 )
+    : QgsMapToolEdit( canvas )
 {
 }
 
@@ -88,10 +88,10 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
       g = f.geometry();
       if ( !g )
         return;
-      if ( ( g->type() == QGis::Point && g->asMultiPoint().size() == 1) ||
-           ( g->type() == QGis::Line  && g->asMultiPolyline().size() == 1 ) )
+      if ( g->wkbType() == QGis::WKBPoint25D || g->wkbType() == QGis::WKBPoint ||
+           g->wkbType() == QGis::WKBLineString25D || g->wkbType() == QGis::WKBLineString)
       {
-        notifySinglePart();
+        emit messageEmitted( tr( "The Delete part tool cannot be used on single part features." ) );
         return;
       }
       int vertex = sr.snappedVertexNr;
@@ -110,9 +110,10 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
       g = f.geometry();
       if ( !g )
         return;
-      if ( g->asMultiPolygon().size() == 1 )
+
+      if ( g->wkbType() == QGis::WKBPolygon25D || g->wkbType() == QGis::WKBPolygon)
       {
-        notifySinglePart();
+        emit messageEmitted( tr( "The Delete part tool cannot be used on single part features." ) );
         return;
       }
       partNum = partNumberOfPoint( g, p );
@@ -135,11 +136,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Delete part" ),
-      tr( "Couldn't remove the selected part." ),
-      QgsMessageBar::WARNING,
-      QgisApp::instance()->messageTimeout() );
+    emit messageEmitted( tr( "Couldn't remove the selected part." ) );
   }
   return;
 }
