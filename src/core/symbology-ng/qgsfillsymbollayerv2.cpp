@@ -165,7 +165,7 @@ void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
   Q_UNUSED( context );
 
-  if ( mIsExterior && ! mExteriorPath.isEmpty() ) {
+  if ( mIsExterior ) {
     QPainter* p = context.renderContext().painter();
     if ( !p )
     {
@@ -768,7 +768,7 @@ void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context
 {
   Q_UNUSED( context );
 
-  if ( mIsExterior && ! mExteriorPath.isEmpty() ) {
+  if ( mIsExterior ) {
     QPainter* p = context.renderContext().painter();
     if ( !p )
     {
