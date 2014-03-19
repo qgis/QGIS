@@ -64,7 +64,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
   }
   else
   {
-    emit displayMessage( tr( "could not snap to a part on the current layer." ) );
+    emit emitMessage( tr( "could not snap to a part on the current layer." ) );
   }
 }
 

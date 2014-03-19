@@ -362,7 +362,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 
     if ( snapResults.size() < 1 )
     {
-      emit displayMessage( tr( "could not snap to a segment on the current layer." ) );
+      emit emitMessage( tr( "could not snap to a segment on the current layer." ) );
       return;
     }
 
