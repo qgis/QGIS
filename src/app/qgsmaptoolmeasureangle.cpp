@@ -21,6 +21,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
 #include <QMouseEvent>
 #include <QSettings>
 #include <cmath>
@@ -145,7 +146,18 @@ QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )
   }
   else
   {
-    return snappingResults.constBegin()->snappedVertex;
+    QList<QgsSnappingResult>::const_iterator it = snappingResults.constBegin();
+    QgsPoint snapPoint = it->snappedVertex;
+    while ( it != snappingResults.constEnd() )
+    {
+      if( it->layer->geometryType() == QGis::Point )
+      {
+        snapPoint = it->snappedVertex;
+        break;
+      }
+      it++;
+    }
+    return snapPoint;
   }
 }
 
