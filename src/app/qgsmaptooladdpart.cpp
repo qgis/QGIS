@@ -155,7 +155,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
     case 0:
     {
       // remove previous message
-      emit removeMessage();
+      emit discardMessage();
 
       //add points to other features to keep topology up-to-date
       int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
