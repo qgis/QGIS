@@ -876,10 +876,10 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
-QString QgsGdalProvider::generateBandName( int BandNo ) const
+QString QgsGdalProvider::generateBandName( int theBandNumber ) const
 {
 #ifdef GDAL_COMPUTE_VERSION /* only available in GDAL 1.10 or later */
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,10,0) 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,10,0)
   if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 )
   {
     char ** GDALmetadata = GDALGetMetadata( mGdalDataset, NULL );
@@ -890,60 +890,62 @@ QString QgsGdalProvider::generateBandName( int BandNo ) const
       QStringList dimExtraValues;
       QMap< QString, QString > unitsMap;
       for ( QStringList::const_iterator i = metadata.begin();
-          i != metadata.end();
-          ++i )
+            i != metadata.end(); ++i )
       {
-        QString val(*i);
+        QString val( *i );
         if ( !val.startsWith( "NETCDF_DIM_EXTRA" ) && !val.contains( "#units=" ) )
           continue;
         QStringList values = val.split( "=" );
         val = values.at( 1 );
-        if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" ) {
-          dimExtraValues = val.replace(QString("{"), QString("")).replace(QString("}"), QString("")).split(",");
+        if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" )
+        {
+          dimExtraValues = val.replace( QString( "{" ), QString( "" ) ).replace( QString( "}" ), QString( "" ) ).split( "," );
           //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
-        } else {
-          unitsMap[ values.at(0).split( "#" ).at(0) ] = val;
+        }
+        else
+        {
+          unitsMap[ values.at( 0 ).split( "#" ).at( 0 )] = val;
         }
       }
       if ( dimExtraValues.count() > 0 )
       {
         QStringList bandNameValues;
-        GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, BandNo );
+        GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, theBandNumber );
         GDALmetadata = GDALGetMetadata( gdalBand, NULL );
 
         if ( GDALmetadata )
         {
           metadata = cStringList2Q_( GDALmetadata );
           for ( QStringList::const_iterator i = metadata.begin();
-              i != metadata.end();
-              ++i )
+                i != metadata.end(); ++i )
           {
-            QString val(*i);
+            QString val( *i );
             if ( !val.startsWith( "NETCDF_DIM_" ) )
               continue;
             QStringList values = val.split( "=" );
             for ( QStringList::const_iterator j = dimExtraValues.begin();
-                j != dimExtraValues.end();
-                ++j )
+                  j != dimExtraValues.end(); ++j )
             {
-              QString dim = (*j);
-              if ( values.at( 0 ) != "NETCDF_DIM_"+dim )
+              QString dim = ( *j );
+              if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
                 continue;
-              if ( unitsMap.contains( dim ) )
-                bandNameValues.append( values.at(1)+" "+unitsMap[ dim ] );
+              if ( unitsMap.contains( dim ) && unitsMap[ dim ] != "" && unitsMap[ dim ] != "none" )
+                bandNameValues.append( dim + "=" + values.at( 1 ) + " (" + unitsMap[ dim ] + ")" );
               else
-                bandNameValues.append( values.at(1) );
+                bandNameValues.append( dim + "=" + values.at( 1 ) );
             }
           }
         }
+
         if ( bandNameValues.count() > 0 )
-          return bandNameValues.join(" ");
+          return tr( "Band" ) + QString( " %1 / %2" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( " / " ) );
       }
     }
   }
 #endif
 #endif
-  return tr( "Band" ) + QString( " %1" ) .arg( BandNo,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
+
+  return QgsRasterDataProvider::generateBandName( theBandNumber );
 }
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
