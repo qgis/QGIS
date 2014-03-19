@@ -67927,13 +67927,3 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
 </context>
 </TS>
-ed">...</translation>
-    </message>
-</context>
-</TS>
-etNumberInput.ui" line="44"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-</TS>
