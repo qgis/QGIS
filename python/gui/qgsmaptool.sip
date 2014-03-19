@@ -111,6 +111,14 @@ class QgsMapTool : QObject
     */
     QString toolName();
 
+  signals:
+    //! emit a message
+    void emitMessage( QString message );
+    void emitMessage( QString message, QgsMessageBar::MessageLevel );
+
+    //! emit signal to clear previous message
+    void discardMessage();
+
   protected:
 
     //! constructor takes map canvas as a parameter

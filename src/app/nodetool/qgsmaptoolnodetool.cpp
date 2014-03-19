@@ -367,7 +367,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     }
 
     // remove previous warning
-    emit removeMessage();
+    emit discardMessage();
 
     mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
     connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
@@ -378,7 +378,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   else
   {
     // remove previous warning
-    emit removeMessage();
+    emit discardMessage();
 
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     Q_ASSERT( vlayer );

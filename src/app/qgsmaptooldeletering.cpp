@@ -55,7 +55,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
   if ( mRecentSnappingResults.size() > 0 )
   {
     // remove previous warning
-    emit removeMessage();
+    emit discardMessage();
 
     QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
 
