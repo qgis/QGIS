@@ -66,7 +66,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
   }
   else
   {
-    emit displayMessage( tr( "could not snap to a ring on the current layer." ) );
+    emit emitMessage( tr( "could not snap to a ring on the current layer." ) );
   }
 }
 

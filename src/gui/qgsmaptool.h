@@ -131,8 +131,8 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   signals:
     //! emit a message
-    void displayMessage( QString message );
-    void displayMessage( QString message, QgsMessageBar::MessageLevel );
+    void emitMessage( QString message );
+    void emitMessage( QString message, QgsMessageBar::MessageLevel );
 
     //! emit signal to clear previous message
     void removeMessage();

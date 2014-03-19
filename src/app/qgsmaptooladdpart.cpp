@@ -62,7 +62,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !selectionErrorMsg.isEmpty() )
   {
-    emit displayMessage( tr( "Could not add part. %1" ).arg( selectionErrorMsg ) , QgsMessageBar::WARNING );
+    emit emitMessage( tr( "Could not add part. %1" ).arg( selectionErrorMsg ) , QgsMessageBar::WARNING );
     stopCapturing();
     return;
   }
@@ -101,7 +101,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
         else if ( error == 2 )
         {
           //problem with coordinate transformation
-          emit displayMessage( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ) , QgsMessageBar::WARNING );
+          emit emitMessage( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ) , QgsMessageBar::WARNING );
           return;
         }
 
@@ -195,6 +195,6 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       break;
   }
 
-  emit displayMessage( errorMessage , QgsMessageBar::WARNING );
+  emit emitMessage( errorMessage , QgsMessageBar::WARNING );
   vlayer->destroyEditCommand();
 }
