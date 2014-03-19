@@ -201,32 +201,33 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
 
   //snap cursor to background layers
   QList<QgsSnappingResult> results;
-  QList<QgsPoint> snapExcludePoints;
   if ( mSnapper.snapToBackgroundLayers( e->pos(), results ) == 0 )
   {
     if ( results.size() > 0 )
     {
-      QgsSnappingResult snap = results.at( 0 );
-      if ( snap.layer && snap.layer->id() != mSourceLayerId && snap.snappedAtGeometry != mModifiedFeature )
+      for( int i = 0 ; i < results.size(); ++i )
       {
-        layerCoords = results.at( 0 ).snappedVertex;
-        mSnapVertexMarker = new QgsVertexMarker( mCanvas );
-        mSnapVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-        mSnapVertexMarker->setColor( Qt::green );
-        mSnapVertexMarker->setPenWidth( 1 );
-        mSnapVertexMarker->setCenter( layerCoords );
+        if ( results[i].snappedAtGeometry != mModifiedFeature )
+        {
+          layerCoords = results[i].snappedVertex;
+          if ( results[i].layer->geometryType() == QGis::Point )
+          {
+            break;
+          }
+        }
       }
+      mSnapVertexMarker = new QgsVertexMarker( mCanvas );
+      mSnapVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
+      mSnapVertexMarker->setColor( Qt::green );
+      mSnapVertexMarker->setPenWidth( 1 );
+      mSnapVertexMarker->setCenter( layerCoords );
     }
   }
-
+  QgsDebugMsg(QString("%1,%2").arg(layerCoords.x()).arg(layerCoords.y()));
   QgsPoint minDistPoint;
   int beforeVertex;
   double leftOf;
   double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-  if ( offset == 0.0 )
-  {
-    return;
-  }
 
   //create offset geometry using geos
   setOffsetForRubberBand( offset, leftOf < 0 );
