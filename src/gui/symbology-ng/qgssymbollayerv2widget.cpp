@@ -571,6 +571,9 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+  mAsExteriorFillCheckBox->blockSignals( true );
+  mAsExteriorFillCheckBox->setCheckState( mLayer->isExterior() ? Qt::Checked : Qt::Unchecked );
+  mAsExteriorFillCheckBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
@@ -632,6 +635,15 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   }
 }
 
+void QgsSimpleFillSymbolLayerV2Widget::on_mAsExteriorFillCheckBox_stateChanged( int state )
+{
+  if ( mLayer )
+  {
+    mLayer->setIsExterior( state == Qt::Checked );
+    emit changed();
+  }
+}
+
 void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
 {
   if ( !mLayer )
@@ -649,7 +661,8 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
       QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mLayer->isExterior() ? 0 : mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
     //empty all existing properties first
@@ -818,6 +831,10 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+
+  mAsExteriorFillCheckBox->blockSignals( true );
+  mAsExteriorFillCheckBox->setCheckState( mLayer->isExterior() ? Qt::Checked : Qt::Unchecked );
+  mAsExteriorFillCheckBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2Widget::symbolLayer()
@@ -961,6 +978,15 @@ void QgsGradientFillSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChan
   if ( mLayer )
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsGradientFillSymbolLayerV2Widget::on_mAsExteriorFillCheckBox_stateChanged( int state )
+{
+  if ( mLayer )
+  {
+    mLayer->setIsExterior( state == Qt::Checked );
     emit changed();
   }
 }

@@ -97,6 +97,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void setIsExterior( bool isExterior ) { mIsExterior = isExterior; }
+    bool isExterior() const { return mIsExterior; }
+
     double estimateMaxBleed() const;
 
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
@@ -116,6 +119,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
+
+    QPainterPath mExteriorPath;
+    bool mIsExterior;
 
   private:
     //helper functions for data defined symbology
@@ -236,6 +242,9 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; };
     QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; };
 
+    void setIsExterior( bool isExterior ) { mIsExterior = isExterior; }
+    bool isExterior() const { return mIsExterior; }
+
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -255,6 +264,9 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
+
+    QPainterPath mExteriorPath;
+    bool mIsExterior;
 
   private:
 

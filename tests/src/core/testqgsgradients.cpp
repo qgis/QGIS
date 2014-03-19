@@ -50,6 +50,7 @@ class TestQgsGradients: public QObject
     void cleanup() {};// will be called after every testfunction.
 
     void gradientSymbol();
+    void gradientSymbolExteriorFill();
     void gradientSymbolColors();
     void gradientSymbolRamp();
     void gradientSymbolRadial();
@@ -153,6 +154,26 @@ void TestQgsGradients::gradientSymbolColors()
   mGradientFill->setColor( QColor( "green" ) );
   mGradientFill->setColor2( QColor( "white" ) );
   QVERIFY( imageCheck( "gradient_colors" ) );
+  mGradientFill->setColor( QColor( "red" ) );
+  mGradientFill->setColor2( QColor( "blue" ) );
+}
+
+void TestQgsGradients::gradientSymbolExteriorFill()
+{
+  mReport += "<h2>Gradient symbol renderer exterior fill test</h2>\n";
+  mGradientFill->setColor( QColor( "green" ) );
+  mGradientFill->setColor2( QColor( "white" ) );
+  mGradientFill->setIsExterior( true );
+  QVERIFY( imageCheck( "gradient_exterior_fill" ) );
+
+  // test data-defined properties
+  mGradientFill->setDataDefinedProperty( "color", "color_rgb(0,255,0)" );
+  mGradientFill->setDataDefinedProperty( "color2", "color_rgb(255,0,0)" );
+  QVERIFY( imageCheck( "gradient_exterior_ddp_fill" ) );
+
+  mGradientFill->removeDataDefinedProperty( "color" );
+  mGradientFill->removeDataDefinedProperty( "color2" );
+  mGradientFill->setIsExterior( false );
   mGradientFill->setColor( QColor( "red" ) );
   mGradientFill->setColor2( QColor( "blue" ) );
 }

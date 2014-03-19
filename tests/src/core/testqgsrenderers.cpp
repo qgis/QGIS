@@ -46,6 +46,7 @@ class TestQgsRenderers: public QObject
     void cleanup() {};// will be called after every testfunction.
 
     void singleSymbol();
+    void exteriorFill();
 //    void uniqueValue();
 //    void graduatedSymbol();
 //    void continuousSymbol();
@@ -53,7 +54,7 @@ class TestQgsRenderers: public QObject
     bool mTestHasError;
     bool setQml( QString theType ); //uniquevalue / continuous / single /
     bool imageCheck( QString theType ); //as above
-    QgsMapRenderer * mpMapRenderer;
+    QgsMapSettings * mpMapSettings;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
     QgsMapLayer * mpPolysLayer;
@@ -113,12 +114,12 @@ void TestQgsRenderers::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mpMapRenderer = new QgsMapRenderer();
+  mpMapSettings = new QgsMapSettings();
   QStringList myLayers;
   myLayers << mpPointsLayer->id();
   myLayers << mpPolysLayer->id();
   myLayers << mpLinesLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mpMapSettings->setLayers( myLayers );
   mReport += "<h1>Vector Renderer Tests</h1>\n";
 }
 void TestQgsRenderers::cleanupTestCase()
@@ -140,6 +141,22 @@ void TestQgsRenderers::singleSymbol()
   mReport += "<h2>Single symbol renderer test</h2>\n";
   QVERIFY( setQml( "single" ) );
   QVERIFY( imageCheck( "single" ) );
+}
+
+void TestQgsRenderers::exteriorFill()
+{
+  mReport += "<h2>Single symbol with exterior fill renderer test</h2>\n";
+  QVERIFY( setQml( "single" ) );
+  // overwrite the poly style
+  bool styleFlag;
+  mpPolysLayer->loadNamedStyle( mTestDataDir + "polys_exterior_fill_symbol.qml", styleFlag );
+  QVERIFY( styleFlag );
+  QVERIFY( imageCheck( "exterior_fill" ) );
+
+  // check data-defined properties
+  mpPolysLayer->loadNamedStyle( mTestDataDir + "polys_exterior_fill_ddp_symbol.qml", styleFlag );
+  QVERIFY( styleFlag );
+  QVERIFY( imageCheck( "exterior_fill_ddp" ) );
 }
 
 // TODO: update tests and enable
@@ -214,11 +231,10 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   // the same wrong value is reported by ogrinfo). Since QGIS 2.1, the provider
   // gives correct extent. Forced to fixed extend however to avoid problems in future.
   QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
-  mpMapRenderer->setExtent( extent );
-  mpMapRenderer->rendererContext()->setForceVectorOutput( true );
+  mpMapSettings->setExtent( extent );
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapRenderer( mpMapRenderer );
+  myChecker.setMapSettings( *mpMapSettings );
   myChecker.setColorTolerance( 15 );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();

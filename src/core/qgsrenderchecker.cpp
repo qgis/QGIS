@@ -147,6 +147,15 @@ bool QgsRenderChecker::runTest( QString theTestName,
   // Load the expected result pixmap
   //
   QImage myExpectedImage( mExpectedImageFile );
+  if ( myExpectedImage.isNull() ) {
+    qDebug( "QgsRenderChecker::runTest failed - Expected Image File loading problem." );
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
+              "Image File loading problem.</td></tr></table>\n";
+    return false;
+  }
+
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
   //
   // Now render our layers onto a pixmap

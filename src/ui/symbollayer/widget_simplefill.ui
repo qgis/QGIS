@@ -166,7 +166,7 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QPushButton" name="mDataDefinedPropertiesButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -259,6 +259,13 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="7" column="1">
+    <widget class="QCheckBox" name="mAsExteriorFillCheckBox">
+     <property name="text">
+      <string>Use as exterior fill</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
