@@ -148,11 +148,15 @@ void TestQgsRenderers::exteriorFill()
   mReport += "<h2>Single symbol with exterior fill renderer test</h2>\n";
   QVERIFY( setQml( "single" ) );
   // overwrite the poly style
-  QString myFileName = mTestDataDir + "polys_exterior_fill_symbol.qml";
   bool styleFlag;
-  mpPolysLayer->loadNamedStyle( myFileName, styleFlag );
+  mpPolysLayer->loadNamedStyle( mTestDataDir + "polys_exterior_fill_symbol.qml", styleFlag );
   QVERIFY( styleFlag );
   QVERIFY( imageCheck( "exterior_fill" ) );
+
+  // check data-defined properties
+  mpPolysLayer->loadNamedStyle( mTestDataDir + "polys_exterior_fill_ddp_symbol.qml", styleFlag );
+  QVERIFY( styleFlag );
+  QVERIFY( imageCheck( "exterior_fill_ddp" ) );
 }
 
 // TODO: update tests and enable

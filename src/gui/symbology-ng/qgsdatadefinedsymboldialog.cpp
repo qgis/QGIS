@@ -129,7 +129,7 @@ void QgsDataDefinedSymbolDialog::expressionButtonClicked()
     previousText.prepend( "\"" ).append( "\"" );
   }
 
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), previousText );
+  QgsExpressionBuilderDialog d( mVectorLayer ? const_cast<QgsVectorLayer*>(mVectorLayer) : 0, previousText );
   if ( d.exec() == QDialog::Accepted )
   {
     QString expressionString = d.expressionText();

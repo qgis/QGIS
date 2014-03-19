@@ -172,6 +172,8 @@ void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
       return;
     }
 
+    applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
+
     p->setBrush( mBrush );
     p->setPen( mPen );
 
@@ -185,7 +187,7 @@ void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 
     // add an exterior rectangle to the painter path
     QRectF rect( p->viewport() );
-    float rectOffset = mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit );
+    float rectOffset = mPen.widthF();
 
     rect.translate( -rectOffset, -rectOffset );
     rect.setHeight( rect.height() + 2 * rectOffset );
@@ -272,7 +274,6 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
   sl->setBorderWidthUnit( mBorderWidthUnit );
   sl->setIsExterior( isExterior() );
   copyDataDefinedProperties( sl );
-  sl->mExteriorPath = mExteriorPath;
   return sl;
 }
 
@@ -788,22 +789,9 @@ void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context
     rect.translate( -offset );
     mExteriorPath.addRect( rect );
 
-    // prepare the gradient
-    QPointF refPoint1, refPoint2;
-    if ( mReferencePoint1IsCentroid ) {
-      refPoint1 = QPointF(0.5,0.5);
-    }
-    else {
-      refPoint1 = mReferencePoint1;
-    }
-    if ( mReferencePoint2IsCentroid ) {
-      refPoint2 = QPointF(0.5,0.5);
-    }
-    else {
-      refPoint2 = mReferencePoint2;
-    }
-    applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp, mGradientType, mCoordinateMode,
-                 mGradientSpread, refPoint1, refPoint2, mAngle );
+    // prepare the gradient, use the current viewport square as "polygon" (for centroid computation)
+    // this will call applyGradient
+    applyDataDefinedSymbology( context, QPolygonF( rect ) );
 
     p->setBrush( mBrush );
     p->setPen( QPen( Qt::NoPen ) );

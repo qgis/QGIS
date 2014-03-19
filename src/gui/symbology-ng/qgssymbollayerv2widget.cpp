@@ -573,7 +573,6 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( false );
   mAsExteriorFillCheckBox->blockSignals( true );
   mAsExteriorFillCheckBox->setCheckState( mLayer->isExterior() ? Qt::Checked : Qt::Unchecked );
-  mDataDefinedPropertiesButton->setEnabled( mLayer->isExterior() ? Qt::Unchecked : Qt::Checked );
   mAsExteriorFillCheckBox->blockSignals( false );
 }
 
@@ -643,7 +642,6 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mAsExteriorFillCheckBox_stateChanged( 
     mLayer->setIsExterior( state == Qt::Checked );
     emit changed();
   }
-  mDataDefinedPropertiesButton->setEnabled( state == Qt::Unchecked );
 }
 
 void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
@@ -663,7 +661,8 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
       QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mLayer->isExterior() ? 0 : mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
     //empty all existing properties first
@@ -835,7 +834,6 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
 
   mAsExteriorFillCheckBox->blockSignals( true );
   mAsExteriorFillCheckBox->setCheckState( mLayer->isExterior() ? Qt::Checked : Qt::Unchecked );
-  mDataDefinedPropertiesButton->setEnabled( mLayer->isExterior() ? Qt::Unchecked : Qt::Checked );
   mAsExteriorFillCheckBox->blockSignals( false );
 }
 
@@ -991,7 +989,6 @@ void QgsGradientFillSymbolLayerV2Widget::on_mAsExteriorFillCheckBox_stateChanged
     mLayer->setIsExterior( state == Qt::Checked );
     emit changed();
   }
-  mDataDefinedPropertiesButton->setEnabled( state == Qt::Unchecked );
 }
 
 void QgsGradientFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
