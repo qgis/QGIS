@@ -115,33 +115,9 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     if ( png8Bit )
     {
       QVector<QRgb> colorTable;
-      QHash<QRgb, int> colorIndexHash;
-      medianCut( colorTable, colorIndexHash, 256, *img );
-
-
-      QImage palettedImg( img->size(), QImage::Format_Indexed8 );
-      palettedImg.setColorTable( colorTable );
-
-      int h = img->height();
-      int w = img->width();
-
-      for ( int y = 0; y < h; ++y )
-      {
-        QRgb* src_pixels = ( QRgb * ) img->scanLine( y );
-        uchar* dest_pixels = ( uchar * ) palettedImg.scanLine( y );
-
-        for ( int x = 0; x < w; ++x )
-        {
-          int src_pixel = src_pixels[x];
-          int value = colorIndexHash.value( src_pixel, -1 );
-          if ( value == -1 )
-          {
-            continue;
-          }
-          dest_pixels[x] = ( uchar ) value;
-        }
-      }
-
+      medianCut( colorTable, 256, *img );
+      QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, colorTable, Qt::ColorOnly | Qt::ThresholdDither |
+                           Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       palettedImg.save( &buffer, "PNG", -1 );
     }
     else if ( png16Bit )
@@ -526,7 +502,7 @@ QString QgsHttpRequestHandler::readPostBody() const
   return inputString;
 }
 
-void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, QHash<QRgb, int>& colorIndexHash, int nColors, const QImage& inputImage )
+void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage )
 {
   QHash<QRgb, int> inputColors;
   imageColors( inputColors, inputImage );
@@ -595,7 +571,7 @@ void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, QHash<QRgb, in
   QgsColorBoxMap::const_iterator colorBoxIt = colorBoxMap.constBegin();
   for ( ; colorBoxIt != colorBoxMap.constEnd(); ++colorBoxIt )
   {
-    colorTable[index] = boxColor( colorBoxIt.value(), colorBoxIt.key(), index, colorIndexHash );
+    colorTable[index] = boxColor( colorBoxIt.value(), colorBoxIt.key() );
     ++index;
   }
 }
@@ -789,7 +765,7 @@ bool QgsHttpRequestHandler::alphaCompare( const QPair<QRgb, int>& c1, const QPai
   return qAlpha( c1.first ) < qAlpha( c2.first );
 }
 
-QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels, int colorMapIndex, QHash<QRgb, int>& colorIndexHash )
+QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels )
 {
   double avRed = 0;
   double avGreen = 0;
@@ -810,8 +786,6 @@ QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels, int
     avGreen += ( qGreen( currentColor ) * weight );
     avBlue += ( qBlue( currentColor ) * weight );
     avAlpha += ( qAlpha( currentColor ) * weight );
-    //allow faster lookup in image conversion
-    colorIndexHash.insert( currentColor, colorMapIndex );
   }
 
   return qRgba( avRed, avGreen, avBlue, avAlpha );
