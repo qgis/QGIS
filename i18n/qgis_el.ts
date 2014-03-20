@@ -427,7 +427,12 @@ This table is essential for many GIS applications for enumeration of tables.</so
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
+<<<<<<< HEAD
         <translation>&lt;warning&gt;Η έκδοση των εγκατεστημένων scipts δεν είναι ίδια των διαθέσιμων scipts. Αυτό ίσως οδηγήσει σε λανθασμένη αναβάθμιση της PostGIS.</translation>
+=======
+        <translation>&lt;warning&gt;Η έκδοση των εγκατεστημένων scipts δεν είναι ίδια των διαθέσιμων scipts. 
+Αυτό ίσως οδηγήσει σε λανθασμένη αναβάθμιση της PostGIS.</translation>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
@@ -27170,6 +27175,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="80"/>
         <source>Select within selection</source>
         <translation type="unfinished">Επιλογή σε επιλεγμένα</translation>
+<<<<<<< HEAD
     </message>
 </context>
 <context>
@@ -27231,6 +27237,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="131"/>
         <source>Map view extent</source>
         <translation type="unfinished"></translation>
+=======
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
 </context>
 <context>
@@ -30230,7 +30238,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="101"/>
         <source>Abort</source>
-        <translation>Ματαίωση</translation>
+        <translation type="unfinished">Ματαίωση</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="122"/>
@@ -45423,6 +45431,7 @@ p, li { white-space: pre-wrap; }
         <translation>Αποτυχία σύνδεσης στη Βάση Δεδομένων</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="210"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="224"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="228"/>
@@ -45432,6 +45441,18 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="453"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="507"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="592"/>
+=======
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="199"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="213"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="217"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="227"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="244"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="312"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="442"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="496"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="581"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="610"/>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="621"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="632"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="676"/>
@@ -54634,7 +54655,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>CRS</source>
+<<<<<<< HEAD
         <translation type="obsolete">Σύστημα Αναφοράς Συντεταγμένων</translation>
+=======
+        <translation type="unfinished">Σύστημα Αναφοράς Συντεταγμένων</translation>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3447"/>
@@ -55651,7 +55676,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More Options &gt;&gt;</source>
+<<<<<<< HEAD
         <translation type="obsolete">Περισσότερες επιλογές</translation>
+=======
+        <translation>Περισσότερες επιλογές</translation>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="199"/>
