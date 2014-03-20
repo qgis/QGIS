@@ -8026,9 +8026,9 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
   if ( oldTool )
   {
-    disconnect( oldTool, SIGNAL( displayMessage( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
-    disconnect( oldTool, SIGNAL( displayMessage( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
-    disconnect( oldTool, SIGNAL( removeMessage() ), this, SLOT( removeMapToolMessage() ) );
+    disconnect( oldTool, SIGNAL( emitMessage( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+    disconnect( oldTool, SIGNAL( emitMessage( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+    disconnect( oldTool, SIGNAL( discardMessage() ), this, SLOT( removeMapToolMessage() ) );
   }
 
   if ( newTool )
@@ -8038,9 +8038,9 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
       mNonEditMapTool = newTool;
     }
 
-    connect( newTool, SIGNAL( displayMessage( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
-    connect( newTool, SIGNAL( displayMessage( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
-    connect( newTool, SIGNAL( removeMessage() ), this, SLOT( removeMapToolMessage() ) );
+    connect( newTool, SIGNAL( emitMessage( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+    connect( newTool, SIGNAL( emitMessage( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+    connect( newTool, SIGNAL( discardMessage() ), this, SLOT( removeMapToolMessage() ) );
   }
 }
 
