@@ -48,6 +48,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QgsVectorLayer* layer() { return mLayer; }
 
+    bool editable();
+
   signals:
     /**
      * Notifies about changes of attributes

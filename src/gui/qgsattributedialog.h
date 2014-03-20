@@ -91,10 +91,9 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      *
      * @return returns true, if this dialog was created in an editable manner.
      */
-    bool editable() { return mEditable; }
+    bool editable() { return mAttributeForm->editable(); }
 
   public slots:
-    void reject();
     void accept();
 
     int exec();

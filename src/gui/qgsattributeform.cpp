@@ -72,6 +72,11 @@ void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )
   mInterfaces.append( iface );
 }
 
+bool QgsAttributeForm::editable()
+{
+  return mFeature.isValid() && mLayer->isEditable() ;
+}
+
 void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& value )
 {
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
@@ -83,7 +88,6 @@ void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& va
     }
   }
 }
-
 
 void QgsAttributeForm::setFeature( const QgsFeature& feature )
 {

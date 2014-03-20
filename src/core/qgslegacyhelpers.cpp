@@ -102,8 +102,9 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
 
     case QgsVectorLayer::Calendar:
     {
-      widgetType = "Calendar";
-      cfg.insert( "DateFormat", editTypeElement.attribute( "dateFormat" ) );
+      widgetType = "DateTime";
+      cfg.insert( "display_format", editTypeElement.attribute( "dateFormat" ) );
+      cfg.insert( "field_format", "yyyy-mm-dd" );
       break;
     }
 
@@ -278,7 +279,7 @@ QgsVectorLayer::EditType QgsLegacyHelpers::convertEditType( const QString& editT
     return QgsVectorLayer::CheckBox;
   }
 
-  if ( editType == "Calendar" )
+  if ( editType == "DateTime" )
   {
     return QgsVectorLayer::Calendar;
   }

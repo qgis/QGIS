@@ -56,9 +56,6 @@ editorwidgets/core/qgseditorwidgetregistry.cpp
 editorwidgets/core/qgseditorwidgetwrapper.cpp
 editorwidgets/core/qgswidgetwrapper.cpp
 
-editorwidgets/qgscalendarconfigdlg.cpp
-editorwidgets/qgscalendarwidget.cpp
-editorwidgets/qgscalendarwidgetfactory.cpp
 editorwidgets/qgscheckboxconfigdlg.cpp
 editorwidgets/qgscheckboxwidget.cpp
 editorwidgets/qgscheckboxwidgetfactory.cpp
@@ -66,6 +63,9 @@ editorwidgets/qgsclassificationwidget.cpp
 editorwidgets/qgsclassificationwidgetwrapperfactory.cpp
 editorwidgets/qgscolorwidget.cpp
 editorwidgets/qgscolorwidgetfactory.cpp
+editorwidgets/qgsdatetimeeditfactory.cpp
+editorwidgets/qgsdatetimeeditconfig.cpp
+editorwidgets/qgsdatetimeeditwrapper.cpp
 editorwidgets/qgsdummyconfigdlg.cpp
 editorwidgets/qgsenumerationwidget.cpp
 editorwidgets/qgsenumerationwidgetfactory.cpp
@@ -270,12 +270,12 @@ editorwidgets/core/qgseditorconfigwidget.h
 editorwidgets/core/qgseditorwidgetregistry.h
 editorwidgets/core/qgseditorwidgetwrapper.h
 editorwidgets/core/qgswidgetwrapper.h
-editorwidgets/qgscalendarconfigdlg.h
-editorwidgets/qgscalendarwidget.h
 editorwidgets/qgscheckboxconfigdlg.h
 editorwidgets/qgscheckboxwidget.h
 editorwidgets/qgsclassificationwidget.h
 editorwidgets/qgscolorwidget.h
+editorwidgets/qgsdatetimeeditconfig.h
+editorwidgets/qgsdatetimeeditwrapper.h
 editorwidgets/qgsdummyconfigdlg.h
 editorwidgets/qgsenumerationwidget.h
 editorwidgets/qgsfilenamewidget.h
@@ -482,9 +482,6 @@ editorwidgets/core/qgseditorwidgetregistry.h
 editorwidgets/core/qgseditorwidgetwrapper.h
 editorwidgets/core/qgswidgetwrapper.h
 
-editorwidgets/qgscalendarconfigdlg.h
-editorwidgets/qgscalendarwidget.h
-editorwidgets/qgscalendarwidgetfactory.h
 editorwidgets/qgscheckboxconfigdlg.h
 editorwidgets/qgscheckboxwidget.h
 editorwidgets/qgscheckboxwidgetfactory.h
@@ -492,6 +489,9 @@ editorwidgets/qgsclassificationwidget.h
 editorwidgets/qgsclassificationwidgetwrapperfactory.h
 editorwidgets/qgscolorwidget.h
 editorwidgets/qgscolorwidgetfactory.h
+editorwidgets/qgsdatetimeeditfactory.h
+editorwidgets/qgsdatetimeeditconfig.h
+editorwidgets/qgsdatetimeeditwrapper.h
 editorwidgets/qgsdummyconfigdlg.h
 editorwidgets/qgsenumerationwidget.h
 editorwidgets/qgsenumerationwidgetfactory.h
