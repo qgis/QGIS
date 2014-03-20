@@ -285,6 +285,7 @@
 #include "qgswebviewwidgetfactory.h"
 #include "qgscolorwidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
+#include "qgsdatetimeeditfactory.h"
 
 //
 // Conditional Includes
@@ -682,6 +683,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   editorWidgetRegistry->registerWidget( "WebView", new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
   editorWidgetRegistry->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
   editorWidgetRegistry->registerWidget( "RelationReference", new QgsRelationReferenceFactory( context, tr( "Relation Reference" ) ) );
+  editorWidgetRegistry->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );

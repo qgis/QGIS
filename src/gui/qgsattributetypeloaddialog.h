@@ -28,7 +28,7 @@ class QLayout;
 class QgsField;
 class QgsMapCanvas;
 
-class APP_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadValues
+class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadValues
 {
     Q_OBJECT
 

@@ -1860,192 +1860,114 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     editTypeElement.setAttribute( "editable", mFieldEditables[field.name()] ? 1 : 0 );
     editTypeElement.setAttribute( "labelontop", mLabelOnTop[field.name()] ? 1 : 0 );
 
-#if 0
-    switch (( EditType ) it.value() )
+
+    editTypesElement.appendChild( editTypeElement );
+  }
+
+  node.appendChild( editTypesElement );
+
+  QDomElement efField  = doc.createElement( "editform" );
+  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
+  efField.appendChild( efText );
+  node.appendChild( efField );
+
+  QDomElement efiField  = doc.createElement( "editforminit" );
+  QDomText efiText = doc.createTextNode( mEditFormInit );
+  efiField.appendChild( efiText );
+  node.appendChild( efiField );
+
+  QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
+  QDomText fFSuppText = doc.createTextNode( QString::number( featureFormSuppress() ) );
+  fFSuppElem.appendChild( fFSuppText );
+  node.appendChild( fFSuppElem );
+
+  QDomElement afField = doc.createElement( "annotationform" );
+  QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
+  afField.appendChild( afText );
+  node.appendChild( afField );
+
+  // tab display
+  QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+  switch ( mEditorLayout )
+  {
+  case UiFileLayout:
+    editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+    break;
+
+  case TabLayout:
+    editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+    break;
+
+  case GeneratedLayout:
+  default:
+    editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+    break;
+  }
+
+  node.appendChild( editorLayoutElem );
+
+  //attribute aliases
+  if ( mAttributeAliasMap.size() > 0 )
+  {
+    QDomElement aliasElem = doc.createElement( "aliases" );
+    QMap<QString, QString>::const_iterator a_it = mAttributeAliasMap.constBegin();
+    for ( ; a_it != mAttributeAliasMap.constEnd(); ++a_it )
     {
-      case ValueMap:
-        if ( mValueMaps.contains( it.key() ) )
-        {
-          const QMap<QString, QVariant> &map = mValueMaps[ it.key()];
+      int idx = fieldNameIndex( a_it.key() );
+      if ( idx < 0 )
+        continue;
 
-          for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); ++vmit )
-          {
-            QDomElement value = doc.createElement( "valuepair" );
-            value.setAttribute( "key", vmit.key() );
-            value.setAttribute( "value", vmit.value().toString() );
-            editTypeElement.appendChild( value );
-          }
-        }
-        break;
-
-      case EditRange:
-      case SliderRange:
-      case DialRange:
-        if ( mRanges.contains( it.key() ) )
-        {
-          editTypeElement.setAttribute( "min", mRanges[ it.key()].mMin.toString() );
-          editTypeElement.setAttribute( "max", mRanges[ it.key()].mMax.toString() );
-          editTypeElement.setAttribute( "step", mRanges[ it.key()].mStep.toString() );
-        }
-        break;
-
-      case CheckBox:
-        if ( mCheckedStates.contains( it.key() ) )
-        {
-          editTypeElement.setAttribute( "checked", mCheckedStates[ it.key()].first );
-          editTypeElement.setAttribute( "unchecked", mCheckedStates[ it.key()].second );
-        }
-        break;
-
-      case ValueRelation:
-        if ( mValueRelations.contains( it.key() ) )
-        {
-          const ValueRelationData &data = mValueRelations[ it.key()];
-          editTypeElement.setAttribute( "layer", data.mLayer );
-          editTypeElement.setAttribute( "key", data.mKey );
-          editTypeElement.setAttribute( "value", data.mValue );
-          editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
-          editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
-          editTypeElement.setAttribute( "allowMulti", data.mAllowMulti ? "true" : "false" );
-          if ( !data.mFilterExpression.isNull() )
-            editTypeElement.setAttribute( "filterExpression", data.mFilterExpression );
-        }
-        break;
-
-      case Calendar:
-        editTypeElement.setAttribute( "dateFormat", mDateFormats[ it.key()] );
-        break;
-
-      case Photo:
-      case WebView:
-        editTypeElement.setAttribute( "widgetWidth", mWidgetSize[ it.key()].width() );
-        editTypeElement.setAttribute( "widgetHeight", mWidgetSize[ it.key()].height() );
-        break;
-
-      case LineEdit:
-      case UniqueValues:
-      case UniqueValuesEditable:
-      case Classification:
-      case FileName:
-      case Hidden:
-      case TextEdit:
-      case Enumeration:
-      case Immutable:
-      case UuidGenerator:
-      case Color:
-      case EditorWidgetV2: // Will get a signal and save there
-        break;
+      QDomElement aliasEntryElem = doc.createElement( "alias" );
+      aliasEntryElem.setAttribute( "field", a_it.key() );
+      aliasEntryElem.setAttribute( "index", idx );
+      aliasEntryElem.setAttribute( "name", a_it.value() );
+      aliasElem.appendChild( aliasEntryElem );
     }
+    node.appendChild( aliasElem );
   }
-#endif
 
-  editTypesElement.appendChild( editTypeElement );
-}
-
-node.appendChild( editTypesElement );
-
-QDomElement efField  = doc.createElement( "editform" );
-QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
-efField.appendChild( efText );
-node.appendChild( efField );
-
-QDomElement efiField  = doc.createElement( "editforminit" );
-QDomText efiText = doc.createTextNode( mEditFormInit );
-efiField.appendChild( efiText );
-node.appendChild( efiField );
-
-QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
-QDomText fFSuppText = doc.createTextNode( QString::number( featureFormSuppress() ) );
-fFSuppElem.appendChild( fFSuppText );
-node.appendChild( fFSuppElem );
-
-QDomElement afField = doc.createElement( "annotationform" );
-QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
-afField.appendChild( afText );
-node.appendChild( afField );
-
-// tab display
-QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
-switch ( mEditorLayout )
-{
-case UiFileLayout:
-  editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
-  break;
-
-case TabLayout:
-  editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
-  break;
-
-case GeneratedLayout:
-default:
-  editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
-  break;
-}
-
-node.appendChild( editorLayoutElem );
-
-//attribute aliases
-if ( mAttributeAliasMap.size() > 0 )
-{
-  QDomElement aliasElem = doc.createElement( "aliases" );
-  QMap<QString, QString>::const_iterator a_it = mAttributeAliasMap.constBegin();
-  for ( ; a_it != mAttributeAliasMap.constEnd(); ++a_it )
+  //exclude attributes WMS
+  QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
+  QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
+  for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
   {
-    int idx = fieldNameIndex( a_it.key() );
-    if ( idx < 0 )
-      continue;
-
-    QDomElement aliasEntryElem = doc.createElement( "alias" );
-    aliasEntryElem.setAttribute( "field", a_it.key() );
-    aliasEntryElem.setAttribute( "index", idx );
-    aliasEntryElem.setAttribute( "name", a_it.value() );
-    aliasElem.appendChild( aliasEntryElem );
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWMSIt );
+    attrElem.appendChild( attrText );
+    excludeWMSElem.appendChild( attrElem );
   }
-  node.appendChild( aliasElem );
-}
+  node.appendChild( excludeWMSElem );
 
-//exclude attributes WMS
-QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
-QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
-for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
-{
-  QDomElement attrElem = doc.createElement( "attribute" );
-  QDomText attrText = doc.createTextNode( *attWMSIt );
-  attrElem.appendChild( attrText );
-  excludeWMSElem.appendChild( attrElem );
-}
-node.appendChild( excludeWMSElem );
-
-//exclude attributes WFS
-QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
-QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
-for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
-{
-  QDomElement attrElem = doc.createElement( "attribute" );
-  QDomText attrText = doc.createTextNode( *attWFSIt );
-  attrElem.appendChild( attrText );
-  excludeWFSElem.appendChild( attrElem );
-}
-node.appendChild( excludeWFSElem );
-
-// tabs and groups of edit form
-if ( mAttributeEditorElements.size() > 0 )
-{
-  QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
-
-  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); ++it )
+  //exclude attributes WFS
+  QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
+  QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
+  for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
   {
-    QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
-    tabsElem.appendChild( attributeEditorWidgetElem );
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWFSIt );
+    attrElem.appendChild( attrText );
+    excludeWFSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWFSElem );
+
+  // tabs and groups of edit form
+  if ( mAttributeEditorElements.size() > 0 )
+  {
+    QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
+
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); ++it )
+    {
+      QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
+      tabsElem.appendChild( attributeEditorWidgetElem );
+    }
+
+    node.appendChild( tabsElem );
   }
 
-  node.appendChild( tabsElem );
-}
+  // add attribute actions
+  mActions->writeXML( node, doc );
 
-// add attribute actions
-mActions->writeXML( node, doc );
-
-return true;
+  return true;
 }
 
 bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
