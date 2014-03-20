@@ -54,9 +54,14 @@ editorwidgets/core/qgseditorconfigwidget.cpp
 editorwidgets/core/qgseditorwidgetfactory.cpp
 editorwidgets/core/qgseditorwidgetregistry.cpp
 editorwidgets/core/qgseditorwidgetwrapper.cpp
+
+editorwidgets/qgsdatetimeeditfactory.cpp
+editorwidgets/qgsdatetimeeditconfig.cpp
+editorwidgets/qgsdatetimeeditwrapper.cpp
 editorwidgets/qgsrelationreferencewidget.cpp
 editorwidgets/qgsrelationreferencefactory.cpp
 editorwidgets/qgsrelreferenceconfigdlg.cpp
+
 
 qgisgui.cpp
 qgisinterface.cpp
@@ -201,6 +206,9 @@ attributetable/qgsvectorlayerselectionmanager.h
 editorwidgets/core/qgseditorconfigwidget.h
 editorwidgets/core/qgseditorwidgetregistry.h
 editorwidgets/core/qgseditorwidgetwrapper.h
+
+editorwidgets/qgsdatetimeeditconfig.h
+editorwidgets/qgsdatetimeeditwrapper.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelreferenceconfigdlg.h
 
@@ -346,6 +354,10 @@ editorwidgets/core/qgseditorconfigwidget.h
 editorwidgets/core/qgseditorwidgetfactory.h
 editorwidgets/core/qgseditorwidgetregistry.h
 editorwidgets/core/qgseditorwidgetwrapper.h
+
+editorwidgets/qgsdatetimeeditfactory.h
+editorwidgets/qgsdatetimeeditconfig.h
+editorwidgets/qgsdatetimeeditwrapper.h
 editorwidgets/qgsrelationreferencefactory.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelreferenceconfigdlg.h

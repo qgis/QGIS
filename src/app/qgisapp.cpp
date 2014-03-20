@@ -265,6 +265,7 @@
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
 #include "qgsrelationreferencefactory.h"
+#include "qgsdatetimeeditfactory.h"
 
 //
 // Conditional Includes
@@ -597,6 +598,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsAttributeEditorContext context;
   context.setVectorLayerTools( vectorLayerTools() );
   editorWidgetRegistry->registerWidget( "RelationReference", new QgsRelationReferenceFactory( context, tr( "Relation Reference" ) ) );
+  editorWidgetRegistry->registerWidget( "DateTimeEdit", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
 
 
   mInternalClipboard = new QgsClipboard; // create clipboard
