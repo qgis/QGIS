@@ -421,6 +421,20 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     */
     QColor color2() const { return mColor2; };
 
+    /**Sets whether the shapeburst fill should ignore polygon rings when calculating
+     * the buffered shading.
+     * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * @note added in 2.3
+     * @see ignoreRings
+    */
+    void setIgnoreRings( double ignoreRings ) { mIgnoreRings = ignoreRings; };
+    /**Returns whether the shapeburst fill is set to ignore polygon interior rings.
+     * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * @note added in 2.3
+     * @see setIgnoreRings
+    */
+    double ignoreRings() const { return mIgnoreRings; };
+
     /**Sets the offset for the shapeburst fill.
      * @param offset QPointF indicating the horizontal/vertical offset amount
      * @note added in 2.3
@@ -466,6 +480,8 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsVectorColorRampV2* mGradientRamp;
     QgsVectorColorRampV2* mTwoColorGradientRamp;
 
+    bool mIgnoreRings;
+
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
 
@@ -473,7 +489,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QColor& color, QColor& color2, int& blurRadius, bool& useWholeShape,
-                                    double& maxDistance );
+                                    double& maxDistance , bool &ignoreRings );
 
     /* distance transform of a 1d function using squared distance */
     void distanceTransform1d( double *f, int n, int *v, double *z, double *d );

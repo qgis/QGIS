@@ -226,6 +226,7 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerV2Widget : public QgsSymbolLayerV2W
     void offsetChanged();
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mIgnoreRingsCheckBox_stateChanged( int state );
 
   protected:
     QgsShapeburstFillSymbolLayerV2* mLayer;

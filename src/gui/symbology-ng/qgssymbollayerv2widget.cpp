@@ -1090,6 +1090,10 @@ void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
   mDistanceUnitComboBox->blockSignals( false );
 
+  mIgnoreRingsCheckBox->blockSignals( true );
+  mIgnoreRingsCheckBox->setCheckState( mLayer->ignoreRings() ? Qt::Checked : Qt::Unchecked );
+  mIgnoreRingsCheckBox->blockSignals( false );
+
   // set source color ramp
   if ( mLayer->colorRamp() )
   {
@@ -1228,6 +1232,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_click
       tr( "Integer between 0 and 18" ) );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "use_whole_shape", tr( "Use whole shape" ), mLayer->dataDefinedPropertyString( "use_whole_shape" ), QgsDataDefinedSymbolDialog::boolHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "max_distance", tr( "Maximum distance" ), mLayer->dataDefinedPropertyString( "max_distance" ), QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "ignore_rings", tr( "Ignore rings" ), mLayer->dataDefinedPropertyString( "ignore_rings" ), QgsDataDefinedSymbolDialog::boolHelpText() );
 
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
@@ -1246,6 +1251,13 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_click
     }
     emit changed();
   }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mIgnoreRingsCheckBox_stateChanged( int state )
+{
+  bool checked = ( state == Qt::Checked );
+  mLayer->setIgnoreRings( checked );
+  emit changed();
 }
 
 ///////////

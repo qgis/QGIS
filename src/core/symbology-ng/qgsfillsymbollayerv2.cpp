@@ -795,6 +795,7 @@ QgsShapeburstFillSymbolLayerV2::QgsShapeburstFillSymbolLayerV2( QColor color, QC
     mColor2( color2 ),
     mGradientRamp( NULL ),
     mTwoColorGradientRamp( 0 ),
+    mIgnoreRings( false ),
     mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
@@ -859,6 +860,10 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::create( const QgsStringMap& pr
   {
     sl->setDistanceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["distance_unit"] ) );
   }
+  if ( props.contains( "ignore_rings" ) )
+  {
+    sl->setIgnoreRings( props["ignore_rings"].toInt() );
+  }
   if ( gradientRamp )
   {
     sl->setColorRamp( gradientRamp );
@@ -874,6 +879,8 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::create( const QgsStringMap& pr
     sl->setDataDefinedProperty( "use_whole_shape", props["use_whole_shape_expression"] );
   if ( props.contains( "max_distance_expression" ) )
     sl->setDataDefinedProperty( "max_distance", props["max_distance_expression"] );
+  if ( props.contains( "ignore_rings_expression" ) )
+    sl->setDataDefinedProperty( "ignore_rings", props["ignore_rings_expression"] );
 
   return sl;
 }
@@ -890,7 +897,7 @@ void QgsShapeburstFillSymbolLayerV2::setColorRamp( QgsVectorColorRampV2* ramp )
 }
 
 void QgsShapeburstFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QColor& color, QColor& color2, int& blurRadius, bool& useWholeShape,
-    double& maxDistance )
+    double& maxDistance, bool& ignoreRings )
 {
   //first gradient color
   QgsExpression* colorExpression = expression( "color" );
@@ -921,6 +928,12 @@ void QgsShapeburstFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2Rende
   maxDistance = mMaxDistance;
   if ( maxDistanceExpression )
     maxDistance = maxDistanceExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+
+  //ignore rings
+  QgsExpression* ignoreRingsExpression = expression( "ignore_rings" );
+  ignoreRings = mIgnoreRings;
+  if ( ignoreRingsExpression )
+    ignoreRings = ignoreRingsExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toBool();
 
 }
 
@@ -970,8 +983,9 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   int blurRadius;
   bool useWholeShape;
   double maxDistance;
+  bool ignoreRings;
   //calculate data defined symbology
-  applyDataDefinedSymbology( context, color1, color2, blurRadius, useWholeShape, maxDistance );
+  applyDataDefinedSymbology( context, color1, color2, blurRadius, useWholeShape, maxDistance, ignoreRings );
 
   //calculate max distance for shapeburst fill to extend from polygon boundary, in pixels
   int outputPixelMaxDist = 0;
@@ -1022,7 +1036,21 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   //now that we have a render of the polygon in white, draw this onto the shapeburst fill image too
   //(this avoids calling _renderPolygon twice, since that can be slow)
   imgPainter.begin( fillImage );
-  imgPainter.drawImage( 0, 0, *alphaImage );
+  if ( !ignoreRings )
+  {
+    imgPainter.drawImage( 0, 0, *alphaImage );
+  }
+  else
+  {
+    //using ignore rings mode, so the alpha image can't be used
+    //directly as the alpha channel contains polygon rings and we need
+    //to draw now without any rings
+    imgPainter.setBrush( QBrush( Qt::white ) );
+    imgPainter.setPen( QPen( Qt::black ) );
+    imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
+    imgPainter.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
+    _renderPolygon( &imgPainter, points, NULL, context );
+  }
   imgPainter.end();
 
   //apply distance transform to image, uses the current color ramp to calculate final pixel colours
@@ -1252,6 +1280,7 @@ QgsStringMap QgsShapeburstFillSymbolLayerV2::properties() const
   map["use_whole_shape"] = QString::number( mUseWholeShape );
   map["max_distance"] = QString::number( mMaxDistance );
   map["distance_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit );
+  map["ignore_rings"] = QString::number( mIgnoreRings );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
 
@@ -1273,6 +1302,7 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::clone() const
     sl->setColorRamp( mGradientRamp->clone() );
   }
   sl->setDistanceUnit( mDistanceUnit );
+  sl->setIgnoreRings( mIgnoreRings );
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   copyDataDefinedProperties( sl );

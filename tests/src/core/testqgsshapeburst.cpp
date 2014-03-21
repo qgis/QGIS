@@ -55,6 +55,7 @@ class TestQgsShapeburst: public QObject
     void shapeburstBlur();
     void shapeburstMaxDistanceMm();
     void shapeburstMaxDistanceMapUnits();
+    void shapeburstIgnoreRings();
     void shapeburstSymbolFromQml();
 
   private:
@@ -179,7 +180,7 @@ void TestQgsShapeburst::shapeburstMaxDistanceMm()
   mShapeburstFill->setMaxDistance( 3 );
   mShapeburstFill->setDistanceUnit( QgsSymbolV2::MM );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mm" ) );
-  mShapeburstFill->setUseWholeShape( true);
+  mShapeburstFill->setUseWholeShape( true );
 }
 
 void TestQgsShapeburst::shapeburstMaxDistanceMapUnits()
@@ -189,8 +190,16 @@ void TestQgsShapeburst::shapeburstMaxDistanceMapUnits()
   mShapeburstFill->setMaxDistance( 10 );
   mShapeburstFill->setDistanceUnit( QgsSymbolV2::MapUnit );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mapunit" ) );
-  mShapeburstFill->setUseWholeShape( true);
+  mShapeburstFill->setUseWholeShape( true );
   mShapeburstFill->setDistanceUnit( QgsSymbolV2::MM );
+}
+
+void TestQgsShapeburst::shapeburstIgnoreRings()
+{
+  mReport += "<h2>Shapeburst symbol renderer ignore rings</h2>\n";
+  mShapeburstFill->setIgnoreRings( true );
+  QVERIFY( imageCheck( "shapeburst_ignorerings" ) );
+  mShapeburstFill->setIgnoreRings( false );
 }
 
 void TestQgsShapeburst::shapeburstSymbolFromQml()

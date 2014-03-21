@@ -351,6 +351,20 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see colorType
     */
     QColor color2() const;
+    
+    /**Sets whether the shapeburst fill should ignore polygon rings when calculating
+     * the buffered shading.
+     * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * @note added in 2.3
+     * @see ignoreRings
+    */
+    void setIgnoreRings( double ignoreRings );
+    /**Returns whether the shapeburst fill is set to ignore polygon interior rings.
+     * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * @note added in 2.3
+     * @see setIgnoreRings
+    */
+    double ignoreRings() const;    
 
     /**Sets the offset for the shapeburst fill.
      * @param offset QPointF indicating the horizontal/vertical offset amount
