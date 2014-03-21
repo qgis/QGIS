@@ -145,6 +145,35 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mSpinAngle_valueChanged( double value );
 };
 
+///////////
+
+class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2widget.h>
+%End
+  public:
+    QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  public slots:
+    void setColor( const QColor& color );
+    void setColor2( const QColor& color );
+    void colorModeChanged();
+    void on_mSpinBlurRadius_valueChanged( int value );
+    void on_mSpinMaxDistance_valueChanged( double value );
+    void on_mDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mRadioUseWholeShape_toggled( bool value );
+    void applyColorRamp();
+    void offsetChanged();
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
+};
 
 ///////////
 
