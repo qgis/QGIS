@@ -1074,11 +1074,8 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
 //fast distance transform code, adapted from http://cs.brown.edu/~pff/dt/
 
 /* distance transform of a 1d function using squared distance */
-double * QgsShapeburstFillSymbolLayerV2::distanceTransform1d( double *f, int n )
+void QgsShapeburstFillSymbolLayerV2::distanceTransform1d( double *f, int n, int *v, double *z, double *d )
 {
-  double *d = new double[n];
-  int *v = new int[n];
-  double *z = new double[n+1];
   int k = 0;
   v[0] = 0;
   z[0] = -INF;
@@ -1104,16 +1101,15 @@ double * QgsShapeburstFillSymbolLayerV2::distanceTransform1d( double *f, int n )
       k++;
     d[q] = ( q - v[k] ) * ( q - v[k] ) + f[v[k]];
   }
-
-  delete [] v;
-  delete [] z;
-  return d;
 }
 
 /* distance transform of 2d function using squared distance */
 void QgsShapeburstFillSymbolLayerV2::distanceTransform2d( double * im, int width, int height )
 {
   double *f = new double[ qMax( width,height )];
+  int *v = new int[ qMax( width,height )];
+  double *z = new double[ qMax( width,height ) + 1 ];
+  double *d = new double[ qMax( width,height )];
 
   // transform along columns
   for ( int x = 0; x < width; x++ )
@@ -1122,12 +1118,11 @@ void QgsShapeburstFillSymbolLayerV2::distanceTransform2d( double * im, int width
     {
       f[y] = im[ x + y * width ];
     }
-    double *d = distanceTransform1d( f, height );
+    distanceTransform1d( f, height, v, z, d );
     for ( int y = 0; y < height; y++ )
     {
       im[ x + y * width ] = d[y];
     }
-    delete [] d;
   }
 
   // transform along rows
@@ -1137,15 +1132,17 @@ void QgsShapeburstFillSymbolLayerV2::distanceTransform2d( double * im, int width
     {
       f[x] = im[  x + y*width ];
     }
-    double *d = distanceTransform1d( f, width );
+    distanceTransform1d( f, width, v, z, d );
     for ( int x = 0; x < width; x++ )
     {
       im[  x + y*width ] = d[x];
     }
-    delete [] d;
   }
 
-  delete f;
+  delete [] d;
+  delete [] f;
+  delete [] v;
+  delete [] z;
 }
 
 /* distance transform of a binary QImage */

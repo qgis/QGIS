@@ -476,7 +476,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
                                     double& maxDistance );
 
     /* distance transform of a 1d function using squared distance */
-    double * distanceTransform1d( double *f, int n );
+    void distanceTransform1d( double *f, int n, int *v, double *z, double *d );
     /* distance transform of 2d function using squared distance */
     void distanceTransform2d( double * im, int width, int height );
     /* distance transform of a binary QImage */
