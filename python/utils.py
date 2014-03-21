@@ -60,10 +60,10 @@ def showException(type, value, tb, msg):
   lst = traceback.format_exception(type, value, tb)
   if msg == None:
     msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
-  txt = '<font color="red">%s</font><br><br>' % msg
+  txt = '<font color="red">%s</font><br><br><pre>' % msg
   for s in lst:
     txt += s.decode('utf-8', 'replace')
-  txt += '<br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python','Python version:'), sys.version)
+  txt += '</pre><br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python','Python version:'), sys.version)
   txt += '<br>%s<br>%s %s, %s<br><br>' % (QCoreApplication.translate('Python','QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME, QGis.QGIS_DEV_VERSION)
   txt += '%s %s' % (QCoreApplication.translate('Python','Python path:'), str(sys.path))
   txt = txt.replace('\n', '<br>')
