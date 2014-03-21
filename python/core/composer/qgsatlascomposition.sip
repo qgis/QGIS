@@ -122,4 +122,9 @@ public:
     /**Is emitted when the coverage layer for an atlas changes*/
     void coverageLayerChanged( QgsVectorLayer* layer );
 
+    /**Is emitted when atlas rendering has begun*/
+    void renderBegun();
+
+    /**Is emitted when atlas rendering has ended*/
+    void renderEnded();
 };
