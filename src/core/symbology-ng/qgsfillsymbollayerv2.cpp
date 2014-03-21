@@ -994,8 +994,10 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   //calculate margin size in pixels so that QImage of polygon has sufficient space to draw the full blur effect
   int sideBuffer = 4 + ( blurRadius + 2 ) * 4 ;
   //create a QImage to draw shapeburst in
-  QImage * fillImage = new QImage( points.boundingRect().width() + ( sideBuffer * 2 ),
-                                   points.boundingRect().height() + ( sideBuffer * 2 ), QImage::Format_ARGB32_Premultiplied );
+  double imWidth = points.boundingRect().width() + ( sideBuffer * 2 );
+  double imHeight = points.boundingRect().height() + ( sideBuffer * 2 );
+  QImage * fillImage = new QImage( imWidth * context.renderContext().rasterScaleFactor(),
+                                   imHeight * context.renderContext().rasterScaleFactor(), QImage::Format_ARGB32_Premultiplied );
   //Fill this image with black. Initially the distance transform is drawn in greyscale, where black pixels have zero distance from the
   //polygon boundary. Since we don't care about pixels which fall outside the polygon, we start with a black image and then draw over it the
   //polygon in white. The distance transform function then fills in the correct distance values for the white pixels.
@@ -1013,6 +1015,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   imgPainter.setBrush( QBrush( Qt::white ) );
   imgPainter.setPen( QPen( Qt::black ) );
   imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
+  imgPainter.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
   _renderPolygon( &imgPainter, points, rings, context );
   imgPainter.end();
 
@@ -1052,6 +1055,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
 
   //draw shapeburst image in correct place in the destination painter
 
+  p->save();
   QPointF offset;
   if ( !mOffset.isNull() )
   {
@@ -1060,6 +1064,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
     p->translate( offset );
   }
 
+  p->scale( 1 / context.renderContext().rasterScaleFactor(), 1 / context.renderContext().rasterScaleFactor() );
   p->drawImage( points.boundingRect().left() - sideBuffer, points.boundingRect().top() - sideBuffer, *fillImage );
 
   delete fillImage;
@@ -1068,6 +1073,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   {
     p->translate( -offset );
   }
+  p->restore();
 
 }
 
