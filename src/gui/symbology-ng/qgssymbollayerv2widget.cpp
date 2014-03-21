@@ -1027,6 +1027,9 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   connect( radioTwoColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+
+  connect( mBlurSlider, SIGNAL( valueChanged( int ) ), mSpinBlurRadius, SLOT( setValue( int ) ) );
+  connect( mSpinBlurRadius, SIGNAL( valueChanged( int ) ), mBlurSlider, SLOT( setValue( int ) ) );
 }
 
 void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -1056,8 +1059,11 @@ void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   }
 
   mSpinBlurRadius->blockSignals( true );
+  mBlurSlider->blockSignals( true );
   mSpinBlurRadius->setValue( mLayer->blurRadius() );
+  mBlurSlider->setValue( mLayer->blurRadius() );
   mSpinBlurRadius->blockSignals( false );
+  mBlurSlider->blockSignals( false );
 
   mSpinMaxDistance->blockSignals( true );
   mSpinMaxDistance->setValue( mLayer->maxDistance() );

@@ -90,16 +90,6 @@
        <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
       </item>
      </layout>
-     <zorder>btnChangeColor2</zorder>
-     <zorder>btnChangeColor</zorder>
-     <zorder>cboGradientColorRamp</zorder>
-     <zorder>radioTwoColor</zorder>
-     <zorder>radioColorRamp</zorder>
-     <zorder>radioTwoColor</zorder>
-     <zorder>radioColorRamp</zorder>
-     <zorder>btnChangeColor</zorder>
-     <zorder>btnChangeColor2</zorder>
-     <zorder>cboGradientColorRamp</zorder>
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
@@ -172,6 +162,25 @@
    <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
+      <widget class="QSlider" name="mBlurSlider">
+       <property name="maximum">
+        <number>18</number>
+       </property>
+       <property name="pageStep">
+        <number>3</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBelow</enum>
+       </property>
+       <property name="tickInterval">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QSpinBox" name="mSpinBlurRadius">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -183,19 +192,6 @@
         <number>18</number>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
