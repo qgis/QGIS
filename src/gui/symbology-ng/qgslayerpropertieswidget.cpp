@@ -68,6 +68,7 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
   _initWidgetFunction( "GradientFill", QgsGradientFillSymbolLayerV2Widget::create );
+  _initWidgetFunction( "ShapeburstFill", QgsShapeburstFillSymbolLayerV2Widget::create );
   _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );
   _initWidgetFunction( "CentroidFill", QgsCentroidFillSymbolLayerV2Widget::create );
   _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );

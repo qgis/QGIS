@@ -2778,6 +2778,30 @@ void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, const QRect& rect, 
   }
 }
 
+void QgsSymbolLayerV2Utils::premultiplyColor(QColor &rgb, int alpha)
+{
+  int r = 0, g = 0, b = 0;
+  double alphaFactor = 1.0;
+
+  if ( alpha != 255 && alpha > 0 )
+  {
+    // Semi-transparent pixel. We need to adjust the colors for ARGB32_Premultiplied images
+    // where color values have to be premultiplied by alpha
+
+    rgb.getRgb( &r, &g, &b );
+
+    alphaFactor = alpha / 255.;
+    r *= alphaFactor;
+    g *= alphaFactor;
+    b *= alphaFactor;
+    rgb.setRgb( r, g, b, alpha );
+  }
+  else if ( alpha == 0 )
+  {
+    rgb.setRgb( 0, 0, 0, 0 );
+  }
+}
+
 #if 0
 static bool _QVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {

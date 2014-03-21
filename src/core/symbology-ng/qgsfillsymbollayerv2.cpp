@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsfillsymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
@@ -778,6 +779,506 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::clone() const
 double QgsGradientFillSymbolLayerV2::estimateMaxBleed() const
 {
   double offsetBleed = mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+  return offsetBleed;
+}
+
+//QgsShapeburstFillSymbolLayer
+
+QgsShapeburstFillSymbolLayerV2::QgsShapeburstFillSymbolLayerV2( QColor color, QColor color2, ShapeburstColorType colorType,
+    int blurRadius, bool useWholeShape, double maxDistance ) :
+
+    mBlurRadius( blurRadius ),
+    mUseWholeShape( useWholeShape ),
+    mMaxDistance( maxDistance ),
+    mDistanceUnit( QgsSymbolV2::MM ),
+    mColorType( colorType ),
+    mColor2( color2 ),
+    mGradientRamp( NULL ),
+    mTwoColorGradientRamp( 0 ),
+    mOffsetUnit( QgsSymbolV2::MM )
+{
+  mColor = color;
+}
+
+QgsShapeburstFillSymbolLayerV2::~QgsShapeburstFillSymbolLayerV2()
+{
+  delete mGradientRamp;
+}
+
+QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::create( const QgsStringMap& props )
+{
+  //default to a two-color gradient
+  ShapeburstColorType colorType = QgsShapeburstFillSymbolLayerV2::SimpleTwoColor;
+  QColor color = DEFAULT_SIMPLEFILL_COLOR, color2 = Qt::white;
+  int blurRadius = 0;
+  bool useWholeShape = true;
+  double maxDistance = 5;
+  QPointF offset;
+
+  //update fill properties from props
+  if ( props.contains( "color_type" ) )
+  {
+    colorType = ( ShapeburstColorType )props["color_type"].toInt();
+  }
+  if ( props.contains( "shapeburst_color" ) )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( props["shapeburst_color"] );
+  }
+  if ( props.contains( "shapeburst_color2" ) )
+  {
+    color2 = QgsSymbolLayerV2Utils::decodeColor( props["shapeburst_color2"] );
+  }
+  if ( props.contains( "blur_radius" ) )
+  {
+    blurRadius = props["blur_radius"].toInt();
+  }
+  if ( props.contains( "use_whole_shape" ) )
+  {
+    useWholeShape = props["use_whole_shape"].toInt();
+  }
+  if ( props.contains( "max_distance" ) )
+  {
+    maxDistance = props["max_distance"].toDouble();
+  }
+  if ( props.contains( "offset" ) )
+  {
+    offset = QgsSymbolLayerV2Utils::decodePoint( props["offset"] );
+  }
+
+  //attempt to create color ramp from props
+  QgsVectorColorRampV2* gradientRamp = QgsVectorGradientColorRampV2::create( props );
+
+  //create a new shapeburst fill layer with desired properties
+  QgsShapeburstFillSymbolLayerV2* sl = new QgsShapeburstFillSymbolLayerV2( color, color2, colorType, blurRadius, useWholeShape, maxDistance );
+  sl->setOffset( offset );
+  if ( props.contains( "offset_unit" ) )
+  {
+    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+  }
+  if ( props.contains( "distance_unit" ) )
+  {
+    sl->setDistanceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["distance_unit"] ) );
+  }
+  if ( gradientRamp )
+  {
+    sl->setColorRamp( gradientRamp );
+  }
+
+  if ( props.contains( "color_expression" ) )
+    sl->setDataDefinedProperty( "color", props["color_expression"] );
+  if ( props.contains( "color2_expression" ) )
+    sl->setDataDefinedProperty( "color2", props["color2_expression"] );
+  if ( props.contains( "blur_radius_expression" ) )
+    sl->setDataDefinedProperty( "blur_radius", props["blur_radius_expression"] );
+  if ( props.contains( "use_whole_shape_expression" ) )
+    sl->setDataDefinedProperty( "use_whole_shape", props["use_whole_shape_expression"] );
+  if ( props.contains( "max_distance_expression" ) )
+    sl->setDataDefinedProperty( "max_distance", props["max_distance_expression"] );
+
+  return sl;
+}
+
+QString QgsShapeburstFillSymbolLayerV2::layerType() const
+{
+  return "ShapeburstFill";
+}
+
+void QgsShapeburstFillSymbolLayerV2::setColorRamp( QgsVectorColorRampV2* ramp )
+{
+  delete mGradientRamp;
+  mGradientRamp = ramp;
+}
+
+void QgsShapeburstFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QColor& color, QColor& color2, int& blurRadius, bool& useWholeShape,
+    double& maxDistance )
+{
+  //first gradient color
+  QgsExpression* colorExpression = expression( "color" );
+  color = mColor;
+  if ( colorExpression )
+    color = QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+
+  //second gradient color
+  QgsExpression* colorExpression2 = expression( "color2" );
+  color2 = mColor2;
+  if ( colorExpression2 )
+    color2 = QgsSymbolLayerV2Utils::decodeColor( colorExpression2->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+
+  //blur radius
+  QgsExpression* blurRadiusExpression = expression( "blur_radius" );
+  blurRadius = mBlurRadius;
+  if ( blurRadiusExpression )
+    blurRadius = blurRadiusExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toInt();
+
+  //use whole shape
+  QgsExpression* useWholeShapeExpression = expression( "use_whole_shape" );
+  useWholeShape = mUseWholeShape;
+  if ( useWholeShapeExpression )
+    useWholeShape = useWholeShapeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toBool();
+
+  //max distance
+  QgsExpression* maxDistanceExpression = expression( "max_distance" );
+  maxDistance = mMaxDistance;
+  if ( maxDistanceExpression )
+    maxDistance = maxDistanceExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+
+}
+
+void QgsShapeburstFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+{
+  //TODO - check this
+  QColor selColor = context.renderContext().selectionColor();
+  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  mSelBrush = QBrush( selColor );
+
+  prepareExpressions( context.fields() );
+}
+
+void QgsShapeburstFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+{
+  Q_UNUSED( context );
+}
+
+void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  QPainter* p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  if ( context.selected() )
+  {
+    //feature is selected, draw using selection style
+    p->setBrush( mSelBrush );
+    QPointF offset;
+    if ( !mOffset.isNull() )
+    {
+      offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+      offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+      p->translate( offset );
+    }
+    _renderPolygon( p, points, rings, context );
+    if ( !mOffset.isNull() )
+    {
+      p->translate( -offset );
+    }
+    return;
+  }
+
+  QColor color1, color2;
+  int blurRadius;
+  bool useWholeShape;
+  double maxDistance;
+  //calculate data defined symbology
+  applyDataDefinedSymbology( context, color1, color2, blurRadius, useWholeShape, maxDistance );
+
+  //calculate max distance for shapeburst fill to extend from polygon boundary, in pixels
+  int outputPixelMaxDist = 0;
+  if ( !useWholeShape && maxDistance != 0 )
+  {
+    //convert max distance to pixels
+    const QgsRenderContext& ctx = context.renderContext();
+    outputPixelMaxDist = maxDistance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
+  }
+
+  //if we are using the two color mode, create a gradient ramp
+  if ( mColorType == QgsShapeburstFillSymbolLayerV2::SimpleTwoColor )
+  {
+    mTwoColorGradientRamp = new QgsVectorGradientColorRampV2( color1, color2 );
+  }
+
+  //no border for shapeburst fills
+  p->setPen( QPen( Qt::NoPen ) );
+
+  //calculate margin size in pixels so that QImage of polygon has sufficient space to draw the full blur effect
+  int sideBuffer = 4 + ( blurRadius + 2 ) * 4 ;
+  //create a QImage to draw shapeburst in
+  QImage * fillImage = new QImage( points.boundingRect().width() + ( sideBuffer * 2 ),
+                                   points.boundingRect().height() + ( sideBuffer * 2 ), QImage::Format_ARGB32_Premultiplied );
+  //Fill this image with black. Initially the distance transform is drawn in greyscale, where black pixels have zero distance from the
+  //polygon boundary. Since we don't care about pixels which fall outside the polygon, we start with a black image and then draw over it the
+  //polygon in white. The distance transform function then fills in the correct distance values for the white pixels.
+  fillImage->fill( Qt::black );
+
+  //also create an image to store the alpha channel
+  QImage * alphaImage = new QImage( fillImage->width(), fillImage->height(), QImage::Format_ARGB32_Premultiplied );
+  //initially fill the alpha channel image with a transparent color
+  alphaImage->fill( Qt::transparent );
+
+  //now, draw the polygon in the alpha channel image
+  QPainter imgPainter;
+  imgPainter.begin( alphaImage );
+  imgPainter.setRenderHint( QPainter::Antialiasing, true );
+  imgPainter.setBrush( QBrush( Qt::white ) );
+  imgPainter.setPen( QPen( Qt::black ) );
+  imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
+  _renderPolygon( &imgPainter, points, rings, context );
+  imgPainter.end();
+
+  //now that we have a render of the polygon in white, draw this onto the shapeburst fill image too
+  //(this avoids calling _renderPolygon twice, since that can be slow)
+  imgPainter.begin( fillImage );
+  imgPainter.drawImage( 0, 0, *alphaImage );
+  imgPainter.end();
+
+  //apply distance transform to image, uses the current color ramp to calculate final pixel colours
+  double * dtArray = distanceTransform( fillImage );
+
+  //copy distance transform values back to QImage, shading by appropriate color ramp
+  dtArrayToQImage( dtArray, fillImage, mColorType == QgsShapeburstFillSymbolLayerV2::SimpleTwoColor ? mTwoColorGradientRamp : mGradientRamp,
+                   context.alpha(), useWholeShape, outputPixelMaxDist );
+
+  //clean up some variables
+  delete [] dtArray;
+  if ( mColorType == QgsShapeburstFillSymbolLayerV2::SimpleTwoColor )
+  {
+    delete mTwoColorGradientRamp;
+  }
+
+  //apply blur if desired
+  if ( blurRadius > 0 )
+  {
+    QgsSymbolLayerV2Utils::blurImageInPlace( *fillImage, QRect( 0, 0, fillImage->width(), fillImage->height() ), blurRadius, false );
+  }
+
+  //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
+  imgPainter.begin( fillImage );
+  imgPainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+  imgPainter.drawImage( 0, 0, *alphaImage );
+  imgPainter.end();
+  //we're finished with the alpha channel image now
+  delete alphaImage;
+
+  //draw shapeburst image in correct place in the destination painter
+
+  QPointF offset;
+  if ( !mOffset.isNull() )
+  {
+    offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    p->translate( offset );
+  }
+
+  p->drawImage( points.boundingRect().left() - sideBuffer, points.boundingRect().top() - sideBuffer, *fillImage );
+
+  delete fillImage;
+
+  if ( !mOffset.isNull() )
+  {
+    p->translate( -offset );
+  }
+
+}
+
+//fast distance transform code, adapted from http://cs.brown.edu/~pff/dt/
+
+/* distance transform of a 1d function using squared distance */
+double * QgsShapeburstFillSymbolLayerV2::distanceTransform1d( double *f, int n )
+{
+  double *d = new double[n];
+  int *v = new int[n];
+  double *z = new double[n+1];
+  int k = 0;
+  v[0] = 0;
+  z[0] = -INF;
+  z[1] = + INF;
+  for ( int q = 1; q <= n - 1; q++ )
+  {
+    double s  = (( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
+    while ( s <= z[k] )
+    {
+      k--;
+      s  = (( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
+    }
+    k++;
+    v[k] = q;
+    z[k] = s;
+    z[k+1] = + INF;
+  }
+
+  k = 0;
+  for ( int q = 0; q <= n - 1; q++ )
+  {
+    while ( z[k+1] < q )
+      k++;
+    d[q] = ( q - v[k] ) * ( q - v[k] ) + f[v[k]];
+  }
+
+  delete [] v;
+  delete [] z;
+  return d;
+}
+
+/* distance transform of 2d function using squared distance */
+void QgsShapeburstFillSymbolLayerV2::distanceTransform2d( double * im, int width, int height )
+{
+  double *f = new double[ qMax( width,height )];
+
+  // transform along columns
+  for ( int x = 0; x < width; x++ )
+  {
+    for ( int y = 0; y < height; y++ )
+    {
+      f[y] = im[ x + y * width ];
+    }
+    double *d = distanceTransform1d( f, height );
+    for ( int y = 0; y < height; y++ )
+    {
+      im[ x + y * width ] = d[y];
+    }
+    delete [] d;
+  }
+
+  // transform along rows
+  for ( int y = 0; y < height; y++ )
+  {
+    for ( int x = 0; x < width; x++ )
+    {
+      f[x] = im[  x + y*width ];
+    }
+    double *d = distanceTransform1d( f, width );
+    for ( int x = 0; x < width; x++ )
+    {
+      im[  x + y*width ] = d[x];
+    }
+    delete [] d;
+  }
+
+  delete f;
+}
+
+/* distance transform of a binary QImage */
+double * QgsShapeburstFillSymbolLayerV2::distanceTransform( QImage *im )
+{
+  int width = im->width();
+  int height = im->height();
+
+  double * dtArray = new double[width * height];
+
+  //load qImage to array
+  QRgb tmpRgb;
+  int idx = 0;
+  for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
+  {
+    QRgb* scanLine = ( QRgb* )im->constScanLine( heightIndex );
+    for ( int widthIndex = 0; widthIndex < width; ++widthIndex )
+    {
+      tmpRgb = scanLine[widthIndex];
+      if ( qRed( tmpRgb ) == 0 )
+      {
+        //black pixel, so zero distance
+        dtArray[ idx ] = 0;
+      }
+      else
+      {
+        //white pixel, so initially set distance as infinite
+        dtArray[ idx ] = INF;
+      }
+      idx++;
+    }
+  }
+
+  //calculate squared distance transform
+  distanceTransform2d( dtArray, width, height );
+
+  return dtArray;
+}
+
+void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im, QgsVectorColorRampV2* ramp, double layerAlpha, bool useWholeShape, int maxPixelDistance )
+{
+  //find maximum distance value
+  double maxDistanceValue;
+
+  if ( useWholeShape )
+  {
+    //no max distance specified in symbol properties, so calculate from maximum value in distance transform results
+    double dtMaxValue = array[0];
+    for ( int i = 1; i < ( im->width() * im->height() ); ++i )
+    {
+      dtMaxValue = qMax( dtMaxValue, array[i] );
+    }
+
+    //values in distance transform are squared
+    maxDistanceValue = sqrt( dtMaxValue );
+  }
+  else
+  {
+    //use max distance set in symbol properties
+    maxDistanceValue = maxPixelDistance;
+  }
+
+  //update the pixels in the provided QImage
+  int idx = 0;
+  double squaredVal = 0;
+  double pixVal = 0;
+  QColor pixColor;
+
+  for ( int heightIndex = 0; heightIndex < im->height(); ++heightIndex )
+  {
+    QRgb* scanLine = ( QRgb* )im->scanLine( heightIndex );
+    for ( int widthIndex = 0; widthIndex < im->width(); ++widthIndex )
+    {
+      //result of distance transform
+      squaredVal = array[idx];
+
+      //scale result to fit in the range [0, 1]
+      pixVal = squaredVal > 0 ? qMin(( sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
+
+      //convert value to color from ramp
+      pixColor = ramp->color( pixVal );
+
+      //apply layer's transparency to alpha value
+      double alpha = pixColor.alpha() * layerAlpha;
+
+      //premultiply ramp color since we are storing this in a ARGB32_Premultiplied QImage
+      QgsSymbolLayerV2Utils::premultiplyColor( pixColor, alpha );
+      scanLine[widthIndex] = pixColor.rgba();
+      idx++;
+    }
+  }
+}
+
+QgsStringMap QgsShapeburstFillSymbolLayerV2::properties() const
+{
+  QgsStringMap map;
+  map["shapeburst_color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["shapeburst_color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
+  map["color_type"] = QString::number( mColorType );
+  map["blur_radius"] = QString::number( mBlurRadius );
+  map["use_whole_shape"] = QString::number( mUseWholeShape );
+  map["max_distance"] = QString::number( mMaxDistance );
+  map["distance_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit );
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+
+  saveDataDefinedProperties( map );
+
+  if ( mGradientRamp )
+  {
+    map.unite( mGradientRamp->properties() );
+  }
+
+  return map;
+}
+
+QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::clone() const
+{
+  QgsShapeburstFillSymbolLayerV2* sl = new QgsShapeburstFillSymbolLayerV2( mColor, mColor2, mColorType, mBlurRadius, mUseWholeShape, mMaxDistance );
+  if ( mGradientRamp )
+  {
+    sl->setColorRamp( mGradientRamp->clone() );
+  }
+  sl->setDistanceUnit( mDistanceUnit );
+  sl->setOffset( mOffset );
+  sl->setOffsetUnit( mOffsetUnit );
+  copyDataDefinedProperties( sl );
+  return sl;
+}
+
+double QgsShapeburstFillSymbolLayerV2::estimateMaxBleed() const
+{
+  double offsetBleed = qMax( mOffset.x(), mOffset.y() );
   return offsetBleed;
 }
 
