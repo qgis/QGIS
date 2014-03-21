@@ -94,7 +94,7 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 
     /**copy color ramp stops to a QGradient
     * @note added in 2.1 */
-    void addStopsToGradient( QGradient* gradient );
+    void addStopsToGradient( QGradient* gradient, double alpha = 1 );
 
   protected:
     QColor mColor1, mColor2;
