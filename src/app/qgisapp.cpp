@@ -1052,7 +1052,7 @@ void QgisApp::createActions()
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
-  connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition () ) );
+  connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
@@ -2460,7 +2460,7 @@ void QgisApp::about()
   abt->activateWindow();
 }
 
-void QgisApp::addLayerDefinition ()
+void QgisApp::addLayerDefinition()
 {
   QString path = QFileDialog::getOpenFileName( this, "Add Layer Definition File", QDir::home().path(), "*.qlr" );
   if ( path.isEmpty() )
@@ -8026,9 +8026,9 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
   if ( oldTool )
   {
-    disconnect( oldTool, SIGNAL( emitMessage( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
-    disconnect( oldTool, SIGNAL( emitMessage( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
-    disconnect( oldTool, SIGNAL( discardMessage() ), this, SLOT( removeMapToolMessage() ) );
+    disconnect( oldTool, SIGNAL( messageEmitted( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+    disconnect( oldTool, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+    disconnect( oldTool, SIGNAL( messageDiscarded() ), this, SLOT( removeMapToolMessage() ) );
   }
 
   if ( newTool )
@@ -8038,9 +8038,9 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
       mNonEditMapTool = newTool;
     }
 
-    connect( newTool, SIGNAL( emitMessage( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
-    connect( newTool, SIGNAL( emitMessage( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
-    connect( newTool, SIGNAL( discardMessage() ), this, SLOT( removeMapToolMessage() ) );
+    connect( newTool, SIGNAL( messageEmitted( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+    connect( newTool, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+    connect( newTool, SIGNAL( messageDiscarded() ), this, SLOT( removeMapToolMessage() ) );
   }
 }
 

@@ -62,7 +62,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !selectionErrorMsg.isEmpty() )
   {
-    emit emitMessage( tr( "Could not add part. %1" ).arg( selectionErrorMsg ) , QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ) , QgsMessageBar::WARNING );
     stopCapturing();
     return;
   }
@@ -101,7 +101,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
         else if ( error == 2 )
         {
           //problem with coordinate transformation
-          emit emitMessage( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ) , QgsMessageBar::WARNING );
+          emit messageEmitted( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ) , QgsMessageBar::WARNING );
           return;
         }
 
@@ -155,7 +155,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
     case 0:
     {
       // remove previous message
-      emit discardMessage();
+      emit messageDiscarded();
 
       //add points to other features to keep topology up-to-date
       int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
@@ -195,6 +195,6 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       break;
   }
 
-  emit emitMessage( errorMessage , QgsMessageBar::WARNING );
+  emit messageEmitted( errorMessage , QgsMessageBar::WARNING );
   vlayer->destroyEditCommand();
 }

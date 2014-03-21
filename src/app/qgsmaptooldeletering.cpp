@@ -55,7 +55,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
   if ( mRecentSnappingResults.size() > 0 )
   {
     // remove previous warning
-    emit discardMessage();
+    emit messageDiscarded();
 
     QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
 
@@ -66,7 +66,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
   }
   else
   {
-    emit emitMessage( tr( "could not snap to a ring on the current layer." ) );
+    emit messageEmitted( tr( "could not snap to a ring on the current layer." ) );
   }
 }
 

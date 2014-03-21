@@ -113,11 +113,11 @@ class QgsMapTool : QObject
 
   signals:
     //! emit a message
-    void emitMessage( QString message );
-    void emitMessage( QString message, QgsMessageBar::MessageLevel );
+    void messageEmitted( QString message );
+    void messageEmitted( QString message, QgsMessageBar::MessageLevel );
 
     //! emit signal to clear previous message
-    void discardMessage();
+    void messageDiscarded();
 
   protected:
 

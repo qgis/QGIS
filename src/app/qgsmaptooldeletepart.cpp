@@ -53,7 +53,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
   if ( mRecentSnappingResults.size() > 0 )
   {
     // remove previous warning
-    emit discardMessage();
+    emit messageDiscarded();
 
     QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
 
@@ -64,7 +64,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
   }
   else
   {
-    emit emitMessage( tr( "could not snap to a part on the current layer." ) );
+    emit messageEmitted( tr( "could not snap to a part on the current layer." ) );
   }
 }
 

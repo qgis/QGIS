@@ -133,10 +133,10 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
 
 void QgsMapToolEdit::notifyNotVectorLayer()
 {
-  emit emitMessage( tr( "No active vector layer" ) );
+  emit messageEmitted( tr( "No active vector layer" ) );
 }
 
 void QgsMapToolEdit::notifyNotEditableLayer()
 {
-  emit emitMessage( tr( "Layer not editable" ) );
+  emit messageEmitted( tr( "Layer not editable" ) );
 }
