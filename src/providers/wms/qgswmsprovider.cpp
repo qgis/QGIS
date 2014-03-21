@@ -4951,12 +4951,23 @@ bool QgsWmsProvider::shouldInvertAxisOrientation( const QString& ogcCrs )
   bool changeXY = false;
   if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
   {
+
+    //have we already checked this crs?
+    if ( mCrsInvertAxis.contains( ogcCrs ) )
+    {
+      //if so, return previous result to save time
+      return mCrsInvertAxis[ ogcCrs ];
+    }
+
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;
     if ( theSrs.createFromOgcWmsCrs( ogcCrs ) && theSrs.axisInverted() )
     {
       changeXY = true;
     }
+
+    //cache result to speed up future checks
+    mCrsInvertAxis[ ogcCrs ] = changeXY;
   }
 
   if ( mInvertAxisOrientation )
