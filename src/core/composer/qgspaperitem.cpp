@@ -158,7 +158,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   context.setScaleFactor( 1.0 );
   if ( mComposition->plotStyle() ==  QgsComposition::Preview )
   {
-    context.setRasterScaleFactor( horizontalViewScaleFactor() );
+    //Limit resolution of symbol fill if composition is not being exported
+    //otherwise zooming into composition slows down renders
+    context.setRasterScaleFactor( qMin( horizontalViewScaleFactor(), 3.0 ) );
   }
   else
   {
