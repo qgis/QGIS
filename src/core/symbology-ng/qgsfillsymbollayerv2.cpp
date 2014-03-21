@@ -677,7 +677,7 @@ void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext
   {
     //color ramp gradient
     QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( gradientRamp );
-    gradRamp->addStopsToGradient( &gradient );
+    gradRamp->addStopsToGradient( &gradient, context.alpha() );
   }
   else
   {

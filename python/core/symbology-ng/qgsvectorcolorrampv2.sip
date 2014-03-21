@@ -83,7 +83,7 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 
     /**copy color ramp stops to a QGradient
     * @note added in 2.1 */
-    void addStopsToGradient( QGradient* gradient );
+    void addStopsToGradient( QGradient* gradient, double alpha = 1 );
 };
 
 class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
