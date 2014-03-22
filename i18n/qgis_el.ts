@@ -427,8 +427,12 @@ This table is essential for many GIS applications for enumeration of tables.</so
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
+<<<<<<< HEAD
+        <translation>&lt;warning&gt;Η έκδοση των εγκατεστημένων scipts δεν είναι ίδια των διαθέσιμων scipts. Αυτό ίσως οδηγήσει σε λανθασμένη αναβάθμιση της PostGIS.</translation>
+=======
         <translation>&lt;warning&gt;Η έκδοση των εγκατεστημένων scipts δεν είναι ίδια των διαθέσιμων scipts. 
 Αυτό ίσως οδηγήσει σε λανθασμένη αναβάθμιση της PostGIS.</translation>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
@@ -1612,7 +1616,7 @@ p, li { white-space: pre-wrap; }\n
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished">Σφάλμα κατά τη φόρτωση του αρχείου shapefile προορισμού: %s</translation>
+        <translation>Σφάλμα κατά τη φόρτωση του αρχείου shapefile προορισμού: %s</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
@@ -1678,11 +1682,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Τελείωσε</translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Επεξεργασία ολοκληρώθηκε.</translation>
+        <translation>Η επεξεργασία ολοκληρώθηκε.</translation>
     </message>
     <message>
         <source>unstratified</source>
@@ -2117,7 +2121,8 @@ were reduced to %d vertices after simplification</source>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργήθηκαν τα αρχεία shapefiles στον φάκελο: 
+%s</translation>
     </message>
     <message>
         <source>CRS warning!</source>
@@ -2291,7 +2296,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία υπολογισμού της έκτασης στο επιλεγμένο επίπεδο εικόνας</translation>
     </message>
     <message>
         <source>Densify geometries</source>
@@ -2756,17 +2761,17 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="14"/>
         <source>Build spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία χωρικού ευρετηρίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
         <source>Select files from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή αρχείων από το δίσκο</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="29"/>
         <source>Select files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή αρχείων...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="53"/>
@@ -2819,32 +2824,32 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="14"/>
         <source>Autofill settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ρυθμίσεις αυτόματης συντήρησης</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="20"/>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Μέθοδος αυτόματης συμπλήρωσης</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="28"/>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>Χωρίς αυτόματη συμπλήρωση</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="33"/>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Συμπλήρωση με αριθμούς</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="38"/>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Συμπλήρωση με τιμές παραμέτρων</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="49"/>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρήση παραμέτρου</translation>
     </message>
 </context>
 <context>
@@ -3102,7 +3107,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="34"/>
         <source>Open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα μοντέλου</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="37"/>
@@ -3178,7 +3183,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="14"/>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή αριθμού ή έκφρασης</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="26"/>
@@ -4281,7 +4286,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="20"/>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished">Μαζικά (για επεξεργασία ολόκληρου φακέλου)</translation>
+        <translation>Μαζικά (για επεξεργασία ολόκληρου φακέλου)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="29"/>
@@ -4566,7 +4571,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="139"/>
         <source>Create an output alpha band</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία καναλιού alpha</translation>
     </message>
     <message>
         <source>Re-Enable Clipping</source>
@@ -24546,12 +24551,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Διάλογος</translation>
+        <translation>Διάλογος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="34"/>
         <source>Enable grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση καννάβου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="44"/>
@@ -24566,12 +24571,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="74"/>
         <source>Grid type</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος καννάβου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="84"/>
         <source>Line symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Συμβολισμός γραμμής</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="148"/>
@@ -24606,12 +24611,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="254"/>
         <source>Offset X</source>
-        <translation type="unfinished">Offset X</translation>
+        <translation>Μετατόπιση κατά Χ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="264"/>
         <source>Offset Y</source>
-        <translation type="unfinished">Offset Y</translation>
+        <translation>Μετατόπιση κατά Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="274"/>
@@ -24650,7 +24655,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="55"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="141"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατακόρυφο</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="59"/>
@@ -24702,22 +24707,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="35"/>
         <source>Preview of north arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπισκόπηση συμβόλου Βορρά</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="52"/>
         <source>Angle</source>
-        <translation type="unfinished">Γωνία</translation>
+        <translation>Περιστροφή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="94"/>
         <source>Placement</source>
-        <translation type="unfinished">Τοποθέτηση</translation>
+        <translation>Τοποθέτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="104"/>
         <source>Placement on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Τοποθέτηση στην οθόνη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="108"/>
@@ -24742,12 +24747,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="131"/>
         <source>Enable North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση συμβόλου Βορρά</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="147"/>
         <source>Set direction automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Αυτόματος ορισμός κατεύθυνσης</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationnortharrowdialog.cpp" line="140"/>
@@ -24760,22 +24765,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="55"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">Κάτω αριστερά</translation>
+        <translation>Κάτω αριστερά</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="55"/>
         <source>Top Left</source>
-        <translation type="unfinished">Επάνω Αριστερά</translation>
+        <translation>Επάνω Αριστερά</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="56"/>
         <source>Top Right</source>
-        <translation type="unfinished">Επάνω δεξιά</translation>
+        <translation>Πάνω δεξιά</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="56"/>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάτω δεξιά</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="58"/>
@@ -24790,72 +24795,72 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="59"/>
         <source>Bar</source>
-        <translation type="unfinished">Μπάρα</translation>
+        <translation>Μπάρα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="59"/>
         <source>Box</source>
-        <translation type="unfinished">Πλαίσιο</translation>
+        <translation>Πλαίσιο</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="182"/>
         <source> km</source>
-        <translation type="unfinished"> km</translation>
+        <translation> χλμ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="187"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation> χιλ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="192"/>
         <source> cm</source>
-        <translation type="unfinished"> cm</translation>
+        <translation> εκ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="196"/>
         <source> m</source>
-        <translation type="unfinished">m</translation>
+        <translation> μ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="201"/>
         <source> miles</source>
-        <translation type="unfinished"></translation>
+        <translation>μίλια</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="208"/>
         <source> mile</source>
-        <translation type="unfinished"> μίλι</translation>
+        <translation> μίλι</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="215"/>
         <source> inches</source>
-        <translation type="unfinished"></translation>
+        <translation> ίντσες</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="221"/>
         <source> foot</source>
-        <translation type="unfinished"> πόδι</translation>
+        <translation> πόδι</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="225"/>
         <source> feet</source>
-        <translation type="unfinished"> πόδια</translation>
+        <translation> πόδια</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="230"/>
         <source> degree</source>
-        <translation type="unfinished"> μοίρες</translation>
+        <translation> μοίρα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="232"/>
         <source> degrees</source>
-        <translation type="unfinished"> μοίρες</translation>
+        <translation> μοίρες</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebar.cpp" line="235"/>
         <source> unknown</source>
-        <translation type="unfinished"> άγνωστο</translation>
+        <translation> άγνωστο</translation>
     </message>
 </context>
 <context>
@@ -24913,22 +24918,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationscalebardialog.ui" line="107"/>
         <source>Box</source>
-        <translation type="unfinished">Πλαίσιο</translation>
+        <translation>Πλαίσιο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationscalebardialog.ui" line="112"/>
         <source>Bar</source>
-        <translation type="unfinished">Μπάρα</translation>
+        <translation>Μπάρα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationscalebardialog.ui" line="126"/>
         <source>Color of bar</source>
-        <translation type="unfinished">Χρώμα μπάρας</translation>
+        <translation>Χρώμα μπάρας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationscalebardialog.ui" line="139"/>
         <source>Size of bar</source>
-        <translation type="unfinished">Μέγεθος μπάρας</translation>
+        <translation>Μέγεθος μπάρας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationscalebardialog.ui" line="165"/>
@@ -24943,17 +24948,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationscalebardialog.cpp" line="35"/>
         <source> metres/km</source>
-        <translation type="unfinished"></translation>
+        <translation>μέτρα/χλμ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebardialog.cpp" line="38"/>
         <source> feet/miles</source>
-        <translation type="unfinished"></translation>
+        <translation>πόδια/μίλια</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationscalebardialog.cpp" line="41"/>
         <source> degrees</source>
-        <translation type="unfinished"> μοίρες</translation>
+        <translation> μοίρες</translation>
     </message>
 </context>
 <context>
@@ -25191,7 +25196,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="908"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="927"/>
         <source>Errors in file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλματα στο αρχείο %1</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="915"/>
@@ -25231,12 +25236,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="121"/>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation type="unfinished">Παρακαλώ εισάγετε ένα όνομα επιπέδου πριν από την προσθήκη του επιπέδου στο χάρτη</translation>
+        <translation>Παρακαλώ εισάγετε ένα όνομα επιπέδου πριν από την προσθήκη του επιπέδου στο χάρτη</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="129"/>
         <source>No delimiters set</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ορίστηκε διαχωριστικά (delimiters)</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="129"/>
@@ -25341,7 +25346,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="632"/>
         <source>All files</source>
-        <translation type="unfinished">Όλα τα αρχεία</translation>
+        <translation>Όλα τα αρχεία</translation>
     </message>
 </context>
 <context>
@@ -25354,7 +25359,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="54"/>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα αρχείου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="64"/>
@@ -25415,29 +25420,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="829"/>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Χαρακτήρας Tab</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="848"/>
         <source>Space</source>
-        <translation type="unfinished">Κενό</translation>
+        <translation>Κενό</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="813"/>
         <source>Comma</source>
-        <translation type="unfinished"></translation>
+        <translation>Κόμμα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="132"/>
         <source>Encoding</source>
-        <translation type="unfinished">Κωδικοποίηση</translation>
+        <translation>Κωδικοποίηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="139"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="142"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="145"/>
         <source>Select the file encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή κωδικοποίησης αρχείου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="259"/>
@@ -25454,7 +25459,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="302"/>
         <source>Geometry field</source>
-        <translation type="unfinished"></translation>
+        <translation>Πεδίο γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="324"/>
@@ -25466,7 +25471,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="343"/>
         <source>Geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="357"/>
@@ -25476,17 +25481,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="362"/>
         <source>Point</source>
-        <translation type="unfinished">Σημείο</translation>
+        <translation>Σημείο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="367"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Γραμμή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="372"/>
         <source>Polygon</source>
-        <translation type="unfinished">Πολύγωνο</translation>
+        <translation>Πολύγωνο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="400"/>
@@ -25496,12 +25501,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="407"/>
         <source>Field options</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογές πεδίων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="414"/>
         <source>File format </source>
-        <translation type="unfinished"></translation>
+        <translation>Μορφή αρχείου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="432"/>
@@ -25761,7 +25766,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1014"/>
         <source>Expression</source>
-        <translation type="unfinished">Έκφραση</translation>
+        <translation>Έκφραση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1036"/>
@@ -25773,17 +25778,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1065"/>
         <source>Layer settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ρυθμίσεις επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1089"/>
         <source>Sample data</source>
-        <translation type="unfinished"></translation>
+        <translation>Δείγμα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="867"/>
         <source>Colon</source>
-        <translation type="unfinished"></translation>
+        <translation>Χαρακτήρας colon</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
@@ -25803,7 +25808,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="205"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="208"/>
         <source>Name of the field containing x values</source>
-        <translation type="unfinished">Όνομα του πεδίου που περιέχει τις τιμές x</translation>
+        <translation>Όνομα του πεδίου που περιέχει τις τιμές x</translation>
     </message>
     <message>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
@@ -25819,7 +25824,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="246"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="249"/>
         <source>Name of the field containing y values</source>
-        <translation type="unfinished">Όνομα του πεδίου που περιέχει τιμές y</translation>
+        <translation>Όνομα του πεδίου που περιέχει τις τιμές y</translation>
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
@@ -25850,7 +25855,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="128"/>
         <source>Category label</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατηγορία ετικέτας</translation>
     </message>
 </context>
 <context>
@@ -25893,22 +25898,22 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdiagramproperties.cpp" line="64"/>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="151"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>χιλ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="65"/>
         <source>Map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="78"/>
         <source>Around Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Γύρω από το σημείο</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="79"/>
         <source>Over Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάνω από το σημείο</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="84"/>
@@ -25918,7 +25923,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="85"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Οριζόντια</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="90"/>
@@ -25928,22 +25933,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="95"/>
         <source>On line</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάνω στη γραμμή</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="96"/>
         <source>Above line</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάνω από τη γραμμή</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="97"/>
         <source>Below Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάτω από τη γραμμή</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="98"/>
         <source>Map orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσανατολισμός χάρτη</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="107"/>
@@ -25974,7 +25979,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="116"/>
         <source>Area</source>
-        <translation type="unfinished">Περιοχή</translation>
+        <translation>Επιφάνεια</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="117"/>
@@ -26061,7 +26066,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="57"/>
         <source>Pen color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Χρώμα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="528"/>
@@ -27170,6 +27175,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="80"/>
         <source>Select within selection</source>
         <translation type="unfinished">Επιλογή σε επιλεγμένα</translation>
+<<<<<<< HEAD
     </message>
 </context>
 <context>
@@ -27231,6 +27237,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="131"/>
         <source>Map view extent</source>
         <translation type="unfinished"></translation>
+=======
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
 </context>
 <context>
@@ -30240,7 +30248,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="126"/>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="141"/>
@@ -30250,7 +30258,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="142"/>
         <source>Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Δίκτυο</translation>
     </message>
 </context>
 <context>
@@ -30475,7 +30483,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="200"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Αντιστροφή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="252"/>
@@ -30998,7 +31006,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="54"/>
         <source>Mode</source>
-        <translation type="unfinished">Λειτουργία</translation>
+        <translation>Λειτουργία</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="107"/>
@@ -31230,7 +31238,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="142"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Εντάξει</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="147"/>
@@ -31250,7 +31258,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="165"/>
         <source>Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation>Επανεγγραφή</translation>
     </message>
 </context>
 <context>
@@ -31283,17 +31291,17 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="112"/>
         <source>Select item</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή στοιχείου</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="119"/>
         <source>Delete selected item</source>
-        <translation type="unfinished">Διαγραφή επιλεγμένου αντικειμένου</translation>
+        <translation>Διαγραφή επιλεγμένου αντικειμένου</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="129"/>
         <source>Open</source>
-        <translation type="unfinished">Άνοιγμα</translation>
+        <translation>Άνοιγμα</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="134"/>
@@ -31308,7 +31316,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="148"/>
         <source>Addition</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="149"/>
@@ -31338,22 +31346,22 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="156"/>
         <source>Equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ίσο</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="157"/>
         <source>Not equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Διάφορο</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="158"/>
         <source>Greater than</source>
-        <translation type="unfinished"></translation>
+        <translation>Μεγαλύτερο από</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="159"/>
         <source>Greater than or equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Μεγαλύτερο ή ίσο από</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="160"/>
@@ -33209,7 +33217,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="20"/>
         <source>Grass Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Εργαλεία Grass</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="30"/>
@@ -33231,7 +33239,7 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="61"/>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="116"/>
         <source>Filter</source>
-        <translation type="unfinished">Φίλτρο</translation>
+        <translation>Φίλτρο</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="85"/>
@@ -33254,7 +33262,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="56"/>
         <source>Start editing failed</source>
-        <translation type="unfinished">Έναρξη επεξεργασίας απέτυχε</translation>
+        <translation>Έναρξη επεξεργασίας απέτυχε</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="57"/>
@@ -33264,17 +33272,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="79"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Τερματισμός επεξεργασίας</translation>
+        <translation>Τερματισμός επεξεργασίας</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="80"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">Θέλετε να αποθηκεύσετε τις αλλαγές στο %1 επίπεδο;</translation>
+        <translation>Θέλετε να αποθηκεύσετε τις αλλαγές στο επίπεδο %1;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="104"/>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="105"/>
@@ -33285,7 +33293,7 @@ at line %2 column %3</source>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="133"/>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="154"/>
         <source>Commit errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλματα οριστικοποίησης</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="134"/>
@@ -33297,12 +33305,12 @@ at line %2 column %3</source>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="136"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σφάλματα: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="143"/>
         <source>Show more</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση περισσότερων</translation>
     </message>
 </context>
 <context>
@@ -33310,12 +33318,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="68"/>
         <source>Browse</source>
-        <translation type="unfinished">Αναζήτηση</translation>
+        <translation>Αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
         <source>Layer name</source>
-        <translation type="unfinished">Όνομα επιπέδου</translation>
+        <translation>Όνομα επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
@@ -33325,7 +33333,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="85"/>
         <source>Provider</source>
-        <translation type="unfinished">Πάροχος</translation>
+        <translation>Πάροχος</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
@@ -33388,17 +33396,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="21"/>
         <source>Layer name</source>
-        <translation type="unfinished">Όνομα επιπέδου</translation>
+        <translation>Όνομα επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="26"/>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="31"/>
         <source>Provider</source>
-        <translation type="unfinished">Πάροχος</translation>
+        <translation>Πάροχος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="36"/>
@@ -33418,7 +33426,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="51"/>
         <source>New datasource</source>
-        <translation type="unfinished">Νέα πηγή δεδομένων</translation>
+        <translation>Νέα πηγή δεδομένων</translation>
     </message>
 </context>
 <context>
@@ -33443,7 +33451,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
         <source>QGIS Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Βοήθεια για το QGIS</translation>
     </message>
 </context>
 <context>
@@ -33451,12 +33459,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="14"/>
         <source>QGIS Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Βοήθεια για το QGIS</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="32"/>
         <source>about:blank</source>
-        <translation type="unfinished">σχετικά: κενό</translation>
+        <translation>σχετικά: κενό</translation>
     </message>
 </context>
 <context>
@@ -33469,12 +33477,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="38"/>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="77"/>
         <source>html</source>
-        <translation type="unfinished"></translation>
+        <translation>html</translation>
     </message>
 </context>
 <context>
@@ -34029,12 +34037,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατόπιση κατά Χ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="275"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατόπιση κατά Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="311"/>
@@ -34044,7 +34052,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="331"/>
         <source>Default label</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπιλεγμένη ετικέτα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="432"/>
@@ -34054,7 +34062,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="477"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Προηγμένες επιλογές</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="703"/>
@@ -34212,7 +34220,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="636"/>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Μέγεθος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="655"/>
@@ -34257,22 +34265,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση βάσει κλίμακας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="144"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Μέγιστη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="154"/>
         <source>Minimum</source>
-        <translation>Ελάχιστο</translation>
+        <translation>Ελάχιστη</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
         <source>°</source>
-        <translation type="unfinished">°</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="674"/>
@@ -34285,7 +34293,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="114"/>
         <source>Font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρώμα γραμματοσειράς</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="75"/>
@@ -34303,28 +34311,28 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="14"/>
         <source>Label properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ιδιότητες ετικέτας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="22"/>
         <source>Text</source>
-        <translation type="unfinished">Κείμενο</translation>
+        <translation>Κείμενο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="34"/>
         <source>Font</source>
-        <translation type="unfinished">Γραμματοσειρά</translation>
+        <translation>Γραμματοσειρά</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="75"/>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="356"/>
         <source>Size</source>
-        <translation type="unfinished">Μέγεθος</translation>
+        <translation>Μέγεθος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="264"/>
         <source>Display</source>
-        <translation type="unfinished">Εμφάνιση</translation>
+        <translation>Εμφάνιση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="322"/>
@@ -34344,7 +34352,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="278"/>
         <source>Scale-based</source>
-        <translation type="unfinished"></translation>
+        <translation>Βάσει κλίμακας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="40"/>
@@ -34354,17 +34362,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="100"/>
         <source>Style</source>
-        <translation type="unfinished">Στυλ</translation>
+        <translation>Στυλ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="130"/>
         <source>Underlined text</source>
-        <translation type="unfinished"></translation>
+        <translation>Υπογραμμισμένο κείμενο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="133"/>
         <source>U</source>
-        <translation type="unfinished"></translation>
+        <translation>Υ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="164"/>
@@ -34416,37 +34424,37 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="391"/>
         <source>Position</source>
-        <translation type="unfinished">Θέση</translation>
+        <translation>Τοποθέτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="403"/>
         <source>Label distance</source>
-        <translation type="unfinished">Απόσταση ετικετών</translation>
+        <translation>Απόσταση ετικετών</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="423"/>
         <source>X Coordinate</source>
-        <translation type="unfinished">Συντεταγμένη Χ</translation>
+        <translation>Συντεταγμένη Χ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="449"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished">Συντεταγμένη Υ</translation>
+        <translation>Συντεταγμένη Υ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="475"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Οριζόντια στοίχιση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="495"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατακόρυφη στοίχιση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="515"/>
         <source>Rotation</source>
-        <translation type="unfinished">Περιστροφή</translation>
+        <translation>Περιστροφή</translation>
     </message>
 </context>
 <context>
@@ -37516,8 +37524,7 @@ not displayed</source>
         <source>Failed to import some layers!
 
 </source>
-        <translation>Αδυναμία εισαγωγής μερικών επιπέδων! 
-</translation>
+        <translation type="unfinished">Αδυναμία εισαγωγής μερικών επιπέδων!</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="388"/>
@@ -45424,6 +45431,7 @@ p, li { white-space: pre-wrap; }
         <translation>Αποτυχία σύνδεσης στη Βάση Δεδομένων</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="210"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="224"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="228"/>
@@ -45433,6 +45441,18 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="453"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="507"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="592"/>
+=======
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="199"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="213"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="217"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="227"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="244"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="312"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="442"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="496"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="581"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="610"/>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="621"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="632"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="676"/>
@@ -54635,7 +54655,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>CRS</source>
+<<<<<<< HEAD
         <translation type="obsolete">Σύστημα Αναφοράς Συντεταγμένων</translation>
+=======
+        <translation type="unfinished">Σύστημα Αναφοράς Συντεταγμένων</translation>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3447"/>
@@ -55652,7 +55676,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More Options &gt;&gt;</source>
+<<<<<<< HEAD
         <translation type="obsolete">Περισσότερες επιλογές</translation>
+=======
+        <translation>Περισσότερες επιλογές</translation>
+>>>>>>> 46d5b1eec049e98b4e2686c0e8bd080cd7fdde14
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="199"/>
@@ -55814,17 +55842,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="102"/>
         <source>Edit...</source>
-        <translation type="unfinished">Επεξεργασία...</translation>
+        <translation>Επεξεργασία...</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="106"/>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="116"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Τροποποίηση σύνδεσης WFS</translation>
     </message>
 </context>
 <context>
@@ -55837,7 +55865,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="98"/>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1261"/>
@@ -56136,12 +56164,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="217"/>
         <source>Load connections</source>
-        <translation type="unfinished">Φόρτωση συνδέσεων</translation>
+        <translation>Φόρτωση συνδέσεων</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="218"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished">XML αρχεία (*.xml *XML)</translation>
+        <translation>XML αρχεία (*.xml *XML)</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="919"/>
@@ -56199,7 +56227,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="931"/>
         <source>No CRS selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν επιλέχθηκε Σύστημα Αναφοράς Συντεταγμένων</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="936"/>
