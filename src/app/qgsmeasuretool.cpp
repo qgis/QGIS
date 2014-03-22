@@ -214,6 +214,17 @@ QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
   }
   else
   {
-    return snappingResults.constBegin()->snappedVertex;
+    QList<QgsSnappingResult>::const_iterator it = snappingResults.constBegin();
+    QgsPoint snapPoint = it->snappedVertex;
+    while ( it != snappingResults.constEnd() )
+    {
+      if( it->layer->geometryType() == QGis::Point )
+      {
+        snapPoint = it->snappedVertex;
+        break;
+      }
+      it++;
+    }
+    return snapPoint;
   }
 }

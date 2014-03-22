@@ -114,8 +114,6 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
     mSnappingMarker->setColor( Qt::magenta );
     mSnappingMarker->setPenWidth( 3 );
     mSnappingMarker->setCenter( snapPointFromResults(snapResults,e->pos()) );
-
-
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
       mapPoint = snapPointFromResults( snapResults, e->pos() );
