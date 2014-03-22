@@ -26,6 +26,8 @@ email                : a.furieri@lqt.it
 #include "qgsmessagelog.h"
 #include "qgsvectorlayerimport.h"
 
+#include <QMessageBox>
+
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
@@ -5144,3 +5146,413 @@ QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes()
   return mPrimaryKeyAttrs;
 }
 
+// ---------------------------------------------------------------------------
+
+QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QString& sldStyle,
+                           const QString& styleName, const QString& styleDescription,
+                           const QString& uiFileContent, bool useAsDefault, QString& errCause )
+{
+  QgsSqliteHandle *handle;
+  sqlite3 *sqliteHandle = NULL;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+
+  QgsDataSourceURI dsUri( uri );
+  QString sqlitePath = dsUri.database();
+  QgsDebugMsg( "Database is: " + sqlitePath );
+
+  // trying to open the SQLite DB
+  spatialite_init( 0 );
+  handle = QgsSqliteHandle::openDb( sqlitePath );
+  if ( NULL == handle )
+  {
+    QgsDebugMsg( "Connection to database failed. Save style aborted." );
+    errCause = QObject::tr( "Connection to database failed" );
+    return QgsVectorLayerImport::ErrConnectionFailed;
+  }
+
+  sqliteHandle = handle->handle();
+
+  // check if layer_styles table already exist
+  QString countIfExist = QString( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( "layer_styles" );
+
+  int ret = sqlite3_get_table( sqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( countIfExist ) );
+    errCause = QObject::tr( "Error looking for style. The query was logged" );
+    return false;
+  }
+
+  // if not table exist... create is
+  int howMany = 0;
+  if ( 1 == rows )
+  {
+    howMany = atoi( results[( rows * columns ) + 0 ] );
+  }
+  sqlite3_free_table( results );
+
+  // create table if not exist
+  if ( 0 == howMany )
+  {
+
+    QString createQuery = QString( "CREATE TABLE layer_styles("
+                                   "id INTEGER PRIMARY KEY AUTOINCREMENT"
+                                   ",f_table_catalog varchar(256)"
+                                   ",f_table_schema varchar(256)"
+                                   ",f_table_name varchar(256)"
+                                   ",f_geometry_column varchar(256)"
+                                   ",styleName varchar(30)"
+                                   ",styleQML text"
+                                   ",styleSLD text"
+                                   ",useAsDefault boolean"
+                                   ",description text"
+                                   ",owner varchar(30)"
+                                   ",ui text"
+                                   ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                                   ")" );
+    ret = sqlite3_exec( sqliteHandle, createQuery.toUtf8().constData(), NULL, NULL, &errMsg );
+    if ( SQLITE_OK != ret )
+    {
+      QgsSqliteHandle::closeDb( handle );
+      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
+      return false;
+    }
+  }
+
+  QString uiFileColumn;
+  QString uiFileValue;
+  if ( !uiFileContent.isEmpty() )
+  {
+    uiFileColumn = ",ui";
+    uiFileValue = QString( ",%1" ).arg( QgsSpatiaLiteProvider::quotedValue( uiFileContent ) );
+  }
+
+  QString sql = QString( "INSERT INTO layer_styles("
+                         "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%11"
+                         ") VALUES ("
+                         "%1,%2,%3,%4,%5,%6,%7,%8,%9,%10%12"
+                         ")" )
+                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( qmlStyle ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( sldStyle ) )
+                .arg( useAsDefault ? "1" : "0" )
+                .arg( QgsSpatiaLiteProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.username() ) )
+                .arg( uiFileColumn )
+                .arg( uiFileValue );
+
+  QString checkQuery = QString( "SELECT styleName"
+                                " FROM layer_styles"
+                                " WHERE f_table_catalog=%1"
+                                " AND f_table_schema=%2"
+                                " AND f_table_name=%3"
+                                " AND f_geometry_column=%4"
+                                " AND styleName=%5" )
+                       .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+                       .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+                       .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+                       .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) )
+                       .arg( QgsSpatiaLiteProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
+
+  ret = sqlite3_get_table( sqliteHandle, checkQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( checkQuery ) );
+    errCause = QObject::tr( "Error looking for style. The query was logged" );
+    return false;
+  }
+
+  if ( 0 != rows )
+  {
+    sqlite3_free_table( results );
+    if ( QMessageBox::question( 0, QObject::tr( "Save style in database" ),
+                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
+                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
+                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+    {
+      QgsSqliteHandle::closeDb( handle );
+      errCause = QObject::tr( "Operation aborted" );
+      return false;
+    }
+
+    sql = QString( "UPDATE layer_styles"
+                   " SET useAsDefault=%1"
+                   ",styleQML=%2"
+                   ",styleSLD=%3"
+                   ",description=%4"
+                   ",owner=%5"
+                   " WHERE f_table_catalog=%6"
+                   " AND f_table_schema=%7"
+                   " AND f_table_name=%8"
+                   " AND f_geometry_column=%9"
+                   " AND styleName=%10" )
+          .arg( useAsDefault ? "1" : "0" )
+          .arg( QgsSpatiaLiteProvider::quotedValue( qmlStyle ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( sldStyle ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.username() ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) )
+          .arg( QgsSpatiaLiteProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
+  }
+
+  if ( useAsDefault )
+  {
+    QString removeDefaultSql = QString( "UPDATE layer_styles"
+                                        " SET useAsDefault=0"
+                                        " WHERE f_table_catalog=%1"
+                                        " AND f_table_schema=%2"
+                                        " AND f_table_name=%3"
+                                        " AND f_geometry_column=%4" )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
+    sql = QString( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql ).arg( sql );
+  }
+
+  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( sql ) );
+    errCause = QObject::tr( "Error looking for style. The query was logged" );
+    return false;
+  }
+
+  bool saved = ( SQLITE_OK == ret ) ? true : false;
+
+  if ( NULL != errMsg )
+    sqlite3_free( errMsg );
+
+  QgsSqliteHandle::closeDb( handle );
+  return saved;
+}
+
+
+QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
+{
+  QgsSqliteHandle *handle;
+  sqlite3 *sqliteHandle = NULL;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  QString sql;
+
+  QgsDataSourceURI dsUri( uri );
+  QString sqlitePath = dsUri.database();
+  QgsDebugMsg( "Database is: " + sqlitePath );
+
+  // trying to open the SQLite DB
+  spatialite_init( 0 );
+  handle = QgsSqliteHandle::openDb( sqlitePath );
+  if ( NULL == handle )
+  {
+    QgsDebugMsg( "Connection to database failed. Save style aborted." );
+    errCause = QObject::tr( "Connection to database failed" );
+    return "";
+  }
+
+  sqliteHandle = handle->handle();
+
+  QString selectQmlQuery = QString( "SELECT styleQML"
+                                    " FROM layer_styles"
+                                    " WHERE f_table_catalog=%1"
+                                    " AND f_table_schema=%2"
+                                    " AND f_table_name=%3"
+                                    " AND f_geometry_column=%4"
+                                    " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                                    ",update_time DESC LIMIT 1" )
+                           .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+                           .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+                           .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+                           .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
+
+  int ret = sqlite3_get_table( sqliteHandle, selectQmlQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+    errCause = QObject::tr( "Error executing loading style. The query was logged" );
+    return "";
+  }
+
+  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : "";
+  sqlite3_free_table( results );
+
+  QgsSqliteHandle::closeDb( handle );
+  return style;
+}
+
+QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
+                           QStringList &descriptions, QString& errCause )
+{
+  QgsSqliteHandle *handle;
+  sqlite3 *sqliteHandle = NULL;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  QString sql;
+
+  QgsDataSourceURI dsUri( uri );
+  QString sqlitePath = dsUri.database();
+  QgsDebugMsg( "Database is: " + sqlitePath );
+
+  // trying to open the SQLite DB
+  spatialite_init( 0 );
+  handle = QgsSqliteHandle::openDb( sqlitePath );
+  if ( NULL == handle )
+  {
+    QgsDebugMsg( "Connection to database failed. Save style aborted." );
+    errCause = QObject::tr( "Connection to database failed" );
+    return -1;
+  }
+
+  sqliteHandle = handle->handle();
+
+  // check if layer_styles table already exist
+  QString countIfExist = QString( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( "layer_styles" );
+
+  int ret = sqlite3_get_table( sqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( countIfExist ) );
+    errCause = QObject::tr( "Error looking for style. The query was logged" );
+    return -1;
+  }
+
+  int howMany = 0;
+  if ( 1 == rows )
+  {
+    howMany = atoi( results[( rows * columns ) + 0 ] );
+  }
+  sqlite3_free_table( results );
+
+  if ( 0 == howMany )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
+    errCause = QObject::tr( "No styles available on DB" );
+    return false;
+  }
+
+  // get them
+  QString selectRelatedQuery = QString( "SELECT id,styleName,description"
+                                        " FROM layer_styles"
+                                        " WHERE f_table_catalog=%1"
+                                        " AND f_table_schema=%2"
+                                        " AND f_table_name=%3"
+                                        " AND f_geometry_column=%4" )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
+
+  ret = sqlite3_get_table( sqliteHandle, selectRelatedQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
+    errCause = QObject::tr( "Error loading styles. The query was logged" );
+    return -1;
+  }
+
+  int numberOfRelatedStyles = rows;
+  for ( int i = 1; i <= rows; i++ )
+  {
+    ids.append( results[( i * columns ) + 0 ] );
+    names.append( QString::fromUtf8( results[( i * columns ) + 1 ] ) );
+    descriptions.append( QString::fromUtf8( results[( i * columns ) + 2 ] ) );
+  }
+  sqlite3_free_table( results );
+
+  QString selectOthersQuery = QString( "SELECT id,styleName,description"
+                                       " FROM layer_styles"
+                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4)"
+                                       " ORDER BY update_time DESC" )
+                              .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.database() ) )
+                              .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
+                              .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
+                              .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
+
+  ret = sqlite3_get_table( sqliteHandle, selectOthersQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
+    errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
+    return -1;
+  }
+
+  for ( int i = 1; i <= rows; i++ )
+  {
+    ids.append( results[( i * columns ) + 0 ] );
+    names.append( QString::fromUtf8( results[( i * columns ) + 1 ] ) );
+    descriptions.append( QString::fromUtf8( results[( i * columns ) + 2 ] ) );
+  }
+  sqlite3_free_table( results );
+
+  QgsSqliteHandle::closeDb( handle );
+  return numberOfRelatedStyles;
+}
+
+QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
+{
+  QgsSqliteHandle *handle;
+  sqlite3 *sqliteHandle = NULL;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  QString sql;
+
+  QgsDataSourceURI dsUri( uri );
+  QString sqlitePath = dsUri.database();
+  QgsDebugMsg( "Database is: " + sqlitePath );
+
+  // trying to open the SQLite DB
+  spatialite_init( 0 );
+  handle = QgsSqliteHandle::openDb( sqlitePath );
+  if ( NULL == handle )
+  {
+    QgsDebugMsg( "Connection to database failed. Save style aborted." );
+    errCause = QObject::tr( "Connection to database failed" );
+    return "";
+  }
+
+  sqliteHandle = handle->handle();
+
+  QString style;
+  QString selectQmlQuery = QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsSpatiaLiteProvider::quotedValue( styleId ) );
+  int ret = sqlite3_get_table( sqliteHandle, selectQmlQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK == ret )
+  {
+    if ( 1 == rows )
+      style = QString::fromUtf8( results[( rows * columns ) + 0 ] );
+    else
+      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( "layer_styles" );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+    errCause = QObject::tr( "Error executing the select query. The query was logged" );
+  }
+
+  QgsSqliteHandle::closeDb( handle );
+  sqlite3_free_table( results );
+  return style;
+}
