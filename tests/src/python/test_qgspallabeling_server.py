@@ -83,7 +83,8 @@ class TestServerBase(TestQgsPalLabeling):
         # noinspection PyArgumentList
         cls._CacheDir = settings.value(
             "cache/directory",
-            os.path.join(QgsApplication.qgisSettingsDirPath(), "cache"),
+            os.path.join(unicode(QgsApplication.qgisSettingsDirPath()),
+                         "cache"),
             type=unicode)
 
     @classmethod
