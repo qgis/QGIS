@@ -362,9 +362,12 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 
     if ( snapResults.size() < 1 )
     {
-      displaySnapToleranceWarning();
+      emit messageEmitted( tr( "could not snap to a segment on the current layer." ) );
       return;
     }
+
+    // remove previous warning
+    emit messageDiscarded();
 
     mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
     connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
@@ -374,6 +377,9 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   }
   else
   {
+    // remove previous warning
+    emit messageDiscarded();
+
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     Q_ASSERT( vlayer );
 

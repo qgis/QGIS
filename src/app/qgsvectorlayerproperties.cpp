@@ -1024,7 +1024,12 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   else
     joinItem->setText( 2, join.targetFieldName );
 
+  if ( join.memoryCache )
+    joinItem->setText( 3, QString::fromUtf8( "\u2714" ) );
+
   mJoinTreeWidget->addTopLevelItem( joinItem );
+  for ( int c = 0; c < 3; c++ )
+    mJoinTreeWidget->resizeColumnToContents( c );
 }
 
 void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()

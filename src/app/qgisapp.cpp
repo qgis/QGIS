@@ -579,6 +579,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mpGpsDock->setWidget( mpGpsWidget );
   mpGpsDock->hide();
 
+  mLastMapToolMessage = 0;
+
   mLogViewer = new QgsMessageLogViewer( statusBar(), this );
 
   mLogDock = new QDockWidget( tr( "Log Messages" ), this );
@@ -1050,7 +1052,7 @@ void QgisApp::createActions()
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
-  connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition () ) );
+  connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
@@ -1890,8 +1892,8 @@ void QgisApp::setupConnections()
            this, SLOT( showScale( double ) ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( updateMouseCoordinatePrecision() ) );
-  connect( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool * ) ),
-           this, SLOT( mapToolChanged( QgsMapTool * ) ) );
+  connect( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ),
+           this, SLOT( mapToolChanged( QgsMapTool *, QgsMapTool * ) ) );
   connect( mMapCanvas, SIGNAL( selectionChanged( QgsMapLayer * ) ),
            this, SLOT( selectionChanged( QgsMapLayer * ) ) );
   connect( mMapCanvas, SIGNAL( extentsChanged() ),
@@ -2006,9 +2008,9 @@ void QgisApp::createCanvasTools()
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
   mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas );
   mMapTools.mRotateFeature->setAction( mActionRotateFeature );
-  //need at least geos 3.3 for OffsetCurve tool
+//need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   mMapTools.mOffsetCurve = new QgsMapToolOffsetCurve( mMapCanvas );
   mMapTools.mOffsetCurve->setAction( mActionOffsetCurve );
 #else
@@ -2059,7 +2061,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mRotateLabel->setAction( mActionRotateLabel );
   mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
   mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
-  //ensure that non edit tool is initialised or we will get crashes in some situations
+//ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
 }
 
@@ -2458,7 +2460,7 @@ void QgisApp::about()
   abt->activateWindow();
 }
 
-void QgisApp::addLayerDefinition ()
+void QgisApp::addLayerDefinition()
 {
   QString path = QFileDialog::getOpenFileName( this, "Add Layer Definition File", QDir::home().path(), "*.qlr" );
   if ( path.isEmpty() )
@@ -8020,11 +8022,25 @@ void QgisApp::showProgress( int theProgress, int theTotalSteps )
   }
 }
 
-void QgisApp::mapToolChanged( QgsMapTool *tool )
+void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
-  if ( tool && !tool->isEditTool() )
+  if ( oldTool )
   {
-    mNonEditMapTool = tool;
+    disconnect( oldTool, SIGNAL( messageEmitted( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+    disconnect( oldTool, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+    disconnect( oldTool, SIGNAL( messageDiscarded() ), this, SLOT( removeMapToolMessage() ) );
+  }
+
+  if ( newTool )
+  {
+    if ( !newTool->isEditTool() )
+    {
+      mNonEditMapTool = newTool;
+    }
+
+    connect( newTool, SIGNAL( messageEmitted( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+    connect( newTool, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+    connect( newTool, SIGNAL( messageDiscarded() ), this, SLOT( removeMapToolMessage() ) );
   }
 }
 
@@ -8150,6 +8166,27 @@ void QgisApp::showStatusMessage( QString theMessage )
 {
   statusBar()->showMessage( theMessage );
 }
+
+void QgisApp::displayMapToolMessage( QString message, QgsMessageBar::MessageLevel level )
+{
+  // remove previous message
+  messageBar()->popWidget( mLastMapToolMessage );
+
+  QgsMapTool* tool = mapCanvas()->mapTool();
+
+  if ( tool )
+  {
+    mLastMapToolMessage = new QgsMessageBarItem( tool->toolName(), message, level, messageTimeout() );
+    messageBar()->pushItem( mLastMapToolMessage );
+  }
+}
+
+void QgisApp::removeMapToolMessage()
+{
+  // remove previous message
+  messageBar()->popWidget( mLastMapToolMessage );
+}
+
 
 // Show the maptip using tooltip
 void QgisApp::showMapTip()

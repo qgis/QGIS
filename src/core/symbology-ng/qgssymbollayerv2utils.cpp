@@ -585,6 +585,8 @@ void QgsSymbolLayerV2Utils::drawStippledBackround( QPainter* painter, QRect rect
 #include <cfloat>
 
 
+#if !defined(GEOS_VERSION_MAJOR) || !defined(GEOS_VERSION_MINOR) || \
+    ((GEOS_VERSION_MAJOR<3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR<3)))
 // calculate line's angle and tangent
 static bool lineInfo( QPointF p1, QPointF p2, double& angle, double& t )
 {
@@ -644,6 +646,7 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
   y = p1.y() + t1 * ( x - p1.x() );
   return QPointF( x, y );
 }
+#endif
 
 
 QPolygonF offsetLine( QPolygonF polyline, double dist )
@@ -2772,6 +2775,30 @@ void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, const QRect& rect, 
     for ( int j = c1; j < c2; j++, p -= 4 )
       for ( int i = i1; i <= i2; i++ )
         p[i] = ( rgba[i] += (( p[i] << 4 ) - rgba[i] ) * alpha / 16 ) >> 4;
+  }
+}
+
+void QgsSymbolLayerV2Utils::premultiplyColor(QColor &rgb, int alpha)
+{
+  int r = 0, g = 0, b = 0;
+  double alphaFactor = 1.0;
+
+  if ( alpha != 255 && alpha > 0 )
+  {
+    // Semi-transparent pixel. We need to adjust the colors for ARGB32_Premultiplied images
+    // where color values have to be premultiplied by alpha
+
+    rgb.getRgb( &r, &g, &b );
+
+    alphaFactor = alpha / 255.;
+    r *= alphaFactor;
+    g *= alphaFactor;
+    b *= alphaFactor;
+    rgb.setRgb( r, g, b, alpha );
+  }
+  else if ( alpha == 0 )
+  {
+    rgb.setRgb( 0, 0, 0, 0 );
   }
 }
 

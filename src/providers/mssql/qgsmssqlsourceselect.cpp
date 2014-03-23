@@ -183,6 +183,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WFlags fl, bool
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
   restoreGeometry( settings.value( "/Windows/MSSQLSourceSelect/geometry" ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( "/Windows/MSSQLSourceSelect/HoldDialogOpen", false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
@@ -396,6 +397,7 @@ QgsMssqlSourceSelect::~QgsMssqlSourceSelect()
 
   QSettings settings;
   settings.setValue( "/Windows/MSSQLSourceSelect/geometry", saveGeometry() );
+  settings.setValue( "/Windows/MSSQLSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
@@ -448,7 +450,10 @@ void QgsMssqlSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, "mssql" );
-    accept();
+    if ( !mHoldDialogOpen->isChecked() )
+    {
+      accept();
+    }
   }
 }
 

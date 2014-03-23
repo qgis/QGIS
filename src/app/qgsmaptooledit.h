@@ -72,7 +72,6 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapTool
     /**Display a timed message bar noting the active vector layer is not editable.
        @note added in QGIS 1.9*/
     void notifyNotEditableLayer();
-
 };
 
 #endif

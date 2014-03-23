@@ -149,9 +149,9 @@ void QgsMessageBarItem::writeContent()
     {
       // add ':' to end of title
       QString t = mTitle.trimmed();
-      if ( !t.endsWith( ":" ) && !content.isEmpty() )
+      if ( !content.isEmpty() && !t.endsWith( ":" ) && !t.endsWith( ": " ) )
         t += ": ";
-      content.prepend( QString( "<b>" ) + t + "</b>" );
+      content.prepend( QString( "<b>" ) + t + " </b>" );
     }
     mTextEdit->setText( content );
   }

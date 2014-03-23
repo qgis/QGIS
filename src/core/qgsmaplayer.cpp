@@ -577,9 +577,9 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
 } // bool QgsMapLayer::writeXML
 
-QDomDocument QgsMapLayer::asLayerDefinition ()
+QDomDocument QgsMapLayer::asLayerDefinition()
 {
-  QDomDocument doc( "qgis-layer-definition");
+  QDomDocument doc( "qgis-layer-definition" );
   QDomElement maplayer = doc.createElement( "maplayer" );
   this->writeLayerXML( maplayer, doc );
   maplayer.removeChild( maplayer.firstChildElement( "id" ) );
@@ -589,11 +589,11 @@ QDomDocument QgsMapLayer::asLayerDefinition ()
 
 QgsMapLayer* QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 {
-  QDomNode layernode = document.elementsByTagName( "maplayer" ).at(0);
+  QDomNode layernode = document.elementsByTagName( "maplayer" ).at( 0 );
   QDomElement layerElem = layernode.toElement();
 
   QString type = layerElem.attribute( "type" );
-  QgsDebugMsg(type);
+  QgsDebugMsg( type );
   QgsMapLayer *layer = NULL;
 
   if ( type == "vector" )
@@ -613,6 +613,9 @@ QgsMapLayer* QgsMapLayer::fromLayerDefinition( QDomDocument& document )
   bool ok = layer->readLayerXML( layerElem );
   if ( ok )
     return layer;
+
+  delete layer;
+  return 0;
 }
 
 QgsMapLayer* QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
@@ -620,14 +623,14 @@ QgsMapLayer* QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg("Can't open file");
+    QgsDebugMsg( "Can't open file" );
     return 0;
   }
 
   QDomDocument doc;
   if ( !doc.setContent( &file ) )
   {
-    QgsDebugMsg("Can't set content");
+    QgsDebugMsg( "Can't set content" );
     return 0;
   }
 

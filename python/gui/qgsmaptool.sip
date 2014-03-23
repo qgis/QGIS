@@ -105,6 +105,18 @@ class QgsMapTool : QObject
 
     //! returns pointer to the tool's map canvas
     QgsMapCanvas* canvas();
+    
+    /** return the tool name
+    * @note added in 2.3
+    */
+    QString toolName();
+
+  signals:
+    //! emit a message
+    void messageEmitted( QString message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+
+    //! emit signal to clear previous message
+    void messageDiscarded();
 
   protected:
 

@@ -28,6 +28,7 @@
 #include "qgssymbolv2.h"
 #include "qgssinglesymbolrendererv2.h"
 #include <QObject>
+#include <QSignalSpy>
 #include <QtTest>
 
 class TestQgsAtlasComposition: public QObject
@@ -57,6 +58,8 @@ class TestQgsAtlasComposition: public QObject
     void sorting_render();
     // test rendering with feature filtering
     void filtering_render();
+    // test render signals
+    void test_signals();
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mLabel1;
@@ -363,6 +366,32 @@ void TestQgsAtlasComposition::filtering_render()
     QVERIFY( checker.testComposition( mReport, 0 ) );
   }
   mAtlas->endRender();
+}
+
+void TestQgsAtlasComposition::test_signals()
+{
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasFixedScale( true );
+  mAtlas->setHideCoverage( false );
+  mAtlas->setSortFeatures( false );
+  mAtlas->setFilterFeatures( false );
+
+  QSignalSpy spyRenderBegun( mAtlas, SIGNAL(renderBegun()) );
+  QSignalSpy spyRenderEnded( mAtlas, SIGNAL(renderEnded()) );
+  QSignalSpy spyPreparedForAtlas( mAtlasMap, SIGNAL(preparedForAtlas()) );  
+  mAtlas->beginRender();
+
+  QVERIFY( spyRenderBegun.count() == 1 );
+
+  for ( int fit = 0; fit < 2; ++fit )
+  {
+    mAtlas->prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+  }
+  QVERIFY( spyPreparedForAtlas.count() == 2 );
+  mAtlas->endRender();
+  QVERIFY( spyRenderEnded.count() == 1 );
 }
 
 QTEST_MAIN( TestQgsAtlasComposition )

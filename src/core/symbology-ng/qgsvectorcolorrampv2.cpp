@@ -219,16 +219,28 @@ void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
   mDiscrete = discrete;
 }
 
-void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient )
+void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, double alpha )
 {
   //copy color ramp stops to a QGradient
-  gradient->setColorAt( 0, mColor1 );
-  gradient->setColorAt( 1, mColor2 );
+  QColor color1 = mColor1;
+  QColor color2 = mColor2;
+  if ( alpha < 1 )
+  {
+    color1.setAlpha( color1.alpha() * alpha );
+    color2.setAlpha( color2.alpha() * alpha );
+  }
+  gradient->setColorAt( 0, color1 );
+  gradient->setColorAt( 1, color2 );
 
   for ( QgsGradientStopsList::const_iterator it = mStops.begin();
         it != mStops.end(); ++it )
   {
-    gradient->setColorAt( it->offset , it->color );
+    QColor rampColor = it->color;
+    if ( alpha < 1 )
+    {
+      rampColor.setAlpha( rampColor.alpha() * alpha );
+    }
+    gradient->setColorAt( it->offset , rampColor );
   }
 }
 

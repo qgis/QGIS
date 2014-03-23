@@ -204,6 +204,11 @@ class QgsSymbolLayerV2Utils
      */
     static void blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly );
 
+    /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
+     * @note added in 2.3
+     */
+    static void premultiplyColor( QColor& rgb, int alpha );
+
     /**Sorts the passed list in requested order*/
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/

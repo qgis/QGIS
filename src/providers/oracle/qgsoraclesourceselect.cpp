@@ -235,6 +235,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WFlags fl, bo
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
   restoreGeometry( settings.value( "/Windows/OracleSourceSelect/geometry" ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( "/Windows/OracleSourceSelect/HoldDialogOpen", false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
@@ -430,6 +431,7 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
 
   QSettings settings;
   settings.setValue( "/Windows/OracleSourceSelect/geometry", saveGeometry() );
+  settings.setValue( "/Windows/OracleSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
@@ -476,7 +478,10 @@ void QgsOracleSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, "oracle" );
-    accept();
+    if ( !mHoldDialogOpen->isChecked() )
+    {
+      accept();
+    }
   }
 }
 

@@ -46,6 +46,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFla
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/SpatiaLiteSourceSelect/geometry" ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen", false ).toBool() );
 
   setWindowTitle( tr( "Add SpatiaLite Table(s)" ) );
   connectionsGroupBox->setTitle( tr( "Databases" ) );
@@ -116,6 +117,7 @@ QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
 {
   QSettings settings;
   settings.setValue( "/Windows/SpatiaLiteSourceSelect/geometry", saveGeometry() );
+  settings.setValue( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 }
 
 // Slot for performing action when the Add button is clicked
@@ -408,7 +410,10 @@ void QgsSpatiaLiteSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( m_selectedTables, "spatialite" );
-    accept();
+    if ( !mHoldDialogOpen->isChecked() )
+    {
+      accept();
+    }
   }
 }
 

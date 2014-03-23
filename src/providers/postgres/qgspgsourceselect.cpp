@@ -214,12 +214,12 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
-
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
   restoreGeometry( settings.value( "/Windows/PgSourceSelect/geometry" ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( "/Windows/PgSourceSelect/HoldDialogOpen", false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
@@ -414,6 +414,7 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
 
   QSettings settings;
   settings.setValue( "/Windows/PgSourceSelect/geometry", saveGeometry() );
+  settings.setValue( "/Windows/PgSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
@@ -460,7 +461,10 @@ void QgsPgSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, "postgres" );
-    accept();
+    if ( !mHoldDialogOpen->isChecked() )
+    {
+      accept();
+    }
   }
 }
 

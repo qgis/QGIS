@@ -197,6 +197,207 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
 };
 
+class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+
+  public:
+  
+    enum ShapeburstColorType
+    {
+      SimpleTwoColor,
+      ColorRamp
+    };
+
+    QgsShapeburstFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                    QColor color2 = Qt::white,
+                                    ShapeburstColorType colorType = SimpleTwoColor,
+                                    int blurRadius = 0,
+                                    bool useWholeShape = true,
+                                    double maxDistance = 5 );
+
+    virtual ~QgsShapeburstFillSymbolLayerV2();
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    double estimateMaxBleed() const;
+
+    /**Sets the blur radius, which controls the amount of blurring applied to the fill.
+     * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
+     * @note added in 2.3
+     * @see blurRadius
+    */
+    void setBlurRadius( int blurRadius );
+    /**Returns the blur radius, which controls the amount of blurring applied to the fill.
+     * @returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
+     * @note added in 2.3
+     * @see setBlurRadius
+    */
+    int blurRadius() const;
+
+    /**Sets whether the shapeburst fill should be drawn using the entire shape.
+     * @param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+     * be shaded
+     * @note added in 2.3
+     * @see useWholeShape
+     * @see setMaxDistance
+    */
+    void setUseWholeShape( double useWholeShape );
+    /**Returns whether the shapeburst fill is set to cover the entire shape.
+     * @returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+     * @note added in 2.3
+     * @see setUseWholeShape
+     * @see maxDistance
+    */
+    double useWholeShape() const;
+
+    /**Sets the maximum distance to shape inside of the shape from the polygon's boundary.
+     * @param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+     * @note added in 2.3
+     * @see maxDistance
+     * @see setUseWholeShape
+     * @see setDistanceUnit
+    */
+    void setMaxDistance( double maxDistance );
+    /**Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+     * @returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
+     * @note added in 2.3
+     * @see useWholeShape
+     * @see setMaxDistance
+     * @see distanceUnit
+    */
+    double maxDistance() const;
+
+    /**Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+     * @param unit distance unit for the maximum distance
+     * @note added in 2.3
+     * @see setMaxDistance
+     * @see distanceUnit
+    */
+    void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
+    /**Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+     * @returns distance unit for the maximum distance
+     * @note added in 2.3
+     * @see maxDistance
+     * @see setDistanceUnit
+    */
+    QgsSymbolV2::OutputUnit distanceUnit() const;
+
+    /**Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
+     * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
+     * @param colorType color type to use for shapeburst fill
+     * @note added in 2.3
+     * @see colorType
+     * @see setColor
+     * @see setColor2
+     * @see setColorRamp
+    */
+    void setColorType( ShapeburstColorType colorType );
+    /**Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
+     * or by simply specificing a start and end color.
+     * @returns current color mode used for the shapeburst fill
+     * @note added in 2.3
+     * @see setColorType
+     * @see color
+     * @see color2
+     * @see colorRamp
+    */
+    ShapeburstColorType colorType() const;
+
+    /**Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
+     * @param ramp color ramp to use for shapeburst fill
+     * @note added in 2.3
+     * @see setColorType
+     * @see colorRamp
+    */
+    void setColorRamp( QgsVectorColorRampV2* ramp );
+    /**Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
+     * @returns a QgsVectorColorRampV2 color ramp
+     * @note added in 2.3
+     * @see setColorRamp
+     * @see colorType
+    */
+    QgsVectorColorRampV2* colorRamp();
+
+    /**Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
+     * @param color2 QColor to use for endpoint of gradient
+     * @note added in 2.3
+     * @see setColorType
+     * @see color2
+    */
+    void setColor2( QColor color2 );
+    /**Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
+     * @returns a QColor indicating the color of the endpoint of the gradient
+     * @note added in 2.3
+     * @see setColor2
+     * @see colorType
+    */
+    QColor color2() const;
+    
+    /**Sets whether the shapeburst fill should ignore polygon rings when calculating
+     * the buffered shading.
+     * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * @note added in 2.3
+     * @see ignoreRings
+    */
+    void setIgnoreRings( double ignoreRings );
+    /**Returns whether the shapeburst fill is set to ignore polygon interior rings.
+     * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * @note added in 2.3
+     * @see setIgnoreRings
+    */
+    double ignoreRings() const;    
+
+    /**Sets the offset for the shapeburst fill.
+     * @param offset QPointF indicating the horizontal/vertical offset amount
+     * @note added in 2.3
+     * @see offset
+     * @see setOffsetUnit
+    */
+    void setOffset( QPointF offset );
+    /**Returns the offset for the shapeburst fill.
+     * @returns a QPointF indicating the horizontal/vertical offset amount
+     * @note added in 2.3
+     * @see setOffset
+     * @see offsetUnit
+    */
+    QPointF offset() const;
+
+    /**Sets the units used for the offset for the shapeburst fill.
+     * @param unit units for fill offset
+     * @note added in 2.3
+     * @see setOffset
+     * @see offsetUnit
+    */
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    /**Returns the units used for the offset of the shapeburst fill.
+     * @returns units used for the fill offset
+     * @note added in 2.3
+     * @see offset
+     * @see setOffsetUnit
+    */
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+
+};
+
 /**Base class for polygon renderers generating texture images*/
 class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 {

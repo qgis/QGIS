@@ -645,10 +645,6 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width_border", tr( "Border width" ), mLayer->dataDefinedPropertyString( "width_border" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
-      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
-      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -973,8 +969,8 @@ void QgsGradientFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
   }
 
   QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ), QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color2", tr( "Color 2" ), mLayer->dataDefinedPropertyString( "color2" ), QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color (start)" ), mLayer->dataDefinedPropertyString( "color" ), QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color2", tr( "Color (end)" ), mLayer->dataDefinedPropertyString( "color2" ), QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "gradient_type", tr( "Gradient type" ), mLayer->dataDefinedPropertyString( "gradient_type" ), QgsDataDefinedSymbolDialog::gradientTypeHelpText() );
@@ -1011,6 +1007,257 @@ void QgsGradientFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
     }
     emit changed();
   }
+}
+
+///////////
+
+QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
+{
+  mLayer = NULL;
+
+  setupUi( this );
+
+  cboGradientColorRamp->setShowGradientOnly( true );
+  cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
+
+  connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( applyColorRamp() ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
+  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
+  connect( radioTwoColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
+  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+
+  connect( mBlurSlider, SIGNAL( valueChanged( int ) ), mSpinBlurRadius, SLOT( setValue( int ) ) );
+  connect( mSpinBlurRadius, SIGNAL( valueChanged( int ) ), mBlurSlider, SLOT( setValue( int ) ) );
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+{
+  if ( layer->layerType() != "ShapeburstFill" )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsShapeburstFillSymbolLayerV2*>( layer );
+
+  // set values
+  btnChangeColor->setColor( mLayer->color() );
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor2->setColor( mLayer->color2() );
+  btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
+  if ( mLayer->colorType() == QgsShapeburstFillSymbolLayerV2::SimpleTwoColor )
+  {
+    radioTwoColor->setChecked( true );
+    cboGradientColorRamp->setEnabled( false );
+  }
+  else
+  {
+    radioColorRamp->setChecked( true );
+    btnChangeColor->setEnabled( false );
+    btnChangeColor2->setEnabled( false );
+  }
+
+  mSpinBlurRadius->blockSignals( true );
+  mBlurSlider->blockSignals( true );
+  mSpinBlurRadius->setValue( mLayer->blurRadius() );
+  mBlurSlider->setValue( mLayer->blurRadius() );
+  mSpinBlurRadius->blockSignals( false );
+  mBlurSlider->blockSignals( false );
+
+  mSpinMaxDistance->blockSignals( true );
+  mSpinMaxDistance->setValue( mLayer->maxDistance() );
+  mSpinMaxDistance->blockSignals( false );
+
+  mRadioUseWholeShape->blockSignals( true );
+  mRadioUseMaxDistance->blockSignals( true );
+  if ( mLayer->useWholeShape() )
+  {
+    mRadioUseWholeShape->setChecked( true );
+    mSpinMaxDistance->setEnabled( false );
+    mDistanceUnitComboBox->setEnabled( false );
+  }
+  else
+  {
+    mRadioUseMaxDistance->setChecked( true );
+    mSpinMaxDistance->setEnabled( true );
+    mDistanceUnitComboBox->setEnabled( true );
+  }
+  mRadioUseWholeShape->blockSignals( false );
+  mRadioUseMaxDistance->blockSignals( false );
+
+  mDistanceUnitComboBox->blockSignals( true );
+  mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
+  mDistanceUnitComboBox->blockSignals( false );
+
+  mIgnoreRingsCheckBox->blockSignals( true );
+  mIgnoreRingsCheckBox->setCheckState( mLayer->ignoreRings() ? Qt::Checked : Qt::Unchecked );
+  mIgnoreRingsCheckBox->blockSignals( false );
+
+  // set source color ramp
+  if ( mLayer->colorRamp() )
+  {
+    cboGradientColorRamp->blockSignals( true );
+    cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
+    cboGradientColorRamp->blockSignals( false );
+  }
+
+  spinOffsetX->blockSignals( true );
+  spinOffsetX->setValue( mLayer->offset().x() );
+  spinOffsetX->blockSignals( false );
+  spinOffsetY->blockSignals( true );
+  spinOffsetY->setValue( mLayer->offset().y() );
+  spinOffsetY->blockSignals( false );
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
+}
+
+QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2Widget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::setColor( const QColor& color )
+{
+  if ( mLayer )
+  {
+    mLayer->setColor( color );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::setColor2( const QColor& color )
+{
+  if ( mLayer )
+  {
+    mLayer->setColor2( color );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::colorModeChanged()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  if ( radioTwoColor->isChecked() )
+  {
+    mLayer->setColorType( QgsShapeburstFillSymbolLayerV2::SimpleTwoColor );
+  }
+  else
+  {
+    mLayer->setColorType( QgsShapeburstFillSymbolLayerV2::ColorRamp );
+  }
+  emit changed();
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mSpinBlurRadius_valueChanged( int value )
+{
+  if ( mLayer )
+  {
+    mLayer->setBlurRadius( value );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mSpinMaxDistance_valueChanged( double value )
+{
+  if ( mLayer )
+  {
+    mLayer->setMaxDistance( value );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mRadioUseWholeShape_toggled( bool value )
+{
+  if ( mLayer )
+  {
+    mLayer->setUseWholeShape( value );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::applyColorRamp()
+{
+  QgsVectorColorRampV2* ramp = cboGradientColorRamp->currentColorRamp();
+  if ( ramp == NULL )
+    return;
+
+  mLayer->setColorRamp( ramp );
+  emit changed();
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::offsetChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color (start)" ), mLayer->dataDefinedPropertyString( "color" ), QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color2", tr( "Color (end)" ), mLayer->dataDefinedPropertyString( "color2" ), QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "blur_radius", tr( "Blur radius" ), mLayer->dataDefinedPropertyString( "blur_radius" ),
+      tr( "Integer between 0 and 18" ) );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "use_whole_shape", tr( "Use whole shape" ), mLayer->dataDefinedPropertyString( "use_whole_shape" ), QgsDataDefinedSymbolDialog::boolHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "max_distance", tr( "Maximum distance" ), mLayer->dataDefinedPropertyString( "max_distance" ), QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "ignore_rings", tr( "Ignore rings" ), mLayer->dataDefinedPropertyString( "ignore_rings" ), QgsDataDefinedSymbolDialog::boolHelpText() );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
+void QgsShapeburstFillSymbolLayerV2Widget::on_mIgnoreRingsCheckBox_stateChanged( int state )
+{
+  bool checked = ( state == Qt::Checked );
+  mLayer->setIgnoreRings( checked );
+  emit changed();
 }
 
 ///////////

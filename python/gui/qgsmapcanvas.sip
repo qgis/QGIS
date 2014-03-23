@@ -50,8 +50,10 @@ class QgsMapCanvas : QGraphicsView
 
     void setCurrentLayer( QgsMapLayer* layer );
 
+    // ### QGIS 3: make QgsMapCanvas independent from overview
     void updateOverview();
 
+    // ### QGIS 3: make QgsMapCanvas independent from overview
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
     //! Get access to properties used for map rendering
@@ -101,19 +103,21 @@ class QgsMapCanvas : QGraphicsView
     //! @deprecated since 2.4 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
-    //! @deprecated since 2.4 - use mapRendererSettings() for anything related to current renderer settings
+    //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
     //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
     //// and in fact there is no transfer of ownership from c++ to python!
     //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
     //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
     QgsMapRenderer* mapRenderer() /Deprecated, KeepReference/;
 
+    //! Accessor for the canvas paint device
     //! @deprecated since 2.4
     QPaintDevice &canvasPaintDevice() /Deprecated/;
 
     //! Get the last reported scale of the canvas
     double scale();
 
+    //! Clear the map canvas
     //! @deprecated since 2.4 - use refresh() - clear does the same thing
     void clear() /Deprecated/;
 
@@ -174,6 +178,7 @@ class QgsMapCanvas : QGraphicsView
     /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
+    /** Updates the full extent */
     //! @deprecated since v2.4 - does nothing
     void updateFullExtent() /Deprecated/;
 
@@ -196,9 +201,11 @@ class QgsMapCanvas : QGraphicsView
     /*! Accessor for frozen status of canvas */
     bool isFrozen();
 
+    //! Flag the canvas as dirty and needed a refresh
     //! @deprecated since 2.4 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
     void setDirty( bool _dirty ) /Deprecated/;
 
+    //! Return the state of the canvas (dirty or not)
     //! @deprecated since 2.4 - dirty flag is not kept anymore - always returns false
     bool isDirty() const /Deprecated/;
 
@@ -211,7 +218,7 @@ class QgsMapCanvas : QGraphicsView
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
 
-    //! true if canvas currently drawing
+    //! Find out whether rendering is in progress
     bool isDrawing();
 
     //! returns current layer (set by legend widget)
@@ -242,6 +249,7 @@ class QgsMapCanvas : QGraphicsView
     //! true if antialising is enabled
     bool antiAliasingEnabled() const;
 
+    //! Select which Qt class to render with
     //! @deprecated since 2.4 - does nothing because now we always render to QImage
     void useImageToRender( bool theFlag ) /Deprecated/;
 
@@ -346,7 +354,12 @@ class QgsMapCanvas : QGraphicsView
 
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool *tool );
+    
+    //! Emit map tool changed with the old tool
+    //! @note added in 2.3
+    void mapToolSet( QgsMapTool *newTool, QgsMapTool* oldTool );
 
+    // ### QGIS 3: remove the signal
     //! Emitted when selection in any layer gets changed
     void selectionChanged( QgsMapLayer * layer );
 

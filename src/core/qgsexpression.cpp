@@ -2198,6 +2198,9 @@ int QgsExpression::NodeBinaryOperator::precedence() const
     case boGT:
     case boRegexp:
     case boLike:
+    case boILike:
+    case boNotLike:
+    case boNotILike:
     case boIs:
     case boIsNot:
       return 3;
