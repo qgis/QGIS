@@ -6,7 +6,7 @@
     <message>
         <location filename="../python/console/console_compile_apis.ui" line="32"/>
         <source>Generating prepared API file (please wait)...</source>
-        <translation type="unfinished">vcug...</translation>
+        <translation>Створення підготованого файлу API (будь ласка зачекайте)...</translation>
     </message>
 </context>
 <context>
@@ -53,7 +53,7 @@
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Неможливо підключитись</translation>
     </message>
 </context>
 <context>
@@ -62,34 +62,34 @@
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="96"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="102"/>
         <source>Coordinate Capture</source>
-        <translation>Захват координат</translation>
+        <translation>Захоплення координат</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="107"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="153"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation>Клацніть на карті для показу координат та їх копіювання до буферу обміну.</translation>
+        <translation>Клацніть на карті для перегляду координат та їх копіювання до буферу обміну.</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="110"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="263"/>
         <source>&amp;Coordinate Capture</source>
-        <translation>&amp;Захват координат</translation>
+        <translation>&amp;Захоплення координат</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation>Клацніть для вибору системи координат (CRS) , щоб використовувати для координування дисплею</translation>
+        <translation>Клацніть, щоб вибрати систему координат для відображення координат</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="133"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Координати в обраній вами системі координат (широта,довгота або схід,північ)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Координати у системі координат карти (широта, довгота або схід, північ)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -107,17 +107,17 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="145"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Клацніть для активації стеження за курсором миші. Клацніть на полотні для зупинки</translation>
+        <translation>Клацніть для активації стеження за курсором миші. Клацніть по карті для припинення</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="150"/>
         <source>Start capture</source>
-        <translation>Почати захват</translation>
+        <translation>Почати захоплення</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="151"/>
         <source>Click to enable coordinate capture</source>
-        <translation>Клацніть для включення захвату координат</translation>
+        <translation>Клацніть для активації захоплення координат</translation>
     </message>
 </context>
 <context>
@@ -836,7 +836,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="14"/>
         <source>Export to vector file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Експортувати в векторний файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="26"/>
@@ -856,7 +856,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="53"/>
         <source>Create new file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створити новий файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
@@ -876,12 +876,12 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Початковий SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="144"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Цільовий SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="163"/>
