@@ -89,8 +89,10 @@ class TestComposerBase(TestQgsPalLabeling):
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
-        self._Mismatch = 200  # default mismatch for crosscheck
+        self._Mismatch = 0
+        self._ColorTol = 0
         self._Mismatches.clear()
+        self._ColorTols.clear()
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
@@ -259,11 +261,18 @@ class TestComposerBase(TestQgsPalLabeling):
         res_m, self._TestImage = self.get_composer_output(self._TestKind)
         self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
         self.saveControlImage(self._TestImage)
-        mismatch = self._Mismatch
-        if (self._TestGroup in self._Mismatches
-                and 'PAL_NO_MISMATCH' not in os.environ):
-            mismatch = self._Mismatches[self._TestGroup]
+        mismatch = 0
+        if 'PAL_NO_MISMATCH' not in os.environ:
+            # some mismatch expected
+            mismatch = self._Mismatch if self._Mismatch else 200
+            if self._TestGroup in self._Mismatches:
+                mismatch = self._Mismatches[self._TestGroup]
+        colortol = 0
+        if 'PAL_NO_COLORTOL' not in os.environ:
+            if self._TestGroup in self._ColorTols:
+                colortol = self._ColorTols[self._TestGroup]
         self.assertTrue(*self.renderCheck(mismatch=mismatch,
+                                          colortol=colortol,
                                           imgpath=self._TestImage))
 
 

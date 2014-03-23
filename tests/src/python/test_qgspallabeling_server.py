@@ -109,8 +109,10 @@ class TestServerBase(TestQgsPalLabeling):
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._Mismatch = 0
+        self._ColorTol = 0
         self._Mismatches.clear()
-        self._Mismatch = 50  # default for server tests; some mismatch expected
+        self._ColorTols.clear()
 
     # noinspection PyPep8Naming
     def delete_cache(self):
@@ -161,7 +163,20 @@ class TestServerBase(TestQgsPalLabeling):
         # print self._TestImage.__repr__()
         self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
-        self.assertTrue(*self.renderCheck(mismatch=self._Mismatch,
+        mismatch = 0
+        if 'PAL_NO_MISMATCH' not in os.environ:
+            # some mismatch expected
+            mismatch = self._Mismatch if self._Mismatch else 50
+            if self._TestGroup in self._Mismatches:
+                mismatch = self._Mismatches[self._TestGroup]
+        colortol = 0
+        if 'PAL_NO_COLORTOL' not in os.environ:
+            # some mismatch expected
+            # colortol = self._ColorTol if self._ColorTol else 10
+            if self._TestGroup in self._ColorTols:
+                colortol = self._ColorTols[self._TestGroup]
+        self.assertTrue(*self.renderCheck(mismatch=mismatch,
+                                          colortol=colortol,
                                           imgpath=self._TestImage))
 
 

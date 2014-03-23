@@ -39,9 +39,15 @@ class TestPointBase(object):
         """:type: QgsPalLabeling"""
         self._Canvas = None
         """:type: QgsMapCanvas"""
-        # custom mismatches per group/test (should not mask needed anomaly)
+        # custom mismatches per group/test (should not mask any needed anomaly)
         # e.g. self._Mismatches['TestClassName'] = 300
+        # check base output class's checkTest() or sublcasses for any defaults
         self._Mismatches = dict()
+        # custom color tolerances per group/test: 1 - 20 (0 default, 20 max)
+        # (should not mask any needed anomaly)
+        # e.g. self._ColorTols['TestClassName'] = 10
+        # check base output class's checkTest() or sublcasses for any defaults
+        self._ColorTols = dict()
 
     # noinspection PyMethodMayBeStatic
     def checkTest(self, **kwargs):
