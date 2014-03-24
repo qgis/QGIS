@@ -7010,24 +7010,43 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
 
 void QgisApp::increaseBrightness()
 {
-  adjustBrightnessContrast( 1 );
+  int step = 1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = 10;
+  }
+  adjustBrightnessContrast( step );
 }
 
 void QgisApp::decreaseBrightness()
 {
-  adjustBrightnessContrast( -1 );
+  int step = -1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = -10;
+  }
+  adjustBrightnessContrast( step );
 }
 
 void QgisApp::increaseContrast()
 {
-  adjustBrightnessContrast( 1, false );
+  int step = 1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = 10;
+  }
+  adjustBrightnessContrast( step, false );
 }
 
 void QgisApp::decreaseContrast()
 {
-  adjustBrightnessContrast( -1, false );
+  int step = -1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = -10;
+  }
+  adjustBrightnessContrast( step, false );
 }
-
 
 void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 {
