@@ -56,7 +56,6 @@ class TestPointBase(object):
 
     def test_default_label(self):
         # Default label placement, with text size in points
-        self._Mismatches['TestComposerSvgVsComposerPoint'] = 500
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -70,12 +69,10 @@ class TestPointBase(object):
     def test_text_color(self):
         # Label color change
         self.lyr.textColor = Qt.blue
-        self._Mismatches['TestComposerSvgVsComposerPoint'] = 500
         self.checkTest()
 
     def test_background_rect(self):
         self.lyr.shapeDraw = True
-        self._Mismatches['TestComposerSvgVsComposerPoint'] = 1100
         self.checkTest()
 
     def test_background_rect_w_offset(self):
@@ -91,7 +88,6 @@ class TestPointBase(object):
         self.lyr.shapeDraw = True
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
-        self._Mismatches['TestComposerSvgVsComposerPoint'] = 750
         self.checkTest()
 
     def test_background_svg(self):
@@ -134,18 +130,17 @@ class TestPointBase(object):
     def test_partials_labels_enabled(self):
         # Set Big font size
         font = QFont(self._TestFont)
-        font.setPointSizeF(120)
+        font.setPointSizeF(84)
         self.lyr.textFont = font
         # Enable partials labels
         self._Pal.setShowingPartialsLabels(True)
         self._Pal.saveEngineSettings()
-        self._Mismatches['TestComposerSvgVsComposerPoint'] = 600
         self.checkTest()
 
     def test_partials_labels_disabled(self):
         # Set Big font size
         font = QFont(self._TestFont)
-        font.setPointSizeF(120)
+        font.setPointSizeF(84)
         self.lyr.textFont = font
         # Disable partials labels
         self._Pal.setShowingPartialsLabels(False)

@@ -167,7 +167,7 @@ class TestServerBase(TestQgsPalLabeling):
         mismatch = 0
         if 'PAL_NO_MISMATCH' not in os.environ:
             # some mismatch expected
-            mismatch = self._Mismatch if self._Mismatch else 50
+            mismatch = self._Mismatch if self._Mismatch else 20
             if self._TestGroup in self._Mismatches:
                 mismatch = self._Mismatches[self._TestGroup]
         colortol = 0

@@ -208,7 +208,7 @@ class TestQgsPalLabeling(TestCase):
         # default for labeling test data: WGS 84 / UTM zone 13N
         crs.createFromSrid(32613)
         ms.setBackgroundColor(QColor(152, 219, 249))
-        ms.setOutputSize(QSize(600, 400))
+        ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
         ms.setFlag(QgsMapSettings.Antialiasing)
         ms.setDestinationCrs(crs)
@@ -258,7 +258,7 @@ class TestQgsPalLabeling(TestCase):
         lyr.enabled = True
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
-        font.setPointSize(48)
+        font.setPointSize(32)
         lyr.textFont = font
         lyr.textNamedStyle = 'Roman'
         return lyr
