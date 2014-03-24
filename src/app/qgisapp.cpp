@@ -7050,37 +7050,38 @@ void QgisApp::decreaseContrast()
 
 void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 {
-  QgsMapLayer * myLayer = mMapLegend->currentLayer();
-
-  if ( !myLayer )
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    messageBar()->pushMessage( tr( "No Layer Selected" ),
-                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
-                               QgsMessageBar::INFO, messageTimeout() );
-    return;
-  }
+    if ( !layer )
+    {
+      messageBar()->pushMessage( tr( "No Layer Selected" ),
+                                 tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                                 QgsMessageBar::INFO, messageTimeout() );
+      return;
+    }
 
-  QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
-  if ( !myRasterLayer )
-  {
-    messageBar()->pushMessage( tr( "No Layer Selected" ),
-                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
-                               QgsMessageBar::INFO, messageTimeout() );
-    return;
-  }
+    QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+    if ( !rasterLayer )
+    {
+      messageBar()->pushMessage( tr( "No Layer Selected" ),
+                                 tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                                 QgsMessageBar::INFO, messageTimeout() );
+      return;
+    }
 
-  QgsBrightnessContrastFilter* brightnessFilter = myRasterLayer->brightnessFilter();
+    QgsBrightnessContrastFilter* brightnessFilter = rasterLayer->brightnessFilter();
 
-  if ( updateBrightness )
-  {
-    brightnessFilter->setBrightness( brightnessFilter->brightness() + delta );
-  }
-  else
-  {
-    brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
-  }
+    if ( updateBrightness )
+    {
+      brightnessFilter->setBrightness( brightnessFilter->brightness() + delta );
+    }
+    else
+    {
+      brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
+    }
 
-  myRasterLayer->triggerRepaint();
+    rasterLayer->triggerRepaint();
+  }
 }
 
 void QgisApp::helpContents()
