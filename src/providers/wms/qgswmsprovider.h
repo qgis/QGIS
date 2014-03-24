@@ -1173,6 +1173,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem mCrs;
 
+    //temporarily caches invert axis setting for each crs
+    QHash<QString, bool> mCrsInvertAxis;
+
 };
 
 

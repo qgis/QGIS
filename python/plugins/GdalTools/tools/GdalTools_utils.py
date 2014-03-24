@@ -59,8 +59,8 @@ def escapeAndJoin(strList):
 # Retrieves last used dir from persistent settings
 def getLastUsedDir():
     settings = QSettings()
-    lastProjectDir = settings.value( "/UI/lastProjectDir", ".", type=str )
-    return settings.value( "/GdalTools/lastUsedDir", lastProjectDir, type=str )
+    lastProjectDir = settings.value( "/UI/lastProjectDir", u".", type=unicode )
+    return settings.value( "/GdalTools/lastUsedDir", lastProjectDir, type=unicode )
 
 # Stores last used dir in persistent settings
 def setLastUsedDir(filePath):
@@ -75,7 +75,7 @@ def setLastUsedDir(filePath):
 # Retrieves GDAL binaries location
 def getGdalBinPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/gdalPath", u"" )
+  return settings.value( "/GdalTools/gdalPath", u"", type=unicode )
 
 # Stores GDAL binaries location
 def setGdalBinPath( path ):
@@ -85,7 +85,7 @@ def setGdalBinPath( path ):
 # Retrieves GDAL python modules location
 def getGdalPymodPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/gdalPymodPath", u"" )
+  return settings.value( "/GdalTools/gdalPymodPath", u"", type=unicode )
 
 # Stores GDAL python modules location
 def setGdalPymodPath( path ):
@@ -95,7 +95,7 @@ def setGdalPymodPath( path ):
 # Retrieves GDAL help files location
 def getHelpPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/helpPath", u"" )
+  return settings.value( "/GdalTools/helpPath", u"", type=unicode )
 
 # Stores GDAL help files location
 def setHelpPath( path ):
@@ -105,7 +105,7 @@ def setHelpPath( path ):
 # Retrieves last used encoding from persistent settings
 def getLastUsedEncoding():
     settings = QSettings()
-    return settings.value( "/UI/encoding", u"System" )
+    return settings.value( "/UI/encoding", u"System", type=unicode )
 
 # Stores last used encoding in persistent settings
 def setLastUsedEncoding(encoding):
@@ -347,7 +347,7 @@ class FileDialog:
     dialog.setFileMode(fileMode)
     dialog.setAcceptMode(acceptMode)
 
-    if selectedFilter != None:
+    if selectedFilter is not None:
       dialog.selectNameFilter(selectedFilter[0])
 
     if not dialog.exec_():
@@ -356,7 +356,7 @@ class FileDialog:
       return ''
 
     # change the selected filter value
-    if selectedFilter != None:
+    if selectedFilter is not None:
       selectedFilter[0] = dialog.selectedNameFilter()
 
     # save the last used dir and return the selected files
@@ -409,7 +409,7 @@ class FileFilter:
   @classmethod
   def getFilter(self, typeName):
       settings = QSettings()
-      return settings.value( "/GdalTools/" + typeName + "FileFilter", u"" )
+      return settings.value( "/GdalTools/" + typeName + "FileFilter", u"", type=unicode )
 
   @classmethod
   def setFilter(self, typeName, aFilter):
