@@ -66,9 +66,8 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 static const QString QGS_NAMESPACE = "http://www.qgis.org/gml";
 
-QgsWFSServer::QgsWFSServer( QMap<QString, QString> parameters )
-    : mParameterMap( parameters )
-    , mConfigParser( 0 )
+QgsWFSServer::QgsWFSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsConfigParser* cp,
+                            QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, cp, rh )
 {
 }
 
@@ -76,8 +75,90 @@ QgsWFSServer::~QgsWFSServer()
 {
 }
 
-QgsWFSServer::QgsWFSServer()
+QgsWFSServer::QgsWFSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0, 0 )
 {
+}
+
+void QgsWFSServer::executeRequest()
+{
+  if ( !mConfigParser && !mRequestHandler )
+  {
+    return;
+  }
+
+  //request type
+  QString request = mParameters.value( "REQUEST" );
+  if ( request.isEmpty() )
+  {
+    //do some error handling
+    QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+    mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+    return;
+  }
+
+  if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
+  {
+    QDomDocument capabilitiesDocument;
+    try
+    {
+      capabilitiesDocument = getCapabilities();
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+      return;
+    }
+    QgsDebugMsg( "sending GetCapabilities response" );
+    mRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+    return;
+  }
+  else if ( request.compare( "DescribeFeatureType", Qt::CaseInsensitive ) == 0 )
+  {
+    QDomDocument describeDocument;
+    try
+    {
+      describeDocument = describeFeatureType();
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+      return;
+    }
+    QgsDebugMsg( "sending GetCapabilities response" );
+    mRequestHandler->sendGetCapabilitiesResponse( describeDocument );
+    return;
+  }
+  else if ( request.compare( "GetFeature", Qt::CaseInsensitive ) == 0 )
+  {
+    //output format for GetFeature
+    QString outputFormat = mParameters.value( "OUTPUTFORMAT" );
+    try
+    {
+      getFeature( *mRequestHandler, outputFormat );
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+    }
+
+    return;
+  }
+  else if ( request.compare( "Transaction", Qt::CaseInsensitive ) == 0 )
+  {
+    QDomDocument transactionDocument;
+    try
+    {
+      transactionDocument = transaction( mParameters.value( "REQUEST_BODY" ) );
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+      return;
+    }
+    QgsDebugMsg( "sending Transaction response" );
+    mRequestHandler->sendGetCapabilitiesResponse( transactionDocument );
+    return;
+  }
 }
 
 QDomDocument QgsWFSServer::getCapabilities()
@@ -246,7 +327,7 @@ QDomDocument QgsWFSServer::describeFeatureType()
 
   QDomDocument queryDoc;
   QString errorMsg;
-  if ( queryDoc.setContent( mParameterMap.value( "REQUEST_BODY" ), true, &errorMsg ) )
+  if ( queryDoc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     //read doc
     QDomElement queryDocElem = queryDoc.documentElement();
@@ -270,8 +351,8 @@ QDomDocument QgsWFSServer::describeFeatureType()
   else
   {
     //read TYPENAME
-    QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
-    if ( type_name_it != mParameterMap.end() )
+    QMap<QString, QString>::const_iterator type_name_it = mParameters.find( "TYPENAME" );
+    if ( type_name_it != mParameters.end() )
     {
       typeName = type_name_it.value();
     }
@@ -300,7 +381,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QDomDocument doc;
   QString errorMsg;
-  if ( doc.setContent( mParameterMap.value( "REQUEST_BODY" ), true, &errorMsg ) )
+  if ( doc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     QDomElement docElem = doc.documentElement();
 
@@ -562,8 +643,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   //read FEATUREDID
   bool featureIdOk = false;
   QStringList featureIdList;
-  QMap<QString, QString>::const_iterator feature_id_it = mParameterMap.find( "FEATUREID" );
-  if ( feature_id_it != mParameterMap.end() )
+  QMap<QString, QString>::const_iterator feature_id_it = mParameters.find( "FEATUREID" );
+  if ( feature_id_it != mParameters.end() )
   {
     featureIdOk = true;
     featureIdList = feature_id_it.value().split( "," );
@@ -585,8 +666,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   if ( !featureIdOk )
   {
     //read TYPENAME
-    QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
-    if ( type_name_it != mParameterMap.end() )
+    QMap<QString, QString>::const_iterator type_name_it = mParameters.find( "TYPENAME" );
+    if ( type_name_it != mParameters.end() )
     {
       mTypeName = type_name_it.value();
     }
@@ -596,8 +677,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
 
     //read FILTER
-    QMap<QString, QString>::const_iterator filterIt = mParameterMap.find( "FILTER" );
-    if ( filterIt != mParameterMap.end() )
+    QMap<QString, QString>::const_iterator filterIt = mParameters.find( "FILTER" );
+    if ( filterIt != mParameters.end() )
     {
       QString errorMsg;
       if ( !filter.setContent( filterIt.value(), true, &errorMsg ) )
@@ -613,8 +694,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     //read EXP_FILTER
     if ( !filterOk )
     {
-      QMap<QString, QString>::const_iterator expFilterIt = mParameterMap.find( "EXP_FILTER" );
-      if ( expFilterIt != mParameterMap.end() )
+      QMap<QString, QString>::const_iterator expFilterIt = mParameters.find( "EXP_FILTER" );
+      if ( expFilterIt != mParameters.end() )
       {
         expFilterOk = true;
         expFilter = expFilterIt.value();
@@ -624,8 +705,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     //read BBOX
     if ( !filterOk )
     {
-      QMap<QString, QString>::const_iterator bbIt = mParameterMap.find( "BBOX" );
-      if ( bbIt == mParameterMap.end() )
+      QMap<QString, QString>::const_iterator bbIt = mParameters.find( "BBOX" );
+      if ( bbIt == mParameters.end() )
       {
         minx = 0; miny = 0; maxx = 0; maxy = 0;
       }
@@ -647,8 +728,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   //read MAXFEATURES
-  QMap<QString, QString>::const_iterator mfIt = mParameterMap.find( "MAXFEATURES" );
-  if ( mfIt != mParameterMap.end() )
+  QMap<QString, QString>::const_iterator mfIt = mParameters.find( "MAXFEATURES" );
+  if ( mfIt != mParameters.end() )
   {
     QString mfString = mfIt.value();
     bool mfOk;
@@ -659,8 +740,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   //read PROPERTYNAME
   mWithGeom = true;
   mPropertyName = "*";
-  QMap<QString, QString>::const_iterator pnIt = mParameterMap.find( "PROPERTYNAME" );
-  if ( pnIt != mParameterMap.end() )
+  QMap<QString, QString>::const_iterator pnIt = mParameters.find( "PROPERTYNAME" );
+  if ( pnIt != mParameters.end() )
   {
     mPropertyName = pnIt.value();
   }
