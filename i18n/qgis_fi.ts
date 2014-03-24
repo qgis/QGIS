@@ -7510,12 +7510,12 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2163"/>
         <source>Add from Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää Tason Määritykset tiedostosta...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2168"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna Tason Määritykset tiedostoon...</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -9239,7 +9239,7 @@ Korjaa tilanne ensin koska OSM liitännäinen ei tiedä mikä taso on tuonnin ko
     </message>
     <message>
         <source>Python warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Python varoitus</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -11240,12 +11240,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="31"/>
         <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished">Ei voitu uudellen projektoida näkymän aluetta: %1</translation>
+        <translation>Ei voitu uudelleen projisoida näkymän aluetta: %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="41"/>
         <source>Could not reproject layer extent: %1</source>
-        <translation type="unfinished">Ei voitu uudellen projektoida tason aluetta: %1</translation>
+        <translation>Ei voitu uudelleen projisoida tason aluetta: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
@@ -11945,7 +11945,7 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="47"/>
         <source>Shapeburst fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapeburst täyttö</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="49"/>
@@ -12910,33 +12910,33 @@ Näet tämän viesti luultavasti koska Sinulla ei ole DISPLAY ympäristömuuttuj
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5330"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5434"/>
         <source>Error looking for style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe etsittäessä tyyliä. Kysely talletettiin lokiin</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5221"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida tallentaa tason tyyliä. Ei ollut mahdollista luoda kohdetaulua tietokantaan.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5283"/>
         <source>Operation aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Toiminto keskeytettiin</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5388"/>
         <source>Error executing loading style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe suoritettaessa tyylin latausta. Kysely talletettiin lokiin</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5448"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5449"/>
         <source>No styles available on DB</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietokannasta ei saatavissa tyylejä</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5470"/>
         <source>Error loading styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe ladattaessa tyylejä. Kysely talletettiin lokiin</translation>
     </message>
     <message>
         <location filename="../src/plugins/compass/qgscompassplugin.cpp" line="35"/>
@@ -13426,18 +13426,18 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="164"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished">Yksinkertaistamisen muunnosvirhe löydettiin : %1</translation>
+        <translation>Yksinkertaistamisen muunnosvirhe löydettiin : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="121"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished"></translation>
+        <translation>tyhjä ominaisuuksien dokumentti</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="235"/>
         <source>Dom Exception</source>
-        <translation type="unfinished">Dom poikkeus</translation>
+        <translation>Dom poikkeus</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="213"/>
@@ -13446,7 +13446,7 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished">Ei saatu WMS ominaisuuksia: %1 rivillä %2 sarakkeessa %3
+        <translation>Ei saatu WMS ominaisuuksia: %1 rivillä %2 sarakkeessa %3
 Tämä johtunee WMS palvelimen virheellisestä URL.
 Vastaus oli:
 
@@ -13459,7 +13459,7 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished">Ei saatu WMS ominaisuuksia odotetussa muodossa (DTD):  ei %1 eikä %2 löytynyt.
+        <translation>Ei saatu WMS ominaisuuksia odotetussa muodossa (DTD):  ei %1 eikä %2 löytynyt.
 Tämä johtunee WMS palvelimen virheellisestä URL.
 Tägi:%3
 Vastaus oli:
@@ -13468,12 +13468,12 @@ Vastaus oli:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1463"/>
         <source>Generated default style</source>
-        <translation type="unfinished">Generoitiin oletustyyli</translation>
+        <translation>Generoitiin oletustyyli</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1464"/>
         <source>Style was missing in capabilities</source>
-        <translation type="unfinished">Tyyli puuttui valmiuksista</translation>
+        <translation>Tyyli puuttui valmiuksista</translation>
     </message>
 </context>
 <context>
@@ -14883,17 +14883,17 @@ Tämä ohjelmakoodi käännettii toimimaan Qt %1:ssä, ja sitä suoritetaan nyt 
         <location filename="../src/app/qgisapp.cpp" line="426"/>
         <location filename="../src/app/qgisapp.cpp" line="433"/>
         <source>CRS was undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS oli tuntematon</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="426"/>
         <source>defaulting to project CRS %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>oletuksena projisoida CRS %1 - %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="433"/>
         <source>defaulting to CRS %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>oletuksena CRS %1 - %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="599"/>
@@ -14913,12 +14913,12 @@ Tämä ohjelmakoodi käännettii toimimaan Qt %1:ssä, ja sitä suoritetaan nyt 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3681"/>
         <source>Insufficient permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Riittämättömät käyttöoikeudet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3682"/>
         <source>The project file is not writable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektitiedosto ei ole kirjoitettavissa.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3808"/>
@@ -15144,22 +15144,22 @@ Tämä ohjelmakoodi käännettii toimimaan Qt %1:ssä, ja sitä suoritetaan nyt 
         <location filename="../src/app/qgisapp.cpp" line="5693"/>
         <location filename="../src/app/qgisapp.cpp" line="5699"/>
         <source>Paste features</source>
-        <translation type="unfinished"></translation>
+        <translation>Liitä ominaisuudet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5687"/>
         <source>no features could be successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>ominaisuuksia ei kyetty liittämään onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5694"/>
         <source>%1 features were successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ominaisuutta liitettiin onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5700"/>
         <source>%1 of %2 features could be successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ominaisuutta kaikkiaan %2 liitettiin onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5727"/>
@@ -16094,34 +16094,34 @@ Ota yhteyttä kehittäjiin.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6488"/>
         <source>No legend entries selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Selitteitä ei ole valittu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6489"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse tasot ja ryhmät jotka haluat poistaa selitteestä.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6496"/>
         <source>Remove layers and groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista tasot ja ryhmät</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6496"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Poista %n seliteosaa?</numerusform>
+            <numerusform>Poista %n selitteen osaa?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6503"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n seliteosa poistettu.</numerusform>
+            <numerusform>%n seliteteen osaa poistettu.</numerusform>
         </translation>
     </message>
     <message>
@@ -18476,7 +18476,7 @@ Tietokanta: %2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="255"/>
         <source>Case Sensitive</source>
-        <translation type="unfinished">Kirjainkoko riippuvainen</translation>
+        <translation>Kirjainkoko riippuvainen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="262"/>
@@ -18486,7 +18486,7 @@ Tietokanta: %2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="265"/>
         <source>Normal</source>
-        <translation type="unfinished">Normaali</translation>
+        <translation>Normaali</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="270"/>
@@ -25089,7 +25089,7 @@ ja nykyinen tiedosto on [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="134"/>
         <source>Hold dialog open</source>
-        <translation type="unfinished"></translation>
+        <translation>Pidä ikkuna avoinna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="143"/>
@@ -28075,22 +28075,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="82"/>
         <source>layer</source>
-        <translation type="unfinished">taso</translation>
+        <translation>taso</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="85"/>
         <source>map view</source>
-        <translation type="unfinished">karttanäyttö</translation>
+        <translation>karttanäyttö</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="88"/>
         <source>user defined</source>
-        <translation type="unfinished">käyttäjän määrittelemä</translation>
+        <translation>käyttäjän määrittelemä</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="93"/>
         <source>Extent (current: %1)</source>
-        <translation type="unfinished">Laajuus (nykyinen: %1)</translation>
+        <translation>Laajuus (nykyinen: %1)</translation>
     </message>
 </context>
 <context>
@@ -28098,37 +28098,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
+        <translation>Lomake</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="22"/>
         <source>West</source>
-        <translation type="unfinished">Länsi</translation>
+        <translation>Länsi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="35"/>
         <source>East</source>
-        <translation type="unfinished">Itä</translation>
+        <translation>Itä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="48"/>
         <source>North</source>
-        <translation type="unfinished">Pohjoinen</translation>
+        <translation>Pohjoinen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="65"/>
         <source>South</source>
-        <translation type="unfinished">Etelä</translation>
+        <translation>Etelä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="102"/>
         <source>Layer extent</source>
-        <translation type="unfinished">Tason laajuus</translation>
+        <translation>Tason laajuus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="131"/>
         <source>Map view extent</source>
-        <translation type="unfinished">Kartta näytön laajuus</translation>
+        <translation>Karttanäytön laajuus</translation>
     </message>
 </context>
 <context>
@@ -31117,12 +31117,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="972"/>
         <source>Color (start)</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri (alku)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="973"/>
         <source>Color (end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri (loppu)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="974"/>
@@ -36934,12 +36934,12 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1188"/>
         <source>Destination CRS set to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuloksen CRS asetettu %1</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1208"/>
         <source>On the fly reprojection enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;Lennossa&quot; uudelleen projisointi otettu käyttöön.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="2087"/>
@@ -37069,7 +37069,7 @@ not displayed</source>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="438"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="454"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna Tason Määritykset tiedostoon...</translation>
     </message>
     <message>
         <source>Save Selection As...</source>
@@ -37792,12 +37792,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="65"/>
         <source>Could not add part. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu lisätä osaa. %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="104"/>
         <source>Coordinate transform error. Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinaattimuunnosvirhe. Ei voida muuntaa pistettä tason koordinaattijärjestelmään</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="174"/>
@@ -37935,7 +37935,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="67"/>
         <source>could not snap to a part on the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>ei voitu kiinnittyä osan nykyisellä tasolla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="111"/>
@@ -37964,12 +37964,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="29"/>
         <source>Delete ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista piiri</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="69"/>
         <source>could not snap to a ring on the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>ei voitu kiinnittyä piiriin nykyisellä tasolla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="125"/>
@@ -38256,7 +38256,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="365"/>
         <source>could not snap to a segment on the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>ei voitu kiinnittyä segmenttiin nykyisellä tasolla.</translation>
     </message>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="698"/>
@@ -40349,7 +40349,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="261"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Tallenna taso nimellä...</translation>
+        <translation>Tallenna taso nimellä...</translation>
     </message>
     <message>
         <source>Save As</source>
@@ -40431,7 +40431,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="270"/>
         <source>File encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedoston koodaus</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -42048,12 +42048,12 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1538"/>
         <source>Restore UI defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Palauta käyttäjäliitynnän oletukset</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1538"/>
         <source>Are you sure to reset the UI to default (needs restart)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Haluatko todella palauttaa käyttäjäliitynnän oletukset (vaatii uudelleenkäynnistyksen)?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1556"/>
@@ -43089,22 +43089,22 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1634"/>
         <source>Render layers in parallel using all available CPU cores</source>
-        <translation type="unfinished"></translation>
+        <translation>Hahmota tasot rinnakkain käyttäen kaikkia CPU ytimiä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1643"/>
         <source>Map update interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Karttapäivitysten intervalli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1688"/>
         <source>Enable feature simplification by default for newly added layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä ominaisuuksien yksinkertaistamista oletuksena uusille lisättäville tasoille</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2684"/>
@@ -43310,7 +43310,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="829"/>
         <source>Prompt for confirmation when a layer is to be removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyydä vahvistusta kun  taso poistetaan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="845"/>
@@ -43340,12 +43340,12 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1048"/>
         <source>QSettings</source>
-        <translation type="unfinished"></translation>
+        <translation>QSettings/QAsetukset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1074"/>
         <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation type="unfinished"></translation>
+        <translation>Uudellen aseta Käyttäliittymnän asetukset, uudellen aseta QGIS sen oletusnäkymään</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1090"/>
@@ -53553,37 +53553,37 @@ Virhesanoma:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1229"/>
         <source>Color (start)</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri (alku)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1230"/>
         <source>Color (end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri (loppu)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1231"/>
         <source>Blur radius</source>
-        <translation type="unfinished">Sumennussäde</translation>
+        <translation>Sumennussäde</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1232"/>
         <source>Integer between 0 and 18</source>
-        <translation type="unfinished"></translation>
+        <translation>Kokonaisluku 0 ja 18 väliltä</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1233"/>
         <source>Use whole shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä koko shape</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1234"/>
         <source>Maximum distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimi etäisyys</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1235"/>
         <source>Ignore rings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita piirit</translation>
     </message>
 </context>
 <context>
@@ -59341,7 +59341,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1260"/>
         <source>Memory cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Muistin välimuisti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1381"/>
@@ -59509,7 +59509,7 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="134"/>
         <source>Save only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna ainoastaan valitut ominaisuudet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="160"/>
@@ -59957,17 +59957,17 @@ Features</source>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="67"/>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Epäonnistuminen jäsennettäessä WMS URI </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="97"/>
         <source>Failed to download capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Epäonnistuminen ladattessa ominaisuuksia</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="104"/>
         <source>Failed to parse capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Epäonnistuminen jäsenneltäessä ominaisuuksia</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="210"/>
@@ -60061,19 +60061,19 @@ Features</source>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="446"/>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Epäonnistuminen jäsennettäessä WMS URI </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="463"/>
         <source>Failed to download capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Epäonnistuminen ladattessa ominaisuuksia:</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
         <source>Failed to parse capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Epäonnistuminen jäsenneltäessä ominaisuuksia:</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
@@ -60495,7 +60495,7 @@ Vastaus oli:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1715"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Tila: %1; Perustelulauseke: %2; URL:%3)</translation>
+        <translation>Kartan pyyntövirhe (Tila: %1; Perustelulauseke: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1718"/>
@@ -60509,62 +60509,62 @@ Vastaus oli:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1876"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1880"/>
         <source>WCS</source>
-        <translation type="unfinished">WCS</translation>
+        <translation>WCS</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1747"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation type="unfinished">Kartan pyyntövirhe &lt;br&gt;Otsikko:%1&lt;br&gt;Virhe:%2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+        <translation>Kartan pyyntövirhe &lt;br&gt;Otsikko:%1&lt;br&gt;Virhe:%2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1753"/>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Tila: %1; Vastaus: %2; URL:%3)</translation>
+        <translation>Kartan pyyntövirhe (Tila: %1; Vastaus: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1774"/>
         <source>Cannot parse multipart response: %1</source>
-        <translation type="unfinished">Ei voida jäsentää moniosaista vastausta: %1</translation>
+        <translation>Ei voida jäsentää moniosaista vastausta: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1784"/>
         <source>Expected 2 parts, %1 received</source>
-        <translation type="unfinished">Odotettiin 2 osaa, %1 vastaanotettiin</translation>
+        <translation>Odotettiin 2 osaa, %1 vastaanotettiin</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1794"/>
         <source>More than 2 parts (%1) received</source>
-        <translation type="unfinished">Useampi kuin 2 osaa (%1) vastaanotettiin</translation>
+        <translation>Useampi kuin 2 osaa (%1) vastaanotettiin</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1809"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
+        <translation>Kartan pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1815"/>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Vastaus: %1; URL:%2)</translation>
+        <translation>Kartan pyyntövirhe (Vastaus: %1; URL:%2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
         <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation type="unfinished">Sisältö-Siirto-Koodaus %1 ei ole tuettu</translation>
+        <translation>Sisältö-Siirto-Koodaus %1 ei ole tuettu</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1876"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished">Kartan pyyntövirhe [virhe:%1 url:%2]</translation>
+        <translation>Kartan pyyntövirhe [virhe:%1 url:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1880"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
+        <translation>Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1892"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished">Kartan kaikkiaan %2 tavusta %1 ladattu.</translation>
+        <translation>Kartan kaikkiaan %2 tavusta %1 ladattu.</translation>
     </message>
 </context>
 <context>
@@ -60707,12 +60707,16 @@ Vastaus oli:
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saatu WCS Service Exception: %1 rivillä %2 sarakkeessa %3
+
+Vastaus oli:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="973"/>
         <source>Service Exception</source>
-        <translation type="unfinished">Palvelun poikkeus</translation>
+        <translation>Palvelun poikkeus</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="982"/>
@@ -60947,33 +60951,33 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1880"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation type="unfinished">Ominaisuuksien kaikkiaan %2 tavusta %1 ladattu.</translation>
+        <translation>Ominaisuuksien kaikkiaan %2 tavusta %1 ladattu.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1894"/>
         <source>Capabilities request redirected.</source>
-        <translation type="unfinished">Valmiuspyyntö ohjattiin uudelleen.</translation>
+        <translation>Valmiuspyyntö ohjattiin uudelleen.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1900"/>
         <source>Redirect loop detected: %1</source>
-        <translation type="unfinished">Takaisinohjauksen luuppi havaittu: %1</translation>
+        <translation>Takaisinohjauksen luuppi havaittu: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1901"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1933"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1926"/>
         <source>empty of capabilities: %1</source>
-        <translation type="unfinished">tyhjänä ominaisuuksista: %1</translation>
+        <translation>tyhjänä ominaisuuksista: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1932"/>
         <source>Download of capabilities failed: %1</source>
-        <translation type="unfinished">Ominaisuuksien lataus epäonnistui: %1</translation>
+        <translation>Ominaisuuksien lataus epäonnistui: %1</translation>
     </message>
 </context>
 <context>
@@ -60981,7 +60985,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3173"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Tila: %1; Perustelulauseke: %2; URL:%3)</translation>
+        <translation>Kartan pyyntövirhe (Tila: %1; Perustelulauseke: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3176"/>
@@ -60991,37 +60995,37 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3237"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3241"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3197"/>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation type="unfinished">Palautettu kuva on virheellinen [Sisältötyyppi:%1; URL: %2]</translation>
+        <translation>Palautettu kuva on virheellinen [Sisältötyyppi:%1; URL: %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3205"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
+        <translation>Kartan pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3211"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation type="unfinished">Kartan pyyntövirhe (Tila:%1; Vastaus: %2; Sisältötyyppi:%3; URL: %4)</translation>
+        <translation>Kartan pyyntövirhe (Tila:%1; Vastaus: %2; Sisältötyyppi:%3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3237"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished">Kartan pyyntövirhe [virhe:%1 url:%2]</translation>
+        <translation>Kartan pyyntövirhe [virhe:%1 url:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3241"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
+        <translation>Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3253"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished">Kartan kaikkiaan %2 tavusta %1 ladattu.</translation>
+        <translation>Kartan kaikkiaan %2 tavusta %1 ladattu.</translation>
     </message>
 </context>
 <context>
@@ -61164,120 +61168,120 @@ Yritettiin URL: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1780"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Tunniste</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1782"/>
         <source>Tile mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvaketila</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1799"/>
         <source>Invalid tile mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen kuvaketila</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1892"/>
         <source>Selected tile matrix set </source>
-        <translation type="unfinished"></translation>
+        <translation>Valittu kuvaketilan asetus</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1893"/>
         <source>Scale</source>
-        <translation type="unfinished">Mittakaava</translation>
+        <translation>Mittakaava</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1894"/>
         <source>Tile size [px]</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvakkeen koko [px]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1895"/>
         <source>Tile size [mu]</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvakkeen koko [mu]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
         <source>Matrix size</source>
-        <translation type="unfinished"></translation>
+        <translation>Matriisin koko</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1897"/>
         <source>Matrix extent [mu]</source>
-        <translation type="unfinished"></translation>
+        <translation>Matriisin laajuus [mu]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1898"/>
         <source>Bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajat</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
         <source>Width</source>
-        <translation type="unfinished">Leveys</translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
         <source>Height</source>
-        <translation type="unfinished">Korkeus</translation>
+        <translation>Korkeus</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylös</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Vasen</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1901"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Alas</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1901"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Oikea</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1931"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1957"/>
         <source>%n missing row(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n puuttuva rivi</numerusform>
+            <numerusform>%n puuttuvaaa riviä</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1932"/>
         <source>Layer&apos;s upper bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tason yläraja: %1</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1944"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1970"/>
         <source>%n missing column(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n puuttuva sarake</numerusform>
+            <numerusform>%n puuttuvaa saraketta</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1945"/>
         <source>Layer&apos;s left bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tason vasenraja: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1958"/>
         <source>Layer&apos;s lower bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tason alaraja: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1971"/>
         <source>Layer&apos;s right bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tason oikea raja: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2609"/>
@@ -61496,7 +61500,11 @@ Vastaus oli:
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saatu WMS Service Exception: %1 rivillä %2 sarakkeessa %3
+
+Vastaus oli:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1520"/>
@@ -61945,19 +61953,19 @@ Syy: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3393"/>
         <source>Tile request error</source>
-        <translation type="unfinished">Kuvakepyyntö virhe</translation>
+        <translation>Kuvakepyyntö virhe</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3393"/>
         <source>Status: %1
 Reason phrase: %2</source>
-        <translation type="unfinished">Tila: %1
+        <translation>Tila: %1
 Syy: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3413"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Kuvakkeen pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
+        <translation>Kuvakkeen pyyntövirhe (Otsikko:%1; Virhe:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3415"/>
@@ -61967,23 +61975,23 @@ Syy: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3542"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3551"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3419"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation type="unfinished">Kuvakkeen pyyntövirhe (Tila:%1; Sisältötyyppi:%2; Pituus:%3; URL: %4)</translation>
+        <translation>Kuvakkeen pyyntövirhe (Tila:%1; Sisältötyyppi:%2; Pituus:%3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3475"/>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished">Palautettu kuva on virheellinen [Sisältötyyppi:%1; URL: %2]</translation>
+        <translation>Palautettu kuva on virheellinen [Sisältötyyppi:%1; URL: %2]</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3509"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n kuvakepyyntö taustalla</numerusform>
             <numerusform>%n kuvakepyyntöä taustalla</numerusform>
         </translation>
@@ -61992,7 +62000,7 @@ Syy: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3510"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n välimuisti osumia</numerusform>
             <numerusform>, %n välimuisti osumia</numerusform>
         </translation>
@@ -62001,7 +62009,7 @@ Syy: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3511"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n välimuistiin ei osumaa.</numerusform>
             <numerusform>, %n välimuistiin ei osumaa.</numerusform>
         </translation>
@@ -62010,7 +62018,7 @@ Syy: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3512"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n virhe.</numerusform>
             <numerusform>, %n virhettä.</numerusform>
         </translation>
@@ -62018,17 +62026,17 @@ Syy: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3524"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
+        <translation>Lokiin ei enempää kuin 100 pyyntövirhettä.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3541"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished">Laattapyyntöjen max uudelleenyritysten virhe. Epäonnistuminen %1 pyynnössä laatalle %2 laattapyynnössä %3 (url: %4) </translation>
+        <translation>Laattapyyntöjen max uudelleenyritysten virhe. Epäonnistuminen %1 pyynnössä laatalle %2 laattapyynnössä %3 (url: %4) </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3550"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished">toista laattapyyntö %1 laatta %2 (uudelleenyritys %3)</translation>
+        <translation>toista laattapyyntö %1 laatta %2 (uudelleenyritys %3)</translation>
     </message>
 </context>
 <context>
@@ -64389,69 +64397,69 @@ Haluatko lisätä uuden tason Sisällysluetteloon (TOC)?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
+        <translation>Lomake</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="20"/>
         <source>Gradient colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradientin värit</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="29"/>
         <source>Two color</source>
-        <translation type="unfinished">Kaksi väriä</translation>
+        <translation>Kaksi väriä</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="85"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Väriluiska</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="98"/>
         <source>Shading style</source>
-        <translation type="unfinished"></translation>
+        <translation>Varjostustyyli</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="104"/>
         <source>Shade whole shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Varjosta koko shape</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="111"/>
         <source>Ignore rings in polygons while shading</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita piirit monikulmioissa varjostettaessa</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="123"/>
         <source>Shade to a set distance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Varjosta annetuun etäisyyteeen:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="147"/>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="262"/>
         <source>Millimeter</source>
-        <translation type="unfinished">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="152"/>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="267"/>
         <source>Map unit</source>
-        <translation type="unfinished">Kartta yksikkö</translation>
+        <translation>Kartta yksikkö</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="165"/>
         <source>Blur strength</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumennuksen voimakkuus</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="208"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Siirtymä X,Y</translation>
+        <translation>Siirtymä X,Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="283"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished">Tiedosta riippuvaiset asetukset...</translation>
+        <translation>Tiedosta riippuvaiset asetukset...</translation>
     </message>
 </context>
 <context>
@@ -68324,7 +68332,23 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;wordwrap() funktio&lt;/h3&gt;
+Palauttaa merkkijonon rivitettynä maksimi/minimi merkkien määrään.
+
+&lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentit&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; on merkkijono.  Merkkijono joka rivitetään.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; on kokonaisluku.  Jos positiivinen, tarkoitta luku ideaalista maksimi merkkien määrää rivillä; jos negatiivinen ilmaisenn merkkien minimimäärää rivillä.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; on merkkijono.  Tämä merkkijono ilmaisee siirtymisen uudelle riville (&lt;u&gt;vapaaehtoinen ja valinnainen&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esimerkit&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1118"/>
