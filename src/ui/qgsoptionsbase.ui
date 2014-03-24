@@ -1676,13 +1676,6 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QLabel" name="textLabel3">
-                    <property name="text">
-                     <string>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                     <property name="title">
                      <string>Enable feature simplification by default for newly added layers</string>
