@@ -6944,7 +6944,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Save Selection as Vector File...</source>
-        <translation>Selectie opslaan als vectorbestand...</translation>
+        <translation type="obsolete">Selectie opslaan als vectorbestand...</translation>
     </message>
     <message>
         <source>Set Project CRS from Layer</source>
@@ -7258,6 +7258,14 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <message>
         <source>Fill Ring</source>
         <translation>Ring Vullen</translation>
+    </message>
+    <message>
+        <source>Add from Layer Definition File...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As Layer Definition File...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8573,7 +8581,7 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     </message>
     <message>
         <source>Python</source>
-        <translation>Python</translation>
+        <translation type="obsolete">Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
@@ -8594,6 +8602,10 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     <message>
         <source>Error while unloading plugin %s</source>
         <translation>Fout bij het uitschakelen van plugin %s</translation>
+    </message>
+    <message>
+        <source>Python warning</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11840,6 +11852,86 @@ Deze zal daarom niet actief worden gemaakt.</translation>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not reproject view extent: %1</source>
+        <translation type="unfinished">Kan de &apos;view extent&apos; %1 niet herprojecteren</translation>
+    </message>
+    <message>
+        <source>Could not reproject layer extent: %1</source>
+        <translation type="unfinished">Kan de &apos;layer extent&apos; %1 niet herprojecteren</translation>
+    </message>
+    <message>
+        <source>Shapeburst fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error looking for style. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation aborted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error executing loading style. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No styles available on DB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading styles. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty capabilities document</source>
+        <translation type="unfinished">leeg capabilities document</translation>
+    </message>
+    <message>
+        <source>Dom Exception</source>
+        <translation type="unfinished">DOM-fout</translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities: %1 at line %2 column %3
+This is probably due to an incorrect WMS Server URL.
+Response was:
+
+%4</source>
+        <translation type="unfinished">Kan de WMS capabilities niet ophalen: %1 op regel %2 kolom %3
+Dit is waarschijnlijk te wijten aan een verkeerde WMS server URL.
+Antwoord was:
+
+%4</translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
+This might be due to an incorrect WMS Server URL.
+Tag:%3
+Response was:
+%4</source>
+        <translation type="unfinished">De WMS capabilities zijn niet in het verwachtte formaat (DTD) ontvangen: geen %1 of %2 gevonden.
+De oorzaak hiervan kan een foute WMS Server URL zijn.
+Tag:%3
+Antwoord was:
+%4</translation>
+    </message>
+    <message>
+        <source>Generated default style</source>
+        <translation type="unfinished">Standaard stijl gegenereerd</translation>
+    </message>
+    <message>
+        <source>Style was missing in capabilities</source>
+        <translation type="unfinished">&apos;Style&apos; mist in de capabilities</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -12697,7 +12789,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Stop map rendering</source>
-        <translation>Stoppen met (her)tekenen</translation>
+        <translation type="obsolete">Stoppen met (her)tekenen</translation>
     </message>
     <message>
         <source>Multiple Instances of QgisApp</source>
@@ -14404,11 +14496,11 @@ Fouten: %3
     </message>
     <message>
         <source>CRS undefined - defaulting to project CRS</source>
-        <translation>CRS niet gedefinieerd - project CRS zal worden gebruikt</translation>
+        <translation type="obsolete">CRS niet gedefinieerd - project CRS zal worden gebruikt</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation>CRS niet gedefinieerd - val terug op standaard CRS: %1</translation>
+        <translation type="obsolete">CRS niet gedefinieerd - val terug op standaard CRS: %1</translation>
     </message>
     <message>
         <source>Multiple instances of QGIS application object detected.
@@ -14571,20 +14663,20 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>No Object Selected</source>
-        <translation>Geen Object Geselecteerd</translation>
+        <translation type="obsolete">Geen Object Geselecteerd</translation>
     </message>
     <message>
         <source>To remove objects, you must select them in the legend</source>
-        <translation>Om objecten te verwijderen, dient u deze in de legenda te selecteren</translation>
+        <translation type="obsolete">Om objecten te verwijderen, dient u deze in de legenda te selecteren</translation>
     </message>
     <message>
         <source>Remove objects</source>
-        <translation>Verwijder objecten</translation>
+        <translation type="obsolete">Verwijder objecten</translation>
     </message>
     <message numerus="yes">
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Verwijder %n object(en)?</numerusform>
             <numerusform></numerusform>
         </translation>
@@ -14592,8 +14684,72 @@ Neem alstublieft contact op met de ontwikkelaars.
     <message numerus="yes">
         <source>%n object(s) removed.</source>
         <comment>number of objects removed</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%n object(en) verwijderd.</numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>CRS was undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>defaulting to project CRS %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>defaulting to CRS %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insufficient permissions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The project file is not writable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no features could be successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 features were successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 features could be successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No legend entries selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the layers and groups you want to remove in the legend.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove layers and groups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Remove %n legend entries?</source>
+        <comment>number of legend items to remove</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n legend entries removed.</source>
+        <comment>number of removed legend entries</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -16647,6 +16803,14 @@ Database: %2</translation>
     <message>
         <source>Directory Properties</source>
         <translation>Folder Eigenschappen</translation>
+    </message>
+    <message>
+        <source>Case Sensitive</source>
+        <translation type="unfinished">Hoofdlettergevoelig</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation type="unfinished">Normaal</translation>
     </message>
 </context>
 <context>
@@ -22027,6 +22191,10 @@ en het huidige bestand is [%3]</translation>
         <source>Add PostGIS layers</source>
         <translation>PostGIS-laag toevoegen</translation>
     </message>
+    <message>
+        <source>Hold dialog open</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDbTableModel</name>
@@ -24186,7 +24354,7 @@ Parser fout:
     </message>
     <message>
         <source>Save settings with project</source>
-        <translation>Opslaan instellingen met project</translation>
+        <translation type="obsolete">Opslaan instellingen met project</translation>
     </message>
     <message>
         <source>Show shadow rectangles (for debugging)</source>
@@ -24561,6 +24729,56 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select within selection</source>
         <translation>Selecteren binnen selectie</translation>
+    </message>
+</context>
+<context>
+    <name>QgsExtentGroupBox</name>
+    <message>
+        <source>layer</source>
+        <translation type="unfinished">laag</translation>
+    </message>
+    <message>
+        <source>map view</source>
+        <translation type="unfinished">Kaartview</translation>
+    </message>
+    <message>
+        <source>user defined</source>
+        <translation type="unfinished">door gebruiker gedefinieërd</translation>
+    </message>
+    <message>
+        <source>Extent (current: %1)</source>
+        <translation type="unfinished">Extent (huidige: %1)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsExtentGroupBoxWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Formulier</translation>
+    </message>
+    <message>
+        <source>West</source>
+        <translation type="unfinished">West</translation>
+    </message>
+    <message>
+        <source>East</source>
+        <translation type="unfinished">Oost</translation>
+    </message>
+    <message>
+        <source>North</source>
+        <translation type="unfinished">Noord</translation>
+    </message>
+    <message>
+        <source>South</source>
+        <translation type="unfinished">Zuid</translation>
+    </message>
+    <message>
+        <source>Layer extent</source>
+        <translation type="unfinished">Laag extent</translation>
+    </message>
+    <message>
+        <source>Map view extent</source>
+        <translation type="unfinished">Kaartbeeld extent</translation>
     </message>
 </context>
 <context>
@@ -27141,11 +27359,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
-        <translation>Kleur</translation>
+        <translation type="obsolete">Kleur</translation>
     </message>
     <message>
         <source>Color 2</source>
-        <translation>Kleur 2</translation>
+        <translation type="obsolete">Kleur 2</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -27186,6 +27404,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Reference Point 2 (is centroid)</source>
         <translation>Referentiepunt 2 (is centroïde)</translation>
+    </message>
+    <message>
+        <source>Color (start)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (end)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31936,6 +32162,14 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
+    <message>
+        <source>Destination CRS set to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On the fly reprojection enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -32037,7 +32271,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Save Selection As...</source>
-        <translation>Selectie opslaan als...</translation>
+        <translation type="obsolete">Selectie opslaan als...</translation>
     </message>
     <message>
         <source>Show Feature Count</source>
@@ -32056,6 +32290,10 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
 not displayed</source>
         <translation>Volgende %1 onderdelen
 worden niet getoond</translation>
+    </message>
+    <message>
+        <source>Save As Layer Definition File...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32291,22 +32529,22 @@ worden niet getoond</translation>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation>Tekenen %1 mislukt omdat:
+        <translation type="obsolete">Tekenen %1 mislukt omdat:
 %2</translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
-        <translation>Tekenen %1 mislukt omdat:
+        <translation type="obsolete">Tekenen %1 mislukt omdat:
 %2</translation>
     </message>
     <message>
         <source>Canvas refresh: %1 ms</source>
-        <translation>Kaartvenster versen: %1 ms</translation>
+        <translation type="obsolete">Kaartvenster versen: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
-        <translation>, verzender &apos;%1&apos;</translation>
+        <translation type="obsolete">, verzender &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Rendering</source>
@@ -32314,7 +32552,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>canvas</source>
-        <translation>ondergrond</translation>
+        <translation type="obsolete">ondergrond</translation>
     </message>
 </context>
 <context>
@@ -32615,7 +32853,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Error. Could not add part.</source>
-        <translation>Fout, toevoegen van onderdeel niet mogelijk.</translation>
+        <translation type="obsolete">Fout, toevoegen van onderdeel niet mogelijk.</translation>
     </message>
     <message>
         <source>Part added</source>
@@ -32623,11 +32861,11 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Coördinaattransformatie fout</translation>
+        <translation type="obsolete">Coördinaattransformatie fout</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Kan dit punt niet omzetten naar coördinatensysteem van de lagen</translation>
+        <translation type="obsolete">Kan dit punt niet omzetten naar coördinatensysteem van de lagen</translation>
     </message>
     <message>
         <source>Selected feature is not multi part.</source>
@@ -32651,7 +32889,15 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Error, could not add part</source>
-        <translation>Fout, toevoegen van ondedeel niet mogelijk</translation>
+        <translation type="obsolete">Fout, toevoegen van ondedeel niet mogelijk</translation>
+    </message>
+    <message>
+        <source>Could not add part. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate transform error. Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32760,12 +33006,24 @@ worden niet getoond</translation>
         <source>Couldn&apos;t remove the selected part.</source>
         <translation>Verwijderen van geselecteerde onderdeel is mislukt.</translation>
     </message>
+    <message>
+        <source>could not snap to a part on the current layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolDeleteRing</name>
     <message>
         <source>Ring deleted</source>
         <translation>Ring verwijderd</translation>
+    </message>
+    <message>
+        <source>Delete ring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not snap to a ring on the current layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32783,7 +33041,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Choose a vector layer in the legend</source>
-        <translation>Kies een vector laag in de legenda</translation>
+        <translation type="obsolete">Kies een vector laag in de legenda</translation>
     </message>
     <message>
         <source>Layer not editable</source>
@@ -32791,7 +33049,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
-        <translation>Gebruik &apos;Bewerken aan/uitzetten&apos; om te bewerken</translation>
+        <translation type="obsolete">Gebruik &apos;Bewerken aan/uitzetten&apos; om te bewerken</translation>
     </message>
 </context>
 <context>
@@ -33000,6 +33258,10 @@ worden niet getoond</translation>
     <message>
         <source>Inserted vertex</source>
         <translation>Toegevoegd hoekpunt</translation>
+    </message>
+    <message>
+        <source>could not snap to a segment on the current layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33279,11 +33541,11 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Snap tolerance</source>
-        <translation>&apos;Snap&apos; tolerantie</translation>
+        <translation type="obsolete">&apos;Snap&apos; tolerantie</translation>
     </message>
     <message>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
-        <translation>Segment &apos;snappen&apos; mislukt. Heeft u de tolerantie ingesteld in Extra &gt; Snapping opties?</translation>
+        <translation type="obsolete">Segment &apos;snappen&apos; mislukt. Heeft u de tolerantie ingesteld in Extra &gt; Snapping opties?</translation>
     </message>
 </context>
 <context>
@@ -34769,7 +35031,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save As</source>
-        <translation>Opslaan Als</translation>
+        <translation type="obsolete">Opslaan Als</translation>
     </message>
     <message>
         <source>Date</source>
@@ -34786,6 +35048,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Mapinfo File</source>
         <translation>Mapinfo Bestand</translation>
+    </message>
+    <message>
+        <source>Save layer as...</source>
+        <translation type="unfinished">Layer opslaan als...</translation>
     </message>
 </context>
 <context>
@@ -34865,6 +35131,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remove attribute</source>
         <translation>Attribuut verwijderen</translation>
+    </message>
+    <message>
+        <source>File encoding</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36351,7 +36621,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>All</source>
-        <translation>Alles</translation>
+        <translation type="obsolete">Alles</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -36377,6 +36647,14 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
         <source>Crosses</source>
         <translation>Kruisjes</translation>
     </message>
+    <message>
+        <source>Restore UI defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure to reset the UI to default (needs restart)?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -36398,7 +36676,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation>Problemen met fout (gevulde) polygonen oplossen</translation>
+        <translation type="obsolete">Problemen met fout (gevulde) polygonen oplossen</translation>
     </message>
     <message>
         <source>General</source>
@@ -36430,7 +36708,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
-        <translation>Kaartvensster zal worden hertekend nadat dit aantal objecten zijn ingelezen vanuit de databrond</translation>
+        <translation type="obsolete">Kaartvensster zal worden hertekend nadat dit aantal objecten zijn ingelezen vanuit de databrond</translation>
     </message>
     <message>
         <source>Measure tool</source>
@@ -36614,7 +36892,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Number of features to draw before updating the display</source>
-        <translation>Aantal objecten alvorens de kaart te hertekenen</translation>
+        <translation type="obsolete">Aantal objecten alvorens de kaart te hertekenen</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
@@ -37251,11 +37529,11 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     <message>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
         <translatorcomment>&apos;and incremental feature drawing&apos; niet meevertaald omdat ik geen idee heb... (Ray)</translatorcomment>
-        <translation>Hogere grafische prestaties ten koste van de mogelijkheid om het renderen te annuleren</translation>
+        <translation type="obsolete">Hogere grafische prestaties ten koste van de mogelijkheid om het renderen te annuleren</translation>
     </message>
     <message>
         <source>Enable back buffer</source>
-        <translation>&apos;Backbuffer&apos; inschakelen</translation>
+        <translation type="obsolete">&apos;Backbuffer&apos; inschakelen</translation>
     </message>
     <message>
         <source>Debugging</source>
@@ -37411,7 +37689,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Enable feature simplication by default for newly added layers</source>
-        <translation>Objectvereenvoudiging standaard toepassen voor nieuwe lagen</translation>
+        <translation type="obsolete">Objectvereenvoudiging standaard toepassen voor nieuwe lagen</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
@@ -37532,6 +37810,34 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Ask for datum transformation when no default is defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for confirmation when a layer is to be removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QSettings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render layers in parallel using all available CPU cores</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map update interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable feature simplification by default for newly added layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -43232,7 +43538,7 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
     </message>
     <message>
         <source>Could not reproject view extent: %1</source>
-        <translation>Kan de &apos;view extent&apos; %1 niet herprojecteren</translation>
+        <translation type="obsolete">Kan de &apos;view extent&apos; %1 niet herprojecteren</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -43240,7 +43546,7 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
     </message>
     <message>
         <source>Could not reproject layer extent: %1</source>
-        <translation>Kan de &apos;layer extent&apos; %1 niet herprojecteren</translation>
+        <translation type="obsolete">Kan de &apos;layer extent&apos; %1 niet herprojecteren</translation>
     </message>
     <message>
         <source>Failed to load provider %1 (Reason: %2)</source>
@@ -44519,11 +44825,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>map view</source>
-        <translation>Kaartview</translation>
+        <translation type="obsolete">Kaartview</translation>
     </message>
     <message>
         <source>Extent (current: %1)</source>
-        <translation>Extent (huidige: %1)</translation>
+        <translation type="obsolete">Extent (huidige: %1)</translation>
     </message>
     <message>
         <source>Layer (%1, %2)</source>
@@ -44602,27 +44908,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>West</source>
-        <translation>West</translation>
+        <translation type="obsolete">West</translation>
     </message>
     <message>
         <source>East</source>
-        <translation>Oost</translation>
+        <translation type="obsolete">Oost</translation>
     </message>
     <message>
         <source>North</source>
-        <translation>Noord</translation>
+        <translation type="obsolete">Noord</translation>
     </message>
     <message>
         <source>South</source>
-        <translation>Zuid</translation>
+        <translation type="obsolete">Zuid</translation>
     </message>
     <message>
         <source>Layer extent</source>
-        <translation>Laag extent</translation>
+        <translation type="obsolete">Laag extent</translation>
     </message>
     <message>
         <source>Map view extent</source>
-        <translation>Kaartbeeld extent</translation>
+        <translation type="obsolete">Kaartbeeld extent</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -46394,6 +46700,37 @@ De foutmelding was:
     </message>
 </context>
 <context>
+    <name>QgsShapeburstFillSymbolLayerV2Widget</name>
+    <message>
+        <source>Color (start)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (end)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">Radius vervagen</translation>
+    </message>
+    <message>
+        <source>Integer between 0 and 18</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use whole shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
@@ -46409,11 +46746,11 @@ De foutmelding was:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation>Horizontaal ankerpunt</translation>
+        <translation type="obsolete">Horizontaal ankerpunt</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation>Verticaal ankerpunt</translation>
+        <translation type="obsolete">Verticaal ankerpunt</translation>
     </message>
 </context>
 <context>
@@ -50420,12 +50757,8 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <translation>Omschrijving van deze provider</translation>
     </message>
     <message>
-        <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation type="obsolete">CRS</translation>
     </message>
 </context>
 <context>
@@ -51498,6 +51831,10 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translation>Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
     </message>
+    <message>
+        <source>Memory cache</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
@@ -51614,7 +51951,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>More Options &gt;&gt;</source>
-        <translation>Meer Optiet &gt;&gt;</translation>
+        <translation type="obsolete">Meer Optiet &gt;&gt;</translation>
     </message>
     <message>
         <source>Datasource Options</source>
@@ -51627,6 +51964,10 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Layer Options</source>
         <translation>Laagopties</translation>
+    </message>
+    <message>
+        <source>Save only selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51985,6 +52326,18 @@ Kaartobjecten</translation>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
+    <message>
+        <source>Failed to parse WMS URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to download capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to parse capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsWMSRootItem</name>
@@ -52013,7 +52366,7 @@ Kaartobjecten</translation>
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation>WMS-provider kan niet worden geopend</translation>
+        <translation type="obsolete">WMS-provider kan niet worden geopend</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -52183,6 +52536,20 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
             <numerusform>Opties (%n ruimtelijke referentie systemen beschikbaar)</numerusform>
             <numerusform>Opties (%n ruimtelijke referentie systemen beschikbaar)</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Failed to parse WMS URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to download capabilities:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to parse capabilities:
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52457,6 +52824,61 @@ Antwoord was:
     </message>
 </context>
 <context>
+    <name>QgsWcsDownloadHandler</name>
+    <message>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WCS</source>
+        <translation type="unfinished">WCS</translation>
+    </message>
+    <message>
+        <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
+        <translation type="unfinished">Map request error:&lt;br&gt;Titel: %1&lt;br&gt;Fout: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
+        <translation type="unfinished">Map request error (Status: %1; Antwoord: %2; URL:%3)</translation>
+    </message>
+    <message>
+        <source>Cannot parse multipart response: %1</source>
+        <translation type="unfinished">Kan antwoord bestaande uit meerdere delen niet parsen: %1</translation>
+    </message>
+    <message>
+        <source>Expected 2 parts, %1 received</source>
+        <translation type="unfinished">Verwacht 2 delen, %1 ontvangen</translation>
+    </message>
+    <message>
+        <source>More than 2 parts (%1) received</source>
+        <translation type="unfinished">Meer dan 2 delen (%1) ontvangen</translation>
+    </message>
+    <message>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished">Map request error (Titel:%1; Fout:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <source>Map request error (Response: %1; URL:%2)</source>
+        <translation type="unfinished">Map request error (Antwoord: %1 - URL: %2)</translation>
+    </message>
+    <message>
+        <source>Content-Transfer-Encoding %1 not supported</source>
+        <translation type="unfinished">Content-Transfer-Encoding %1 wordt niet ondersteund</translation>
+    </message>
+    <message>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation type="unfinished">Map request failed [fout:%1 url:%2]</translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished">Er worden niet meer dan 100 request errors gelogd.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation type="unfinished">%1 van %2 bytes van de kaart gedownload.</translation>
+    </message>
+</context>
+<context>
     <name>QgsWcsProvider</name>
     <message>
         <source>Cannot describe coverage</source>
@@ -52500,31 +52922,31 @@ Antwoord was:
     </message>
     <message>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation>Map request error (Status: %1 - Reden: %2, URL: %3)</translation>
+        <translation type="obsolete">Map request error (Status: %1 - Reden: %2, URL: %3)</translation>
     </message>
     <message>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Map request error (Titel:%1; Fout:%2; URL: %3)</translation>
+        <translation type="obsolete">Map request error (Titel:%1; Fout:%2; URL: %3)</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation>Map request error (Status: %1; Antwoord: %2; URL:%3)</translation>
+        <translation type="obsolete">Map request error (Status: %1; Antwoord: %2; URL:%3)</translation>
     </message>
     <message>
         <source>Expected 2 parts, %1 received</source>
-        <translation>Verwacht 2 delen, %1 ontvangen</translation>
+        <translation type="obsolete">Verwacht 2 delen, %1 ontvangen</translation>
     </message>
     <message>
         <source>More than 2 parts (%1) received</source>
-        <translation>Meer dan 2 delen (%1) ontvangen</translation>
+        <translation type="obsolete">Meer dan 2 delen (%1) ontvangen</translation>
     </message>
     <message>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation>Map request error (Antwoord: %1 - URL: %2)</translation>
+        <translation type="obsolete">Map request error (Antwoord: %1 - URL: %2)</translation>
     </message>
     <message>
         <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation>Content-Transfer-Encoding %1 wordt niet ondersteund</translation>
+        <translation type="obsolete">Content-Transfer-Encoding %1 wordt niet ondersteund</translation>
     </message>
     <message>
         <source>No data received</source>
@@ -52536,15 +52958,15 @@ Antwoord was:
     </message>
     <message>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation>Map request failed [fout:%1 url:%2]</translation>
+        <translation type="obsolete">Map request failed [fout:%1 url:%2]</translation>
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
-        <translation>Er worden niet meer dan 100 request errors gelogd.</translation>
+        <translation type="obsolete">Er worden niet meer dan 100 request errors gelogd.</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation>%1 van %2 bytes van de kaart gedownload.</translation>
+        <translation type="obsolete">%1 van %2 bytes van de kaart gedownload.</translation>
     </message>
     <message>
         <source>Dom Exception</source>
@@ -52556,7 +52978,7 @@ Antwoord was:
 Response was:
 
 %5</source>
-        <translation>Probleem bij het ophalen van WCS Service Exception in %1: %2 op regel %3 kolom %4
+        <translation type="obsolete">Probleem bij het ophalen van WCS Service Exception in %1: %2 op regel %3 kolom %4
 
 Antwoord was:
 
@@ -52724,11 +53146,11 @@ Antwoord was:
     </message>
     <message>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation>Map request error:&lt;br&gt;Titel: %1&lt;br&gt;Fout: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+        <translation type="obsolete">Map request error:&lt;br&gt;Titel: %1&lt;br&gt;Fout: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Cannot parse multipart response: %1</source>
-        <translation>Kan antwoord bestaande uit meerdere delen niet parsen: %1</translation>
+        <translation type="obsolete">Kan antwoord bestaande uit meerdere delen niet parsen: %1</translation>
     </message>
     <message>
         <source>Cannot verify coverage full extent: %1</source>
@@ -52745,6 +53167,80 @@ Antwoord was:
     <message>
         <source>RasterIO error: </source>
         <translation>RasterIO fout: </translation>
+    </message>
+    <message>
+        <source>Could not get WCS Service Exception at %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Service Exception</source>
+        <translation type="unfinished">Service fout</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsCapabilitiesDownload</name>
+    <message>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation type="unfinished">%1 van %2 bytes van de capabilities gedownload.</translation>
+    </message>
+    <message>
+        <source>Capabilities request redirected.</source>
+        <translation type="unfinished">Capabilities request &apos;redirected&apos;.</translation>
+    </message>
+    <message>
+        <source>Redirect loop detected: %1</source>
+        <translation type="unfinished">Een &apos;redirect loop&apos; gedetecteerd: %1</translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>empty of capabilities: %1</source>
+        <translation type="unfinished">lege capabilities: %1</translation>
+    </message>
+    <message>
+        <source>Download of capabilities failed: %1</source>
+        <translation type="unfinished">Downloaden van capabilities mislukt: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsImageDownloadHandler</name>
+    <message>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
+        <translation type="unfinished">Ontvangen kaart is misvormd [Content-type:%1; URL:%2]</translation>
+    </message>
+    <message>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished">Map request error (Titel:%1; Fout:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
+        <translation type="unfinished">Map request error (Status: %1; Antwoord: %2; Content-Type: %3; URL:%4)</translation>
+    </message>
+    <message>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation type="unfinished">Map request failed [fout:%1 url:%2]</translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished">Er worden niet meer dan 100 request errors gelogd.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation type="unfinished">%1 van %2 bytes van de kaart gedownload.</translation>
     </message>
 </context>
 <context>
@@ -52831,7 +53327,7 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation>Kan de WMS capabilities niet ophalen: %1 op regel %2 kolom %3
+        <translation type="obsolete">Kan de WMS capabilities niet ophalen: %1 op regel %2 kolom %3
 Dit is waarschijnlijk te wijten aan een verkeerde WMS server URL.
 Antwoord was:
 
@@ -52843,7 +53339,7 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation>De WMS capabilities zijn niet in het verwachtte formaat (DTD) ontvangen: geen %1 of %2 gevonden.
+        <translation type="obsolete">De WMS capabilities zijn niet in het verwachtte formaat (DTD) ontvangen: geen %1 of %2 gevonden.
 De oorzaak hiervan kan een foute WMS Server URL zijn.
 Tag:%3
 Antwoord was:
@@ -52855,7 +53351,7 @@ Antwoord was:
 Response was:
 
 %5</source>
-        <translation>Probleem bij het ophalen van WMS Service Exception in %1: %2 op regel %3 kolom %4
+        <translation type="obsolete">Probleem bij het ophalen van WMS Service Exception in %1: %2 op regel %3 kolom %4
 
 Antwoord was:
 
@@ -53063,32 +53559,32 @@ Antwoord was:
     </message>
     <message>
         <source>empty capabilities document</source>
-        <translation>leeg capabilities document</translation>
+        <translation type="obsolete">leeg capabilities document</translation>
     </message>
     <message>
         <source>
 Tried URL: %1</source>
-        <translation>Gebruikte URL: %1</translation>
+        <translation type="obsolete">Gebruikte URL: %1</translation>
     </message>
     <message>
         <source>Capabilities request redirected.</source>
-        <translation>Capabilities request &apos;redirected&apos;.</translation>
+        <translation type="obsolete">Capabilities request &apos;redirected&apos;.</translation>
     </message>
     <message>
         <source>empty of capabilities: %1</source>
-        <translation>lege capabilities: %1</translation>
+        <translation type="obsolete">lege capabilities: %1</translation>
     </message>
     <message>
         <source>Download of capabilities failed: %1</source>
-        <translation>Downloaden van capabilities mislukt: %1</translation>
+        <translation type="obsolete">Downloaden van capabilities mislukt: %1</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation>%1 van %2 bytes van de capabilities gedownload.</translation>
+        <translation type="obsolete">%1 van %2 bytes van de capabilities gedownload.</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation>%1 van %2 bytes van de kaart gedownload.</translation>
+        <translation type="obsolete">%1 van %2 bytes van de kaart gedownload.</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
@@ -53168,7 +53664,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Tile request error</source>
-        <translation>tile request fout</translation>
+        <translation type="obsolete">tile request fout</translation>
     </message>
     <message>
         <source>Status: %1
@@ -53246,11 +53742,11 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Tile request error (Titel:%1; Fout:%2; URL: %3)</translation>
+        <translation type="obsolete">Tile request error (Titel:%1; Fout:%2; URL: %3)</translation>
     </message>
     <message>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation>Tile request error (Status:%1; Content-Type:%2; Lengte:%3; URL: %4)</translation>
+        <translation type="obsolete">Tile request error (Status:%1; Content-Type:%2; Lengte:%3; URL: %4)</translation>
     </message>
     <message>
         <source>Tile request failed [error:%1 url:%2]</source>
@@ -53258,19 +53754,19 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
-        <translation>Er worden niet meer dan 100 request errors gelogd.</translation>
+        <translation type="obsolete">Er worden niet meer dan 100 request errors gelogd.</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation>Map request error (Status: %1; Reden: %2; URL:%3)</translation>
+        <translation type="obsolete">Map request error (Status: %1; Reden: %2; URL:%3)</translation>
     </message>
     <message>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Map request error (Titel:%1; Fout:%2; URL: %3)</translation>
+        <translation type="obsolete">Map request error (Titel:%1; Fout:%2; URL: %3)</translation>
     </message>
     <message>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation>Map request failed [fout:%1 url:%2]</translation>
+        <translation type="obsolete">Map request failed [fout:%1 url:%2]</translation>
     </message>
     <message>
         <source>Tile Layer Properties</source>
@@ -53334,15 +53830,15 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation>Ontvangen kaart is misvormd [Content-Type:%1; URL: %2]</translation>
+        <translation type="obsolete">Ontvangen kaart is misvormd [Content-Type:%1; URL: %2]</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation>Ontvangen kaart is misvormd [Content-type:%1; URL:%2]</translation>
+        <translation type="obsolete">Ontvangen kaart is misvormd [Content-type:%1; URL:%2]</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation>Map request error (Status: %1; Antwoord: %2; Content-Type: %3; URL:%4)</translation>
+        <translation type="obsolete">Map request error (Status: %1; Antwoord: %2; Content-Type: %3; URL:%4)</translation>
     </message>
     <message>
         <source>Redirect loop detected: %1</source>
@@ -53378,19 +53874,19 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation>Tile request max pogingen fout. %1 Pogingen voor tile %2 van request %3 (url: %4)</translation>
+        <translation type="obsolete">Tile request max pogingen fout. %1 Pogingen voor tile %2 van request %3 (url: %4)</translation>
     </message>
     <message>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation>herhaal tileRequest %1 tile %2(poging %3)</translation>
+        <translation type="obsolete">herhaal tileRequest %1 tile %2(poging %3)</translation>
     </message>
     <message>
         <source>Generated default style</source>
-        <translation>Standaard stijl gegenereerd</translation>
+        <translation type="obsolete">Standaard stijl gegenereerd</translation>
     </message>
     <message>
         <source>Style was missing in capabilities</source>
-        <translation>&apos;Style&apos; mist in de capabilities</translation>
+        <translation type="obsolete">&apos;Style&apos; mist in de capabilities</translation>
     </message>
     <message>
         <source>LegendURLs</source>
@@ -53431,6 +53927,181 @@ Omschrijving: %2</translation>
     <message>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get WMS Service Exception: %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid tile mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected tile matrix set </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile size [px]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile size [mu]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matrix size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matrix extent [mu]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Breedte</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Hoogte</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation type="unfinished">Boven</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Links</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation type="unfinished">Onder</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Rechts</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n missing row(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Layer&apos;s upper bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n missing column(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Layer&apos;s left bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer&apos;s lower bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer&apos;s right bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsTiledImageDownloadHandler</name>
+    <message>
+        <source>Tile request error</source>
+        <translation type="unfinished">tile request fout</translation>
+    </message>
+    <message>
+        <source>Status: %1
+Reason phrase: %2</source>
+        <translation type="unfinished">Status: %1
+Omschrijving: %2</translation>
+    </message>
+    <message>
+        <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished">Tile request error (Titel:%1; Fout:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
+        <translation type="unfinished">Tile request error (Status:%1; Content-Type:%2; Lengte:%3; URL: %4)</translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
+        <translation type="unfinished">Ontvangen kaart is misvormd [Content-Type:%1; URL: %2]</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation type="unfinished">
+            <numerusform>%n tile-aanvraag op de achtergrond</numerusform>
+            <numerusform>%n tile-aanvragen op de achtergrond</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation type="unfinished">
+            <numerusform>, %n cache hit</numerusform>
+            <numerusform>, %n cache hits</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation type="unfinished">
+            <numerusform>, %n cache misses.</numerusform>
+            <numerusform>, %n cache misses.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation type="unfinished">
+            <numerusform>, %n fout.</numerusform>
+            <numerusform>, %n fouten.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished">Er worden niet meer dan 100 request errors gelogd.</translation>
+    </message>
+    <message>
+        <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
+        <translation type="unfinished">Tile request max pogingen fout. %1 Pogingen voor tile %2 van request %3 (url: %4)</translation>
+    </message>
+    <message>
+        <source>repeat tileRequest %1 tile %2(retry %3)</source>
+        <translation type="unfinished">herhaal tileRequest %1 tile %2(poging %3)</translation>
     </message>
 </context>
 <context>
@@ -55518,6 +56189,61 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     <message>
         <source>Data defined properties...</source>
         <translation>Data-bepaalde eigenschappen...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShapeburstFill</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Formulier</translation>
+    </message>
+    <message>
+        <source>Gradient colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Two color</source>
+        <translation type="unfinished">Twee kleuren</translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished">Kleurverloop</translation>
+    </message>
+    <message>
+        <source>Shading style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shade whole shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore rings in polygons while shading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shade to a set distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Millimeter</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Kaarteenheid</translation>
+    </message>
+    <message>
+        <source>Blur strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished">Data-bepaalde eigenschappen...</translation>
     </message>
 </context>
 <context>
@@ -62760,6 +63486,26 @@ geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
+Returns a string wrapped to a maximum/minimum number of characters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to be wrapped.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; is number.  If positive, the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; is string.  The delimiter string to wrap to a new line (&lt;u&gt;optional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
