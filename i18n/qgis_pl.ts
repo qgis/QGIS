@@ -15003,23 +15003,25 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6488"/>
         <source>No legend entries selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wybrano elementów legendy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6489"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz warstwy i grupy, które chcesz usunąć z legendy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6496"/>
         <source>Remove layers and groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń warstwy i grupy</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6496"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Czy usunąć %n obiektów legendy?</numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -15027,7 +15029,9 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
         <location filename="../src/app/qgisapp.cpp" line="6503"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Usunięto %n obiektów legendy.</numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -15641,7 +15645,7 @@ QWT Version: %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="426"/>
         <location filename="../src/app/qgisapp.cpp" line="433"/>
         <source>CRS was undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie zdefiniowano układu współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="426"/>
@@ -15926,22 +15930,22 @@ Błąd: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="5693"/>
         <location filename="../src/app/qgisapp.cpp" line="5699"/>
         <source>Paste features</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej obiekty</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5687"/>
         <source>no features could be successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>nie wklejono żadnych obiektów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5694"/>
         <source>%1 features were successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 obiektów wklejono poprawnie.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5700"/>
         <source>%1 of %2 features could be successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 z %2 obiektów wklejono poprawnie.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5727"/>
@@ -25634,7 +25638,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="204"/>
         <source>&apos;feature&apos;|&apos;viewport&apos;</source>
-        <translation>&apos;obiekt&apos;|&apos;widokt&apos;</translation>
+        <translation type="unfinished">&apos;obiekt&apos;|&apos;widok&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="209"/>
@@ -25748,7 +25752,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="134"/>
         <source>Hold dialog open</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie zamykaj okna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="143"/>
@@ -28847,37 +28851,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="22"/>
         <source>West</source>
-        <translation type="unfinished">Zachód</translation>
+        <translation>Zachód</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="35"/>
         <source>East</source>
-        <translation type="unfinished">Wschód</translation>
+        <translation>Wschód</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="48"/>
         <source>North</source>
-        <translation type="unfinished">Północ</translation>
+        <translation>Północ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="65"/>
         <source>South</source>
-        <translation type="unfinished">Południe</translation>
+        <translation>Południe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="102"/>
         <source>Layer extent</source>
-        <translation type="unfinished">Zasięg warstwy</translation>
+        <translation>Zasięg warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="131"/>
         <source>Map view extent</source>
-        <translation type="unfinished">Zasięg widoku mapy</translation>
+        <translation>Zasięg widoku mapy</translation>
     </message>
 </context>
 <context>
@@ -32077,12 +32081,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="972"/>
         <source>Color (start)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor (początkowy)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="973"/>
         <source>Color (end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor (końcowy)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="974"/>
@@ -38009,12 +38013,12 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1188"/>
         <source>Destination CRS set to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Docelowy układ współrzędnych ustwiono na %1</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1208"/>
         <source>On the fly reprojection enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Włączona reprojekcja w locie.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="2087"/>
@@ -38878,7 +38882,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="65"/>
         <source>Could not add part. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można dodać części. %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="104"/>
@@ -67706,10 +67710,10 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Zarządzanie i instalacja wtyczek&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;Manadżer wtyczek&lt;/h3&gt;
 
 &lt;p&gt;
-Zarządzanie i instalacja wtyczek.
+Manadżer wtyczek.
 &lt;/p&gt;
 
 
@@ -67724,8 +67728,8 @@ Zarządzanie i instalacja wtyczek.
 &lt;h4&gt;Zainstalowane&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-Ta zakładka zawiera listę wszystkich wtyczek zainstalowanych na tym komputerze.
- Lista zawiera zarówno wtyczki napisane w języku C++ jak i Python.
+Ta zakładka zawiera listę wszystkich wtyczek zainstalowanych na komputerze.
+Lista zawiera zarówno wtyczki napisane w języku C++ jak i Python.
 &lt;/p&gt;
 &lt;p&gt;
 Wtyczki możesz włączać i wyłączać poprzez zaznaczanie checkboksa lub dwuklik na nazwie.&lt;br/&gt;
@@ -67759,8 +67763,8 @@ Ta zakładka pokaże się, gdy nowa wtyczka zostanie upubliczniona. Zostanie ona
 &lt;h4&gt;Aktualizowalne&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if one of your installed plugins can be upgraded
-from the remote repositories.
+Ta zakładka pokaże się, jeśli któraś z zainstalowanych wtyczek ma nowszą wersję niż zainstalowana
+i może być zaktualizoawna.
 &lt;/p&gt;
 
 &lt;a name=&quot;Invalid tab&quot;&gt;
@@ -67782,11 +67786,12 @@ Możesz ustawić z jaką częstotliwością QGIS  będzie pobierał listę wtycz
 z dostępnych repozytoriów.
 &lt;/p&gt;
 &lt;p&gt;
-By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
-in the lists, even the ones that are considered &apos;experimental&apos; by the author.
+Zaznaczając opcję &apos;Pokaż również wtyczki ekcperymentalne&apos;, wszystkie wtyczki zostaną pokazane
+na listach, nawet te, które są uważane przez autora za &apos;eksperymentalne&apos;.
 
 &lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+Uwaga:  Wtyczki eksperymentalne generalnie nie są przeznaczone do codziennego użytku. Są na wczesnym etapie rozwoju i powinny być traktowane jako niekompletne lub koncepcyjne.
+Zaspół QGIS nie zaleca instalowania ich w celach innych niż testowe.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;/p&gt;
@@ -74417,7 +74422,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja crosses&lt;/h3&gt;
+Zwraca 1 jeśli wejściowe geometrie posiadają kilka, lecz nie wszystkie, takie same wewnętrzne punkty.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+geometry &amp;rarr; geometry
+geometry &amp;rarr; geometry
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; zwraca 1&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; zwraca 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1257"/>
