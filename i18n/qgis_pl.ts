@@ -15021,8 +15021,6 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
         <comment>number of legend items to remove</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -15030,8 +15028,6 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -63177,8 +63173,6 @@ Response was:
         <source>%n missing row(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -63191,8 +63185,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1970"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -67714,7 +67706,91 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;Zarządzanie i instalacja wtyczek&lt;/h3&gt;
+
+&lt;p&gt;
+Zarządzanie i instalacja wtyczek.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Zainstalowane&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Pobierz więcej&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;Nowości&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Aktualizowalne&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Niesprawne&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Ustawienia&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Zainstalowane&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Ta zakładka zawiera listę wszystkich wtyczek zainstalowanych na tym komputerze.
+ Lista zawiera zarówno wtyczki napisane w języku C++ jak i Python.
+&lt;/p&gt;
+&lt;p&gt;
+Wtyczki możesz włączać i wyłączać poprzez zaznaczanie checkboksa lub dwuklik na nazwie.&lt;br/&gt;
+Pojedyncze klinięcie na nazwie wtyczki wyświetla jej opis i szczegóły instalacji.
+&lt;/p&gt;
+&lt;p&gt;
+Kliknięcie prawym uaktywni menu konstektowe, w którym możesz zmienić sortowanie po:
+nazwie, liczbie pobrań, głosach i statusie.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Pobierz więcej&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Na tej zakładce znajduje się lista wtyczek dostępnych do instalacji z repozytorium.
+Lista jest pobierana na starcie, możesz zmienić to w ustawieniach.
+&lt;/p&gt;
+&lt;p&gt;
+Kliknięcie na nazwie wtyczki wyświetli jej opis i uaktywni przycisk umożliwiający jej instalację.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;Nowości&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Ta zakładka pokaże się, gdy nowa wtyczka zostanie upubliczniona. Zostanie ona pokazana tylko raz.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Aktualizowalne&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if one of your installed plugins can be upgraded
+from the remote repositories.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Niesprawne&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Ta zakładka pokaże się tylko wtedy, gdy jakaś wtyczka będzie uszkodzona.
+Może się to zdarzyć podczas instalacji.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Ustawienia&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Na tej zakładce możesz zmieniać ustawienia Menadżera wtyczek.
+&lt;/p&gt;
+&lt;p&gt;
+Możesz ustawić z jaką częstotliwością QGIS  będzie pobierał listę wtyczek i aktualizował informację 
+z dostępnych repozytoriów.
+&lt;/p&gt;
+&lt;p&gt;
+By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
+in the lists, even the ones that are considered &apos;experimental&apos; by the author.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="829"/>
