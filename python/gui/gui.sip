@@ -28,6 +28,8 @@
 %Include qgsexpressionbuilderdialog.sip
 %Include qgsexpressionbuilderwidget.sip
 %Include qgsexpressionhighlighter.sip
+%Include qgsfieldcombobox.sip
+%Include qgsfieldmodel.sip
 %Include qgsfieldvalidator.sip
 %Include qgsfiledropedit.sip
 %Include qgsfilterlineedit.sip
@@ -44,6 +46,9 @@
 %Include qgsmapcanvasmap.sip
 %Include qgsmapcanvassnapper.sip
 %Include qgsmaplayeractionregistry.sip
+%Include qgsmaplayercombobox.sip
+%Include qgsmaplayermodel.sip
+%Include qgsmaplayerproxymodel.sip
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmaptip.sip
 %Include qgsmaptool.sip

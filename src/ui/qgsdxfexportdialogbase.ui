@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
-    <height>292</height>
+    <width>406</width>
+    <height>293</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,11 @@
       <widget class="QLineEdit" name="mSymbologyScaleLineEdit"/>
      </item>
      <item row="3" column="0" colspan="3">
-      <widget class="QListWidget" name="mLayersListWidget"/>
+      <widget class="QListView" name="mLayersListView">
+       <property name="selectionMode">
+        <enum>QAbstractItemView::NoSelection</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -65,7 +65,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 
   // Grab the first feature so that user can use it to test the style in rules.
-  if( layer )
+  if ( layer )
   {
     QgsFeature fet;
     layer->getFeatures().nextFeature( fet );
@@ -155,6 +155,29 @@ void QgsAtlasComposition::setMargin( float margin )
   map->setAtlasMargin(( double ) margin );
 }
 
+int QgsAtlasComposition::sortKeyAttributeIndex() const
+{
+  if ( !mCoverageLayer )
+  {
+    return -1;
+  }
+  return mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
+}
+
+void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
+{
+  if ( mCoverageLayer )
+  {
+    const QgsFields fields = mCoverageLayer->pendingFields();
+    if ( idx >= 0 && idx < fields.count() )
+    {
+      mSortKeyAttributeName = fields[idx].name();
+      return;
+    }
+  }
+  mSortKeyAttributeName = "";
+}
+
 //
 // Private class only used for the sorting of features
 class FieldSorter
@@ -215,6 +238,7 @@ int QgsAtlasComposition::updateFeatures()
   QgsFeature feat;
   mFeatureIds.clear();
   mFeatureKeys.clear();
+  int sortIdx = mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
   while ( fit.nextFeature( feat ) )
   {
     if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
@@ -233,14 +257,14 @@ int QgsAtlasComposition::updateFeatures()
     }
     mFeatureIds.push_back( feat.id() );
 
-    if ( mSortFeatures )
+    if ( mSortFeatures && sortIdx != -1 )
     {
-      mFeatureKeys.insert( feat.id(), feat.attributes()[ mSortKeyAttributeIdx ] );
+      mFeatureKeys.insert( feat.id(), feat.attributes()[ sortIdx ] );
     }
   }
 
   // sort features, if asked for
-  if ( mSortFeatures )
+  if ( mFeatureKeys.count() )
   {
     FieldSorter sorter( mFeatureKeys, mSortAscending );
     qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
@@ -567,7 +591,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   atlasElem.setAttribute( "sortFeatures", mSortFeatures ? "true" : "false" );
   if ( mSortFeatures )
   {
-    atlasElem.setAttribute( "sortKey", QString::number( mSortKeyAttributeIdx ) );
+    atlasElem.setAttribute( "sortKey", mSortKeyAttributeName );
     atlasElem.setAttribute( "sortAscending", mSortAscending ? "true" : "false" );
   }
   atlasElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
@@ -637,7 +661,20 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   mSortFeatures = atlasElem.attribute( "sortFeatures", "false" ) == "true" ? true : false;
   if ( mSortFeatures )
   {
-    mSortKeyAttributeIdx = atlasElem.attribute( "sortKey", "0" ).toInt();
+    mSortKeyAttributeName = atlasElem.attribute( "sortKey", "" );
+    // since 2.3, the field name is saved instead of the field index
+    // following code keeps compatibility with version 2.2 projects
+    // to be removed in QGIS 3.0
+    bool isIndex;
+    int idx = mSortKeyAttributeName.toInt( &isIndex );
+    if ( isIndex && mCoverageLayer )
+    {
+      const QgsFields fields = mCoverageLayer->pendingFields();
+      if ( idx >= 0 && idx < fields.count() )
+      {
+        mSortKeyAttributeName = fields[idx].name();
+      }
+    }
     mSortAscending = atlasElem.attribute( "sortAscending", "true" ) == "true" ? true : false;
   }
   mFilterFeatures = atlasElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;

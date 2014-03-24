@@ -330,7 +330,7 @@ void TestQgsAtlasComposition::sorting_render()
   mAtlas->setHideCoverage( false );
 
   mAtlas->setSortFeatures( true );
-  mAtlas->setSortKeyAttributeIndex( 4 ); // departement name
+  mAtlas->setSortKeyAttributeName( "NAME_1" ); // departement name
   mAtlas->setSortAscending( false );
 
   mAtlas->beginRender();
