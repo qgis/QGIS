@@ -87,11 +87,11 @@ class StatisticsByCategories(GeoAlgorithm):
             except:
                 pass
 
-        fields = ['category', 'min', 'max', 'mean', 'stddev']
+        fields = ['category', 'min', 'max', 'mean', 'stddev', 'count']
         writer = output.getTableWriter(fields)
         for (cat, v) in values.items():
             (min, max, mean, stddev) = calculateStats(v)
-            record = [cat, min, max, mean, stddev]
+            record = [cat, min, max, mean, stddev, len(v)]
             writer.addRecord(record)
 
 
