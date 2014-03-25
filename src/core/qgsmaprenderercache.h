@@ -11,7 +11,11 @@
 /**
  * This class is responsible for keeping cache of rendered images of individual layers.
  *
- * The class is thread-safe (multiple classes can access the same instance safely).
+ * Once a layer has rendered image stored in the cache (using setCacheImage(...)),
+ * the cache listens to repaintRequested() signals from layer. If triggered, the cache
+ * removes the rendered image (and disconnects from the layer).
+ *
+ * The class is thread-safe (multiple classes can access the same instance safely). 
  *
  * @note added in 2.4
  */
@@ -35,9 +39,16 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! get cached image for the specified layer ID. Returns null image if it is not cached.
     QImage cacheImage( QString layerId );
 
-  public slots:
+    //! remove layer from the cache
+    void clearCacheImage( QString layerId );
+
+  protected slots:
     //! remove layer (that emitted the signal) from the cache
-    void layerDataChanged();
+    void layerRequestedRepaint();
+
+  protected:
+    //! invalidate cache contents (without locking)
+    void clearInternal();
 
   protected:
     QMutex mMutex;

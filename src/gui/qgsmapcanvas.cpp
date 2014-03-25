@@ -380,7 +380,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Add check if vector layer when disconnecting from selectionChanged slot
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
-      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -395,7 +395,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Add check if vector layer when connecting to selectionChanged slot
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
-      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -681,18 +681,6 @@ void QgsMapCanvas::refreshMap()
   mMapUpdateTimer.start();
 }
 
-void QgsMapCanvas::layerRequestedRepaint()
-{
-  // make sure to clear the cached image
-  if ( mCache )
-  {
-    QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
-    if ( layer )
-      mCache->setCacheImage( layer->id(), QImage() );
-  }
-
-  refresh();
-}
 
 void QgsMapCanvas::rendererJobFinished()
 {

@@ -222,12 +222,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    QDomDocument asLayerDefinition ( );
+    QDomDocument asLayerDefinition( );
 
     /** Creates a new layer from a layer defininition document
     */
     static QgsMapLayer* fromLayerDefinition( QDomDocument& document );
-    static QgsMapLayer* fromLayerDefinitionFile(const QString qlrfile );
+    static QgsMapLayer* fromLayerDefinitionFile( const QString qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
@@ -370,8 +370,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** @deprecated since 2.4 - returns NULL */
     Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
-    /** @deprecated since 2.4 - does nothing */
-    Q_DECL_DEPRECATED void setCacheImage( QImage * ) {}
+    /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
+    Q_DECL_DEPRECATED void setCacheImage( QImage * );
     /** @deprecated since 2.4 - does nothing */
     Q_DECL_DEPRECATED virtual void onCacheImageDelete() {}
 
@@ -393,8 +393,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool hasScaleBasedVisibility() const;
 
     /** Clear cached image
-     * added in 1.5 */
-    //! @deprecated in 2.4 - does nothing
+     *  @deprecated in 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     Q_DECL_DEPRECATED void clearCacheImage();
 
     /** \brief Obtain Metadata for this layer */

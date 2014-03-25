@@ -589,7 +589,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( vl->isEditable() || ( labelingEngine && labelingEngine->willUseLayer( vl ) ) )
-        mCache->setCacheImage( ml->id(), QImage() );
+        mCache->clearCacheImage( ml->id() );
     }
 
     layerJobs.append( LayerRenderJob() );
