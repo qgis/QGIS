@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
+#include "qgshighlight.h"
 #include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
@@ -104,7 +105,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
   cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
 
-  // read the current browser and set it
+  mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
+  mIdentifyHighlightColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
   QSettings settings;
 
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
@@ -116,6 +119,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
   spinBoxIdentifyValue->setMinimum( 0.01 );
   spinBoxIdentifyValue->setValue( identifyValue );
+  QColor highlightColor = QColor( settings.value( "/Map/identify/highlight/color", "#ff0000" ).toString() );
+  int highlightAlpha = settings.value( "/Map/identify/highlight/colorAlpha", "63" ).toInt();
+  highlightColor.setAlpha( highlightAlpha );
+  mIdentifyHighlightColorButton->setColor( highlightColor );
+  double highlightBuffer = settings.value( "/Map/highlight/buffer", "0.5" ).toDouble();
+  mIdentifyHighlightBufferSpinBox->setValue( highlightBuffer );
+  double highlightMinWidth = settings.value( "/Map/highlight/minWidth", "1." ).toDouble();
+  mIdentifyHighlightMinWidthSpinBox->setValue( highlightMinWidth );
 
   // custom environment variables
   bool useCustomVars = settings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
@@ -1035,6 +1046,11 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
   settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
+  settings.setValue( "/Map/identify/highlight/color", mIdentifyHighlightColorButton->color().name() );
+  settings.setValue( "/Map/identify/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
+  settings.setValue( "/Map/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
+  settings.setValue( "/Map/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
+
   bool showLegendClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
   bool legendLayersBold = settings.value( "/qgis/legendLayersBold", true ).toBool();
@@ -1533,11 +1549,11 @@ QStringList QgsOptions::i18nList()
 
 void QgsOptions::on_mRestoreDefaultWindowStateBtn_clicked()
 {
-    // richard
-    QSettings mySettings;
-    if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default (needs restart)?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-        return;
-    mySettings.setValue( "/qgis/restoreDefaultWindowState", true );
+  // richard
+  QSettings mySettings;
+  if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default (needs restart)?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+    return;
+  mySettings.setValue( "/qgis/restoreDefaultWindowState", true );
 }
 
 void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )

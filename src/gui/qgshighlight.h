@@ -19,6 +19,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 #include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
 #include <QBrush>
 #include <QColor>
 #include <QList>
@@ -46,10 +47,24 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer );
     ~QgsHighlight();
 
+    /** Set line/outline to color, polygon fill to color with alpha = 63.
+     *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
     void setColor( const QColor & color );
+
+    /** Set polygons fill color.
+     * @note: added in version 2.3 */
+    void setFillColor( const QColor & fillColor );
 
     /** Set width. Ignored in feature mode. */
     void setWidth( int width );
+
+    /** Set line / outline buffer in milimeters.
+     *  @note: added in version 2.3 */
+    void setBuffer( double buffer ) { mBuffer = buffer; }
+
+    /** Set minimum line / outline width in milimeters.
+     *  @note: added in version 2.3 */
+    void setMinWidth( double width ) { mMinWidth = width; }
 
   protected:
     virtual void paint( QPainter* p );
@@ -59,7 +74,10 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
   private:
     void init();
-    void setSymbolColor( QgsSymbolV2* symbol, const QColor & color );
+    void setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context, const QColor & color );
+    double getSymbolWidth( const QgsRenderContext & context, double width, QgsSymbolV2::OutputUnit unit );
+    /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
+    QgsFeatureRendererV2 * getRenderer( const QgsRenderContext & context );
     void paintPoint( QPainter *p, QgsPoint point );
     void paintLine( QPainter *p, QgsPolyline line );
     void paintPolygon( QPainter *p, QgsPolygon polygon );
@@ -73,8 +91,9 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QgsGeometry *mGeometry;
     QgsMapLayer *mLayer;
     QgsFeature mFeature;
-    QgsFeatureRendererV2 *mRenderer;
     QColor mTemporaryFillColor;
+    double mBuffer; // line / outline buffer in pixels
+    double mMinWidth; // line / outline minimum width in pixels
 };
 
 #endif
