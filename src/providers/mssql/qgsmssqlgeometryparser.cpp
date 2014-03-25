@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmssqlprovider.h"
+#include "qgsmssqlgeometryparser.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
