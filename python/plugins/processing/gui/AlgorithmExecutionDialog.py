@@ -6,7 +6,11 @@
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
+                           (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
+                           otb at c-s dot fr (CS SI)
+    Contributors         : Victor Olaya 
+                           Alexia Mondot (CS SI) - managing the new parameter ParameterMultipleExternalInput
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -50,6 +54,7 @@ from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterMultipleExternalInput import ParameterMultipleExternalInput
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
@@ -162,6 +167,13 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         return True
 
     def setParamValue(self, param, widget):
+        """
+        set the .value of the parameter according to the given widget
+        the way to get the value is different for each value, 
+        so there is a code for each kind of parameter
+        
+        param : -il <ParameterMultipleInput> or -method <ParameterSelection> ...
+        """
         if isinstance(param, ParameterRaster):
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterVector, ParameterTable)):
@@ -187,6 +199,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             value = []
             for index in widget.selectedoptions:
                 value.append(options[index])
+            return param.setValue(value)
+        elif isinstance(param, ParameterMultipleExternalInput):
+            value = widget.selectedoptions
             return param.setValue(value)
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):
