@@ -32,7 +32,7 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputString import OutputString
-from processing.tools import dataobjects
+from processing.tools import dataobjects, vector
 
 
 class UniqueValues(GeoAlgorithm):
