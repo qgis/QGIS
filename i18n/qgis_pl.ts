@@ -74339,7 +74339,25 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;wyrażenie IS&lt;/h3&gt;
+Zwraca 1 jeśli a jest takie samo jak b.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;a is b&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; zwraca 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; zwraca 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; zwraca 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; zwraca 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; zwraca 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; zwraca 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; zwraca 0, jeśli twoja geometria nie jest NULL&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1535"/>
@@ -74357,7 +74375,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja disjoint&lt;/h3&gt;
+Zwraca 1 if jeśli geometrie nie &quot;przecinają się przestrzennie&quot; - jeśli nie współdzielą żadnej przestrzeni. 
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometria
+b &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; zwraca 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; zwraca 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="245"/>
@@ -74404,7 +74435,20 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja buffer&lt;/h3&gt;
+Zwraca geometrię reprezentującą wszystkie punkty, których odległość od tej geometrii jest mniejsza lub równa odległości. Kalkulacje są przeprowadzone w układzie współrzędnych tej geometrii. 
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;buffer(a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometria
+b &amp;rarr; odległość dla bufora
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; zwraca polygon&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="962"/>
