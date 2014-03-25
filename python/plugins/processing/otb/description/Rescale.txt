@@ -1,9 +1,0 @@
-Rescale
-otbcli_Rescale
-Rescale Image
-Image Manipulation
-ParameterRaster|-in|Input Image|False
-OutputRaster|-out|Output Image
-ParameterNumber|-ram|Available RAM (Mb)|None|None|128
-ParameterNumber|-outmin|Output min value|None|None|0.0
-ParameterNumber|-outmax|Output max value|None|None|255.0

@@ -1,0 +1,31 @@
+<root>
+  <key>ComputeImagesStatistics</key>
+  <exec>otbcli_ComputeImagesStatistics</exec>
+  <longname>Compute Images second order statistics</longname>
+  <group>Learning</group>
+  <description>Computes global mean and standard deviation for each band from a set of images and optionally saves the results in an XML file.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImageList">ParameterMultipleInput</parameter_type>
+    <key>il</key>
+    <name>Input images</name>
+    <description>List of input images filenames.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>bv</key>
+    <name>Background Value</name>
+    <description>Background value to ignore in statistics computation.</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>out</key>
+    <name>Output XML file</name>
+    <description>XML filename where the statistics are saved for future reuse.</description>
+    <hidden />
+  </parameter>
+</root>

@@ -1,9 +1,0 @@
-WatershedSegmentation
-otbcli_Segmentation
-Watershed segmentation (labeled raster output)
-Segmentation
-ParameterRaster|-filter watershed -in|Input Image|False
-ParameterNumber|-filter.watershed.threshold|Depth Threshold|0|None|0.01
-ParameterNumber|-filter.watershed.level|Flood level|0|None|0.1
-OutputRaster|-mode raster -mode.raster.out|Output labeled image
-

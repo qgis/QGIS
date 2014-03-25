@@ -1,0 +1,75 @@
+<root>
+  <key>CompareImages</key>
+  <exec>otbcli_CompareImages</exec>
+  <longname>Images comparaison</longname>
+  <group>Miscellaneous</group>
+  <description>Estimator between 2 images.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>ref.in</key>
+    <name>Reference image</name>
+    <description>Image used as reference in the comparison</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ref.channel</key>
+    <name>Reference image channel</name>
+    <description>Used channel for the reference image</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>meas.in</key>
+    <name>Measured image</name>
+    <description>Image used as measured in the comparison</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>meas.channel</key>
+    <name>Measured image channel</name>
+    <description>Used channel for the measured image</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>roi.startx</key>
+    <name>Start X</name>
+    <description>ROI start x position.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>roi.starty</key>
+    <name>Start Y</name>
+    <description>ROI start y position.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>roi.sizex</key>
+    <name>Size X</name>
+    <description>Size along x in pixels.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>roi.sizey</key>
+    <name>Size Y</name>
+    <description>Size along y in pixels.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  </root>
