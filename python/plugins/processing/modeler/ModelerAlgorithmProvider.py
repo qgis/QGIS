@@ -31,6 +31,8 @@ from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.CreateNewModelAction import \
+        CreateNewModelAction
 from processing.modeler.SaveAsPythonScriptAction import \
         SaveAsPythonScriptAction
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -45,7 +47,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        # self.actions = [CreateNewModelAction()]
+        self.actions = [CreateNewModelAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction(),
                                    SaveAsPythonScriptAction()]
 
