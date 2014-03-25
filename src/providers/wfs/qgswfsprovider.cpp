@@ -27,6 +27,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
+#include "qgsdatasourceuri.h"
 #include "qgsspatialindex.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -88,6 +89,9 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
   {
     mSourceCRS.createFromOgcWmsCrs( srsname );
   }
+
+  mAuth.mUserName = parameterFromUrl( "username" );
+  mAuth.mPassword = parameterFromUrl( "password" );
 
   //fetch attributes of layer and type of its geometry attribute
   //WBC 111221: extracting geometry type here instead of getFeature allows successful
@@ -682,7 +686,10 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   }
 
   //if ( dataReader.getWFSData() != 0 )
-  if ( dataReader.getFeatures( uri, &mWKBType, &mExtent ) != 0 )
+  QUrl getFeatureUrl( uri );
+  getFeatureUrl.removeQueryItem( "username" );
+  getFeatureUrl.removeQueryItem( "password" );
+  if ( dataReader.getFeatures( getFeatureUrl.toString(), &mWKBType, &mExtent, mAuth.mUserName, mAuth.mPassword ) != 0 )
   {
     QgsDebugMsg( "getWFSData returned with error" );
     return 1;
@@ -751,10 +758,13 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
   mNetworkRequestFinished = false;
 
   QUrl describeFeatureUrl( uri );
+  describeFeatureUrl.removeQueryItem( "username" );
+  describeFeatureUrl.removeQueryItem( "password" );
   describeFeatureUrl.removeQueryItem( "SRSNAME" );
   describeFeatureUrl.removeQueryItem( "REQUEST" );
   describeFeatureUrl.addQueryItem( "REQUEST", "DescribeFeatureType" );
   QNetworkRequest request( describeFeatureUrl.toString() );
+  mAuth.setAuthorization( request );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
@@ -1338,6 +1348,8 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
   mNetworkRequestFinished = false;
 
   QUrl typeDetectionUri( dataSourceUri() );
+  typeDetectionUri.removeQueryItem( "username" );
+  typeDetectionUri.removeQueryItem( "password" );
   typeDetectionUri.removeQueryItem( "REQUEST" );
   typeDetectionUri.removeQueryItem( "TYPENAME" );
   typeDetectionUri.removeQueryItem( "BBOX" );
@@ -1349,6 +1361,7 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
   QString serverUrl = typeDetectionUri.toString();
 
   QNetworkRequest request( serverUrl );
+  mAuth.setAuthorization( request );
   request.setHeader( QNetworkRequest::ContentTypeHeader, "text/xml" );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->post( request, doc.toByteArray( -1 ) );
 
@@ -1475,7 +1488,11 @@ void QgsWFSProvider::getLayerCapabilities()
 
   QString uri = dataSourceUri();
   uri.replace( QString( "GetFeature" ), QString( "GetCapabilities" ) );
-  QNetworkRequest request( uri );
+  QUrl getCapabilitiesUrl( uri );
+  getCapabilitiesUrl.removeQueryItem( "username" );
+  getCapabilitiesUrl.removeQueryItem( "password" );
+  QNetworkRequest request( getCapabilitiesUrl.toString() );
+  mAuth.setAuthorization( request );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
