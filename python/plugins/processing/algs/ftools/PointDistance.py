@@ -113,7 +113,6 @@ class PointDistance(GeoAlgorithm):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        inLayer.select([inIdx])
         outIdx = targetLayer.fieldNameIndex(inField)
 
         outFeat = QgsFeature()
@@ -136,10 +135,10 @@ class PointDistance(GeoAlgorithm):
                 outID = outFeat.attributes()[outIdx]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
-                        outGeom.asPoint())
+                                            outGeom.asPoint())
                 if matType == 0:
                     self.writer.addRecord([unicode(inID), unicode(outID),
-                            unicode(dist)])
+                                           unicode(dist)])
                 else:
                     distList.append(float(dist))
 
@@ -191,7 +190,7 @@ class PointDistance(GeoAlgorithm):
                 outFeat = targetLayer.getFeatures(request).next()
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
-                        outGeom.asPoint())
+                                            outGeom.asPoint())
                 data.append(unicode(float(dist)))
             self.writer.addRecord(data)
 

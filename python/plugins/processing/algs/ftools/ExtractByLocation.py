@@ -74,7 +74,7 @@ class ExtractByLocation(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(layer.fields(),
+        writer = output.getVectorWriter(layer.layer.pendingFields().toList(),
                 layer.geometryType(), layer.crs())
 
         for (i, feat) in enumerate(features):

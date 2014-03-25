@@ -1,0 +1,41 @@
+<root>
+  <key>BandMath</key>
+  <exec>otbcli_BandMath</exec>
+  <longname>Band Math</longname>
+  <group>Miscellaneous</group>
+  <description>Perform a mathematical operation on monoband images</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImageList">ParameterMultipleInput</parameter_type>
+    <key>il</key>
+    <name>Input image list</name>
+    <description>Image list to perform computation on.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>exp</key>
+    <name>Expression</name>
+    <description>The mathematical expression to apply. 
+Use im1b1 for the first band, im1b2 for the second one...</description>
+    <default />
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+</root>

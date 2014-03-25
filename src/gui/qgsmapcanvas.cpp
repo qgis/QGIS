@@ -380,7 +380,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Add check if vector layer when disconnecting from selectionChanged slot
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
-      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -395,7 +395,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Add check if vector layer when connecting to selectionChanged slot
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
-      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -588,60 +588,6 @@ void QgsMapCanvas::refresh()
 
   // schedule a refresh
   QTimer::singleShot( 1, this, SLOT( refreshMap() ) );
-
-  /*
-  // we can't draw again if already drawing...
-  if ( mDrawing )
-    return;
-
-  QSettings settings;
-  bool logRefresh = settings.value( "/Map/logCanvasRefreshEvent", false ).toBool();
-  QTime t;
-  if ( logRefresh )
-  {
-    t.start();
-  }
-
-  mDrawing = true;
-
-  //update $map variable to canvas
-  QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
-
-  if ( mRenderFlag && !mFrozen )
-  {
-    clear();
-
-    // Tell the user we're going to be a while
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    mMap->render();
-
-    mDirty = false;
-
-    // notify any listeners that rendering is complete
-    QPainter p;
-    p.begin( &mMap->paintDevice() );
-    emit renderComplete( &p );
-    p.end();
-
-    // Tell the user we've finished going to be a while
-    QApplication::restoreOverrideCursor();
-  }
-
-  mDrawing = false;
-
-  if ( logRefresh )
-  {
-    QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( t.elapsed() );
-    QObject* senderObj = QObject::sender();
-    if ( senderObj )
-    {
-      logMsg += tr( ", sender '%1'" ).arg( senderObj->metaObject()->className() );
-    }
-    QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
-  }
-  */
-
 } // refresh
 
 void QgsMapCanvas::refreshMap()
@@ -654,6 +600,9 @@ void QgsMapCanvas::refreshMap()
 
   // from now on we can accept refresh requests again
   mRefreshScheduled = false;
+
+  //update $map variable to canvas
+  QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
 
   // create the renderer job
   Q_ASSERT( mJob == 0 );
@@ -681,18 +630,6 @@ void QgsMapCanvas::refreshMap()
   mMapUpdateTimer.start();
 }
 
-void QgsMapCanvas::layerRequestedRepaint()
-{
-  // make sure to clear the cached image
-  if ( mCache )
-  {
-    QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
-    if ( layer )
-      mCache->setCacheImage( layer->id(), QImage() );
-  }
-
-  refresh();
-}
 
 void QgsMapCanvas::rendererJobFinished()
 {
@@ -718,6 +655,13 @@ void QgsMapCanvas::rendererJobFinished()
     // emit renderComplete to get our decorations drawn
     QPainter p( &img );
     emit renderComplete( &p );
+
+    QSettings settings;
+    if ( settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() )
+    {
+      QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
+      QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
+    }
 
     if ( mDrawRenderingStats )
     {

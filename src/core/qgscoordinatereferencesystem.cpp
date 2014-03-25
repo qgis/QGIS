@@ -1130,7 +1130,8 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
 bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &theSrs ) const
 {
-  return mIsValidFlag && theSrs.mIsValidFlag && theSrs.authid() == authid();
+  return ( !mIsValidFlag && !theSrs.mIsValidFlag ) ||
+         ( mIsValidFlag && theSrs.mIsValidFlag && theSrs.authid() == authid() );
 }
 
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs ) const

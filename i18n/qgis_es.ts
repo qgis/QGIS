@@ -7236,7 +7236,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Save Selection as Vector File...</source>
-        <translation>Guardar selección como archivo vectorial...</translation>
+        <translation type="obsolete">Guardar selección como archivo vectorial...</translation>
     </message>
     <message>
         <source>Set Project CRS from Layer</source>
@@ -7547,6 +7547,14 @@ Actúa sobre la capa actual en edición</translation>
     <message>
         <source>Fill Ring</source>
         <translation>Rellenar anillo</translation>
+    </message>
+    <message>
+        <source>Add from Layer Definition File...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As Layer Definition File...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8862,7 +8870,7 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
     <message>
         <source>Python</source>
-        <translation>Python</translation>
+        <translation type="obsolete">Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
@@ -8883,6 +8891,10 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     <message>
         <source>Error while unloading plugin %s</source>
         <translation>Error al descargar el complemento %s</translation>
+    </message>
+    <message>
+        <source>Python warning</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12104,6 +12116,86 @@ Se desactivará.</translation>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation>Controla si los nombres de capas y campos se limpiarán para un uso más fácil en SQLite. Los nombres limpiados se convertirán a minúsculas y algunas caracteres especiales (&apos; - #) se sustituirán por guiones bajos.</translation>
     </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation type="unfinished">Error de transformación de simplificación capturado: %1</translation>
+    </message>
+    <message>
+        <source>Could not reproject view extent: %1</source>
+        <translation type="unfinished">No se pudo reproyectar la extensión de la vista: %1</translation>
+    </message>
+    <message>
+        <source>Could not reproject layer extent: %1</source>
+        <translation type="unfinished">No se pudo reproyectar la extensión de la capa: %1</translation>
+    </message>
+    <message>
+        <source>Shapeburst fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error looking for style. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation aborted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error executing loading style. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No styles available on DB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading styles. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty capabilities document</source>
+        <translation type="unfinished">documento de capacidades vacío</translation>
+    </message>
+    <message>
+        <source>Dom Exception</source>
+        <translation type="unfinished">Excepción dom</translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities: %1 at line %2 column %3
+This is probably due to an incorrect WMS Server URL.
+Response was:
+
+%4</source>
+        <translation type="unfinished">No se pudieron obtener las capacidades WMS: %1 en la línea %2 columna %3
+Esto se debe probablemente a una URL incorrecta del servidor WMS.
+La respuesta fue:
+
+%4</translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
+This might be due to an incorrect WMS Server URL.
+Tag:%3
+Response was:
+%4</source>
+        <translation type="unfinished">No se pudieron obtener las capacidades WMS en el formato esperado (DTD): no se encontró ningún %1 o %2.
+Esto puede deberse a una URL incorrecta del servidor WMS.
+Etiqueta: %3
+La respuesta fue:
+%4</translation>
+    </message>
+    <message>
+        <source>Generated default style</source>
+        <translation type="unfinished">Estilo predeterminado generado</translation>
+    </message>
+    <message>
+        <source>Style was missing in capabilities</source>
+        <translation type="unfinished">El estilo faltaba en las capacidades</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -13755,7 +13847,7 @@ Este binario se compiló contra Qt %1 y se está ejecutando contra Qt %2</transl
     </message>
     <message>
         <source>Stop map rendering</source>
-        <translation>Detener la renderización del mapa</translation>
+        <translation type="obsolete">Detener la renderización del mapa</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
@@ -15201,11 +15293,11 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to project CRS</source>
-        <translation>SRC no definido - se establece el SRC del proyecto</translation>
+        <translation type="obsolete">SRC no definido - se establece el SRC del proyecto</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation>SRC no definido - se establece el SRC predeterminado: %1</translation>
+        <translation type="obsolete">SRC no definido - se establece el SRC predeterminado: %1</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -15334,20 +15426,20 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>No Object Selected</source>
-        <translation>Ningún objeto seleccionado</translation>
+        <translation type="obsolete">Ningún objeto seleccionado</translation>
     </message>
     <message>
         <source>To remove objects, you must select them in the legend</source>
-        <translation>Para eliminar objetos debe seleccionarlos en el panel Capas</translation>
+        <translation type="obsolete">Para eliminar objetos debe seleccionarlos en el panel Capas</translation>
     </message>
     <message>
         <source>Remove objects</source>
-        <translation>Eliminar objetos</translation>
+        <translation type="obsolete">Eliminar objetos</translation>
     </message>
     <message numerus="yes">
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>¿Eliminar un objeto?</numerusform>
             <numerusform>¿Eliminar %n objetos?</numerusform>
         </translation>
@@ -15355,9 +15447,73 @@ Por favor, contacte con los desarrolladores.</translation>
     <message numerus="yes">
         <source>%n object(s) removed.</source>
         <comment>number of objects removed</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Un objeto eliminado.</numerusform>
             <numerusform>%n objetos eliminados.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>CRS was undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>defaulting to project CRS %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>defaulting to CRS %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insufficient permissions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The project file is not writable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no features could be successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 features were successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 features could be successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No legend entries selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the layers and groups you want to remove in the legend.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove layers and groups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Remove %n legend entries?</source>
+        <comment>number of legend items to remove</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n legend entries removed.</source>
+        <comment>number of removed legend entries</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -17428,6 +17584,14 @@ Base de datos: %2</translation>
     <message>
         <source>Directory Properties</source>
         <translation>Propiedades del directorio</translation>
+    </message>
+    <message>
+        <source>Case Sensitive</source>
+        <translation type="unfinished">Distinguir mayúsculas</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation type="unfinished">Normal</translation>
     </message>
 </context>
 <context>
@@ -22935,6 +23099,10 @@ y el archivo actual es [%3]</translation>
         <source>Add PostGIS layers</source>
         <translation>Añadir capas PostGIS</translation>
     </message>
+    <message>
+        <source>Hold dialog open</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDbTableModel</name>
@@ -25109,7 +25277,7 @@ Error del analizador:
     </message>
     <message>
         <source>Save settings with project</source>
-        <translation>Guardar configuración con el proyecto</translation>
+        <translation type="obsolete">Guardar configuración con el proyecto</translation>
     </message>
     <message>
         <source>Show shadow rectangles (for debugging)</source>
@@ -25496,6 +25664,56 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select within selection</source>
         <translation>Seleccionar dentro de la selección</translation>
+    </message>
+</context>
+<context>
+    <name>QgsExtentGroupBox</name>
+    <message>
+        <source>layer</source>
+        <translation type="unfinished">capa</translation>
+    </message>
+    <message>
+        <source>map view</source>
+        <translation type="unfinished">Vista de mapa</translation>
+    </message>
+    <message>
+        <source>user defined</source>
+        <translation type="unfinished">definido por el usuario</translation>
+    </message>
+    <message>
+        <source>Extent (current: %1)</source>
+        <translation type="unfinished">Extensión (actual: %1) </translation>
+    </message>
+</context>
+<context>
+    <name>QgsExtentGroupBoxWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Formulario</translation>
+    </message>
+    <message>
+        <source>West</source>
+        <translation type="unfinished">Oeste</translation>
+    </message>
+    <message>
+        <source>East</source>
+        <translation type="unfinished">Este</translation>
+    </message>
+    <message>
+        <source>North</source>
+        <translation type="unfinished">Norte</translation>
+    </message>
+    <message>
+        <source>South</source>
+        <translation type="unfinished">Sur</translation>
+    </message>
+    <message>
+        <source>Layer extent</source>
+        <translation type="unfinished">Extensión de la capa</translation>
+    </message>
+    <message>
+        <source>Map view extent</source>
+        <translation type="unfinished">Extensión de la vista del mapa</translation>
     </message>
 </context>
 <context>
@@ -28078,11 +28296,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
-        <translation>Color</translation>
+        <translation type="obsolete">Color</translation>
     </message>
     <message>
         <source>Color 2</source>
-        <translation>Color 2</translation>
+        <translation type="obsolete">Color 2</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -28123,6 +28341,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Reference Point 2 (is centroid)</source>
         <translation>Punto de referencia 2 (es centroide)</translation>
+    </message>
+    <message>
+        <source>Color (start)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (end)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32890,6 +33116,14 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Legend</source>
         <translation>Leyenda</translation>
     </message>
+    <message>
+        <source>Destination CRS set to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On the fly reprojection enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -32991,7 +33225,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Save Selection As...</source>
-        <translation>Guardar selección como...</translation>
+        <translation type="obsolete">Guardar selección como...</translation>
     </message>
     <message>
         <source>Show Feature Count</source>
@@ -33010,6 +33244,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
 not displayed</source>
         <translation>los siguientes %1 elementos
 no se muestran</translation>
+    </message>
+    <message>
+        <source>Save As Layer Definition File...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33245,22 +33483,22 @@ no se muestran</translation>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation>No se pudo dibujar %1 porque:
+        <translation type="obsolete">No se pudo dibujar %1 porque:
 %2</translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
-        <translation>No se pudo dibujar %1 porque:
+        <translation type="obsolete">No se pudo dibujar %1 porque:
 %2</translation>
     </message>
     <message>
         <source>Canvas refresh: %1 ms</source>
-        <translation>Refresco de la vista del mapa: %1 ms</translation>
+        <translation type="obsolete">Refresco de la vista del mapa: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
-        <translation>, remitente &apos;%1&apos;</translation>
+        <translation type="obsolete">, remitente &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Rendering</source>
@@ -33268,7 +33506,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>canvas</source>
-        <translation>lienzo</translation>
+        <translation type="obsolete">lienzo</translation>
     </message>
 </context>
 <context>
@@ -33565,7 +33803,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Error. Could not add part.</source>
-        <translation>Error. No se pudo añadir la parte.</translation>
+        <translation type="obsolete">Error. No se pudo añadir la parte.</translation>
     </message>
     <message>
         <source>Part added</source>
@@ -33573,11 +33811,11 @@ no se muestran</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation>Error de transformación de coordenadas</translation>
+        <translation type="obsolete">Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>No se puede transformar el punto al sistema de coordenadas de las capas</translation>
+        <translation type="obsolete">No se puede transformar el punto al sistema de coordenadas de las capas</translation>
     </message>
     <message>
         <source>Selected feature is not multi part.</source>
@@ -33601,7 +33839,15 @@ no se muestran</translation>
     </message>
     <message>
         <source>Error, could not add part</source>
-        <translation>Error, no se pudo añadir la parte</translation>
+        <translation type="obsolete">Error, no se pudo añadir la parte</translation>
+    </message>
+    <message>
+        <source>Could not add part. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate transform error. Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33710,12 +33956,24 @@ no se muestran</translation>
         <source>Couldn&apos;t remove the selected part.</source>
         <translation>No se pudo eliminar la parte seleccionada.</translation>
     </message>
+    <message>
+        <source>could not snap to a part on the current layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolDeleteRing</name>
     <message>
         <source>Ring deleted</source>
         <translation>Anillo borrado</translation>
+    </message>
+    <message>
+        <source>Delete ring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not snap to a ring on the current layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33733,7 +33991,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Choose a vector layer in the legend</source>
-        <translation>Seleccione una capa vectorial en el panel Capas</translation>
+        <translation type="obsolete">Seleccione una capa vectorial en el panel Capas</translation>
     </message>
     <message>
         <source>Layer not editable</source>
@@ -33741,7 +33999,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
-        <translation>Use &apos;Conmutar edición&apos; para hacerla editable</translation>
+        <translation type="obsolete">Use &apos;Conmutar edición&apos; para hacerla editable</translation>
     </message>
 </context>
 <context>
@@ -33962,6 +34220,10 @@ no se muestran</translation>
     <message>
         <source>Feature was deleted on background.</source>
         <translation type="obsolete">El objeto espacial se borró en segundo plano.</translation>
+    </message>
+    <message>
+        <source>could not snap to a segment on the current layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34229,7 +34491,7 @@ no se muestran</translation>
     <name>QgsMapToolVertexEdit</name>
     <message>
         <source>Snap tolerance</source>
-        <translation>Tolerancia de autoensamblado</translation>
+        <translation type="obsolete">Tolerancia de autoensamblado</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -34245,7 +34507,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
-        <translation>No se pudo autoensamblar el segmento. ¿Ha establecido la tolerancia en Configuración &gt; Opciones de autoensamblado?</translation>
+        <translation type="obsolete">No se pudo autoensamblar el segmento. ¿Ha establecido la tolerancia en Configuración &gt; Opciones de autoensamblado?</translation>
     </message>
 </context>
 <context>
@@ -35742,7 +36004,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save As</source>
-        <translation>Guardar como</translation>
+        <translation type="obsolete">Guardar como</translation>
     </message>
     <message>
         <source>Date</source>
@@ -35759,6 +36021,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Mapinfo File</source>
         <translation>Archivo de Mapinfo</translation>
+    </message>
+    <message>
+        <source>Save layer as...</source>
+        <translation type="unfinished">Guardar capa como...</translation>
     </message>
 </context>
 <context>
@@ -35838,6 +36104,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remove attribute</source>
         <translation>Eliminar atributo</translation>
+    </message>
+    <message>
+        <source>File encoding</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37343,7 +37613,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>All</source>
-        <translation>Todos</translation>
+        <translation type="obsolete">Todos</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -37369,6 +37639,14 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
         <source>Crosses</source>
         <translation>Cruces</translation>
     </message>
+    <message>
+        <source>Restore UI defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure to reset the UI to default (needs restart)?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -37378,7 +37656,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
-        <translation>La vista del mapa se actualizará después de que todos estos objetos espaciales sean leídos de la fuente de datos</translation>
+        <translation type="obsolete">La vista del mapa se actualizará después de que todos estos objetos espaciales sean leídos de la fuente de datos</translation>
     </message>
     <message>
         <source>By default new la&amp;yers added to the map should be displayed</source>
@@ -37390,7 +37668,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation>Solucionar problemas con polígonos rellenados incorrectamente</translation>
+        <translation type="obsolete">Solucionar problemas con polígonos rellenados incorrectamente</translation>
     </message>
     <message>
         <source>%</source>
@@ -37590,7 +37868,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Number of features to draw before updating the display</source>
-        <translation>Número de objetos espaciales a dibujar antes de actualizar la visualización</translation>
+        <translation type="obsolete">Número de objetos espaciales a dibujar antes de actualizar la visualización</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
@@ -38266,11 +38544,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation>Mejor rendimiento gráfico a costa de perder la posibilidad de cancelar la representación y dibujado incremental de objetos espaciales</translation>
+        <translation type="obsolete">Mejor rendimiento gráfico a costa de perder la posibilidad de cancelar la representación y dibujado incremental de objetos espaciales</translation>
     </message>
     <message>
         <source>Enable back buffer</source>
-        <translation>Activar buffer trasero</translation>
+        <translation type="obsolete">Activar buffer trasero</translation>
     </message>
     <message>
         <source>Debugging</source>
@@ -38422,7 +38700,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Enable feature simplication by default for newly added layers</source>
-        <translation>Habilitar la simplificación de objetos espaciales por omisión para nuevas capas añadidas</translation>
+        <translation type="obsolete">Habilitar la simplificación de objetos espaciales por omisión para nuevas capas añadidas</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
@@ -38543,6 +38821,34 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Ask for datum transformation when no default is defined</source>
         <translation>Preguntar la transformación de dátum cuando no haya una predefinida</translation>
+    </message>
+    <message>
+        <source>Prompt for confirmation when a layer is to be removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QSettings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render layers in parallel using all available CPU cores</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map update interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable feature simplification by default for newly added layers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -44332,11 +44638,11 @@ Pulse el botón de ayuda para obtener opciones de creación válidas para este f
     </message>
     <message>
         <source>Could not reproject view extent: %1</source>
-        <translation>No se pudo reproyectar la extensión de la vista: %1</translation>
+        <translation type="obsolete">No se pudo reproyectar la extensión de la vista: %1</translation>
     </message>
     <message>
         <source>Could not reproject layer extent: %1</source>
-        <translation>No se pudo reproyectar la extensión de la capa: %1</translation>
+        <translation type="obsolete">No se pudo reproyectar la extensión de la capa: %1</translation>
     </message>
     <message>
         <source>Cannot instantiate the data provider</source>
@@ -45616,11 +45922,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>map view</source>
-        <translation>Vista de mapa</translation>
+        <translation type="obsolete">Vista de mapa</translation>
     </message>
     <message>
         <source>Extent (current: %1)</source>
-        <translation>Extensión (actual: %1) </translation>
+        <translation type="obsolete">Extensión (actual: %1) </translation>
     </message>
     <message>
         <source>Layer (%1, %2)</source>
@@ -45699,27 +46005,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>West</source>
-        <translation>Oeste</translation>
+        <translation type="obsolete">Oeste</translation>
     </message>
     <message>
         <source>East</source>
-        <translation>Este</translation>
+        <translation type="obsolete">Este</translation>
     </message>
     <message>
         <source>North</source>
-        <translation>Norte</translation>
+        <translation type="obsolete">Norte</translation>
     </message>
     <message>
         <source>South</source>
-        <translation>Sur</translation>
+        <translation type="obsolete">Sur</translation>
     </message>
     <message>
         <source>Layer extent</source>
-        <translation>Extensión de la capa</translation>
+        <translation type="obsolete">Extensión de la capa</translation>
     </message>
     <message>
         <source>Map view extent</source>
-        <translation>Extensión de la vista del mapa</translation>
+        <translation type="obsolete">Extensión de la vista del mapa</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -47501,6 +47807,37 @@ El error fue:
     </message>
 </context>
 <context>
+    <name>QgsShapeburstFillSymbolLayerV2Widget</name>
+    <message>
+        <source>Color (start)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (end)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">Radio de enturbiamiento</translation>
+    </message>
+    <message>
+        <source>Integer between 0 and 18</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use whole shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
@@ -47516,11 +47853,11 @@ El error fue:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation>Punto de anclaje horizontal</translation>
+        <translation type="obsolete">Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation>Punto de anclaje vertical</translation>
+        <translation type="obsolete">Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -51463,11 +51800,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Simplify transform error caught: %1</source>
-        <translation>Error de transformación de simplificación capturado: %1</translation>
+        <translation type="obsolete">Error de transformación de simplificación capturado: %1</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation>SRC</translation>
+        <translation type="obsolete">SRC</translation>
     </message>
 </context>
 <context>
@@ -52568,6 +52905,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translation>Escala máxima a la que la capa se debería simplificar (1:1 siempre simplifica): </translation>
     </message>
+    <message>
+        <source>Memory cache</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
@@ -52680,7 +53021,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>More Options &gt;&gt;</source>
-        <translation>Más opciones &gt;&gt;</translation>
+        <translation type="obsolete">Más opciones &gt;&gt;</translation>
     </message>
     <message>
         <source>Datasource Options</source>
@@ -52693,6 +53034,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Layer Options</source>
         <translation>Opciones de capa</translation>
+    </message>
+    <message>
+        <source>Save only selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53059,6 +53404,18 @@ Objetos espaciales</translation>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
+    <message>
+        <source>Failed to parse WMS URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to download capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to parse capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsWMSRootItem</name>
@@ -53091,7 +53448,7 @@ Objetos espaciales</translation>
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation>No se pudo abrir el proveedor WMS</translation>
+        <translation type="obsolete">No se pudo abrir el proveedor WMS</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -53261,6 +53618,20 @@ Esto puede ser un error de configuración del servidor. ¿Se debe usar la URL?</
     <message>
         <source>&amp;Add</source>
         <translation>&amp;Añadir</translation>
+    </message>
+    <message>
+        <source>Failed to parse WMS URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to download capabilities:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to parse capabilities:
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53536,6 +53907,61 @@ La respuesta fue:
     </message>
 </context>
 <context>
+    <name>QgsWcsDownloadHandler</name>
+    <message>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation type="unfinished">Error en la solicitud de mapa (Estado: %1; Motivo: %2; URL:%3)</translation>
+    </message>
+    <message>
+        <source>WCS</source>
+        <translation type="unfinished">WCS</translation>
+    </message>
+    <message>
+        <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
+        <translation type="unfinished">Error en la solicitud de mapa:&lt;br&gt;Título: %1&lt;br&gt;Error:%2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
+        <translation type="unfinished">Error en la solicitud de mapa (Estado: %1; Respuesta: %2; URL:%3)</translation>
+    </message>
+    <message>
+        <source>Cannot parse multipart response: %1</source>
+        <translation type="unfinished">No se puede procesar una respuesta multiparte: %1</translation>
+    </message>
+    <message>
+        <source>Expected 2 parts, %1 received</source>
+        <translation type="unfinished">Esperadas 2 partes, %1 recibidas</translation>
+    </message>
+    <message>
+        <source>More than 2 parts (%1) received</source>
+        <translation type="unfinished">Mas de 2 partes (%1) recibidas</translation>
+    </message>
+    <message>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished">Error en la solicitud de mapa (Título:%1; Error:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <source>Map request error (Response: %1; URL:%2)</source>
+        <translation type="unfinished">Error en la solicitud de mapa (Respuesta: %1; URL:%2)</translation>
+    </message>
+    <message>
+        <source>Content-Transfer-Encoding %1 not supported</source>
+        <translation type="unfinished">Codificación del contenido de la transferencia %1 no admitida</translation>
+    </message>
+    <message>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation type="unfinished">La solicitud del mapa ha fallado[error:%1 url:%2] </translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished">No más de 100 errores de solicitud de registro. </translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation type="unfinished">%1 de %2 bytes de mapas descargados.</translation>
+    </message>
+</context>
+<context>
     <name>QgsWcsProvider</name>
     <message>
         <source>Cannot describe coverage</source>
@@ -53579,15 +54005,15 @@ La respuesta fue:
     </message>
     <message>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation>Error en la solicitud de mapa (Estado: %1; Motivo: %2; URL:%3)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Estado: %1; Motivo: %2; URL:%3)</translation>
     </message>
     <message>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Error en la solicitud de mapa (Título:%1; Error:%2; URL: %3)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Título:%1; Error:%2; URL: %3)</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation>Error en la solicitud de mapa (Estado: %1; Respuesta: %2; URL:%3)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Estado: %1; Respuesta: %2; URL:%3)</translation>
     </message>
     <message>
         <source>Cannot find boundary in multipart content type</source>
@@ -53595,19 +54021,19 @@ La respuesta fue:
     </message>
     <message>
         <source>Expected 2 parts, %1 received</source>
-        <translation>Esperadas 2 partes, %1 recibidas</translation>
+        <translation type="obsolete">Esperadas 2 partes, %1 recibidas</translation>
     </message>
     <message>
         <source>More than 2 parts (%1) received</source>
-        <translation>Mas de 2 partes (%1) recibidas</translation>
+        <translation type="obsolete">Mas de 2 partes (%1) recibidas</translation>
     </message>
     <message>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation>Error en la solicitud de mapa (Respuesta: %1; URL:%2)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Respuesta: %1; URL:%2)</translation>
     </message>
     <message>
         <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation>Codificación del contenido de la transferencia %1 no admitida</translation>
+        <translation type="obsolete">Codificación del contenido de la transferencia %1 no admitida</translation>
     </message>
     <message>
         <source>No data received</source>
@@ -53619,15 +54045,15 @@ La respuesta fue:
     </message>
     <message>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation>La solicitud del mapa ha fallado[error:%1 url:%2] </translation>
+        <translation type="obsolete">La solicitud del mapa ha fallado[error:%1 url:%2] </translation>
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
-        <translation>No más de 100 errores de solicitud de registro. </translation>
+        <translation type="obsolete">No más de 100 errores de solicitud de registro. </translation>
     </message>
     <message>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation>%1 de %2 bytes de mapas descargados.</translation>
+        <translation type="obsolete">%1 de %2 bytes de mapas descargados.</translation>
     </message>
     <message>
         <source>Dom Exception</source>
@@ -53639,7 +54065,7 @@ La respuesta fue:
 Response was:
 
 %5</source>
-        <translation>No se pudo obtener una excepción del servicio WCS en %1: %2 en la línea %3 columna %4
+        <translation type="obsolete">No se pudo obtener una excepción del servicio WCS en %1: %2 en la línea %3 columna %4
 
 La respuesta fue:
 
@@ -53807,11 +54233,11 @@ La respuesta fue:
     </message>
     <message>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation>Error en la solicitud de mapa:&lt;br&gt;Título: %1&lt;br&gt;Error:%2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa:&lt;br&gt;Título: %1&lt;br&gt;Error:%2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Cannot parse multipart response: %1</source>
-        <translation>No se puede procesar una respuesta multiparte: %1</translation>
+        <translation type="obsolete">No se puede procesar una respuesta multiparte: %1</translation>
     </message>
     <message>
         <source>Cannot verify coverage full extent: %1</source>
@@ -53828,6 +54254,80 @@ La respuesta fue:
     <message>
         <source>RasterIO error: </source>
         <translation>Error  de E/S ráster: </translation>
+    </message>
+    <message>
+        <source>Could not get WCS Service Exception at %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Service Exception</source>
+        <translation type="unfinished">Excepción del servicio</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsCapabilitiesDownload</name>
+    <message>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation type="unfinished">%1 de %2 bytes de capacidades descargados.</translation>
+    </message>
+    <message>
+        <source>Capabilities request redirected.</source>
+        <translation type="unfinished">Solicitud de capacidades redirigida.</translation>
+    </message>
+    <message>
+        <source>Redirect loop detected: %1</source>
+        <translation type="unfinished">Detectado un bucle de redirección: %1</translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>empty of capabilities: %1</source>
+        <translation type="unfinished">vacío de capacidades: %1</translation>
+    </message>
+    <message>
+        <source>Download of capabilities failed: %1</source>
+        <translation type="unfinished">Falló la descarga de capacidades: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsImageDownloadHandler</name>
+    <message>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation type="unfinished">Error en la solicitud de mapa (Estado: %1; Motivo: %2; URL:%3)</translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
+        <translation type="unfinished">La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
+    </message>
+    <message>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished">Error en la solicitud de mapa (Título:%1; Error:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
+        <translation type="unfinished">Error de solicitud de mapa (Estado: %1; Respuesta: %2; Tipo de contenido: %3; URL:%4)</translation>
+    </message>
+    <message>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation type="unfinished">La solicitud del mapa ha fallado[error:%1 url:%2] </translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished">No más de 100 errores de solicitud de registro. </translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation type="unfinished">%1 de %2 bytes de mapas descargados.</translation>
     </message>
 </context>
 <context>
@@ -53926,7 +54426,7 @@ La respuesta fue:
     </message>
     <message>
         <source>Tile request error</source>
-        <translation>Error de solicitud de tesela</translation>
+        <translation type="obsolete">Error de solicitud de tesela</translation>
     </message>
     <message>
         <source>Status: %1
@@ -53948,7 +54448,7 @@ Frase de motivo: %2</translation>
     </message>
     <message>
         <source>empty capabilities document</source>
-        <translation>documento de capacidades vacío</translation>
+        <translation type="obsolete">documento de capacidades vacío</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
@@ -53956,7 +54456,7 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation>No se pudieron obtener las capacidades WMS: %1 en la línea %2 columna %3
+        <translation type="obsolete">No se pudieron obtener las capacidades WMS: %1 en la línea %2 columna %3
 Esto se debe probablemente a una URL incorrecta del servidor WMS.
 La respuesta fue:
 
@@ -53968,7 +54468,7 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation>No se pudieron obtener las capacidades WMS en el formato esperado (DTD): no se encontró ningún %1 o %2.
+        <translation type="obsolete">No se pudieron obtener las capacidades WMS en el formato esperado (DTD): no se encontró ningún %1 o %2.
 Esto puede deberse a una URL incorrecta del servidor WMS.
 Etiqueta: %3
 La respuesta fue:
@@ -53980,7 +54480,7 @@ La respuesta fue:
 Response was:
 
 %5</source>
-        <translation>No se pudo obtener una excepción del servicio WMS en %1: %2 en la línea %3 columna %4
+        <translation type="obsolete">No se pudo obtener una excepción del servicio WMS en %1: %2 en la línea %3 columna %4
 
 La respuesta fue:
 
@@ -54217,28 +54717,28 @@ La respuesta fue:
     <message>
         <source>
 Tried URL: %1</source>
-        <translation>
+        <translation type="obsolete">
 URL probada: %1</translation>
     </message>
     <message>
         <source>Capabilities request redirected.</source>
-        <translation>Solicitud de capacidades redirigida.</translation>
+        <translation type="obsolete">Solicitud de capacidades redirigida.</translation>
     </message>
     <message>
         <source>empty of capabilities: %1</source>
-        <translation>vacío de capacidades: %1</translation>
+        <translation type="obsolete">vacío de capacidades: %1</translation>
     </message>
     <message>
         <source>Download of capabilities failed: %1</source>
-        <translation>Falló la descarga de capacidades: %1</translation>
+        <translation type="obsolete">Falló la descarga de capacidades: %1</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation>%1 de %2 bytes de capacidades descargados.</translation>
+        <translation type="obsolete">%1 de %2 bytes de capacidades descargados.</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation>%1 de %2 bytes de mapas descargados.</translation>
+        <translation type="obsolete">%1 de %2 bytes de mapas descargados.</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
@@ -54330,11 +54830,11 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Error en la solicitud de tesela (Titulo:%1; Error:%2; URL: %3)</translation>
+        <translation type="obsolete">Error en la solicitud de tesela (Titulo:%1; Error:%2; URL: %3)</translation>
     </message>
     <message>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation>Error en la solicitud de tesela (Estado:%1; Tipo de contenido:%2; Longitud:%3; URL: %4)</translation>
+        <translation type="obsolete">Error en la solicitud de tesela (Estado:%1; Tipo de contenido:%2; Longitud:%3; URL: %4)</translation>
     </message>
     <message>
         <source>Tile request failed [error:%1 url:%2]</source>
@@ -54342,15 +54842,15 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
-        <translation>No más de 100 errores de solicitud de registro. </translation>
+        <translation type="obsolete">No más de 100 errores de solicitud de registro. </translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation>Error en la solicitud de mapa (Estado: %1; Motivo: %2; URL:%3)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Estado: %1; Motivo: %2; URL:%3)</translation>
     </message>
     <message>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Error en la solicitud de mapa (Título:%1; Error:%2; URL: %3)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Título:%1; Error:%2; URL: %3)</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
@@ -54358,7 +54858,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation>La solicitud del mapa ha fallado[error:%1 url:%2] </translation>
+        <translation type="obsolete">La solicitud del mapa ha fallado[error:%1 url:%2] </translation>
     </message>
     <message>
         <source>Tile Layer Properties</source>
@@ -54422,15 +54922,15 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation>La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
+        <translation type="obsolete">La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation>La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
+        <translation type="obsolete">La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation>Error de solicitud de mapa (Estado: %1; Respuesta: %2; Tipo de contenido: %3; URL:%4)</translation>
+        <translation type="obsolete">Error de solicitud de mapa (Estado: %1; Respuesta: %2; Tipo de contenido: %3; URL:%4)</translation>
     </message>
     <message>
         <source>Redirect loop detected: %1</source>
@@ -54466,19 +54966,19 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation>Error de reintentos máximos en la solicitud de teselas. Fallaron %1 solicitudes para la tesela %2 de tileRequest %3 (URL: %4)</translation>
+        <translation type="obsolete">Error de reintentos máximos en la solicitud de teselas. Fallaron %1 solicitudes para la tesela %2 de tileRequest %3 (URL: %4)</translation>
     </message>
     <message>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation>repetir tileRequest %1 tesela %2 (reintento %3)</translation>
+        <translation type="obsolete">repetir tileRequest %1 tesela %2 (reintento %3)</translation>
     </message>
     <message>
         <source>Generated default style</source>
-        <translation>Estilo predeterminado generado</translation>
+        <translation type="obsolete">Estilo predeterminado generado</translation>
     </message>
     <message>
         <source>Style was missing in capabilities</source>
-        <translation>El estilo faltaba en las capacidades</translation>
+        <translation type="obsolete">El estilo faltaba en las capacidades</translation>
     </message>
     <message>
         <source>LegendURLs</source>
@@ -54519,6 +55019,181 @@ URL probada: %1</translation>
     <message>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
         <translation>Falló el análisis del resultado. Se estimaron %1 tipos de objeto espacial del gml (%2), pero no se analizó ningún objeto espacial.</translation>
+    </message>
+    <message>
+        <source>Could not get WMS Service Exception: %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid tile mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected tile matrix set </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">Escala</translation>
+    </message>
+    <message>
+        <source>Tile size [px]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile size [mu]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matrix size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matrix extent [mu]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Anchura</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Altura</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation type="unfinished">Arriba</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierda</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation type="unfinished">Abajo</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecha</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n missing row(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Layer&apos;s upper bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n missing column(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Layer&apos;s left bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer&apos;s lower bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer&apos;s right bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsTiledImageDownloadHandler</name>
+    <message>
+        <source>Tile request error</source>
+        <translation type="unfinished">Error de solicitud de tesela</translation>
+    </message>
+    <message>
+        <source>Status: %1
+Reason phrase: %2</source>
+        <translation type="unfinished">Estado: %1
+Frase de motivo: %2</translation>
+    </message>
+    <message>
+        <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished">Error en la solicitud de tesela (Titulo:%1; Error:%2; URL: %3)</translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
+        <translation type="unfinished">Error en la solicitud de tesela (Estado:%1; Tipo de contenido:%2; Longitud:%3; URL: %4)</translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
+        <translation type="unfinished">La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation type="unfinished">
+            <numerusform>1 solicitud de teselas en segundo plano</numerusform>
+            <numerusform>%n solicitudes de teselas en segundo plano</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation type="unfinished">
+            <numerusform>, 1 éxito de cacheado</numerusform>
+            <numerusform>, %n éxitos de cacheado</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation type="unfinished">
+            <numerusform>, 1 falta de cacheado.</numerusform>
+            <numerusform>, %n faltas de cacheado.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation type="unfinished">
+            <numerusform>, 1 error. </numerusform>
+            <numerusform>, %n errores.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished">No más de 100 errores de solicitud de registro. </translation>
+    </message>
+    <message>
+        <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
+        <translation type="unfinished">Error de reintentos máximos en la solicitud de teselas. Fallaron %1 solicitudes para la tesela %2 de tileRequest %3 (URL: %4)</translation>
+    </message>
+    <message>
+        <source>repeat tileRequest %1 tile %2(retry %3)</source>
+        <translation type="unfinished">repetir tileRequest %1 tesela %2 (reintento %3)</translation>
     </message>
 </context>
 <context>
@@ -56611,6 +57286,61 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Data defined properties...</source>
         <translation>Propiedades definidas por datos...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShapeburstFill</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Formulario</translation>
+    </message>
+    <message>
+        <source>Gradient colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Two color</source>
+        <translation type="unfinished">Dos colores</translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished">Rampa de color</translation>
+    </message>
+    <message>
+        <source>Shading style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shade whole shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore rings in polygons while shading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shade to a set distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Blur strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset X,Y</source>
+        <translation type="unfinished">Desplazamiento X, Y</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished">Propiedades definidas por datos...</translation>
     </message>
 </context>
 <context>
@@ -65888,6 +66618,26 @@ geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
+Returns a string wrapped to a maximum/minimum number of characters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to be wrapped.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; is number.  If positive, the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; is string.  The delimiter string to wrap to a new line (&lt;u&gt;optional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>

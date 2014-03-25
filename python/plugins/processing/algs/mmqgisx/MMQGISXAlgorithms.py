@@ -1146,7 +1146,7 @@ class mmqgisx_extract_algorithm(GeoAlgorithm):
 
         features = vector.features(layer)
         featureCount = len(features)
-        output = self.getOutputFromName(self.OUTPUT)
+        output = self.getOutputFromName(self.RESULT)
         writer = output.getVectorWriter(fields,
                 provider.geometryType(), layer.crs())
         for (i, feat) in enumerate(features):

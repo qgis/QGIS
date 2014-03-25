@@ -49,6 +49,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void validate();
     void equality();
     void noEquality();
+    void equalityInvalid();
     void readXML();
     void writeXML();
     void setCustomSrsValidation();
@@ -311,6 +312,12 @@ void TestQgsCoordinateReferenceSystem::noEquality()
   myCrs2.createFromSrsId( 4327 );
   debugPrint( myCrs );
   QVERIFY( myCrs != myCrs2 );
+}
+void TestQgsCoordinateReferenceSystem::equalityInvalid()
+{
+  QgsCoordinateReferenceSystem invalidCrs1;
+  QgsCoordinateReferenceSystem invalidCrs2;
+  QVERIFY( invalidCrs1 == invalidCrs2 );
 }
 void TestQgsCoordinateReferenceSystem::readXML()
 {

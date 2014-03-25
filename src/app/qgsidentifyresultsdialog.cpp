@@ -1253,24 +1253,30 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem->feature().geometry() || featItem->feature().geometry()->wkbType() == QGis::WKBUnknown )
     return;
 
+  QgsHighlight *highlight = 0;
   if ( vlayer )
   {
-    QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
-    h->setColor( Qt::red );
-    h->show();
-    mHighlights.insert( featItem, h );
+    highlight = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
   }
   else
   {
-    QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
-    if ( h )
-    {
-      h->setWidth( 2 );
-      h->setColor( Qt::red );
-      h->show();
-      mHighlights.insert( featItem, h );
-    }
+    highlight = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
+    highlight->setWidth( 2 );
   }
+
+  QSettings settings;
+  QColor color = QColor( settings.value( "/Map/identify/highlight/color", "#ff0000" ).toString() );
+  int alpha = settings.value( "/Map/identify/highlight/colorAlpha", "128" ).toInt();
+  double buffer = settings.value( "/Map/highlight/buffer", "0.5" ).toDouble();
+  double minWidth = settings.value( "/Map/highlight/minWidth", "1." ).toDouble();
+
+  highlight->setColor( color ); // sets also fill with default alpha
+  color.setAlpha( alpha );
+  highlight->setFillColor( color ); // sets fill with alpha
+  highlight->setBuffer( buffer );
+  highlight->setMinWidth( minWidth );
+  highlight->show();
+  mHighlights.insert( featItem, highlight );
 }
 
 void QgsIdentifyResultsDialog::zoomToFeature()

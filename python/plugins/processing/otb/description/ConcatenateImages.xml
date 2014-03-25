@@ -1,0 +1,31 @@
+<root>
+  <key>ConcatenateImages</key>
+  <exec>otbcli_ConcatenateImages</exec>
+  <longname>Images Concatenation</longname>
+  <group>Image Manipulation</group>
+  <description>Concatenate a list of images of the same size into a single multi-channel one.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImageList">ParameterMultipleInput</parameter_type>
+    <key>il</key>
+    <name>Input images list</name>
+    <description>The list of images to concatenate</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>The concatenated output image</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

@@ -53,6 +53,7 @@ class CreateNewScriptAction(ToolboxAction):
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
         if self.scriptType == self.SCRIPT_R:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
+        dlg.show()
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateTree()

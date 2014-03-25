@@ -106,6 +106,8 @@ class TestQgsPalLabeling(TestCase):
         cls._TestMapSettings = None
         cls._Mismatch = 0
         cls._Mismatches = dict()
+        cls._ColorTol = 0
+        cls._ColorTols = dict()
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
@@ -206,7 +208,7 @@ class TestQgsPalLabeling(TestCase):
         # default for labeling test data: WGS 84 / UTM zone 13N
         crs.createFromSrid(32613)
         ms.setBackgroundColor(QColor(152, 219, 249))
-        ms.setOutputSize(QSize(600, 400))
+        ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
         ms.setFlag(QgsMapSettings.Antialiasing)
         ms.setDestinationCrs(crs)
@@ -256,7 +258,7 @@ class TestQgsPalLabeling(TestCase):
         lyr.enabled = True
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
-        font.setPointSize(48)
+        font.setPointSize(32)
         lyr.textFont = font
         lyr.textNamedStyle = 'Roman'
         return lyr
@@ -368,12 +370,13 @@ class TestQgsPalLabeling(TestCase):
         if not os.path.exists(imgpath):
             raise OSError('Control image not created: {0}'.format(imgpath))
 
-    def renderCheck(self, mismatch=0, imgpath='', grpprefix=''):
+    def renderCheck(self, mismatch=0, colortol=0, imgpath='', grpprefix=''):
         """Check rendered map canvas or existing image against control image
 
-        mismatch: number of pixels different from control, and still valid check
-        imgpath: existing image; if present, skips rendering canvas
-        grpprefix: compare test image/rendering against different test group
+        :mismatch: number of pixels different from control, and still valid
+        :colortol: maximum difference for each color component including alpha
+        :imgpath: existing image; if present, skips rendering canvas
+        :grpprefix: compare test image/rendering against different test group
         """
         if not grpprefix:
             grpprefix = self._TestGroupPrefix
@@ -383,6 +386,7 @@ class TestQgsPalLabeling(TestCase):
         chk = QgsRenderChecker()
         chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
+        chk.setColorTolerance(colortol)
         chk.setMapSettings(self._MapSettings)
         # noinspection PyUnusedLocal
         res = False

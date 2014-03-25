@@ -1,7 +1,0 @@
-SplitImage
-otbcli_SplitImage
-Split Image
-Image Manipulation
-ParameterRaster|-in|Input Image|False
-OutputFile|-out|Output Image
-ParameterNumber|-ram|Available RAM (Mb)|None|None|128

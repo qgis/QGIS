@@ -43,7 +43,7 @@ class PointsFromLines(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Get raster values at line nodes'
+        self.name = 'Generate points (pixel centroids) along line'
         self.group = 'Vector analysis tools'
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Raster layer'))

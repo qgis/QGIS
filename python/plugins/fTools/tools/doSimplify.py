@@ -108,9 +108,9 @@ class Dialog( QDialog, Ui_Dialog ):
                                     self.spnTolerance.value(), True, outFileName, self.encoding )
     else:
       res = QMessageBox.warning( self, self.tr( "Warning"),
-                                 self.tr( "Currently QGIS doesn't allow simultaneous access from \
-                                 different threads to the same datasource. Make sure your layer's \
-                                 attribute tables are closed. Continue?"),
+                                 self.tr( "Currently QGIS doesn't allow simultaneous access from "
+                                 "different threads to the same datasource. Make sure your layer's "
+                                 "attribute tables are closed. Continue?"),
                                  QMessageBox.Yes | QMessageBox.No )
       if res == QMessageBox.No:
         return

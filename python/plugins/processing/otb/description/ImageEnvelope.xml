@@ -1,0 +1,39 @@
+<root>
+  <key>ImageEnvelope</key>
+  <exec>otbcli_ImageEnvelope</exec>
+  <longname>Image Envelope</longname>
+  <group>Geometry</group>
+  <description>Extracts an image envelope.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputVectorData">OutputVector</parameter_type>
+    <key>out</key>
+    <name>Output Vector Data</name>
+    <description>Vector data file containing the envelope</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sr</key>
+    <name>Sampling Rate</name>
+    <description>Sampling rate for image edges (in pixel)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>proj</key>
+    <name>Projection</name>
+    <description>Projection to be used to compute the envelope (default is WGS84)</description>
+    <default />
+    <multiline />
+    <optional>True</optional>
+  </parameter>
+</root>

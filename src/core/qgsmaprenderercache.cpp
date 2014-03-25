@@ -1,6 +1,8 @@
 
 #include "qgsmaprenderercache.h"
 
+#include "qgsmaplayerregistry.h"
+#include "qgsmaplayer.h"
 
 QgsMapRendererCache::QgsMapRendererCache()
 {
@@ -10,8 +12,23 @@ QgsMapRendererCache::QgsMapRendererCache()
 void QgsMapRendererCache::clear()
 {
   QMutexLocker lock( &mMutex );
+  clearInternal();
+}
+
+void QgsMapRendererCache::clearInternal()
+{
   mExtent.setMinimal();
   mScale = 0;
+
+  // make sure we are disconnected from all layers
+  foreach ( QString layerId, mCachedImages.keys() )
+  {
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    if ( layer )
+    {
+      disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+    }
+  }
   mCachedImages.clear();
 }
 
@@ -24,12 +41,11 @@ bool QgsMapRendererCache::init( QgsRectangle extent, double scale )
        scale == mScale )
     return true;
 
+  clearInternal();
+
   // set new params
   mExtent = extent;
   mScale = scale;
-
-  // invalidate cache
-  mCachedImages.clear();
 
   return false;
 }
@@ -38,6 +54,13 @@ void QgsMapRendererCache::setCacheImage( QString layerId, const QImage& img )
 {
   QMutexLocker lock( &mMutex );
   mCachedImages[layerId] = img;
+
+  // connect to the layer to listen to layer's repaintRequested() signals
+  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  if ( layer )
+  {
+    connect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+  }
 }
 
 QImage QgsMapRendererCache::cacheImage( QString layerId )
@@ -46,10 +69,22 @@ QImage QgsMapRendererCache::cacheImage( QString layerId )
   return mCachedImages.value( layerId );
 }
 
-void QgsMapRendererCache::layerDataChanged()
+void QgsMapRendererCache::layerRequestedRepaint()
 {
-  // TODO!
-  qDebug( "nothing here yet" );
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
+  if ( layer )
+    clearCacheImage( layer->id() );
 }
 
+void QgsMapRendererCache::clearCacheImage( QString layerId )
+{
+  QMutexLocker lock( &mMutex );
 
+  mCachedImages.remove( layerId );
+
+  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  if ( layer )
+  {
+    disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+  }
+}

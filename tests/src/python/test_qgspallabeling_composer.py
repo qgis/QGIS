@@ -30,8 +30,6 @@ from PyQt4.QtSvg import QSvgRenderer, QSvgGenerator
 from qgis.core import *
 
 from utilities import (
-    unittest,
-    expectedFailure,
     getTempfilePath,
     getExecutablePath,
 )
@@ -42,18 +40,23 @@ from test_qgspallabeling_tests import (
     suiteTests
 )
 
-# look for Poppler, then muPDF PDF-to-image utility
-for util in ['pdftoppm', 'mudraw']:
+# PDF-to-image utility
+# look for Poppler w/ Cairo, then muPDF
+# * Poppler w/ Cairo renders correctly
+# * Poppler w/o Cairo does not always correctly render vectors in PDF to image
+# * muPDF renders correctly, but sightly shifts colors
+for util in [
+    'pdftocairo',
+    # 'mudraw',
+]:
     PDFUTIL = getExecutablePath(util)
     if PDFUTIL:
         break
 
-
-def skip_if_not_pdf_util():  # skip test class decorator
-    if PDFUTIL:
-        return lambda func: func
-    return unittest.skip('\nPDF-to-image utility not found on PATH\n'
-                         'Install Poppler or muPDF utilities\n\n')
+# noinspection PyUnboundLocalVariable
+if not PDFUTIL:
+    raise Exception('PDF-to-image utility not found on PATH: '
+                    'install Poppler (with Cairo)')
 
 
 # output kind enum
@@ -89,8 +92,10 @@ class TestComposerBase(TestQgsPalLabeling):
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
-        self._Mismatch = 200  # default mismatch for crosscheck
+        self._Mismatch = 0
+        self._ColorTol = 0
         self._Mismatches.clear()
+        self._ColorTols.clear()
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
@@ -212,28 +217,40 @@ class TestComposerBase(TestQgsPalLabeling):
             return False, ''
 
         filepath = getTempfilePath('png')
-        # pdftoppm -singlefile -r 72 -x 0 -y 0 -W 600 -H 400 -png in.pdf pngbase
-        # mudraw -o out.png -r 72 -w 600 -h 400 -c rgb[a] in.pdf
-        if PDFUTIL == 'pdftoppm':
+        # Poppler (pdftocairo or pdftoppm):
+        # PDFUTIL -png -singlefile -r 72 -x 0 -y 0 -W 420 -H 280 in.pdf pngbase
+        # muPDF (mudraw):
+        # PDFUTIL -c rgb[a] -r 72 -w 420 -h 280 -o out.png in.pdf
+        if PDFUTIL.strip().endswith('pdftocairo'):
             filebase = os.path.join(
                 os.path.dirname(filepath),
                 os.path.splitext(os.path.basename(filepath))[0]
             )
             call = [
-                'pdftoppm', '-singlefile', '-r', str(dpi),
-                '-x', str(0), '-y', str(0), '-W', str(width), '-H', str(height),
-                '-png', pdfpath, filebase
+                PDFUTIL, '-png', '-singlefile', '-r', str(dpi),
+                '-x', '0', '-y', '0', '-W', str(width), '-H', str(height),
+                pdfpath, filebase
             ]
-        elif PDFUTIL == 'mudraw':
+        elif PDFUTIL.strip().endswith('mudraw'):
             call = [
-                'mudraw', '-c', 'rgba',
+                PDFUTIL,  '-c', 'rgba',
                 '-r', str(dpi), '-w', str(width), '-h', str(height),
+                # '-b', '8',
                 '-o', filepath, pdfpath
             ]
         else:
             return False, ''
 
-        res = subprocess.check_call(call)
+        qDebug("_get_composer_pdf_image call: {0}".format(' '.join(call)))
+        res = False
+        try:
+            subprocess.check_call(call)
+            res = True
+        except subprocess.CalledProcessError as e:
+            qDebug("_get_composer_pdf_image failed!\n"
+                   "cmd: {0}\n"
+                   "returncode: {1}\n"
+                   "message: {2}".format(e.cmd, e.returncode, e.message))
 
         if not res:
             os.unlink(filepath)
@@ -259,11 +276,19 @@ class TestComposerBase(TestQgsPalLabeling):
         res_m, self._TestImage = self.get_composer_output(self._TestKind)
         self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
         self.saveControlImage(self._TestImage)
-        mismatch = self._Mismatch
-        if (self._TestGroup in self._Mismatches
-                and 'PAL_NO_MISMATCH' not in os.environ):
-            mismatch = self._Mismatches[self._TestGroup]
+        mismatch = 0
+        if 'PAL_NO_MISMATCH' not in os.environ:
+            # some mismatch expected
+            mismatch = self._Mismatch if self._Mismatch else 20
+            if self._TestGroup in self._Mismatches:
+                mismatch = self._Mismatches[self._TestGroup]
+        colortol = 0
+        if 'PAL_NO_COLORTOL' not in os.environ:
+            colortol = self._ColorTol if self._ColorTol else 0
+            if self._TestGroup in self._ColorTols:
+                colortol = self._ColorTols[self._TestGroup]
         self.assertTrue(*self.renderCheck(mismatch=mismatch,
+                                          colortol=colortol,
                                           imgpath=self._TestImage))
 
 
@@ -311,6 +336,29 @@ class TestComposerSvgVsComposerPoint(TestComposerPointBase, TestPointBase):
         super(TestComposerSvgVsComposerPoint, self).setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer', 'sp_img')
+        self._ColorTol = 4
+
+
+class TestComposerPdfPoint(TestComposerPointBase, TestPointBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerPdfPoint, self).setUp()
+        self._TestKind = OutputKind.Pdf
+        self.configTest('pal_composer', 'sp_pdf')
+
+
+class TestComposerPdfVsComposerPoint(TestComposerPointBase, TestPointBase):
+    """
+    Compare only to composer image, which is already compared to canvas point
+    """
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerPdfVsComposerPoint, self).setUp()
+        self._TestKind = OutputKind.Pdf
+        self.configTest('pal_composer', 'sp_img')
+        self._Mismatch = 50
+        self._ColorTol = 18
 
 
 if __name__ == '__main__':
@@ -321,11 +369,17 @@ if __name__ == '__main__':
     sp_ivs = ['TestComposerImageVsCanvasPoint.' + t for t in st['sp_vs_suite']]
     sp_s = ['TestComposerSvgPoint.' + t for t in st['sp_suite']]
     sp_svs = ['TestComposerSvgVsComposerPoint.' + t for t in st['sp_vs_suite']]
+    sp_p = ['TestComposerPdfPoint.' + t for t in st['sp_suite']]
+    sp_pvs = ['TestComposerPdfVsComposerPoint.' + t for t in st['sp_vs_suite']]
     suite = []
+
     # extended separately for finer control of PAL_SUITE (comment-out undesired)
     suite.extend(sp_i)
     suite.extend(sp_ivs)
     suite.extend(sp_s)
     suite.extend(sp_svs)
+    suite.extend(sp_p)
+    suite.extend(sp_pvs)
+
     res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

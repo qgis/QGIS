@@ -6601,7 +6601,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Save Selection as Vector File...</source>
-        <translation>Saglabāt izvelni kā vektordatu failu...</translation>
+        <translation type="obsolete">Saglabāt izvelni kā vektordatu failu...</translation>
     </message>
     <message>
         <source>Set Project CRS from Layer</source>
@@ -6898,6 +6898,14 @@ Acts on currently active editable layer</source>
     <message>
         <source>Fill Ring</source>
         <translation>Pildīt apli</translation>
+    </message>
+    <message>
+        <source>Add from Layer Definition File...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As Layer Definition File...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8027,7 +8035,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Python</source>
-        <translation>Pitons</translation>
+        <translation type="obsolete">Pitons</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
@@ -8047,6 +8055,10 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Error while unloading plugin %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python warning</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11130,6 +11142,78 @@ It will be disabled.</source>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Simplify transform error caught: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not reproject view extent: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not reproject layer extent: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shapeburst fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error looking for style. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation aborted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error executing loading style. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No styles available on DB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading styles. The query was logged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty capabilities document</source>
+        <translation type="unfinished">tukšs iespēju dokuments</translation>
+    </message>
+    <message>
+        <source>Dom Exception</source>
+        <translation type="unfinished">DOM izņēmums</translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities: %1 at line %2 column %3
+This is probably due to an incorrect WMS Server URL.
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
+This might be due to an incorrect WMS Server URL.
+Tag:%3
+Response was:
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generated default style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style was missing in capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11990,7 +12074,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Stop map rendering</source>
-        <translation>Apturēt kartes zīmēšanu</translation>
+        <translation type="obsolete">Apturēt kartes zīmēšanu</translation>
     </message>
     <message>
         <source>Multiple Instances of QgisApp</source>
@@ -13268,14 +13352,6 @@ Errors: %3
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CRS undefined - defaulting to project CRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Multiple instances of QGIS application object detected.
 Please contact the developers.
 </source>
@@ -13433,20 +13509,56 @@ Please contact the developers.
         </translation>
     </message>
     <message>
-        <source>No Object Selected</source>
+        <source>CRS was undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>To remove objects, you must select them in the legend</source>
+        <source>defaulting to project CRS %1 - %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove objects</source>
+        <source>defaulting to CRS %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insufficient permissions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The project file is not writable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no features could be successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 features were successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 features could be successfully pasted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No legend entries selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the layers and groups you want to remove in the legend.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove layers and groups</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <source>Remove %n object(s)?</source>
-        <comment>number of objects to remove</comment>
+        <source>Remove %n legend entries?</source>
+        <comment>number of legend items to remove</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -13454,8 +13566,8 @@ Please contact the developers.
         </translation>
     </message>
     <message numerus="yes">
-        <source>%n object(s) removed.</source>
-        <comment>number of objects removed</comment>
+        <source>%n legend entries removed.</source>
+        <comment>number of removed legend entries</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -15387,6 +15499,14 @@ Database:%2</source>
     </message>
     <message>
         <source>Directory Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Case Sensitive</source>
+        <translation type="unfinished">Reģistrjūtīgi</translation>
+    </message>
+    <message>
+        <source>Normal</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20812,6 +20932,10 @@ and current file is [%3]</source>
         <source>Add PostGIS layers</source>
         <translation>Pievienot PostGIS slāņus</translation>
     </message>
+    <message>
+        <source>Hold dialog open</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDbTableModel</name>
@@ -22926,10 +23050,6 @@ Parser error:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save settings with project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show shadow rectangles (for debugging)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23265,6 +23385,56 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select within selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsExtentGroupBox</name>
+    <message>
+        <source>layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>map view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>user defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extent (current: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsExtentGroupBoxWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Forma</translation>
+    </message>
+    <message>
+        <source>West</source>
+        <translation type="unfinished">Rietumi</translation>
+    </message>
+    <message>
+        <source>East</source>
+        <translation type="unfinished">Austrumi</translation>
+    </message>
+    <message>
+        <source>North</source>
+        <translation type="unfinished">Ziemeļi</translation>
+    </message>
+    <message>
+        <source>South</source>
+        <translation type="unfinished">Dienvidi</translation>
+    </message>
+    <message>
+        <source>Layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map view extent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25786,11 +25956,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Krāsa</translation>
+        <translation type="obsolete">Krāsa</translation>
     </message>
     <message>
         <source>Color 2</source>
-        <translation type="unfinished">Krāsa 2</translation>
+        <translation type="obsolete">Krāsa 2</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -25830,6 +26000,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reference Point 2 (is centroid)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (start)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (end)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -30524,6 +30702,14 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
         <source>Legend</source>
         <translation type="unfinished">Leģenda</translation>
     </message>
+    <message>
+        <source>Destination CRS set to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On the fly reprojection enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -30621,7 +30807,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
     </message>
     <message>
         <source>Save Selection As...</source>
-        <translation>Saglabāt izvēli kā...</translation>
+        <translation type="obsolete">Saglabāt izvēli kā...</translation>
     </message>
     <message>
         <source>Show Feature Count</source>
@@ -30638,6 +30824,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.<
     <message>
         <source>following %1 items
 not displayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As Layer Definition File...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -30870,30 +31060,18 @@ not displayed</source>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation>Nevarēja uzzīmēt %1 jo:
+        <translation type="obsolete">Nevarēja uzzīmēt %1 jo:
 %2</translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
-        <translation>Nevarēja uzzīmēt %1 jo:
+        <translation type="obsolete">Nevarēja uzzīmēt %1 jo:
 %2</translation>
-    </message>
-    <message>
-        <source>Canvas refresh: %1 ms</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, sender &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rendering</source>
         <translation type="unfinished">Renderēšana</translation>
-    </message>
-    <message>
-        <source>canvas</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31181,20 +31359,12 @@ not displayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error. Could not add part.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Part added</source>
         <translation type="unfinished">Daļa pievienota</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinātu pārrēķina kļūda</translation>
-    </message>
-    <message>
-        <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Koordinātu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Selected feature is not multi part.</source>
@@ -31217,7 +31387,11 @@ not displayed</source>
         <translation type="unfinished">Nebija iespējams atrast izvēlēto ģeometriju</translation>
     </message>
     <message>
-        <source>Error, could not add part</source>
+        <source>Could not add part. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate transform error. Cannot transform the point to the layers coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -31327,12 +31501,24 @@ not displayed</source>
         <source>Couldn&apos;t remove the selected part.</source>
         <translation>Nav iespējams novākt izvēlēto daļu.</translation>
     </message>
+    <message>
+        <source>could not snap to a part on the current layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolDeleteRing</name>
     <message>
         <source>Ring deleted</source>
         <translation>Dzēsts riņķis</translation>
+    </message>
+    <message>
+        <source>Delete ring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not snap to a ring on the current layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31350,7 +31536,7 @@ not displayed</source>
     </message>
     <message>
         <source>Choose a vector layer in the legend</source>
-        <translation>Izvēlies vektoru slāni no apzīmējumiem</translation>
+        <translation type="obsolete">Izvēlies vektoru slāni no apzīmējumiem</translation>
     </message>
     <message>
         <source>Layer not editable</source>
@@ -31358,7 +31544,7 @@ not displayed</source>
     </message>
     <message>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
-        <translation>Lieto &apos;Pārslēgt rediģēšanu&apos;, lai padarītu to rediģējamu</translation>
+        <translation type="obsolete">Lieto &apos;Pārslēgt rediģēšanu&apos;, lai padarītu to rediģējamu</translation>
     </message>
 </context>
 <context>
@@ -31575,6 +31761,10 @@ not displayed</source>
     <message>
         <source>Inserted vertex</source>
         <translation>Ievietotā virsotne</translation>
+    </message>
+    <message>
+        <source>could not snap to a segment on the current layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31826,7 +32016,7 @@ not displayed</source>
     <name>QgsMapToolVertexEdit</name>
     <message>
         <source>Snap tolerance</source>
-        <translation>Pielipšanas tolerance</translation>
+        <translation type="obsolete">Pielipšanas tolerance</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -31842,7 +32032,7 @@ not displayed</source>
     </message>
     <message>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
-        <translation>Nevar pielipt segmentam. Vai esi noteicis pielpšanas attālumu Iestatījumi &gt; Pielipšanas iespējas?</translation>
+        <translation type="obsolete">Nevar pielipt segmentam. Vai esi noteicis pielpšanas attālumu Iestatījumi &gt; Pielipšanas iespējas?</translation>
     </message>
 </context>
 <context>
@@ -33263,7 +33453,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">Saglabāt kā</translation>
+        <translation type="obsolete">Saglabāt kā</translation>
     </message>
     <message>
         <source>Date</source>
@@ -33280,6 +33470,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Mapinfo File</source>
         <translation type="unfinished">Mapinfo fails</translation>
+    </message>
+    <message>
+        <source>Save layer as...</source>
+        <translation type="unfinished">Saglabāt slāni kā...</translation>
     </message>
 </context>
 <context>
@@ -33359,6 +33553,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remove attribute</source>
         <translation type="unfinished">Noņemt atribūtu</translation>
+    </message>
+    <message>
+        <source>File encoding</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34800,7 +34998,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished">Viss</translation>
+        <translation type="obsolete">Viss</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -34826,6 +35024,14 @@ Always network: always load from network and do not check if the cache has a val
         <source>Crosses</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Restore UI defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure to reset the UI to default (needs restart)?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -34835,7 +35041,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
-        <translation>Karte tiks rādīta tikai pēctam, kad būs nolasīti </translation>
+        <translation type="obsolete">Karte tiks rādīta tikai pēctam, kad būs nolasīti </translation>
     </message>
     <message>
         <source>Select Global Default ...</source>
@@ -34855,7 +35061,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation>Salabot problēmas ar nekorekti aizpildītiem poligoniem</translation>
+        <translation type="obsolete">Salabot problēmas ar nekorekti aizpildītiem poligoniem</translation>
     </message>
     <message>
         <source>%</source>
@@ -34983,7 +35189,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Number of features to draw before updating the display</source>
-        <translation>Objektu skaits, ko uzzīmēt pirms ekrāna atjaunināšanas</translation>
+        <translation type="obsolete">Objektu skaits, ko uzzīmēt pirms ekrāna atjaunināšanas</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
@@ -35666,14 +35872,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable back buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Debugging</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35818,10 +36016,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable feature simplication by default for newly added layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35939,6 +36133,34 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Ask for datum transformation when no default is defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for confirmation when a layer is to be removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QSettings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render layers in parallel using all available CPU cores</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map update interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable feature simplification by default for newly added layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -41202,16 +41424,8 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">Slāņa apjoms (oriģinālajā projekcijā): </translation>
     </message>
     <message>
-        <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Raster</source>
         <translation>Rastrs</translation>
-    </message>
-    <message>
-        <source>Could not reproject layer extent: %1</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;maplayer&gt; not found.</source>
@@ -42359,14 +42573,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>map view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Extent (current: %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Layer (%1, %2)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42443,27 +42649,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>West</source>
-        <translation type="unfinished">Rietumi</translation>
+        <translation type="obsolete">Rietumi</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished">Austrumi</translation>
+        <translation type="obsolete">Austrumi</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished">Ziemeļi</translation>
+        <translation type="obsolete">Ziemeļi</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="unfinished">Dienvidi</translation>
-    </message>
-    <message>
-        <source>Layer extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map view extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Dienvidi</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -44182,6 +44380,37 @@ Kļūda bija:
     </message>
 </context>
 <context>
+    <name>QgsShapeburstFillSymbolLayerV2Widget</name>
+    <message>
+        <source>Color (start)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color (end)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer between 0 and 18</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use whole shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
@@ -44197,11 +44426,11 @@ Kļūda bija:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation>Horizontālais enkura punkts</translation>
+        <translation type="obsolete">Horizontālais enkura punkts</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation>Vertikālais enkura punkts</translation>
+        <translation type="obsolete">Vertikālais enkura punkts</translation>
     </message>
 </context>
 <context>
@@ -47903,12 +48132,8 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation type="obsolete">CRS</translation>
     </message>
 </context>
 <context>
@@ -48966,6 +49191,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Memory cache</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
@@ -49077,10 +49306,6 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="unfinished">Mērogs</translation>
     </message>
     <message>
-        <source>More Options &gt;&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Datasource Options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -49090,6 +49315,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Layer Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save only selected features</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49443,6 +49672,18 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Delete</source>
         <translation>Dzēst</translation>
     </message>
+    <message>
+        <source>Failed to parse WMS URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to download capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to parse capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsWMSRootItem</name>
@@ -49503,7 +49744,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation>Nebija iespējams atvērt WMS datu sniedzēju</translation>
+        <translation type="obsolete">Nebija iespējams atvērt WMS datu sniedzēju</translation>
     </message>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
@@ -49604,6 +49845,20 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
             <numerusform>Opcijas (pieejamas %n koordinātu atskaites sistēmas)</numerusform>
             <numerusform>Opcijas (pieejams %n koordinātu atskaites sistēmu)</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Failed to parse WMS URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to download capabilities:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to parse capabilities:
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49867,6 +50122,61 @@ Response was:
     </message>
 </context>
 <context>
+    <name>QgsWcsDownloadHandler</name>
+    <message>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WCS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot parse multipart response: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected 2 parts, %1 received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>More than 2 parts (%1) received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error (Response: %1; URL:%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Content-Transfer-Encoding %1 not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation type="unfinished">lejupielādēti %1 kartes baiti no %2.</translation>
+    </message>
+</context>
+<context>
     <name>QgsWcsProvider</name>
     <message>
         <source>Cannot describe coverage</source>
@@ -49909,34 +50219,6 @@ Response was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected 2 parts, %1 received</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>More than 2 parts (%1) received</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error (Response: %1; URL:%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No data received</source>
         <translation type="unfinished"></translation>
     </message>
@@ -49945,28 +50227,12 @@ Response was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished">lejupielādēti %1 kartes baiti no %2.</translation>
+        <translation type="obsolete">lejupielādēti %1 kartes baiti no %2.</translation>
     </message>
     <message>
         <source>Dom Exception</source>
         <translation type="unfinished">DOM izņēmums</translation>
-    </message>
-    <message>
-        <source>Could not get WCS Service Exception at %1: %2 at line %3 column %4
-
-Response was:
-
-%5</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Request contains a format not offered by the server.</source>
@@ -50130,14 +50396,6 @@ Response was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot parse multipart response: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot verify coverage full extent: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -50152,6 +50410,80 @@ Response was:
     <message>
         <source>RasterIO error: </source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get WCS Service Exception at %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Service Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsCapabilitiesDownload</name>
+    <message>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation type="unfinished">%1 no %2 baitiem iespejām lejuplādēti.</translation>
+    </message>
+    <message>
+        <source>Capabilities request redirected.</source>
+        <translation type="unfinished">Iespēju pieprasījums pārvirzīts.</translation>
+    </message>
+    <message>
+        <source>Redirect loop detected: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>empty of capabilities: %1</source>
+        <translation type="unfinished">nav iespēju: %1</translation>
+    </message>
+    <message>
+        <source>Download of capabilities failed: %1</source>
+        <translation type="unfinished">Iespēju lejuplāde izgāzās: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsImageDownloadHandler</name>
+    <message>
+        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request failed [error:%1 url:%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of map downloaded.</source>
+        <translation type="unfinished">lejupielādēti %1 kartes baiti no %2.</translation>
     </message>
 </context>
 <context>
@@ -50439,28 +50771,28 @@ Response was:
     <message>
         <source>
 Tried URL: %1</source>
-        <translation>
+        <translation type="obsolete">
 Tika mēģināts URL: %1</translation>
     </message>
     <message>
         <source>Capabilities request redirected.</source>
-        <translation>Iespēju pieprasījums pārvirzīts.</translation>
+        <translation type="obsolete">Iespēju pieprasījums pārvirzīts.</translation>
     </message>
     <message>
         <source>empty of capabilities: %1</source>
-        <translation>nav iespēju: %1</translation>
+        <translation type="obsolete">nav iespēju: %1</translation>
     </message>
     <message>
         <source>Download of capabilities failed: %1</source>
-        <translation>Iespēju lejuplāde izgāzās: %1</translation>
+        <translation type="obsolete">Iespēju lejuplāde izgāzās: %1</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation>%1 no %2 baitiem iespejām lejuplādēti.</translation>
+        <translation type="obsolete">%1 no %2 baitiem iespejām lejuplādēti.</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation>lejupielādēti %1 kartes baiti no %2.</translation>
+        <translation type="obsolete">lejupielādēti %1 kartes baiti no %2.</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
@@ -50537,39 +50869,11 @@ Tika mēģināts URL: %1</translation>
     </message>
     <message>
         <source>empty capabilities document</source>
-        <translation>tukšs iespēju dokuments</translation>
-    </message>
-    <message>
-        <source>Could not get WMS capabilities: %1 at line %2 column %3
-This is probably due to an incorrect WMS Server URL.
-Response was:
-
-%4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.
-This might be due to an incorrect WMS Server URL.
-Tag:%3
-Response was:
-%4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4
-
-Response was:
-
-%5</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">tukšs iespēju dokuments</translation>
     </message>
     <message>
         <source>Request contains a format not offered by the server.</source>
         <translation>Vaicājums satur formātu, kādu nepiedāvā serveris.</translation>
-    </message>
-    <message>
-        <source>Tile request error</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Status: %1
@@ -50606,30 +50910,6 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Getting tiles.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request failed [error:%1 url:%2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -50693,18 +50973,6 @@ Reason phrase: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Redirect loop detected: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -50730,22 +50998,6 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Cannot parse getfeatureinfo: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generated default style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Style was missing in capabilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -50786,6 +51038,186 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get WMS Service Exception: %1 at line %2 column %3
+
+Response was:
+
+%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid tile mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected tile matrix set </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">Mērogs</translation>
+    </message>
+    <message>
+        <source>Tile size [px]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile size [mu]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matrix size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matrix extent [mu]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Platums</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Augstums</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Pa kreisi</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Pa labi</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n missing row(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Layer&apos;s upper bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n missing column(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Layer&apos;s left bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer&apos;s lower bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer&apos;s right bound: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWmsTiledImageDownloadHandler</name>
+    <message>
+        <source>Tile request error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status: %1
+Reason phrase: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished">WMS</translation>
+    </message>
+    <message>
+        <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation type="unfinished">
+            <numerusform>Fonā pieprasīta %n daļa  </numerusform>
+            <numerusform>Fonā pieprasītas %n daļas </numerusform>
+            <numerusform>Fonā pieprasīts %n daļu</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation type="unfinished">
+            <numerusform>, %n keša trāpījums    </numerusform>
+            <numerusform>, %n keša trāpījumi </numerusform>
+            <numerusform>, %n keša trāpījumu </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation type="unfinished">
+            <numerusform>, %n iztrūkst kešā     </numerusform>
+            <numerusform>, %n iztrūkst kešā </numerusform>
+            <numerusform>, %n iztrūkst kešā </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation type="unfinished">
+            <numerusform>, %n kļūda.        </numerusform>
+            <numerusform>, %n kļūdas.</numerusform>
+            <numerusform>, %n kļūdu.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Not logging more than 100 request errors.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>repeat tileRequest %1 tile %2(retry %3)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52723,6 +53155,61 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <message>
         <source>Data defined properties...</source>
         <translation>Datu definētas īpašības...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShapeburstFill</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Forma</translation>
+    </message>
+    <message>
+        <source>Gradient colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Two color</source>
+        <translation type="unfinished">Divu krāsu</translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished">Krāsu rampa</translation>
+    </message>
+    <message>
+        <source>Shading style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shade whole shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore rings in polygons while shading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shade to a set distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Kartes vienība</translation>
+    </message>
+    <message>
+        <source>Blur strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset X,Y</source>
+        <translation type="unfinished">Nobīde X, Y</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished">Datu definētas īpašības...</translation>
     </message>
 </context>
 <context>
@@ -58275,6 +58762,26 @@ Returns a string representing a color from a color ramp.
 The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
+Returns a string wrapped to a maximum/minimum number of characters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to be wrapped.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; is number.  If positive, the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; is string.  The delimiter string to wrap to a new line (&lt;u&gt;optional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>

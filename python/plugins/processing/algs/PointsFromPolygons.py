@@ -32,7 +32,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects, vector, raster
 from processing.tools.general import *
 
 
@@ -44,7 +44,7 @@ class PointsFromPolygons(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Get raster values at polygon nodes'
+        self.name = 'Generate points (pixel centroids) inside polygons'
         self.group = 'Vector analysis tools'
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Raster layer'))
@@ -92,12 +92,12 @@ class PointsFromPolygons(GeoAlgorithm):
             yMin = bbox.yMinimum()
             yMax = bbox.yMaximum()
 
-            (startRow, startColumn) = mapToPixel(xMin, yMax, geoTransform)
-            (endRow, endColumn) = mapToPixel(xMax, yMin, geoTransform)
+            (startRow, startColumn) = raster.mapToPixel(xMin, yMax, geoTransform)
+            (endRow, endColumn) = raster.mapToPixel(xMax, yMin, geoTransform)
 
             for row in xrange(startRow, endRow + 1):
                 for col in xrange(startColumn, endColumn + 1):
-                    (x, y) = pixelToMap(row, col, geoTransform)
+                    (x, y) = raster.pixelToMap(row, col, geoTransform)
                     point.setX(x)
                     point.setY(y)
 

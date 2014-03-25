@@ -25,6 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import uuid
+
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -123,6 +125,20 @@ def values(layer, *attributes):
         ret[attr] = values
     return ret
 
+def testForUniqueness( fieldList1, fieldList2 ):
+    '''Returns a modified version of fieldList2, removing naming
+    collisions with fieldList1.'''
+    changed = True
+    while changed:
+        changed = False
+        for i in range(0,len(fieldList1)):
+            for j in range(0,len(fieldList2)):
+                if fieldList1[i].name() == fieldList2[j].name():
+                    field = fieldList2[j]
+                    name = createUniqueFieldName( field.name(), fieldList1 )
+                    fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
+                    changed = True
+    return fieldList2
 
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
@@ -260,3 +276,51 @@ def combineVectorFields(layerA, layerB):
         fields.append(field)
 
     return fields
+
+
+def duplicateInMemory(layer, newName='', addToRegistry=False):
+    """Return a memory copy of a layer
+
+    layer: QgsVectorLayer that shall be copied to memory.
+    new_name: The name of the copied layer.
+    add_to_registry: if True, the new layer will be added to the QgsMapRegistry
+
+    Returns an in-memory copy of a layer.
+    """
+    if newName is '':
+        newName = layer.name() + ' (Memory)'
+
+    if layer.type() == QgsMapLayer.VectorLayer:
+        geomType = layer.geometryType()
+        if geomType == QGis.Point:
+            strType = 'Point'
+        elif geomType == QGis.Line:
+            strType = 'Line'
+        elif geomType == QGis.Polygon:
+            strType = 'Polygon'
+        else:
+            raise RuntimeError('Layer is whether Point nor Line nor Polygon')
+    else:
+        raise RuntimeError('Layer is not a VectorLayer')
+
+    crs = layer.crs().authid().lower()
+    myUuid = str(uuid.uuid4())
+    uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
+    memLayer = QgsVectorLayer(uri, newName, 'memory')
+    memProvider = memLayer.dataProvider()
+
+    provider = layer.dataProvider()
+    fields = provider.fields().toList()
+    memProvider.addAttributes(fields)
+    memLayer.updateFields()
+
+    for ft in provider.getFeatures():
+        memProvider.addFeatures([ft])
+
+    if addToRegistry:
+        if memLayer.isValid():
+            QgsMapLayerRegistry.instance().addMapLayer(memLayer)
+        else:
+            raise RuntimeError('Layer invalid')
+
+    return memLayer

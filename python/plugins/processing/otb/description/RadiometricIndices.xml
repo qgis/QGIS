@@ -1,0 +1,124 @@
+<root>
+  <key>RadiometricIndices</key>
+  <exec>otbcli_RadiometricIndices</exec>
+  <longname>Radiometric Indices</longname>
+  <group>Feature Extraction</group>
+  <description>Compute radiometric indices.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Radiometric indices output image</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channels.blue</key>
+    <name>Blue Channel</name>
+    <description>Blue channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channels.green</key>
+    <name>Green Channel</name>
+    <description>Green channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channels.red</key>
+    <name>Red Channel</name>
+    <description>Red channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channels.nir</key>
+    <name>NIR Channel</name>
+    <description>NIR channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channels.mir</key>
+    <name>Mir Channel</name>
+    <description>Mir channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_ListView">ParameterSelection</parameter_type>
+    <key>list</key>
+    <name>Available Radiometric Indices</name>
+    <description>List of available radiometric indices with their relevant channels in brackets:
+        Vegetation:NDVI - Normalized difference vegetation index (Red, NIR)
+        Vegetation:TNDVI - Transformed normalized difference vegetation index (Red, NIR)
+        Vegetation:RVI - Ratio vegetation index (Red, NIR)
+        Vegetation:SAVI - Soil adjusted vegetation index (Red, NIR)
+        Vegetation:TSAVI - Transformed soil adjusted vegetation index (Red, NIR)
+        Vegetation:MSAVI - Modified soil adjusted vegetation index (Red, NIR)
+        Vegetation:MSAVI2 - Modified soil adjusted vegetation index 2 (Red, NIR)
+        Vegetation:GEMI - Global environment monitoring index (Red, NIR)
+        Vegetation:IPVI - Infrared percentage vegetation index (Red, NIR)
+        
+        Water:NDWI - Normalized difference water index (Gao 1996) (NIR, MIR)
+        Water:NDWI2 - Normalized difference water index (Mc Feeters 1996) (Green, NIR)
+        Water:MNDWI - Modified normalized difference water index (Xu 2006) (Green, MIR)
+        Water:NDPI - Normalized difference pond index (Lacaux et al.) (MIR, Green)
+        Water:NDTI - Normalized difference turbidity index (Lacaux et al.) (Red, Green)
+        
+        Soil:RI - Redness index (Red, Green)
+        Soil:CI - Color index (Red, Green)
+        Soil:BI - Brightness index (Red, Green)
+        Soil:BI2 - Brightness index 2 (NIR, Red, Green)</description>
+    <options>
+      <choices>
+        <choice>ndvi</choice>
+        <choice>tndvi</choice>
+        <choice>rvi</choice>
+        <choice>savi</choice>
+        <choice>tsavi</choice>
+        <choice>msavi</choice>
+        <choice>msavi2</choice>
+        <choice>gemi</choice>
+        <choice>ipvi</choice>
+        <choice>ndwi</choice>
+        <choice>ndwi2</choice>
+        <choice>mndwi</choice>
+        <choice>ndpi</choice>
+        <choice>ndti</choice>
+        <choice>ri</choice>
+        <choice>ci</choice>
+        <choice>bi</choice>
+        <choice>bi2</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+</root>

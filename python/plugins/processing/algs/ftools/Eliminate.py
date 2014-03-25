@@ -50,9 +50,10 @@ class Eliminate(GeoAlgorithm):
     COMPARISONVALUE = 'COMPARISONVALUE'
     COMPARISON = 'COMPARISON'
 
-    MODES = ['Area', 'Common boundary']
-    MODE_AREA = 0
-    MODE_BOUNDARY = 1
+    MODES = ['Largest area',  'Smallest Area', 'Largest common boundary']
+    MODE_LARGEST_AREA = 0
+    MODE_SMALLEST_AREA = 1
+    MODE_BOUNDARY = 2
 
     def defineCharacteristics(self):
         self.name = 'Eliminate sliver polygons'
@@ -60,8 +61,8 @@ class Eliminate(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,
-                          'Use current selection in input layer (works only \
-                          if called from toolbox)', False))
+                          'Use current selection in input layer (works only ' + \
+                          'if called from toolbox)', False))
         self.addParameter(ParameterTableField(self.ATTRIBUTE,
                           'Selection attribute', self.INPUT))
         self.comparisons = [
@@ -79,14 +80,15 @@ class Eliminate(GeoAlgorithm):
         self.addParameter(ParameterString(self.COMPARISONVALUE, 'Value',
                           default='0'))
         self.addParameter(ParameterSelection(self.MODE,
-                          'Merge selection with the neighbouring polygon \
-                          with the largest', self.MODES))
+                          'Merge selection with the neighbouring polygon with the ',
+                            self.MODES))
         self.addOutput(OutputVector(self.OUTPUT, 'Cleaned layer'))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT))
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
+        smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
         keepSelection = self.getParameterValue(self.KEEPSELECTION)
 
         if not keepSelection:
@@ -246,6 +248,7 @@ class Eliminate(GeoAlgorithm):
                 mergeWithFid = None
                 mergeWithGeom = None
                 max = 0
+                min = -1
                 selFeat = QgsFeature()
 
                 while fit.nextFeature(selFeat):
@@ -258,17 +261,33 @@ class Eliminate(GeoAlgorithm):
                         if boundary:
                             selValue = iGeom.length()
                         else:
-                            # Largest area. We need a common boundary in
+                            # area. We need a common boundary in
                             # order to merge
                             if 0 < iGeom.length():
                                 selValue = selGeom.area()
                             else:
-                                selValue = 0
+                                selValue = -1
 
-                        if selValue > max:
-                            max = selValue
-                            mergeWithFid = selFeat.id()
-                            mergeWithGeom = QgsGeometry(selGeom)
+                        if -1 != selValue:
+                            useThis = True
+
+                            if smallestArea:
+                                if -1 == min:
+                                    min = selValue
+                                else:
+                                    if selValue < min:
+                                        min = selValue
+                                    else:
+                                        useThis = False
+                            else:
+                                if selValue > max:
+                                    max = selValue
+                                else:
+                                    useThis = False
+
+                            if useThis:
+                                mergeWithFid = selFeat.id()
+                                mergeWithGeom = QgsGeometry(selGeom)
                 # End while fit
 
                 if mergeWithFid is not None:
@@ -279,8 +298,8 @@ class Eliminate(GeoAlgorithm):
                         madeProgress = True
                     else:
                         raise GeoAlgorithmExecutionException(
-                                'Could not replace geometry of feature \
-                                with id %s' % mergeWithFid)
+                                'Could not replace geometry of feature ' + \
+                                'with id %s' % mergeWithFid)
 
                     start = start + add
                     progress.setPercentage(start)

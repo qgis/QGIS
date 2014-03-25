@@ -209,12 +209,12 @@ class QgsMapLayer : QObject
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    QDomDocument asLayerDefinition ( );
+    QDomDocument asLayerDefinition( );
 
     /** Creates a new layer from a layer defininition document
     */
     static QgsMapLayer* fromLayerDefinition( QDomDocument& document );
-    static QgsMapLayer* fromLayerDefinitionFile(const QString qlrfile );
+    static QgsMapLayer* fromLayerDefinitionFile( const QString qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
@@ -355,7 +355,7 @@ class QgsMapLayer : QObject
 
     /** @deprecated since 2.4 - returns NULL */
     QImage *cacheImage() /Deprecated/;
-    /** @deprecated since 2.4 - does nothing */
+    /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     void setCacheImage( QImage * thepImage /Transfer/ ) /Deprecated/;
     /** @deprecated since 2.4 - does nothing */
     virtual void onCacheImageDelete() /Deprecated/;
@@ -377,7 +377,8 @@ class QgsMapLayer : QObject
     void toggleScaleBasedVisibility( bool theVisibilityFlag );
     bool hasScaleBasedVisibility() const;
 
-    /** @deprecated since 2.4 - does nothing */
+    /** Clear cached image
+     *  @deprecated in 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     void clearCacheImage() /Deprecated/;
 
     /** \brief Obtain Metadata for this layer */

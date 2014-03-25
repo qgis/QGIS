@@ -339,7 +339,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
   settingsMenu->addAction( mActionOptions );
-  settingsMenu->addAction( mActionResetUIdefaults );
 
 #ifdef Q_WS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
@@ -2497,17 +2496,6 @@ void QgsComposer::restoreWindowState()
   {
     QgsDebugMsg( "restore of composer UI geometry failed" );
   }
-}
-
-void QgsComposer::on_mActionResetUIdefaults_triggered()
-{
-  if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-    return;
-
-  saveWindowState();
-  QSettings settings;
-  settings.remove( "/ComposerUI/state" );
-  restoreWindowState();
 }
 
 void  QgsComposer::writeXML( QDomDocument& doc )

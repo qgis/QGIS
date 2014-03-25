@@ -1101,7 +1101,6 @@ void QgisApp::createActions()
   connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
-  connect( mActionResetUIdefaults, SIGNAL( triggered() ), this, SLOT( restoreDefaultWindowState() ) );
 
 #ifdef Q_WS_MAC
   // Window Menu Items
@@ -2371,20 +2370,6 @@ void QgisApp::restoreWindowState()
   }
 
 }
-
-void QgisApp::restoreDefaultWindowState()
-{
-  if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-    return;
-
-  saveWindowState();
-
-  QSettings settings;
-  settings.remove( "/UI/state" );
-
-  restoreWindowState();
-}
-
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
 {
@@ -7025,58 +7010,78 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
 
 void QgisApp::increaseBrightness()
 {
-  adjustBrightnessContrast( 1 );
+  int step = 1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = 10;
+  }
+  adjustBrightnessContrast( step );
 }
 
 void QgisApp::decreaseBrightness()
 {
-  adjustBrightnessContrast( -1 );
+  int step = -1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = -10;
+  }
+  adjustBrightnessContrast( step );
 }
 
 void QgisApp::increaseContrast()
 {
-  adjustBrightnessContrast( 1, false );
+  int step = 1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = 10;
+  }
+  adjustBrightnessContrast( step, false );
 }
 
 void QgisApp::decreaseContrast()
 {
-  adjustBrightnessContrast( -1, false );
+  int step = -1;
+  if ( QgsApplication::keyboardModifiers() == Qt::ShiftModifier )
+  {
+    step = -10;
+  }
+  adjustBrightnessContrast( step, false );
 }
-
 
 void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 {
-  QgsMapLayer * myLayer = mMapLegend->currentLayer();
-
-  if ( !myLayer )
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    messageBar()->pushMessage( tr( "No Layer Selected" ),
-                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
-                               QgsMessageBar::INFO, messageTimeout() );
-    return;
-  }
+    if ( !layer )
+    {
+      messageBar()->pushMessage( tr( "No Layer Selected" ),
+                                 tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                                 QgsMessageBar::INFO, messageTimeout() );
+      return;
+    }
 
-  QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
-  if ( !myRasterLayer )
-  {
-    messageBar()->pushMessage( tr( "No Layer Selected" ),
-                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
-                               QgsMessageBar::INFO, messageTimeout() );
-    return;
-  }
+    QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+    if ( !rasterLayer )
+    {
+      messageBar()->pushMessage( tr( "No Layer Selected" ),
+                                 tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                                 QgsMessageBar::INFO, messageTimeout() );
+      return;
+    }
 
-  QgsBrightnessContrastFilter* brightnessFilter = myRasterLayer->brightnessFilter();
+    QgsBrightnessContrastFilter* brightnessFilter = rasterLayer->brightnessFilter();
 
-  if ( updateBrightness )
-  {
-    brightnessFilter->setBrightness( brightnessFilter->brightness() + delta );
-  }
-  else
-  {
-    brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
-  }
+    if ( updateBrightness )
+    {
+      brightnessFilter->setBrightness( brightnessFilter->brightness() + delta );
+    }
+    else
+    {
+      brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
+    }
 
-  myRasterLayer->triggerRepaint();
+    rasterLayer->triggerRepaint();
+  }
 }
 
 void QgisApp::helpContents()

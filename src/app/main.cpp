@@ -115,6 +115,7 @@ void usage( std::string const & appName )
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
             << "\t[--code path]\trun the given python file on load\n"
+            << "\t[--defaultui]\tstart by resetting user ui settings to default\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILE:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -453,6 +454,7 @@ int main( int argc, char *argv[] )
   myHideSplash = true;
 #endif
 
+  bool myRestoreDefaultWindowState = false;
   bool myRestorePlugins = true;
   bool myCustomization = true;
 
@@ -553,6 +555,10 @@ int main( int argc, char *argv[] )
       else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
       {
         customizationfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+      }
+      else if ( arg == "--defaultui" || arg == "-d" )
+      {
+        myRestoreDefaultWindowState = true;
       }
       else
       {
@@ -856,6 +862,15 @@ int main( int argc, char *argv[] )
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
     mypSplash->show();
+  }
+
+  // optionally restore default window state
+  // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
+  if ( myRestoreDefaultWindowState || mySettings.value( "/qgis/restoreDefaultWindowState", false ).toBool() )
+  {
+    QgsDebugMsg( "Resetting /UI/state settings!" );
+    mySettings.remove( "/UI/state" );
+    mySettings.remove( "/qgis/restoreDefaultWindowState" );
   }
 
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance

@@ -1402,8 +1402,14 @@ void QgsMapLayer::setValid( bool valid )
   mValid = valid;
 }
 
+void QgsMapLayer::setCacheImage( QImage * )
+{
+  emit repaintRequested();
+}
+
 void QgsMapLayer::clearCacheImage()
 {
+  emit repaintRequested();
 }
 
 QString QgsMapLayer::metadata()
