@@ -35,6 +35,7 @@ from processing.core.GeoAlgorithmExecutionException import \
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterSelection import ParameterSelection
 from processing.tools import dataobjects
 
 from processing.admintools import postgis_utils
@@ -48,12 +49,13 @@ class ImportIntoPostGIS(GeoAlgorithm):
     INPUT = 'INPUT'
     OVERWRITE = 'OVERWRITE'
     CREATEINDEX = 'CREATEINDEX'
+    GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
 
     def processAlgorithm(self, progress):
-        connection = self.getParameterValue(self.DATABASE)
+        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         schema = self.getParameterValue(self.SCHEMA)
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
@@ -80,9 +82,13 @@ class ImportIntoPostGIS(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n" + e.message)
 
+        geomColumn = self.getParameterValue(self.GEOMETRY_COLUMN)
+        if not geomColumn:
+            geomColumn = 'the_geom'
+
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
-        uri.setDataSource(schema, table, 'the_geom', '')
+        uri.setDataSource(schema, table, geomColumn, '')
 
         options = {}
         if overwrite:
@@ -104,18 +110,28 @@ class ImportIntoPostGIS(GeoAlgorithm):
                     'Error importing to PostGIS\n%s' % errMsg)
 
         if createIndex:
-            db.create_spatial_index(table, schema, 'the_geom')
+            db.create_spatial_index(table, schema, geomColumn)
 
         db.vacuum_analyze(table, schema)
+
+    def dbConnectionNames(self):
+        settings = QSettings()
+        settings.beginGroup('/PostgreSQL/connections/')
+        return settings.childGroups()
 
     def defineCharacteristics(self):
         self.name = 'Import into PostGIS'
         self.group = 'PostGIS management tools'
         self.addParameter(ParameterVector(self.INPUT, 'Layer to import'))
-        self.addParameter(ParameterString(self.DATABASE,
-                          'Database (connection name)'))
+
+        self.DB_CONNECTIONS = self.dbConnectionNames()
+        self.addParameter(ParameterSelection(self.DATABASE, 'Database (connection name)',
+                          self.DB_CONNECTIONS))
+
         self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)'))
         self.addParameter(ParameterString(self.TABLENAME, 'Table to import to'
+                          ))
+        self.addParameter(ParameterString(self.GEOMETRY_COLUMN, 'Geometry column', 'the_geom'
                           ))
         self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite', True))
         self.addParameter(ParameterBoolean(self.CREATEINDEX,
