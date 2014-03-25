@@ -2844,8 +2844,6 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   QString *errorMessage,
   const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( options );
-
   // populate members from the uri structure
   QgsDataSourceURI dsUri( uri );
   QString schemaName = dsUri.schema();
@@ -3046,6 +3044,12 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       {
         QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
         continue;
+      }
+
+      if ( options->contains( "lowercaseFieldNames" ) && options->value( "lowercaseFieldNames" ).toBool() )
+      {
+        //convert field name to lowercase
+        fld.setName( fld.name().toLower() );
       }
 
       if ( !convertField( fld ) )
