@@ -33,6 +33,14 @@ from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 
+wkbTypeGroups = {
+    'Point': (QGis.WKBPoint, QGis.WKBMultiPoint, QGis.WKBPoint25D, QGis.WKBMultiPoint25D,),
+    'LineString': (QGis.WKBLineString, QGis.WKBMultiLineString, QGis.WKBLineString25D, QGis.WKBMultiLineString25D,),
+    'Polygon': (QGis.WKBPolygon, QGis.WKBMultiPolygon, QGis.WKBPolygon25D, QGis.WKBMultiPolygon25D,),
+}
+for key, value in wkbTypeGroups.items():
+    for const in value:
+        wkbTypeGroups[const] = key
 
 class Intersection(GeoAlgorithm):
 
@@ -70,16 +78,17 @@ class Intersection(GeoAlgorithm):
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                    if int_geom.wkbType() == 7:
+                    if int_geom.wkbType() == QGis.WKBUnknown:
                         int_com = geom.combine(tmpGeom)
                         int_sym = geom.symDifference(tmpGeom)
                         int_geom = QgsGeometry(int_com.difference(int_sym))
-                    outFeat.setGeometry(int_geom)
-                    attrs = []
-                    attrs.extend(atMapA)
-                    attrs.extend(atMapB)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
+                    if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
+                        outFeat.setGeometry(int_geom)
+                        attrs = []
+                        attrs.extend(atMapA)
+                        attrs.extend(atMapB)
+                        outFeat.setAttributes(attrs)
+                        writer.addFeature(outFeat)
 
         del writer
 
