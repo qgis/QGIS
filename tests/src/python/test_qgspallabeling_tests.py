@@ -105,6 +105,7 @@ class TestPointBase(object):
         self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
         self.lyr.shapeSize = QPointF(100.0, 0.0)
+        self._Mismatches['TestComposerPdfVsComposerPoint'] = 580
         self.checkTest()
 
     def test_background_svg_w_offset(self):
@@ -125,6 +126,7 @@ class TestPointBase(object):
 
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
+        self._Mismatches['TestComposerPdfVsComposerPoint'] = 760
         self.checkTest()
 
     def test_partials_labels_enabled(self):
