@@ -1,7 +1,6 @@
 /***************************************************************************
                               qgs_map_serv.cpp
- A server application supporting WMS/SLD syntax for HTTP GET and Orchestra
-map service syntax for SOAP/HTTP POST
+ A server application supporting WMS / WFS / WCS
                               -------------------
   begin                : July 04, 2006
   copyright            : (C) 2006 by Marco Hugentobler & Ionut Iosifescu Enescu
@@ -50,8 +49,6 @@ map service syntax for SOAP/HTTP POST
 
 void dummyMessageHandler( QtMsgType type, const char *msg )
 {
-  Q_UNUSED( type );
-  Q_UNUSED( msg );
 #ifdef QGSMSDEBUG
   QString output;
 
@@ -76,6 +73,9 @@ void dummyMessageHandler( QtMsgType type, const char *msg )
 
   if ( type == QtFatalMsg )
     abort();
+#else
+  Q_UNUSED( type );
+  Q_UNUSED( msg );
 #endif
 }
 
@@ -133,12 +133,10 @@ void printRequestInfos()
 QFileInfo defaultProjectFile()
 {
   QDir currentDir;
-  QgsDebugMsg( "current directory: " + currentDir.absolutePath() );
   fprintf( FCGI_stderr, "current directory: %s\n", currentDir.absolutePath().toUtf8().constData() );
   QStringList nameFilterList;
   nameFilterList << "*.qgs";
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
-  QgsDebugMsg( "Project files found:" );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
     QgsDebugMsg( projectFiles.at( x ).absoluteFilePath() );
@@ -167,6 +165,69 @@ int fcgi_accept()
 #endif
 }
 
+void setupNetworkAccessManager()
+{
+  QSettings settings;
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
+  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  cache->setCacheDirectory( cacheDirectory );
+  cache->setMaximumCacheSize( cacheSize );
+  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
+  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
+  nam->setCache( cache );
+}
+
+QgsRequestHandler* createRequestHandler()
+{
+  QgsRequestHandler* requestHandler = 0;
+  char* requestMethod = getenv( "REQUEST_METHOD" );
+  if ( requestMethod != NULL )
+  {
+    if ( strcmp( requestMethod, "POST" ) == 0 )
+    {
+      //requestHandler = new QgsSOAPRequestHandler();
+      requestHandler = new QgsPostRequestHandler();
+    }
+    else
+    {
+      requestHandler = new QgsGetRequestHandler();
+    }
+  }
+  else
+  {
+    requestHandler = new QgsGetRequestHandler();
+  }
+  return requestHandler;
+}
+
+QString configPath( const QString& defaultConfigPath, const QMap<QString, QString>& parameters )
+{
+  QString cfPath( defaultConfigPath );
+  QString projectFile = getenv( "QGIS_PROJECT_FILE" );
+  if ( !projectFile.isEmpty() )
+  {
+    cfPath = projectFile;
+  }
+  else
+  {
+    QMap<QString, QString>::const_iterator paramIt = parameters.find( "MAP" );
+    if ( paramIt == parameters.constEnd() )
+    {
+      QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigPath ) );
+    }
+    else
+    {
+      cfPath = paramIt.value();
+    }
+  }
+  return cfPath;
+}
+
+
 int main( int argc, char * argv[] )
 {
 #ifndef _MSC_VER
@@ -188,22 +249,7 @@ int main( int argc, char * argv[] )
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
 
-  QSettings settings;
-
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-  QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
-
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
-  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
-  cache->setCacheDirectory( cacheDirectory );
-  cache->setMaximumCacheSize( cacheSize );
-  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
-  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
-
-  nam->setCache( cache );
-
+  setupNetworkAccessManager();
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   // Instantiate the plugin directory so that providers are loaded
@@ -216,8 +262,6 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
-  //create config cache and search for config files in the current directory.
-  //These configurations are used if no mapfile parameter is present in the request
   QString defaultConfigFilePath;
   QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory
   if ( projectFileInfo.exists() )
@@ -245,37 +289,13 @@ int main( int argc, char * argv[] )
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
-
-  //for( int i = 0; i < 2; ++i )
   while ( fcgi_accept() >= 0 )
   {
     printRequestInfos(); //print request infos if in debug mode
 
-    //use QgsGetRequestHandler in case of HTTP GET and QgsSOAPRequestHandler in case of HTTP POST
-    QgsRequestHandler* theRequestHandler = 0;
-    char* requestMethod = getenv( "REQUEST_METHOD" );
-    if ( requestMethod != NULL )
-    {
-      if ( strcmp( requestMethod, "POST" ) == 0 )
-      {
-        //QgsDebugMsg( "Creating QgsSOAPRequestHandler" );
-        //theRequestHandler = new QgsSOAPRequestHandler();
-        theRequestHandler = new QgsPostRequestHandler();
-      }
-      else
-      {
-        QgsDebugMsg( "Creating QgsGetRequestHandler" );
-        theRequestHandler = new QgsGetRequestHandler();
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "Creating QgsGetRequestHandler" );
-      theRequestHandler = new QgsGetRequestHandler();
-    }
-
+    //Request handler
+    QgsRequestHandler* theRequestHandler = createRequestHandler();
     QMap<QString, QString> parameterMap;
-
     try
     {
       parameterMap = theRequestHandler->parseInput();
@@ -289,27 +309,10 @@ int main( int argc, char * argv[] )
 
     QMap<QString, QString>::const_iterator paramIt;
 
-    //set admin config file to wms server object
-    QString configFilePath( defaultConfigFilePath );
+    //Config file path
+    QString configFilePath = configPath( defaultConfigFilePath, parameterMap );
 
-    QString projectFile = getenv( "QGIS_PROJECT_FILE" );
-    if ( !projectFile.isEmpty() )
-    {
-      configFilePath = projectFile;
-    }
-    else
-    {
-      paramIt = parameterMap.find( "MAP" );
-      if ( paramIt == parameterMap.constEnd() )
-      {
-        QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
-      }
-      else
-      {
-        configFilePath = paramIt.value();
-      }
-    }
-
+    //Admin config parser
     QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
     if ( !adminConfigParser )
     {
@@ -317,23 +320,16 @@ int main( int argc, char * argv[] )
       theRequestHandler->sendServiceException( QgsMapServiceException( "", "Configuration file problem : perhaps you left off the .qgs extension?" ) );
       continue;
     }
-
-    //sld parser might need information about request parameters
     adminConfigParser->setParameterMap( parameterMap );
 
-    //request to WMS?
+    //Service parameter
     QString serviceString;
     paramIt = parameterMap.find( "SERVICE" );
     if ( paramIt == parameterMap.constEnd() )
     {
-#ifndef QGISDEBUG
-      serviceString = parameterMap.value( "SERVICE", "WMS" );
-#else
-      QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
-#endif
     }
     else
     {
@@ -344,7 +340,6 @@ int main( int argc, char * argv[] )
     {
       QgsWCSServer wcsServer( configFilePath, parameterMap, adminConfigParser, theRequestHandler );
       wcsServer.executeRequest();
-
     }
     else if ( serviceString == "WFS" )
     {
@@ -360,7 +355,6 @@ int main( int argc, char * argv[] )
   }
 
   delete theMapRenderer;
-  QgsDebugMsg( "************* all done ***************" );
   return 0;
 }
 
