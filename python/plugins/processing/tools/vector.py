@@ -278,63 +278,49 @@ def combineVectorFields(layerA, layerB):
     return fields
 
 
-def duplicate_in_memory(layer, new_name='', add_to_registry=False):
+def duplicateInMemory(layer, newName='', addToRegistry=False):
+    """Return a memory copy of a layer
+
+    layer: QgsVectorLayer that shall be copied to memory.
+    new_name: The name of the copied layer.
+    add_to_registry: if True, the new layer will be added to the QgsMapRegistry
+
+    Returns an in-memory copy of a layer.
     """
-    Return a memory copy of a layer
-
-    :param layer: QgsVectorLayer that shall be copied to memory.
-    :type layer: QgsVectorLayer
-
-    :param new_name: The name of the copied layer.
-    :type new_name: str
-
-    :param add_to_registry: if True, the new layer will be added to
-    the QgsMapRegistry
-    :type: bool
-
-    :returns: An in-memory copy of a layer.
-    :rtype: QgsMapLayer
-
-    """
-    if new_name is '':
-        new_name = layer.name() + ' TMP'
+    if newName is '':
+        newName = layer.name() + ' (Memory)'
 
     if layer.type() == QgsMapLayer.VectorLayer:
-        v_type = layer.geometryType()
-        if v_type == QGis.Point:
-            type_str = 'Point'
-        elif v_type == QGis.Line:
-            type_str = 'Line'
-        elif v_type == QGis.Polygon:
-            type_str = 'Polygon'
+        geomType = layer.geometryType()
+        if geomType == QGis.Point:
+            strType = 'Point'
+        elif geomType == QGis.Line:
+            strType = 'Line'
+        elif geomType == QGis.Polygon:
+            strType = 'Polygon'
         else:
-            raise RuntimeError('Layer is whether Point nor '
-                               'Line nor Polygon')
+            raise RuntimeError('Layer is whether Point nor Line nor Polygon')
     else:
         raise RuntimeError('Layer is not a VectorLayer')
 
     crs = layer.crs().authid().lower()
-    my_uuid = str(uuid.uuid4())
-    uri = '%s?crs=%s&index=yes&uuid=%s' % (type_str, crs, my_uuid)
-    mem_layer = QgsVectorLayer(uri, new_name, 'memory')
-    mem_provider = mem_layer.dataProvider()
+    myUuid = str(uuid.uuid4())
+    uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
+    memLayer = QgsVectorLayer(uri, newName, 'memory')
+    memProvider = memLayer.dataProvider()
 
     provider = layer.dataProvider()
-    v_fields = provider.fields()
-
-    fields = []
-    for i in v_fields:
-        fields.append(i)
-
-    mem_provider.addAttributes(fields)
+    fields = provider.fields().toList()
+    memProvider.addAttributes(fields)
+    memLayer.updateFields()
 
     for ft in provider.getFeatures():
-        mem_provider.addFeatures([ft])
+        memProvider.addFeatures([ft])
 
-    if add_to_registry:
-        if mem_layer.isValid():
-            QgsMapLayerRegistry.instance().addMapLayer(mem_layer)
+    if addToRegistry:
+        if memLayer.isValid():
+            QgsMapLayerRegistry.instance().addMapLayer(memLayer)
         else:
             raise RuntimeError('Layer invalid')
 
-    return mem_layer
+    return memLayer
