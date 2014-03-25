@@ -3,6 +3,8 @@
 
 Class is meant to be inherited by classes that test different labeling outputs
 
+See <qgis-src-dir>/tests/testdata/labeling/README.rst for description.
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -154,7 +156,7 @@ class TestPointBase(object):
 def suiteTests():
     """
     Use to define which tests are run when PAL_SUITE is set.
-    Use sp_vs_suite comparison of server and composer outputs to canvas
+    Use sp_vs_suite for comparison of server and composer outputs to canvas
     """
     sp_suite = [
         # 'test_default_label',
