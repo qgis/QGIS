@@ -71,6 +71,10 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.manageGui()
 
     def manageGui(self):
+        if hasattr(self.leOutputFile, 'setPlaceholderText'):
+            self.leOutputFile.setPlaceholderText(
+                self.tr('[Save to temporary file]'))
+
         self.mOutputFieldTypeComboBox.blockSignals(True)
         for t in self.alg.TYPE_NAMES:
             self.mOutputFieldTypeComboBox.addItem(t)

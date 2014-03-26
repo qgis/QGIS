@@ -37,7 +37,7 @@ from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.outputs.OutputVector import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects, vector, system
 
 from processing.algs.ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
@@ -84,6 +84,10 @@ class FieldsCalculator(GeoAlgorithm):
         formula = self.getParameterValue(self.FORMULA)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
+
+        if output.value == '':
+            ext = output.getDefaultFileExtension(self)
+            output.value = system.getTempFilenameInTempFolder(output.name + '.' + ext)
 
         provider = layer.dataProvider()
         fields = layer.pendingFields()
@@ -143,7 +147,6 @@ class FieldsCalculator(GeoAlgorithm):
                 'An error occured while evaluating the calculation '
                 'string:\n' + error)
 
-
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)
         fieldName = self.getParameterValue(self.FIELD_NAME)
@@ -155,7 +158,6 @@ class FieldsCalculator(GeoAlgorithm):
         if outputName == '':
             raise GeoAlgorithmExecutionException('Output is not set. '
                 'Please specify valid filename')
-
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)
