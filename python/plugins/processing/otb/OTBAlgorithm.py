@@ -61,8 +61,8 @@ class OTBAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
         self.hasROI = None;
-       
-        
+
+
     def __str__(self):
         return( "Algo : " + self.name + " from app : " + self.cliName + " in : " + self.group )
 
@@ -114,7 +114,7 @@ class OTBAlgorithm(GeoAlgorithm):
             rebuild.append(name)
             for each in parameter[4:]:
                 if not each.tag in ["hidden"]:
-                    if len(each.getchildren()) == 0:
+                    if len(list(each)) == 0:
                         rebuild.append(each.text)
                     else:
                         rebuild.append([item.text for item in each.iter('choice')])
@@ -131,7 +131,7 @@ class OTBAlgorithm(GeoAlgorithm):
         self.name = dom_model.find('longname').text
         self.group = dom_model.find('group').text
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Reading parameters... for %s" % self.appkey)
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Reading parameters for %s" % self.appkey)
 
         rebu = None
         the_result = None
@@ -194,7 +194,7 @@ class OTBAlgorithm(GeoAlgorithm):
                         else :
                             data = inputParameter[5:]
                         dataset = data
-            
+
                         #on windows, there isn't "
                         #if data[-1] == '"':
                         if currentOs == "posix" :
@@ -209,7 +209,7 @@ class OTBAlgorithm(GeoAlgorithm):
                         else :
                             #dataset = os.path.basename( data ) + '"' + dataset[dataset.index('://'):]
                             dataset = dataset[dataset.index('://'):]
-                
+
                         #get index of the subdataset with gdal
                         if currentOs == "posix" :
                             commandgdal = "gdalinfo " + data + " | grep '" + dataset + "$'"
@@ -227,15 +227,15 @@ class OTBAlgorithm(GeoAlgorithm):
                         else :
                             print "Error : no match of ", dataset, "$ in gdalinfo " + data
                             indexSubdataset = -1
-                        
-                
+
+
                         if not indexSubdataset == -1 :
                             indexSubdataset = int(indexSubdataset) -1
                             newParam = "\'" + data + "?&sdataidx=" + str(indexSubdataset) + "\'"
-                    
+
                         else :
                             newParam = inputParameter
-                
+
                         newparams += newParam
                     # no hdf5
                     else :
@@ -343,5 +343,5 @@ class OTBAlgorithm(GeoAlgorithm):
         for a_frame in frames:
             frame,filename,line_number,function_name,lines,index = a_frame
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "%s %s %s %s %s %s" % (frame,filename,line_number,function_name,lines,index))
-    
+
         OTBUtils.executeOtb(commands, progress)
