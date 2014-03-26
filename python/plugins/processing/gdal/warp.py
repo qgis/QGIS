@@ -67,7 +67,7 @@ class warp(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD, 'Resampling method',
                           self.METHOD_OPTIONS))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', ''))
+                          'Additional creation parameters', '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):

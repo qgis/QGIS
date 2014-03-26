@@ -745,8 +745,8 @@ class ModelerParametersDialog(QtGui.QDialog):
             else:
                 self.params[param.name] = value
         else:
-            if widget.currentText() == '':
-                return False
+            #if widget.currentText() == '':
+            #    return False
             idx = widget.findText(widget.currentText())
             if idx < 0:
                 name = self.getSafeNameForHarcodedParameter(param)

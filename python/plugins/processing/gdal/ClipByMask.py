@@ -70,7 +70,7 @@ class ClipByMask(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
                           'Keep resolution of output raster', False))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', ''))
+                          'Additional creation parameters', '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):

@@ -84,7 +84,7 @@ class translate(GeoAlgorithm):
             'Copy all subdatasets of this file to individual output files',
             False))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', ''))
+                          'Additional creation parameters', '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):

@@ -64,7 +64,7 @@ class contour(GeoAlgorithm):
             'Attribute name (if not set, no elevation attribute is attached)',
             'ELEV', optional=True))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', ''))
+                          'Additional creation parameters', '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_VECTOR,
                        'Output file for contour lines (vector)'))
