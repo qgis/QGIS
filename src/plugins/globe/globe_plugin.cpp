@@ -530,15 +530,28 @@ void GlobePlugin::syncExtent()
   const QgsMapSettings &mapSettings = mapCanvas->mapSettings();
   QgsRectangle extent = mapCanvas->extent();
 
+  long epsgGlobe = 4326;
+  QgsCoordinateReferenceSystem globeCrs;
+  globeCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgGlobe ) );
+
+  // transform extent to WGS84
+  if ( mapSettings.destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) != 0 )
+  {
+    QgsCoordinateReferenceSystem srcCRS( mapSettings.destinationCrs() );
+    QgsCoordinateTransform* coordTransform = new QgsCoordinateTransform( srcCRS, globeCrs );
+    extent = coordTransform->transformBoundingBox( extent );
+    delete coordTransform;
+  }
+
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
   QgsDistanceArea dist;
 
-  dist.setSourceCrs( mapSettings.destinationCrs().srsid() );
-  dist.setEllipsoidalMode( mapSettings.hasCrsTransformEnabled() );
-  dist.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dist.setSourceCrs( globeCrs );
+  dist.setEllipsoidalMode( true );
+  dist.setEllipsoid( "WGS84" );
 
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
