@@ -562,7 +562,7 @@ void QgsGlobePluginDialog::setStereoMode()
 
 void QgsGlobePluginDialog::loadVideoSettings()
 {
-  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() );
+  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", false ).toBool() );
   mAANumSamples->setValidator( new QIntValidator( mAANumSamples ) );
   mAANumSamples->setText( settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString() );
 }
