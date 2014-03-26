@@ -518,7 +518,7 @@ int main( int argc, char *argv[] )
       }
       else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
       {
-        mySnapshotFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
       {
@@ -534,7 +534,7 @@ int main( int argc, char *argv[] )
       }
       else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
       {
-        myProjectFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        myProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
       {
@@ -542,19 +542,19 @@ int main( int argc, char *argv[] )
       }
       else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
       {
-        optionpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
+        optionpath = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
       }
       else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
       {
-        configpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
+        configpath = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
       }
       else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
       {
-        pythonfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
       {
-        customizationfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        customizationfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( arg == "--defaultui" || arg == "-d" )
       {
@@ -562,7 +562,7 @@ int main( int argc, char *argv[] )
       }
       else
       {
-        myFileList.append( QDir::convertSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
+        myFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
     }
   }
@@ -578,7 +578,7 @@ int main( int argc, char *argv[] )
     // check for a .qgs
     for ( int i = 0; i < args.size(); i++ )
     {
-      QString arg = QDir::convertSeparators( QFileInfo( args[i] ).absoluteFilePath() );
+      QString arg = QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() );
       if ( arg.contains( ".qgs" ) )
       {
         myProjectFileName = arg;

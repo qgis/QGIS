@@ -209,11 +209,11 @@ int main( int argc, char *argv[] )
         break;
 
       case 's':
-        mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+        mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
         break;
 
       case 'l':
-        myLogFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+        myLogFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
         break;
 
       case 'w':
@@ -225,7 +225,7 @@ int main( int argc, char *argv[] )
         break;
 
       case 'p':
-        myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+        myProjectFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
         break;
 
       case 'e':
@@ -278,7 +278,7 @@ int main( int argc, char *argv[] )
       int idx = optind;
       QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
+      myFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
     }
   }
 #else
@@ -297,11 +297,11 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
     {
-      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+      mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
     else if ( i + 1 < argc && ( arg == "--log" || arg == "-l" ) )
     {
-      myLogFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+      myLogFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
     else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
     {
@@ -313,7 +313,7 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
     {
-      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+      myProjectFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
     else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
     {
@@ -346,7 +346,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+      myFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
     }
   }
 #endif //WIN32
@@ -457,7 +457,7 @@ int main( int argc, char *argv[] )
     // check for a .qgs
     for ( int i = 0; i < argc; i++ )
     {
-      QString arg = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
+      QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
       if ( arg.contains( ".qgs" ) )
       {
         myProjectFileName = arg;

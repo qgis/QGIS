@@ -61,7 +61,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,
   // need to force selection of the first filter since that corresponds to
   // the file name we're looking for; even if we're not here from
   // findFiles_(), it won't hurt to force selection of the first file filter
-  selectFilter( filters().at( 0 ) );
+  selectNameFilter( nameFilters().at( 0 ) );
 
   // Connect our slot to get a signal when the user is done with the file dialog
   connect( this, SIGNAL( accepted() ), this, SLOT( saveUsedEncoding() ) );
