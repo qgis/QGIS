@@ -55,12 +55,6 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source,
 QgsMssqlFeatureIterator::~QgsMssqlFeatureIterator()
 {
   close();
-
-  if ( mQuery )
-      delete mQuery;
-
-  if (mDatabase.isOpen())
-    mDatabase.close();
 }
 
 void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
@@ -224,6 +218,9 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
 
 bool QgsMssqlFeatureIterator::rewind()
 {
+  if ( mClosed )
+    return false;
+
   if ( mStatement.isEmpty() )
   {
     QgsDebugMsg( "QgsMssqlFeatureIterator::rewind on empty statement" );
@@ -259,6 +256,12 @@ bool QgsMssqlFeatureIterator::close()
 
       mQuery->finish();
   }
+
+  if ( mQuery )
+      delete mQuery;
+
+  if (mDatabase.isOpen())
+    mDatabase.close();
 
   iteratorClosed();
 
