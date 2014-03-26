@@ -169,14 +169,14 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   QSvgRenderer r;
   if ( type == StartMarker )
   {
-    if ( !r.load( mStartMarkerFile ) )
+    if ( mStartMarkerFile.isEmpty() || !r.load( mStartMarkerFile ) )
     {
       return;
     }
   }
   else //end marker
   {
-    if ( !r.load( mEndMarkerFile ) )
+    if ( mEndMarkerFile.isEmpty() || !r.load( mEndMarkerFile ) )
     {
       return;
     }
@@ -215,7 +215,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 void QgsComposerArrow::setStartMarker( const QString& svgPath )
 {
   QSvgRenderer r;
-  if ( !r.load( svgPath ) )
+  if ( svgPath.isEmpty() || !r.load( svgPath ) )
   {
     return;
     // mStartArrowHeadHeight = 0;
@@ -231,7 +231,7 @@ void QgsComposerArrow::setStartMarker( const QString& svgPath )
 void QgsComposerArrow::setEndMarker( const QString& svgPath )
 {
   QSvgRenderer r;
-  if ( !r.load( svgPath ) )
+  if ( svgPath.isEmpty() || !r.load( svgPath ) )
   {
     return;
     // mStopArrowHeadHeight = 0;
