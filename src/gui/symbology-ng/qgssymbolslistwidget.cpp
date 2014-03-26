@@ -107,8 +107,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
   btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-  // Set symbol color in btnColor
-  updateSymbolColor();
+
+  updateSymbolInfo();
 }
 
 void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
