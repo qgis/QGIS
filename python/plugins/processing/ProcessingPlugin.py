@@ -59,7 +59,7 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         interface.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
-        Processing.addAlgListListener(self.toolbox)
+        #Processing.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(interface.iface.mainWindow())
         self.menu.setTitle(QCoreApplication.translate('Processing',
@@ -142,7 +142,8 @@ class ProcessingPlugin:
         dlg.show()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            Processing.updateAlgsList()
+            self.toolbox.updateProvider('model')
 
     def openResults(self):
         dlg = ResultsDialog()

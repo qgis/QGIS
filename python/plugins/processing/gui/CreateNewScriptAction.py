@@ -30,7 +30,6 @@ from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
 import processing.resources_rc
 
-
 class CreateNewScriptAction(ToolboxAction):
 
     SCRIPT_PYTHON = 0
@@ -55,5 +54,5 @@ class CreateNewScriptAction(ToolboxAction):
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.show()
         dlg.exec_()
-        if dlg.update:
-            self.toolbox.updateTree()
+        if dlg.update: 
+            self.toolbox.updateProvider('model')

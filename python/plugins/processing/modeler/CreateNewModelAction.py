@@ -30,7 +30,6 @@ from PyQt4 import QtGui
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 
-
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
@@ -44,5 +43,5 @@ class CreateNewModelAction(ToolboxAction):
         dlg = ModelerDialog()
         dlg.show()
         dlg.exec_()
-        if dlg.update:
-            self.toolbox.updateTree()
+        if dlg.update:            
+            self.toolbox.updateProvider('model')

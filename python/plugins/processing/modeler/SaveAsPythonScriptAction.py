@@ -34,7 +34,6 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, \
 from processing.script.ScriptUtils import ScriptUtils
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 
-
 class SaveAsPythonScriptAction(ContextAction):
 
     def __init__(self):
@@ -56,8 +55,8 @@ class SaveAsPythonScriptAction(ContextAction):
                 fout.write(text)
                 fout.close()
                 if filename.replace('\\', '/').startswith(
-                        ScriptUtils.scriptsFolder().replace('\\', '/')):
-                    self.toolbox.updateTree()
+                        ScriptUtils.scriptsFolder().replace('\\', '/')):                                    
+                    self.toolbox.updateProvider('script')
             except:
                 QMessageBox.warning(self, self.tr('I/O error'),
                         self.tr('Unable to save edits. Reason:\n %s')
