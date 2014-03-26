@@ -602,6 +602,12 @@ void QgsProjectProperties::apply()
       if ( srs.mapUnits() != QGis::UnknownUnit )
         mMapCanvas->setMapUnits( srs.mapUnits() );
     }
+
+    if ( cbxProjectionEnabled->isChecked() )
+    {
+      // mark selected projection for push to front
+      projectionSelector->pushProjectionToFront();
+    }
   }
 
   // Set the project title
