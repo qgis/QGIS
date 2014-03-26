@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import stat
 import shutil
+import codecs
 import traceback
 import subprocess
 from qgis.core import QgsApplication
@@ -123,7 +124,7 @@ class GrassUtils:
         gisrc = userFolder() + os.sep + 'processing.gisrc'
 
         # Temporary gisrc file
-        output = open(gisrc, 'w')
+        output = codecs.open(gisrc, 'w', encoding='utf-8')
         location = 'temp_location'
         gisdbase = GrassUtils.grassDataFolder()
 
@@ -133,7 +134,7 @@ class GrassUtils:
         output.write('GRASS_GUI: text\n')
         output.close()
 
-        output = open(script, 'w')
+        output = codecs.open(script, 'w', encoding='utf-8')
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
         output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
@@ -171,7 +172,7 @@ class GrassUtils:
 
     @staticmethod
     def createGrassBatchJobFileFromGrassCommands(commands):
-        fout = open(GrassUtils.grassBatchJobFilename(), 'w')
+        fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
         for command in commands:
             fout.write(command + '\n')
         fout.write('exit')
@@ -204,20 +205,20 @@ class GrassUtils:
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
         GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT',
                                     'DEFAULT_WIND'))
-        outfile = open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w')
+        outfile = codecs.open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w', encoding='utf-8')
         outfile.write(
             'QGIS GRASS interface: temporary data processing location.\n')
         outfile.close()
         GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'dbf'))
-        outfile = open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w')
+        outfile = codecs.open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w', encoding='utf-8')
         outfile.write('DB_DRIVER: dbf\n')
         outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n')
         outfile.close()
 
     @staticmethod
     def writeGrassWindow(filename):
-        out = open(filename, 'w')
+        out = codecs.open(filename, 'w', encoding='utf-8')
         out.write('proj:       0\n')
         out.write('zone:       0\n')
         out.write('north:      1\n')
