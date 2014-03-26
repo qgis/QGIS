@@ -18,6 +18,7 @@
 #include "qgscomposertable.h"
 #include "qgslogger.h"
 #include <QPainter>
+#include <QSettings>
 
 QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     : QgsComposerItem( composition )

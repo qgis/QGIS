@@ -43,7 +43,13 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
+#include <QFontDatabase>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPen>
+#include <QPoint>
+#include <QToolTip>
 
 #include "characterwidget.h"
 

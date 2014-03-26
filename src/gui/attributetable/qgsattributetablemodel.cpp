@@ -27,7 +27,6 @@
 #include "qgsexpression.h"
 #include "qgsmaplayeractionregistry.h"
 
-#include <QtGui>
 #include <QVariant>
 
 #include <limits>

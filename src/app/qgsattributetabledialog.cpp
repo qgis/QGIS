@@ -14,7 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QDockWidget>
+#include <QMessageBox>
 
 #include "qgsattributetabledialog.h"
 #include "qgsattributetablemodel.h"
