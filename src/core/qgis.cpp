@@ -72,6 +72,7 @@ const CORE_EXPORT QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
 const CORE_EXPORT QString GEO_NONE = "NONE";
 
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
+const double QGis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
 //! Default threshold between map coordinates and device coordinates for map2pixel simplification
 const float QGis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;

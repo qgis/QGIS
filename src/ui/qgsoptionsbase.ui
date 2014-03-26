@@ -248,7 +248,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -931,7 +931,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>610</width>
+                <width>630</width>
                 <height>867</height>
                </rect>
               </property>
@@ -1604,7 +1604,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>669</width>
-                <height>744</height>
+                <height>724</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2602,16 +2602,16 @@
                     <item>
                      <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
                       <property name="suffix">
-                       <string> %</string>
+                       <string> mm</string>
                       </property>
                       <property name="maximum">
                        <double>100.000000000000000</double>
                       </property>
                       <property name="singleStep">
-                       <double>0.010000000000000</double>
+                       <double>1.000000000000000</double>
                       </property>
                       <property name="value">
-                       <double>5.000000000000000</double>
+                       <double>2.000000000000000</double>
                       </property>
                      </widget>
                     </item>

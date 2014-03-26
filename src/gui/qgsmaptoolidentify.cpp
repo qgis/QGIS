@@ -265,13 +265,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
 
-  // load identify radius from settings
-  QSettings settings;
-  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-
-  if ( identifyValue <= 0.0 )
-    identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
-
   int featureCount = 0;
 
   QgsFeatureList featureList;
@@ -282,7 +275,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   try
   {
     // create the search rectangle
-    double searchRadius = mCanvas->extent().width() * ( identifyValue / 100.0 );
+    double searchRadius = searchRadiusMU( mCanvas );
 
     QgsRectangle r;
     r.setXMinimum( point.x() - searchRadius );

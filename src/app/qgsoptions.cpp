@@ -113,11 +113,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
-  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
+  double identifyValue = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   if ( identifyValue <= 0.0 )
-    identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
-  spinBoxIdentifyValue->setMinimum( 0.01 );
+    identifyValue = QGis::DEFAULT_SEARCH_RADIUS_MM;
+  spinBoxIdentifyValue->setMinimum( 0.0 );
   spinBoxIdentifyValue->setValue( identifyValue );
   QColor highlightColor = QColor( settings.value( "/Map/identify/highlight/color", "#ff0000" ).toString() );
   int highlightAlpha = settings.value( "/Map/identify/highlight/colorAlpha", "63" ).toInt();
@@ -1045,7 +1045,7 @@ void QgsOptions::saveOptions()
   //general settings
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
   settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
-  settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
+  settings.setValue( "/Map/searchRadiusMM", spinBoxIdentifyValue->value() );
   settings.setValue( "/Map/identify/highlight/color", mIdentifyHighlightColorButton->color().name() );
   settings.setValue( "/Map/identify/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
   settings.setValue( "/Map/identify/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );

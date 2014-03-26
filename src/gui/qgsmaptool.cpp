@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaprenderer.h"
+#include "qgsrendercontext.h"
 #include <QAction>
 #include <QAbstractButton>
 
@@ -181,4 +182,32 @@ bool QgsMapTool::isEditTool()
 QgsMapCanvas* QgsMapTool::canvas()
 {
   return mCanvas;
+}
+
+double QgsMapTool::searchRadiusMM()
+{
+  QSettings settings;
+  double radius = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+
+  if ( radius > 0 )
+  {
+    return radius;
+  }
+  return QGis::DEFAULT_SEARCH_RADIUS_MM;
+}
+
+double QgsMapTool::searchRadiusMU( const QgsRenderContext& context )
+{
+  return searchRadiusMM() * context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
+}
+
+double QgsMapTool::searchRadiusMU( QgsMapCanvas * canvas )
+{
+  if ( !canvas )
+  {
+    return 0;
+  }
+  QgsMapSettings mapSettings = canvas->mapSettings();
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  return searchRadiusMU( context );
 }

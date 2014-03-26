@@ -28,6 +28,7 @@
 
 #include "qgscursors.h"
 #include "qgsmaptopixel.h"
+#include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
@@ -94,7 +95,7 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer( );
 
   // create the search rectangle. this was modeled after the QgsMapIdentifyTool in core QGIS application
-  double searchWidth = mCanvas->extent( ).width( ) * (( double )QGis::DEFAULT_IDENTIFY_RADIUS / 100.0 );
+  double searchWidth = QgsMapTool::searchRadiusMU( mCanvas );
 
   QgsRectangle myRectangle;
   myRectangle.setXMinimum( thePoint.x( ) - searchWidth );

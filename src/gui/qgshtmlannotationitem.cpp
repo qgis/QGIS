@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 
@@ -189,8 +190,7 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   }
 
   QSettings settings;
-  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-  double halfIdentifyWidth = mMapCanvas->extent().width() / 100 / 2 * identifyValue;
+  double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
   QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
                            mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
 
