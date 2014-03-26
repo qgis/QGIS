@@ -268,6 +268,8 @@ class ParametersPanel(QtGui.QWidget):
             else:
                 layers = dataobjects.getTables()
             if len(layers) > 0:
+                if param.optional:
+                    item.addItem("[not set]")
                 item.addItems(self.getFields(layers[0], param.datatype))
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()

@@ -50,10 +50,12 @@ class MeanCoords(GeoAlgorithm):
                           [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.WEIGHT, 'Weight field',
                           MeanCoords.POINTS,
-                          ParameterTableField.DATA_TYPE_NUMBER))
+                          ParameterTableField.DATA_TYPE_NUMBER,
+                          optional = True))
         self.addParameter(ParameterTableField(self.UID, 'Unique ID field',
                           MeanCoords.POINTS,
-                          ParameterTableField.DATA_TYPE_NUMBER))
+                          ParameterTableField.DATA_TYPE_NUMBER,
+                          optional = True))
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, 'Result'))
 
@@ -63,8 +65,17 @@ class MeanCoords(GeoAlgorithm):
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 
-        weightIndex = layer.fieldNameIndex(weightField)
-        uniqueIndex = layer.fieldNameIndex(uniqueField)
+        print weightField, uniqueField
+        
+        if weightField is None:
+            weightIndex = -1
+        else:
+            weightIndex = layer.fieldNameIndex(weightField)
+        
+        if uniqueField is None:
+            uniqueIndex = -1
+        else:
+            uniqueIndex = layer.fieldNameIndex(uniqueField)
 
         fieldList = [QgsField('MEAN_X', QVariant.Double, '', 24, 15),
                      QgsField('MEAN_Y', QVariant.Double, '', 24, 15),
@@ -82,7 +93,10 @@ class MeanCoords(GeoAlgorithm):
         for feat in features:
             current += 1
             progress.setPercentage(current * total)
-            clazz = str(feat.attributes()[uniqueIndex]).strip()
+            if uniqueIndex == -1:
+                clazz = "Single class"
+            else:
+                clazz = str(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:

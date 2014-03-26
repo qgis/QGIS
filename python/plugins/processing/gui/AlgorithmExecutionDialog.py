@@ -190,6 +190,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         elif isinstance(param, ParameterRange):
             return param.setValue(widget.getValue())
         if isinstance(param, ParameterTableField):
+            if param.optional and widget.currentIndex() == 0:
+                return param.setValue(None)            
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
