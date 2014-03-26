@@ -123,9 +123,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   int highlightAlpha = settings.value( "/Map/identify/highlight/colorAlpha", "63" ).toInt();
   highlightColor.setAlpha( highlightAlpha );
   mIdentifyHighlightColorButton->setColor( highlightColor );
-  double highlightBuffer = settings.value( "/Map/highlight/buffer", "0.5" ).toDouble();
+  double highlightBuffer = settings.value( "/Map/identify/highlight/buffer", "0.5" ).toDouble();
   mIdentifyHighlightBufferSpinBox->setValue( highlightBuffer );
-  double highlightMinWidth = settings.value( "/Map/highlight/minWidth", "1." ).toDouble();
+  double highlightMinWidth = settings.value( "/Map/identify/highlight/minWidth", "1." ).toDouble();
   mIdentifyHighlightMinWidthSpinBox->setValue( highlightMinWidth );
 
   // custom environment variables
@@ -1048,8 +1048,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
   settings.setValue( "/Map/identify/highlight/color", mIdentifyHighlightColorButton->color().name() );
   settings.setValue( "/Map/identify/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
-  settings.setValue( "/Map/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
-  settings.setValue( "/Map/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
+  settings.setValue( "/Map/identify/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
+  settings.setValue( "/Map/identify/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
 
   bool showLegendClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );

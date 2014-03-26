@@ -131,7 +131,7 @@ void QgsHighlight::setFillColor( const QColor & fillColor )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & context )
+QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & context, const QColor & color, const QColor & fillColor )
 {
   QgsFeatureRendererV2 *renderer = 0;
   QgsVectorLayer *layer = vectorLayer();
@@ -144,30 +144,16 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & conte
     foreach ( QgsSymbolV2* symbol, renderer->symbols() )
     {
       if ( !symbol ) continue;
-      setSymbol( symbol, context, mPen.color() );
+      setSymbol( symbol, context, color, fillColor );
     }
   }
   return renderer;
 }
 
-void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context,   const QColor & color )
+void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context,   const QColor & color, const QColor & fillColor )
 {
   if ( !symbol ) return;
 
-  // Temporary fill color must be similar to outline color (antialiasing between
-  // outline and temporary fill) but also different enough to be distinguishable
-  // so that it can be replaced by transparent fill.
-  // Unfortunately the result of the transparent fill rendered over the original
-  // (not highlighted) feature color may be either lighter or darker.
-  if ( color.lightness() < 200 )
-  {
-    mTemporaryFillColor = color.lighter( 120 );
-  }
-  else
-  {
-    mTemporaryFillColor = color.darker( 120 );
-  }
-  mTemporaryFillColor.setAlpha( 255 );
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
@@ -176,13 +162,13 @@ void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & cont
 
     if ( symbolLayer->subSymbol() )
     {
-      setSymbol( symbolLayer->subSymbol(), context, color );
+      setSymbol( symbolLayer->subSymbol(), context, color, fillColor );
     }
     else
     {
       symbolLayer->setColor( color ); // line symbology layers
       symbolLayer->setOutlineColor( color ); // marker and fill symbology layers
-      symbolLayer->setFillColor( mTemporaryFillColor ); // marker and fill symbology layers
+      symbolLayer->setFillColor( fillColor ); // marker and fill symbology layers
 
       // Data defined widths overwrite what we set here (widths do not work with data defined)
       QgsSimpleMarkerSymbolLayerV2 * simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>( symbolLayer );
@@ -214,9 +200,8 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext & context, double wi
   {
     scale = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsSymbolV2::MM ) / QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsSymbolV2::MapUnit );
   }
-  return  qMax( width + 2*mBuffer*scale, mMinWidth*scale );
-
-
+  width =  qMax( width + 2 * mBuffer * scale, mMinWidth * scale );
+  return width;
 }
 
 /*!
@@ -364,7 +349,13 @@ void QgsHighlight::paint( QPainter* p )
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
 
-    QgsFeatureRendererV2 *renderer = getRenderer( context );
+    // Because lower level outlines must be covered by upper level fill color
+    // we render first with temporary opaque color, which is then replaced
+    // by final transparent fill color.
+    QColor tmpColor( 255, 0, 0, 255 );
+    QColor tmpFillColor( 0, 255, 0, 255 );
+
+    QgsFeatureRendererV2 *renderer = getRenderer( context, tmpColor, tmpFillColor );
     if ( layer && renderer )
     {
       QgsRectangle extent = mMapCanvas->extent();
@@ -374,10 +365,6 @@ void QgsHighlight::paint( QPainter* p )
         return; // it will be repainted after updateRect()
       }
 
-      // Because lower level outlines must be covered by upper level fill color
-      // we render first with temporary opaque color, which is then replaced
-      // by final transparent fill color.
-      //QImage image = QImage(( int )width, ( int )height, QImage::Format_ARGB32 );
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
       QImage image = QImage( imageSize.width(), imageSize.height(), QImage::Format_ARGB32 );
       image.fill( 0 );
@@ -392,20 +379,21 @@ void QgsHighlight::paint( QPainter* p )
 
       imagePainter->end();
 
-      // overwrite temporary fill color
-      QRgb temporaryRgb = mTemporaryFillColor.rgba();
-      QColor color = QColor( mBrush.color() );
-      color.setAlpha( 63 );
-      QRgb colorRgb = color.rgba();
-
+      QColor color( mPen.color() );  // true output color
+      // coeficient to subtract alpha using green (temporary fill)
+      double k = ( 255. - mBrush.color().alpha() ) / 255.;
       for ( int r = 0; r < image.height(); r++ )
       {
-        QRgb *line = ( QRgb * ) image.scanLine( r );
         for ( int c = 0; c < image.width(); c++ )
         {
-          if ( line[c] == temporaryRgb )
+          QRgb rgba = image.pixel( c, r );
+          int alpha = qAlpha( rgba );
+          if ( alpha > 0 )
           {
-            line[c] = colorRgb;
+            int green = qGreen( rgba );
+            color.setAlpha( alpha - ( green * k ) );
+
+            image.setPixel( c, r, color.rgba() );
           }
         }
       }

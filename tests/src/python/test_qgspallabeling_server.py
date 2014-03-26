@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
-"""QGIS unit tests for QgsPalLabeling: label rendering via QGIS Server
+"""QGIS unit tests for QgsPalLabeling: label rendering output via QGIS Server
 
-From build dir: ctest -R PyQgsPalLabelingServer -V
-Set the following env variables when manually running tests:
-  PAL_SUITE to run specific tests (define in __main__)
-  PAL_VERBOSE to output individual test summary
-  PAL_CONTROL_IMAGE to trigger building of new control images
-  PAL_REPORT to open any failed image check reports in web browser
+From build dir, run: ctest -R PyQgsPalLabelingServer -V
 
-  PAL_SERVER_TEMP to open the web server temp directory, instead of deleting
+See <qgis-src-dir>/tests/testdata/labeling/README.rst for description.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

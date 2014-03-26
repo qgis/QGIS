@@ -71,11 +71,17 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
   mUseWkb = false;
   mSkipFailures = false;
 
+  mUserName = anUri.username();
+  mPassword = anUri.password();
+  mService = anUri.service();
+  mDatabaseName = anUri.database();
+  mHost = anUri.host();
+
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
 
   mSqlWhereClause = anUri.sql();
 
-  mDatabase = GetDatabase( anUri.service(), anUri.host(), anUri.database(), anUri.username(), anUri.password() );
+  mDatabase = QgsMssqlProvider::GetDatabase(mDriver, mHost, mDatabaseName, mUserName, mPassword);
 
   if ( !OpenDatabase( mDatabase ) )
   {
@@ -161,6 +167,13 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
 QgsMssqlProvider::~QgsMssqlProvider()
 {
+    if (mDatabase.isOpen())
+        mDatabase.close();
+}
+
+QgsAbstractFeatureSource* QgsMssqlProvider::featureSource() const
+{
+  return new QgsMssqlFeatureSource( this );
 }
 
 QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest& request )
@@ -171,7 +184,7 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest& reque
     return QgsFeatureIterator();
   }
 
-  return QgsFeatureIterator( new QgsMssqlFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsMssqlFeatureIterator( new QgsMssqlFeatureSource( this ), true, request ) );
 }
 
 bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
@@ -186,10 +199,14 @@ bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
-QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QString database, QString username, QString password )
+QSqlDatabase QgsMssqlProvider::GetDatabase(QString driver, QString host, QString database, QString username, QString password)
 {
   QSqlDatabase db;
   QString connectionName;
+
+  // create a separate database connection for each feature source
+  QgsDebugMsg( "Creating a separate database connection" );
+  
   if ( driver.isEmpty() )
   {
     if ( host.isEmpty() )
@@ -353,7 +370,7 @@ void QgsMssqlProvider::loadFields()
       {
         mGeometryColName = query.value( 3 ).toString();
         mGeometryColType = sqlTypeName;
-        parser.IsGeography = sqlTypeName == "geography";
+        mParser.IsGeography = sqlTypeName == "geography";
       }
       else
       {
@@ -649,10 +666,10 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   while ( query.next() )
   {
     QByteArray ar = query.value( 0 ).toByteArray();
-    unsigned char* wkb = parser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
+    unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
     if ( wkb )
     {
-      geom.fromWkb( wkb, parser.GetWkbLen() );
+      geom.fromWkb( wkb, mParser.GetWkbLen() );
       QgsRectangle rect = geom.boundingBox();
 
       if ( rect.xMinimum() < mExtent.xMinimum() )
@@ -665,7 +682,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
         mExtent.setYMaximum( rect.yMaximum() );
 
       mWkbType = geom.wkbType();
-      mSRId = parser.GetSRSId();
+      mSRId = mParser.GetSRSId();
     }
   }
 }

@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite setup
 
-From build dir: ctest -R PyQgsPalLabelingBase -V
-Set the following env variables when manually running tests:
-  PAL_SUITE to run specific tests (define in __main__)
-  PAL_VERBOSE to output individual test summary
-  PAL_CONTROL_IMAGE to trigger building of new control images
-  PAL_REPORT to open any failed image check reports in web browser
+From build dir, run: ctest -R PyQgsPalLabelingBase -V
+
+See <qgis-src-dir>/tests/testdata/labeling/README.rst for description.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'

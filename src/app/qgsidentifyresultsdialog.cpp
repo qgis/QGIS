@@ -1267,8 +1267,8 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   QSettings settings;
   QColor color = QColor( settings.value( "/Map/identify/highlight/color", "#ff0000" ).toString() );
   int alpha = settings.value( "/Map/identify/highlight/colorAlpha", "128" ).toInt();
-  double buffer = settings.value( "/Map/highlight/buffer", "0.5" ).toDouble();
-  double minWidth = settings.value( "/Map/highlight/minWidth", "1." ).toDouble();
+  double buffer = settings.value( "/Map/identify/highlight/buffer", "0.5" ).toDouble();
+  double minWidth = settings.value( "/Map/identify/highlight/minWidth", "1." ).toDouble();
 
   highlight->setColor( color ); // sets also fill with default alpha
   color.setAlpha( alpha );
