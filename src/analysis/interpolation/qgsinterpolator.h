@@ -87,7 +87,7 @@ class ANALYSIS_EXPORT QgsInterpolator
      @return 0 in case of success*/
     int addVerticesToCache( QgsGeometry* geom, bool zCoord, double attributeValue );
 
-
+  friend class QgsGridFileWriter;
 };
 
 #endif
