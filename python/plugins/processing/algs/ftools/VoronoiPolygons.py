@@ -34,6 +34,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
 from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
 from processing.algs.ftools import voronoi
 from processing.tools import dataobjects, vector
@@ -42,6 +43,7 @@ from processing.tools import dataobjects, vector
 class VoronoiPolygons(GeoAlgorithm):
 
     INPUT = 'INPUT'
+    BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
 
     # =========================================================================
@@ -55,12 +57,16 @@ class VoronoiPolygons(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterNumber(
+                          self.BUFFER, 'Buffer region', 0.0, 100.0, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, 'Voronoi polygons'))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT))
+
+        buf = self.getParameterValue(self.BUFFER)
 
         writer = self.getOutputFromName(
                 self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
@@ -69,6 +75,8 @@ class VoronoiPolygons(GeoAlgorithm):
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         extent = layer.extent()
+        extraX = extent.height() * (buf / 100.0)
+        extraY = extent.width() * (buf / 100.0)
         height = extent.height()
         width = extent.width()
         c = voronoi.Context()
@@ -104,7 +112,7 @@ class VoronoiPolygons(GeoAlgorithm):
         for (site, edges) in c.polygons.iteritems():
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
             inFeat = layer.getFeatures(request).next()
-            lines = self.clip_voronoi(edges, c, width, height, extent, 0, 0)
+            lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
             geom = QgsGeometry.fromMultiPoint(lines)
             geom = QgsGeometry(geom.convexHull())
