@@ -75,7 +75,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         self.fillTree()
         
     def textChanged(self):
-        text = self.searchBox.text().strip(' ')
+        text = self.searchBox.text().strip(' ').lower()
         self._filterItem(self.algorithmTree.invisibleRootItem(), text)
         if text:
             self.algorithmTree.expandAll()
@@ -92,8 +92,8 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                 show = showChild or show            
             item.setHidden(not show)            
             return show
-        elif isinstance(item, TreeAlgorithmItem):                     
-            hide = bool(text) and (text not in item.text(0))            
+        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):                     
+            hide = bool(text) and (text not in item.text(0).lower())            
             item.setHidden(hide)            
             return not hide
         else:
