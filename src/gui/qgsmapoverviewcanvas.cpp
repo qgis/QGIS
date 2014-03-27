@@ -45,7 +45,7 @@ class QgsPanningWidget : public QWidget
       QSize s = r->size();
       QRegion reg( 0, 0, s.width(), s.height() );
       QRegion reg2( 2, 2, s.width() - 4, s.height() - 4 );
-      QRegion reg3 = reg.subtract( reg2 );
+      QRegion reg3 = reg.subtracted( reg2 );
       setMask( reg3 );
     }
 
