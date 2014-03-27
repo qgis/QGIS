@@ -187,6 +187,9 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
+        elif tokens[1].lower().strip().startswith('longstring'):
+            default = tokens[1].strip()[len('longstring') + 1:]
+            param = ParameterString(tokens[0], desc, default, multiline = True)            
         elif tokens[1].lower().strip().startswith('crs'):
             default = tokens[1].strip()[len('crs') + 1:]
             if not default:
