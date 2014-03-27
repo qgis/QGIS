@@ -119,13 +119,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     identifyValue = QGis::DEFAULT_SEARCH_RADIUS_MM;
   spinBoxIdentifyValue->setMinimum( 0.0 );
   spinBoxIdentifyValue->setValue( identifyValue );
-  QColor highlightColor = QColor( settings.value( "/Map/identify/highlight/color", "#ff0000" ).toString() );
-  int highlightAlpha = settings.value( "/Map/identify/highlight/colorAlpha", "63" ).toInt();
+  QColor highlightColor = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int highlightAlpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
   highlightColor.setAlpha( highlightAlpha );
   mIdentifyHighlightColorButton->setColor( highlightColor );
-  double highlightBuffer = settings.value( "/Map/identify/highlight/buffer", "0.5" ).toDouble();
+  double highlightBuffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
   mIdentifyHighlightBufferSpinBox->setValue( highlightBuffer );
-  double highlightMinWidth = settings.value( "/Map/identify/highlight/minWidth", "1." ).toDouble();
+  double highlightMinWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
   mIdentifyHighlightMinWidthSpinBox->setValue( highlightMinWidth );
 
   // custom environment variables
@@ -1046,10 +1046,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
   settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
   settings.setValue( "/Map/searchRadiusMM", spinBoxIdentifyValue->value() );
-  settings.setValue( "/Map/identify/highlight/color", mIdentifyHighlightColorButton->color().name() );
-  settings.setValue( "/Map/identify/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
-  settings.setValue( "/Map/identify/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
-  settings.setValue( "/Map/identify/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
+  settings.setValue( "/Map/highlight/color", mIdentifyHighlightColorButton->color().name() );
+  settings.setValue( "/Map/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
+  settings.setValue( "/Map/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
+  settings.setValue( "/Map/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
 
   bool showLegendClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );

@@ -275,6 +275,19 @@ class CORE_EXPORT QGis
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
+    /** Default highlight color.  The transparency is expected to only be applied to polygon
+     *  fill. Lines and outlines are rendered opaque.
+     *  @note added in 2.3 */
+    static const QColor DEFAULT_HIGHLIGHT_COLOR;
+
+    /** Default highlight buffer in mm.
+     *  @note added in 2.3 */
+    static double DEFAULT_HIGHLIGHT_BUFFER_MM;
+
+    /** Default highlight line/outline minimum width in mm.
+     *  @note added in 2.3 */
+    static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+
   private:
     // String representation of unit types (set in qgis.cpp)
     static const char *qgisUnitTypes[];
