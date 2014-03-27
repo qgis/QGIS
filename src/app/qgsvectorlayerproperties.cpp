@@ -68,7 +68,7 @@
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget * parent,
-  Qt::WFlags fl
+  Qt::WindowFlags fl
 )
     : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
     , layer( lyr )

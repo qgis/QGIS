@@ -27,7 +27,7 @@
 #include <QTimer>
 
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl, QSettings* settings )
+QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WindowFlags fl, QSettings* settings )
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )

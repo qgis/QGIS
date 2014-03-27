@@ -120,7 +120,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     //! Constructor
     QgsGrassEdit( QgisInterface *iface,
                   QgsMapLayer *layer, bool newMap,
-                  QWidget * parent = 0, Qt::WFlags f = 0 );
+                  QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     // Shared by constructors
     void init();

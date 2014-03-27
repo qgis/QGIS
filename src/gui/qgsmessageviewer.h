@@ -31,7 +31,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
 {
     Q_OBJECT
   public:
-    QgsMessageViewer( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
+    QgsMessageViewer( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
     ~QgsMessageViewer();
 
     virtual void setMessage( const QString& message, MessageType msgType );

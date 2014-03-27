@@ -28,7 +28,7 @@
 
 #include "qgslogger.h"
 
-dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WFlags fl ):
+dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WindowFlags fl ):
     QDialog( parent, fl )
 {
   setupUi( this );

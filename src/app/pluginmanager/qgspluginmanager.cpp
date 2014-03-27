@@ -54,7 +54,7 @@
 #endif
 
 
-QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt::WFlags fl )
+QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
     : QgsOptionsDialogBase( "PluginManager", parent, fl )
 {
   // initialize pointer

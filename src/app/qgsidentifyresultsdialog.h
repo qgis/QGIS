@@ -100,7 +100,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
     // that it is independent of whoever created it.
-    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WFlags f = 0 );
+    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
     ~QgsIdentifyResultsDialog();
 

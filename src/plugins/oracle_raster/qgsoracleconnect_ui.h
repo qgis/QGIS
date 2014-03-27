@@ -29,7 +29,7 @@ class QgsOracleConnect : public QDialog, private Ui::OracleConnectGuiBase
   public:
     QgsOracleConnect( QWidget* parent = 0,
                       const QString& connName = QString::null,
-                      Qt::WFlags fl = QgisGui::ModalDialogFlags );
+                      Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsOracleConnect();
 
   private:

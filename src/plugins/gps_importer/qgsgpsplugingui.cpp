@@ -28,7 +28,7 @@
 QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
                                   std::map<QString, QgsGPSDevice*>& devices,
                                   std::vector<QgsVectorLayer*> gpxMapLayers,
-                                  QWidget* parent, Qt::WFlags fl )
+                                  QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mGPXLayers( gpxMapLayers )
     , mImporters( importers )

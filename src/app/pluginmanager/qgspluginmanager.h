@@ -46,7 +46,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     Q_OBJECT
   public:
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
-    QgsPluginManager( QWidget *parent = 0, bool pluginsAreEnabled = true, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsPluginManager( QWidget *parent = 0, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsPluginManager();

@@ -39,7 +39,7 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
-QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
+QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded ):
     QDialog( parent, fl )
 {
   setupUi( this );

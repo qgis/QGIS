@@ -1803,7 +1803,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WFlags fl )
+QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
 {
   return new QgsMssqlSourceSelect( parent, fl );
 }

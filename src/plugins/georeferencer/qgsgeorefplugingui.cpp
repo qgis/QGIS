@@ -71,7 +71,7 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * paren
   setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
 }
 
-QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl )
+QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mMousePrecisionDecimalPlaces( 0 )
     , mTransformParam( QgsGeorefTransform::InvalidTransform )

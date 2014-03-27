@@ -18,7 +18,7 @@
 #include "qgscharacterselectdialog.h"
 
 
-QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WFlags fl )
+QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mChar( QChar::Null )
 {
   setupUi( this );

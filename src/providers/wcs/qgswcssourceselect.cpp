@@ -27,7 +27,7 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
     : QgsOWSSourceSelect( "WCS", parent, fl, managerMode, embeddedMode )
 {
   // Hide irrelevant widgets

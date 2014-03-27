@@ -372,10 +372,10 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
 } // QgsProviderRegistry::setDataProvider
 
 // This should be QWidget, not QDialog
-typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
+typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WindowFlags fl );
 
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
-    QWidget * parent, Qt::WFlags fl )
+    QWidget * parent, Qt::WindowFlags fl )
 {
   selectFactoryFunction_t * selectFactory =
     ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );

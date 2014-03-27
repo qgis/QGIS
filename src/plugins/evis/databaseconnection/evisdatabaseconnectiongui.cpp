@@ -46,7 +46,7 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemoraryFileList, QWidget* parent, Qt::WFlags fl )
+eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemoraryFileList, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

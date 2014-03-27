@@ -19,7 +19,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsErrorDialog::QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WFlags fl )
+QgsErrorDialog::QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mError( theError )
 {
@@ -56,7 +56,7 @@ QgsErrorDialog::~QgsErrorDialog()
 {
 }
 
-void QgsErrorDialog::show( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WFlags fl )
+void QgsErrorDialog::show( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WindowFlags fl )
 {
   QgsErrorDialog d( theError, theTitle, parent, fl );
   d.exec();

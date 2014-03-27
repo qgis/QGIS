@@ -26,7 +26,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgscontexthelp.h"
 
-QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
+QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );

@@ -20,7 +20,7 @@
 #include <QSettings>
 #include <cmath>
 
-QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WFlags f )
+QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WindowFlags f )
     : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );

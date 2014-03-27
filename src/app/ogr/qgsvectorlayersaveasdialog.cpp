@@ -25,14 +25,14 @@
 #include <QFileDialog>
 #include <QTextCodec>
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
 {
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
     , mLayerExtent( layerExtent )

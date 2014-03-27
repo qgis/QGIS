@@ -31,7 +31,7 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WFlags fl )
+QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ),
     mOriginalConnName( connName )
 {

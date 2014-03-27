@@ -429,7 +429,7 @@ QGISEXTERN void registerGui( QMainWindow *mainWindow )
   QgsTileScaleWidget::showTileScale( mainWindow );
 }
 
-QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 {
   return new QgsWMSSourceSelect( parent, fl );
 }

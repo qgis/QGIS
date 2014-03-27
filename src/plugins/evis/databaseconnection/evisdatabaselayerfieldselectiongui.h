@@ -42,7 +42,7 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
 
   public:
     /** \brief Constructor */
-    eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WFlags fl );
+    eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WindowFlags fl );
 
     /** \brief Public method that sets the contents of the combo boxes with the available field names */
     void setFieldList( QStringList* );

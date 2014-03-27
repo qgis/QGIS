@@ -24,7 +24,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 
-QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
+QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );

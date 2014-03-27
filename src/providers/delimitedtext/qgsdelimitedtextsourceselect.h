@@ -31,7 +31,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
+    QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
     ~QgsDelimitedTextSourceSelect();
 
     QStringList splitLine( QString line );

@@ -39,7 +39,7 @@ static QIcon icon( QString icon )
   return QIcon( path );
 }
 
-QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WFlags fl )
+QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mButton( 0 )
     , mCount( 0 )

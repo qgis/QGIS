@@ -57,10 +57,10 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
   public:
     /** \brief Constructor called when button is pressed in the plugin toolbar */
-    eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WFlags fl );
+    eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl );
 
     /** \brief Constructor called when new browser is requested by the eVisEventIdTool */
-    eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WFlags fl );
+    eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl );
 
     /** \Brief Destructor */
     ~eVisGenericEventBrowserGui( );

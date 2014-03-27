@@ -25,7 +25,7 @@
 #include "qgscompassplugingui.h"
 #include "compass.h"
 
-QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WFlags fl )
+QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WindowFlags fl )
     : QWidget( parent, fl )
 {
   setupUi( this );

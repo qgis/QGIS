@@ -43,7 +43,7 @@ extern "C"
 }
 
 
-QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlags fl )
+QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

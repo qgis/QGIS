@@ -36,7 +36,7 @@
 
 //standard includes
 
-HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl, QMap<QString, QVariant>* temporarySettings )
+HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVariant>* temporarySettings )
     : QDialog( parent, fl ),
     mRows( 500 )
 {

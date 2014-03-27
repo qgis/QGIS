@@ -443,7 +443,7 @@ static bool cmpByText_( QAction* a, QAction* b )
 QgisApp *QgisApp::smInstance = 0;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mSplash( splash )
     , mMousePrecisionDecimalPlaces( 0 )
