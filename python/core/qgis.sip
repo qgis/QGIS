@@ -148,6 +148,8 @@ class QGis
 
     static const double DEFAULT_IDENTIFY_RADIUS;
 
+    static const double DEFAULT_SEARCH_RADIUS_MM;
+
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 };

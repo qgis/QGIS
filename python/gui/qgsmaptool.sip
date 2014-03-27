@@ -111,6 +111,12 @@ class QgsMapTool : QObject
     */
     QString toolName();
 
+    static double searchRadiusMM();
+
+    static double searchRadiusMU( const QgsRenderContext& context );
+
+    static double searchRadiusMU( QgsMapCanvas * canvas );
+
   signals:
     //! emit a message
     void messageEmitted( QString message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
