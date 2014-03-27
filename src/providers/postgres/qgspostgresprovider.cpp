@@ -2788,7 +2788,13 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::DateTime:
+      fieldType = "timestamp without time zone";
+      break;
+
     case QVariant::Time:
+      fieldType = "time";
+      break;
+
     case QVariant::String:
       fieldType = "varchar";
       fieldPrec = -1;
