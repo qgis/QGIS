@@ -221,6 +221,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             self.alg.descriptionFile = None
             alg.descriptionFile = None
         else:
+            self.save()
             if self.alg.provider is None:
                 # Might happen if model is opened from modeler dialog
                 self.alg.provider = Providers.providers['model']
