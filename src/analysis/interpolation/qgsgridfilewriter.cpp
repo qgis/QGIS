@@ -100,7 +100,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
 
   // create prj file
   QgsInterpolator::LayerData ld;
-  ld = mInterpolator->mLayerData.first();
+  ld = mInterpolator->layerData().first();
   QgsVectorLayer* vl = ld.vectorLayer;
   QString crs = vl->crs().toWkt();
   QFileInfo fi( mOutputFilePath );
