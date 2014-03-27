@@ -29,6 +29,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
@@ -75,20 +76,28 @@ class Intersection(GeoAlgorithm):
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = vlayerB.getFeatures(request).next()
                 tmpGeom = QgsGeometry(inFeatB.geometry())
-                if geom.intersects(tmpGeom):
-                    atMapB = inFeatB.attributes()
-                    int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                    if int_geom.wkbType() == QGis.WKBUnknown:
-                        int_com = geom.combine(tmpGeom)
-                        int_sym = geom.symDifference(tmpGeom)
-                        int_geom = QgsGeometry(int_com.difference(int_sym))
-                    if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
-                        outFeat.setGeometry(int_geom)
-                        attrs = []
-                        attrs.extend(atMapA)
-                        attrs.extend(atMapB)
-                        outFeat.setAttributes(attrs)
-                        writer.addFeature(outFeat)
+                try:
+                    if geom.intersects(tmpGeom):
+                        atMapB = inFeatB.attributes()
+                        int_geom = QgsGeometry(geom.intersection(tmpGeom))
+                        if int_geom.wkbType() == QGis.WKBUnknown:
+                            int_com = geom.combine(tmpGeom)
+                            int_sym = geom.symDifference(tmpGeom)
+                            int_geom = QgsGeometry(int_com.difference(int_sym))
+                        try:
+                            if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
+                                outFeat.setGeometry(int_geom)
+                                attrs = []
+                                attrs.extend(atMapA)
+                                attrs.extend(atMapB)
+                                outFeat.setAttributes(attrs)
+                                writer.addFeature(outFeat)
+                        except:
+                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, 'Feature geometry error: One or more output features ignored due to invalid geometry.')
+                            continue
+                except:
+                    break
+
 
         del writer
 
