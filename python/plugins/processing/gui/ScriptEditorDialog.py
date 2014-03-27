@@ -36,18 +36,13 @@ from PyQt4.Qsci import *
 from qgis.core import *
 
 from processing import interface
-
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.gui.ScriptEdit import ScriptEdit
-
 from processing.modeler.Providers import Providers
-
 from processing.r.RAlgorithm import RAlgorithm
 from processing.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
 import processing.resources_rc

@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import sys
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import Help2Html
@@ -218,7 +217,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addOutput(out)
         else:
             raise WrongScriptException('Could not load script:'
-                                       + self.descriptionFile
+                                       + self.descriptionFile or ''
                                        + '.\n Problem with line "' + line + '"'
                                        )
 
@@ -234,7 +233,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 self.addOutput(OutputFactory.getFromString(line))
         except Exception:
             raise WrongScriptException('Could not load script:'
-                                       + self.descriptionFile
+                                       + self.descriptionFile or ''
                                        + '.\n Problem with line "' + line + '"'
                                        )
 
@@ -257,6 +256,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             out.setValue(ns[out.name])
 
     def helpFile(self):
+        if self.descriptionFile is None:
+            return None
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
             h2h = Help2Html()
