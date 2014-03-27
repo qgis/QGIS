@@ -312,16 +312,6 @@ int main( int argc, char * argv[] )
     //Config file path
     QString configFilePath = configPath( defaultConfigFilePath, parameterMap );
 
-    //Admin config parser
-    QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
-    if ( !adminConfigParser )
-    {
-      QgsDebugMsg( "parse error on config file " + configFilePath );
-      theRequestHandler->sendServiceException( QgsMapServiceException( "", "Configuration file problem : perhaps you left off the .qgs extension?" ) );
-      continue;
-    }
-    adminConfigParser->setParameterMap( parameterMap );
-
     //Service parameter
     QString serviceString;
     paramIt = parameterMap.find( "SERVICE" );
@@ -338,18 +328,33 @@ int main( int argc, char * argv[] )
 
     if ( serviceString == "WCS" )
     {
-      QgsWCSServer wcsServer( configFilePath, parameterMap, adminConfigParser, theRequestHandler );
+      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
+      if ( !p )
+      {
+        //error handling
+      }
+      QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler );
       wcsServer.executeRequest();
     }
     else if ( serviceString == "WFS" )
     {
-      QgsWFSServer wfsServer( configFilePath, parameterMap, adminConfigParser, theRequestHandler );
+      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
+      if ( !p )
+      {
+        //error handling
+      }
+      QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler );
       wfsServer.executeRequest();
     }
     else    //WMS else
     {
-      adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
-      QgsWMSServer wmsServer( configFilePath, parameterMap, adminConfigParser, theRequestHandler, theMapRenderer, &capabilitiesCache );
+      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath );
+      if ( !p )
+      {
+        //error handling
+      }
+      //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
+      QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler, theMapRenderer, &capabilitiesCache );
       wmsServer.executeRequest();
     }
   }

@@ -25,7 +25,7 @@
 #include "qgis.h"
 #include "qgsowsserver.h"
 
-class QgsConfigParser;
+class QgsWCSProjectParser;
 class QgsRequestHandler;
 
 /**This class handles all the wcs server requests. The parameters and values have to be passed in the form of
@@ -36,7 +36,7 @@ class QgsWCSServer: public QgsOWSServer
 {
   public:
     /**Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
-    QgsWCSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsConfigParser* cp,
+    QgsWCSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWCSProjectParser* pp,
                   QgsRequestHandler* rh );
     ~QgsWCSServer();
 
@@ -52,7 +52,7 @@ class QgsWCSServer: public QgsOWSServer
     QByteArray* getCoverage();
 
     /**Sets configuration parser for administration settings. Does not take ownership*/
-    void setAdminConfigParser( QgsConfigParser* parser ) { mConfigParser = parser; }
+    void setAdminConfigParser( QgsWCSProjectParser* parser ) { mConfigParser = parser; }
 
   private:
     /**Don't use the default constructor*/
@@ -60,6 +60,8 @@ class QgsWCSServer: public QgsOWSServer
 
     /**Get service address from REQUEST_URI if not specified in the configuration*/
     QString serviceUrl() const;
+
+    QgsWCSProjectParser* mConfigParser;
 };
 
 #endif

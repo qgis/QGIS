@@ -1,8 +1,8 @@
 /***************************************************************************
-                              qgsowsserver.h
-                              --------------
-  begin                : March 24, 2014
-  copyright            : (C) 2006 by Marco Hugentobler
+                              qgswfsprojectparser.cpp
+                              -----------------------
+  begin                : March 25, 2014
+  copyright            : (C) 2014 by Marco Hugentobler
   email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************/
 
@@ -15,28 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSOWSSERVER_H
-#define QGSOWSSERVER_H
+#include "qgswfsprojectparser.h"
 
-#include "qgsconfigparser.h"
-#include "qgsrequesthandler.h"
-
-class QgsOWSServer
+QgsWFSProjectParser::QgsWFSProjectParser( QDomDocument* xmlDoc, const QString& filePath ):
+    mProjectParser( xmlDoc, filePath )
 {
-  public:
-    QgsOWSServer( const QString& configFilePath, const QMap<QString, QString>& parameters, QgsRequestHandler* rh ):
-        mParameters( parameters ), mRequestHandler( rh ), mConfigFilePath( configFilePath ) {}
-    virtual ~QgsOWSServer() { delete mRequestHandler; }
+}
 
-    virtual void executeRequest() = 0;
-
-  private:
-    QgsOWSServer() {}
-
-  protected:
-    QMap<QString, QString> mParameters;
-    QgsRequestHandler* mRequestHandler;
-    QString mConfigFilePath;
-};
-
-#endif // QGSOWSSERVER_H
+QgsWFSProjectParser::~QgsWFSProjectParser()
+{
+}

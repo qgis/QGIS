@@ -16,6 +16,94 @@
  ***************************************************************************/
 
 #include "qgsconfigcache.h"
+#include "qgswcsprojectparser.h"
+#include "qgswfsprojectparser.h"
+#include "qgswmsprojectparser.h"
+
+QgsConfigCache* QgsConfigCache::instance()
+{
+  static QgsConfigCache mInstance;
+  return &mInstance;
+}
+
+QgsConfigCache::~QgsConfigCache()
+{
+}
+
+QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
+{
+  QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
+  if ( p )
+  {
+    return p;
+  }
+
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
+  {
+    return 0;
+  }
+  p = new QgsWCSProjectParser( doc, filePath );
+  mWCSConfigCache.insert( filePath, p );
+  return p;
+}
+
+QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
+{
+  return 0; //todo...
+}
+
+QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath )
+{
+  QgsWMSConfigParser* p = mWMSConfigCache.object( filePath );
+
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
+  {
+    return 0;
+  }
+
+  //sld or QGIS project file?
+  //is it an sld document or a qgis project file?
+  QDomElement documentElem = doc->documentElement();
+  if ( documentElem.tagName() == "StyledLayerDescriptor" )
+  {
+  }
+  else
+  {
+    p = new QgsWMSProjectParser( doc, filePath );
+  }
+
+  mWMSConfigCache.insert( filePath, p );
+  return p;
+}
+
+QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
+{
+  //first open file
+  QFile configFile( filePath );
+  if ( !configFile.exists() || !configFile.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( "File unreadable: " + filePath );
+    return 0;
+  }
+
+  //then create xml document
+  QDomDocument* xmlDoc = new QDomDocument();
+  QString errorMsg;
+  int line, column;
+  if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
+  {
+    QgsDebugMsg( QString( "Parse error %1 at row %2, column %3 in %4 " )
+                 .arg( errorMsg ).arg( line ).arg( column ).arg( filePath ) );
+    delete xmlDoc;
+    return 0;
+  }
+  return xmlDoc;
+}
+
+#if 0
+
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsprojectfiletransform.h"
@@ -141,3 +229,5 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
   }
   mFileSystemWatcher.removePath( path );
 }
+
+#endif //0

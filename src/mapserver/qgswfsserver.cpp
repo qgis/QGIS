@@ -66,8 +66,8 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 static const QString QGS_NAMESPACE = "http://www.qgis.org/gml";
 
-QgsWFSServer::QgsWFSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsConfigParser* cp,
-                            QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, cp, rh )
+QgsWFSServer::QgsWFSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWFSProjectParser* cp,
+                            QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, rh ), mConfigParser( cp )
 {
 }
 
@@ -75,7 +75,7 @@ QgsWFSServer::~QgsWFSServer()
 {
 }
 
-QgsWFSServer::QgsWFSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0, 0 )
+QgsWFSServer::QgsWFSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
 {
 }
 
@@ -165,6 +165,9 @@ QDomDocument QgsWFSServer::getCapabilities()
 {
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
+
+#if 0 //todo: fixme
+
   //wfs:WFS_Capabilities element
   QDomElement wfsCapabilitiesElement = doc.createElement( "WFS_Capabilities"/*wms:WFS_Capabilities*/ );
   wfsCapabilitiesElement.setAttribute( "xmlns", WFS_NAMESPACE );
@@ -297,6 +300,9 @@ QDomDocument QgsWFSServer::getCapabilities()
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Simple_Comparisons"/*ogc:Simple_Comparisons*/ ) );
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Between"/*ogc:Between*/ ) );
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Like"/*ogc:Like*/ ) );
+
+#endif //0 //todo: fixme
+
   return doc;
 }
 
@@ -304,6 +310,9 @@ QDomDocument QgsWFSServer::describeFeatureType()
 {
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
+
+#if 0 //todo: fixme
+
   //xsd:schema
   QDomElement schemaElement = doc.createElement( "schema"/*xsd:schema*/ );
   schemaElement.setAttribute( "xmlns", "http://www.w3.org/2001/XMLSchema" );
@@ -358,11 +367,15 @@ QDomDocument QgsWFSServer::describeFeatureType()
     }
     mConfigParser->describeFeatureType( typeName, schemaElement, doc );
   }
+
+#endif //0 //todo: fixme
+
   return doc;
 }
 
 int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format )
 {
+#if 0 //todo: fixme
   QgsDebugMsg( "Info format is:" + format );
 
   QStringList wfsLayersId = mConfigParser->wfsLayers();
@@ -1071,11 +1084,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   else
     endGetFeature( request, format );
 
+#endif // 0 //todo: fixme
+
   return 0;
 }
 
 void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& format, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect )
 {
+#if 0 //todo: fixme
   QByteArray result;
   QString fcString;
   if ( format == "GeoJSON" )
@@ -1202,6 +1218,9 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     request.sendGetFeatureResponse( &result );
   }
   fcString = "";
+
+#endif //0 //todo: fixme
+
 }
 
 void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/
@@ -1271,6 +1290,10 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 {
   // Getting  the transaction document
   QDomDocument doc;
+  return doc;
+
+#if 0 //todo: fixme
+
   QString errorMsg;
   if ( !doc.setContent( requestBody, true, &errorMsg ) )
   {
@@ -1631,6 +1654,8 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   respElem.appendChild( trElem );
 
   return resp;
+
+#endif //0 //todo: fixme
 }
 
 QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, QgsVectorLayer* layer )

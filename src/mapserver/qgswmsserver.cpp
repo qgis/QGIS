@@ -57,10 +57,10 @@
 #include <QUrl>
 #include <QPaintEngine>
 
-QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsConfigParser* cp,
+QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWMSConfigParser* cp,
                             QgsRequestHandler* rh, QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache )
-    : QgsOWSServer( configFilePath, parameters, cp, rh )
-    , mMapRenderer( renderer ), mCapabilitiesCache( capCache )
+    : QgsOWSServer( configFilePath, parameters, rh )
+    , mMapRenderer( renderer ), mCapabilitiesCache( capCache ), mConfigParser( cp )
 {
 }
 
@@ -68,7 +68,7 @@ QgsWMSServer::~QgsWMSServer()
 {
 }
 
-QgsWMSServer::QgsWMSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0, 0 )
+QgsWMSServer::QgsWMSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
 {
 }
 
@@ -317,11 +317,6 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   }
   wmsCapabilitiesElement.setAttribute( "version", version );
   doc.appendChild( wmsCapabilitiesElement );
-
-  if ( mConfigParser )
-  {
-    mConfigParser->serviceCapabilities( wmsCapabilitiesElement, doc );
-  }
 
   //wms:Capability element
   QDomElement capabilityElement = doc.createElement( "Capability"/*wms:Capability*/ );
@@ -1569,6 +1564,8 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
       delete theDocument;
       return 0;
     }
+
+#if 0 //todo: fixme
     QgsSLDParser* userSLDParser = new QgsSLDParser( theDocument );
     userSLDParser->setParameterMap( mParameters );
     userSLDParser->setFallbackParser( mConfigParser );
@@ -1590,6 +1587,7 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
       layersList << *layersIt;
       stylesList << *stylesIt;
     }
+#endif //0 //todo: fixme
   }
   return 0;
 }

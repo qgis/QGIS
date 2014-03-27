@@ -19,6 +19,7 @@
 #define QGSWMSSERVER_H
 
 #include "qgsowsserver.h"
+#include "qgswmsconfigparser.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QPair>
@@ -59,7 +60,7 @@ class QgsWMSServer: public QgsOWSServer
   public:
     /**Constructor. Takes ownership of QgsRequestHandler. Does _NOT_ take ownership of
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
-    QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsConfigParser* cp, QgsRequestHandler* rh,
+    QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWMSConfigParser* cp, QgsRequestHandler* rh,
                   QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache );
     ~QgsWMSServer();
 
@@ -92,7 +93,7 @@ class QgsWMSServer: public QgsOWSServer
     int getFeatureInfo( QDomDocument& result, QString version = "1.3.0" );
 
     /**Sets configuration parser for administration settings. Does not take ownership*/
-    void setAdminConfigParser( QgsConfigParser* parser ) { mConfigParser = parser; }
+    void setAdminConfigParser( QgsWMSConfigParser* parser ) { mConfigParser = parser; }
 
   private:
     /**Don't use the default constructor*/
@@ -230,6 +231,8 @@ class QgsWMSServer: public QgsOWSServer
     QgsMapRenderer* mMapRenderer;
 
     QgsCapabilitiesCache* mCapabilitiesCache;
+
+    QgsWMSConfigParser* mConfigParser;
 
     QDomElement createFeatureGML(
       QgsFeature* feat,

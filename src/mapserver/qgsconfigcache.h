@@ -18,6 +18,40 @@
 #ifndef QGSCONFIGCACHE_H
 #define QGSCONFIGCACHE_H
 
+#include <QCache>
+#include <QObject>
+
+class QgsWCSProjectParser;
+class QgsWFSProjectParser;
+class QgsWMSConfigParser;
+
+class QDomDocument;
+
+class QgsConfigCache: public QObject
+{
+    Q_OBJECT
+  public:
+    static QgsConfigCache* instance();
+    ~QgsConfigCache();
+
+    QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
+    QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
+    QgsWMSConfigParser* wmsConfiguration( const QString& filePath );
+
+  private:
+    static QgsConfigCache* mInstance;
+
+    /**Returns xml document for project file / sld or 0 in case of errors*/
+    QDomDocument* xmlDocument( const QString& filePath );
+
+    QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
+    QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
+    QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
+};
+
+
+#if 0
+
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QObject>
@@ -55,5 +89,5 @@ class QgsConfigCache: public QObject
     /**Removes changed entry from this cache*/
     void removeChangedEntry( const QString& path );
 };
-
+#endif //0
 #endif // QGSCONFIGCACHE_H
