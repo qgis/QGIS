@@ -9,7 +9,7 @@ class QgsNewVectorLayerDialog : QDialog
     // run the dialog, create the layer. Return file name if the creation was successful
     static QString runAndCreateLayer( QWidget* parent = 0, QString* enc = 0 );
 
-    QgsNewVectorLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewVectorLayerDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
     /**Returns the selected geometry type*/
     QGis::WkbType selectedType() const;

@@ -16,7 +16,7 @@ class QgsBusyIndicatorDialog : QDialog
      * @param fl widget flags
      * @note added in 1.9
     */
-    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsBusyIndicatorDialog();
 
     QString message() const;
