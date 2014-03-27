@@ -27,7 +27,7 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
 {
     Q_OBJECT
   public:
-    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsErrorDialog();
 
     /** Show dialog with error
@@ -36,7 +36,7 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
      * @param parent parent object
      * @param fl widget flags
      */
-    static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
   public slots:
     void on_mDetailPushButton_clicked();

@@ -28,7 +28,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/, Qt::WFlags fl /*= 0*/ )
+QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/, Qt::WindowFlags fl /*= 0*/ )
     : QDialog( parent, fl )
 {
   setupUi( this );

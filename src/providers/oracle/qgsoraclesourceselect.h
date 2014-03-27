@@ -73,7 +73,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box

@@ -38,7 +38,7 @@
 #include <osg/DisplaySettings>
 
 //constructor
-QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WFlags fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mGlobe( globe )
 {

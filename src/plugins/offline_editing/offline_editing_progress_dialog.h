@@ -27,7 +27,7 @@ class QgsOfflineEditingProgressDialog : public QDialog, private Ui::QgsOfflineEd
     Q_OBJECT
 
   public:
-    QgsOfflineEditingProgressDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsOfflineEditingProgressDialog( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     virtual ~QgsOfflineEditingProgressDialog();
 
     void setTitle( const QString& title );

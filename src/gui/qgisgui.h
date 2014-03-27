@@ -44,7 +44,7 @@ namespace QgisGui
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
    * the dialog is a fixed size and does not have a size grip.
    */
-  static const Qt::WFlags ModalDialogFlags = 0;
+  static const Qt::WindowFlags ModalDialogFlags = 0;
 
   /**
     Open files, preferring to have the default file selector be the

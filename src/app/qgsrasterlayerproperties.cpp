@@ -66,7 +66,7 @@
 #include <QMouseEvent>
 #include <QVector>
 
-QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
+QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )
     : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),

@@ -38,7 +38,7 @@
 #include <QPainter>
 
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool embeddedMode )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
     , mCapabilities( NULL )
 {

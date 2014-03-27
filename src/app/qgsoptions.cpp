@@ -66,7 +66,7 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
+QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     QgsOptionsDialogBase( "Options", parent, fl )
 {
   setupUi( this );

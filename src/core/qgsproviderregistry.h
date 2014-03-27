@@ -69,7 +69,7 @@ class CORE_EXPORT QgsProviderRegistry
                                const QString & dataSource );
 
     QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = 0, Qt::WFlags fl = 0 );
+                           QWidget * parent = 0, Qt::WindowFlags fl = 0 );
 
     /** Get pointer to provider function
         @param providerKey identificator of the provider

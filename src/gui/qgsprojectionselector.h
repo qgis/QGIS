@@ -29,7 +29,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WFlags fl = 0 );
+    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WindowFlags fl = 0 );
 
     ~QgsProjectionSelector();
 

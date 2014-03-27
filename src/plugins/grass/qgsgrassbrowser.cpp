@@ -39,7 +39,7 @@
 
 
 QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
-                                  QWidget * parent, Qt::WFlags f )
+                                  QWidget * parent, Qt::WindowFlags f )
     : QMainWindow( parent, Qt::Dialog ), mIface( iface ), mRunningMods( 0 )
 {
   Q_UNUSED( f );

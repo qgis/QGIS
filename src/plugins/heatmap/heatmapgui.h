@@ -25,7 +25,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 {
     Q_OBJECT
   public:
-    HeatmapGui( QWidget* parent, Qt::WFlags fl, QMap<QString, QVariant>* temporarySettings );
+    HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVariant>* temporarySettings );
     ~HeatmapGui();
 
     // Buffer unit type

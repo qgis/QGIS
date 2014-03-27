@@ -33,7 +33,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 {
     Q_OBJECT
   public:
-    QgsCustomProjectionDialog( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    QgsCustomProjectionDialog( QWidget *parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsCustomProjectionDialog();
 
   public slots:

@@ -46,7 +46,7 @@
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 #include "qgscursors.h"
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )

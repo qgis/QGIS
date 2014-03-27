@@ -32,7 +32,7 @@
 #include "qgsogrhelperfunctions.h"
 #include "qgscontexthelp.h"
 
-QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags fl )
+QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

@@ -252,7 +252,7 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 //       action
 //     name value
 
-QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
+QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mActionPopup( 0 )
     , mCanvas( canvas )

@@ -29,7 +29,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsPgNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsPgNewConnection();
     //! Tests the connection using the parameters supplied

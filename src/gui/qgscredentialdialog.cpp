@@ -21,7 +21,7 @@
 #include <QSettings>
 #include <QThread>
 
-QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WFlags fl )
+QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

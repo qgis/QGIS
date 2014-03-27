@@ -26,7 +26,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WFlags fl )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
     : QWidget( parent, fl )
     , mProjListDone( false )
     , mUserProjListDone( false )

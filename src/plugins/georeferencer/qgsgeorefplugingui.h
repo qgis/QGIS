@@ -50,7 +50,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     Q_OBJECT
 
   public:
-    QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsGeorefPluginGui();
 
   protected:

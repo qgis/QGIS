@@ -31,7 +31,7 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WFlags fl )
+eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

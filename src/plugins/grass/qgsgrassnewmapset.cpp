@@ -55,7 +55,7 @@ bool QgsGrassNewMapset::mRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
                                       QgsGrassPlugin *plugin, QWidget * parent,
-                                      Qt::WFlags f ) :
+                                      Qt::WindowFlags f ) :
     QWizard( parent, f ),
     QgsGrassNewMapsetBase( )
 {

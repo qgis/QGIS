@@ -3173,7 +3173,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WFlags fl )
+QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
 {
   return new QgsPgSourceSelect( parent, fl );
 }

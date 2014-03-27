@@ -52,7 +52,7 @@ quotedIdentifier( QString id )
 } // quotedIdentifier()
 
 
-SaSourceSelect::SaSourceSelect( QWidget *parent, Qt::WFlags fl )
+SaSourceSelect::SaSourceSelect( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL )
 {
   setupUi( this );

@@ -31,7 +31,7 @@
 #include <QPushButton>
 
 
-QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
+QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
     : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );

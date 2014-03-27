@@ -21,7 +21,7 @@
 #include <QSettings>
 #include <QComboBox>
 
-QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WFlags fl )
+QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

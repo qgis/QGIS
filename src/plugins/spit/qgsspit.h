@@ -38,7 +38,7 @@ class QgsSpit : public QDialog, private Ui::QgsSpitBase
 {
     Q_OBJECT
   public:
-    QgsSpit( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    QgsSpit( QWidget *parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsSpit();
     //! Populate the list of available database connections
     void populateConnectionList();

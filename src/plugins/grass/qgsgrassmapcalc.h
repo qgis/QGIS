@@ -40,7 +40,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalc(
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
-      QWidget * parent = 0, Qt::WFlags f = 0 );
+      QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassMapcalc();
@@ -525,7 +525,7 @@ class QgsGrassMapcalcView: public QGraphicsView
     Q_OBJECT
 
   public:
-    QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc, QWidget * parent = 0, Qt::WFlags f = 0 );
+    QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
   protected:
     void mousePressEvent( QMouseEvent * e );

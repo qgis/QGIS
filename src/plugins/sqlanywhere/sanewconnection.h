@@ -31,7 +31,7 @@ class SaNewConnection : public QDialog, private Ui::SaNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    SaNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    SaNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~SaNewConnection();
     //! Tests the connection using the parameters supplied

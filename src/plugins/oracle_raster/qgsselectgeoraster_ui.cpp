@@ -33,7 +33,7 @@
 
 QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
     QgisInterface* iface,
-    Qt::WFlags fl ) : QDialog( parent, fl ), mIface( iface )
+    Qt::WindowFlags fl ) : QDialog( parent, fl ), mIface( iface )
 {
   setupUi( this );
 

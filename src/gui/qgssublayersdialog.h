@@ -33,7 +33,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       Vsifile
     };
 
-    QgsSublayersDialog( ProviderType providerType, QString name, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsSublayersDialog( ProviderType providerType, QString name, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsSublayersDialog();
 
     void populateLayerTable( QStringList theList, QString delim = ":" );

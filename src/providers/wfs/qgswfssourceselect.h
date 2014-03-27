@@ -46,7 +46,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   public:
 
-    QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool embeddedMode = false );
+    QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
     ~QgsWFSSourceSelect();
 
   signals:

@@ -53,7 +53,7 @@ bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 }
 
 QgsGrassAttributes::QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *provider, int line,
-                                        QWidget * parent, const char * name, Qt::WFlags f )
+                                        QWidget * parent, const char * name, Qt::WindowFlags f )
     : QDialog( parent, f ), QgsGrassAttributesBase()
 {
   Q_UNUSED( name );

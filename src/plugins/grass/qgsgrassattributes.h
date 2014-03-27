@@ -55,8 +55,8 @@ class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
     //! Constructor
     QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *provider, int line,
                         QWidget * parent = 0, const char * name = 0,
-                        Qt::WFlags f = Qt::Window );
-    //Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool);
+                        Qt::WindowFlags f = Qt::Window );
+    //Qt::WindowFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool);
 
     //! Destructor
     ~QgsGrassAttributes();

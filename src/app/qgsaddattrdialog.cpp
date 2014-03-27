@@ -22,7 +22,7 @@
 
 #include <QMessageBox>
 
-QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WFlags fl )
+QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
 {

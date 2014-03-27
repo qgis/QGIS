@@ -24,7 +24,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 
-QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
+QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );

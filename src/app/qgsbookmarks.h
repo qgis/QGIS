@@ -38,7 +38,7 @@ class APP_EXPORT QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
-    QgsBookmarks( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    QgsBookmarks( QWidget *parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsBookmarks();
 
     void saveWindowLocation();

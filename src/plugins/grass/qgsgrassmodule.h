@@ -64,7 +64,7 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 
     //! Constructor
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                    QString path, bool direct, QWidget *parent, Qt::WFlags f = 0 );
+                    QString path, bool direct, QWidget *parent, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModule();
@@ -299,7 +299,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
       QString xname, QDomElement docElem,
-      bool direct, QWidget * parent = 0, Qt::WFlags f = 0 );
+      bool direct, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModuleStandardOptions();

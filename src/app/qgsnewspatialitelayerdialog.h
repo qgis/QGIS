@@ -34,7 +34,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    QgsNewSpatialiteLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewSpatialiteLayerDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:

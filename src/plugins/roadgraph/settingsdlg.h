@@ -37,7 +37,7 @@ class RgSettingsDlg : public QDialog
 {
     Q_OBJECT
   public:
-    RgSettingsDlg( RgSettings *settings, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    RgSettingsDlg( RgSettings *settings, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     ~RgSettingsDlg();
 
     QString timeUnitName();

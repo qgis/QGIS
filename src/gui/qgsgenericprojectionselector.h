@@ -50,7 +50,7 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      * Constructor
      */
     QgsGenericProjectionSelector( QWidget *parent = 0,
-                                  Qt::WFlags fl = QgisGui::ModalDialogFlags );
+                                  Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsGenericProjectionSelector();

@@ -309,7 +309,7 @@ void QgsSvgSelectorWidget::populateList()
 
 //-- QgsSvgSelectorDialog
 
-QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WFlags fl,
+QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
     QDialogButtonBox::StandardButtons buttons,
     Qt::Orientation orientation )
     : QDialog( parent, fl )

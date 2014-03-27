@@ -55,7 +55,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
