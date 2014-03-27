@@ -77,7 +77,7 @@ class SaveAsPythonScriptAction(ContextAction):
         iMultiple = 0
         for alg in model.algs:
             multiple = []
-            runline = 'outputs_' + str(i) + '=Processing.runalg("' \
+            runline = 'outputs_' + str(i) + '=processing.runalg("' \
                 + alg.commandLineName() + '"'
             for param in alg.parameters:
                 aap = model.algParameters[i][param.name]
