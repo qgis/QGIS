@@ -42,7 +42,6 @@
 #include <QLibrary>
 #include <QMenu>
 #include <QMenuBar>
-#include <QMenuItem>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPictureIO>
