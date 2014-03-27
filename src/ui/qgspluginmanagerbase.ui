@@ -223,7 +223,7 @@
       <property name="lineWidth">
        <number>0</number>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_12">
+      <layout class="QVBoxLayout" name="vlayoutRightColumn">
        <property name="spacing">
         <number>6</number>
        </property>
@@ -467,33 +467,31 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-
-              <item>
-               <widget class="QLabel" name="labelNoPython">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-                <property name="margin">
-                 <number>20</number>
-                </property>
-                <property name="indent">
-                 <number>0</number>
-                </property>
-               </widget>
-              </item>
-
+           <item>
+            <widget class="QLabel" name="labelNoPython">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+             <property name="margin">
+              <number>20</number>
+             </property>
+             <property name="indent">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QFrame" name="frameSettings">
              <property name="sizePolicy">
@@ -509,6 +507,9 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
+              <property name="margin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QScrollArea" name="scrollArea">
                 <property name="widgetResizable">
@@ -519,7 +520,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>574</width>
+                   <width>582</width>
                    <height>653</height>
                   </rect>
                  </property>

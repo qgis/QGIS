@@ -32,6 +32,7 @@
 #include <QTimer>
 
 #include "qgis.h"
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsconfig.h"
 #include "qgsproviderregistry.h"
@@ -111,6 +112,11 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   buttonInstall->hide();
   buttonUninstall->hide();
   frameSettings->setHidden( true );
+
+  // Init the message bar instance
+  msgBar = new QgsMessageBar( this );
+  msgBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  vlayoutRightColumn->insertWidget( 0, msgBar );
 }
 
 
@@ -462,6 +468,13 @@ QStandardItem * QgsPluginManager::createSpacerItem( QString text, QString value 
 void QgsPluginManager::reloadModelData()
 {
   mModelPlugins->clear();
+
+  if ( !mCurrentlyDisplayedPlugin.isEmpty() )
+  {
+    tbDetails->setHtml( "" );
+    buttonInstall->setEnabled( false );
+    buttonUninstall->setEnabled( false );
+  }
 
   for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
@@ -1016,11 +1029,8 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex & theIndex )
 {
   if ( theIndex.column() == 0 )
   {
-    // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
-    // so we need to jump through this little hoop to get the correct item
-    QModelIndex realIndex = mModelProxy->mapToSource( theIndex );
-    QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
-    showPluginDetails( mypItem );
+    // Do exactly the same as if a plugin was clicked
+    on_vwPlugins_clicked( theIndex );
   }
 }
 
@@ -1038,8 +1048,10 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
     {
       //The item is inactive (uncompatible or broken plugin), so it can't be selected. Display it's data anyway.
       vwPlugins->clearSelection();
-      showPluginDetails( mypItem );
     }
+    // Display details in any case: selection changed, inactive button clicked,
+    // or previously selected plugin clicked (while details view contains the welcome message for a category)
+    showPluginDetails( mypItem );
   }
 }
 
@@ -1363,6 +1375,8 @@ void QgsPluginManager::updateWindowTitle( )
   }
 }
 
+
+
 void QgsPluginManager::showEvent( QShowEvent* e )
 {
   if ( mInit )
@@ -1376,4 +1390,16 @@ void QgsPluginManager::showEvent( QShowEvent* e )
 
   QDialog::showEvent( e );
 }
+
+
+
+void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+{
+  if ( duration == -1 )
+  {
+    duration = QgisApp::instance()->messageTimeout();
+  }
+  msgBar->pushMessage( text, level, duration );
+}
+
 

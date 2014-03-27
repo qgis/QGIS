@@ -29,6 +29,7 @@
 #include "qgscontexthelp.h"
 #include "qgspythonutils.h"
 #include "qgspluginsortfilterproxymodel.h"
+#include "qgsmessagebar.h"
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;
@@ -163,6 +164,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Enable all repositories disabled by "Enable selected repository only"
     void clearRepositoryFilter( );
 
+    //! show the given message in the Plugin Manager internal message bar
+    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration );
+
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
     void showEvent( QShowEvent* e );
@@ -208,6 +212,8 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     QString mCurrentlyDisplayedPlugin;
 
     QList<int> mCheckingOnStartIntervals;
+
+    QgsMessageBar *msgBar;
 };
 
 #endif
