@@ -169,6 +169,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const;
     int ySize() const;
 
+    QString generateBandName( int theBandNumber ) const;
+
     /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
     QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 

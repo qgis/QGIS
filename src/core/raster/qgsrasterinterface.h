@@ -97,7 +97,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual int ySize() const { if ( mInput ) return mInput->ySize(); else return 0; }
 
     /** \brief helper function to create zero padded band names */
-    virtual QString  generateBandName( int theBandNumber ) const
+    virtual QString generateBandName( int theBandNumber ) const
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
     }
