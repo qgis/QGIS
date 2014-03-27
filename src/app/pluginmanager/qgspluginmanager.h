@@ -111,10 +111,13 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void pluginItemChanged( QStandardItem * item );
 
     //! Display details of inactive item too
-    void on_vwPlugins_clicked( const QModelIndex & );
+    void on_vwPlugins_clicked( const QModelIndex & index );
 
     //! Load/unload plugin by double click
     void on_vwPlugins_doubleClicked( const QModelIndex & index );
+
+    //! Handle click in the web wiew
+    void on_wvDetails_linkClicked( const QUrl & url );
 
     //! Update the filter when user changes the filter expression
     void on_leFilter_textChanged( QString theText );

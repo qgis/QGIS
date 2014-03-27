@@ -30,6 +30,8 @@
 #include <QActionGroup>
 #include <QTextStream>
 #include <QTimer>
+#include <QWebPage>
+#include <QDesktopServices>
 
 #include "qgis.h"
 #include "qgisapp.h"
@@ -95,6 +97,7 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
 
   // Preset widgets
   leFilter->setFocus( Qt::MouseFocusReason );
+  wvDetails->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 
   // Don't restore the last used tab from QSettings
   mOptionsListWidget->setCurrentRow( 0 );
@@ -103,7 +106,6 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentTab( int ) ) );
   connect( vwPlugins->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( currentPluginChanged( const QModelIndex & ) ) );
   connect( mModelPlugins, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( pluginItemChanged( QStandardItem * ) ) );
-
   // Force setting the status filter (if the active tab was 0, the setCurrentRow( 0 ) above doesn't take any action)
   setCurrentTab( 0 );
 
@@ -471,7 +473,7 @@ void QgsPluginManager::reloadModelData()
 
   if ( !mCurrentlyDisplayedPlugin.isEmpty() )
   {
-    tbDetails->setHtml( "" );
+    wvDetails->setHtml( "" );
     buttonInstall->setEnabled( false );
     buttonUninstall->setEnabled( false );
   }
@@ -599,23 +601,34 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   if ( ! metadata ) return;
 
   QString html = "";
+  html += "<style>"
+          "  body, table {"
+          "    padding:0px;"
+          "    margin:0px;"
+          "    font-family:verdana;"
+          "    font-size: 12px;"
+          "  }"
+          "  div#votes {"
+          "    width:360px;"
+          "    margin-left:98px;"
+          "    padding-top:3px;"
+          "  }";
 
-  //   // A future mockup for install/uninstall html controls
-  //   "<table bgcolor=\"#CCCCCC\" cellspacing=\"5\" cellpadding=\"10\" width=\"100%\" height=\"100px\">"
-  //   "<tr><td colspan=\"3\"><b>This plugin is installed</b></td></tr>"
-  //   "<tr>"
-  //   "  <td></td>"
-  //   "  <td bgcolor=\"#AAFFAA\" align=\"right\"><a href=\"foo\" style=\"text-decoration:none;\" ><b>REINSTALL</b></a></td>"
-  //   "  <td bgcolor=\"#FFFFAA\" align=\"right\"><a href=\"foo\" style=\"text-decoration:none;\" ><b>UNINSTALL</b></a></td>"
-  //   "</tr>"
-  //   "</table><br/>";
-  //   // -----------------------------------------
-  //   // Print all tags for debug purposes
-  //   QList<QString> keys = metadata->keys();
-  //   for ( int i=0; i < keys.size(); ++i )
-  //   {
-  //     html += QString( "%1: %2 <br/>" ).arg( keys.at( i ) ).arg( metadata->value( keys.at( i ) ) );
-  //   }
+  if ( ! metadata->value( "average_vote" ).isEmpty() )
+  {
+    html += QString(
+          "  div#stars_bg {"
+          "    background-image: url('file:///home/borys/Pobrane/stars_empty.png');"
+          "    width:92px;"
+          "    height:16px;"
+          "  }"
+          "  div#stars {"
+          "    background-image: url('file:///home/borys/Pobrane/stars_full.png');"
+          "    width:%1px;"
+          "    height:16px;"
+          "  }").arg( metadata->value( "average_vote" ).toFloat() / 5 * 92 );
+  }
+  html += "</style>";
 
   // First prepare message box(es)
   if ( ! metadata->value( "error" ).isEmpty() )
@@ -659,7 +672,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\":/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
+                     "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
   };
@@ -667,25 +680,30 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   {
     html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\":/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
+                     "    <img src=\"qrc:/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
   };
-  // if ( metadata->value( "status" ) == t.b.d. )
-  // {
-  //   html += QString( "<table bgcolor=\"#CCCCFF\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-  //           "  <tr><td width=\"100%\" style=\"color:#000088\"><b>%1</b></td></tr>"
-  //           "</table>" ).arg( tr( "Installing..." ) );
-  // };
 
   // Now the metadata
-  html += "<table cellspacing=\"10\" width=\"100%\"><tr><td>";
-  html += QString( "<h1>%1</h1>" ).arg( metadata->value( "name" ) );
 
-  if ( QFileInfo( metadata->value( "icon" ) ).isFile() )
+  html += "<table cellspacing=\"4\" width=\"100%\"><tr><td>";
+
+  QString iconPath = metadata->value( "icon" );
+  if ( QFileInfo( iconPath ).isFile() )
   {
-    html += QString( "<img src=\"%1\" style=\"float:right;\">" ).arg( metadata->value( "icon" ) );
+    if ( iconPath.contains( ":/" ) )
+    {
+      iconPath = "qrc" + iconPath;
+    }
+    else
+    {
+      iconPath = "file://" + iconPath;
+    }
+    html += QString( "<img src=\"%1\" style=\"float:right;\">" ).arg( iconPath );
   }
+
+  html += QString( "<h1>%1</h1>" ).arg( metadata->value( "name" ) );
 
   html += QString( "<h3>%1</h3>" ).arg( metadata->value( "description" ) );
 
@@ -694,27 +712,25 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     html += metadata->value( "about" );
   }
 
-  html += "<table><tr><td align='right' width='100%'>";
-  if ( ! metadata->value( "average_vote" ).isEmpty() && metadata->value( "average_vote" ).toFloat() )
+  html += "<br/><br/>";
+  html += "<div id='stars_bg'><div/><div id='stars'><div/>";
+  html += "<div id='votes'>";
+  if ( ! metadata->value( "rating_votes" ).isEmpty() )
   {
-    // draw stars
-    int stars = qRound( metadata->value( "average_vote" ).toFloat() );
-    for ( int i = 0; i < stars; i++ )
-    {
-      html += "<img src=\":/images/themes/default/mIconNew.png\">";
-    }
-    html += tr( "<br/>%1 rating vote(s)<br/>" ).arg( metadata->value( "rating_votes" ) );
+    html += tr( "%1 rating vote(s)" ).arg( metadata->value( "rating_votes" ) );
   }
-  else if ( ! metadata->value( "downloads" ).isEmpty() )
+  if ( ! ( metadata->value( "rating_votes" ).isEmpty() || metadata->value( "downloads" ).isEmpty() ) )
   {
-    // spacer between description and downloads
-    html += "<br/>";
+    html += ", ";
   }
   if ( ! metadata->value( "downloads" ).isEmpty() )
   {
     html += tr( "%1 downloads" ).arg( metadata->value( "downloads" ) );
   }
-  html += "</td></tr></table><br/>";
+
+  html += "</div>";
+  html += "</td></tr><tr><td>";
+  html += "<br/>";
 
   if ( ! metadata->value( "category" ).isEmpty() )
   {
@@ -774,7 +790,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
 
   html += "</td></tr></table>";
 
-  tbDetails->setHtml( html );
+  wvDetails->setHtml( html );
 
   // Set buttonInstall text (and sometimes focus)
   buttonInstall->setDefault( false );
@@ -1009,11 +1025,17 @@ void QgsPluginManager::setCurrentTab( int idx )
     QMap<QString, QString>::iterator it = mTabDescriptions.find( tabTitle );
     if ( it != mTabDescriptions.end() )
     {
-      QString myStyle = QgsApplication::reportStyleSheet();
-      tabInfoHTML += "<style>" + myStyle + "</style>";
-      tabInfoHTML = it.value();
+      tabInfoHTML += "<style>"
+          "body, table {"
+            "margin:4px;"
+            "font-family:verdana;"
+            "font-size: 12px;"
+          "}"
+        "</style>";
+      // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
+      tabInfoHTML += it.value();
     }
-    tbDetails->setHtml( tabInfoHTML );
+    wvDetails->setHtml( tabInfoHTML );
 
     // disable buttons
     buttonInstall->setEnabled( false );
@@ -1077,6 +1099,13 @@ void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex 
       }
     }
   }
+}
+
+
+
+void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
+{
+    QDesktopServices::openUrl( url );
 }
 
 
