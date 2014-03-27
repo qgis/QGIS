@@ -5940,6 +5940,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       }
 
       mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );
+      mMapCanvas->clearCache();
       mMapCanvas->refresh();
     }
   }
