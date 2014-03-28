@@ -138,6 +138,14 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
 }
 
+#ifdef QT_ARCH_ARM
+void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
+{
+  x = ( x - xMin ) / mMapUnitsPerPixel;
+  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
+}
+#endif
+
 void QgsMapToPixel::transformInPlace( QVector<double>& x,
                                       QVector<double>& y ) const
 {
@@ -161,3 +169,4 @@ void QgsMapToPixel::transformInPlace( QVector<float>& x,
     transformInPlace( x[i], y[i] );
 }
 #endif
+
