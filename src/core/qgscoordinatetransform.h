@@ -156,6 +156,9 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     // and y variables in place. The second one works with good old-fashioned
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
+#ifdef QT_ARCH_ARM
+    void transformInPlace( qreal& x, qreal& y, double &z, TransformDirection direction = ForwardTransform ) const;
+#endif
 
     //! @note not available in python bindings
     void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,

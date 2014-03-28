@@ -278,7 +278,7 @@ QRectF QwtPolarLayout::layoutLegend( Options options, QRectF &rect ) const
         // We don't allow vertical legends to take more than
         // half of the available space.
 
-        dim = qMin( hint.width(), rect.width() * d_data->legendRatio );
+        dim = qMin( hint.width(), (qreal)(rect.width() * d_data->legendRatio) );
 
         if ( !( options & IgnoreScrollbars ) )
         {
@@ -293,7 +293,7 @@ QRectF QwtPolarLayout::layoutLegend( Options options, QRectF &rect ) const
     }
     else
     {
-        dim = qMin( hint.height(), rect.height() * d_data->legendRatio );
+        dim = qMin( hint.height(), (qreal)(rect.height() * d_data->legendRatio) );
         dim = qMax( dim, d_data->layoutData.legend.hScrollBarHeight );
     }
 
