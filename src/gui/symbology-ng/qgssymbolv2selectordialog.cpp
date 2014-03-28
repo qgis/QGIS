@@ -256,7 +256,6 @@ void QgsSymbolV2SelectorDialog::updateUi()
     btnDown->setEnabled( false );
     btnRemoveLayer->setEnabled( false );
     btnLock->setEnabled( false );
-    btnAddLayer->setEnabled( true );
     return;
   }
 
@@ -267,7 +266,6 @@ void QgsSymbolV2SelectorDialog::updateUi()
   btnDown->setEnabled( currentRow < rowCount - 1 );
   btnRemoveLayer->setEnabled( rowCount > 1 );
   btnLock->setEnabled( true );
-  btnAddLayer->setEnabled( false );
 }
 
 void QgsSymbolV2SelectorDialog::updatePreview()
@@ -398,19 +396,22 @@ void QgsSymbolV2SelectorDialog::addLayer()
   if ( !idx.isValid() )
     return;
 
+  int insertIdx = -1;
   SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
   if ( item->isLayer() )
   {
-    QMessageBox::critical( this, tr( "Invalid Selection!" ), tr( "Kindly select a symbol to add layer." ) );
-    return;
+    insertIdx = item->row();
+    item = static_cast<SymbolLayerItem*>( item->parent() );
   }
 
   QgsSymbolV2* parentSymbol = item->symbol();
   QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( parentSymbol->type() );
-  parentSymbol->appendSymbolLayer( newLayer );
-  // XXX Insane behaviour of the appendSymbolLayer, it actually "pushes" into the list
+  if ( insertIdx == -1 )
+    parentSymbol->appendSymbolLayer( newLayer );
+  else
+    parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
-  item->insertRow( 0, newLayerItem );
+  item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
   layersTree->setCurrentIndex( model->indexFromItem( newLayerItem ) );
