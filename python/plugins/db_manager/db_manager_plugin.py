@@ -35,6 +35,7 @@ class DBManagerPlugin:
 
 	def initGui(self):
 		self.action = QAction( QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin","DB Manager"), self.iface.mainWindow() )
+		self.action.setObjectName("dbManager")
 		QObject.connect( self.action, SIGNAL( "triggered()" ), self.run )
 		# Add toolbar button and menu item
 		if hasattr( self.iface, 'addDatabaseToolBarIcon' ):
