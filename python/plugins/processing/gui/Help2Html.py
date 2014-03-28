@@ -53,6 +53,9 @@ class Help2Html:
         for out in self.alg.outputs:
             s += '<h3>' + out.description + '</h3>\n'
             s += '<p>' + self.getDescription(out.name) + '</p>\n'
+        s += '<br>'
+        s += '<p align="right">Algorithm author: ' + self.getDescription(self.ALG_CREATOR) + '</p>'
+        s += '<p align="right">Help author: ' + self.getDescription(self.ALG_HELP_CREATOR) + '</p>'
         s += '</body></html>'
         filename = tempFolder() + os.sep + 'temphelp.html'
         tempHtml = codecs.open(filename, 'w', encoding='utf-8')
