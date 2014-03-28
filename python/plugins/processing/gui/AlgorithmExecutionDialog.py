@@ -9,7 +9,7 @@
                            (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
                            otb at c-s dot fr (CS SI)
-    Contributors         : Victor Olaya 
+    Contributors         : Victor Olaya
                            Alexia Mondot (CS SI) - managing the new parameter ParameterMultipleExternalInput
 ***************************************************************************
 *                                                                         *
@@ -169,9 +169,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def setParamValue(self, param, widget):
         """
         set the .value of the parameter according to the given widget
-        the way to get the value is different for each value, 
+        the way to get the value is different for each value,
         so there is a code for each kind of parameter
-        
+
         param : -il <ParameterMultipleInput> or -method <ParameterSelection> ...
         """
         if isinstance(param, ParameterRaster):
@@ -191,7 +191,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             return param.setValue(widget.getValue())
         if isinstance(param, ParameterTableField):
             if param.optional and widget.currentIndex() == 0:
-                return param.setValue(None)            
+                return param.setValue(None)
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
@@ -260,10 +260,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
-                    if not keepOpen:
-                        self.close()
-                    else:
-                        self.resetGUI()
+                    self.resetGUI()
             else:
                 command = self.alg.getAsCommand()
                 if command:
@@ -273,10 +270,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
-                    if not keepOpen:
-                        self.close()
-                    else:
-                        self.resetGUI()
+                    self.resetGUI()
         except AlgorithmExecutionDialog.InvalidParameterValue, ex:
             try:
                 self.buttonBox.accepted.connect(lambda :
@@ -309,15 +303,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
         self.setInfo(msg, True)
-        if not keepOpen:
-            QMessageBox.critical(self, 'Error', msg)
-            self.close()
-        else:
-            self.resetGUI()
-            self.tabWidget.setCurrentIndex(1)  # log tab
+        self.resetGUI()
+        self.tabWidget.setCurrentIndex(1)  # log tab
 
     def iterate(self, i):
         self.setInfo('<b>Algorithm %s iteration #%i completed</b>'
