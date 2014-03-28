@@ -48,6 +48,8 @@
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaprenderer.sip
+%Include qgsmaprenderercache.sip
+%Include qgsmaprendererjob.sip
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmessagelog.sip
