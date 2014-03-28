@@ -106,6 +106,8 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVari
   updateBBox();
   updateSize();
 
+  mAddToCanvas->setChecked( s.value( "/Heatmap/addToCanvas", true ).toBool() );
+
   blockAllSignals( false );
 
   //finally set right the ok button
@@ -215,6 +217,7 @@ void HeatmapGui::saveSettings()
   // Save persistent settings
   QSettings s;
   s.setValue( "/Heatmap/lastFormat", QVariant( formatCombo->currentIndex() ) );
+  s.setValue( "/Heatmap/addToCanvas", mAddToCanvas->isChecked() );
 
   // Store temporary settings, which only apply to this session
   mHeatmapSessionSettings->insert( QString( "lastInputLayer" ), QVariant( inputLayerCombo->itemData( inputLayerCombo->currentIndex() ) ) );
@@ -580,6 +583,11 @@ int HeatmapGui::weightField()
   int weightindex;
   weightindex = weightFieldCombo->currentIndex();
   return weightFieldCombo->itemData( weightindex ).toInt();
+}
+
+bool HeatmapGui::addToCanvas()
+{
+  return mAddToCanvas->isChecked();
 }
 
 QString HeatmapGui::outputFilename()

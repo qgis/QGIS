@@ -303,6 +303,13 @@
      </layout>
     </widget>
    </item>
+   <item row="5" column="0" colspan="3">
+    <widget class="QCheckBox" name="mAddToCanvas">
+     <property name="text">
+      <string>Add generated file to map</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>

@@ -60,6 +60,9 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     /** Returns the attrinute field for weighted heat */
     int weightField();
 
+    /** Returns state of the add to canvas checkbox*/
+    bool addToCanvas();
+
     /** Returns the output filename/path */
     QString outputFilename();
 
