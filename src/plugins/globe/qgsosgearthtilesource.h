@@ -16,13 +16,21 @@
 #ifndef OSGEARTH_DRIVER_QGIS_DRIVEROPTIONS
 #define OSGEARTH_DRIVER_QGIS_DRIVEROPTIONS 1
 
-#include "qgsmaprenderer.h"
+#include <QtGlobal>
 
-#include <QImage>
 class QgisInterface;
+class QgsMapRenderer;
+class QgsCoordinateTransform;
+class QImage;
 
 #include <osgEarth/Common>
 #include <osgEarth/TileSource>
+
+#define USE_RENDERER
+
+#ifndef USE_RENDERER
+#include "qgsmapsettings.h"
+#endif
 
 using namespace osgEarth;
 
@@ -60,12 +68,16 @@ namespace osgEarth
         }
 
       private:
-        bool intersects( const TileKey* key );
+        QImage* createQImage( int width, int height ) const;
 
         //! Pointer to the QGIS interface object
         QgisInterface *mQGisIface;
-        QgsCoordinateTransform *mCoordTranform;
+        QgsCoordinateTransform *mCoordTransform;
+#ifndef USE_RENDERER
         QgsMapSettings mMapSettings;
+#else
+        QgsMapRenderer *mMapRenderer;
+#endif
     };
   }
 } // namespace osgEarth::Drivers

@@ -47,6 +47,10 @@ using namespace osgEarth::Util::Controls;
 #endif
 #include <osgEarth/Version>
 
+#if 0
+#include <iostream>
+#endif
+
 class QAction;
 class QToolBar;
 class QgisInterface;
@@ -177,6 +181,10 @@ class GlobePlugin : public QObject, public QgisPlugin
     bool mIsGlobeRunning;
     //! coordinates of the right-clicked point on the globe
     double mSelectedLat, mSelectedLon, mSelectedElevation;
+
+#if 0
+    std::streambuf *mCoutRdBuf, *mCerrRdBuf;
+#endif
 
   signals:
     //! emits current mouse position

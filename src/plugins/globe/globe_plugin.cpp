@@ -81,6 +81,37 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sIcon = ":/globe/globe.png";
 static const QString sExperimental = QString( "true" );
 
+#if 0
+#include <qgsmessagelog.h>
+
+class QgsMsgTrap : public std::streambuf
+{
+  public:
+    inline virtual int_type overflow( int_type c = std::streambuf::traits_type::eof() )
+    {
+      if ( c == std::streambuf::traits_type::eof() )
+        return std::streambuf::traits_type::not_eof( c );
+
+      switch ( c )
+      {
+        case '\r':
+          break;
+        case '\n':
+          QgsMessageLog::logMessage( buf, QObject::tr( "Globe" ) );
+          buf.clear();
+          break;
+        default:
+          buf += c;
+          break;
+      }
+      return c;
+    }
+
+  private:
+    QString buf;
+} msgTrap;
+#endif
+
 
 //constructor
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
@@ -255,6 +286,11 @@ void GlobePlugin::initGui()
            SLOT( blankProjectReady() ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
            mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
+
+#if 0
+  mCoutRdBuf = std::cout.rdbuf( &msgTrap );
+  mCerrRdBuf = std::cerr.rdbuf( &msgTrap );
+#endif
 }
 
 void GlobePlugin::run()
@@ -939,6 +975,13 @@ void GlobePlugin::unload()
   mQGisIface->removeToolBarIcon( mQActionPointer );
 
   delete mQActionPointer;
+
+#if 0
+  if ( mCoutRdBuf )
+    std::cout.rdbuf( mCoutRdBuf );
+  if ( mCerrRdBuf )
+    std::cerr.rdbuf( mCerrRdBuf );
+#endif
 }
 
 void GlobePlugin::help()
