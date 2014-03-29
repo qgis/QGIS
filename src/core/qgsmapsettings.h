@@ -61,7 +61,7 @@ class CORE_EXPORT QgsMapSettings
       ForceVectorOutput  = 0x04,
       UseAdvancedEffects = 0x08,
       DrawLabeling       = 0x10
-      // TODO: ignore scale-based visibiity (overview)
+      // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

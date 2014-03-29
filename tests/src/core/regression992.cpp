@@ -25,14 +25,13 @@
 #include <QTime>
 #include <QDesktopServices>
 
-
 //qgis includes...
 #include <qgsrasterlayer.h>
 #include <qgsrasterbandstats.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
-#include <qgsmaprenderer.h>
 #include <qgsproviderregistry.h>
+#include <qgsmapsettings.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -55,15 +54,13 @@ class Regression992: public QObject
     bool render( QString theFileName );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
-    QgsMapRenderer * mpMapRenderer;
+    QgsMapSettings mMapSettings;
     QString mReport;
 };
 
 //runs before all tests
 void Regression992::initTestCase()
 {
-  mpMapRenderer = 0;
-
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
@@ -92,10 +89,7 @@ void Regression992::initTestCase()
   myList << mpRasterLayer;
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
   // add the test layer to the maprender
-  mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpRasterLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mMapSettings.setLayers( QStringList() << mpRasterLayer->id() );
   mReport += "<h1>Regression 992 Test</h1>\n";
   mReport += "<p>See <a href=\"http://hub.qgis.org/issues/992\">"
              "redmine ticket 992</a> for more details.</p>";
@@ -114,15 +108,15 @@ void Regression992::cleanupTestCase()
   }
 
   delete mpRasterLayer;
-  delete mpMapRenderer;
 }
 
 void Regression992::regression992()
 {
-  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  QgsMapSettings settings;
+  settings.setExtent( mpRasterLayer->extent() );
   QgsRenderChecker myChecker;
+  myChecker.setMapSettings( settings );
   myChecker.setControlName( "expected_rgbwcmyk01_YeGeo.jp2" );
-  myChecker.setMapRenderer( mpMapRenderer );
   // allow up to 300 mismatched pixels
   bool myResultFlag = myChecker.runTest( "regression992", 400 );
   mReport += "\n\n\n" + myChecker.report();

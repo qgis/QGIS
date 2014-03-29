@@ -35,7 +35,6 @@ class CORE_EXPORT QgsDxfPalLabeling: public QgsPalLabeling
 
   private:
     QgsDxfExport* mDxfExport;
-    QgsMapRenderer mMapRenderer;
     QgsRenderContext mRenderContext;
 
     //only used for render context

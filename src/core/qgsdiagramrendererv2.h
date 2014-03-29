@@ -58,20 +58,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
       MapOrientation = 8
     };
 
-    QgsDiagramLayerSettings()
-        : placement( AroundPoint )
-        , placementFlags( OnLine )
-        , priority( 5 )
-        , obstacle( false )
-        , dist( 0.0 )
-        , renderer( 0 )
-        , palLayer( 0 )
-        , ct( 0 )
-        , xform( 0 )
-        , xPosColumn( -1 )
-        , yPosColumn( -1 )
-    {
-    }
+    QgsDiagramLayerSettings();
 
     ~QgsDiagramLayerSettings();
 

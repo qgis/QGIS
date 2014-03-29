@@ -78,11 +78,11 @@ void TestQgsComposerRotation::initTestCase()
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  mMapRenderer = new QgsMapRenderer();
-  mMapRenderer->setLayerSet( QStringList() << mRasterLayer->id() );
-  mMapRenderer->setProjectionsEnabled( false );
+  QgsMapSettings settings;
+  settings.setLayers( QStringList() << mRasterLayer->id() );
+  settings.setCrsTransformEnabled( false );
 
-  mComposition = new QgsComposition( mMapRenderer );
+  mComposition = new QgsComposition( settings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerRect = new QgsComposerShape( 70, 70, 150, 100, mComposition );

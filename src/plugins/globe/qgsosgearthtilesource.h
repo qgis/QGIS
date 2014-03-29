@@ -60,15 +60,12 @@ namespace osgEarth
         }
 
       private:
-
-        QImage* createQImage( int width, int height ) const;
         bool intersects( const TileKey* key );
 
         //! Pointer to the QGIS interface object
         QgisInterface *mQGisIface;
         QgsCoordinateTransform *mCoordTranform;
-        QgsMapRenderer* mMapRenderer;
-
+        QgsMapSettings mMapSettings;
     };
   }
 } // namespace osgEarth::Drivers

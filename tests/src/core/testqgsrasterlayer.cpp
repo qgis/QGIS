@@ -82,7 +82,7 @@ class TestQgsRasterLayer: public QObject
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
     QgsRasterLayer * mpFloat32RasterLayer;
-    QgsMapRenderer * mpMapRenderer;
+    QgsMapSettings mMapSettings;
     QString mReport;
 };
 
@@ -143,10 +143,7 @@ void TestQgsRasterLayer::initTestCase()
     QList<QgsMapLayer *>() << mpFloat32RasterLayer );
 
   // add the test layer to the maprender
-  mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpRasterLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mMapSettings.setLayers( QStringList() << mpRasterLayer->id() );
   mReport += "<h1>Raster Layer Tests</h1>\n";
   mReport += "<p>" + mySettings + "</p>";
 }
@@ -168,7 +165,7 @@ void TestQgsRasterLayer::isValid()
 {
   QVERIFY( mpRasterLayer->isValid() );
   mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
-  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  mMapSettings.setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
 }
 
@@ -201,7 +198,7 @@ void TestQgsRasterLayer::pseudoColor()
   rasterShader->setRasterShaderFunction( colorRampShader );
   QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( mpRasterLayer->dataProvider(), 1, rasterShader );
   mpRasterLayer->setRenderer( r );
-  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  mMapSettings.setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster_pseudo" ) );
 }
 
@@ -262,7 +259,7 @@ bool TestQgsRasterLayer::testColorRamp( QString name, QgsVectorColorRampV2* colo
   rasterShader->setRasterShaderFunction( colorRampShader );
   QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( mpRasterLayer->dataProvider(), 1, rasterShader );
   mpRasterLayer->setRenderer( r );
-  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  mMapSettings.setExtent( mpRasterLayer->extent() );
   return render( name );
 }
 
@@ -306,20 +303,16 @@ void TestQgsRasterLayer::colorRamp4()
 void TestQgsRasterLayer::landsatBasic()
 {
   mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
-  QStringList myLayers;
-  myLayers << mpLandsatRasterLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
-  mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
+  mMapSettings.setLayers( QStringList() << mpLandsatRasterLayer->id() );
+  mMapSettings.setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( render( "landsat_basic" ) );
 }
 
 void TestQgsRasterLayer::landsatBasic875Qml()
 {
   //a qml that orders the rgb bands as 8,7,5
-  QStringList myLayers;
-  myLayers << mpLandsatRasterLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
-  mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
+  mMapSettings.setLayers( QStringList() << mpLandsatRasterLayer->id() );
+  mMapSettings.setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( setQml( "875" ) );
   QVERIFY( render( "landsat_875" ) );
 }
@@ -432,7 +425,7 @@ bool TestQgsRasterLayer::render( QString theTestType )
   mReport += "<h2>" + theTestType + "</h2>\n";
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapRenderer( mpMapRenderer );
+  myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += "\n\n\n" + myChecker.report();
   return myResultFlag;
@@ -489,11 +482,8 @@ void TestQgsRasterLayer::transparency()
   QVERIFY( rasterRenderer != 0 );
   rasterRenderer->setRasterTransparency( rasterTransparency );
 
-  QStringList myLayers;
-  myLayers << mpFloat32RasterLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
-
-  mpMapRenderer->setExtent( mpFloat32RasterLayer->extent() );
+  mMapSettings.setLayers( QStringList() << mpFloat32RasterLayer->id() );
+  mMapSettings.setExtent( mpFloat32RasterLayer->extent() );
   QVERIFY( render( "raster_transparency" ) );
 }
 

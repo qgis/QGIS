@@ -121,7 +121,7 @@ void TestQgsComposerMap::grid()
   //mComposerMap->setShowGridAnnotation( true );
   mComposerMap->setGridPenWidth( 0.5 );
   mComposerMap->setGridPenColor( QColor( 0, 255, 0 ) );
-  /*
+#if 0
   mComposerMap->setGridAnnotationPrecision( 0 );
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::Disabled, QgsComposerMap::Left );
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, QgsComposerMap::Right );
@@ -130,7 +130,7 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Right );
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
   mComposerMap->setAnnotationFontColor( QColor( 255, 0, 0, 150 ) );
-  */
+#endif
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_Overlay );
   qWarning() << "grid annotation font: " << mComposerMap->gridAnnotationFont().toString() << " exactMatch:" << mComposerMap->gridAnnotationFont().exactMatch();
   QgsCompositionChecker checker( "composermap_grid", mComposition );

@@ -2220,6 +2220,8 @@ int QgsExpression::NodeBinaryOperator::precedence() const
     case boConcat:
       return 7;
   }
+  Q_ASSERT( 0 && "unexpected binary operator" );
+  return -1;
 }
 
 QString QgsExpression::NodeBinaryOperator::dump() const

@@ -36,6 +36,7 @@
 #include "qgsmaptopixel.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
+#include "qgsmaprendererjob.h"
 
 #include <QFile>
 #include <QPainter>
@@ -54,22 +55,20 @@ void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const P
   Q_UNUSED( overrideProfile );
 
   setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
-  QgsMapRenderer* mainRenderer = mQGisIface->mapCanvas()->mapRenderer();
-  mMapRenderer = new QgsMapRenderer();
 
   long epsgGlobe = 4326;
-  if ( mainRenderer->destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) != 0 )
+  if ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) != 0 )
   {
-    QgsCoordinateReferenceSystem srcCRS( mainRenderer->destinationCrs() ); //FIXME: crs from canvas or first layer?
+    QgsCoordinateReferenceSystem srcCRS( mQGisIface->mapCanvas()->mapSettings().destinationCrs() ); //FIXME: crs from canvas or first layer?
     QgsCoordinateReferenceSystem destCRS;
     destCRS.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgGlobe ) );
-    //QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
-    mMapRenderer->setDestinationCrs( destCRS );
-    mMapRenderer->setProjectionsEnabled( true );
+
+    mMapSettings.setDestinationCrs( destCRS );
+    mMapSettings.setCrsTransformEnabled( true );
     mCoordTranform = new QgsCoordinateTransform( srcCRS, destCRS );
   }
-  mMapRenderer->setOutputUnits( mainRenderer->outputUnits() );
-  mMapRenderer->setMapUnits( QGis::Degrees );
+  // mMapSettings.setOutputUnits( mQGisIface->mapCanvas()->mapSettings().outputUnits() );
+  mMapSettings.setMapUnits( QGis::Degrees );
 
   //mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 }
@@ -97,29 +96,21 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCall
       return 0;
     }
 
-    QImage* qImage = createQImage( target_width, target_height );
-    if ( !qImage )
-    {
-      return 0;
-    }
+    mMapSettings.setOutputSize( QSize( tileSize, tileSize ) );
+    mMapSettings.setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
+    mMapSettings.setLayers( mQGisIface->mapCanvas()->mapSettings().layers() );
 
-    QgsMapRenderer* mainRenderer = mQGisIface->mapCanvas()->mapRenderer();
-    mMapRenderer->setLayerSet( mainRenderer->layerSet() );
+    QgsMapRendererSequentialJob job( mMapSettings );
+    job.start();
+    job.waitForFinished();
 
-    mMapRenderer->setOutputSize( QSize( qImage->width(), qImage->height() ), qImage->logicalDpiX() );
+    QImage qImage( job.renderedImage() );
 
-    QgsRectangle mapExtent( xmin, ymin, xmax, ymax );
-    mMapRenderer->setExtent( mapExtent );
-
-    QPainter thePainter( qImage );
-    //thePainter.setRenderHint(QPainter::Antialiasing); //make it look nicer
-    mMapRenderer->render( &thePainter );
-
-    unsigned char* data = qImage->bits();
+    unsigned char *data = qImage.bits();
 
     image = new osg::Image;
     //The pixel format is always RGBA to support transparency
-    image->setImage( qImage->width(), qImage->height(), 1,
+    image->setImage( qImage.width(), qImage.height(), 1,
                      4,
                      GL_BGRA, GL_UNSIGNED_BYTE, //Why not GL_RGBA - QGIS bug?
                      data,
@@ -135,52 +126,14 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCall
   return image.release();
 }
 
-QImage* QgsOsgEarthTileSource::createQImage( int width, int height ) const
-{
-  if ( width < 0 || height < 0 )
-  {
-    return 0;
-  }
-
-  QImage* qImage = 0;
-
-  //is format jpeg?
-  bool jpeg = false;
-  //transparent parameter
-  bool transparent = true;
-
-  //use alpha channel only if necessary because it slows down performance
-  if ( transparent && !jpeg )
-  {
-    qImage = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
-    qImage->fill( 0 );
-  }
-  else
-  {
-    qImage = new QImage( width, height, QImage::Format_RGB32 );
-    qImage->fill( qRgb( 255, 255, 255 ) );
-  }
-
-  if ( !qImage )
-  {
-    return 0;
-  }
-
-  //apply DPI parameter if present.
-#if 0
-  int dpm = dpi / 0.0254;
-  qImage->setDotsPerMeterX( dpm );
-  qImage->setDotsPerMeterY( dpm );
-#endif
-  return qImage;
-}
-
 bool QgsOsgEarthTileSource::intersects( const TileKey* key )
 {
   //Get the native extents of the tile
   double xmin, ymin, xmax, ymax;
   key->getExtent().getBounds( xmin, ymin, xmax, ymax );
   QgsRectangle extent = mQGisIface->mapCanvas()->fullExtent();
-  if ( mCoordTranform ) extent = mCoordTranform->transformBoundingBox( extent );
+  if ( mCoordTranform )
+    extent = mCoordTranform->transformBoundingBox( extent );
+
   return !( xmin >= extent.xMaximum() || xmax <= extent.xMinimum() || ymin >= extent.yMaximum() || ymax <= extent.yMinimum() );
 }

@@ -649,14 +649,14 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       }
     }
 
-    /*
+#if 0
     // TODO: split extent
     if ( split )
     {
       mRenderContext.setExtent( r2 );
       ml->draw( mRenderContext );
-    }*/
-
+    }
+#endif
   } // while (li.hasPrevious())
 
   return layerJobs;

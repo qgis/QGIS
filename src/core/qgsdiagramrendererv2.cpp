@@ -18,9 +18,24 @@
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
 #include "qgsrendercontext.h"
+
 #include <QDomElement>
 #include <QPainter>
 
+QgsDiagramLayerSettings::QgsDiagramLayerSettings()
+    : placement( AroundPoint )
+    , placementFlags( OnLine )
+    , priority( 5 )
+    , obstacle( false )
+    , dist( 0.0 )
+    , renderer( 0 )
+    , palLayer( 0 )
+    , ct( 0 )
+    , xform( 0 )
+    , xPosColumn( -1 )
+    , yPosColumn( -1 )
+{
+}
 
 QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 {
@@ -254,7 +269,8 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   rendererElem.appendChild( categoryElem );
 }
 
-QgsDiagramRendererV2::QgsDiagramRendererV2(): mDiagram( 0 )
+QgsDiagramRendererV2::QgsDiagramRendererV2()
+    : mDiagram( 0 )
 {
 }
 

@@ -42,17 +42,17 @@
 #include <cmath>
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition ), mMapRotation( 0 ), mKeepLayerSet( false ),
-    mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
-    mGridEnabled( false ), mGridStyle( Solid ),
-    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
-    mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
-    mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
-    mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
-    mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
-    mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 ),
-    mGridFramePenThickness( 0.5 ), mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black ),
-    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
+    : QgsComposerItem( x, y, width, height, composition ), mMapRotation( 0 ), mKeepLayerSet( false )
+    , mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false )
+    , mGridEnabled( false ), mGridStyle( Solid )
+    , mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) )
+    , mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver )
+    , mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame )
+    , mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 )
+    , mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal )
+    , mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 )
+    , mGridFramePenThickness( 0.5 ), mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black )
+    , mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
@@ -100,17 +100,17 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition ), mMapRotation( 0 ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
-    mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
-    mGridEnabled( false ), mGridStyle( Solid ),
-    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
-    mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
-    mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
-    mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
-    mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
-    mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mGridFramePenThickness( 0.5 ),
-    mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black ),
-    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
+    : QgsComposerItem( 0, 0, 10, 10, composition ), mMapRotation( 0 ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 )
+    , mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false )
+    , mGridEnabled( false ), mGridStyle( Solid )
+    , mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) )
+    , mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver )
+    , mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame )
+    , mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 )
+    , mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal )
+    , mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mGridFramePenThickness( 0.5 )
+    , mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black )
+    , mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
 {
   mOverviewFrameMapSymbol = 0;
   mGridLineSymbol = 0;

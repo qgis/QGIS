@@ -448,11 +448,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mMousePrecisionDecimalPlaces( 0 )
     , mInternalClipboard( 0 )
     , mShowProjectionTab( false )
-    , mPythonUtils( NULL )
+    , mPythonUtils( 0 )
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
-    , mpGpsWidget( NULL )
+    , mpGpsWidget( 0 )
 {
   if ( smInstance )
   {
@@ -785,6 +785,7 @@ QgisApp::QgisApp( )
   mMapCanvas->freeze();
   mMapLegend = new QgsLegend( mMapCanvas );
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
+  mInfoBar = new QgsMessageBar( centralWidget() );
   // More tests may need more members to be initialized
 }
 
@@ -3785,12 +3786,7 @@ void QgisApp::dxfExport()
     dxfExport.setSymbologyExport( d.symbologyMode() );
     if ( mapCanvas() )
     {
-      QgsMapRenderer* r = mapCanvas()->mapRenderer();
-      if ( r )
-      {
-        dxfExport.setMapUnits( r->mapUnits() );
-      }
-
+      dxfExport.setMapUnits( mapCanvas()->mapUnits() );
       //extent
       if ( d.exportMapExtent() )
       {

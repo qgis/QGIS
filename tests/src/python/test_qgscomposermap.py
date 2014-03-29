@@ -95,6 +95,7 @@ class TestQgsComposerMap(TestCase):
                                                      QgsComposerMap.Bottom)
         self.mComposerMap.setAnnotationFontColor(QColor(255,0,0,150))
         self.mComposerMap.setGridBlendMode(QPainter.CompositionMode_Overlay)
+        self.mComposerMap.setShowGridAnnotation(False)
         checker = QgsCompositionChecker('composermap_grid', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
         self.mComposerMap.setGridEnabled(False)
