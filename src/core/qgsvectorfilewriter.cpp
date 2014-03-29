@@ -579,10 +579,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( "LINEFORMAT", new SetOption(
                          QObject::tr( "By default when creating new .csv files they "
                                       "are created with the line termination conventions "
-                                      "of the local platform (CR/LF on win32 or LF on all other systems). "
-                                      "This may be overridden through use of the LINEFORMAT option." ),
+                                      "of the local platform (CR/LF on Win32 or LF on all other systems). "
+                                      "This may be overridden through the use of the LINEFORMAT option." ),
                          QStringList()
-                         << "AS_WKT"
+                         << "CRLF"
                          << "LF"
                          , "" // Default value
                          , true // Allow None
@@ -595,7 +595,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                       "into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY "
                                       "or GEOMETRY=AS_YX." ),
                          QStringList()
-                         << "CRLF"
+                         << "AS_WKT"
                          << "AS_XYZ"
                          << "AS_XY"
                          << "AS_YX"
@@ -610,7 +610,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                        ) );
 
   layerOptions.insert( "SEPARATOR", new SetOption(
-                         QObject::tr( "Field separator character. Default value : COMMA" ),
+                         QObject::tr( "Field separator character." ),
                          QStringList()
                          << "COMMA"
                          << "SEMICOLON"
