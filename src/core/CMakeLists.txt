@@ -370,6 +370,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
+  symbology-ng/qgsstylev2.h
 )
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)

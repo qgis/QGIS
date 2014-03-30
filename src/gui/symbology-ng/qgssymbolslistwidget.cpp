@@ -62,22 +62,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
-  if ( parent )
-  {
-    if ( dynamic_cast<QgsStyleV2ManagerDialog*>( parent->parentWidget() ) )
-    {
-      btnStyle->setVisible( false );
-    }
-  }
-  // Set the Style Menu under btnStyle
-  QMenu *styleMenu = new QMenu( btnStyle );
-  QAction *styleMgrAction = new QAction( tr( "Style Manager" ), styleMenu );
-  styleMenu->addAction( styleMgrAction );
-  QAction *saveStyle = new QAction( tr( "Save in symbol library..." ), styleMenu );
-  styleMenu->addAction( saveStyle );
-  connect( styleMgrAction, SIGNAL( triggered() ), this, SLOT( openStyleManager() ) );
-  connect( saveStyle, SIGNAL( triggered() ), this, SLOT( addSymbolToStyle() ) );
-  btnStyle->setMenu( styleMenu );
+  connect( mStyle, SIGNAL( symbolSaved( QString, QgsSymbolV2* ) ), this, SLOT( symbolAddedToStyle( QString, QgsSymbolV2* ) ) );
+  connect(  openStyleManagerButton, SIGNAL( pressed() ), this, SLOT( openStyleManager() ) );
 
   lblSymbolName->setText( "" );
   populateSymbolView();
@@ -217,33 +203,8 @@ void QgsSymbolsListWidget::setLineWidth( double width )
   emit changed();
 }
 
-void QgsSymbolsListWidget::addSymbolToStyle()
+void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol)
 {
-  bool ok;
-  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
-                                        tr( "Please enter name for the symbol:" ) , QLineEdit::Normal, tr( "New symbol" ), &ok );
-  if ( !ok || name.isEmpty() )
-    return;
-
-  // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( name ) )
-  {
-    int res = QMessageBox::warning( this, tr( "Save symbol" ),
-                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( name ),
-                                    QMessageBox::Yes | QMessageBox::No );
-    if ( res != QMessageBox::Yes )
-    {
-      return;
-    }
-  }
-
-  // add new symbol to style and re-populate the list
-  mStyle->addSymbol( name, mSymbol->clone() );
-
-  // make sure the symbol is stored
-  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
-
   populateSymbolView();
 }
 

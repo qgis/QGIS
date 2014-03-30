@@ -1,4 +1,4 @@
-class QgsStyleV2
+class QgsStyleV2 : QObject
 {
 %TypeHeaderCode
 #include <qgsstylev2.h>
