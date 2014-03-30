@@ -1,0 +1,12 @@
+r.stream.order
+r.stream.order - Calculate Strahler's and Horton's stream order Hack's main streams and Shreeve's stream magnitude
+Raster (r.*)
+ParameterRaster|stream_rast|Input map: stream mask|False
+ParameterRaster|direction|Input map: direction map|False
+ParameterBoolean|-a|Use flow accumulation to trace horton and hack models|False
+ParameterBoolean|-z|Create zero-value background|False
+OutputRaster|strahler|Output basin map (Strahler)
+OutputRaster|shreve|Output basin map (Shreve)
+OutputRaster|horton|Output basin map (Horton)
+OutputRaster|hack|Output basin map (Hack)
+OutputRaster|topo|Output basin map (Topo)

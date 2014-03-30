@@ -1,0 +1,9 @@
+r.viewshed
+r.viewshed - Computes the viewshed of a point on an elevation raster map.
+Raster (r.*)
+ParameterRaster|input|Elevation|False
+ParameterString|coordinates|Coordinate identifying the viewing position|0,0
+ParameterString|obs_elev|Viewing position height above the ground|1.75
+ParameterString|max_dist|Maximum distance from the viewing point (meters)|10000
+ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
+OutputRaster|output|Output raster layer
