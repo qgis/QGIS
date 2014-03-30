@@ -50,20 +50,11 @@ class QgsServerProjectParser
     @return the maplayer or 0 in case of error*/
     QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
 
-    QStringList createCRSListForLayer( QgsMapLayer* theMapLayer ) const;
-
     /**Returns the layer id under a <legendlayer> tag in the QGIS projectfile*/
     QString layerIdFromLegendLayer( const QDomElement& legendLayer ) const;
 
     /**@param considerMapExtent Take user-defined map extent instead of data-calculated extent if present in project file*/
     void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc, bool considerMapExtent = false ) const;
-
-    void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList ) const;
-
-    void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement, const QString& crsText, QDomDocument& doc ) const;
-
-    void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-                                   const QgsCoordinateReferenceSystem& layerCRS ) const;
 
     void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer ) const;
 

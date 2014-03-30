@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmsprojectparser.h"
+#include "qgsconfigparserutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapserviceexception.h"
@@ -866,11 +867,11 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       //CRS
       if ( geometryLayer )
       {
-        QStringList crsList = mProjectParser.createCRSListForLayer( currentLayer );
-        mProjectParser.appendCRSElementsToLayer( layerElem, doc, crsList );
+        QStringList crsList = QgsConfigParserUtils::createCRSListForLayer( currentLayer );
+        QgsConfigParserUtils::appendCRSElementsToLayer( layerElem, doc, crsList, mProjectParser.supportedOutputCrsList() );
 
         //Ex_GeographicBoundingBox
-        mProjectParser.appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
+        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
       }
 
       //only one default style in project file mode

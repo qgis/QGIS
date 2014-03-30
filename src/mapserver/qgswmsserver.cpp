@@ -34,7 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
-#include "qgssldparser.h"
+#include "qgssldconfigparser.h"
 #include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
@@ -1562,7 +1562,28 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
       QgsDebugMsg( "Error, could not create DomDocument from SLD" );
       QgsDebugMsg( QString( "The error message is: %1" ).arg( errorMsg ) );
       delete theDocument;
-      return 0;
+      return 1;
+    }
+
+    QgsSLDConfigParser* userSLDParser = new QgsSLDConfigParser( theDocument, mParameters );
+    userSLDParser->setFallbackParser( mConfigParser );
+    mConfigParser = userSLDParser;
+    //now replace the content of layersList and stylesList (if present)
+    layersList.clear();
+    stylesList.clear();
+    QStringList layersSTDList;
+    QStringList stylesSTDList;
+    if ( mConfigParser->layersAndStyles( layersSTDList, stylesSTDList ) != 0 )
+    {
+      QgsDebugMsg( "Error, no layers and styles found in SLD" );
+      return 2;
+    }
+    QStringList::const_iterator layersIt;
+    QStringList::const_iterator stylesIt;
+    for ( layersIt = layersSTDList.constBegin(), stylesIt = stylesSTDList.constBegin(); layersIt != layersSTDList.constEnd(); ++layersIt, ++stylesIt )
+    {
+      layersList << *layersIt;
+      stylesList << *stylesIt;
     }
 
 #if 0 //todo: fixme

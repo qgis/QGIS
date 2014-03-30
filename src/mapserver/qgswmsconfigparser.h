@@ -98,11 +98,14 @@ class QgsWMSConfigParser
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
-    virtual void setFallbackParser( QgsWMSConfigParser* p ) {}
     virtual void setScaleDenominator( double denom ) = 0;
     virtual void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) = 0;
 
     virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
+#if 0
+    /**List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
+    QMap<QString, QDomDocument*> mExternalGMLDatasets;
+#endif //0
 };
 
 #endif // QGSWMSCONFIGPARSER_H
