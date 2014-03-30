@@ -40,7 +40,7 @@ Build-Depends:
  txt2tags,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
- spawn-cgi, lighttpd, poppler-utils
+ spawn-fcgi, lighttpd, poppler-utils
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current

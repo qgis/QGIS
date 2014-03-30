@@ -39,7 +39,7 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
  oracle-instantclient11.2-devel,
- spawn-cgi, lighttpd, poppler-utils
+ spawn-fcgi, lighttpd, poppler-utils
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.9.5
 Homepage: http://qgis.org/
