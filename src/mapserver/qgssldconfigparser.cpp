@@ -331,17 +331,142 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
 
 int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& styles ) const
 {
-  return 1; //soon...
+  QgsDebugMsg( "Entering." );
+  layers.clear();
+  styles.clear();
+
+  if ( mXMLDoc )
+  {
+    QDomElement sldElem = mXMLDoc->documentElement();
+    if ( !sldElem.isNull() )
+    {
+      //go through all the children and search for <NamedLayers> and <UserLayers>
+      QDomNodeList layerNodes = sldElem.childNodes();
+      for ( int i = 0; i < layerNodes.size(); ++i )
+      {
+        QDomElement currentLayerElement = layerNodes.item( i ).toElement();
+        if ( currentLayerElement.localName() == "NamedLayer" )
+        {
+          QgsDebugMsg( "Found a NamedLayer" );
+          //layer name
+          QDomNodeList nameList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+          if ( nameList.length() < 1 )
+          {
+            continue; //a layer name is mandatory
+          }
+          QString layerName = nameList.item( 0 ).toElement().text();
+
+          //find the Named Styles and the corresponding names
+          QDomNodeList namedStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "NamedStyle" );
+          for ( int j = 0; j < namedStyleList.size(); ++j )
+          {
+            QDomNodeList styleNameList = namedStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+            if ( styleNameList.size() < 1 )
+            {
+              continue; //a layer name is mandatory
+            }
+            QString styleName = styleNameList.item( 0 ).toElement().text();
+            QgsDebugMsg( "styleName is: " + styleName );
+            layers.push_back( layerName );
+            styles.push_back( styleName );
+          }
+
+          //named layers can also have User Styles
+          QDomNodeList userStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "UserStyle" );
+          for ( int j = 0; j < userStyleList.size(); ++j )
+          {
+            QDomNodeList styleNameList = userStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+            if ( styleNameList.size() < 1 )
+            {
+              continue; //a layer name is mandatory
+            }
+            QString styleName = styleNameList.item( 0 ).toElement().text();
+            QgsDebugMsg( "styleName is: " + styleName );
+            layers.push_back( layerName );
+            styles.push_back( styleName );
+          }
+        }
+        else if ( currentLayerElement.localName() == "UserLayer" )
+        {
+          QgsDebugMsg( "Found a UserLayer" );
+          //layer name
+          QDomNodeList nameList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+          if ( nameList.length() < 1 )
+          {
+            QgsDebugMsg( "Namelist size is <1" );
+            continue; //a layer name is mandatory
+          }
+          QString layerName = nameList.item( 0 ).toElement().text();
+          QgsDebugMsg( "layerName is: " + layerName );
+          //find the User Styles and the corresponding names
+          QDomNodeList userStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "UserStyle" );
+          for ( int j = 0; j < userStyleList.size(); ++j )
+          {
+            QDomNodeList styleNameList = userStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+            if ( styleNameList.size() < 1 )
+            {
+              QgsDebugMsg( "Namelist size is <1" );
+              continue;
+            }
+
+            QString styleName = styleNameList.item( 0 ).toElement().text();
+            QgsDebugMsg( "styleName is: " + styleName );
+            layers.push_back( layerName );
+            styles.push_back( styleName );
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    return 1;
+  }
+  return 0;
 }
 
 QDomDocument QgsSLDConfigParser::getStyle( const QString& styleName, const QString& layerName ) const
 {
-  return QDomDocument(); //soon...
+  QDomElement userLayerElement = findUserLayerElement( layerName );
+
+  if ( userLayerElement.isNull() )
+  {
+    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+  }
+
+  QDomElement userStyleElement = findUserStyleElement( userLayerElement, styleName );
+
+  if ( userStyleElement.isNull() )
+  {
+    throw QgsMapServiceException( "StyleNotDefined", "Operation request references a Style not offered by the server." );
+  }
+
+  QDomDocument styleDoc;
+  styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+  return styleDoc;
 }
 
 QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
 {
-  return QDomDocument(); //soon...
+  QDomDocument styleDoc;
+  for ( int i = 0; i < layerList.size(); i++ )
+  {
+    QString layerName;
+    QString typeName;
+    layerName = layerList.at( i );
+    QDomElement userLayerElement = findUserLayerElement( layerName );
+    if ( userLayerElement.isNull() )
+    {
+      throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+    }
+    QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
+    for ( int j = 0; j < userStyleList.size(); j++ )
+    {
+      QDomElement userStyleElement = userStyleList.item( i ).toElement();
+      styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+    }
+  }
+  return styleDoc;
 }
 
 QgsMapRenderer::OutputUnits QgsSLDConfigParser::outputUnits() const
@@ -351,23 +476,35 @@ QgsMapRenderer::OutputUnits QgsSLDConfigParser::outputUnits() const
 
 QStringList QgsSLDConfigParser::identifyDisabledLayers() const
 {
-  return QStringList(); //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->identifyDisabledLayers();
+  }
+  return QStringList();
 }
 
 bool QgsSLDConfigParser::featureInfoWithWktGeometry() const
 {
-  return false; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoWithWktGeometry();
+  }
+  return false;
 }
 
 
 QHash<QString, QString> QgsSLDConfigParser::featureInfoLayerAliasMap() const
 {
-  return QHash<QString, QString>(); //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoLayerAliasMap();
+  }
+  return QHash<QString, QString>();
 }
 
 QString QgsSLDConfigParser::featureInfoDocumentElement( const QString& defaultValue ) const
 {
-  return QString();
+  return defaultValue;
 }
 
 QString QgsSLDConfigParser::featureInfoDocumentElementNS() const
@@ -382,102 +519,172 @@ QString QgsSLDConfigParser::featureInfoSchema() const
 
 bool QgsSLDConfigParser::featureInfoFormatSIA2045() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoFormatSIA2045();
+  }
   return false;
 }
 
 void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
 {
-  //soon...
+  //todo: fixme
 }
 
 void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
 {
-  //soon...
+  //needs to be here?
 }
 
 QString QgsSLDConfigParser::serviceUrl() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->serviceUrl();
+  }
   return QString();
 }
 
 QStringList QgsSLDConfigParser::wfsLayerNames() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->wfsLayerNames();
+  }
   return QStringList();
 }
 
 void QgsSLDConfigParser::owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const
 {
-  //soon...
+  if ( mFallbackParser )
+  {
+    mFallbackParser->owsGeneralAndResourceList( parentElement, doc, strHref );
+  }
 }
 
 double QgsSLDConfigParser::legendBoxSpace() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendBoxSpace();
+  }
+  return 0;
 }
 
 double QgsSLDConfigParser::legendLayerSpace() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendLayerSpace();
+  }
+  return 0;
 }
 
 double QgsSLDConfigParser::legendLayerTitleSpace() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendLayerTitleSpace();
+  }
+  return 0;
 }
 
 double QgsSLDConfigParser::legendSymbolSpace() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendSymbolSpace();
+  }
+  return 0;
 }
 
 double QgsSLDConfigParser::legendIconLabelSpace() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendIconLabelSpace();
+  }
+  return 0;
 }
 
 double QgsSLDConfigParser::legendSymbolWidth() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendSymbolWidth();
+  }
+  return 0;
 }
 
 double QgsSLDConfigParser::legendSymbolHeight() const
 {
-  return 0; //soon...
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendSymbolHeight();
+  }
+  return 0;
 }
 
 const QFont& QgsSLDConfigParser::legendLayerFont() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendLayerFont();
+  }
   return mLegendLayerFont;
 }
 
 const QFont& QgsSLDConfigParser::legendItemFont() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->legendItemFont();
+  }
   return mLegendItemFont;
 }
 
 double QgsSLDConfigParser::maxWidth() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->maxWidth();
+  }
   return -1;
 }
 
 double QgsSLDConfigParser::maxHeight() const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->maxHeight();
+  }
   return -1;
 }
 
 QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->createPrintComposition( composerTemplate, mapRenderer, parameterMap );
+  }
   return 0;
 }
 
 QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
 {
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->initComposition( composerTemplate, mapRenderer, mapList, labelList, htmlFrameList );
+  }
   return 0;
 }
 
 void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  //soon...
+  if ( mFallbackParser )
+  {
+    mFallbackParser->printCapabilities( parentElement, doc );
+  }
 }
 
 void QgsSLDConfigParser::setScaleDenominator( double denom )
