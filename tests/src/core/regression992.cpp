@@ -53,8 +53,7 @@ class Regression992: public QObject
   private:
     bool render( QString theFileName );
     QString mTestDataDir;
-    QgsRasterLayer * mpRasterLayer;
-    QgsMapSettings mMapSettings;
+    QgsRasterLayer *mpRasterLayer;
     QString mReport;
 };
 
@@ -63,10 +62,10 @@ void Regression992::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
   // QgsApplication::skipGdalDriver( "JP2ECW" );
   // QgsApplication::skipGdalDriver( "JP2MrSID" );
-  QgsApplication::initQgis();
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
@@ -89,7 +88,6 @@ void Regression992::initTestCase()
   myList << mpRasterLayer;
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
   // add the test layer to the maprender
-  mMapSettings.setLayers( QStringList() << mpRasterLayer->id() );
   mReport += "<h1>Regression 992 Test</h1>\n";
   mReport += "<p>See <a href=\"http://hub.qgis.org/issues/992\">"
              "redmine ticket 992</a> for more details.</p>";
@@ -114,6 +112,7 @@ void Regression992::regression992()
 {
   QgsMapSettings settings;
   settings.setExtent( mpRasterLayer->extent() );
+  settings.setLayers( QStringList() << mpRasterLayer->id() );
   QgsRenderChecker myChecker;
   myChecker.setMapSettings( settings );
   myChecker.setControlName( "expected_rgbwcmyk01_YeGeo.jp2" );
