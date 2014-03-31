@@ -14793,7 +14793,6 @@ Por favor contate os desenvolvedores.</translation>
         <comment>number of legend items to remove</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -14801,7 +14800,6 @@ Por favor contate os desenvolvedores.</translation>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -44191,22 +44189,22 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1634"/>
         <source>Render layers in parallel using all available CPU cores</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderizar camadas em paralelo usando todos os núcleos de CPU disponíveis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1643"/>
         <source>Map update interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo de atualização do Mapa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1688"/>
         <source>Enable feature simplification by default for newly added layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar simplificação de feição por padrão para novas camadas adicionadas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2470"/>
@@ -44540,7 +44538,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="829"/>
         <source>Prompt for confirmation when a layer is to be removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Solicitar confirmação quando uma camada for ser removida</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="845"/>
@@ -44580,12 +44578,12 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1048"/>
         <source>QSettings</source>
-        <translation type="unfinished"></translation>
+        <translation>QSettings</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1074"/>
         <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation type="unfinished"></translation>
+        <translation>Redefinir as configurações de Interface do Usuário, repor QGIS ao seu modo de exibição padrão</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1090"/>
@@ -45866,12 +45864,12 @@ erro: %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
         <source>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</source>
-        <translation type="unfinished">Restringir tabelas mostradas por aquelas que estão na tabela all_sdo_geom_metadata</translation>
+        <translation>Restringir as tabelas mostradas por aquelas que estão na tabela all_sdo_geom_metadata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="141"/>
         <source>When searching for spatial tables restrict the search to tables that are owned by the user.</source>
-        <translation type="unfinished">Ao procurar tabelas espaciais restringir a pesquisa a tabelas que pertencem ao usuário.</translation>
+        <translation>Ao procurar tabelas espaciais restringir a pesquisa à tabelas que pertencem ao usuário.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="144"/>
@@ -45881,7 +45879,7 @@ erro: %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
         <source>Only list the existing geometry types and don&apos;t offer to add others.</source>
-        <translation type="unfinished">Listar apenas os tipos de geometria existentes e não oferecer para adicionar outros tipos.</translation>
+        <translation>Listar apenas os tipos de geometria existentes e não oferecer para adicionar outros tipos.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
@@ -45895,7 +45893,7 @@ erro: %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restringir as tabelas exibidas para aquelas que estão na visão all_sdo_geom_metadata. Isso pode acelerar a exibição inicial das tabelas espaciais.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restringir as tabelas exibidas para aquelas que estão na visão all_sdo_geom_metadata. Isso pode acelerar a exibição inicial das tabelas espaciais.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="134"/>
@@ -45950,12 +45948,12 @@ erro: %2</translation>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="214"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Quando a camada é configurada, vários metadados são nescessários para a tabela do Oracle. Isso inclue informações como o número de linhas da tabela, tipo de geometria e extensão espacial dos dados na coluna geometria. Se a tabela contém um grande número de linhas determinar esses metadados é demorado.&lt;/p&gt;&lt;p&gt;Ao ativar essa opção as seguintes operações rápidas na tabela de metadados são feitas:&lt;/p&gt;&lt;p&gt;1) O número de linhas é determinado pela all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) A extensão da tabela sempre é determinada com a função SDO_TUNE.EXTENTS_OF mesmo que um filtro for aplicado a camada.&lt;/p&gt;&lt;p&gt;3) A geometria da tabela é determinada a partir das primeiras 100 linhas de geometrias não-nulas na tabela.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Quando a camada é configurada, vários metadados são nescessários para a tabela do Oracle. Isso inclue informações como o número de linhas da tabela, tipo de geometria e extensão espacial dos dados na coluna geometria. Se a tabela contém um grande número de linhas determinar esses metadados é demorado.&lt;/p&gt;&lt;p&gt;Ao ativar essa opção as seguintes operações rápidas na tabela de metadados são feitas:&lt;/p&gt;&lt;p&gt;1) O número de linhas é determinado pela all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) A extensão da tabela sempre é determinada com a função SDO_TUNE.EXTENTS_OF mesmo que um filtro for aplicado a camada.&lt;/p&gt;&lt;p&gt;3) A geometria da tabela é determinada a partir das primeiras 100 linhas de geometrias não-nulas na tabela.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>
         <source>Use estimated table metadata</source>
-        <translation type="unfinished">Usar metadados estimados da tabela</translation>
+        <translation>Usar metadados estimados da tabela</translation>
     </message>
 </context>
 <context>
@@ -64264,7 +64262,6 @@ Response was:
         <source>%n missing row(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -64277,7 +64274,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1970"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
