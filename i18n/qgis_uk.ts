@@ -25,15 +25,15 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пошук...</translation>
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Налаштування</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Значення</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -41,19 +41,20 @@
     </message>
     <message>
         <source>Wrong value</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірне значення</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірне значення параметра:
+%1</translation>
     </message>
 </context>
 <context>
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished">Неможливо підключитись</translation>
+        <translation>Неможливо підключитись</translation>
     </message>
 </context>
 <context>
@@ -79,17 +80,17 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation>Клацніть, щоб вибрати систему координат для відображення координат</translation>
+        <translation>Клацніть, щоб вибрати систему (CRS) для відображення координат</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="133"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation>Координати в обраній вами системі координат (широта,довгота або схід,північ)</translation>
+        <translation>Координати в обраній вами системі (CRS) (широта,довгота або схід,північ)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation>Координати у системі координат карти (широта, довгота або схід, північ)</translation>
+        <translation>Координати у системі координат (CRS) карти (широта, довгота або схід, північ)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -107,7 +108,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="145"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Клацніть для активації стеження за курсором миші. Клацніть по карті для припинення</translation>
+        <translation>Клацніть для активації стеження за курсором миші. Клацніть на карті для припинення</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="150"/>
@@ -124,191 +125,193 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>База даних не обрана або ви не підключені до неї.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Оберіть таблицю яку ви хочете експортувати в файл.</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер баз даних (DB)</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished">Інформація</translation>
+        <translation>Інформація</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Таблиця</translation>
+        <translation>Таблиця</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">Попередній перегляд</translation>
+        <translation>Попередній перегляд</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;База даних</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Схема</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Таблиця</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Оновити</translation>
     </message>
     <message>
         <source>&amp;SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вікно SQL</translation>
     </message>
     <message>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вихід</translation>
     </message>
     <message>
         <source>&amp;Import layer/file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Імпортувати шар/файл</translation>
     </message>
     <message>
         <source>&amp;Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Експортувати в файл</translation>
     </message>
 </context>
 <context>
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо знайти допустиме унікальне поле</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Копіювати</translation>
+        <translation>Копіювати</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер баз даних (DB)</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation type="unfinished"></translation>
+        <translation>Версія сервера: </translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Хост:</translation>
     </message>
     <message>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувач:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation type="unfinished"></translation>
+        <translation>Бібліотека:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; таблиця geometry_columns відсутня!
+Ця таблиця має важливе значення для обліку таблиць в багатьох програмах ГІС.</translation>
     </message>
     <message>
         <source>create new schemas</source>
-        <translation type="unfinished"></translation>
+        <translation>створити нові схеми</translation>
     </message>
     <message>
         <source>create temporary tables</source>
-        <translation type="unfinished"></translation>
+        <translation>створити тимчасові таблиці</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished">Немає підключення</translation>
+        <translation>Немає підключення</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished">Параметри підключення</translation>
+        <translation>Параметри підключення</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальна інформація</translation>
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; %s підтримку не активовано!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Цей користувач не має привілеїв!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувач має привілеї:</translation>
     </message>
     <message>
         <source>Privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Привілеї</translation>
     </message>
     <message>
         <source>Owner:</source>
-        <translation type="unfinished"></translation>
+        <translation>Власник:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Коментар:</translation>
     </message>
     <message>
         <source>create new objects</source>
-        <translation type="unfinished"></translation>
+        <translation>створити нові об&apos;єкти</translation>
     </message>
     <message>
         <source>access objects</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>або доступ до об&apos;єктів</translatorcomment>
+        <translation type="unfinished">об&apos;єкти доступу</translation>
     </message>
     <message>
         <source>Schema details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Параметри схеми</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Цей користувач не має привілеїв доступу до цієї схеми!</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип відношення:</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished">Вид</translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Таблиця</translation>
+        <translation>Таблиця</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Рядки:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідомо (&lt;a href=&quot;action:rows/count&quot;&gt;з&apos;ясувати&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Ім&apos;я</translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Null</source>
@@ -316,51 +319,51 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">За замовчуванням</translation>
+        <translation>За замовчанням</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Колнка(и)</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Функція</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ця таблиця не є просторовою.</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Поля</translation>
+        <translation>Поля</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Обмеження</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Індекси</translation>
     </message>
     <message>
         <source>Triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Тригери</translation>
     </message>
     <message>
         <source>View definition</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Переглянути визначення</translation>
     </message>
     <message>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Колонка:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation type="unfinished"></translation>
+        <translation>Геометрія:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вимір:</translation>
     </message>
     <message>
         <source>Undefined</source>
@@ -368,73 +371,75 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Просторова прив&apos;язка:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розрахункове охоплення:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(невідомо) (&lt;a href=&quot;action:extent/get&quot;&gt;з&apos;ясувати&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Охоплення:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Немає записів в geometry_columns!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Просторовий індекс не визначено (&lt;a href=&quot;action:spatialindex/create&quot;&gt;створити&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Pages:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сторінки:</translation>
     </message>
     <message>
         <source>Rows (estimation):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Рядки (приблизна оцінка):</translation>
     </message>
     <message>
         <source>Privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Привілеї:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Цей користувач не має привілеїв користування цією схемою!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Рядки (розрахункова оцінка):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Цей користувач має тільки привілеї читання.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Виявлено істотну різницю між розрахунковою та справжньою кількістю рядків. Рекомендується виконати &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Не визначено первинний ключ для цієї таблиці!</translation>
     </message>
     <message>
         <source>Scripts:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скрипти:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Версія установлених скриптів не відповідає версії опублікованих скриптів!
+Імовірно це результат некоректного оновлення PostGIS.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Цей користувач не має привілеїв на читання змісту таблиці geometry_columns!
+Ця таблиця має важливе значення для обліку таблиць в багатьох програмах ГІС.</translation>
     </message>
     <message>
         <source>Length</source>
@@ -442,15 +447,15 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Активовано</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Так</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ні</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
