@@ -131,7 +131,7 @@ class OTBAlgorithm(GeoAlgorithm):
         self.name = dom_model.find('longname').text
         self.group = dom_model.find('group').text
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Reading parameters for %s" % self.appkey)
+        #ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Reading parameters for %s" % self.appkey)
 
         rebu = None
         the_result = None
