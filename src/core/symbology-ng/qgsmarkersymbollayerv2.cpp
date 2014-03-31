@@ -402,7 +402,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( QString name )
     mPolygon
     << QPointF( 0, -1 )
     << QPointF( 0.5,  -0.5 )
-    << QPointF( 0.25, -0.25 )
+    << QPointF( 0.25, -0.5 )
     << QPointF( 0.25,  1 )
     << QPointF( -0.25,  1 )
     << QPointF( -0.25, -0.5 )
