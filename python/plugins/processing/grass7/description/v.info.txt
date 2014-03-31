@@ -1,0 +1,9 @@
+v.info
+v.info - Outputs basic information about a user-specified vector map.
+Vector (v.*)
+ParameterVector|map|Name of input vector map|-1|False
+ParameterBoolean|-c|Print types/names of table columns for specified layer instead of info|False
+ParameterBoolean|-g|Print map region only|False
+ParameterBoolean|-t|Print topology information only|False
+OutputHTML|html|Info file
+

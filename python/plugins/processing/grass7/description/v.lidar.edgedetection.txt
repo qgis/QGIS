@@ -1,0 +1,14 @@
+v.lidar.edgedetection
+v.lidar.edgedetection - Detects the object's edges from a LIDAR data set.
+Vector (v.*)
+ParameterVector|input|Input vector layer|0|False
+ParameterString|see|Interpolation spline step value in east direction|4
+ParameterString|sen|Interpolation spline step value in north direction|4
+ParameterString|lambda_g|Regularization weight in gradient evaluation|0.01
+ParameterString|tgh|High gradient threshold for edge classification|6
+ParameterString|tgl|Low gradient threshold for edge classification|3
+ParameterString|theta_g|Angle range for same direction detection|0.26
+ParameterString|lambda_r|Regularization weight in residual evaluation|2
+ParameterBoolean|-e|Estimate point density and distance|False
+OutputVector|output|Output vector layer
+
