@@ -45,7 +45,7 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) 
   QObject::connect( mComposition, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
 
   //accept hover events, required for changing cursor to resize cursors
-  setAcceptsHoverEvents( true );
+  setAcceptHoverEvents( true );
 }
 
 QgsComposerMouseHandles::~QgsComposerMouseHandles()
