@@ -537,6 +537,11 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPai
   QPolygonF mapPolygon = canvasExtent();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
 
+  // draw nothing if the distance between grid lines would be less than 1px
+  // otherwise the grid lines would completely cover the whole map
+  if ( mapBoundingRect.width() / mGridIntervalX >= p->device()->width() )
+    return 1;
+
   //consider to round up to the next step in case the left boundary is > 0
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
@@ -605,6 +610,11 @@ int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines, QPai
   // QPolygonF mapPolygon = transformedMapPolygon();
   QPolygonF mapPolygon = canvasExtent();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
+
+  // draw nothing if the distance between grid lines would be less than 1px
+  // otherwise the grid lines would completely cover the whole map
+  if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
+    return 1;
 
   //consider to round up to the next step in case the left boundary is > 0
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
