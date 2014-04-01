@@ -1558,6 +1558,19 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         featureElement.appendChild( attributeElement );
       }
 
+      //add maptip attribute based on html/expression (in case there is no maptip attribute)
+      if ( layer->fieldNameIndex( layer->displayField() ) < 0 )
+      {
+        QString displayField = layer->displayField();
+        if ( !displayField.isEmpty() )
+        {
+          QDomElement maptipElem = infoDocument.createElement( "Attribute" );
+          maptipElem.setAttribute( "name", "maptip" );
+          maptipElem.setAttribute( "value",  QgsExpression::replaceExpressionText( displayField, &feature, layer ) );
+          featureElement.appendChild( maptipElem );
+        }
+      }
+
       //append feature bounding box to feature info xml
       if ( hasGeometry && mapRender )
       {
@@ -2606,6 +2619,20 @@ QDomElement QgsWMSServer::createFeatureGML(
     QDomText fieldText = doc.createTextNode( fieldTextString );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
+  }
+
+  //add maptip attribute based on html/expression (in case there is no maptip attribute)
+  if ( layer->fieldNameIndex( layer->displayField() ) < 0 )
+  {
+    QString displayField = layer->displayField();
+    if ( !displayField.isEmpty() )
+    {
+      QString fieldTextString = QgsExpression::replaceExpressionText( displayField, feat, layer );
+      QDomElement fieldElem = doc.createElement( "qgs:maptip" );
+      QDomText maptipText = doc.createTextNode( fieldTextString );
+      fieldElem.appendChild( maptipText );
+      typeNameElement.appendChild( fieldElem );
+    }
   }
 
   return typeNameElement;

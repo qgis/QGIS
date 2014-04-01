@@ -1546,6 +1546,7 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
     const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
     QString displayField = vLayer->displayField();
+    int displayFieldIdx = vLayer->fieldNameIndex( displayField );
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
@@ -1575,8 +1576,19 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
       attributeElem.setAttribute( "precision", field.precision() );
       attributesElem.appendChild( attributeElem );
     }
+
     //displayfield
-    layerElem.setAttribute( "displayField", displayField );
+    if ( !displayField.isEmpty() )
+    {
+      if ( displayFieldIdx >= 0 )
+      {
+        layerElem.setAttribute( "displayField", displayField );
+      }
+      else
+      {
+        layerElem.setAttribute( "displayField", "maptip" );
+      }
+    }
     layerElem.appendChild( attributesElem );
   }
 }
