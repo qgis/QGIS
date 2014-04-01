@@ -188,6 +188,7 @@ class QgsPluginInstaller(QObject):
       plugin = plugins.all()[key]
       iface.pluginManagerInterface().addPluginMetadata({
         "id" : key,
+        "plugin_id" : plugin["plugin_id"] or "",
         "name" : plugin["name"],
         "description" : plugin["description"],
         "about" : plugin["about"],
@@ -512,3 +513,17 @@ class QgsPluginInstaller(QObject):
       reposName = reposName.decode("utf-8")
     repositories.setInspectionFilter(reposName)
     self.reloadAndExportData()
+
+
+  # ----------------------------------------- #
+  def sendVote(self, plugin_id, vote):
+    """ send vote via the RPC """
+
+    if not plugin_id or not vote:
+      return False
+    url = "http://plugins.qgis.org/plugins/RPC2/"
+    params = "{\"id\":\"djangorpc\",\"method\":\"plugin.vote\",\"params\":[%s,%s]}" % (str(plugin_id), str(vote))
+    req = QNetworkRequest(QUrl(url))
+    req.setRawHeader("Content-Type", "application/json");
+    reply = QgsNetworkAccessManager.instance().post(req, params)
+    return True

@@ -1,6 +1,7 @@
 PLUGIN METADATA TAGS
 =======================================================
 id                  the key; C++ library base name or Python module name
+plugin_id           for the official repository: an integer id. At the time, used for voting only.
 name                human readable plugin name
 description         short description of the plugin purpose only
 about               longer description: how does it work, where does it install, how to run it?

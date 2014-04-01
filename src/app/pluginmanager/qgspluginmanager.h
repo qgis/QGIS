@@ -168,7 +168,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void clearRepositoryFilter( );
 
     //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration );
+    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration = -1 );
 
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method

@@ -612,11 +612,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
           "    width:360px;"
           "    margin-left:98px;"
           "    padding-top:3px;"
-          "  }";
+          "  }"
+          "</style>";
 
-  if ( ! metadata->value( "average_vote" ).isEmpty() )
+  if ( ! metadata->value( "plugin_id" ).isEmpty() )
   {
     html += QString(
+          "<style>"
           "  div#stars_bg {"
           "    background-image: url('file:///home/borys/Pobrane/stars_empty.png');"
           "    width:92px;"
@@ -626,9 +628,52 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
           "    background-image: url('file:///home/borys/Pobrane/stars_full.png');"
           "    width:%1px;"
           "    height:16px;"
-          "  }").arg( metadata->value( "average_vote" ).toFloat() / 5 * 92 );
+          "  }"
+          "</style>").arg( metadata->value( "average_vote" ).toFloat() / 5 * 92 );
+    html += QString(
+          "<script>"
+          "  var plugin_id=%1;"
+          "  var vote=0;"
+          "  function ready()"
+          "  {"
+          "    document.getElementById('stars_bg').onmouseover=save_vote;"
+          "    document.getElementById('stars_bg').onmouseout=restore_vote;"
+          "    document.getElementById('stars_bg').onmousemove=change_vote;"
+          "    document.getElementById('stars_bg').onclick=send_vote;"
+          "  };"
+          "    "
+          "  function save_vote(e)"
+          "  {"
+          "    vote = document.getElementById('stars').style.width"
+          "  }"
+          "   "
+          "  function restore_vote(e)"
+          "  {"
+          "    document.getElementById('stars').style.width = vote;"
+          "  }"
+          "   "
+          "  function change_vote(e)"
+          "  {"
+          "    var length = e.x - document.getElementById('stars').getBoundingClientRect().left;"
+          "    max = document.getElementById('stars_bg').getBoundingClientRect().right;"
+          "    if ( length <= max ) document.getElementById('stars').style.width = length + 'px';"
+          "  }"
+          "   "
+          "  function send_vote(e)"
+          "  {"
+          "    save_vote();"
+          "    result = Number(vote.replace('px',''));"
+          "    if (!result) return;"
+          "    result = Math.floor(result/92*5)+1;"
+          "    document.getElementById('send_vote_trigger').href='rpc2://plugin.vote/'+plugin_id+'/'+result;"
+          "    ev=document.createEvent('MouseEvents');"
+          "    ev.initEvent('click', false, true);"
+          "    document.getElementById('send_vote_trigger').dispatchEvent(ev);"
+          "  }"
+          "</script>").arg( metadata->value( "plugin_id" ) );
   }
-  html += "</style>";
+
+  html += "<body onload='ready()'>";
 
   // First prepare message box(es)
   if ( ! metadata->value( "error" ).isEmpty() )
@@ -713,7 +758,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   }
 
   html += "<br/><br/>";
-  html += "<div id='stars_bg'><div/><div id='stars'><div/>";
+  html += "<div id='stars_bg'/><div id='stars'/>";
   html += "<div id='votes'>";
   if ( ! metadata->value( "rating_votes" ).isEmpty() )
   {
@@ -727,8 +772,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   {
     html += tr( "%1 downloads" ).arg( metadata->value( "downloads" ) );
   }
-
   html += "</div>";
+  html += "<div><a id='send_vote_trigger'/></div>";
+
   html += "</td></tr><tr><td>";
   html += "<br/>";
 
@@ -789,6 +835,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   }
 
   html += "</td></tr></table>";
+
+  html += "</body>";
 
   wvDetails->setHtml( html );
 
@@ -1105,7 +1153,28 @@ void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex 
 
 void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
 {
+  if ( url.scheme() == "rpc2" )
+  {
+    if ( url.host() == "plugin.vote" )
+    {
+      QString params = url.path();
+      QString response;
+      QgsPythonRunner::eval( QString( "pyplugin_installer.instance().sendVote('%1', '%2')" ).arg( params.split( "/" )[1] )
+                                                                                            .arg( params.split( "/" )[2] ), response );
+      if ( response == "True" )
+      {
+        pushMessage( tr( "Vote sent successfully" ), QgsMessageBar::INFO );
+      }
+      else
+      {
+        pushMessage( tr( "Sending vote to the plugin repository failed." ), QgsMessageBar::WARNING );
+      }
+    }
+  }
+  else
+  {
     QDesktopServices::openUrl( url );
+  }
 }
 
 
