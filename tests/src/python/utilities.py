@@ -302,6 +302,7 @@ def mapSettingsString(ms):
         ms.testFlag(QgsMapSettings.DrawLabeling))
     s += '  flag.DrawEditingInfo: {0}\n'.format(
         ms.testFlag(QgsMapSettings.DrawEditingInfo))
+    s += '  outputImageFormat(): {0}\n'.format(ms.outputImageFormat())
     return s
 
 

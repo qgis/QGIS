@@ -233,6 +233,7 @@ class TestQgsPalLabeling(TestCase):
         ms.setCrsTransformEnabled(oms.hasCrsTransformEnabled())
         ms.setMapUnits(oms.mapUnits())
         ms.setExtent(oms.extent())
+        ms.setOutputImageFormat(oms.outputImageFormat())
 
         ms.setLayers(oms.layers())
         return ms

@@ -50,7 +50,7 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& 
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 
-  mImage = QImage( mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied );
+  mImage = QImage( mSettings.outputSize(), mSettings.outputImageFormat() );
 }
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
@@ -639,7 +639,8 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       // Flattened image for drawing when a blending mode is set
       QImage * mypFlattenedImage = 0;
       mypFlattenedImage = new QImage( mSettings.outputSize().width(),
-                                      mSettings.outputSize().height(), QImage::Format_ARGB32_Premultiplied );
+                                      mSettings.outputSize().height(),
+                                      mSettings.outputImageFormat() );
       if ( mypFlattenedImage->isNull() )
       {
         mErrors.append( Error( layerId, "Insufficient memory for image " + QString::number( mSettings.outputSize().width() ) + "x" + QString::number( mSettings.outputSize().height() ) ) );
@@ -915,7 +916,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
 
 QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs )
 {
-  QImage image( settings.outputSize(), QImage::Format_ARGB32_Premultiplied );
+  QImage image( settings.outputSize(), settings.outputImageFormat() );
   image.fill( settings.backgroundColor().rgb() );
 
   QPainter painter( &image );

@@ -186,6 +186,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setMapUnits( ms.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setShowSelection( false );
+  jobMapSettings.setOutputImageFormat( ms.outputImageFormat() );
 
   //set layers to render
   QStringList theLayerSet = layersToRender();

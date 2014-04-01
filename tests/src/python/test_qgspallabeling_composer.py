@@ -123,19 +123,22 @@ class TestComposerBase(TestQgsPalLabeling):
 
     # noinspection PyUnusedLocal
     def _get_composer_image(self, width, height, dpi):
-        # image = QImage(QSize(width, height), QImage.Format_ARGB32)
-        # image.fill(QColor(152, 219, 249).rgb())
-        # image.setDotsPerMeterX(dpi / 25.4 * 1000)
-        # image.setDotsPerMeterY(dpi / 25.4 * 1000)
-        #
-        # p = QPainter(image)
-        # p.setRenderHint(QPainter.Antialiasing, False)
-        # p.setRenderHint(QPainter.HighQualityAntialiasing, False)
-        # self._c.renderPage(p, 0)
-        # p.end()
+        image = QImage(QSize(width, height),
+                       self._TestMapSettings.outputImageFormat())
+        image.fill(QColor(152, 219, 249).rgb())
+        image.setDotsPerMeterX(dpi / 25.4 * 1000)
+        image.setDotsPerMeterY(dpi / 25.4 * 1000)
 
-        image = self._c.printPageAsRaster(0)
-        """:type: QImage"""
+        p = QPainter(image)
+        p.setRenderHint(
+            QPainter.Antialiasing,
+            self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
+        )
+        self._c.renderPage(p, 0)
+        p.end()
+
+        # image = self._c.printPageAsRaster(0)
+        # """:type: QImage"""
 
         if image.isNull():
             return False, ''
@@ -169,13 +172,18 @@ class TestComposerBase(TestQgsPalLabeling):
         if temp_size == os.path.getsize(svgpath):
             return False, ''
 
-        image = QImage(width, height, QImage.Format_ARGB32)
+        image = QImage(width, height, self._TestMapSettings.outputImageFormat())
         image.fill(QColor(152, 219, 249).rgb())
         image.setDotsPerMeterX(dpi / 25.4 * 1000)
         image.setDotsPerMeterY(dpi / 25.4 * 1000)
 
         svgr = QSvgRenderer(svgpath)
         p = QPainter(image)
+        p.setRenderHint(
+            QPainter.Antialiasing,
+            self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
+        )
+        p.setRenderHint(QPainter.TextAntialiasing)
         svgr.render(p)
         p.end()
 
