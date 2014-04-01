@@ -214,6 +214,14 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   if ( mConfigParser && fullProjectInformation )
   {
+    //Insert <ProjectSettings> elements derived from wms:_ExtendedCapabilities
+    mConfigParser->projectSettings( capabilityElement, doc );
+  }
+
+  if ( mConfigParser && fullProjectInformation )
+  {
+    // Project information
+
     //WFS layers
     QStringList wfsLayers = mConfigParser->wfsLayerNames();
     if ( wfsLayers.size() > 0 )
@@ -1561,14 +1569,13 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       featureAttributes = feature.attributes();
       for ( int i = 0; i < featureAttributes.count(); ++i )
       {
+        QString attributeName = fields[i].name();
+
         //skip attribute if it is explicitly excluded from WMS publication
-        if ( excludedAttributes.contains( fields[i].name() ) )
+        if ( excludedAttributes.contains( attributeName ) )
         {
           continue;
         }
-
-        //replace attribute name if there is an attribute alias?
-        QString attributeName = layer->attributeDisplayName( i );
 
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
@@ -2625,12 +2632,18 @@ QDomElement QgsWMSServer::createFeatureGML(
     }
   }
 
+  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
   //read all attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
   const QgsFields* fields = feat->fields();
   for ( int i = 0; i < fields->count(); ++i )
   {
     QString attributeName = fields->at( i ).name();
+    //skip attribute if it is explicitly excluded from WMS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
     QDomText fieldText = doc.createTextNode( featureAttributes[i].toString() );
     fieldElem.appendChild( fieldText );
