@@ -46,6 +46,8 @@ from utilities import (
     TestCase,
     unittest,
     unitTestDataPath,
+    getTempfilePath,
+    renderMapToImage,
     loadTestFonts,
     getTestFont,
     openInBrowserTab
@@ -208,7 +210,9 @@ class TestQgsPalLabeling(TestCase):
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
-        ms.setFlag(QgsMapSettings.Antialiasing)
+        ms.setFlag(QgsMapSettings.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
         ms.setCrsTransformEnabled(False)
         ms.setMapUnits(crs.mapUnits())  # meters
@@ -217,7 +221,7 @@ class TestQgsPalLabeling(TestCase):
 
     def cloneMapSettings(self, oms):
         """
-        :param oms: QgsMapSettings
+        :param QgsMapSettings oms: Other QgsMapSettings
         :rtype: QgsMapSettings
         """
         ms = QgsMapSettings()
@@ -292,81 +296,43 @@ class TestQgsPalLabeling(TestCase):
                 or 'Vs' in self._TestGroup):
             return
         imgpath = self.controlImagePath()
-        # print "saveControlImage: {0}".format(imgpath)
         testdir = os.path.dirname(imgpath)
         if not os.path.exists(testdir):
             os.makedirs(testdir)
         imgbasepath = \
             os.path.join(testdir,
                          os.path.splitext(os.path.basename(imgpath))[0])
+        # remove any existing control images
         for f in glob.glob(imgbasepath + '.*'):
             if os.path.exists(f):
                 os.remove(f)
-        if tmpimg and os.path.exists(tmpimg):
-            shutil.copyfile(tmpimg, imgpath)
-        else:
-            print '\nsaveControlImage.render(): entered'
-            print '{0}.{1}'.format(self._TestGroup, self._TestFunction)
+        qDebug('Control image for {0}.{1}'.format(self._TestGroup,
+                                                  self._TestFunction))
 
+        if not tmpimg:
+            # TODO: this can be deprecated, when per-base-test-class rendering
+            #       in checkTest() is verified OK for all classes
+            qDebug('Rendering control to: {0}'.format(imgpath))
             ms = self._MapSettings  # class settings
             """:type: QgsMapSettings"""
+            settings_type = 'Class'
             if self._TestMapSettings is not None:
                 ms = self._TestMapSettings  # per test settings
-            print 'self._MapSettings...'
-            print 'ms.layers(): {0}'.format(
-                [self._MapRegistry.mapLayer(i).name() for i in ms.layers()]
-            )
-            print 'ms.outputSize(): {0} x {1}'.format(
-                ms.outputSize().width(), ms.outputSize().height())
-            print 'ms.outputDpi(): {0}'.format(ms.outputDpi())
-            print 'ms.mapUnits(): {0}'.format(ms.mapUnits())
-            print 'ms.extent(): {0}'.format(ms.extent().toString())
-            print 'ms.hasCrsTransformEnabled(): {0}'.format(
-                ms.hasCrsTransformEnabled())
-            print 'ms.destinationCrs(): {0}'.format(
-                ms.destinationCrs().authid())
+                settings_type = 'Test'
+            qDebug('MapSettings type: {0}'.format(settings_type))
 
-            # pal = QgsPalLabeling()
-            pal = self._Pal.clone()  # or custom settings are lost
-            pal.init(ms)
-            r = QgsMapRenderer()
-            r.setLabelingEngine(pal)
+            img = renderMapToImage(ms, parallel=False)
+            """:type: QImage"""
+            tmpimg = getTempfilePath('png')
+            if not img.save(tmpimg, 'png'):
+                os.unlink(tmpimg)
+                raise OSError('Control not created for: {0}'.format(imgpath))
 
-            # this seems too redundant
-            r.setOutputSize(ms.outputSize(), ms.outputDpi())
-            r.setMapUnits(ms.mapUnits())
-            r.setExtent(ms.extent())
-            r.setProjectionsEnabled(ms.hasCrsTransformEnabled())
-            r.setDestinationCrs(ms.destinationCrs())
-            r.setLayerSet(ms.layers())
-
-            ctx = r.rendererContext()
-            ctx.setDrawEditingInformation(
-                ms.testFlag(QgsMapSettings.DrawEditingInfo))
-            ctx.setForceVectorOutput(
-                ms.testFlag(QgsMapSettings.ForceVectorOutput))
-            ctx.setUseAdvancedEffects(
-                ms.testFlag(QgsMapSettings.UseAdvancedEffects))
-
-            image = QImage(ms.outputSize(), QImage.Format_ARGB32)
-            image.fill(ms.backgroundColor().rgb())
-            image.setDotsPerMeterX(ms.outputDpi() / 25.4 * 1000)
-            image.setDotsPerMeterY(ms.outputDpi() / 25.4 * 1000)
-
-            p = QPainter(image)
-            r.render(p)
-            p.end()
-
-            if not image.save(imgpath, 'png'):
-                os.unlink(imgpath)
-
-            # delete extraneous world file (always generated)
-            # wrld_file = imgbasepath + '.PNGw'
-            # if os.path.exists(wrld_file):
-            #     os.remove(wrld_file)
-
-        if not os.path.exists(imgpath):
-            raise OSError('Control image not created: {0}'.format(imgpath))
+        if tmpimg and os.path.exists(tmpimg):
+            qDebug('Copying control to: {0}'.format(imgpath))
+            shutil.copyfile(tmpimg, imgpath)
+        else:
+            raise OSError('Control not copied to: {0}'.format(imgpath))
 
     def renderCheck(self, mismatch=0, colortol=0, imgpath='', grpprefix=''):
         """Check rendered map canvas or existing image against control image
@@ -385,7 +351,10 @@ class TestQgsPalLabeling(TestCase):
         chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
         chk.setColorTolerance(colortol)
-        chk.setMapSettings(self._MapSettings)
+        ms = self._MapSettings  # class settings
+        if self._TestMapSettings is not None:
+            ms = self._TestMapSettings  # per test settings
+        chk.setMapSettings(ms)
         # noinspection PyUnusedLocal
         res = False
         if imgpath:

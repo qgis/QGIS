@@ -29,6 +29,7 @@ from qgis.core import *
 from utilities import (
     getTempfilePath,
     getExecutablePath,
+    mapSettingsString
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -96,9 +97,6 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
-        self._TestMapSettings.setFlag(QgsMapSettings.Antialiasing, True)
-        self._TestMapSettings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
-        self._TestMapSettings.setFlag(QgsMapSettings.ForceVectorOutput, True)
         self._c = QgsComposition(self._TestMapSettings)
         """:type: QgsComposition"""
         # self._c.setUseAdvancedEffects(False)
@@ -270,6 +268,16 @@ class TestComposerBase(TestQgsPalLabeling):
     # noinspection PyUnusedLocal
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)
+
+        ms = self._MapSettings  # class settings
+        settings_type = 'Class'
+        if self._TestMapSettings is not None:
+            ms = self._TestMapSettings  # per test settings
+            settings_type = 'Test'
+        if 'PAL_VERBOSE' in os.environ:
+            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(mapSettingsString(ms))
+
         res_m, self._TestImage = self.get_composer_output(self._TestKind)
         self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
         self.saveControlImage(self._TestImage)
