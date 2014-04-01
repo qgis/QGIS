@@ -60,7 +60,7 @@
 QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWMSConfigParser* cp,
                             QgsRequestHandler* rh, QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache )
     : QgsOWSServer( configFilePath, parameters, rh )
-    , mMapRenderer( renderer ), mCapabilitiesCache( capCache ), mConfigParser( cp )
+    , mMapRenderer( renderer ), mCapabilitiesCache( capCache ), mConfigParser( cp ), mOwnsConfigParser( false )
 {
 }
 
@@ -70,6 +70,16 @@ QgsWMSServer::~QgsWMSServer()
 
 QgsWMSServer::QgsWMSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
 {
+}
+
+void QgsWMSServer::cleanupAfterRequest()
+{
+  if ( mOwnsConfigParser )
+  {
+    delete mConfigParser;
+    mConfigParser = 0;
+    mOwnsConfigParser = false;
+  }
 }
 
 void QgsWMSServer::executeRequest()
@@ -85,7 +95,6 @@ void QgsWMSServer::executeRequest()
   {
     QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
     mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
-    return;
   }
 
   //version
@@ -111,6 +120,7 @@ void QgsWMSServer::executeRequest()
       catch ( QgsMapServiceException& ex )
       {
         mRequestHandler->sendServiceException( ex );
+        cleanupAfterRequest();
         return;
       }
       mCapabilitiesCache->insertCapabilitiesDocument( mConfigFilePath, getProjectSettings ? "projectSettings" : version, &doc );
@@ -125,7 +135,6 @@ void QgsWMSServer::executeRequest()
     {
       mRequestHandler->sendGetCapabilitiesResponse( *capabilitiesDocument );
     }
-    return;
   }
   //GetMap
   else if ( request.compare( "GetMap", Qt::CaseInsensitive ) == 0 )
@@ -139,6 +148,7 @@ void QgsWMSServer::executeRequest()
     {
       QgsDebugMsg( "Caught exception during GetMap request" );
       mRequestHandler->sendServiceException( ex );
+      cleanupAfterRequest();
       return;
     }
 
@@ -154,7 +164,6 @@ void QgsWMSServer::executeRequest()
       QgsDebugMsg( "result image is 0" );
     }
     delete result;
-    return;
   }
   //GetFeatureInfo
   else if ( request.compare( "GetFeatureInfo", Qt::CaseInsensitive ) == 0 )
@@ -164,18 +173,19 @@ void QgsWMSServer::executeRequest()
     {
       if ( getFeatureInfo( featureInfoDoc, version ) != 0 )
       {
+        cleanupAfterRequest();
         return;
       }
     }
     catch ( QgsMapServiceException& ex )
     {
       mRequestHandler->sendServiceException( ex );
+      cleanupAfterRequest();
       return;
     }
 
     QString infoFormat = mParameters.value( "INFO_FORMAT" );
     mRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
-    return;
   }
   //GetContext
   else if ( request.compare( "GetContext", Qt::CaseInsensitive ) == 0 )
@@ -189,7 +199,6 @@ void QgsWMSServer::executeRequest()
     {
       mRequestHandler->sendServiceException( ex );
     }
-    return;
   }
   //GetStyle for compatibility with earlier QGIS versions
   else if ( request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 )
@@ -203,7 +212,6 @@ void QgsWMSServer::executeRequest()
     {
       mRequestHandler->sendServiceException( ex );
     }
-    return;
   }
   //GetStyles
   else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 )
@@ -225,7 +233,6 @@ void QgsWMSServer::executeRequest()
         mRequestHandler->sendServiceException( ex );
       }
     }
-    return;
   }
   //GetLegendGraphic
   else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 ||
@@ -255,7 +262,6 @@ void QgsWMSServer::executeRequest()
       //do some error handling
       QgsDebugMsg( "result image is 0" );
     }
-    return;
   }
   //GetPrint
   else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
@@ -275,14 +281,13 @@ void QgsWMSServer::executeRequest()
       mRequestHandler->sendGetPrintResponse( printOutput );
     }
     delete printOutput;
-    return;
   }
   else//unknown request
   {
     QgsMapServiceException e( "OperationNotSupported", "Operation " + request + " not supported" );
     mRequestHandler->sendServiceException( e );
-    return;
   }
+  cleanupAfterRequest();
 }
 
 void QgsWMSServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats )
@@ -1568,6 +1573,7 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
     QgsSLDConfigParser* userSLDParser = new QgsSLDConfigParser( theDocument, mParameters );
     userSLDParser->setFallbackParser( mConfigParser );
     mConfigParser = userSLDParser;
+    mOwnsConfigParser = true;
     //now replace the content of layersList and stylesList (if present)
     layersList.clear();
     stylesList.clear();

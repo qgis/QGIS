@@ -227,12 +227,17 @@ class QgsWMSServer: public QgsOWSServer
     /**Converts a feature info xml document to SIA2045 norm*/
     void convertFeatureInfoToSIA2045( QDomDocument& doc );
 
+    /**Cleanup temporary objects (e.g. SLD parser objects or temporary files) after request*/
+    void cleanupAfterRequest();
+
     /**Map containing the WMS parameters*/
     QgsMapRenderer* mMapRenderer;
 
     QgsCapabilitiesCache* mCapabilitiesCache;
 
     QgsWMSConfigParser* mConfigParser;
+
+    bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
 
     QDomElement createFeatureGML(
       QgsFeature* feat,
