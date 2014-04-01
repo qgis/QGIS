@@ -24,6 +24,9 @@ class QgsWMSConfigParser
 {
   public:
 
+    QgsWMSConfigParser();
+    virtual ~QgsWMSConfigParser();
+
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const = 0;
@@ -90,7 +93,7 @@ class QgsWMSConfigParser
     //printing
 
     /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
-    virtual QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const = 0;
+    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
 
     /**Creates a composition from the project file (probably delegated to the fallback parser)*/
     virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;

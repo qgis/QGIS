@@ -22,9 +22,20 @@
 #include "qgsmapserviceexception.h"
 #include "qgsvectorlayer.h"
 
+#include "qgscomposition.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerattributetable.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposermap.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
+
 #include <QFileInfo>
 
-QgsWMSProjectParser::QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath ):
+QgsWMSProjectParser::QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsWMSConfigParser(),
     mProjectParser( xmlDoc, filePath )
 {
   mLegendLayerFont.fromString( mProjectParser.firstComposerLegendElement().attribute( "layerFont" ) );
@@ -293,14 +304,66 @@ double QgsWMSProjectParser::maxHeight() const
   return maxHeight;
 }
 
-QgsComposition* QgsWMSProjectParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
+QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
-  return 0; //todo: fixme
-}
+  //Create composition from xml
+  QDomElement composerElem = composerByName( composerTemplate );
+  if ( composerElem.isNull() )
+  {
+    throw QgsMapServiceException( "Error", "Composer template not found" );
+  }
 
-QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
-{
-  return 0; //todo: fixme
+  QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    return 0;
+  }
+
+  QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
+  if ( !composition->readXML( compositionElem, *( mProjectParser.xmlDocument() ) ) )
+  {
+    delete composition;
+    return 0;
+  }
+
+  composition->addItemsFromXML( compositionElem, *( mProjectParser.xmlDocument() ) );
+
+  labelList.clear();
+  mapList.clear();
+  htmlList.clear();
+
+  QList<QgsComposerItem* > itemList;
+  composition->composerItems( itemList );
+  QList<QgsComposerItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerLabel* label = dynamic_cast< QgsComposerLabel *>( *itemIt );
+    if ( label )
+    {
+      labelList.push_back( label );
+      continue;
+    }
+    QgsComposerMap* map = dynamic_cast< QgsComposerMap *>( *itemIt );
+    if ( map )
+    {
+      mapList.push_back( map );
+      continue;
+    }
+    QgsComposerPicture* pic = dynamic_cast< QgsComposerPicture *>( *itemIt );
+    if ( pic )
+    {
+      pic->setPictureFile( mProjectParser.convertToAbsolutePath(( pic )->pictureFile() ) );
+      continue;
+    }
+    const QgsComposerHtml* html = composition->getComposerHtmlByItem( *itemIt );
+    if ( html )
+    {
+      htmlList.push_back( html );
+      continue;
+    }
+  }
+
+  return composition;
 }
 
 void QgsWMSProjectParser::printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
@@ -1583,4 +1646,26 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
     }
   }
 #endif //0
+}
+
+QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) const
+{
+  QDomElement composerElem;
+  if ( !mProjectParser.xmlDocument() )
+  {
+    return composerElem;
+  }
+
+  QList<QDomElement> composerElemList = mProjectParser.publishedComposerElements();
+  QList<QDomElement>::const_iterator composerIt = composerElemList.constBegin();
+  for ( ; composerIt != composerElemList.constEnd(); ++composerIt )
+  {
+    QDomElement currentComposerElem = *composerIt;
+    if ( currentComposerElem.attribute( "title" ) == composerName )
+    {
+      return currentComposerElem;
+    }
+  }
+
+  return composerElem;
 }

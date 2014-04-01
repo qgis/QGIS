@@ -54,8 +54,6 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
     double maxHeight() const;
 
     //printing
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
-
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const;
 
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
@@ -126,6 +124,8 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
     void addOWSLayers( QDomDocument &doc, QDomElement &parentElem, const QDomElement &legendElem,
                        const QMap<QString, QgsMapLayer *> &layerMap, const QStringList &nonIdentifiableLayers,
                        const QString& strHref, QgsRectangle& combinedBBox, QString strGroup ) const;
+
+    QDomElement composerByName( const QString& composerName ) const;
 };
 
 #endif // QGSWMSPROJECTPARSER_H

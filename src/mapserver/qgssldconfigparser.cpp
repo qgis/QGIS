@@ -54,8 +54,8 @@
 #define TO8(x) (x).toLocal8Bit().constData()
 #endif
 
-QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters ): mXMLDoc( doc ),
-    mParameterMap( parameters ), mFallbackParser( 0 )
+QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters ):
+    QgsWMSConfigParser(), mXMLDoc( doc ), mParameterMap( parameters ), mFallbackParser( 0 )
 {
   mSLDNamespace = "http://www.opengis.net/sld";
 

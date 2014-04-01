@@ -42,6 +42,7 @@ SET ( qgis_mapserv_SRCS
   qgsmsutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
+  qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
   qgssldconfigparser.cpp
