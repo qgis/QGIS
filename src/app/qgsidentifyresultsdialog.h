@@ -191,6 +191,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void printCurrentItem();
 
+    void mapLayerActionRemoved( QgsMapLayerAction *action );
+
   private:
     enum ItemDataRole
     {
@@ -226,6 +228,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
     QDockWidget *mDock;
+
+    void removeMapLayerActionItems( QTreeWidgetItem *item, QgsMapLayerAction *action );
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

@@ -52,6 +52,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /** Triggers the action with the specified layer. This also emits the triggered() slot. */
     void triggerForLayer( QgsMapLayer* layer );
 
+    /** Returns a unique id for the map layer action */
+    QString id() { return mUuid; };
+
   signals:
     /** Triggered when action has been run for a specific feature */
     void triggeredForFeature( QgsMapLayer* layer, QgsFeature* feature );
@@ -71,6 +74,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     //layer type if action is only valid for a specific layer type
     QgsMapLayer::LayerType mLayerType;
 
+    //unique id for map layer action
+    QString mUuid;
 
 };
 
@@ -108,6 +113,9 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
   signals:
     /** Triggered when an action is added or removed from the registry */
     void changed();
+
+    /** Triggered when an action is removed from the registry */
+    void actionRemoved( QgsMapLayerAction* action );
 
   private:
 
