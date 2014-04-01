@@ -151,10 +151,10 @@ void QgsDecorationGrid::projectRead()
   }
   if ( ! mMarkerSymbol )
   {
-    // set default symbol : cross with width=20
+    // set default symbol : cross with width=3
     QgsSymbolLayerV2List symbolList;
     symbolList << new QgsSimpleMarkerSymbolLayerV2( "cross", DEFAULT_SIMPLEMARKER_COLOR,
-        DEFAULT_SIMPLEMARKER_BORDERCOLOR, 20, 0 );
+        DEFAULT_SIMPLEMARKER_BORDERCOLOR, 3, 0 );
     mMarkerSymbol = new QgsMarkerSymbolV2( symbolList );
     // mMarkerSymbol = new QgsMarkerSymbolV2();
   }
@@ -233,7 +233,7 @@ void QgsDecorationGrid::render( QPainter * p )
     if ( ! mLineSymbol )
       return;
 
-    QgsRenderContext context;
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
     mLineSymbol->startRender( context, 0 );
 
@@ -311,7 +311,7 @@ void QgsDecorationGrid::render( QPainter * p )
     if ( ! mMarkerSymbol )
       return;
 
-    QgsRenderContext context;
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
     mMarkerSymbol->startRender( context, 0 );
 
