@@ -1603,6 +1603,13 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbxAutomaticValidation">
+                     <property name="text">
+                       <string>Enable automatic repair of invalid geometries for newly added layers</string>
+                     </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>

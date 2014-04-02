@@ -546,6 +546,22 @@
                 </widget>
                </item>
                <item>
+                 <widget class="QgsCollapsibleGroupBox" name="groupBox_19">
+                   <property name="title">
+                     <string>Data source handling</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_35">
+                     <item>
+                       <widget class="QCheckBox" name="cbxAutomaticValidation">
+                         <property name="text">
+                           <string>Enable automatic repair of invalid geometries for this layer</string>
+                         </property>
+                       </widget>
+                     </item>
+                   </layout>
+                 </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>

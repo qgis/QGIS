@@ -420,6 +420,18 @@ void QgsVectorLayerProperties::syncToLayer( void )
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
 
+  // get geometry validation configuration, only for no-point layers
+  if ( layer->geometryType() == QGis::Point )
+  {
+    cbxAutomaticValidation->setEnabled( false );
+    cbxAutomaticValidation->setChecked( false );
+  }
+  else
+  {
+    cbxAutomaticValidation->setEnabled( true );
+    cbxAutomaticValidation->setChecked( layer->automaticGeometryValidation() );
+  }
+
   if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
   {
     mSimplifyDrawingAtProvider->setChecked( false );
@@ -601,6 +613,9 @@ void QgsVectorLayerProperties::apply()
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
   simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );
   layer->setSimplifyMethod( simplifyMethod );
+
+  // set geometry validation configuration
+  layer->setAutomaticGeometryValidation( cbxAutomaticValidation->isChecked() );
 
   mOldJoins = layer->vectorJoins();
 
