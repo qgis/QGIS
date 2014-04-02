@@ -25,7 +25,8 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
     mShape( Ellipse ),
     mCornerRadius( 0 ),
     mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 )
+    mShapeStyleSymbol( 0 ),
+    mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -36,7 +37,8 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
     mShape( Ellipse ),
     mCornerRadius( 0 ),
     mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 )
+    mShapeStyleSymbol( 0 ),
+    mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -58,12 +60,14 @@ void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mShapeStyleSymbol;
   mShapeStyleSymbol = symbol;
-  update();
-  emit frameChanged();
+  refreshSymbol();
 }
 
 void QgsComposerShape::refreshSymbol()
 {
+  mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  updateBoundingRect();
+
   update();
   emit frameChanged();
 }
@@ -78,6 +82,11 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( "color_border", "black" );
   properties.insert( "width_border", "0.3" );
   mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
+
+  mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  updateBoundingRect();
+
+  emit frameChanged();
 }
 
 void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -203,13 +212,6 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
 
   mShapeStyleSymbol->startRender( context );
 
-  double maxBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
-
-  //even though we aren't going to use it to draw the shape, set the pen width as 2 * symbol bleed
-  //so that the item is fully rendered within it's scene rect
-  //(QGraphicsRectItem considers the pen width when calculating an item's scene rect)
-  setPen( QPen( QBrush( Qt::NoBrush ),  maxBleed * 2.0 ) );
-
   //need to render using atlas feature properties?
   if ( mComposition->atlasComposition().enabled() && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
@@ -251,7 +253,7 @@ void QgsComposerShape::drawBackground( QPainter* p )
 
 double QgsComposerShape::estimatedFrameBleed() const
 {
-  return QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  return mMaxSymbolBleed;
 }
 
 bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
@@ -327,4 +329,20 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
 void QgsComposerShape::setCornerRadius( double radius )
 {
   mCornerRadius = radius;
+}
+
+QRectF QgsComposerShape::boundingRect() const
+{
+  return mCurrentRectangle;
+}
+
+void QgsComposerShape::updateBoundingRect()
+{
+  QRectF rectangle = rect();
+  rectangle.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
+  if ( rectangle != mCurrentRectangle )
+  {
+    prepareGeometryChange();
+    mCurrentRectangle = rectangle;
+  }
 }
