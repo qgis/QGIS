@@ -67,6 +67,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual QString layerType() const = 0;
 
     virtual void startRender( QgsSymbolV2RenderContext& context ) = 0;
+    virtual void preRender( QgsSymbolV2RenderContext& ) {}
+    virtual void postRender( QgsSymbolV2RenderContext& ) {}
     virtual void stopRender( QgsSymbolV2RenderContext& context ) = 0;
 
     virtual QgsSymbolLayerV2* clone() const = 0;
@@ -102,6 +104,16 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
     int renderingPass() const { return mRenderingPass; }
 
+    /**Boolean flag set to force the rendering as an independent symbol layer,
+       i.e. iterating over each feature for this layer (instead of iterating over each layer first).
+       This is used for symbol layers that need a pre-processing and a post-processing phase
+       after each feature has been rendered (exterior fills for instance)
+
+       It is meaningless when symbol levels are turned on
+    */
+    void setForceRenderAsLayer( bool forceRenderAsLayer ) { mForceRenderAsLayer = forceRenderAsLayer; }
+    bool forceRenderAsLayer() const { return mForceRenderAsLayer; }
+
     // symbol layers normally only use additional attributes to provide data defined settings
     virtual QSet<QString> usedAttributes() const;
 
@@ -128,7 +140,7 @@ class CORE_EXPORT QgsSymbolLayerV2
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
-        : mType( type ), mLocked( locked ), mRenderingPass( 0 ) {}
+      : mType( type ), mLocked( locked ), mRenderingPass( 0 ), mForceRenderAsLayer(false) {}
 
     QgsSymbolV2::SymbolType mType;
     bool mLocked;
@@ -148,6 +160,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
+
+    bool mForceRenderAsLayer;
 };
 
 //////////////////////

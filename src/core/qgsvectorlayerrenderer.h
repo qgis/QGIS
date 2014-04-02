@@ -25,6 +25,7 @@ typedef QList<int> QgsAttributeList;
 #include "qgsvectorsimplifymethod.h"
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsrendererv2.h"
 
 
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
@@ -48,13 +49,28 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
     void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
 
+    struct PassSymbols
+    {
+      PassSymbols( bool asLayer = false ) : 
+        renderAsLayer( asLayer ) {}
+      // whether to render as a layer
+      bool renderAsLayer;
+      // symbol layers to render
+      QgsSymbolV2Level levels;
+    };
+    // rendering pass # -> symbols in this pass
+    typedef QMap< int, PassSymbols > PassSymbolMap;
+
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+     */
+    void drawRendererV2Levels( QgsFeatureIterator& fit, const PassSymbolMap& levels );
+
     /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
     void drawRendererV2( QgsFeatureIterator& fit );
 
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
-     */
-    void drawRendererV2Levels( QgsFeatureIterator& fit );
+    /** Draw a feature for the given symbol layers */
+    void renderFeature( const QgsFeature& feature, const QList<int>& layers );
 
     /** Stop version 2 renderer and selected renderer (if required) */
     void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );

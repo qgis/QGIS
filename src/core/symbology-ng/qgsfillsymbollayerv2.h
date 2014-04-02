@@ -47,6 +47,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     void startRender( QgsSymbolV2RenderContext& context );
 
+    void preRender( QgsSymbolV2RenderContext& context );
+    void postRender( QgsSymbolV2RenderContext& context );
+
     void stopRender( QgsSymbolV2RenderContext& context );
 
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
@@ -97,7 +100,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    void setIsExterior( bool isExterior ) { mIsExterior = isExterior; }
+    void setIsExterior( bool isExterior );
     bool isExterior() const { return mIsExterior; }
 
     double estimateMaxBleed() const;
@@ -180,6 +183,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     void startRender( QgsSymbolV2RenderContext& context );
 
+    void postRender( QgsSymbolV2RenderContext& context );
+
     void stopRender( QgsSymbolV2RenderContext& context );
 
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
@@ -242,7 +247,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; };
     QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; };
 
-    void setIsExterior( bool isExterior ) { mIsExterior = isExterior; }
+    void setIsExterior( bool isExterior );
     bool isExterior() const { return mIsExterior; }
 
   protected:

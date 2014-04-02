@@ -54,6 +54,13 @@ QgsSymbolV2::OutputUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
   return unit;
 }
 
+void QgsSimpleFillSymbolLayerV2::setIsExterior( bool isExterior )
+{
+  mIsExterior = isExterior;
+  // force the rendering as a whole layer, even if symbol levels are turned off
+  mForceRenderAsLayer = isExterior;
+}
+
 void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen )
 {
   QgsExpression* colorExpression = expression( "color" );
@@ -164,7 +171,15 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
   Q_UNUSED( context );
+}
 
+void QgsSimpleFillSymbolLayerV2::preRender( QgsSymbolV2RenderContext& context )
+{
+  Q_UNUSED( context );
+}
+
+void QgsSimpleFillSymbolLayerV2::postRender( QgsSymbolV2RenderContext& context )
+{
   if ( mIsExterior ) {
     QPainter* p = context.renderContext().painter();
     if ( !p )
@@ -517,6 +532,13 @@ QString QgsGradientFillSymbolLayerV2::layerType() const
   return "GradientFill";
 }
 
+void QgsGradientFillSymbolLayerV2::setIsExterior( bool isExterior )
+{
+  mIsExterior = isExterior;
+  // force rendering as a whole layer, even when symbol levels are turned off
+  mForceRenderAsLayer = isExterior;
+}
+
 void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points )
 {
   //first gradient color
@@ -768,7 +790,10 @@ void QgsGradientFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
   Q_UNUSED( context );
+}
 
+void QgsGradientFillSymbolLayerV2::postRender( QgsSymbolV2RenderContext& context )
+{
   if ( mIsExterior ) {
     QPainter* p = context.renderContext().painter();
     if ( !p )

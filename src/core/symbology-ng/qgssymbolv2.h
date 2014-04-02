@@ -99,6 +99,8 @@ class CORE_EXPORT QgsSymbolV2
     bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer );
 
     void startRender( QgsRenderContext& context, const QgsFields* fields = 0 );
+    virtual void preRender( QgsRenderContext&, int ) {}
+    virtual void postRender( QgsRenderContext&, int ) {}
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -273,6 +275,8 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     QgsFillSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void preRender( QgsRenderContext& context, int layer );
+    void postRender( QgsRenderContext& context, int layer );
 
     virtual QgsSymbolV2* clone() const;
 };

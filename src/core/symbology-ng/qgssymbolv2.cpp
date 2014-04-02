@@ -639,6 +639,28 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
     mLayers.append( new QgsSimpleFillSymbolLayerV2() );
 }
 
+void QgsFillSymbolV2::preRender( QgsRenderContext& context, int layer )
+{
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
+
+  QgsSymbolV2::SymbolType layertype = mLayers.at( layer )->type();
+  if ( layertype == QgsSymbolV2::Fill )
+    (( QgsFillSymbolLayerV2* ) mLayers[layer] )->preRender( symbolContext );
+  else if ( layertype == QgsSymbolV2::Line )
+    (( QgsLineSymbolLayerV2* ) mLayers[layer] )->preRender( symbolContext );
+}
+
+void QgsFillSymbolV2::postRender( QgsRenderContext& context, int layer )
+{
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
+
+  QgsSymbolV2::SymbolType layertype = mLayers.at( layer )->type();
+  if ( layertype == QgsSymbolV2::Fill )
+    (( QgsFillSymbolLayerV2* ) mLayers[layer] )->postRender( symbolContext );
+  else if ( layertype == QgsSymbolV2::Line )
+    (( QgsLineSymbolLayerV2* ) mLayers[layer] )->postRender( symbolContext );
+}
+
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
