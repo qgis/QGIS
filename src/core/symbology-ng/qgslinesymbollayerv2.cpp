@@ -250,7 +250,8 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   else
   {
     double scaledOffset = offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-    p->drawPolyline( ::offsetLine( points, scaledOffset ) );
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset );
+    for ( int part = 0; part < mline.count(); ++part ) p->drawPolyline( mline[ part ] );
   }
 }
 
@@ -721,13 +722,19 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
-    QPolygonF points2 = ::offsetLine( points, offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
-    if ( placement == Interval )
-      renderPolylineInterval( points2, context );
-    else if ( placement == CentralPoint )
-      renderPolylineCentral( points2, context );
-    else
-      renderPolylineVertex( points2, context, placement );
+    QList<QPolygonF> mline = ::offsetLine( points, offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+
+    for ( int part = 0; part < mline.count(); ++part )
+    {
+      QPolygonF points2 = mline[ part ];
+
+      if ( placement == Interval )
+        renderPolylineInterval( points2, context );
+      else if ( placement == CentralPoint )
+        renderPolylineCentral( points2, context );
+      else
+        renderPolylineVertex( points2, context, placement );
+    }
   }
 }
 
