@@ -1542,6 +1542,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
+    /** Set whether the fetched geometries must be automatically validated and fixed when needed 
+     *  @note added in 2.4
+     **/
+    void setAutomaticGeometryValidation( bool automaticValidation ) { mAutomaticGeometryValidation = automaticValidation; }
+    /** Returns whether the fetched geometries must be automatically validated and fixed when needed 
+     *  @note added in 2.4
+     **/
+    inline bool automaticGeometryValidation() const { return mAutomaticGeometryValidation; }
+
   public slots:
     /**
      * Select feature by its ID
@@ -1818,6 +1827,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mSimplifyMethod;
+
+    /** Flag indicating whether the fetched geometries must be automatically validated and fixed when needed
+     * @note added in 2.4
+     **/
+    bool mAutomaticGeometryValidation;
 
     /** Label */
     QgsLabel *mLabel;

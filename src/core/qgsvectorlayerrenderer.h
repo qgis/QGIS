@@ -110,6 +110,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorSimplifyMethod mSimplifyMethod;
     bool mSimplifyGeometry;
+
+    bool mValidateGeometry;
 };
 
 

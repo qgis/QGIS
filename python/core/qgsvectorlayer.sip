@@ -1180,6 +1180,15 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
+    /** Set whether the fetched geometries must be automatically validated and fixed when needed 
+     *  @note added in 2.4
+     **/
+    void setAutomaticGeometryValidation( bool automaticValidation );
+    /** Returns whether the fetched geometries must be automatically validated and fixed when needed 
+     *  @note added in 2.4
+     **/
+    bool automaticGeometryValidation() const;
+
   public slots:
     /**
      * Select feature by its ID
