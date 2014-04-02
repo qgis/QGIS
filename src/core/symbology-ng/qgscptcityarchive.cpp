@@ -1583,9 +1583,10 @@ QModelIndex QgsCptCityBrowserModel::findPath( QString path )
 
 void QgsCptCityBrowserModel::reload()
 {
+  beginResetModel();
   removeRootItems();
   addRootItems();
-  reset(); // Qt4.6 brings better methods beginResetModel + endResetModel
+  endResetModel();
 }
 
 /* Refresh dir path */
