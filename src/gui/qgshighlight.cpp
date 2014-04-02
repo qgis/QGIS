@@ -380,7 +380,7 @@ void QgsHighlight::paint( QPainter* p )
       imagePainter->end();
 
       QColor color( mPen.color() );  // true output color
-      // coeficient to subtract alpha using green (temporary fill)
+      // coefficient to subtract alpha using green (temporary fill)
       double k = ( 255. - mBrush.color().alpha() ) / 255.;
       for ( int r = 0; r < image.height(); r++ )
       {
@@ -391,7 +391,7 @@ void QgsHighlight::paint( QPainter* p )
           if ( alpha > 0 )
           {
             int green = qGreen( rgba );
-            color.setAlpha( alpha - ( green * k ) );
+            color.setAlpha( qBound<int>( 0, alpha - ( green * k ), 255 ) );
 
             image.setPixel( c, r, color.rgba() );
           }
