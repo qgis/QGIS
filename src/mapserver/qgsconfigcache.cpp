@@ -50,12 +50,30 @@ QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
 
 QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
 {
-  return 0; //todo...
+  QgsWFSProjectParser* p = mWFSConfigCache.object( filePath );
+  if ( p )
+  {
+    return p;
+  }
+
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
+  {
+    return 0;
+  }
+
+  p = new QgsWFSProjectParser( doc, filePath );
+  mWFSConfigCache.insert( filePath, p );
+  return p;
 }
 
 QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath )
 {
   QgsWMSConfigParser* p = mWMSConfigCache.object( filePath );
+  if ( p )
+  {
+    return p;
+  }
 
   QDomDocument* doc = xmlDocument( filePath );
   if ( !doc )

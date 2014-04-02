@@ -166,8 +166,6 @@ QDomDocument QgsWFSServer::getCapabilities()
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
 
-#if 0 //todo: fixme
-
   //wfs:WFS_Capabilities element
   QDomElement wfsCapabilitiesElement = doc.createElement( "WFS_Capabilities"/*wms:WFS_Capabilities*/ );
   wfsCapabilitiesElement.setAttribute( "xmlns", WFS_NAMESPACE );
@@ -300,8 +298,6 @@ QDomDocument QgsWFSServer::getCapabilities()
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Simple_Comparisons"/*ogc:Simple_Comparisons*/ ) );
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Between"/*ogc:Between*/ ) );
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Like"/*ogc:Like*/ ) );
-
-#endif //0 //todo: fixme
 
   return doc;
 }

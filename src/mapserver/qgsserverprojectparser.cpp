@@ -303,6 +303,27 @@ QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
   return nameElem.text().replace( "," , "%60" ); //commas are not allowed in layer names
 }
 
+QString QgsServerProjectParser::serviceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElement = propertiesElem();
+  if ( !propertiesElement.isNull() )
+  {
+    QDomElement wmsUrlElem = propertiesElement.firstChildElement( "WMSUrl" );
+    if ( !wmsUrlElem.isNull() )
+    {
+      url = wmsUrlElem.text();
+    }
+  }
+  return url;
+}
+
 void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
 {
   QgsRectangle combinedBBox;

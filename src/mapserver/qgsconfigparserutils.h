@@ -38,6 +38,9 @@ class QgsConfigParserUtils
                                           const QgsCoordinateReferenceSystem& layerCRS );
     /**Returns a list of supported EPSG coordinate system numbers from a layer*/
     static QStringList createCRSListForLayer( QgsMapLayer* theMapLayer );
+
+    /**Returns default service capabilities from wms_metadata.xml if nothing else is defined*/
+    static void fallbackServiceCapabilities( QDomElement& parentElement, QDomDocument& doc );
 };
 
 #endif // QGSCONFIGPARSERUTILS_H

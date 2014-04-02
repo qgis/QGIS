@@ -25,6 +25,7 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFile>
 #include <QString>
 
 #include <sqlite3.h>
@@ -183,4 +184,22 @@ QStringList QgsConfigParserUtils::createCRSListForLayer( QgsMapLayer* theMapLaye
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
   return crsNumbers;
+}
+
+void QgsConfigParserUtils::fallbackServiceCapabilities( QDomElement& parentElement, QDomDocument& doc )
+{
+  Q_UNUSED( doc );
+  QFile wmsService( "wms_metadata.xml" );
+  if ( wmsService.open( QIODevice::ReadOnly ) )
+  {
+    QDomDocument externServiceDoc;
+    QString parseError;
+    int errorLineNo;
+    if ( externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
+    {
+      wmsService.close();
+      QDomElement service = externServiceDoc.firstChildElement();
+      parentElement.appendChild( service );
+    }
+  }
 }

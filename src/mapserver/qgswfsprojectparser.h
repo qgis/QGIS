@@ -26,8 +26,17 @@ class QgsWFSProjectParser
     QgsWFSProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     ~QgsWFSProjectParser();
 
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    QString serviceUrl() const;
+    QString wfsServiceUrl() const;
+    void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
+
   private:
     QgsServerProjectParser mProjectParser;
+
+    QStringList wfstUpdateLayers() const;
+    QStringList wfstInsertLayers() const;
+    QStringList wfstDeleteLayers() const;
 };
 
 #endif // QGSWFSPROJECTPARSER_H

@@ -216,12 +216,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
 
 QString QgsWMSProjectParser::serviceUrl() const
 {
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
-  if ( propertiesElem.isNull() )
-  {
-    return QString();
-  }
-  return propertiesElem.firstChildElement( "WMSUrl" ).text();
+  return mProjectParser.serviceUrl();
 }
 
 QStringList QgsWMSProjectParser::wfsLayerNames() const

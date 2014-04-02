@@ -101,6 +101,10 @@ class QgsServerProjectParser
     @return id or a null string in case of error*/
     QString layerName( const QDomElement& layerElem ) const;
 
+    QString serviceUrl() const;
+
+    QStringList wfsLayers() const;
+
   private:
 
     /**Content of project file*/
@@ -135,8 +139,6 @@ class QgsServerProjectParser
 
     /**Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
-
-    QStringList wfsLayers() const;
 };
 
 #endif // QGSSERVERPROJECTPARSER_H
