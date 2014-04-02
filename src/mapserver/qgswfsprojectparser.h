@@ -31,6 +31,12 @@ class QgsWFSProjectParser
     QString wfsServiceUrl() const;
     void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+
+    QStringList wfsLayers() const;
+
+    QList<QgsMapLayer*> mapLayerFromTypeName( const QString& aTypeName, bool useCache = true ) const;
+
   private:
     QgsServerProjectParser mProjectParser;
 

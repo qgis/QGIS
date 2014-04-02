@@ -307,8 +307,6 @@ QDomDocument QgsWFSServer::describeFeatureType()
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
 
-#if 0 //todo: fixme
-
   //xsd:schema
   QDomElement schemaElement = doc.createElement( "schema"/*xsd:schema*/ );
   schemaElement.setAttribute( "xmlns", "http://www.w3.org/2001/XMLSchema" );
@@ -364,14 +362,11 @@ QDomDocument QgsWFSServer::describeFeatureType()
     mConfigParser->describeFeatureType( typeName, schemaElement, doc );
   }
 
-#endif //0 //todo: fixme
-
   return doc;
 }
 
 int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format )
 {
-#if 0 //todo: fixme
   QgsDebugMsg( "Info format is:" + format );
 
   QStringList wfsLayersId = mConfigParser->wfsLayers();
@@ -1080,14 +1075,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   else
     endGetFeature( request, format );
 
-#endif // 0 //todo: fixme
-
   return 0;
 }
 
 void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& format, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect )
 {
-#if 0 //todo: fixme
   QByteArray result;
   QString fcString;
   if ( format == "GeoJSON" )
@@ -1214,9 +1206,6 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     request.sendGetFeatureResponse( &result );
   }
   fcString = "";
-
-#endif //0 //todo: fixme
-
 }
 
 void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/
@@ -1286,9 +1275,6 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 {
   // Getting  the transaction document
   QDomDocument doc;
-  return doc;
-
-#if 0 //todo: fixme
 
   QString errorMsg;
   if ( !doc.setContent( requestBody, true, &errorMsg ) )
@@ -1650,8 +1636,6 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   respElem.appendChild( trElem );
 
   return resp;
-
-#endif //0 //todo: fixme
 }
 
 QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, QgsVectorLayer* layer )
