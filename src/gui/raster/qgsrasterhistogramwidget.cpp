@@ -353,7 +353,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       if ( i == myGrayBand )
       {
         mHistoColors << Qt::darkGray;
-        cboHistoBand->setItemData( i - 1, Qt::darkGray, Qt::ForegroundRole );
+        cboHistoBand->setItemData( i - 1, QColor( Qt::darkGray ), Qt::ForegroundRole );
       }
       else
       {
@@ -366,7 +366,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
         {
           mHistoColors << Qt::black;
         }
-        cboHistoBand->setItemData( i - 1, Qt::black, Qt::ForegroundRole );
+        cboHistoBand->setItemData( i - 1, QColor( Qt::black ), Qt::ForegroundRole );
       }
     }
   }
@@ -399,7 +399,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
         {
           myColor = Qt::black;
         }
-        cboHistoBand->setItemData( i - 1, Qt::black, Qt::ForegroundRole );
+        cboHistoBand->setItemData( i - 1, QColor( Qt::black ), Qt::ForegroundRole );
       }
       if ( i == myRedBand ||  i == myGreenBand || i == myBlueBand )
       {
