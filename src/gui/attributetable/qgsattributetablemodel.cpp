@@ -660,7 +660,8 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
 
 void QgsAttributeTableModel::resetModel()
 {
-  reset();
+  beginResetModel();
+  endResetModel();
 }
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
