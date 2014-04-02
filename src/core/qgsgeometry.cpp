@@ -147,6 +147,7 @@ QgsGeometry::QgsGeometry()
     , mGeos( 0 )
     , mDirtyWkb( false )
     , mDirtyGeos( false )
+    , mAutovalidateGeos( false )
 {
 }
 
@@ -155,6 +156,7 @@ QgsGeometry::QgsGeometry( QgsGeometry const & rhs )
     , mGeometrySize( rhs.mGeometrySize )
     , mDirtyWkb( rhs.mDirtyWkb )
     , mDirtyGeos( rhs.mDirtyGeos )
+    , mAutovalidateGeos( rhs.mAutovalidateGeos )
 {
   if ( mGeometrySize && rhs.mGeometry )
   {
@@ -568,6 +570,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 
   mDirtyGeos = rhs.mDirtyGeos;
   mDirtyWkb  = rhs.mDirtyWkb;
+  mAutovalidateGeos = rhs.mAutovalidateGeos;
 
   if ( mGeometrySize && rhs.mGeometry )
   {
@@ -4248,6 +4251,13 @@ bool QgsGeometry::exportWkbToGeos() const
       default:
         return false;
     }
+
+    // fix invalid geometries if needed
+    if ( mAutovalidateGeos )
+    {
+       executeGeosValidation();
+       return mGeos != 0;
+    }
   }
   CATCH_GEOS( false )
 
@@ -6383,6 +6393,33 @@ bool QgsGeometry::isGeosValid() const
 bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 {
   return geosRelOp( GEOSEquals_r, this, &g );
+}
+
+void QgsGeometry::setAutomaticGeosValidation(bool automaticValidation)
+{
+	if (mAutovalidateGeos != automaticValidation)
+	{
+		mAutovalidateGeos = automaticValidation;
+		if (automaticValidation) executeGeosValidation();
+	}
+}
+
+bool QgsGeometry::executeGeosValidation() const
+{
+	if (!mDirtyGeos && mGeos && GEOSisValid(mGeos) != 1) // 0=invalid, 1=valid, 2=exception
+	{
+		GEOSGeometry* validGeometry = QgsGeometryValidator::makeValidGeometry(mGeos);
+		GEOSGeom_destroy(mGeos);
+		mGeos = validGeometry;
+		mDirtyGeos = mGeos == 0;
+		return true;
+	}
+	return false;
+}
+
+QgsGeometry* QgsGeometry::makeValid() const
+{
+	return QgsGeometryValidator::makeValidGeometry(this);
 }
 
 bool QgsGeometry::isGeosEmpty() const
