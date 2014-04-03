@@ -31,8 +31,14 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
-    : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
+QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth,
+    Qt::PenJoinStyle penJoinStyle ) :
+    mBrushStyle( style ),
+    mBorderColor( borderColor ),
+    mBorderStyle( borderStyle ),
+    mBorderWidth( borderWidth ),
+    mBorderWidthUnit( QgsSymbolV2::MM ),
+    mPenJoinStyle( penJoinStyle ),
     mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
@@ -84,6 +90,7 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
   QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR;
   Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE;
   double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH;
+  Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE;
   QPointF offset;
 
   if ( props.contains( "color" ) )
@@ -98,8 +105,10 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
     borderWidth = props["width_border"].toDouble();
   if ( props.contains( "offset" ) )
     offset = QgsSymbolLayerV2Utils::decodePoint( props["offset"] );
+  if ( props.contains( "joinstyle" ) )
+    penJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( props["joinstyle"] );
 
-  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth );
+  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth, penJoinStyle );
   sl->setOffset( offset );
   if ( props.contains( "border_width_unit" ) )
     sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
@@ -155,6 +164,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit ) );
+  mPen.setJoinStyle( mPenJoinStyle );
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
@@ -201,6 +211,7 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["style_border"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
   map["width_border"] = QString::number( mBorderWidth );
   map["border_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
+  map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   saveDataDefinedProperties( map );
@@ -209,7 +220,7 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 {
-  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth );
+  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth, mPenJoinStyle );
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   sl->setBorderWidthUnit( mBorderWidthUnit );
@@ -243,7 +254,7 @@ void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
     // <Stroke>
     QDomElement strokeElem = doc.createElement( "se:Stroke" );
     symbolizerElem.appendChild( strokeElem );
-    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, mBorderColor, mBorderWidth );
+    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, mBorderColor, mBorderWidth, &mPenJoinStyle );
   }
 
   // <se:Displacement>
@@ -257,7 +268,7 @@ QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, doubl
   symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( mColor ) );
   symbolStyle.append( ";" );
   //pen
-  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor ) );
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor, mPenJoinStyle ) );
   return symbolStyle;
 }
 

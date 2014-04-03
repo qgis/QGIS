@@ -9,8 +9,10 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
                                 Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
                                 QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                                 Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
-                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH );
-
+                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
+                                Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
+                              );
+                              
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
@@ -59,6 +61,9 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     double borderWidth() const;
     void setBorderWidth( double borderWidth );
+    
+    Qt::PenJoinStyle penJoinStyle() const;
+    void setPenJoinStyle( Qt::PenJoinStyle style );
 
     void setOffset( QPointF offset );
     QPointF offset();
