@@ -85,7 +85,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
         popupmenu.addAction(selectOnCanvasAction)
         if self.canUseAutoExtent():
             useMincoveringExtentAction = \
-                QtGui.QAction('Use min convering extent from input layers',
+                QtGui.QAction('Use min covering extent from input layers',
                               self.pushButton)
             useMincoveringExtentAction.triggered.connect(
                     self.useMinCoveringExtent)
