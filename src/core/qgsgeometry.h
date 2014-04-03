@@ -563,7 +563,12 @@ class CORE_EXPORT QgsGeometry
     */
     static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
-	/** Indicates whether the geometry must be automatically validated and fixed after last conversion to GEOS 
+    /** Attempts to repair the geometry if it is invalid.
+     * @note added in 2.4
+     **/
+    bool repairGeometry();
+
+    /** Indicates whether the geometry must be automatically validated and fixed after last conversion to GEOS 
      * @note added in 2.4
      **/
     void setAutomaticGeosValidation( bool automaticValidation );

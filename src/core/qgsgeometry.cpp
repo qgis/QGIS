@@ -6409,6 +6409,64 @@ bool QgsGeometry::executeGeosValidation() const
 	if (!mDirtyGeos && mGeos && GEOSisValid(mGeos) != 1) // 0=invalid, 1=valid, 2=exception
 	{
 		GEOSGeometry* validGeometry = QgsGeometryValidator::makeValidGeometry(mGeos);
+
+		if (validGeometry)
+		{
+			GEOSGeom_destroy(mGeos);
+			mGeos = validGeometry;
+			mDirtyGeos = false;
+			return true;
+		}
+	}
+	return false;
+}
+
+QgsGeometry* QgsGeometry::makeValid() const
+{
+	return QgsGeometryValidator::makeValidGeometry(this);
+}
+
+bool QgsGeometry::repairGeometry()
+{
+	try
+	{
+		const GEOSGeometry *g = asGeos();
+
+		if (!g)
+			return false;
+
+		GEOSGeometry* validGeos = QgsGeometryValidator::makeValidGeometry(g);
+
+		if (validGeos)
+		{
+			GEOSGeom_destroy(mGeos);
+			mGeos = validGeos;
+			mDirtyGeos = false;
+			return true;
+		}
+		return false;
+	}
+	catch (GEOSException &e)
+	{
+		QgsMessageLog::logMessage(QObject::tr("Exception: %1").arg(e.what()), QObject::tr("GEOS"));
+		return false;
+	}
+}
+
+void QgsGeometry::setAutomaticGeosValidation(bool automaticValidation)
+{
+	if (mAutovalidateGeos != automaticValidation)
+	{
+		mAutovalidateGeos = automaticValidation;
+		if (automaticValidation) executeGeosValidation();
+	}
+}
+
+bool QgsGeometry::executeGeosValidation() const
+{
+	if (!mDirtyGeos && mGeos && GEOSisValid(mGeos) != 1) // 0=invalid, 1=valid, 2=exception
+	{
+		GEOSGeometry* validGeometry = QgsGeometryValidator::makeValidGeometry(mGeos);
 		GEOSGeom_destroy(mGeos);
 		mGeos = validGeometry;
 		mDirtyGeos = mGeos == 0;
