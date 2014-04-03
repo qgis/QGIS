@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QMessageBox>
+#include <QProgressDialog>
 
 #include "checkDock.h"
 
