@@ -190,7 +190,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   mSimplifyMethod.setMaximumScale( settings.value( "/qgis/simplifyMaxScale", mSimplifyMethod.maximumScale() ).toFloat() );
 
   // Default geometry validation settings
-  mAutomaticGeometryValidation = settings.value( "/qgis/automaticGeometryValidation", false ).toBool();
+  mAutomaticGeometryValidation = settings.value( "/qgis/automaticGeometryValidation", false ).toBool() && hasGeometryType() && geometryType() != QGis::Point;
 
 } // QgsVectorLayer ctor
 
