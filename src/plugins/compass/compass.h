@@ -20,8 +20,6 @@
 #ifndef _COMPASS_H__
 #define _COMPASS_H__
 
-#include <QtGui>
-#include <QtCore>
 #include <QtSensors/QCompass>
 #include <QObject>
 

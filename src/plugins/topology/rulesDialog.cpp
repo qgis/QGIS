@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QDebug>
+#include <QTableWidgetItem>
+
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
