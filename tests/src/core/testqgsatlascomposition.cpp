@@ -27,6 +27,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgssymbolv2.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgsfontutils.h"
 #include <QObject>
 #include <QSignalSpy>
 #include <QtTest>
@@ -134,14 +135,16 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel1 );
   mLabel1->setText( "[% \"NAME_1\" %] area" );
-  //next to explicetly set width, since expression isn't yet evaulated against
-  //an atlas feature and will be shorter then required
+  mLabel1->setFont( QgsFontUtils::getStandardTestFont() );
+  //need to explictly set width, since expression hasn't been evaluated against
+  //an atlas feature yet and will be shorter than required
   mLabel1->setSceneRect( QRectF( 150, 5, 60, 15 ) );
 
   // feature number label
   mLabel2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel2 );
   mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
+  mLabel2->setFont( QgsFontUtils::getStandardTestFont() );
   mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
   qWarning() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
@@ -201,7 +204,7 @@ void TestQgsAtlasComposition::autoscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_autoscale%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0, 10 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
   mAtlasMap->setAtlasDriven( false );
@@ -223,7 +226,7 @@ void TestQgsAtlasComposition::autoscale_render_2_0_api()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_autoscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
   mAtlas->setComposerMap( 0 );
@@ -245,7 +248,7 @@ void TestQgsAtlasComposition::fixedscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_fixedscale%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
 
@@ -266,7 +269,7 @@ void TestQgsAtlasComposition::fixedscale_render_2_0_api()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_fixedscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
   mAtlas->setComposerMap( 0 );
@@ -290,7 +293,7 @@ void TestQgsAtlasComposition::two_map_autoscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_two_maps%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0, 10 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
   mAtlasMap->setAtlasDriven( false );
@@ -314,7 +317,7 @@ void TestQgsAtlasComposition::hiding_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_hiding%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
 }
@@ -338,7 +341,7 @@ void TestQgsAtlasComposition::sorting_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_sorting%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
 }
@@ -363,7 +366,7 @@ void TestQgsAtlasComposition::filtering_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_filtering%1" ).arg((( int )fit ) + 1 ), mComposition );
-    QVERIFY( checker.testComposition( mReport, 0 ) );
+    QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
 }
@@ -377,9 +380,9 @@ void TestQgsAtlasComposition::test_signals()
   mAtlas->setSortFeatures( false );
   mAtlas->setFilterFeatures( false );
 
-  QSignalSpy spyRenderBegun( mAtlas, SIGNAL(renderBegun()) );
-  QSignalSpy spyRenderEnded( mAtlas, SIGNAL(renderEnded()) );
-  QSignalSpy spyPreparedForAtlas( mAtlasMap, SIGNAL(preparedForAtlas()) );  
+  QSignalSpy spyRenderBegun( mAtlas, SIGNAL( renderBegun() ) );
+  QSignalSpy spyRenderEnded( mAtlas, SIGNAL( renderEnded() ) );
+  QSignalSpy spyPreparedForAtlas( mAtlasMap, SIGNAL( preparedForAtlas() ) );
   mAtlas->beginRender();
 
   QVERIFY( spyRenderBegun.count() == 1 );
