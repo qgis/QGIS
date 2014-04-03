@@ -27,6 +27,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgssymbolv2.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgsfontutils.h"
 #include <QObject>
 #include <QSignalSpy>
 #include <QtTest>
@@ -134,6 +135,7 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel1 );
   mLabel1->setText( "[% \"NAME_1\" %] area" );
+  mLabel1->setFont( QgsFontUtils::getStandardTestFont() );
   //next to explicetly set width, since expression isn't yet evaulated against
   //an atlas feature and will be shorter then required
   mLabel1->setSceneRect( QRectF( 150, 5, 60, 15 ) );
@@ -142,6 +144,7 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel2 );
   mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
+  mLabel2->setFont( QgsFontUtils::getStandardTestFont() );
   mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
   qWarning() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
