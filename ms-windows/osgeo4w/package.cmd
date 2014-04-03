@@ -181,7 +181,8 @@ if errorlevel 1 (echo "ZERO_CHECK failed" & goto error)
 
 echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
-if errorlevel 1 (echo "ALL_BUILD failed" & goto error)
+if errorlevel 1 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
+if errorlevel 1 (echo "ALL_BUILD failed twice" & goto error)
 
 set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
 
