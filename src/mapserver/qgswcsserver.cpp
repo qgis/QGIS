@@ -118,8 +118,6 @@ QDomDocument QgsWCSServer::getCapabilities()
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
 
-#if 0 //todo: fixme
-
   //wcs:WCS_Capabilities element
   QDomElement wcsCapabilitiesElement = doc.createElement( "WCS_Capabilities"/*wcs:WCS_Capabilities*/ );
   wcsCapabilitiesElement.setAttribute( "xmlns", WCS_NAMESPACE );
@@ -198,8 +196,6 @@ QDomDocument QgsWCSServer::getCapabilities()
     mConfigParser->wcsContentMetadata( contentMetadataElement, doc );
   }
 
-#endif //0 //todo: fixme
-
   return doc;
 }
 
@@ -207,8 +203,6 @@ QDomDocument QgsWCSServer::describeCoverage()
 {
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
-
-#if 0 //todo: fixme
 
   //wcs:WCS_Capabilities element
   QDomElement coveDescElement = doc.createElement( "CoverageDescription"/*wcs:CoverageDescription*/ );
@@ -238,16 +232,11 @@ QDomDocument QgsWCSServer::describeCoverage()
     }
   }
   mConfigParser->describeCoverage( coveName, coveDescElement, doc );
-
-#endif //0 //todo: fixme
-
   return doc;
 }
 
 QByteArray* QgsWCSServer::getCoverage()
 {
-#if 0 //todo: fixme
-
   QStringList wcsLayersId = mConfigParser->wcsLayers();
 
   QList<QgsMapLayer*> layerList;
@@ -411,7 +400,6 @@ QByteArray* QgsWCSServer::getCoverage()
 
     return ba;
   }
-#endif //0 //todo: fixme
   return 0;
 }
 

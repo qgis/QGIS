@@ -26,6 +26,14 @@ class QgsWCSProjectParser
     QgsWCSProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     ~QgsWCSProjectParser();
 
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    QString wcsServiceUrl() const;
+    QString serviceUrl() const;
+    void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const;
+    QStringList wcsLayers() const;
+    void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
+    QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
+
   private:
     QgsServerProjectParser mProjectParser;
 };
