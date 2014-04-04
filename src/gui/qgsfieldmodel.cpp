@@ -107,6 +107,17 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   if ( !mLayer )
     return QVariant();
 
+  if ( role == FieldNameRole )
+  {
+    QgsField field = mFields[index.internalId()];
+    return field.name();
+  }
+
+  if ( role == FieldIndexRole )
+  {
+    return index.row();
+  }
+
   if ( role == Qt::DisplayRole )
   {
     QgsField field = mFields[index.internalId()];
