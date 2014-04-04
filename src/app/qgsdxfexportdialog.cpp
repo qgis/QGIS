@@ -17,6 +17,7 @@
 
 #include "qgsdxfexportdialog.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayermodel.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgis.h"
@@ -24,33 +25,19 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDxfExportDialog::QgsDxfExportDialog( QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+
+  mModel = new QgsMapLayerProxyModel( this );
+  mModel->sourceLayerModel()->setItemsCheckable( true );
+  mModel->setFilters( QgsMapLayerProxyModel::HasGeometry );
+  mLayersListView->setModel( mModel );
+
   connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   connect( mUnSelectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
-
-  QList<QgsMapLayer*>::const_iterator layerIt = layerKeys.constBegin();
-  for ( ; layerIt != layerKeys.constEnd(); ++layerIt )
-  {
-    QgsMapLayer* layer = *layerIt;
-    if ( layer )
-    {
-      if ( layer->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-        if ( !vl->hasGeometryType() )
-          continue;
-        QListWidgetItem* layerItem = new QListWidgetItem( layer->name() );
-        layerItem->setData( Qt::UserRole, layer->id() );
-        layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-        layerItem->setCheckState( Qt::Checked );
-        mLayersListWidget->addItem( layerItem );
-      }
-    }
-  }
 
   //last dxf symbology mode
   QSettings s;
@@ -64,34 +51,21 @@ QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QW
 
 QgsDxfExportDialog::~QgsDxfExportDialog()
 {
-
 }
 
 void QgsDxfExportDialog::selectAll()
 {
-  for ( int r = 0; r < mLayersListWidget->count(); r++ )
-    mLayersListWidget->item( r )->setCheckState( Qt::Checked );
+  mModel->sourceLayerModel()->checkAll( Qt::Checked );
 }
 
 void QgsDxfExportDialog::unSelectAll()
 {
-  for ( int r = 0; r < mLayersListWidget->count(); r++ )
-    mLayersListWidget->item( r )->setCheckState( Qt::Unchecked );
+  mModel->sourceLayerModel()->checkAll( Qt::Unchecked );
 }
 
-QList<QString> QgsDxfExportDialog::layers() const
+QList<QgsMapLayer*> QgsDxfExportDialog::layers() const
 {
-  QList<QString> layerKeyList;
-  int nItems = mLayersListWidget->count();
-  for ( int i = 0; i < nItems; ++i )
-  {
-    QListWidgetItem* currentItem = mLayersListWidget->item( i );
-    if ( currentItem->checkState() == Qt::Checked )
-    {
-      layerKeyList.prepend( currentItem->data( Qt::UserRole ).toString() );
-    }
-  }
-  return layerKeyList;
+  return mModel->sourceLayerModel()->layersChecked();
 }
 
 double QgsDxfExportDialog::symbologyScale() const

@@ -96,8 +96,11 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilter() const { return mFeatureFilter; }
     void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
 
-    int sortKeyAttributeIndex() const { return mSortKeyAttributeIdx; }
-    void setSortKeyAttributeIndex( int idx ) { mSortKeyAttributeIdx = idx; }
+    QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
+    void setSortKeyAttributeName( QString fieldName ) { mSortKeyAttributeName = fieldName; }
+
+    Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
+    Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
@@ -188,7 +191,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     // value of field that is used for ordering of features
     SorterKeys mFeatureKeys;
     // key (attribute index) used for ordering
-    int mSortKeyAttributeIdx;
+    QString mSortKeyAttributeName;
 
     // feature filtering
     bool mFilterFeatures;

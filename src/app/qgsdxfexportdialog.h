@@ -20,15 +20,16 @@
 
 #include "ui_qgsdxfexportdialogbase.h"
 #include "qgsdxfexport.h"
+#include "qgsmaplayerproxymodel.h"
 
 class QgsDxfExportDialog: public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsDxfExportDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDxfExportDialog();
 
-    QList<QString> layers() const;
+    QList<QgsMapLayer *> layers() const;
     double symbologyScale() const;
     QgsDxfExport::SymbologyExport symbologyMode() const;
     QString saveFile() const;
@@ -43,6 +44,9 @@ class QgsDxfExportDialog: public QDialog, private Ui::QgsDxfExportDialogBase
     void on_mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
+
+  private:
+    QgsMapLayerProxyModel* mModel;
 };
 
 #endif // QGSDXFEXPORTDIALOG_H
