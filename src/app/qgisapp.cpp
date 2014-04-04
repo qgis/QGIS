@@ -3758,29 +3758,11 @@ void QgisApp::fileSaveAs()
 
 void QgisApp::dxfExport()
 {
-  QgsLegend* mapLegend = legend();
-  if ( !mapLegend )
-  {
-    return;
-  }
-
-  QgsDxfExportDialog d( mapLegend->layers() );
+  QgsDxfExportDialog d;
   if ( d.exec() == QDialog::Accepted )
   {
     QgsDxfExport dxfExport;
-
-    QList<QgsMapLayer*> layerList;
-    QList<QString> layerIdList = d.layers();
-    QList<QString>::const_iterator layerIt = layerIdList.constBegin();
-    for ( ; layerIt != layerIdList.constEnd(); ++layerIt )
-    {
-      QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
-      if ( l )
-      {
-        layerList.append( l );
-      }
-    }
-
+    QList<QgsMapLayer*> layerList = d.layers();
     dxfExport.addLayers( layerList );
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );

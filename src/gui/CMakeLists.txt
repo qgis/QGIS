@@ -88,6 +88,8 @@ qgsexpressionhighlighter.cpp
 qgsexpressionselectiondialog.cpp
 qgsextentgroupbox.cpp
 qgsfeatureselectiondlg.cpp
+qgsfieldcombobox.cpp
+qgsfieldmodel.cpp
 qgsfieldvalidator.cpp
 qgsfiledropedit.cpp
 qgsfilterlineedit.cpp
@@ -103,6 +105,9 @@ qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
 qgsmapcanvassnapper.cpp
 qgsmaplayeractionregistry.cpp
+qgsmaplayercombobox.cpp
+qgsmaplayermodel.cpp
+qgsmaplayerproxymodel.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptip.cpp
 qgsmaptool.cpp
@@ -227,6 +232,8 @@ qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
 qgsextentgroupbox.h
 qgsfeatureselectiondlg.h
+qgsfieldcombobox.h
+qgsfieldmodel.h
 qgsfieldvalidator.h
 qgsfilterlineedit.h
 qgsformannotationitem.h
@@ -238,6 +245,9 @@ qgsludialog.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmaplayeractionregistry.h
+qgsmaplayercombobox.h
+qgsmaplayermodel.h
+qgsmaplayerproxymodel.h
 qgsmapoverviewcanvas.h
 qgsmaptool.h
 qgsmaptoolemitpoint.h
@@ -292,6 +302,8 @@ qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
 qgsfeatureselectiondlg.h
+qgsfieldcombobox.h
+qgsfieldmodel.h
 qgsfieldvalidator.h
 qgsfiledropedit.h
 qgsfilterlineedit.h
@@ -301,6 +313,9 @@ qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h
 qgsmapcanvassnapper.h
+qgsmaplayercombobox.h
+qgsmaplayermodel.h
+qgsmaplayerproxymodel.h
 qgsmapoverviewcanvas.h
 qgsmaptip.h
 qgsmaptool.h
