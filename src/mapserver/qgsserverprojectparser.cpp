@@ -20,6 +20,7 @@
 #include "qgsconfigparserutils.h"
 #include "qgscrscache.h"
 #include "qgsdatasourceuri.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 
@@ -76,9 +77,8 @@ void QgsServerProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layer
   QList<QDomElement>::const_iterator layerElemIt = mProjectLayerElements.constBegin();
   for ( ; layerElemIt != mProjectLayerElements.constEnd(); ++layerElemIt )
   {
-    //todo: fixme
-    //addJoinLayersForElement( *layerElemIt );
-    //addValueRelationLayersForElement( *layerElemIt );
+    addJoinLayersForElement( *layerElemIt );
+    addValueRelationLayersForElement( *layerElemIt );
     QgsMapLayer *layer = createLayerFromElement( *layerElemIt );
     if ( layer )
     {
@@ -255,6 +255,16 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     }
   }
   return layer;
+}
+
+QgsMapLayer* QgsServerProjectParser::mapLayerFromLayerId( const QString& lId, bool useCache ) const
+{
+  QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( lId );
+  if ( layerIt != mProjectLayerElementsById.constEnd() )
+  {
+    return createLayerFromElement( layerIt.value(), useCache );
+  }
+  return 0;
 }
 
 QString QgsServerProjectParser::layerIdFromLegendLayer( const QDomElement& legendLayer ) const
@@ -854,9 +864,9 @@ void QgsServerProjectParser::addLayerFromLegendLayer( const QDomElement& legendL
   QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( id );
   if ( layerIt != mProjectLayerElementsById.constEnd() )
   {
-    //todo: fixme
-    /*addJoinLayersForElement( layerIt.value(), useCache );
-    addValueRelationLayersForElement( layerIt.value(), useCache );*/
+
+    addJoinLayersForElement( layerIt.value(), useCache );
+    addValueRelationLayersForElement( layerIt.value(), useCache );
     QgsMapLayer* layer = createLayerFromElement( layerIt.value(), useCache );
     if ( layer )
     {
@@ -1059,4 +1069,58 @@ QStringList QgsServerProjectParser::wfsLayers() const
     wfsList << valueList.at( i ).toElement().text();
   }
   return wfsList;
+}
+
+void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerElem, bool useCache ) const
+{
+  QDomElement vectorJoinsElem = layerElem.firstChildElement( "vectorjoins" );
+  if ( vectorJoinsElem.isNull() )
+  {
+    return;
+  }
+
+  QDomNodeList joinNodeList = vectorJoinsElem.elementsByTagName( "join" );
+  if ( joinNodeList.size() > 1 )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < joinNodeList.size(); ++i )
+  {
+    QString id = joinNodeList.at( i ).toElement().attribute( "joinLayerId" );
+    QgsMapLayer* layer = mapLayerFromLayerId( id, useCache );
+    if ( layer )
+    {
+      QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
+    }
+  }
+}
+
+void QgsServerProjectParser::addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache ) const
+{
+  QDomElement editTypesElem = layerElem.firstChildElement( "edittypes" );
+  if ( editTypesElem.isNull() )
+  {
+    return;
+  }
+
+  QDomNodeList editTypeNodeList = editTypesElem.elementsByTagName( "edittype" );
+  for ( int i = 0; i < editTypeNodeList.size(); ++i )
+  {
+    QDomElement editTypeElem = editTypeNodeList.at( i ).toElement();
+    int type = editTypeElem.attribute( "type" ).toInt();
+    if ( type == QgsVectorLayer::ValueRelation )
+    {
+      QString layerId = editTypeElem.attribute( "layer" );
+      /*QString keyAttribute = editTypeEleml.attribute( "id" ); //relation attribute in other layer
+      QString valueAttribute = editTypeElem.attribute( "value" ); //value attribute in other layer
+      QString relationAttribute = editTypeElem.attribute( "name" );*/
+
+      QgsMapLayer* layer = mapLayerFromLayerId( layerId, useCache );
+      if ( layer )
+      {
+        QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
+      }
+    }
+  }
 }

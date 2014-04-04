@@ -50,6 +50,8 @@ class QgsServerProjectParser
     @return the maplayer or 0 in case of error*/
     QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
 
+    QgsMapLayer* mapLayerFromLayerId( const QString& lId, bool useCache = true ) const;
+
     /**Returns the layer id under a <legendlayer> tag in the QGIS projectfile*/
     QString layerIdFromLegendLayer( const QDomElement& legendLayer ) const;
 
@@ -104,6 +106,10 @@ class QgsServerProjectParser
     QString serviceUrl() const;
 
     QStringList wfsLayers() const;
+
+    void addJoinLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
+
+    void addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
 
   private:
 

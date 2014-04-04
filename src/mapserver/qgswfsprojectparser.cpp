@@ -172,7 +172,7 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      //addJoinLayersForElement( elem ); //todo: fixme
+      mProjectParser.addJoinLayersForElement( elem );
       QgsMapLayer *layer = mProjectParser.createLayerFromElement( elem );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
@@ -421,7 +421,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      //addJoinLayersForElement( elem ); //todo: fixme
+      mProjectParser.addJoinLayersForElement( elem );
       QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
@@ -580,7 +580,7 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      //addJoinLayersForElement( elem, useCache ); //todo: fixme
+      mProjectParser.addJoinLayersForElement( elem, useCache );
       QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )

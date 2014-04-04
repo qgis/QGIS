@@ -101,11 +101,8 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElementsByName.find( lName );
   if ( layerElemIt != projectLayerElementsByName.constEnd() )
   {
-    //todo: fixme
-    /*
-    addJoinLayersForElement( layerElemIt.value(), useCache );
-    addValueRelationLayersForElement( layerElemIt.value(), useCache );
-    */
+    mProjectParser.addJoinLayersForElement( layerElemIt.value(), useCache );
+    mProjectParser.addValueRelationLayersForElement( layerElemIt.value(), useCache );
     QgsMapLayer* layer = mProjectParser.createLayerFromElement( layerElemIt.value(), useCache );
     if ( layer )
     {
