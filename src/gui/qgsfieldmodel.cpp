@@ -19,9 +19,6 @@
 #include "qgslogger.h"
 
 
-const int QgsFieldModel::FieldIndexRole = Qt::UserRole + 1;
-const int QgsFieldModel::FieldNameRole = Qt::UserRole + 2;
-
 QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )
     , mLayer( NULL )

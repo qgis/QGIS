@@ -11,7 +11,7 @@ class QgsMapLayerModel : QAbstractItemModel
 %TypeHeaderCode
 #include "qgsmaplayermodel.h"
 %End
-    
+
   public:
     static const int LayerIdRole;
 

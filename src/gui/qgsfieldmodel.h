@@ -32,7 +32,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    static const int FieldNameRole, FieldIndexRole;
+    enum { FieldNameRole = Qt::UserRole + 1, FieldIndexRole = Qt::UserRole + 2 };
 
     /**
      * @brief QgsFieldModel creates a model to display the fields of a given layer

@@ -70,7 +70,7 @@ public:
 
     QString sortKeyAttributeName() const;
     void setSortKeyAttributeName( QString fieldName );
-    
+
     int sortKeyAttributeIndex() const /Deprecated/;
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
 
