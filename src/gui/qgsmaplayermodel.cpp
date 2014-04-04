@@ -148,7 +148,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
     return layer->id();
   }
 
-  if ( role == Qt::CheckStateRole )
+  if ( role == Qt::CheckStateRole && mItemCheckable )
   {
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
     return mLayersChecked[layer->id()];
