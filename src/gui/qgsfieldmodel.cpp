@@ -22,15 +22,34 @@
 QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )
     , mLayer( NULL )
+    , mAllowExpression( false )
 {
 }
 
 QModelIndex QgsFieldModel::indexFromName( QString fieldName )
 {
   int r = mFields.indexFromName( fieldName );
-  return index( r, 0 );
-}
+  QModelIndex idx = index( r, 0 );
+  if ( idx.isValid() )
+  {
+    return idx;
+  }
 
+  if ( mAllowExpression )
+  {
+    int exprIdx = mExpression.indexOf( fieldName );
+    if ( exprIdx != -1 )
+    {
+      return index( mFields.count() + exprIdx , 0 );
+    }
+    else
+    {
+      return setExpression( fieldName );
+    }
+  }
+
+  return QModelIndex();
+}
 
 void QgsFieldModel::setLayer( QgsMapLayer *layer )
 {
@@ -39,29 +58,37 @@ void QgsFieldModel::setLayer( QgsMapLayer *layer )
     disconnect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateFields() ) );
     disconnect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   }
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
-  {
-    mLayer = vl;
-    connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateFields() ) );
-    connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
-  }
-  else
+
+  if ( !layer )
   {
     mLayer = 0;
+    updateModel();
+    return;
   }
-  updateFields();
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( !vl )
+  {
+    mLayer = 0;
+    updateModel();
+    return;
+  }
+
+  mLayer = vl;
+  connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateFields() ) );
+  connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
+  updateModel();
 }
 
 void QgsFieldModel::layerDeleted()
 {
   mLayer = 0;
-  updateFields();
+  updateModel();
 }
 
-void QgsFieldModel::updateFields()
+void QgsFieldModel::updateModel()
 {
   beginResetModel();
+  mExpression = QList<QString>();
   if ( mLayer )
     mFields = mLayer->pendingFields();
   else
@@ -69,10 +96,39 @@ void QgsFieldModel::updateFields()
   endResetModel();
 }
 
+void QgsFieldModel::setAllowExpression( bool allowExpression )
+{
+  if ( allowExpression == mAllowExpression )
+    return;
+
+  mAllowExpression = allowExpression;
+
+  if ( !mAllowExpression )
+  {
+    int start = mFields.count();
+    int end = start + mExpression.count() - 1;
+    beginRemoveRows( QModelIndex(), start, end );
+    mExpression = QList<QString>();
+    endRemoveRows();
+  }
+}
+
+QModelIndex QgsFieldModel::setExpression( QString expression )
+{
+  if ( !mAllowExpression )
+    return QModelIndex();
+
+  beginResetModel();
+  mExpression = QList<QString>() << expression;
+  endResetModel();
+
+  return index( mFields.count() , 0 );
+}
+
 QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  if ( row < 0 || row >= mFields.count() )
+  if ( row < 0 || row >= rowCount() )
     return QModelIndex();
 
   return createIndex( row, column, row );
@@ -87,7 +143,7 @@ QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
 int QgsFieldModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return mFields.count();
+  return mAllowExpression ? mFields.count() + mExpression.count() : mFields.count();
 }
 
 int QgsFieldModel::columnCount( const QModelIndex &parent ) const
@@ -106,27 +162,53 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
   if ( role == FieldNameRole )
   {
+    int exprIdx = index.internalId() - mFields.count();
+    if ( exprIdx >= 0 )
+    {
+      return "";
+    }
     QgsField field = mFields[index.internalId()];
     return field.name();
   }
 
+  if ( role == ExpressionRole )
+  {
+    int exprIdx = index.internalId() - mFields.count();
+    if ( exprIdx >= 0 )
+    {
+      return mExpression[exprIdx];
+    }
+    return "";
+  }
+
   if ( role == FieldIndexRole )
   {
-    return index.row();
+    if ( index.internalId() >= mFields.count() )
+    {
+      return QVariant();
+    }
+    return index.internalId();
   }
 
   if ( role == Qt::DisplayRole )
   {
+    int exprIdx = index.internalId() - mFields.count();
+    if ( exprIdx >= 0 )
+    {
+      return mExpression[exprIdx];
+    }
     QgsField field = mFields[index.internalId()];
     const QMap< QString, QString > aliases = mLayer->attributeAliases();
     QString alias = aliases.value( field.name(), field.name() );
     return alias;
   }
 
-  if ( role == Qt::UserRole )
+  if ( role == Qt::FontRole && index.internalId() >= mFields.count() )
   {
-    QgsField field = mFields[index.internalId()];
-    return field.name();
+    // if the line is an expression, set it as italic
+    QFont font;
+    font.setItalic( true );
+    return font;
   }
 
   return QVariant();

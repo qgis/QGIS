@@ -31,21 +31,41 @@ void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
   mFieldModel->setLayer( layer );
 }
 
+QgsVectorLayer *QgsFieldComboBox::layer()
+{
+  QgsMapLayer* layer = mFieldModel->layer();
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( vl )
+    return vl;
+  else
+    return 0;
+}
+
 void QgsFieldComboBox::setField( QString fieldName )
 {
   QModelIndex idx = mFieldModel->indexFromName( fieldName );
   if ( idx.isValid() )
   {
     setCurrentIndex( idx.row() );
+    return;
   }
-  else
+
+  if ( mAllowExpression )
   {
-    setCurrentIndex( -1 );
+    mFieldModel->setExpression( fieldName );
+    setCurrentIndex( findText( fieldName ) );
+    return;
   }
+  setCurrentIndex( -1 );
 }
 
-QString QgsFieldComboBox::currentField()
+QString QgsFieldComboBox::currentField( bool *isExpression )
 {
+  if ( isExpression )
+  {
+    *isExpression = false;
+  }
+
   int i = currentIndex();
 
   const QModelIndex index = mFieldModel->index( i, 0 );
@@ -54,8 +74,31 @@ QString QgsFieldComboBox::currentField()
     return "";
   }
 
-  QString name = mFieldModel->data( index, QgsFieldModel::FieldNameRole ).toString();
-  return name;
+  QString fieldName = mFieldModel->data( index, QgsFieldModel::FieldNameRole ).toString();
+  if ( !fieldName.isEmpty() )
+  {
+    return fieldName;
+  }
+
+  if ( mAllowExpression )
+  {
+    QString expression = mFieldModel->data( index, QgsFieldModel::ExpressionRole ).toString();
+    if ( !expression.isEmpty() )
+    {
+      if ( isExpression )
+      {
+        *isExpression = true;
+      }
+      return expression;
+    }
+  }
+
+  return "";
+}
+
+void QgsFieldComboBox::setAllowExpression( bool allowExpression )
+{
+  mFieldModel->setAllowExpression( allowExpression );
 }
 
 void QgsFieldComboBox::indexChanged( int i )

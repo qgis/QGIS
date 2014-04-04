@@ -45,7 +45,6 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void apply();
     void changeTextColor( const QColor &color );
     void showEngineConfigDialog();
-    void showExpressionDialog();
     void changeBufferColor( const QColor &color );
 
     void updateUi();

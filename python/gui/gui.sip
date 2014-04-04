@@ -29,6 +29,7 @@
 %Include qgsexpressionbuilderwidget.sip
 %Include qgsexpressionhighlighter.sip
 %Include qgsfieldcombobox.sip
+%Include qgsfieldexpressionwidget.sip
 %Include qgsfieldmodel.sip
 %Include qgsfieldvalidator.sip
 %Include qgsfiledropedit.sip
