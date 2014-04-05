@@ -1032,7 +1032,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			outBuffer.append(1, '*');
 			i++;
 			size_t j = line.find_first_not_of(" \t");
-			if (!line.compare(j, 2, "/*") == 0)	// does line start with comment?
+      if (!(line.compare(j, 2, "/*") == 0))	// does line start with comment?
 				blockCommentNoIndent = true;		// if no, cannot indent continuation lines
 			continue;
 		}

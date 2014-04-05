@@ -2212,7 +2212,7 @@ void ASFormatter::formatBrackets(BracketType bracketType)
 		else
 		{
 			if (!isCharImmediatelyPostComment
-			        && !bracketFormatMode == NONE_MODE
+              && !(bracketFormatMode == NONE_MODE)
 			        && !isImmediatelyPostEmptyBlock)
 				isInLineBreak = false;
 

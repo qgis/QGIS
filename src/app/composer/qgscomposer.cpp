@@ -3114,7 +3114,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat )
 
   //check if composition has atlas preview
   QgsAtlasComposition& atlas = mComposition->atlasComposition();
-  if ( ! atlas.enabled() || ! mComposition->atlasMode() == QgsComposition::PreviewAtlas || atlas.coverageLayer() != layer )
+  if ( ! atlas.enabled() || !( mComposition->atlasMode() == QgsComposition::PreviewAtlas ) || atlas.coverageLayer() != layer )
   {
     //either atlas preview isn't enabled, or layer doesn't match
     return;

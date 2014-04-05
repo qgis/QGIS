@@ -175,7 +175,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureCheckBox_stateChanged( int s
 void QgsAtlasCompositionWidget::updateAtlasFeatures()
 {
   //only do this if composer mode is preview
-  if ( !mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  if ( !( mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
   {
     return;
   }
