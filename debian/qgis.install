@@ -14,18 +14,8 @@ usr/lib/qgis/plugins/libzonalstatisticsplugin.so
 usr/lib/qgis/plugins/libheatmapplugin.so
 usr/lib/qgis/plugins/libtopolplugin.so
 usr/lib/qgis/qgis_help
-usr/share/pixmaps/qgis-icon.png
-usr/share/pixmaps/qgis-mime-icon.png
-usr/share/pixmaps/qgis-mime-icon.png usr/share/icons/crystalsvg/128x128/mimetypes
-../qgis.desktop usr/share/applications
-../qbrowser.desktop usr/share/applications
-../qgis.xml usr/share/mime/packages
-../mime/application/x-esri-shape.desktop usr/share/mimelnk/application
-../mime/application/x-mapinfo-mif.desktop usr/share/mimelnk/application
-../mime/application/x-esri-crs.desktop usr/share/mimelnk/application
-../mime/application/x-raster-ecw.desktop usr/share/mimelnk/application
-../mime/application/x-adobe-mif.desktop usr/share/mimelnk/application
-../mime/application/x-raster-aig.desktop usr/share/mimelnk/application
-../mime/application/x-qgis-project.desktop usr/share/mimelnk/application
-../mime/application/x-raster-mrsid.desktop usr/share/mimelnk/application
-../mime/application/x-qgis-layer-settings.desktop usr/share/mimelnk/application
+usr/share/pixmaps/
+usr/share/applications/
+usr/share/mime/packages/
+usr/share/mimelnk/
+usr/share/icons/hicolor/

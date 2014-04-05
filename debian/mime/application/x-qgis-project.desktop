@@ -5,5 +5,5 @@ Hidden=false
 Comment=QGIS Project
 Comment[de]=QGIS-Projekt
 Patterns=*.qgs;
-Icon=qgis-mime-icon
+Icon=qgis-mime
 X-KDE-IsAlso=application/x-qgis

@@ -4,6 +4,9 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -13,6 +16,8 @@ DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
+
+QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*\)-.*/\1/p')
 
 ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
@@ -38,20 +43,18 @@ GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 
 CMAKE_OPTS := \
-	-D BUILDNAME=$(DEB_BUILD_NAME) \
-	-D GRASS_PREFIX=/usr/lib/grass64 \
-	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BINDINGS_GLOBAL_INSTALL=TRUE \
-	-D PEDANTIC=TRUE \
-	-D WITH_QSPATIALITE=TRUE \
-	-D WITH_MAPSERVER=TRUE \
-	-D MAPSERVER_SKIP_ECW=TRUE \
-	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
-	-D WITH_APIDOC=TRUE \
-	-D WITH_GLOBE=TRUE
-
-MAKEFLAGS += VERBOSE=YES
-
+	-DBUILDNAME=$(DEB_BUILD_NAME) \
+	-DCMAKE_VERBOSE_MAKEFILE=1 \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DGRASS_PREFIX=/usr/lib/grass64 \
+	-DBINDINGS_GLOBAL_INSTALL=TRUE \
+	-DPEDANTIC=TRUE \
+	-DWITH_QSPATIALITE=TRUE \
+	-DWITH_MAPSERVER=TRUE \
+	-DMAPSERVER_SKIP_ECW=TRUE \
+	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
+	-DWITH_APIDOC=TRUE \
+	-DWITH_GLOBE=TRUE
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -59,20 +62,29 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise raring saucy trusty"))
-	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
+	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
-
 ifneq (,$(findstring $(DISTRIBUTION),"jessie raring saucy trusty sid sid-oracle"))
-	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
+	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
 ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
-	CMAKE_OPTS += -D WITH_ORACLE=TRUE
+	CMAKE_OPTS += -DWITH_ORACLE=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))
-	CMAKE_OPTS += -D SPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
+	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
+endif
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
+endif
+
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -DENABLE_TESTS=FALSE
+else
+	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie saucy trusty sid"))
@@ -80,6 +92,10 @@ CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
 LDFLAGS  := $(shell dpkg-buildflags --get LDFLAGS)
+endif
+
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
 endif
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -90,18 +106,6 @@ else
 	CXXFLAGS += -O2
 endif
 
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
-
-ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug
-endif
-
-ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -D ENABLE_TESTS=FALSE
-endif
-
 ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -pg
 	CXXFLAGS += -pg
@@ -110,12 +114,14 @@ endif
 
 define gentemplate
 $(2): $(1)
-	sed \
-		-e "s/{DEB_BUILD_GNU_TYPE}/$(DEB_BUILD_GNU_TYPE)/g" \
-		-e "s#{QT_PLUGIN_DIR}#$(QT_PLUGIN_DIR)#g" \
-		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
-		-e "s/{GRASS}/$(GRASS)/g" \
-		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
+	sed -r \
+		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
+		-e '/^#/d' \
+		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
+		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
+		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
+		-e "s/\{GRASS\}/$(GRASS)/g" \
+		-e "s/\{GRASS_ABI\}/$(GRASS_ABI)/g" $$^ >$$@
 
 templates:: $(2)
 
@@ -123,109 +129,124 @@ templateclean::
 	rm -f $(2)
 endef
 
-$(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(eval $(call gentemplate,$(t),$(basename $(t)))))
+$(foreach t,$(wildcard debian/*.in),$(eval $(call gentemplate,$(t),$(basename $(t)))))
 $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
-
-debian/build/CMakeCache.txt: templates CMakeLists.txt
-	dh_testdir
-	# Add here commands to configure the package.
-	[ -d debian/build ] || mkdir debian/build
-	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
-	cd debian/build; CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" LDFLAGS="$(LDFLAGS)" cmake $(CMAKE_OPTS) ../..
-
-build: build-stamp
-
-build-stamp: debian/build/CMakeCache.txt
-	dh_testdir
-
-	# Add here commands to compile the package.
-	$(MAKE) -C debian/build
-
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	# Code to run the package test suite - and ignore the outcome for now
-	-LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) PATH=/usr/sbin:$(PATH) LC_CTYPE=C.UTF-8 $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
-else
-	@echo Skipping tests.
-endif
-
-	touch $@
 
 cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-clean: cleantemplates
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp 
-	rm -f i18n/*.qm
-	rm -rf debian/tmp
+binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
+	dh $@ --with python2 --parallel --builddirectory=debian/build
 
-	# Add here commands to clean up after the build process.
-	rm -rf debian/build
-
+override_dh_clean: cleantemplates
 	dh_clean
 
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
+	# automatically generated files
+	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
+	-$(RM) $(CURDIR)/src/core/qgsexpression_texts.cpp
 
-	# Add here commands to install the package into debian/tmp.
-	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
+	-$(RM) -r $(CURDIR)/debian/build/
 
-	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
+override_dh_auto_configure: templates
+	dh_auto_configure -- $(CMAKE_OPTS)
+
+override_dh_auto_build-arch:
+	dh_auto_build --arch
+
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	# Code to run the package test suite - and ignore the outcome for now
+	-LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) PATH=/usr/sbin:$(PATH) LC_CTYPE=C.UTF-8 $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
+else
+	@echo Skipping tests.
+endif
+
+override_dh_auto_install-arch:
+	dh_auto_install --arch
 
 	# remove unwanted files
-	! [ -f debian/tmp/usr/share/qgis/doc/api/installdox ] || rm debian/tmp/usr/share/qgis/doc/api/installdox
-	! [ -f debian/tmp/usr/share/qgis/doc/api/jquery.js ] || ln -sf /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/qgis/doc/api/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENCE
+
+	# Don't include a copy of the world.tif also included in osgearth-data
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
+
+	# remove extra license files
+	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
+
+	# Man pages are installed by dh_installman
+	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
+	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.xpm
 
-	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
+	# Install application icon
+	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
+		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
+		install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
+	done
+	
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qgis.svg
 
-# Build architecture-independent files here.
-binary-indep: build install
-# We have nothing to do by default.
+	# Install desktop files
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis.desktop $(CURDIR)/debian/tmp/usr/share/applications
+	install -o root -g root -m 644 $(CURDIR)/debian/qbrowser.desktop $(CURDIR)/debian/tmp/usr/share/applications
 
-# Build architecture-dependent files here.
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs ChangeLog
-	dh_installdocs
-	dh_installexamples
-	dh_install --sourcedir=debian/tmp
+	# Mime info
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
 
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mimelnk/application
+	install -o root -g root -m 644 $(CURDIR)/debian/mime/application/* $(CURDIR)/debian/tmp/usr/share/mimelnk/application
+
+	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qbrowser $(CURDIR)/debian/qgis/usr/bin
 
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
+
+	# qgis binary wrappers
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
-	
-	dh_sip
-	dh_python2 --no-guessing-versions
-	dh_installmenu
-	dh_icons
-	dh_installman -pqgis qgis.1 qbrowser.1
-	dh_installmime -pqgis
-	dh_link
-	if which dh_lintian >/dev/null; then dh_lintian; fi
-	dh_strip
-	dh_compress --exclude=pdf
-	dh_fixperms
-	dh_makeshlibs
-	dh_installdeb
-	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install debian/control cleantemplates templateclean
+override_dh_install:
+	# Don't ship srs.db, automatically updated in postinst with crssync
+	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
+
+	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
+
+	dh_install --autodest --list-missing
+
+override_dh_installchangelogs:
+	dh_installchangelogs ChangeLog
+
+override_dh_installman:
+	dh_installman -pqgis qgis.1 qbrowser.1
+
+override_dh_installmime:
+	dh_installmime -pqgis
+
+override_dh_python2:
+	dh_python2 --no-guessing-versions
+	dh_sip -ppython-qgis
+
+override_dh_compress:
+	dh_compress --exclude=pdf
+
+override_dh_makeshlibs:
+	dh_makeshlibs -Xqgis-plugin-grass -- -c0 -v$(QGIS_VERSION)
+
+override_dh_shlibdeps:
+	dh_shlibdeps -l/usr/lib/$(GRASS)/lib

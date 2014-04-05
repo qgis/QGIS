@@ -1,2 +1,2 @@
 version=3
-http://qgis.org/downloads/qgis-(.*).tar.bz2
+http://qgis.org/downloads/ (?:.*/)?(?:rel|v|qgis)[\-\_](\d[\d\-\.]+)\.(?:tgz|tbz|txz|(?:tar\.(?:gz|bz2|xz)))

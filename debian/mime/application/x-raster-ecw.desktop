@@ -4,5 +4,5 @@ MimeType=application/x-raster-ecw
 Hidden=false
 Comment=ECW raster data
 Comment[de]=ECW-Rasterdaten
-Icon=qgis-mime-icon
+Icon=qgis-mime
 Patterns=*.ecw;

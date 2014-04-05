@@ -10,7 +10,7 @@ Build-Depends:
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
- libgdal1-dev,
+ libgdal1-dev | libgdal-dev,
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
