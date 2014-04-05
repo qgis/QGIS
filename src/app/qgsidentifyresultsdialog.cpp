@@ -463,6 +463,65 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
   }
 
+  // table
+  int j = tblResults->rowCount();
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    if ( i >= fields.count() )
+      continue;
+
+    QString value = fields[i].displayString( attrs[i] );
+    QString value2 = value;
+    switch ( vlayer->editType( i ) )
+    {
+      case QgsVectorLayer::Hidden:
+        // skip the item
+        continue;
+
+      case QgsVectorLayer::ValueMap:
+        value2 = vlayer->valueMap( i ).key( value, QString( "(%1)" ).arg( value ) );
+        break;
+
+      case QgsVectorLayer::Calendar:
+        if ( attrs[i].canConvert( QVariant::Date ) )
+          value2 = attrs[i].toDate().toString( vlayer->dateFormat( i ) );
+        break;
+
+      default:
+        break;
+    }
+
+    tblResults->setRowCount( j + 1 );
+
+    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( vlayer->name() ).arg( vlayer->attributeDisplayName( i ) ).arg( value2 ) );
+
+    QTableWidgetItem *item = new QTableWidgetItem( vlayer->name() );
+    item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
+    tblResults->setItem( j, 0, item );
+
+    item = new QTableWidgetItem( FID_TO_STRING( f.id() ) );
+    item->setData( Qt::UserRole, FID_TO_STRING( f.id() ) );
+    item->setData( Qt::UserRole + 1, mFeatures.size() );
+    tblResults->setItem( j, 1, item );
+
+    item = new QTableWidgetItem( QString::number( i ) );
+    if ( fields[i].name() == vlayer->displayField() )
+      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) + " *" );
+    else
+      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
+    item->setData( Qt::UserRole, fields[i].name() );
+    item->setData( Qt::UserRole + 1, i );
+    tblResults->setItem( j, 2, item );
+
+    item = new QTableWidgetItem( value );
+    item->setData( Qt::UserRole, value );
+    item->setData( Qt::DisplayRole, value2 );
+    tblResults->setItem( j, 3, item );
+
+    j++;
+  }
+  tblResults->resizeColumnToContents( 1 );
+
   highlightFeature( featItem );
 }
 
@@ -574,6 +633,24 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
     }
   }
+
+  // table
+  int j = tblResults->rowCount();
+  tblResults->setRowCount( j + attributes.count() );
+  int i = 1;
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    QgsDebugMsg( QString( "adding item #%1 / %1 / %2 / %3" ).arg( j ).arg( layer->name() ).arg( it.key() ).arg( it.value() ) );
+    QTableWidgetItem *item = new QTableWidgetItem( layer->name() );
+    item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    tblResults->setItem( j, 0, item );
+    tblResults->setItem( j, 1, new QTableWidgetItem( QString::number( i ) ) );
+    tblResults->setItem( j, 2, new QTableWidgetItem( it.key() ) );
+    tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
+    j++; i++;
+  }
+  tblResults->resizeColumnToContents( 1 );
+
 }
 
 void QgsIdentifyResultsDialog::editingToggled()
@@ -868,6 +945,9 @@ void QgsIdentifyResultsDialog::clear()
   lstResults->clear();
   clearHighlights();
 
+  tblResults->clearContents();
+  tblResults->setRowCount( 0 );
+
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
   mPrintToolButton->setDisabled( true );
@@ -1120,6 +1200,18 @@ void QgsIdentifyResultsDialog::layerDestroyed()
   disconnectLayer( theSender );
   delete layerItem( theSender );
 
+  // remove items, starting from last
+  for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
+  {
+    QgsDebugMsg( QString( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QTableWidgetItem *layItem = tblResults->item( i, 0 );
+    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() )
+    {
+      QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
+      tblResults->removeRow( i );
+    }
+  }
+
   if ( lstResults->topLevelItemCount() == 0 )
   {
     close();
@@ -1169,6 +1261,19 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
   if ( layItem->childCount() == 0 )
   {
     delete layItem;
+  }
+
+  for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
+  {
+    QgsDebugMsg( QString( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QTableWidgetItem *layItem = tblResults->item( i, 0 );
+    QTableWidgetItem *featItem = tblResults->item( i, 1 );
+    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() &&
+         featItem && STRING_TO_FID( featItem->data( Qt::UserRole ) ) == fid )
+    {
+      QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
+      tblResults->removeRow( i );
+    }
   }
 
   if ( lstResults->topLevelItemCount() == 0 )
