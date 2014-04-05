@@ -275,6 +275,11 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   {
     lstResults->setColumnWidth( 0, width );
   }
+  width = mySettings.value( "/Windows/Identify/columnWidthTable", "0" ).toInt();
+  if ( width > 0 )
+  {
+    tblResults->setColumnWidth( 0, width );
+  }
 
   // retrieve mode before on_cmbIdentifyMode_currentIndexChanged resets it on addItem
   int identifyMode = mySettings.value( "/Map/identifyMode", 0 ).toInt();
@@ -469,6 +474,15 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   // table
   int j = tblResults->rowCount();
+  // insert empty row to separate layers
+  if ( j > 0 && tblResults->item( j - 1, 0 ) &&
+       tblResults->item( j - 1, 0 )->data( Qt::UserRole + 1 ).toString() != vlayer->id() )
+  {
+    tblResults->setRowCount( j + 1 );
+    tblResults->setRowHeight( j, 2 );
+    j++;
+  }
+
   for ( int i = 0; i < attrs.count(); ++i )
   {
     if ( i >= fields.count() )
@@ -501,6 +515,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     QTableWidgetItem *item = new QTableWidgetItem( vlayer->name() );
     item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
+    item->setData( Qt::UserRole + 1, vlayer->id() );
     tblResults->setItem( j, 0, item );
 
     item = new QTableWidgetItem( FID_TO_STRING( f.id() ) );
@@ -522,6 +537,15 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     item->setData( Qt::DisplayRole, value2 );
     tblResults->setItem( j, 3, item );
 
+    // highlight first item
+    // if ( i==0 )
+    // {
+    //   QBrush b = tblResults->palette().brush( QPalette::AlternateBase );
+    //   for ( int k = 0; k <= 3; k++)
+    //  tblResults->item( j, k )->setBackground( b );
+    // }
+
+    tblResults->resizeRowToContents( j );
     j++;
   }
   tblResults->resizeColumnToContents( 1 );
@@ -652,18 +676,31 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   }
 
   // table
+  int i = 0;
   int j = tblResults->rowCount();
+  // insert empty row to separate layers
+  if ( j > 0 && tblResults->item( j - 1, 0 ) &&
+       tblResults->item( j - 1, 0 )->data( Qt::UserRole + 1 ).toString() != layer->id() )
+  {
+    j++;
+    tblResults->setRowCount( j + 1 );
+    tblResults->setRowHeight( j - 1, 2 );
+  }
   tblResults->setRowCount( j + attributes.count() );
-  int i = 1;
+
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QgsDebugMsg( QString( "adding item #%1 / %1 / %2 / %3" ).arg( j ).arg( layer->name() ).arg( it.key() ).arg( it.value() ) );
+    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( layer->name() ).arg( it.key() ).arg( it.value() ) );
     QTableWidgetItem *item = new QTableWidgetItem( layer->name() );
     item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    item->setData( Qt::UserRole + 1, layer->id() );
     tblResults->setItem( j, 0, item );
-    tblResults->setItem( j, 1, new QTableWidgetItem( QString::number( i ) ) );
+    tblResults->setItem( j, 1, new QTableWidgetItem( QString::number( i + 1 ) ) );
     tblResults->setItem( j, 2, new QTableWidgetItem( it.key() ) );
     tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
+
+    tblResults->resizeRowToContents( j );
+
     j++; i++;
   }
   tblResults->resizeColumnToContents( 1 );
@@ -894,6 +931,16 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   }
 
   mActionPopup->popup( event->globalPos() );
+}
+
+// Save the current window location (store in ~/.qt/qgisrc)
+void QgsIdentifyResultsDialog::saveWindowLocation()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/Identify/geometry", saveGeometry() );
+  // first column width
+  settings.setValue( "/Windows/Identify/columnWidth", lstResults->columnWidth( 0 ) );
+  settings.setValue( "/Windows/Identify/columnWidthTable", tblResults->columnWidth( 0 ) );
 }
 
 void QgsIdentifyResultsDialog::setColumnText( int column, const QString & label )
