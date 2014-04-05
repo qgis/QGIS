@@ -111,6 +111,10 @@ class QgsServerProjectParser
 
     void addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
 
+    /**Returns the text of the <id> element for a layer element
+    @return id or a null string in case of error*/
+    QString layerId( const QDomElement& layerElem ) const;
+
   private:
 
     /**Content of project file*/
@@ -135,10 +139,6 @@ class QgsServerProjectParser
     QSet<QString> mRestrictedLayers;
 
     QgsServerProjectParser(); //forbidden
-
-    /**Returns the text of the <id> element for a layer element
-    @return id or a null string in case of error*/
-    QString layerId( const QDomElement& layerElem ) const;
 
     /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
     QSet<QString> findRestrictedLayers() const;

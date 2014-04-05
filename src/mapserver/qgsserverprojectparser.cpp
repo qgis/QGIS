@@ -17,6 +17,7 @@
 
 #include "qgsserverprojectparser.h"
 #include "qgsapplication.h"
+#include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgscrscache.h"
 #include "qgsdatasourceuri.h"

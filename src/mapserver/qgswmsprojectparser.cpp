@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmsprojectparser.h"
+#include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
@@ -179,32 +180,32 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   {
     if ( legendIt->attribute( "embedded" ) == "1" )
     {
-#if 0 //todo: fixme
-      QString project = convertToAbsolutePath( legendIt->attribute( "project" ) );
-      QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+      QString project = mProjectParser.convertToAbsolutePath( legendIt->attribute( "project" ) );
+      QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
       if ( p )
       {
-        const QHash< QString, QDomElement >& pLayerByName = p->mProjectLayerElementsByName;
+        QgsServerProjectParser& pp = p->mProjectParser;
+        const QHash< QString, QDomElement >& pLayerByName = pp.projectLayerElementsByName();
         QHash< QString, QDomElement >::const_iterator pLayerNameIt = pLayerByName.find( lName );
         if ( pLayerNameIt != pLayerByName.constEnd() )
         {
-          p->addJoinLayersForElement( pLayerNameIt.value(), useCache );
-          p->addValueRelationLayersForElement( pLayerNameIt.value(), useCache );
-          layerList.push_back( p->createLayerFromElement( pLayerNameIt.value(), useCache ) );
+          pp.addJoinLayersForElement( pLayerNameIt.value(), useCache );
+          pp.addValueRelationLayersForElement( pLayerNameIt.value(), useCache );
+          layerList.push_back( pp.createLayerFromElement( pLayerNameIt.value(), useCache ) );
           break;
         }
 
-        QList<QDomElement>::const_iterator pLegendGroupIt = p->mLegendGroupElements.constBegin();
-        for ( ; pLegendGroupIt != p->mLegendGroupElements.constEnd(); ++pLegendGroupIt )
+        const QList<QDomElement>& legendGroupElements = pp.legendGroupElements();
+        QList<QDomElement>::const_iterator pLegendGroupIt = legendGroupElements.constBegin();
+        for ( ; pLegendGroupIt != legendGroupElements.constEnd(); ++pLegendGroupIt )
         {
           if ( pLegendGroupIt->attribute( "name" ) == lName )
           {
-            p->addLayersFromGroup( *pLegendGroupIt, layerList, useCache );
+            pp.addLayersFromGroup( *pLegendGroupIt, layerList, useCache );
             break;
           }
         }
       }
-#endif //0
     }
   }
 
@@ -666,15 +667,13 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement groupElem, bool useDrawin
   }
 
   int embedDrawingOrder = groupElem.attribute( "drawingOrder", "-1" ).toInt();
-  //todo: fixme
-  QgsWMSProjectParser* p = 0; //dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project, QgsConfigCache::WMS ) );
+  QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
   if ( !p )
   {
     return;
   }
 
-  //todo: fixme
-  QDomDocument* doc = 0; //p->mXMLDoc;
+  const QDomDocument* doc = p->mProjectParser.xmlDocument();
   if ( !doc )
   {
     return;
@@ -785,16 +784,15 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
 
       if ( currentChildElem.attribute( "embedded" ) == "1" )
       {
-//todo: fixme
-#if 0
         //add layers from other project files and embed into this group
-        QString project = convertToAbsolutePath( currentChildElem.attribute( "project" ) );
+        QString project = mProjectParser.convertToAbsolutePath( currentChildElem.attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
-        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
         if ( p )
         {
-          QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
+          QgsServerProjectParser& pp = p->mProjectParser;
+          const QList<QDomElement>& embeddedGroupElements = pp.legendGroupElements();
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
@@ -808,16 +806,15 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
           }
 
           QMap<QString, QgsMapLayer *> pLayerMap;
-          QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
+          const QList<QDomElement>& embeddedProjectLayerElements = pp.projectLayerElements();
           foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
-            p->addJoinLayersForElement( elem );
-            pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
+            pp.addJoinLayersForElement( elem );
+            pLayerMap.insert( pp.layerId( elem ), pp.createLayerFromElement( elem ) );
           }
 
           p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, version, fullProjectSettings );
         }
-#endif //0
       }
       else //normal (not embedded) legend group
       {
@@ -1096,15 +1093,15 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
 
       if ( currentChildElem.attribute( "embedded" ) == "1" )
       {
-#if 0 //todo: fixme
         //add layers from other project files and embed into this group
         QString project = mProjectParser.convertToAbsolutePath( currentChildElem.attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
-        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
         if ( p )
         {
-          QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
+          QgsServerProjectParser& pp = p->mProjectParser;
+          const QList<QDomElement>& embeddedGroupElements = pp.legendGroupElements();
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
@@ -1118,16 +1115,15 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
           }
 
           QMap<QString, QgsMapLayer *> pLayerMap;
-          QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
+          const QList<QDomElement>& embeddedProjectLayerElements = pp.projectLayerElements();
           foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
-            p->addJoinLayersForElement( elem );
-            pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
+            pp.addJoinLayersForElement( elem );
+            pLayerMap.insert( pp.layerId( elem ), pp.createLayerFromElement( elem ) );
           }
 
           p->addOWSLayers( doc, parentElem, embeddedGroupElem, pLayerMap, pIdDisabled, strHref, combinedBBox, group );
         }
-#endif //0 //todo: fixme
       }
       else //normal (not embedded) legend group
       {
