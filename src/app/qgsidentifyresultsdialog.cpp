@@ -56,6 +56,8 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_symbol.h>
+#include <qwt_legend.h>
+#include "qgsvectorcolorrampv2.h" // for random colors
 #endif
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebView( parent )
@@ -305,17 +307,13 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 #if defined(QWT_VERSION) && QWT_VERSION<0x060000
   mPlot->setAutoFillBackground( false );
   mPlot->setAutoDelete( true );
+  mPlot->insertLegend( new QwtLegend(), QwtPlot::RightLegend );
   QSizePolicy sizePolicy = QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   sizePolicy.setHorizontalStretch( 0 );
   sizePolicy.setVerticalStretch( 0 );
   sizePolicy.setHeightForWidth( mPlot->sizePolicy().hasHeightForWidth() );
   mPlot->setSizePolicy( sizePolicy );
   mPlot->updateGeometry();
-
-  mPlotCurve = new QwtPlotCurve( "" );
-  mPlotCurve->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
-                                    QPen( Qt::red, 2 ), QSize( 9, 9 ) ) );
-  mPlotCurve->attach( mPlot );
 #else
   delete mPlot;
   mPlot = 0;
@@ -343,7 +341,9 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
   if ( mActionPopup )
     delete mActionPopup;
 #if defined(QWT_VERSION) && QWT_VERSION<0x060000
-  delete mPlotCurve;
+  foreach ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+    delete curve;
+  mPlotCurves.clear();
 #endif
 }
 
@@ -581,6 +581,48 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   highlightFeature( featItem );
 }
 
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
+    QwtPlot* plot, const QString &title, QColor color )
+{
+  mPlotCurve = new QwtPlotCurve( title );
+
+  if ( color == QColor() )
+  {
+    color = QgsVectorRandomColorRampV2::randomColors( 1 )[0];
+  }
+  mPlotCurve->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
+                                    QPen( color, 2 ), QSize( 9, 9 ) ) );
+
+  int i = 1;
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin();
+        it != attributes.end(); ++it )
+  {
+    mPlotCurveXData.append( double( i++ ) );
+    mPlotCurveYData.append( double( it.value().toDouble() ) );
+  }
+  mPlotCurve->setData( mPlotCurveXData, mPlotCurveYData );
+
+  mPlotCurve->attach( plot );
+
+  plot->setAxisMaxMinor( QwtPlot::xBottom, 0 );
+  //mPlot->setAxisScale( QwtPlot::xBottom, 1, mPlotCurve->dataSize());
+  //mPlot->setAxisScale( QwtPlot::yLeft, ymin, ymax );
+
+  plot->replot();
+  plot->setVisible( true );
+}
+
+QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
+{
+  if ( mPlotCurve )
+  {
+    mPlotCurve->detach();
+    delete mPlotCurve;
+  }
+}
+#endif
+
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QString label,
     const QMap<QString, QString> &attributes,
@@ -722,20 +764,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   // graph
 #if defined(QWT_VERSION) && QWT_VERSION<0x060000
-  i = mPlotCurveXData.count();
-  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  if ( attributes.count() > 0 )
   {
-    mPlotCurveXData.append( double( ++i ) );
-    mPlotCurveYData.append( double( it.value().toDouble() ) );
+    mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
   }
-  mPlotCurve->setData( mPlotCurveXData, mPlotCurveYData );
-
-  mPlot->setAxisMaxMinor( QwtPlot::xBottom, 0 );
-  //mPlot->setAxisScale( QwtPlot::xBottom, 1, mPlotCurve->dataSize());
-  //mPlot->setAxisScale( QwtPlot::yLeft, ymin, ymax );
-
-  mPlot->replot();
-  mPlot->setVisible( mPlotCurveXData.count() > 0 );
 #endif
 }
 
@@ -1037,8 +1069,9 @@ void QgsIdentifyResultsDialog::clear()
 
 #if defined(QWT_VERSION) && QWT_VERSION<0x060000
   mPlot->setVisible( false );
-  mPlotCurveXData.clear();
-  mPlotCurveYData.clear();
+  foreach ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+    delete curve;
+  mPlotCurves.clear();
 #endif
 
   // keep it visible but disabled, it can switch from disabled/enabled
