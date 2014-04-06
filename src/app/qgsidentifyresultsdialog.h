@@ -43,6 +43,8 @@ class QgsHighlight;
 class QgsMapCanvas;
 class QDockWidget;
 
+class QwtPlotCurve;
+
 /**
  *@author Gary E.Sherman
  */
@@ -226,6 +228,11 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
     QDockWidget *mDock;
+
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+    QwtPlotCurve* mPlotCurve;
+    QVector<double> mPlotCurveXData, mPlotCurveYData;
+#endif
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction
