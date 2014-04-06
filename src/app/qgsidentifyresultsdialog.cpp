@@ -52,13 +52,12 @@
 #include <QWebFrame>
 
 //graph
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include "qgsvectorcolorrampv2.h" // for random colors
-#endif
+
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebView( parent )
 {
@@ -304,7 +303,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 
   // graph
   mPlot->setVisible( false );
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
   mPlot->setAutoFillBackground( false );
   mPlot->setAutoDelete( true );
   mPlot->insertLegend( new QwtLegend(), QwtPlot::TopLegend );
@@ -314,11 +312,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   sizePolicy.setHeightForWidth( mPlot->sizePolicy().hasHeightForWidth() );
   mPlot->setSizePolicy( sizePolicy );
   mPlot->updateGeometry();
-#else
-  delete mPlot;
-  mPlot = 0;
-  tabWidget->removeTab( 2 );
-#endif
 
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
@@ -340,11 +333,9 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
   clearHighlights();
   if ( mActionPopup )
     delete mActionPopup;
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
   foreach ( QgsIdentifyPlotCurve *curve, mPlotCurves )
     delete curve;
   mPlotCurves.clear();
-#endif
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
@@ -581,7 +572,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   highlightFeature( featItem );
 }
 
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
 QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
     QwtPlot* plot, const QString &title, QColor color )
 {
@@ -591,17 +581,39 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
   {
     color = QgsVectorRandomColorRampV2::randomColors( 1 )[0];
   }
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
+                                        QPen( color, 2 ), QSize( 9, 9 ) ) );
+  mPlotCurve->setPen( QPen( color, 2 ) ); // needed for legend
+#else
   mPlotCurve->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
                                     QPen( color, 2 ), QSize( 9, 9 ) ) );
+  mPlotCurve->setPen( QPen( color, 2 ) );
+#endif
 
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  QVector<QPointF> myData;
+#else
+  QVector<double> myX2Data;
+  QVector<double> myY2Data;
+#endif
   int i = 1;
+
   for ( QMap<QString, QString>::const_iterator it = attributes.begin();
         it != attributes.end(); ++it )
   {
-    mPlotCurveXData.append( double( i++ ) );
-    mPlotCurveYData.append( double( it.value().toDouble() ) );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    myData << QPointF( double( i++ ), it.value().toDouble() );
+#else
+    myX2Data.append( double( i++ ) );
+    myY2Data.append( it.value().toDouble() );
+#endif
   }
-  mPlotCurve->setData( mPlotCurveXData, mPlotCurveYData );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mPlotCurve->setSamples( myData );
+#else
+  mPlotCurve->setData( myX2Data, myY2Data );
+#endif
 
   mPlotCurve->attach( plot );
 
@@ -621,7 +633,6 @@ QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
     delete mPlotCurve;
   }
 }
-#endif
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QString label,
@@ -763,12 +774,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   tblResults->resizeColumnToContents( 1 );
 
   // graph
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
   if ( attributes.count() > 0 )
   {
     mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
   }
-#endif
 }
 
 void QgsIdentifyResultsDialog::editingToggled()
@@ -1067,12 +1076,10 @@ void QgsIdentifyResultsDialog::clear()
   tblResults->clearContents();
   tblResults->setRowCount( 0 );
 
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
   mPlot->setVisible( false );
   foreach ( QgsIdentifyPlotCurve *curve, mPlotCurves )
     delete curve;
   mPlotCurves.clear();
-#endif
 
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
