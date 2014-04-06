@@ -1300,7 +1300,7 @@ void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< d
   }
 
   double currentDiff = abs( checkCoord - currentCoord );
-  if ( currentDiff < mComposition->alignmentSnapTolerance() )
+  if ( currentDiff < mComposition->alignmentSnapTolerance() && currentDiff < smallestDiff )
   {
     itemCoord = currentCoord + itemCoordOffset;
     alignCoord = currentCoord;
@@ -1348,3 +1348,4 @@ bool QgsComposerMouseHandles::nearestItem( const QMap< double, const QgsComposer
     }
   }
 }
+
