@@ -51,6 +51,13 @@
 #include <QComboBox>
 #include <QWebFrame>
 
+//graph
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
+#endif
+
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebView( parent )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
@@ -293,6 +300,28 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
     tblResults->setColumnWidth( 0, width );
   }
 
+  // graph
+  mPlot->setVisible( false );
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+  mPlot->setAutoFillBackground( false );
+  mPlot->setAutoDelete( true );
+  QSizePolicy sizePolicy = QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  sizePolicy.setHorizontalStretch( 0 );
+  sizePolicy.setVerticalStretch( 0 );
+  sizePolicy.setHeightForWidth( mPlot->sizePolicy().hasHeightForWidth() );
+  mPlot->setSizePolicy( sizePolicy );
+  mPlot->updateGeometry();
+
+  mPlotCurve = new QwtPlotCurve( "" );
+  mPlotCurve->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
+                                    QPen( Qt::red, 2 ), QSize( 9, 9 ) ) );
+  mPlotCurve->attach( mPlot );
+#else
+  delete mPlot;
+  mPlot = 0;
+  tabWidget->removeTab( 2 );
+#endif
+
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
@@ -313,6 +342,9 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
   clearHighlights();
   if ( mActionPopup )
     delete mActionPopup;
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+  delete mPlotCurve;
+#endif
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
@@ -688,6 +720,23 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   }
   tblResults->resizeColumnToContents( 1 );
 
+  // graph
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+  i = mPlotCurveXData.count();
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    mPlotCurveXData.append( double( ++i ) );
+    mPlotCurveYData.append( double( it.value().toDouble() ) );
+  }
+  mPlotCurve->setData( mPlotCurveXData, mPlotCurveYData );
+
+  mPlot->setAxisMaxMinor( QwtPlot::xBottom, 0 );
+  //mPlot->setAxisScale( QwtPlot::xBottom, 1, mPlotCurve->dataSize());
+  //mPlot->setAxisScale( QwtPlot::yLeft, ymin, ymax );
+
+  mPlot->replot();
+  mPlot->setVisible( mPlotCurveXData.count() > 0 );
+#endif
 }
 
 void QgsIdentifyResultsDialog::editingToggled()
@@ -985,6 +1034,12 @@ void QgsIdentifyResultsDialog::clear()
 
   tblResults->clearContents();
   tblResults->setRowCount( 0 );
+
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+  mPlot->setVisible( false );
+  mPlotCurveXData.clear();
+  mPlotCurveYData.clear();
+#endif
 
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
