@@ -30,6 +30,7 @@
 #include <QLineEdit>
 #include <QDockWidget>
 #include <QPushButton>
+#include <QDoubleSpinBox>
 
 
 class QgsSnappingDock : public QDockWidget
@@ -84,11 +85,6 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   }
 
   mLayerTreeWidget->setHeaderLabels( QStringList() << "" );
-  mLayerTreeWidget->resizeColumnToContents( 0 );
-  mLayerTreeWidget->setColumnWidth( 1, 200 );  //hardcoded for now
-  mLayerTreeWidget->setColumnWidth( 2, 200 );  //hardcoded for now
-  mLayerTreeWidget->resizeColumnToContents( 3 );
-  mLayerTreeWidget->resizeColumnToContents( 4 );
   mLayerTreeWidget->setSortingEnabled( true );
 
   connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), this, SLOT( reload() ) );
@@ -174,7 +170,7 @@ void QgsSnappingDialog::apply()
       snapToList << "to_vertex_and_segment";
     }
 
-    toleranceList << QString::number( qobject_cast<QLineEdit*>( mLayerTreeWidget->itemWidget( currentItem, 3 ) )->text().toDouble(), 'f' );
+    toleranceList << QString::number( qobject_cast<QDoubleSpinBox*>( mLayerTreeWidget->itemWidget( currentItem, 3 ) )->value(), 'f' );
     toleranceUnitList << QString::number( qobject_cast<QComboBox*>( mLayerTreeWidget->itemWidget( currentItem, 4 ) )->currentIndex() );
 
     QCheckBox *cbxAvoidIntersection = qobject_cast<QCheckBox*>( mLayerTreeWidget->itemWidget( currentItem, 5 ) );
@@ -262,12 +258,12 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   mLayerTreeWidget->setItemWidget( item, 2, cbxSnapTo );
 
   //snapping tolerance
-  QLineEdit *leTolerance = new QLineEdit( mLayerTreeWidget );
-  QDoubleValidator *validator = new QDoubleValidator( leTolerance );
-  leTolerance->setValidator( validator );
-  leTolerance->setText( QString::number( defaultSnappingTolerance, 'f' ) );
+  QDoubleSpinBox* sbTolerance = new QDoubleSpinBox( mLayerTreeWidget );
+  sbTolerance->setRange( 0., 100000000. );
+  sbTolerance->setDecimals( 5 );
+  sbTolerance->setValue( defaultSnappingTolerance );
 
-  mLayerTreeWidget->setItemWidget( item, 3, leTolerance );
+  mLayerTreeWidget->setItemWidget( item, 3, sbTolerance );
 
   //snap to vertex/ snap to segment
   QComboBox *cbxUnits = new QComboBox( mLayerTreeWidget );
@@ -283,6 +279,12 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );
   }
 
+  //resize treewidget columns
+  for ( int i = 0 ; i < 4 ; ++i )
+  {
+    mLayerTreeWidget->resizeColumnToContents( i );
+  }
+
   int idx = layerIdList.indexOf( currentVectorLayer->id() );
   if ( idx < 0 )
   {
@@ -290,7 +292,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     {
       connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
       connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
-      connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+      connect( sbTolerance, SIGNAL( valueChanged( double ) ), this, SLOT( apply() ) );
       connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
 
       if ( cbxAvoidIntersection )
@@ -324,7 +326,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   }
 
   cbxSnapTo->setCurrentIndex( snappingStringIdx );
-  leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
+  sbTolerance->setValue( toleranceList[idx].toDouble() );
   cbxUnits->setCurrentIndex( toleranceUnitList[idx].toInt() );
   if ( cbxAvoidIntersection )
   {
@@ -335,7 +337,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   {
     connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
     connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
-    connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+    connect( sbTolerance, SIGNAL( valueChanged( double ) ), this, SLOT( apply() ) );
     connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
 
     if ( cbxAvoidIntersection )
@@ -384,3 +386,4 @@ void QgsSnappingDialog::setIntersectionSnappingState()
   cbxEnableIntersectionSnappingCheckBox->setChecked( intersectionSnapping );
   cbxEnableIntersectionSnappingCheckBox->blockSignals( false );
 }
+
