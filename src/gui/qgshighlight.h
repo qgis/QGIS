@@ -66,6 +66,8 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      *  @note: added in version 2.3 */
     void setMinWidth( double width ) { mMinWidth = width; }
 
+    const QgsMapLayer *layer() const { return mLayer; }
+
   protected:
     virtual void paint( QPainter* p );
 
@@ -81,10 +83,6 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void paintPoint( QPainter *p, QgsPoint point );
     void paintLine( QPainter *p, QgsPolyline line );
     void paintPolygon( QPainter *p, QgsPolygon polygon );
-
-    QgsVectorLayer *vectorLayer();
-
-    QgsHighlight();
 
     QBrush mBrush;
     QPen mPen;

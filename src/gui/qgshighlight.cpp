@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <typeinfo>
-
 #include <QImage>
 
 #include "qgsmarkersymbollayerv2.h"
@@ -134,7 +132,7 @@ void QgsHighlight::setFillColor( const QColor & fillColor )
 QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & context, const QColor & color, const QColor & fillColor )
 {
   QgsFeatureRendererV2 *renderer = 0;
-  QgsVectorLayer *layer = vectorLayer();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
   if ( layer && layer->rendererV2() )
   {
     renderer = layer->rendererV2()->clone();
@@ -345,7 +343,9 @@ void QgsHighlight::paint( QPainter* p )
   }
   else if ( mFeature.geometry() )
   {
-    QgsVectorLayer *layer = vectorLayer();
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
+    if( !layer )
+      return;
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
 
@@ -438,9 +438,3 @@ void QgsHighlight::updateRect()
     setRect( QgsRectangle() );
   }
 }
-
-QgsVectorLayer * QgsHighlight::vectorLayer()
-{
-  return dynamic_cast<QgsVectorLayer *>( mLayer );
-}
-
