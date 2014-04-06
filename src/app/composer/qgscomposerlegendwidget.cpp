@@ -125,6 +125,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   {
     legend->model()->setHorizontalHeaderLabels( QStringList() << tr( "Item" ) << tr( "Title style" ) );
     mItemTreeView->setModel( legend->model() );
+    connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
   }
 
   QgsComposerLegendWidgetStyleDelegate* styleDelegate = new QgsComposerLegendWidgetStyleDelegate();
@@ -997,3 +998,4 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
   mCountToolButton->setChecked( layerItem->showFeatureCount() );
   mCountToolButton->setEnabled( true );
 }
+
