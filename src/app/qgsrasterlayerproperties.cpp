@@ -1604,6 +1604,7 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
       setRendererWidget( renderer->type() );
     }
     mRasterLayer->triggerRepaint();
+    populateTransparencyTable( mRasterLayer->renderer() );
   }
   else
   {
@@ -1661,6 +1662,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
       setRendererWidget( renderer->type() );
     }
     mRasterLayer->triggerRepaint();
+    populateTransparencyTable( mRasterLayer->renderer() );
   }
   else
   {
@@ -1737,4 +1739,5 @@ bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 {
   return mRasterLayer && dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() ) != 0;
 }
+
 
