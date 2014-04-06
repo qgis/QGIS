@@ -299,6 +299,36 @@ QString QgsServerProjectParser::layerId( const QDomElement& layerElem ) const
   return idElem.text();
 }
 
+QgsRectangle QgsServerProjectParser::projectExtent() const
+{
+  QgsRectangle extent;
+  if ( !mXMLDoc )
+  {
+    return extent;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomElement mapCanvasElem = qgisElem.firstChildElement( "mapcanvas" );
+  if ( mapCanvasElem.isNull() )
+  {
+    return extent;
+  }
+
+  QDomElement extentElem = mapCanvasElem.firstChildElement( "extent" );
+  bool xminOk, xmaxOk, yminOk, ymaxOk;
+  double xMin = extentElem.firstChildElement( "xmin" ).text().toDouble( &xminOk );
+  double xMax = extentElem.firstChildElement( "xmax" ).text().toDouble( &xmaxOk );
+  double yMin = extentElem.firstChildElement( "ymin" ).text().toDouble( &yminOk );
+  double yMax = extentElem.firstChildElement( "ymax" ).text().toDouble( &ymaxOk );
+
+  if ( xminOk && xmaxOk && yminOk && ymaxOk )
+  {
+    extent = QgsRectangle( xMin, yMin, xMax, yMax );
+  }
+
+  return extent;
+}
+
 QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
 {
   if ( layerElem.isNull() )

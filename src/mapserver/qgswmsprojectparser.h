@@ -21,6 +21,9 @@
 #include "qgswmsconfigparser.h"
 #include "qgsserverprojectparser.h"
 
+class QTextDocument;
+class QSvgRenderer;
+
 class QgsWMSProjectParser: public QgsWMSConfigParser
 {
   public:
@@ -104,6 +107,11 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
 
     mutable QFont mLegendItemFont;
 
+    /**Watermark text items*/
+    QList< QPair< QTextDocument*, QDomElement > > mTextAnnotationItems;
+    /**Watermark items (content cached in QgsSVGCache)*/
+    QList< QPair< QSvgRenderer*, QDomElement > > mSvgAnnotationElems;
+
     /**Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file*/
     virtual QStringList identifyDisabledLayers() const;
 
@@ -126,6 +134,13 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
                        const QString& strHref, QgsRectangle& combinedBBox, QString strGroup ) const;
 
     QDomElement composerByName( const QString& composerName ) const;
+
+    static bool annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos );
+    static void drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );
+    void createTextAnnotationItems();
+    void createSvgAnnotationItems();
+    void cleanupSvgAnnotationItems();
+    void cleanupTextAnnotationItems();
 };
 
 #endif // QGSWMSPROJECTPARSER_H

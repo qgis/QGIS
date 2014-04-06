@@ -115,6 +115,8 @@ class QgsServerProjectParser
     @return id or a null string in case of error*/
     QString layerId( const QDomElement& layerElem ) const;
 
+    QgsRectangle projectExtent() const;
+
   private:
 
     /**Content of project file*/

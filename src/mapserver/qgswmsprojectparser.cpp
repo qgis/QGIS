@@ -41,10 +41,14 @@ QgsWMSProjectParser::QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& f
 {
   mLegendLayerFont.fromString( mProjectParser.firstComposerLegendElement().attribute( "layerFont" ) );
   mLegendItemFont.fromString( mProjectParser.firstComposerLegendElement().attribute( "itemFont" ) );
+  createTextAnnotationItems();
+  createSvgAnnotationItems();
 }
 
 QgsWMSProjectParser::~QgsWMSProjectParser()
 {
+  cleanupTextAnnotationItems();
+  cleanupSvgAnnotationItems();
 }
 
 void QgsWMSProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
@@ -1555,13 +1559,12 @@ bool QgsWMSProjectParser::featureInfoFormatSIA2045() const
 
 void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
 {
-#if 0
   Q_UNUSED( width );
   Q_UNUSED( height );
 
   //consider DPI
   double scaleFactor = dpi / 88.0; //assume 88 as standard dpi
-  QgsRectangle prjExtent = projectExtent();
+  QgsRectangle prjExtent = mProjectParser.projectExtent();
 
   //text annotations
   QList< QPair< QTextDocument*, QDomElement > >::const_iterator textIt = mTextAnnotationItems.constBegin();
@@ -1633,7 +1636,6 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
                                        renderHeight ) );
     }
   }
-#endif //0
 }
 
 QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) const
@@ -1656,4 +1658,113 @@ QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) c
   }
 
   return composerElem;
+}
+
+bool QgsWMSProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos )
+{
+  Q_UNUSED( scaleFactor );
+
+  xPos = elem.attribute( "canvasPosX" ).toDouble() / scaleFactor;
+  yPos = elem.attribute( "canvasPosY" ).toDouble() / scaleFactor;
+  return true;
+}
+
+void QgsWMSProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight )
+{
+  Q_UNUSED( scaleFactor );
+  if ( !p )
+  {
+    return;
+  }
+
+  QColor backgroundColor( elem.attribute( "frameBackgroundColor", "#000000" ) );
+  backgroundColor.setAlpha( elem.attribute( "frameBackgroundColorAlpha", "255" ).toInt() );
+  p->setBrush( QBrush( backgroundColor ) );
+  QColor frameColor( elem.attribute( "frameColor", "#000000" ) );
+  frameColor.setAlpha( elem.attribute( "frameColorAlpha", "255" ).toInt() );
+  QPen framePen( frameColor );
+  framePen.setWidth( elem.attribute( "frameBorderWidth", "1" ).toInt() );
+  p->setPen( framePen );
+
+  p->drawRect( QRectF( xPos, yPos, itemWidth, itemHeight ) );
+}
+
+void QgsWMSProjectParser::createTextAnnotationItems()
+{
+  cleanupTextAnnotationItems();
+
+  const QDomDocument* xmlDoc = mProjectParser.xmlDocument();
+  if ( !xmlDoc )
+  {
+    return;
+  }
+
+  //text annotations
+  QDomElement qgisElem = xmlDoc->documentElement();
+  QDomNodeList textAnnotationList = qgisElem.elementsByTagName( "TextAnnotationItem" );
+  QDomElement textAnnotationElem;
+  QDomElement annotationElem;
+  for ( int i = 0; i < textAnnotationList.size(); ++i )
+  {
+    textAnnotationElem = textAnnotationList.at( i ).toElement();
+    annotationElem = textAnnotationElem.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() && annotationElem.attribute( "mapPositionFixed" ) != "1" )
+    {
+      QTextDocument* textDoc = new QTextDocument();
+      textDoc->setHtml( textAnnotationElem.attribute( "document" ) );
+      mTextAnnotationItems.push_back( qMakePair( textDoc, annotationElem ) );
+    }
+  }
+}
+
+void QgsWMSProjectParser::createSvgAnnotationItems()
+{
+  mSvgAnnotationElems.clear();
+  const QDomDocument* xmlDoc = mProjectParser.xmlDocument();
+  if ( !xmlDoc )
+  {
+    return;
+  }
+
+  QDomElement qgisElem = xmlDoc->documentElement();
+  QDomNodeList svgAnnotationList = qgisElem.elementsByTagName( "SVGAnnotationItem" );
+  QDomElement svgAnnotationElem;
+  QDomElement annotationElem;
+  for ( int i = 0; i < svgAnnotationList.size(); ++i )
+  {
+    svgAnnotationElem = svgAnnotationList.at( i ).toElement();
+    annotationElem = svgAnnotationElem.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() && annotationElem.attribute( "mapPositionFixed" ) != "1" )
+    {
+      QSvgRenderer* svg = new QSvgRenderer();
+      if ( svg->load( mProjectParser.convertToAbsolutePath( svgAnnotationElem.attribute( "file" ) ) ) )
+      {
+        mSvgAnnotationElems.push_back( qMakePair( svg, annotationElem ) );
+      }
+      else
+      {
+        delete svg;
+      }
+    }
+  }
+}
+
+void QgsWMSProjectParser::cleanupSvgAnnotationItems()
+{
+  QList< QPair< QSvgRenderer*, QDomElement > >::const_iterator it = mSvgAnnotationElems.constBegin();
+  for ( ; it != mSvgAnnotationElems.constEnd(); ++it )
+  {
+    delete it->first;
+  }
+  mSvgAnnotationElems.clear();
+}
+
+void QgsWMSProjectParser::cleanupTextAnnotationItems()
+{
+  QList< QPair< QTextDocument*, QDomElement > >::const_iterator it = mTextAnnotationItems.constBegin();
+  for ( ; it != mTextAnnotationItems.constEnd(); ++it )
+  {
+    delete it->first;
+  }
+  mTextAnnotationItems.clear();
 }
