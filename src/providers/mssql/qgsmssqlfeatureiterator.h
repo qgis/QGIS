@@ -44,7 +44,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 
     QString mGeometryColName;
     QString mGeometryColType;
-    
+
     // current layer name
     QString mSchemaName;
     QString mTableName;
@@ -79,10 +79,10 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close();
 
   protected:
-    
+
     void BuildStatement( const QgsFeatureRequest& request );
 
-    QSqlDatabase GetDatabase(QString driver, QString host, QString database, QString username, QString password);
+    QSqlDatabase GetDatabase( QString driver, QString host, QString database, QString username, QString password );
 
   private:
     //! fetch next feature, return true on success

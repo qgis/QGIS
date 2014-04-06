@@ -9,7 +9,7 @@
                            (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
                            otb at c-s dot fr (CS SI)
-    Contributors         : Victor Olaya 
+    Contributors         : Victor Olaya
                            Alexia Mondot (CS SI) - managing the new parameter ParameterMultipleExternalInput
 ***************************************************************************
 *                                                                         *

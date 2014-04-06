@@ -27,8 +27,8 @@
 using namespace pal;
 
 QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits )
-  : QgsPalLabeling()
-  , mDxfExport( dxf )
+    : QgsPalLabeling()
+    , mDxfExport( dxf )
 {
   QgsMapSettings settings;
   settings.setExtent( bbox );

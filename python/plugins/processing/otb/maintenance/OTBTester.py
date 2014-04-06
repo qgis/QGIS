@@ -6,7 +6,7 @@
     ---------------------
     Copyright            : (C) 2013 by CS Systemes d'information (CS SI)
     Email                : otb at c-s dot fr (CS SI)
-    Contributors         : Julien Malik (CS SI) 
+    Contributors         : Julien Malik (CS SI)
                            Oscar Picas (CS SI)
 ***************************************************************************
 *                                                                         *
@@ -86,7 +86,7 @@ class MakefileParser(object):
                     return item
 
                 the_sets = {key : mini_clean(the_sets[key]) for key in the_sets}
-                
+
                 def templatize(item):
                     if "$" in item:
                         return Template(item)
@@ -153,7 +153,7 @@ class MakefileParser(object):
             key = stringcommand.body[-1].contents
             ct = stringcommand.body[-2].contents
             ct = mini_clean(ct.lower())
-            
+
             if "$" in ct:
                 values = LowerTemplate(ct)
             else:
@@ -322,10 +322,10 @@ class MakefileParser(object):
             for intermediate_makefile in resolve_algos[makefile]:
                 last_context = self.add_make(last_context, intermediate_makefile)
             dict_for_algo[makefile] = last_context
-			
+
         for makefile in makefiles:
             appz = self.get_apps_with_context(makefile, dict_for_algo[makefile])
-            
+
             for app, context in appz:
                 if len(context) == 0:
                     import copy
@@ -340,7 +340,7 @@ class MakefileParser(object):
                     if '$' in test_line or '$' in command_line:
                         if '$' in command_line:
                             self.logger.error(command_line)
-                        if '$' in test_line:    
+                        if '$' in test_line:
                             self.logger.warning(test_line)
                     else:
                         tests[name_line] = (command_line, test_line)

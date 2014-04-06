@@ -80,7 +80,7 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
         """Run before each test."""
         super(TestCanvasPoint, self).setUp()
         self.configTest('pal_canvas', 'sp')
-    
+
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

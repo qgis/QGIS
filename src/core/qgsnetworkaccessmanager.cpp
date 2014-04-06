@@ -279,25 +279,25 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     {
       if ( proxyTypeString == "Socks5Proxy" )
       {
-	proxyType = QNetworkProxy::Socks5Proxy;
+        proxyType = QNetworkProxy::Socks5Proxy;
       }
       else if ( proxyTypeString == "HttpProxy" )
       {
-	proxyType = QNetworkProxy::HttpProxy;
+        proxyType = QNetworkProxy::HttpProxy;
       }
       else if ( proxyTypeString == "HttpCachingProxy" )
       {
-	proxyType = QNetworkProxy::HttpCachingProxy;
+        proxyType = QNetworkProxy::HttpCachingProxy;
       }
       else if ( proxyTypeString == "FtpCachingProxy" )
       {
-	proxyType = QNetworkProxy::FtpCachingProxy;
+        proxyType = QNetworkProxy::FtpCachingProxy;
       }
       QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
-	  .arg( proxyType )
-	  .arg( proxyHost ).arg( proxyPort )
-	  .arg( proxyUser ).arg( proxyPassword )
-	  );
+                   .arg( proxyType )
+                   .arg( proxyHost ).arg( proxyPort )
+                   .arg( proxyUser ).arg( proxyPassword )
+                 );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
   }

@@ -8,7 +8,7 @@
     Copyright            : (C) 2013 by CS Systemes d'information (CS SI)
     Email                : otb at c-s dot fr (CS SI)
     Contributors         : Julien Malik (CS SI)  - creation of otbspecific
-                           Oscar Picas (CS SI)   -  
+                           Oscar Picas (CS SI)   -
                            Alexia Mondot (CS SI) - split otbspecific into 2 files
                                            add functions
 ***************************************************************************
@@ -126,7 +126,7 @@ def adaptLSMSVectorization(commands_list):
             if not "." in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".shp" + commands_list[index + 1][-1]
         commands_list2.append(item)
-        
+
     return commands_list2
 
 def adaptComputeImagesStatistics(commands_list):
@@ -143,7 +143,7 @@ def adaptComputeImagesStatistics(commands_list):
             index = commands_list.index(item)
             if not "." in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".xml" + commands_list[index + 1][-1]
-         
+
     return commands_list2
 
 
@@ -162,7 +162,7 @@ def adaptKmzExport(commands_list):
             index = commands_list.index(item)
             if not "." in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".kmz" + commands_list[index + 1][-1]
-         
+
         commands_list2.append(item)
     return commands_list2
 
@@ -207,7 +207,7 @@ def adaptComputeConfusionMatrix(commands_list):
             index = commands_list.index(item)
             if not "." in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".csv" + commands_list[index + 1][-1]
-         
+
         commands_list2.append(item)
     return commands_list2
 
@@ -215,19 +215,19 @@ def adaptComputeConfusionMatrix(commands_list):
 def adaptRadiometricIndices(commands_list):
     """
     Replace indice nickname by its corresponding entry in the following dictionnary :
-    indices = {"ndvi" : "Vegetation:NDVI", "tndvi" : "Vegetation:TNDVI",  "rvi" : "Vegetation:RVI",  "savi" : "Vegetation:SAVI", 
-           "tsavi" : "Vegetation:TSAVI", "msavi" : "Vegetation:MSAVI",  "msavi2" : "Vegetation:MSAVI2",  "gemi" : "Vegetation:GEMI", 
-           "ipvi" : "Vegetation:IPVI", 
-           "ndwi" : "Water:NDWI", "ndwi2" : "Water:NDWI2", "mndwi" :"Water:MNDWI" , "ndpi" : "Water:NDPI", 
-           "ndti" : "Water:NDTI", 
+    indices = {"ndvi" : "Vegetation:NDVI", "tndvi" : "Vegetation:TNDVI",  "rvi" : "Vegetation:RVI",  "savi" : "Vegetation:SAVI",
+           "tsavi" : "Vegetation:TSAVI", "msavi" : "Vegetation:MSAVI",  "msavi2" : "Vegetation:MSAVI2",  "gemi" : "Vegetation:GEMI",
+           "ipvi" : "Vegetation:IPVI",
+           "ndwi" : "Water:NDWI", "ndwi2" : "Water:NDWI2", "mndwi" :"Water:MNDWI" , "ndpi" : "Water:NDPI",
+           "ndti" : "Water:NDTI",
            "ri" : "Soil:RI", "ci" : "Soil:CI", "bi" : "Soil:BI", "bi2" : "Soil:BI2"}
     """
-#                 "laindvilog" : , "lairefl" : , "laindviformo" : , 
-    indices = {"ndvi" : "Vegetation:NDVI", "tndvi" : "Vegetation:TNDVI",  "rvi" : "Vegetation:RVI",  "savi" : "Vegetation:SAVI", 
-               "tsavi" : "Vegetation:TSAVI", "msavi" : "Vegetation:MSAVI",  "msavi2" : "Vegetation:MSAVI2",  "gemi" : "Vegetation:GEMI", 
-               "ipvi" : "Vegetation:IPVI", 
-               "ndwi" : "Water:NDWI", "ndwi2" : "Water:NDWI2", "mndwi" :"Water:MNDWI" , "ndpi" : "Water:NDPI", 
-               "ndti" : "Water:NDTI", 
+#                 "laindvilog" : , "lairefl" : , "laindviformo" : ,
+    indices = {"ndvi" : "Vegetation:NDVI", "tndvi" : "Vegetation:TNDVI",  "rvi" : "Vegetation:RVI",  "savi" : "Vegetation:SAVI",
+               "tsavi" : "Vegetation:TSAVI", "msavi" : "Vegetation:MSAVI",  "msavi2" : "Vegetation:MSAVI2",  "gemi" : "Vegetation:GEMI",
+               "ipvi" : "Vegetation:IPVI",
+               "ndwi" : "Water:NDWI", "ndwi2" : "Water:NDWI2", "mndwi" :"Water:MNDWI" , "ndpi" : "Water:NDPI",
+               "ndti" : "Water:NDTI",
                "ri" : "Soil:RI", "ci" : "Soil:CI", "bi" : "Soil:BI", "bi2" : "Soil:BI2"}
     for item in commands_list:
         if item in indices:

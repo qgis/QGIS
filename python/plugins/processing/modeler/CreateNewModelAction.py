@@ -43,5 +43,5 @@ class CreateNewModelAction(ToolboxAction):
         dlg = ModelerDialog()
         dlg.show()
         dlg.exec_()
-        if dlg.update:            
+        if dlg.update:
             self.toolbox.updateProvider('model')

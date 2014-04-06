@@ -8,7 +8,7 @@
     Copyright            : (C) 2013 by CS Systemes d'information (CS SI)
     Email                : otb at c-s dot fr (CS SI)
     Contributors         : Julien Malik (CS SI)  - creation of otbspecific
-                           Oscar Picas (CS SI)   -  
+                           Oscar Picas (CS SI)   -
                            Alexia Mondot (CS SI) - split otbspecific into 2 files
                                            add functions
 ***************************************************************************
@@ -45,10 +45,10 @@ except ImportError, e:
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from processing.otb.OTBUtils import (renameValueField, 
-                                    remove_dependant_choices, 
-                                    remove_other_choices, 
-                                    remove_parameter_by_key, 
+from processing.otb.OTBUtils import (renameValueField,
+                                    remove_dependant_choices,
+                                    remove_other_choices,
+                                    remove_parameter_by_key,
                                     defaultSplit,
                                     split_by_choice,
                                     defaultWrite,
@@ -58,7 +58,7 @@ from processing.otb.OTBUtils import (renameValueField,
 
 def getBinaryMorphologicalOperation(available_app, original_dom_document):
     """
-    Let ball as only available structype. 
+    Let ball as only available structype.
     Split the application according to its filter dilate, erode, opening, closing.
     """
     the_root = original_dom_document
@@ -75,7 +75,7 @@ def getBinaryMorphologicalOperation(available_app, original_dom_document):
 
 def getEdgeExtraction(available_app, original_dom_document):
     """
-    Let ball as only available filter (not an oval). 
+    Let ball as only available filter (not an oval).
     Split the application according to its filter gradient, sobel, touzi.
     """
     the_root = original_dom_document
@@ -92,7 +92,7 @@ def getEdgeExtraction(available_app, original_dom_document):
 
 def getGrayScaleMorphologicalOperation(available_app, original_dom_document):
     """
-    Let ball as only available structype. 
+    Let ball as only available structype.
     Split the application according to its filter dilate, erode, opening, closing.
     """
     the_root = original_dom_document
@@ -108,7 +108,7 @@ def getGrayScaleMorphologicalOperation(available_app, original_dom_document):
 
 def getOrthoRectification(available_app, original_dom_document):
     """
-    Let only mode auto. 
+    Let only mode auto.
     Remove all parameters which should be updated once the input file given.
     Split by SRS : EPSG, fit to ortho, lambert-wgs84 and UTM.
     Each of these SRS have their own parameters modified in this fonction.
@@ -382,8 +382,8 @@ def getSarRadiometricCalibration(available_app, original_dom_document):
     the_root = original_dom_document
     defaultWrite(available_app, the_root)
     return [the_root]
-    
-    
+
+
 def getSmoothing(available_app, original_dom_document):
     """
     Split by type (anidif, gaussian, mean)

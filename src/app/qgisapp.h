@@ -1021,7 +1021,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void destinationCrsChanged();
     //    void debugHook();
     //! Add a Layer Definition file
-    void addLayerDefinition ();
+    void addLayerDefinition();
     //! Add a vector layer to the map
     void addVectorLayer();
     //! Exit Qgis

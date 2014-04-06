@@ -113,7 +113,7 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
     mSnappingMarker->setIconType( QgsVertexMarker::ICON_CROSS );
     mSnappingMarker->setColor( Qt::magenta );
     mSnappingMarker->setPenWidth( 3 );
-    mSnappingMarker->setCenter( snapPointFromResults(snapResults,e->pos()) );
+    mSnappingMarker->setCenter( snapPointFromResults( snapResults, e->pos() ) );
 
 
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )

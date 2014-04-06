@@ -73,7 +73,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
 
         self.fillTree()
-        
+
     def textChanged(self):
         text = self.searchBox.text().strip(' ').lower()
         self._filterItem(self.algorithmTree.invisibleRootItem(), text)
@@ -82,24 +82,24 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         else:
             self.algorithmTree.collapseAll()
             self.algorithmTree.invisibleRootItem().child(0).setExpanded(True)
-    
-    def _filterItem(self, item, text):        
+
+    def _filterItem(self, item, text):
         if (item.childCount() > 0):
             show = False
-            for i in xrange(item.childCount()):                
+            for i in xrange(item.childCount()):
                 child = item.child(i)
                 showChild = self._filterItem(child, text)
-                show = showChild or show            
-            item.setHidden(not show)            
+                show = showChild or show
+            item.setHidden(not show)
             return show
-        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):                     
-            hide = bool(text) and (text not in item.text(0).lower())            
-            item.setHidden(hide)            
+        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
+            hide = bool(text) and (text not in item.text(0).lower())
+            item.setHidden(hide)
             return not hide
         else:
-            item.setHidden(True)            
+            item.setHidden(True)
             return False
-                
+
 
     def modeHasChanged(self):
         idx = self.modeComboBox.currentIndex()
@@ -116,7 +116,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
     def updateTree(self):
         Processing.updateAlgsList()
         self.fillTree()
-        
+
     def updateProvider(self, providerName, updateAlgsList = True):
         if updateAlgsList:
             Processing.updateAlgsList()
@@ -308,9 +308,9 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
-            providerItem = TreeProviderItem(providerName)            
+            providerItem = TreeProviderItem(providerName)
             self.algorithmTree.addTopLevelItem(providerItem)
-            
+
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         for providerName in Processing.algs.keys():
@@ -320,7 +320,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             providerItem = TreeProviderItem(providerName)
             self.algorithmTree.addTopLevelItem(providerItem)
             providerItem.setHidden(providerItem.childCount() == 0)
-            
+
 
 
 class TreeAlgorithmItem(QTreeWidgetItem):
@@ -348,20 +348,20 @@ class TreeActionItem(QTreeWidgetItem):
         self.action = action
         self.setText(0, action.name)
         self.setIcon(0, action.getIcon())
-        
+
 class TreeProviderItem(QTreeWidgetItem):
 
     def __init__(self, providerName):
         QTreeWidgetItem.__init__(self)
-        self.providerName = providerName                
+        self.providerName = providerName
         self.provider = Processing.getProviderFromName(providerName)
         self.setIcon(0, self.provider.getIcon())
         self.populate()
-        
+
     def refresh(self):
         self.takeChildren()
         self.populate()
-                
+
     def populate(self):
         groups = {}
         count = 0
@@ -384,7 +384,7 @@ class TreeProviderItem(QTreeWidgetItem):
             count += 1
 
         actions = Processing.actions[self.providerName]
-        for action in actions:           
+        for action in actions:
             if action.group in groups:
                 groupItem = groups[action.group]
             else:
@@ -392,13 +392,13 @@ class TreeProviderItem(QTreeWidgetItem):
                 groupItem.setText(0, action.group)
                 groups[action.group] = groupItem
             algItem = TreeActionItem(action)
-            groupItem.addChild(algItem)        
-        
+            groupItem.addChild(algItem)
+
         self.setText(0, self.provider.getDescription()
                     + ' [' + str(count) + ' geoalgorithms]')
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)
 
-        
+
 

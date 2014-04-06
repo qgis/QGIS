@@ -2778,7 +2778,7 @@ void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, const QRect& rect, 
   }
 }
 
-void QgsSymbolLayerV2Utils::premultiplyColor(QColor &rgb, int alpha)
+void QgsSymbolLayerV2Utils::premultiplyColor( QColor &rgb, int alpha )
 {
   int r = 0, g = 0, b = 0;
   double alphaFactor = 1.0;

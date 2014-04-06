@@ -63,7 +63,7 @@ class OTBAlgorithmProvider(AlgorithmProvider):
             if descriptionFile.endswith("xml"):
                 try:
                     alg = OTBAlgorithm(os.path.join(folder, descriptionFile))
- 
+
                     if alg.name.strip() != "":
                         self.preloadedAlgs.append(alg)
                     else:

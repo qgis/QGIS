@@ -55,7 +55,7 @@ class SaveAsPythonScriptAction(ContextAction):
                 fout.write(text)
                 fout.close()
                 if filename.replace('\\', '/').startswith(
-                        ScriptUtils.scriptsFolder().replace('\\', '/')):                                    
+                        ScriptUtils.scriptsFolder().replace('\\', '/')):
                     self.toolbox.updateProvider('script')
             except:
                 QMessageBox.warning(self, self.tr('I/O error'),

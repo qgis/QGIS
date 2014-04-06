@@ -56,7 +56,7 @@ def myself(L):
 class SpatialJoin(GeoAlgorithm):
     '''
     Join by location
-    
+
     Port of the spatial join algorithm from fTools to the Processing Toolbox.
     '''
 
@@ -67,7 +67,7 @@ class SpatialJoin(GeoAlgorithm):
     GEOMETRY = "GEOMETRY"
     KEEP = "KEEP"
     OUTPUT = "OUTPUT"
-    
+
     SUMMARYS = [
         'Take attributes of the first located feature',
         'Take summary of intersecting features'
@@ -77,7 +77,7 @@ class SpatialJoin(GeoAlgorithm):
         'Use geometry from target layer',
         'Use geometry from joined layer (multipart if summary)'
     ]
-    
+
     KEEPS = [
         'Only keep matching records',
         'Keep all records (including non-matching target records)'
@@ -87,7 +87,7 @@ class SpatialJoin(GeoAlgorithm):
     # def getIcon(self):
     #    return QIcon(os.path.dirname(__file__) + "/icons/join_location.png")
     #===========================================================================
-    
+
     def defineCharacteristics(self):
         self.name = "Join by location"
         self.group = "Vector general tools"
@@ -106,7 +106,7 @@ class SpatialJoin(GeoAlgorithm):
         sumList = self.getParameterValue(self.STATS).upper().replace(' ','').split(',')
         use_geom = self.getParameterValue(self.GEOMETRY)
         keep = self.getParameterValue(self.KEEP) == 1
-        
+
         input1 = self.getParameterValue(self.INPUT1)
         layer1 = dataobjects.getObjectFromUri(input1)
         provider1 = layer1.dataProvider()
@@ -116,8 +116,8 @@ class SpatialJoin(GeoAlgorithm):
         layer2 = dataobjects.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
         fieldList2 = provider2.fields()
-        
-        fieldList = QgsFields()        
+
+        fieldList = QgsFields()
         if not summary:
             fieldList2 = vector.testForUniqueness(fieldList1, fieldList2)
             seq = range(0, len(fieldList1) + len(fieldList2))
@@ -157,12 +157,12 @@ class SpatialJoin(GeoAlgorithm):
                 geometry_type = provider2.geometryType()
 
         writer = output.getVectorWriter(fields, geometry_type, crs)
-        
+
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inFeatB = QgsFeature()
         inGeom = QgsGeometry()
-        
+
         progress.setPercentage(15)
         start = 15.00
         add = 85.00 / provider1.featureCount()
@@ -240,7 +240,7 @@ class SpatialJoin(GeoAlgorithm):
                     writer.addFeature(outFeat)
             start = start + add
             progress.setPercentage(start)
-            
+
         del writer
 
     def singleToMultiGeom(self, wkbType):

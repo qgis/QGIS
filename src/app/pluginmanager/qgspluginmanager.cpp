@@ -97,7 +97,7 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
 
   // Preset widgets
   leFilter->setFocus( Qt::MouseFocusReason );
-  wvDetails->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+  wvDetails->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 
   // Don't restore the last used tab from QSettings
   mOptionsListWidget->setCurrentRow( 0 );
@@ -618,59 +618,59 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   if ( ! metadata->value( "plugin_id" ).isEmpty() )
   {
     html += QString(
-          "<style>"
-          "  div#stars_bg {"
-          "    background-image: url('file:///home/borys/Pobrane/stars_empty.png');"
-          "    width:92px;"
-          "    height:16px;"
-          "  }"
-          "  div#stars {"
-          "    background-image: url('file:///home/borys/Pobrane/stars_full.png');"
-          "    width:%1px;"
-          "    height:16px;"
-          "  }"
-          "</style>").arg( metadata->value( "average_vote" ).toFloat() / 5 * 92 );
+              "<style>"
+              "  div#stars_bg {"
+              "    background-image: url('file:///home/borys/Pobrane/stars_empty.png');"
+              "    width:92px;"
+              "    height:16px;"
+              "  }"
+              "  div#stars {"
+              "    background-image: url('file:///home/borys/Pobrane/stars_full.png');"
+              "    width:%1px;"
+              "    height:16px;"
+              "  }"
+              "</style>" ).arg( metadata->value( "average_vote" ).toFloat() / 5 * 92 );
     html += QString(
-          "<script>"
-          "  var plugin_id=%1;"
-          "  var vote=0;"
-          "  function ready()"
-          "  {"
-          "    document.getElementById('stars_bg').onmouseover=save_vote;"
-          "    document.getElementById('stars_bg').onmouseout=restore_vote;"
-          "    document.getElementById('stars_bg').onmousemove=change_vote;"
-          "    document.getElementById('stars_bg').onclick=send_vote;"
-          "  };"
-          "    "
-          "  function save_vote(e)"
-          "  {"
-          "    vote = document.getElementById('stars').style.width"
-          "  }"
-          "   "
-          "  function restore_vote(e)"
-          "  {"
-          "    document.getElementById('stars').style.width = vote;"
-          "  }"
-          "   "
-          "  function change_vote(e)"
-          "  {"
-          "    var length = e.x - document.getElementById('stars').getBoundingClientRect().left;"
-          "    max = document.getElementById('stars_bg').getBoundingClientRect().right;"
-          "    if ( length <= max ) document.getElementById('stars').style.width = length + 'px';"
-          "  }"
-          "   "
-          "  function send_vote(e)"
-          "  {"
-          "    save_vote();"
-          "    result = Number(vote.replace('px',''));"
-          "    if (!result) return;"
-          "    result = Math.floor(result/92*5)+1;"
-          "    document.getElementById('send_vote_trigger').href='rpc2://plugin.vote/'+plugin_id+'/'+result;"
-          "    ev=document.createEvent('MouseEvents');"
-          "    ev.initEvent('click', false, true);"
-          "    document.getElementById('send_vote_trigger').dispatchEvent(ev);"
-          "  }"
-          "</script>").arg( metadata->value( "plugin_id" ) );
+              "<script>"
+              "  var plugin_id=%1;"
+              "  var vote=0;"
+              "  function ready()"
+              "  {"
+              "    document.getElementById('stars_bg').onmouseover=save_vote;"
+              "    document.getElementById('stars_bg').onmouseout=restore_vote;"
+              "    document.getElementById('stars_bg').onmousemove=change_vote;"
+              "    document.getElementById('stars_bg').onclick=send_vote;"
+              "  };"
+              "    "
+              "  function save_vote(e)"
+              "  {"
+              "    vote = document.getElementById('stars').style.width"
+              "  }"
+              "   "
+              "  function restore_vote(e)"
+              "  {"
+              "    document.getElementById('stars').style.width = vote;"
+              "  }"
+              "   "
+              "  function change_vote(e)"
+              "  {"
+              "    var length = e.x - document.getElementById('stars').getBoundingClientRect().left;"
+              "    max = document.getElementById('stars_bg').getBoundingClientRect().right;"
+              "    if ( length <= max ) document.getElementById('stars').style.width = length + 'px';"
+              "  }"
+              "   "
+              "  function send_vote(e)"
+              "  {"
+              "    save_vote();"
+              "    result = Number(vote.replace('px',''));"
+              "    if (!result) return;"
+              "    result = Math.floor(result/92*5)+1;"
+              "    document.getElementById('send_vote_trigger').href='rpc2://plugin.vote/'+plugin_id+'/'+result;"
+              "    ev=document.createEvent('MouseEvents');"
+              "    ev.initEvent('click', false, true);"
+              "    document.getElementById('send_vote_trigger').dispatchEvent(ev);"
+              "  }"
+              "</script>" ).arg( metadata->value( "plugin_id" ) );
   }
 
   html += "<body onload='ready()'>";
@@ -764,7 +764,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   {
     html += tr( "%1 rating vote(s)" ).arg( metadata->value( "rating_votes" ) );
   }
-  if ( ! ( metadata->value( "rating_votes" ).isEmpty() || metadata->value( "downloads" ).isEmpty() ) )
+  if ( !( metadata->value( "rating_votes" ).isEmpty() || metadata->value( "downloads" ).isEmpty() ) )
   {
     html += ", ";
   }
@@ -1074,12 +1074,12 @@ void QgsPluginManager::setCurrentTab( int idx )
     if ( it != mTabDescriptions.end() )
     {
       tabInfoHTML += "<style>"
-          "body, table {"
-            "margin:4px;"
-            "font-family:verdana;"
-            "font-size: 12px;"
-          "}"
-        "</style>";
+                     "body, table {"
+                     "margin:4px;"
+                     "font-family:verdana;"
+                     "font-size: 12px;"
+                     "}"
+                     "</style>";
       // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
       tabInfoHTML += it.value();
     }
@@ -1159,8 +1159,9 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
     {
       QString params = url.path();
       QString response;
-      QgsPythonRunner::eval( QString( "pyplugin_installer.instance().sendVote('%1', '%2')" ).arg( params.split( "/" )[1] )
-                                                                                            .arg( params.split( "/" )[2] ), response );
+      QgsPythonRunner::eval( QString( "pyplugin_installer.instance().sendVote('%1', '%2')" )
+                             .arg( params.split( "/" )[1] )
+                             .arg( params.split( "/" )[2] ), response );
       if ( response == "True" )
       {
         pushMessage( tr( "Vote sent successfully" ), QgsMessageBar::INFO );

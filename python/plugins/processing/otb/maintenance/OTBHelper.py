@@ -233,16 +233,16 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     our_type = parameters[app_instance.GetParameterType(our_descriptor)]
 
     #get the list of mapped parameters (otb/processing)
-    inverted_parameters = get_inverted_parameters()    
+    inverted_parameters = get_inverted_parameters()
 
     mapped_parameter = inverted_parameters[our_type]
 
     file_parameter = retrieve_module_name(mapped_parameter)
-    
+
     if not file_parameter:
         logger.info("Type %s is not handled yet. (%s, %s)" % (our_type, appkey, our_descriptor))
         return
-    
+
     param = ET.SubElement(root, 'parameter')
     attrs = {'source_parameter_type' : parameters[app_instance.GetParameterType(our_descriptor)]}
     if appkey == "Segmentation" :
@@ -254,7 +254,7 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     if appkey == "SplitImage" :
         if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
             attrs = {'source_parameter_type' : 'ParameterType_OutputFilename'}
-    
+
     param_type = ET.SubElement(param, 'parameter_type', attrib = attrs)
 
     param_type.text = inverted_parameters[parameters[app_instance.GetParameterType(our_descriptor)]]
@@ -267,7 +267,7 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     if appkey == "SplitImage" :
         if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
             param_type.text = "OutputFile"
-    
+
     the_params = get_constructor_parameters_from_filename(file_parameter)
     if len(the_params) == 0:
         if 'Output' in file_parameter:
@@ -276,12 +276,12 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
         if 'Parameter' in file_parameter:
             file_path = os.path.join(os.path.dirname(file_parameter), 'Parameter.py')
             the_params = (file_path)
-    
+
     if "self" in the_params:
         the_params = the_params[1:]
     else:
         raise Exception("Unexpected constructor parameters")
-    
+
     key = ET.SubElement(param, 'key')
     key.text = our_descriptor
     is_choice_type = False
@@ -448,7 +448,7 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
             with tag('h2', result):
                 result.append('Example of use')
             result.append(app_instance.GetHtmlExample())
-    if app_instance.GetName() == "HaralickTextureExtraction" :      
+    if app_instance.GetName() == "HaralickTextureExtraction" :
         index = result.index("<b>[param] -parameters</b> &lt;string&gt; ")
         del result[index +2]
         del result[index +1]
@@ -528,7 +528,7 @@ def get_automatic_ut_from_xml_description(the_root):
 
         if not cliName.startswith("otbcli_"):
             raise Exception('Wrong client executable')
-        
+
         rebu = get_list_from_node(dom_model, appkey)
         the_result = map(adapt_list_to_string,rebu)
         ut_command = cliName + " " + " ".join(the_result)
@@ -582,7 +582,7 @@ def create_xml_descriptors():
                                 logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
                 else:
                     logger.warning("%s is not in white list." % available_app)
-        
+
             else:
                 if available_app in white_list and not available_app in black_list:
                     logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
@@ -595,10 +595,10 @@ def create_xml_descriptors():
                         ut_command = get_automatic_ut_from_xml_description(the_root)
                     except:
                         logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
-        
+
         except Exception, e:
             logger.error(traceback.format_exc())
-        
+
     for available_app in otbApplication.Registry.GetAvailableApplications():
         try:
             fh = open("description/doc/%s.html" % available_app, "w")

@@ -133,7 +133,7 @@ class QgsSqliteHandle
     //
   public:
     QgsSqliteHandle( sqlite3 * handle, const QString& dbPath, bool shared )
-      : ref( shared ? 1 : -1 ), sqlite_handle( handle ), mDbPath( dbPath )
+        : ref( shared ? 1 : -1 ), sqlite_handle( handle ), mDbPath( dbPath )
     {
     }
 

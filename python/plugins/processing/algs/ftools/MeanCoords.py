@@ -66,12 +66,12 @@ class MeanCoords(GeoAlgorithm):
         uniqueField = self.getParameterValue(self.UID)
 
         print weightField, uniqueField
-        
+
         if weightField is None:
             weightIndex = -1
         else:
             weightIndex = layer.fieldNameIndex(weightField)
-        
+
         if uniqueField is None:
             uniqueIndex = -1
         else:

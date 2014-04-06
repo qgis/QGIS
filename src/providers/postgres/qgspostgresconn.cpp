@@ -772,8 +772,8 @@ QString QgsPostgresConn::quotedValue( QVariant value )
     case QVariant::String:
       QString v = value.toString();
       v.replace( "'", "''" );
-      if( v.contains( "\\" ) )
-        return v.replace( "\\", "\\\\" ).prepend("E'").append("'");
+      if ( v.contains( "\\" ) )
+        return v.replace( "\\", "\\\\" ).prepend( "E'" ).append( "'" );
       else
         return v.prepend( "'" ).append( "'" );
   }

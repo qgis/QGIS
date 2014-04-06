@@ -9,7 +9,7 @@
                            (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
                            otb at c-s dot fr (CS SI)
-    Contributors         : Victor Olaya 
+    Contributors         : Victor Olaya
                            Julien Malik, Oscar Picas  (CS SI) - add functions to manage xml tree
                            Alexia Mondot (CS SI) - add a trick for OTBApplication SplitImages
 ***************************************************************************
@@ -136,7 +136,7 @@ class OTBUtils:
             else:
                 loglines.append(line)
                 progress.setConsoleInfo(line)
-                   
+
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
 

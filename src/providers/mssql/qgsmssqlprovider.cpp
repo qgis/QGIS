@@ -81,7 +81,7 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
   mSqlWhereClause = anUri.sql();
 
-  mDatabase = QgsMssqlProvider::GetDatabase(mDriver, mHost, mDatabaseName, mUserName, mPassword);
+  mDatabase = QgsMssqlProvider::GetDatabase( mDriver, mHost, mDatabaseName, mUserName, mPassword );
 
   if ( !OpenDatabase( mDatabase ) )
   {
@@ -167,8 +167,8 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
 QgsMssqlProvider::~QgsMssqlProvider()
 {
-    if (mDatabase.isOpen())
-        mDatabase.close();
+  if ( mDatabase.isOpen() )
+    mDatabase.close();
 }
 
 QgsAbstractFeatureSource* QgsMssqlProvider::featureSource() const
@@ -199,14 +199,14 @@ bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
-QSqlDatabase QgsMssqlProvider::GetDatabase(QString driver, QString host, QString database, QString username, QString password)
+QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QString database, QString username, QString password )
 {
   QSqlDatabase db;
   QString connectionName;
 
   // create a separate database connection for each feature source
   QgsDebugMsg( "Creating a separate database connection" );
-  
+
   if ( driver.isEmpty() )
   {
     if ( host.isEmpty() )

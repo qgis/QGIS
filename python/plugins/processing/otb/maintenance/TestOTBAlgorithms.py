@@ -53,7 +53,7 @@ class AlgoTestCase(unittest.TestCase):
     def setUp(self):
         self.logger = get_OTB_log()
         self.the_files = [os.path.join(os.path.join(os.path.abspath(os.curdir), 'description'),each) for each in os.listdir(os.path.join(os.path.abspath(os.curdir), 'description')) if '.xml' in each]
-        
+
     def tearDown(self):
         self.logger = None
 

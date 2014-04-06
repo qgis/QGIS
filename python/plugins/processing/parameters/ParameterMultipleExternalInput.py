@@ -84,7 +84,7 @@ class ParameterMultipleExternalInput(ParameterDataObject):
         layers = self.value.split(";")
         if layers == None or len(layers) == 0:
             return self.value
-        
+
         return layers
 
 

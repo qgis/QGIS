@@ -9,7 +9,7 @@
                            (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
                            otb at c-s dot fr (CS SI)
-    Contributors         : Victor Olaya 
+    Contributors         : Victor Olaya
                            Alexia Mondot (CS SI) - managing the new parameter ParameterMultipleExternalInput
 ***************************************************************************
 *                                                                         *
@@ -221,7 +221,7 @@ class ParametersPanel(QtGui.QWidget):
                     items.append((self.getExtendedLayerName(layer), layer))
                 # if already set, put first in list
                 for i,(name,layer) in enumerate(items):
-                    if layer and layer.source() == param.value: 
+                    if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterTable):
@@ -243,7 +243,7 @@ class ParametersPanel(QtGui.QWidget):
                     items.append((layer.name(), layer))
                 # if already set, put first in list
                 for i,(name,layer) in enumerate(items):
-                    if layer and layer.source() == param.value: 
+                    if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterBoolean):

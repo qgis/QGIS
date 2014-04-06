@@ -35,6 +35,6 @@ if d and isinstance(d, dict):
         output = r.sub(v, output)
 else:
     progress.setText('ERROR - Replace dict does not represent a dictionnary. String not changed !' )
-    
+
 if verbose:
     progress.setText('OUTPUT = \n%s\n' % output)
