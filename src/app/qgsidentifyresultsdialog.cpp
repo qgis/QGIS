@@ -307,7 +307,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 #if defined(QWT_VERSION) && QWT_VERSION<0x060000
   mPlot->setAutoFillBackground( false );
   mPlot->setAutoDelete( true );
-  mPlot->insertLegend( new QwtLegend(), QwtPlot::RightLegend );
+  mPlot->insertLegend( new QwtLegend(), QwtPlot::TopLegend );
   QSizePolicy sizePolicy = QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   sizePolicy.setHorizontalStretch( 0 );
   sizePolicy.setVerticalStretch( 0 );
