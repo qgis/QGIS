@@ -2690,7 +2690,7 @@
                     <item>
                      <widget class="QDoubleSpinBox" name="mIdentifyHighlightBufferSpinBox">
                       <property name="toolTip">
-                       <string>Lines / outlines buffer in milimeters.</string>
+                       <string>Lines / outlines buffer in millimeters.</string>
                       </property>
                       <property name="suffix">
                        <string> mm</string>
@@ -2710,7 +2710,7 @@
                     <item>
                      <widget class="QDoubleSpinBox" name="mIdentifyHighlightMinWidthSpinBox">
                       <property name="toolTip">
-                       <string>Minimum line / outline width in milimeters.</string>
+                       <string>Minimum line / outline width in millimeters.</string>
                       </property>
                       <property name="suffix">
                        <string> mm</string>

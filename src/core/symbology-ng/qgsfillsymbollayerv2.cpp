@@ -2137,7 +2137,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     // QgsMarkerLineSymbolLayerV2::estimateMaxBleed() is mixing marker size and
     // offset regardless units. This has to be fixed especially
     // in estimateMaxBleed(), context probably has to be used.
-    // For now, we only support milimeters
+    // For now, we only support millimeters
     double outputPixelLayerBleed = layerBleed * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, QgsSymbolV2::MM );
     outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
 

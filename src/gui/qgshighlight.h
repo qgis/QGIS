@@ -58,11 +58,11 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     /** Set width. Ignored in feature mode. */
     void setWidth( int width );
 
-    /** Set line / outline buffer in milimeters.
+    /** Set line / outline buffer in millimeters.
      *  @note: added in version 2.3 */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
-    /** Set minimum line / outline width in milimeters.
+    /** Set minimum line / outline width in millimeters.
      *  @note: added in version 2.3 */
     void setMinWidth( double width ) { mMinWidth = width; }
 

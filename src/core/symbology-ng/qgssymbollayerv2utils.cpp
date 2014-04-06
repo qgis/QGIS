@@ -349,7 +349,7 @@ QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( QString str )
     return QgsSymbolV2::MapUnit;
   }
 
-  // milimeters are default
+  // millimeters are default
   return QgsSymbolV2::MM;
 }
 
