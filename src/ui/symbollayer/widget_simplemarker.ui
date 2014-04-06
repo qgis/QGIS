@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
+    <width>408</width>
     <height>424</height>
    </rect>
   </property>
@@ -128,18 +128,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mSizeUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mSizeUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -151,7 +140,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox"/>
+    <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox" native="true"/>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="mOutlineWidthLabel">
@@ -176,18 +165,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mOutlineWidthUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -262,18 +240,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -389,6 +356,17 @@
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenStyleComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgspenstylecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

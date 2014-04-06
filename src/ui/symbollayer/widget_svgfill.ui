@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="1" column="0">
@@ -121,18 +130,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="mTextureWidthUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QgsUnitSelectionWidget" name="mTextureWidthUnitWidget" native="true"/>
        </item>
       </layout>
      </item>
@@ -267,18 +265,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="mSvgOutlineWidthUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QgsUnitSelectionWidget" name="mSvgOutlineWidthUnitWidget" native="true"/>
        </item>
       </layout>
      </item>
@@ -304,6 +291,12 @@
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

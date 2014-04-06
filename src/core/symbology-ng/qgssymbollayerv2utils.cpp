@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbollayerv2utils.cpp
-    ---------------------
-    begin                : November 2009
-    copyright            : (C) 2009 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+ qgssymbollayerv2utils.cpp
+ ---------------------
+ begin                : November 2009
+ copyright            : (C) 2009 by Martin Dobias
+ email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -325,6 +325,19 @@ QPointF QgsSymbolLayerV2Utils::decodePoint( QString str )
   return QPointF( lst[0].toDouble(), lst[1].toDouble() );
 }
 
+QString QgsSymbolLayerV2Utils::encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale )
+{
+  return QString( "%1,%2" ).arg( mapUnitScale.minScale ).arg( mapUnitScale.maxScale );
+}
+
+QgsMapUnitScale QgsSymbolLayerV2Utils::decodeMapUnitScale( const QString& str )
+{
+  QStringList lst = str.split( ',' );
+  if ( lst.count() != 2 )
+    return QgsMapUnitScale();
+  return QgsMapUnitScale( lst[0].toDouble(), lst[1].toDouble() );
+}
+
 QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
 {
   switch ( unit )
@@ -518,7 +531,7 @@ double QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( QgsSymbolV2* symbol )
   return maxBleed;
 }
 
-QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size )
+QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -526,7 +539,7 @@ QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, Qg
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
-  QgsSymbolV2RenderContext symbolContext( renderContext, u );
+  QgsSymbolV2RenderContext symbolContext( renderContext, u, 1.0, false, 0, 0, 0, scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
@@ -586,7 +599,7 @@ void QgsSymbolLayerV2Utils::drawStippledBackround( QPainter* painter, QRect rect
 
 
 #if !defined(GEOS_VERSION_MAJOR) || !defined(GEOS_VERSION_MINOR) || \
-    ((GEOS_VERSION_MAJOR<3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR<3)))
+ ((GEOS_VERSION_MAJOR<3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR<3)))
 // calculate line's angle and tangent
 static bool lineInfo( QPointF p1, QPointF p2, double& angle, double& t )
 {
@@ -658,7 +671,7 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
 
   // need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
 
   unsigned int i, pointCount = polyline.count();
 
@@ -798,6 +811,13 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
   if ( element.hasAttribute( "outputUnit" ) )
   {
     symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  }
+  if ( element.hasAttribute(( "mapUnitScale" ) ) )
+  {
+    QgsMapUnitScale mapUnitScale;
+    mapUnitScale.minScale = element.attribute( "mapUnitMinScale", "0.0" ).toDouble();
+    mapUnitScale.maxScale = element.attribute( "mapUnitMaxScale", "0.0" ).toDouble();
+    symbol->setMapUnitScale( mapUnitScale );
   }
   symbol->setAlpha( element.attribute( "alpha", "1.0" ).toDouble() );
 
@@ -1281,9 +1301,9 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
   QgsDebugMsg( "Entered." );
 
   /* SE 1.1 says about PolygonSymbolizer:
-     if a point geometry is referenced instead of a polygon,
-     then a small, square, ortho-normal polygon should be
-     constructed for rendering.
+  if a point geometry is referenced instead of a polygon,
+  then a small, square, ortho-normal polygon should be
+  constructed for rendering.
    */
 
   QgsSymbolLayerV2List layers;
@@ -2615,7 +2635,7 @@ QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
   return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
 }
 
-double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
 
   if ( u == QgsSymbolV2::MM )
@@ -2624,7 +2644,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
   }
   else //QgsSymbol::MapUnit
   {
-    double mup = c.mapToPixel().mapUnitsPerPixel();
+    double mup = scale.computeMapUnitsPerPixel( c );
     if ( mup > 0 )
     {
       return 1.0 / mup;
@@ -2636,7 +2656,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
   }
 }
 
-double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
   if ( u == QgsSymbolV2::MM )
   {
@@ -2644,10 +2664,10 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
   }
   else //QgsSymbol::MapUnit
   {
-    double mup = c.mapToPixel().mapUnitsPerPixel();
+    double mup = scale.computeMapUnitsPerPixel( c );
     if ( mup > 0 )
     {
-      return c.rasterScaleFactor() / c.mapToPixel().mapUnitsPerPixel();
+      return c.rasterScaleFactor() / mup;
     }
     else
     {
@@ -3064,3 +3084,5 @@ QString QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( QgsExpression* e
 
   return expression->expression();
 }
+
+

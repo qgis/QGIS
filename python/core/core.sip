@@ -52,6 +52,7 @@
 %Include qgsmaprendererjob.sip
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
+%Include qgsmapunitscale.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
@@ -217,3 +218,5 @@
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
 %Include dxf/qgsdxfexport.sip
+ 
+ 

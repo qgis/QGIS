@@ -70,18 +70,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="mIntervalUnitComboBox">
-          <item>
-           <property name="text">
-            <string>Millimeter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Map unit</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QgsUnitSelectionWidget" name="mIntervalUnitWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -145,18 +134,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="mOffsetAlongLineUnitComboBox">
-          <item>
-           <property name="text">
-            <string>Millimeter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Map unit</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QgsUnitSelectionWidget" name="mOffsetAlongLineUnitWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -219,23 +197,20 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>chkRotateMarker</tabstop>
  </tabstops>

@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgsvectorfieldsymbollayer.h
-                              -------------------------
+         qgsvectorfieldsymbollayer.h
+         -------------------------
   begin                : Octorer 25, 2011
   copyright            : (C) 2011 by Marco Hugentobler
   email                : marco dot hugentobler at sourcepole dot ch
@@ -84,13 +84,20 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
+
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
     QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
+
+    void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
+    const QgsMapUnitScale& distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
   private:
     QString mXAttribute;
     QString mYAttribute;
     QgsSymbolV2::OutputUnit mDistanceUnit;
+    QgsMapUnitScale mDistanceMapUnitScale;
     double mScale;
     VectorFieldType mVectorFieldType;
     AngleOrientation mAngleOrientation;
@@ -107,3 +114,5 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYER_H
+
+
