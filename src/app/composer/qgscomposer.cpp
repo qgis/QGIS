@@ -100,6 +100,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 {
   setupUi( this );
   setWindowTitle( mTitle );
+  setWindowModality( Qt::WindowModal );
   setupTheme();
 
   QSettings settings;
@@ -3184,3 +3185,4 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
   }
 }
+
