@@ -1208,6 +1208,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
 
+    /**This signal is emitted when a composer instance has been removed
+       @note added in version 2.3*/
+    void composerRemoved( QgsComposerView* v );
+
     /**This signal is emitted when QGIS' initialization is complete
      @note added in version 1.6*/
     void initializationCompleted();

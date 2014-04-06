@@ -42,6 +42,8 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   restoreGeometry( settings.value( "/Windows/ComposerManager/geometry" ).toByteArray() );
 
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
+  connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
 
   pb = new QPushButton( tr( "&Show" ) );
   mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
@@ -58,28 +60,6 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   pb = new QPushButton( tr( "Re&name" ) );
   mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
-
-  initialize();
-}
-
-QgsComposerManager::~QgsComposerManager()
-{
-  QSettings settings;
-  settings.setValue( "/Windows/ComposerManager/geometry", saveGeometry() );
-}
-
-void QgsComposerManager::initialize()
-{
-  QSettings settings;
-  QSet<QgsComposer*> composers = QgisApp::instance()->printComposers();
-  QSet<QgsComposer*>::const_iterator it = composers.constBegin();
-  for ( ; it != composers.constEnd(); ++it )
-  {
-    QListWidgetItem* item = new QListWidgetItem(( *it )->title(), mComposerListWidget );
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-    mItemComposerMap.insert( item, *it );
-  }
-  mComposerListWidget->sortItems();
 
   mTemplate->addItem( tr( "Empty composer" ) );
   mTemplate->addItem( tr( "Specific" ) );
@@ -109,6 +89,30 @@ void QgsComposerManager::initialize()
   }
 
   mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString( "" ) ).toString() );
+
+  refreshComposers();
+}
+
+QgsComposerManager::~QgsComposerManager()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/ComposerManager/geometry", saveGeometry() );
+}
+
+void QgsComposerManager::refreshComposers()
+{
+  mItemComposerMap.clear();
+  mComposerListWidget->clear();
+
+  QSet<QgsComposer*> composers = QgisApp::instance()->printComposers();
+  QSet<QgsComposer*>::const_iterator it = composers.constBegin();
+  for ( ; it != composers.constEnd(); ++it )
+  {
+    QListWidgetItem* item = new QListWidgetItem(( *it )->title(), mComposerListWidget );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+    mItemComposerMap.insert( item, *it );
+  }
+  mComposerListWidget->sortItems();
 }
 
 QMap<QString, QString> QgsComposerManager::defaultTemplates( bool fromUser ) const
@@ -200,25 +204,11 @@ void QgsComposerManager::on_mAddButton_clicked()
     }
   }
 
-  if ( loadedOK )
+  if ( newComposer && !loadedOK )
   {
-    // do not close on Add, since user may want to add multiple composers from templates
-    QListWidgetItem* item = new QListWidgetItem( newComposer->title(), mComposerListWidget );
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-    mItemComposerMap.insert( item, newComposer );
-
-    mComposerListWidget->sortItems();
-    mComposerListWidget->setCurrentItem( item );
-    mComposerListWidget->setFocus();
-  }
-  else
-  {
-    if ( newComposer )
-    {
-      newComposer->close();
-      QgisApp::instance()->deleteComposer( newComposer );
-      newComposer = 0;
-    }
+    newComposer->close();
+    QgisApp::instance()->deleteComposer( newComposer );
+    newComposer = 0;
     QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not load template file" ) );
   }
 }
@@ -288,10 +278,6 @@ void QgsComposerManager::remove_clicked()
   {
     QgisApp::instance()->deleteComposer( it.value() );
   }
-  mItemComposerMap.remove( item );
-  mComposerListWidget->removeItemWidget( item );
-  //and remove the list widget row
-  delete( mComposerListWidget->takeItem( mComposerListWidget->row( item ) ) );
 }
 
 void QgsComposerManager::show_clicked()
@@ -350,7 +336,6 @@ void QgsComposerManager::show_clicked()
     if ( c )
     {
       c->readXML( templateDoc );
-      mItemComposerMap.insert( it.key(), c );
     }
   }
 

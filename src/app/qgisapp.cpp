@@ -3919,8 +3919,11 @@ void QgisApp::newPrintComposer()
 
 void QgisApp::showComposerManager()
 {
-  QgsComposerManager m( this );
-  m.exec();
+  QgsComposerManager* m = new QgsComposerManager( this, Qt::Window );
+  connect( m, SIGNAL( finished( int ) ), m, SLOT( deleteLater() ) );
+  m->show();
+  m->raise();
+  m->activateWindow();
 }
 
 void QgisApp::saveMapAsImage()
@@ -5004,6 +5007,7 @@ void QgisApp::deleteComposer( QgsComposer* c )
   mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
   markDirty();
+  emit composerRemoved( c->view() );
   delete c;
 }
 
