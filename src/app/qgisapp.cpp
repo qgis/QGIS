@@ -3284,6 +3284,11 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
 bool QgisApp::fileNewFromTemplate( QString fileName )
 {
+  if ( !saveDirty() )
+  {
+    return false; //cancel pressed
+  }
+
   QgsDebugMsg( QString( "loading project template: %1" ).arg( fileName ) );
   if ( addProject( fileName ) )
   {
@@ -9560,3 +9565,4 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
   return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
+
