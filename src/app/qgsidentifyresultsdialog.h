@@ -94,6 +94,22 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
     QgsIdentifyResultsWebView *mWebView;
 };
 
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+class APP_EXPORT QgsIdentifyPlotCurve
+{
+  public:
+
+    QgsIdentifyPlotCurve() { mPlotCurve = 0; }
+    QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
+                          QwtPlot* plot, const QString &title = QString(), QColor color = QColor() ) ;
+    ~QgsIdentifyPlotCurve();
+
+  private:
+    QwtPlotCurve* mPlotCurve;
+    QVector<double> mPlotCurveXData, mPlotCurveYData;
+};
+#endif
+
 class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
 {
     Q_OBJECT
@@ -230,8 +246,9 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QDockWidget *mDock;
 
 #if defined(QWT_VERSION) && QWT_VERSION<0x060000
-    QwtPlotCurve* mPlotCurve;
-    QVector<double> mPlotCurveXData, mPlotCurveYData;
+    /* QwtPlotCurve* mPlotCurve; */
+    /* QVector<double> mPlotCurveXData, mPlotCurveYData; */
+    QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 #endif
 };
 

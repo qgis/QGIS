@@ -131,6 +131,12 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
 
     virtual QgsStringMap properties() const;
 
+    /** get a list of random colors
+    * @note added in 2.4 */
+    static QList<QColor> randomColors( int count,
+                                       int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
+                                       int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
+                                       int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
     void updateColors();
 
     int count() const { return mCount; }
