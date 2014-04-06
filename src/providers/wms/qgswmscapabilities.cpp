@@ -1198,7 +1198,9 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
         else if ( e1.hasAttribute( "crs" ) )
           bb.crs = e1.attribute( "crs" );
         else
+        {
           QgsDebugMsg( "crs of bounding box undefined" );
+        }
 
         if ( !bb.crs.isEmpty() )
         {
@@ -1399,7 +1401,9 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         else if ( bbox.hasAttribute( "crs" ) )
           bb.crs = bbox.attribute( "crs" );
         else
+        {
           QgsDebugMsg( "crs of bounding box undefined" );
+        }
 
         if ( !bb.crs.isEmpty() )
         {
