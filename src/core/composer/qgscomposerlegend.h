@@ -58,6 +58,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitle( const QString& t ) {mTitle = t;}
     QString title() const {return mTitle;}
 
+    Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
+    void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
+
     /** Returns reference to modifiable style */
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
     /** Returns style */
@@ -153,6 +156,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /** Spacing between lines when wrapped */
     double mlineSpacing;
 
+    /** Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight) */
+    Qt::AlignmentFlag mTitleAlignment;
+
     /** Number of legend columns */
     int mColumnCount;
 
@@ -247,3 +253,4 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 };
 
 #endif
+

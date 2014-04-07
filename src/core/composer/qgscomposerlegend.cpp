@@ -36,6 +36,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mFontColor( QColor( 0, 0, 0 ) )
     , mBoxSpace( 2 )
     , mColumnSpace( 2 )
+    , mTitleAlignment( Qt::AlignLeft )
     , mColumnCount( 1 )
     , mComposerMap( 0 )
     , mSplitLayer( false )
@@ -153,23 +154,21 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   // Now we know total width and can draw the title centered
   if ( !mTitle.isEmpty() )
   {
-    // For multicolumn center if we stay in totalWidth, otherwise allign to left
-    // and expand total width. With single column keep alligned to left be cause
-    // it looks better alligned with items bellow instead of centered
-    Qt::AlignmentFlag halignment;
-    if ( mColumnCount > 1 && titleSize.width() + 2 * mBoxSpace < size.width() )
+    size.rwidth() = qMax( titleSize.width() + 2 * mBoxSpace, size.width() );
+    if ( mTitleAlignment == Qt::AlignLeft )
     {
-      halignment = Qt::AlignHCenter;
+      point.rx() = mBoxSpace;
+    }
+    else if ( mTitleAlignment == Qt::AlignHCenter )
+    {
       point.rx() = mBoxSpace + size.rwidth() / 2;
     }
     else
     {
-      halignment = Qt::AlignLeft;
-      point.rx() = mBoxSpace;
-      size.rwidth() = qMax( titleSize.width() + 2 * mBoxSpace, size.width() );
+      point.rx() = mBoxSpace + size.rwidth();
     }
     point.ry() = mBoxSpace;
-    drawTitle( painter, point, halignment );
+    drawTitle( painter, point, mTitleAlignment );
   }
 
   //adjust box if width or height is to small
@@ -214,7 +213,9 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
     qreal width = textWidthMillimeters( styleFont( QgsComposerLegendStyle::Title ), *titlePart ) + 1;
     qreal height = fontAscentMillimeters( styleFont( QgsComposerLegendStyle::Title ) ) + fontDescentMillimeters( styleFont( QgsComposerLegendStyle::Title ) );
 
-    double left = halignment == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
+    double left = halignment == Qt::AlignLeft ?    point.x() :
+                  halignment == Qt::AlignHCenter ? point.x() - width / 2 :
+                  point.x() - width - mBoxSpace;
 
     QRectF rect( left, y, width, height );
 
@@ -1038,4 +1039,5 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
     }
   }
 }
+
 
