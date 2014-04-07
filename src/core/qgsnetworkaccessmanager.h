@@ -87,6 +87,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
+    void requestTimedOut( QNetworkReply * );
 
   private slots:
     void connectionProgress();
@@ -105,3 +106,4 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
+

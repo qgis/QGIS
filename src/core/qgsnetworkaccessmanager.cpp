@@ -161,6 +161,8 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   timer->setSingleShot( true );
   timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
 
+  connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
+
   mActiveRequests.insert( reply, timer );
   return reply;
 }
@@ -194,6 +196,8 @@ void QgsNetworkAccessManager::abortRequest()
 
   if ( reply->isRunning() )
     reply->close();
+
+  emit requestTimedOut( reply );
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
@@ -324,3 +328,4 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   setProxy( proxy );
 #endif
 }
+
