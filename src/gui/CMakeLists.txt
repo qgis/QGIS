@@ -72,6 +72,7 @@ qgscolorbutton.cpp
 qgscolordialog.cpp
 qgscomposerruler.cpp
 qgscomposerview.cpp
+qgsprevieweffect.cpp
 qgscredentialdialog.cpp
 qgscursors.cpp
 qgsdatadefinedbutton.cpp
@@ -220,6 +221,7 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscollapsiblegroupbox.h
 qgscolordialog.h
+qgsprevieweffect.h
 qgscomposerruler.h
 qgscomposerview.h
 qgscredentialdialog.h

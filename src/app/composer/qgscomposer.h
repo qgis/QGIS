@@ -537,6 +537,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QUndoView* mUndoView;
 
+    //! Preview mode actions
+    QAction *mActionPreviewModeOff;
+    QAction *mActionPreviewModeGrayscale;
+    QAction *mActionPreviewModeMono;
+    QAction *mActionPreviewProtanope;
+    QAction *mActionPreviewDeuteranope;
+
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
     QMap< QgsComposerMap*, int > mMapsToRestore;
 
@@ -601,6 +608,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets the printer page orientation when the page orientation changes
     void setPrinterPageOrientation( QString orientation );
+
+    void disablePreviewMode();
+    void activateGrayscalePreview();
+    void activateMonoPreview();
+    void activateProtanopePreview();
+    void activateDeuteranopePreview();
 
 };
 
