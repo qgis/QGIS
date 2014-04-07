@@ -1591,30 +1591,6 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
       layersList << *layersIt;
       stylesList << *stylesIt;
     }
-
-#if 0 //todo: fixme
-    QgsSLDParser* userSLDParser = new QgsSLDParser( theDocument );
-    userSLDParser->setParameterMap( mParameters );
-    userSLDParser->setFallbackParser( mConfigParser );
-    mConfigParser = userSLDParser;
-    //now replace the content of layersList and stylesList (if present)
-    layersList.clear();
-    stylesList.clear();
-    QStringList layersSTDList;
-    QStringList stylesSTDList;
-    if ( mConfigParser->layersAndStyles( layersSTDList, stylesSTDList ) != 0 )
-    {
-      QgsDebugMsg( "Error, no layers and styles found in SLD" );
-      return 0;
-    }
-    QStringList::const_iterator layersIt;
-    QStringList::const_iterator stylesIt;
-    for ( layersIt = layersSTDList.constBegin(), stylesIt = stylesSTDList.constBegin(); layersIt != layersSTDList.constEnd(); ++layersIt, ++stylesIt )
-    {
-      layersList << *layersIt;
-      stylesList << *stylesIt;
-    }
-#endif //0 //todo: fixme
   }
   return 0;
 }

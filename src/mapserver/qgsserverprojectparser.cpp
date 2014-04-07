@@ -329,6 +329,11 @@ QgsRectangle QgsServerProjectParser::projectExtent() const
   return extent;
 }
 
+int QgsServerProjectParser::numberOfLayers() const
+{
+  return mProjectLayerElements.size();
+}
+
 QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
 {
   if ( layerElem.isNull() )

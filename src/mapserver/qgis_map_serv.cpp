@@ -350,7 +350,7 @@ int main( int argc, char * argv[] )
     }
     else    //WMS else
     {
-      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath );
+      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
       if ( !p )
       {
         //error handling

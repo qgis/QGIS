@@ -117,6 +117,8 @@ class QgsServerProjectParser
 
     QgsRectangle projectExtent() const;
 
+    int numberOfLayers() const;
+
   private:
 
     /**Content of project file*/

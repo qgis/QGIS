@@ -20,6 +20,7 @@
 
 #include <QCache>
 #include <QFileSystemWatcher>
+#include <QMap>
 #include <QObject>
 
 class QgsWCSProjectParser;
@@ -37,7 +38,7 @@ class QgsConfigCache: public QObject
 
     QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
     QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
-    QgsWMSConfigParser* wmsConfiguration( const QString& filePath );
+    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
 
   private:
     QgsConfigCache();

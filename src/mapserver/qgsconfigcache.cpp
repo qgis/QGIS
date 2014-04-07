@@ -19,6 +19,7 @@
 #include "qgswcsprojectparser.h"
 #include "qgswfsprojectparser.h"
 #include "qgswmsprojectparser.h"
+#include "qgssldconfigparser.h"
 
 QgsConfigCache* QgsConfigCache::instance()
 {
@@ -74,7 +75,7 @@ QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
   return p;
 }
 
-QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath )
+QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap )
 {
   QgsWMSConfigParser* p = mWMSConfigCache.object( filePath );
   if ( p )
@@ -93,6 +94,7 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath )
   QDomElement documentElem = doc->documentElement();
   if ( documentElem.tagName() == "StyledLayerDescriptor" )
   {
+    p = new QgsSLDConfigParser( doc, parameterMap );
   }
   else
   {
