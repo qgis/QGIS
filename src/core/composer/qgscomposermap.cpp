@@ -44,7 +44,7 @@
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mMapRotation( 0 ), mKeepLayerSet( false )
     , mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false )
-    , mGridEnabled( false ), mGridStyle( Solid )
+    , mUpdatesEnabled( true ), mGridEnabled( false ), mGridStyle( Solid )
     , mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) )
     , mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver )
     , mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame )
@@ -102,7 +102,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mMapRotation( 0 ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 )
     , mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false )
-    , mGridEnabled( false ), mGridStyle( Solid )
+    , mUpdatesEnabled( true ), mGridEnabled( false ), mGridStyle( Solid )
     , mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) )
     , mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver )
     , mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame )
@@ -734,6 +734,11 @@ void QgsComposerMap::setMapRotation( double r )
 
 void QgsComposerMap::updateItem()
 {
+  if ( !mUpdatesEnabled )
+  {
+    return;
+  }
+
   if ( mPreviewMode != QgsComposerMap::Rectangle &&  !mCacheUpdated )
   {
     cache();
@@ -1065,8 +1070,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     xmax = extentElem.attribute( "xmax" ).toDouble();
     ymin = extentElem.attribute( "ymin" ).toDouble();
     ymax = extentElem.attribute( "ymax" ).toDouble();
-
-    mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
+    setNewExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
   }
 
   //map rotation
@@ -2553,3 +2557,4 @@ void QgsComposerMap::sizeChangedByRotation( double& width, double& height )
   //kept for api compatibility with QGIS 2.0 - use mMapRotation
   return QgsComposerItem::sizeChangedByRotation( width, height, mMapRotation );
 }
+
