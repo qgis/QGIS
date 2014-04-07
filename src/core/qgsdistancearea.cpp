@@ -82,7 +82,6 @@ void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
   // Some calculations and trig. Should not be TOO time consuming.
   // Alternatively we could copy the temp vars?
   computeAreaInit();
-  mSourceRefSys = origDA.mSourceRefSys;
   mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
 }
 
@@ -1008,3 +1007,4 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
   QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QGis::toLiteral( displayUnits ) ) );
   measureUnits = displayUnits;
 }
+
