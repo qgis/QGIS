@@ -1168,12 +1168,16 @@ void QgsComposition::raiseItem( QgsComposerItem* item )
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   if ( it.findNext( item ) )
   {
-    if ( it.hasNext() )
+    it.remove();
+    while ( it.hasNext() )
     {
-      it.remove();
       it.next();
-      it.insert( item );
+      if ( it.value() && it.value()->scene() )
+      {
+        break;
+      }
     }
+    it.insert( item );
   }
 }
 
@@ -1266,13 +1270,16 @@ void QgsComposition::lowerItem( QgsComposerItem* item )
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   if ( it.findNext( item ) )
   {
-    it.previous();
-    if ( it.hasPrevious() )
+    it.remove();
+    while ( it.hasPrevious() )
     {
-      it.remove();
       it.previous();
-      it.insert( item );
+      if ( it.value() && it.value()->scene() )
+      {
+        break;
+      }
     }
+    it.insert( item );
   }
 }
 
@@ -2578,3 +2585,4 @@ double QgsComposition::relativePosition( double position, double beforeMin, doub
   //return linearly scaled position
   return m * position + c;
 }
+
