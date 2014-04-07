@@ -161,8 +161,11 @@ void QgsComposerLegendWidget::setGuiElements()
     return;
   }
 
+  int alignment = mLegend->titleAlignment() == Qt::AlignLeft ? 0 : mLegend->titleAlignment() == Qt::AlignHCenter ? 1 : 2;
+
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
+  mTitleAlignCombo->setCurrentIndex( alignment );
   mColumnCountSpinBox->setValue( mLegend->columnCount() );
   mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
@@ -215,6 +218,18 @@ void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString& text
     mLegend->beginCommand( tr( "Legend title changed" ), QgsComposerMergeCommand::ComposerLegendText );
     mLegend->setTitle( text );
     mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mTitleAlignCombo_currentIndexChanged( int index )
+{
+  if ( mLegend )
+  {
+    Qt::AlignmentFlag alignment = index == 0 ? Qt::AlignLeft : index == 1 ? Qt::AlignHCenter : Qt::AlignRight;
+    mLegend->beginCommand( tr( "Legend title alignment changed" ) );
+    mLegend->setTitleAlignment( alignment );
     mLegend->update();
     mLegend->endCommand();
   }
@@ -916,6 +931,7 @@ void QgsComposerLegendWidget::updateLegend()
 void QgsComposerLegendWidget::blockAllSignals( bool b )
 {
   mTitleLineEdit->blockSignals( b );
+  mTitleAlignCombo->blockSignals( b );
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
@@ -997,3 +1013,4 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
   mCountToolButton->setChecked( layerItem->showFeatureCount() );
   mCountToolButton->setEnabled( true );
 }
+
