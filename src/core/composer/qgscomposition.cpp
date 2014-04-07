@@ -1193,12 +1193,19 @@ void QgsComposition::raiseItem( QgsComposerItem* item )
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   if ( it.findNext( item ) )
   {
-    if ( it.hasNext() )
+    it.remove();
+    while ( it.hasNext() )
     {
-      it.remove();
+      //search through item z list to find next item which is present in the scene
+      //(deleted items still exist in the z list so that they can be restored to their correct stacking order,
+      //but since they are not in the scene they should be ignored here)
       it.next();
-      it.insert( item );
+      if ( it.value() && it.value()->scene() )
+      {
+        break;
+      }
     }
+    it.insert( item );
   }
 }
 
@@ -1291,13 +1298,19 @@ void QgsComposition::lowerItem( QgsComposerItem* item )
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   if ( it.findNext( item ) )
   {
-    it.previous();
-    if ( it.hasPrevious() )
+    it.remove();
+    while ( it.hasPrevious() )
     {
-      it.remove();
+      //search through item z list to find previous item which is present in the scene
+      //(deleted items still exist in the z list so that they can be restored to their correct stacking order,
+      //but since they are not in the scene they should be ignored here)
       it.previous();
-      it.insert( item );
+      if ( it.value() && it.value()->scene() )
+      {
+        break;
+      }
     }
+    it.insert( item );
   }
 }
 
