@@ -401,6 +401,12 @@ class QgsComposerMap : QgsComposerItem
     /** Sets the margin size (percentage) used when the map is in atlas mode */
     void setAtlasMargin( double margin );
 
+    /** Sets whether updates to the composer map are enabled. */
+    void setUpdatesEnabled( bool enabled );
+
+    /** Returns whether updates to the composer map are enabled. */
+    bool updatesEnabled() const;
+
   signals:
     void extentChanged();
 

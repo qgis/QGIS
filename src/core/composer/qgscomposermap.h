@@ -439,6 +439,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets the margin size (percentage) used when the map is in atlas mode */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
+    /** Sets whether updates to the composer map are enabled. */
+    void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
+
+    /** Returns whether updates to the composer map are enabled. */
+    bool updatesEnabled() const { return mUpdatesEnabled; }
+
   signals:
     void extentChanged();
 
@@ -517,6 +523,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool mOverviewInverted;
     /** Centering mode for overview */
     bool mOverviewCentered;
+
+    /** Whether updates to the map are enabled */
+    bool mUpdatesEnabled;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
@@ -659,3 +668,4 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 };
 
 #endif
+
