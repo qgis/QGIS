@@ -36,6 +36,7 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
+from processing.parameters.ParameterTableField import ParameterTableField
 from processing.tools import dataobjects
 
 from processing.admintools import postgis_utils
@@ -52,6 +53,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
     STRING_TYPE = 'STRING_TYPE'
+    PRIMARY_KEY = 'PRIMARY_KEY'
 
     STRING_FIELD_TYPES = ['varchar', 'text']
 
@@ -65,6 +67,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         stringType = self.getParameterValue(self.STRING_TYPE)
+        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
@@ -94,7 +97,10 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
-        uri.setDataSource(schema, table, geomColumn, '')
+        if primaryKeyField:
+            uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
+        else:
+            uri.setDataSource(schema, table, geomColumn, '')
 
         options = {}
         if overwrite:
@@ -141,6 +147,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)'))
         self.addParameter(ParameterString(self.TABLENAME, 'Table to import to'
                           ))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY, 'Primary key field',
+                          self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN, 'Geometry column', 'the_geom'
                           ))
         self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite', True))
@@ -150,3 +158,4 @@ class ImportIntoPostGIS(GeoAlgorithm):
                           'Convert field names to lowercase', False))
         self.addParameter(ParameterSelection(self.STRING_TYPE, 'Field type for strings',
                           self.STRING_FIELD_TYPES))
+
