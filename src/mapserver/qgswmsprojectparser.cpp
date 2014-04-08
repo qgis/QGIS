@@ -1638,6 +1638,11 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
   }
 }
 
+int QgsWMSProjectParser::nLayers() const
+{
+  return mProjectParser.numberOfLayers();
+}
+
 QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) const
 {
   QDomElement composerElem;

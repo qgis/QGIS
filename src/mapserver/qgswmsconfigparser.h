@@ -105,6 +105,9 @@ class QgsWMSConfigParser
     virtual void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) = 0;
 
     virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
+
+    virtual int nLayers() const = 0;
+
 #if 0
     /**List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
     QMap<QString, QDomDocument*> mExternalGMLDatasets;

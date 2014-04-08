@@ -702,6 +702,20 @@ QList< QPair< QString, QgsLayerCoordinateTransform > > QgsSLDConfigParser::layer
   return QList< QPair< QString, QgsLayerCoordinateTransform > >();
 }
 
+int QgsSLDConfigParser::nLayers() const
+{
+  if ( mXMLDoc )
+  {
+    QDomNode sldNode = mXMLDoc->documentElement();
+    if ( !sldNode.isNull() )
+    {
+      QDomNodeList layerNodeList = sldNode.toElement().elementsByTagName( "UserLayer" );
+      return layerNodeList.size();
+    }
+  }
+  return 0;
+}
+
 QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& layerName ) const
 {
   QList<QDomElement> resultList;

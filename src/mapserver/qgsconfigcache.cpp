@@ -101,6 +101,12 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
     p = new QgsWMSProjectParser( doc, filePath );
   }
 
+  int numberOfLayers = p->nLayers();
+  if ( numberOfLayers > 100 )
+  {
+    mWMSConfigCache.setMaxCost( numberOfLayers );
+  }
+
   mWMSConfigCache.insert( filePath, p );
   mFileSystemWatcher.addPath( filePath );
   return p;

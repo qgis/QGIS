@@ -97,6 +97,8 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
     /**Draw text annotation items from the QGIS projectfile*/
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
+    int nLayers() const;
+
   private:
     QgsServerProjectParser mProjectParser;
 

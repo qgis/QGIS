@@ -114,6 +114,8 @@ class QgsSLDConfigParser: public QgsWMSConfigParser
 
     QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 
+    int nLayers() const;
+
   private:
 
     /**SLD as dom document*/
