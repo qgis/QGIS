@@ -81,6 +81,7 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( "style_border", "solid" );
   properties.insert( "color_border", "black" );
   properties.insert( "width_border", "0.3" );
+  properties.insert( "joinstyle", "miter" );
   mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 
   mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
