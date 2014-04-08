@@ -3112,16 +3112,33 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat )
 
   emit atlasPreviewFeatureChanged();
 
-  //check if composition has atlas preview
+  //check if composition atlas settings match
   QgsAtlasComposition& atlas = mComposition->atlasComposition();
-  if ( ! atlas.enabled() || !( mComposition->atlasMode() == QgsComposition::PreviewAtlas ) || atlas.coverageLayer() != layer )
+  if ( ! atlas.enabled() || atlas.coverageLayer() != layer )
   {
-    //either atlas preview isn't enabled, or layer doesn't match
+    //either atlas isn't enabled, or layer doesn't match
     return;
   }
 
+  if ( mComposition->atlasMode() != QgsComposition::PreviewAtlas )
+  {
+    mComposition->setAtlasMode( QgsComposition::PreviewAtlas );
+    //update gui controls
+    mActionAtlasPreview->blockSignals( true );
+    mActionAtlasPreview->setChecked( true );
+    mActionAtlasPreview->blockSignals( false );
+    mActionAtlasFirst->setEnabled( true );
+    mActionAtlasLast->setEnabled( true );
+    mActionAtlasNext->setEnabled( true );
+    mActionAtlasPrev->setEnabled( true );
+  }
+
+  //bring composer window to foreground
+  activate();
+
   //set current preview feature id
   atlas.prepareForFeature( feat );
+  emit( atlasPreviewFeatureChanged() );
 }
 
 void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )

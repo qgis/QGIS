@@ -350,36 +350,34 @@ int QgsAtlasComposition::numFeatures() const
 
 void QgsAtlasComposition::nextFeature()
 {
-  mCurrentFeatureNo++;
-  if ( mCurrentFeatureNo >= mFeatureIds.size() )
+  int newFeatureNo = mCurrentFeatureNo + 1;
+  if ( newFeatureNo >= mFeatureIds.size() )
   {
-    mCurrentFeatureNo = mFeatureIds.size() - 1;
+    newFeatureNo = mFeatureIds.size() - 1;
   }
 
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( newFeatureNo );
 }
 
 void QgsAtlasComposition::prevFeature()
 {
-  mCurrentFeatureNo--;
-  if ( mCurrentFeatureNo < 0 )
+  int newFeatureNo = mCurrentFeatureNo - 1;
+  if ( newFeatureNo < 0 )
   {
-    mCurrentFeatureNo = 0;
+    newFeatureNo = 0;
   }
 
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( newFeatureNo );
 }
 
 void QgsAtlasComposition::firstFeature()
 {
-  mCurrentFeatureNo = 0;
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( 0 );
 }
 
 void QgsAtlasComposition::lastFeature()
 {
-  mCurrentFeatureNo = mFeatureIds.size() - 1;
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( mFeatureIds.size() - 1 );
 }
 
 void QgsAtlasComposition::prepareForFeature( QgsFeature * feat )
@@ -400,6 +398,8 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
     emit statusMsgChanged( tr( "No matching atlas features" ) );
     return;
   }
+
+  mCurrentFeatureNo = featureI;
 
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
