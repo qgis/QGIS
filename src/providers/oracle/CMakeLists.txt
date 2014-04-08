@@ -9,6 +9,7 @@ SET(ORACLE_SRCS
   qgsoracledataitems.cpp
   qgsoraclesourceselect.cpp
   qgsoraclenewconnection.cpp
+  qgsoracletablecache.cpp
   qgsoracletablemodel.cpp
   qgsoraclecolumntypethread.cpp
   qgsoraclefeatureiterator.cpp
@@ -20,6 +21,7 @@ SET(ORACLE_MOC_HDRS
   qgsoracledataitems.h
   qgsoraclesourceselect.h
   qgsoraclenewconnection.h
+  qgsoracletablecache.h
   qgsoracletablemodel.h
   qgsoraclecolumntypethread.h
 )
