@@ -324,7 +324,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool loadFields();
 
     /** convert a QgsField to work with PG */
-    static bool convertField( QgsField &field );
+    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = 0 );
 
     /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
