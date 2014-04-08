@@ -7391,12 +7391,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2163"/>
         <source>Add from Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wczytaj definicję warstwy ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2168"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zapisz definicję warstwy ...</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -8794,7 +8794,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Python warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostrzeżenie Pythona</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -37978,7 +37978,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="901"/>
         <source>&amp;Group Selected</source>
-        <translation>Wybrana &amp;grupa</translation>
+        <translation>&amp;Grupuj wybrane</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="909"/>
@@ -38172,7 +38172,7 @@ nie będą wyświetlane</translation>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="438"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="454"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz definicję warstwy ...</translation>
     </message>
     <message>
         <source>Save Selection As...</source>
@@ -39054,7 +39054,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="29"/>
         <source>Delete ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń pierścień</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="69"/>
@@ -41468,7 +41468,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="261"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Zapisz warstwę jako...</translation>
+        <translation>Zapisz warstwę jako...</translation>
     </message>
     <message>
         <source>Save As</source>
@@ -41540,7 +41540,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="270"/>
         <source>File encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodowanie pliku</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -44153,7 +44153,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1688"/>
@@ -60957,7 +60957,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="134"/>
         <source>Save only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz tylko wybrane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="160"/>
@@ -62052,7 +62052,7 @@ Odpowiedź:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1876"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1880"/>
         <source>WCS</source>
-        <translation type="unfinished">WCS</translation>
+        <translation>WCS</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1747"/>
@@ -62255,7 +62255,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="973"/>
         <source>Service Exception</source>
-        <translation type="unfinished">Wyjątek usługi</translation>
+        <translation>Wyjątek usługi</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="982"/>
@@ -62507,7 +62507,7 @@ Response was:
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1901"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1933"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1926"/>
@@ -62535,7 +62535,7 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3237"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3241"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3197"/>
@@ -63114,7 +63114,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1893"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1894"/>
@@ -63549,7 +63549,7 @@ Przyczyna: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3542"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3551"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3419"/>
@@ -65999,13 +65999,13 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="147"/>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="262"/>
         <source>Millimeter</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="152"/>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="267"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="165"/>
