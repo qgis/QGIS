@@ -21,7 +21,6 @@ SET(ORACLE_MOC_HDRS
   qgsoracledataitems.h
   qgsoraclesourceselect.h
   qgsoraclenewconnection.h
-  qgsoracletablecache.h
   qgsoracletablemodel.h
   qgsoraclecolumntypethread.h
 )
