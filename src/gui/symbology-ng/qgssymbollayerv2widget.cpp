@@ -109,10 +109,16 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mDashPatternUnitComboBox->blockSignals( false );
 
   // set values
+  spinWidth->blockSignals( true );
   spinWidth->setValue( mLayer->width() );
+  spinWidth->blockSignals( false );
+  btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
   btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->blockSignals( false );
+  spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
+  spinOffset->blockSignals( false );
   cboPenStyle->blockSignals( true );
   cboJoinStyle->blockSignals( true );
   cboCapStyle->blockSignals( true );
@@ -336,14 +342,26 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
       break;
     }
   }
+  btnChangeColorBorder->blockSignals( true );
   btnChangeColorBorder->setColor( mLayer->borderColor() );
   btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColorBorder->blockSignals( false );
+  btnChangeColorFill->blockSignals( true );
   btnChangeColorFill->setColor( mLayer->color() );
   btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColorFill->blockSignals( false );
+  spinSize->blockSignals( true );
   spinSize->setValue( mLayer->size() );
+  spinSize->blockSignals( false );
+  spinAngle->blockSignals( true );
   spinAngle->setValue( mLayer->angle() );
+  spinAngle->blockSignals( false );
+  mOutlineStyleComboBox->blockSignals( true );
   mOutlineStyleComboBox->setPenStyle( mLayer->outlineStyle() );
+  mOutlineStyleComboBox->blockSignals( false );
+  mOutlineWidthSpinBox->blockSignals( true );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
+  mOutlineWidthSpinBox->blockSignals( false );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -552,13 +570,23 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mLayer = static_cast<QgsSimpleFillSymbolLayerV2*>( layer );
 
   // set values
+  btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
   btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->blockSignals( false );
+  cboFillStyle->blockSignals( true );
   cboFillStyle->setBrushStyle( mLayer->brushStyle() );
+  cboFillStyle->blockSignals( false );
+  btnChangeBorderColor->blockSignals( true );
   btnChangeBorderColor->setColor( mLayer->borderColor() );
   btnChangeBorderColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeBorderColor->blockSignals( false );
+  cboBorderStyle->blockSignals( true );
   cboBorderStyle->setPenStyle( mLayer->borderStyle() );
+  cboBorderStyle->blockSignals( false );
+  spinBorderWidth->blockSignals( true );
   spinBorderWidth->setValue( mLayer->borderWidth() );
+  spinBorderWidth->blockSignals( false );
   cboJoinStyle->blockSignals( true );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   cboJoinStyle->blockSignals( false );
@@ -707,10 +735,14 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mLayer = static_cast<QgsGradientFillSymbolLayerV2*>( layer );
 
   // set values
+  btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
   btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->blockSignals( false );
+  btnChangeColor2->blockSignals( true );
   btnChangeColor2->setColor( mLayer->color2() );
   btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor2->blockSignals( false );
 
   if ( mLayer->gradientColorType() == QgsGradientFillSymbolLayerV2::SimpleTwoColor )
   {
@@ -1046,10 +1078,14 @@ void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   mLayer = static_cast<QgsShapeburstFillSymbolLayerV2*>( layer );
 
   // set values
+  btnChangeColor->blockSignals( true );
   btnChangeColor->setColor( mLayer->color() );
   btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor->blockSignals( false );
+  btnChangeColor2->blockSignals( true );
   btnChangeColor2->setColor( mLayer->color2() );
   btnChangeColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnChangeColor2->blockSignals( false );
 
   if ( mLayer->colorType() == QgsShapeburstFillSymbolLayerV2::SimpleTwoColor )
   {
@@ -1293,9 +1329,15 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mLayer = static_cast<QgsMarkerLineSymbolLayerV2*>( layer );
 
   // set values
+  spinInterval->blockSignals( true );
   spinInterval->setValue( mLayer->interval() );
+  spinInterval->blockSignals( false );
+  chkRotateMarker->blockSignals( true );
   chkRotateMarker->setChecked( mLayer->rotateMarker() );
+  chkRotateMarker->blockSignals( false );
+  spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
+  spinOffset->blockSignals( false );
   if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::Interval )
     radInterval->setChecked( true );
   else if ( mLayer->placement() == QgsMarkerLineSymbolLayerV2::Vertex )
@@ -1650,8 +1692,12 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     }
   }
 
+  spinSize->blockSignals( true );
   spinSize->setValue( mLayer->size() );
+  spinSize->blockSignals( false );
+  spinAngle->blockSignals( true );
   spinAngle->setValue( mLayer->angle() );
+  spinAngle->blockSignals( false );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -1915,9 +1961,13 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   if ( mLayer )
   {
     double width = mLayer->patternWidth();
+    mTextureWidthSpinBox->blockSignals( true );
     mTextureWidthSpinBox->setValue( width );
+    mTextureWidthSpinBox->blockSignals( false );
     mSVGLineEdit->setText( mLayer->svgFilePath() );
+    mRotationSpinBox->blockSignals( true );
     mRotationSpinBox->setValue( mLayer->angle() );
+    mRotationSpinBox->blockSignals( false );
     mTextureWidthUnitComboBox->blockSignals( true );
     mTextureWidthUnitComboBox->setCurrentIndex( mLayer->patternWidthUnit() );
     mTextureWidthUnitComboBox->blockSignals( false );
@@ -2163,9 +2213,15 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
   if ( patternLayer )
   {
     mLayer = patternLayer;
+    mAngleSpinBox->blockSignals( true );
     mAngleSpinBox->setValue( mLayer->lineAngle() );
+    mAngleSpinBox->blockSignals( false );
+    mDistanceSpinBox->blockSignals( true );
     mDistanceSpinBox->setValue( mLayer->distance() );
+    mDistanceSpinBox->blockSignals( false );
+    mOffsetSpinBox->blockSignals( true );
     mOffsetSpinBox->setValue( mLayer->offset() );
+    mOffsetSpinBox->blockSignals( false );
 
     //units
     mDistanceUnitComboBox->blockSignals( true );
@@ -2280,10 +2336,18 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* lay
   }
 
   mLayer = static_cast<QgsPointPatternFillSymbolLayer*>( layer );
+  mHorizontalDistanceSpinBox->blockSignals( true );
   mHorizontalDistanceSpinBox->setValue( mLayer->distanceX() );
+  mHorizontalDistanceSpinBox->blockSignals( false );
+  mVerticalDistanceSpinBox->blockSignals( true );
   mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
+  mVerticalDistanceSpinBox->blockSignals( false );
+  mHorizontalDisplacementSpinBox->blockSignals( true );
   mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
+  mHorizontalDisplacementSpinBox->blockSignals( false );
+  mVerticalDisplacementSpinBox->blockSignals( true );
   mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
+  mVerticalDisplacementSpinBox->blockSignals( false );
 
   mHorizontalDistanceUnitComboBox->blockSignals( true );
   mHorizontalDistanceUnitComboBox->setCurrentIndex( mLayer->distanceXUnit() );
@@ -2441,11 +2505,19 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mLayer = static_cast<QgsFontMarkerSymbolLayerV2*>( layer );
 
   // set values
+  cboFont->blockSignals( true );
   cboFont->setCurrentFont( QFont( mLayer->fontFamily() ) );
+  cboFont->blockSignals( false );
+  spinSize->blockSignals( true );
   spinSize->setValue( mLayer->size() );
+  spinSize->blockSignals( false );
+  btnColor->blockSignals( true );
   btnColor->setColor( mLayer->color() );
   btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnColor->blockSignals( false );
+  spinAngle->blockSignals( true );
   spinAngle->setValue( mLayer->angle() );
+  spinAngle->blockSignals( false );
 
   //block
   spinOffsetX->blockSignals( true );
