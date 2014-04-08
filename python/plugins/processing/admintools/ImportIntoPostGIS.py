@@ -51,6 +51,9 @@ class ImportIntoPostGIS(GeoAlgorithm):
     CREATEINDEX = 'CREATEINDEX'
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
+    STRING_TYPE = 'STRING_TYPE'
+
+    STRING_FIELD_TYPES = ['varchar', 'text']
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
@@ -61,6 +64,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
+        stringType = self.getParameterValue(self.STRING_TYPE)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
@@ -97,6 +101,9 @@ class ImportIntoPostGIS(GeoAlgorithm):
             options['overwrite'] = True
         if convertLowerCase:
             options['lowercaseFieldNames'] = True
+        if stringType == 1:
+            options['useTextType'] = True
+
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
         (ret, errMsg) = QgsVectorLayerImport.importLayer(
@@ -141,3 +148,5 @@ class ImportIntoPostGIS(GeoAlgorithm):
                           'Create spatial index', True))
         self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
                           'Convert field names to lowercase', False))
+        self.addParameter(ParameterSelection(self.STRING_TYPE, 'Field type for strings',
+                          self.STRING_FIELD_TYPES))
