@@ -43,6 +43,8 @@ class QgsHighlight;
 class QgsMapCanvas;
 class QDockWidget;
 
+class QwtPlotCurve;
+
 /**
  *@author Gary E.Sherman
  */
@@ -90,6 +92,19 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
 
   private:
     QgsIdentifyResultsWebView *mWebView;
+};
+
+class APP_EXPORT QgsIdentifyPlotCurve
+{
+  public:
+
+    QgsIdentifyPlotCurve() { mPlotCurve = 0; }
+    QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
+                          QwtPlot* plot, const QString &title = QString(), QColor color = QColor() ) ;
+    ~QgsIdentifyPlotCurve();
+
+  private:
+    QwtPlotCurve* mPlotCurve;
 };
 
 class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
@@ -226,6 +241,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
     QDockWidget *mDock;
+
+    QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction
