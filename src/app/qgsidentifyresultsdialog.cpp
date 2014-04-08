@@ -651,7 +651,6 @@ void QgsIdentifyResultsDialog::show()
         // don't show the form dialog instead of the results window
         lstResults->setCurrentItem( featItem );
         featureForm();
-        return;
       }
     }
 
