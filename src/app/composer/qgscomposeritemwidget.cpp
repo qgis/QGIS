@@ -200,6 +200,19 @@ void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   mItem->endCommand();
 }
 
+void QgsComposerItemWidget::on_mFrameJoinStyleCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  if ( !mItem )
+  {
+    return;
+  }
+
+  mItem->beginCommand( tr( "Item frame join style" ) );
+  mItem->setFrameJoinStyle( mFrameJoinStyleCombo->penJoinStyle() );
+  mItem->endCommand();
+}
+
 void QgsComposerItemWidget::on_mFrameGroupBox_toggled( bool state )
 {
   if ( !mItem )
@@ -339,6 +352,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mTransparencySlider->blockSignals( true );
   mTransparencySpnBx->blockSignals( true );
   mFrameColorButton->blockSignals( true );
+  mFrameJoinStyleCombo->blockSignals( true );
   mBackgroundColorButton->blockSignals( true );
   mItemRotationSpinBox->blockSignals( true );
 
@@ -349,6 +363,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
   mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
+  mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
@@ -359,6 +374,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
+  mFrameJoinStyleCombo->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );

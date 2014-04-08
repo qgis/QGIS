@@ -197,6 +197,22 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     virtual void setFrameOutlineWidth( double outlineWidth );
 
+    /** Returns the join style used for drawing the item's frame
+     * @returns Join style for outline frame
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameJoinStyle
+     */
+    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+    /** Sets join style used when drawing the item's frame
+     * @param style Join style for outline frame
+     * @returns nothing
+     * @note introduced in 2.3
+     * @see setFrameEnabled
+     * @see frameJoinStyle
+     */
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
+
     /** Returns the estimated amount the item's frame bleeds outside the item's
      *  actual rectangle. For instance, if the item has a 2mm frame outline, then
      *  1mm of this frame is drawn outside the item's rect. In this case the
@@ -382,6 +398,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool mBackground;
     /**Background color*/
     QColor mBackgroundColor;
+    /**Frame join style*/
+    Qt::PenJoinStyle mFrameJoinStyle;
 
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/

@@ -55,6 +55,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 //    void on_mTransparencySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );
+    void on_mFrameJoinStyleCombo_currentIndexChanged( int index );
     void on_mBackgroundGroupBox_toggled( bool state );
     void on_mItemIdLineEdit_editingFinished();
 
