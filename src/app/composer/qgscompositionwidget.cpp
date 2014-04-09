@@ -139,9 +139,6 @@ void QgsCompositionWidget::createPaperEntries()
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );
   }
-  mPaperSizeComboBox->setCurrentIndex( 2 ); //A4
-  mPaperWidthDoubleSpinBox->setEnabled( false );
-  mPaperHeightDoubleSpinBox->setEnabled( false );
 }
 
 void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QString& text )
@@ -381,6 +378,11 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   {
     //custom
     mPaperSizeComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mPaperWidthDoubleSpinBox->setEnabled( false );
+    mPaperHeightDoubleSpinBox->setEnabled( false );
   }
 }
 
