@@ -95,20 +95,21 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if not geomColumn:
             geomColumn = 'the_geom'
 
+        options = {}
+        if overwrite:
+            options['overwrite'] = True
+        if convertLowerCase:
+            options['lowercaseFieldNames'] = True
+            geomColumn = geomColumn.lower()
+        if stringType == 1:
+            options['useTextType'] = True
+
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
         if primaryKeyField:
             uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
         else:
             uri.setDataSource(schema, table, geomColumn, '')
-
-        options = {}
-        if overwrite:
-            options['overwrite'] = True
-        if convertLowerCase:
-            options['lowercaseFieldNames'] = True
-        if stringType == 1:
-            options['useTextType'] = True
 
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
