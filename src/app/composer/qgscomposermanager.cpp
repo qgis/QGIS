@@ -204,7 +204,7 @@ void QgsComposerManager::on_mAddButton_clicked()
     }
   }
 
-  if ( newComposer && !loadedOK )
+  if ( !loadedOK )
   {
     newComposer->close();
     QgisApp::instance()->deleteComposer( newComposer );
