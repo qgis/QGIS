@@ -9385,7 +9385,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
 void QgisApp::namRequestTimedOut( QNetworkReply *reply )
 {
-  QMessageBox::warning( this, tr( "Network request timed out" ), tr( "The following request timed out %1. If any data was received, it is likely incomplete." ).arg( reply->url().toString() ) );
+  messageBar()->pushMessage( tr( "Network request timeout" ), tr( "The request '%1' timed out. Any data received is likely incomplete." ).arg( reply->url().toString() ), QgsMessageBar::WARNING, messageTimeout() );
 }
 
 void QgisApp::namUpdate()
