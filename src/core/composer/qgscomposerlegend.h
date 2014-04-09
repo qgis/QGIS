@@ -58,7 +58,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitle( const QString& t ) {mTitle = t;}
     QString title() const {return mTitle;}
 
+    /** Returns the alignment of the legend title*/
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
+    /** Sets the alignment of the legend title*/
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
     /** Returns reference to modifiable style */

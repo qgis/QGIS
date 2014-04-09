@@ -154,7 +154,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   // Now we know total width and can draw the title centered
   if ( !mTitle.isEmpty() )
   {
-    size.rwidth() = qMax( titleSize.width() + 2 * mBoxSpace, size.width() );
+    size.rwidth() = qMax( titleSize.width(), size.width() );
     if ( mTitleAlignment == Qt::AlignLeft )
     {
       point.rx() = mBoxSpace;
@@ -165,7 +165,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     }
     else
     {
-      point.rx() = mBoxSpace + size.rwidth();
+      point.rx() = mBoxSpace + size.rwidth() - mBoxSpace;
     }
     point.ry() = mBoxSpace;
     drawTitle( painter, point, mTitleAlignment );
@@ -210,18 +210,16 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
   for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
   {
     // it does not draw the last world if rectangle width is exactly text width
-    qreal width = textWidthMillimeters( styleFont( QgsComposerLegendStyle::Title ), *titlePart ) + 1;
     qreal height = fontAscentMillimeters( styleFont( QgsComposerLegendStyle::Title ) ) + fontDescentMillimeters( styleFont( QgsComposerLegendStyle::Title ) );
 
     double left = halignment == Qt::AlignLeft ?    point.x() :
-                  halignment == Qt::AlignHCenter ? point.x() - width / 2 :
-                  point.x() - width - mBoxSpace;
+                  halignment == Qt::AlignHCenter ? point.x() - rect().width() / 2. :
+                  point.x() - rect().width();
+    QRectF r( left, y, rect().width(), height );
 
-    QRectF rect( left, y, width, height );
+    if ( painter ) drawText( painter, r, *titlePart, styleFont( QgsComposerLegendStyle::Title ), halignment, Qt::AlignVCenter );
 
-    if ( painter ) drawText( painter, rect, *titlePart, styleFont( QgsComposerLegendStyle::Title ), halignment, Qt::AlignVCenter );
-
-    size.rwidth() = qMax( width, size.width() );
+    size.rwidth() = qMax( rect().width(), size.width() );
 
     y += height;
     if ( titlePart != lines.end() )

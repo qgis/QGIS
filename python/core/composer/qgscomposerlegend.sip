@@ -31,6 +31,11 @@ class QgsComposerLegend : QgsComposerItem
     void setTitle( const QString& t );
     QString title() const;
 
+    /** Returns the alignment of the legend title*/
+    Qt::AlignmentFlag titleAlignment() const;
+    /** Sets the alignment of the legend title*/
+    void setTitleAlignment( Qt::AlignmentFlag alignment );
+
     /** Returns reference to modifiable style */
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
     /** Returns style */
