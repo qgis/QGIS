@@ -383,6 +383,7 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   {
     mPaperWidthDoubleSpinBox->setEnabled( false );
     mPaperHeightDoubleSpinBox->setEnabled( false );
+    mPaperUnitsComboBox->setEnabled( false );
   }
 }
 
