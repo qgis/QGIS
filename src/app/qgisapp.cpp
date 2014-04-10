@@ -2135,6 +2135,13 @@ QToolBar *QgisApp::addToolBar( QString name )
   return toolBar;
 }
 
+void QgisApp::addToolBar( QToolBar* toolBar , Qt::ToolBarArea area )
+{
+  QMainWindow::addToolBar( area, toolBar );
+  // add to the Toolbar submenu
+  mToolbarMenu->addAction( toolBar->toggleViewAction() );
+}
+
 QgsLegend *QgisApp::legend()
 {
   Q_ASSERT( mMapLegend );

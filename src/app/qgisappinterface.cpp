@@ -285,6 +285,11 @@ QToolBar* QgisAppInterface::addToolBar( QString name )
   return qgis->addToolBar( name );
 }
 
+void QgisAppInterface::addToolBar( QToolBar *toolbar, Qt::ToolBarArea area )
+{
+  return qgis->addToolBar( toolbar, area );
+}
+
 void QgisAppInterface::openURL( QString url, bool useQgisDocDirectory )
 {
   qgis->openURL( url, useQgisDocDirectory );

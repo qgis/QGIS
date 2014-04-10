@@ -211,6 +211,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
     QToolBar *addToolBar( QString name );
 
+    /** Add a toolbar to the main window. Overloaded from QMainWindow.
+     * After adding the toolbar to the ui (by delegating to the QMainWindow
+     * parent class, it will also add it to the View menu list of toolbars.
+     * @note added in 2.3
+     */
+    void addToolBar( QToolBar* toolBar, Qt::ToolBarArea area = Qt::TopToolBarArea );
+
+
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     void addWindow( QAction *action );
