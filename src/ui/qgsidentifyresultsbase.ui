@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>313</width>
+    <width>317</width>
     <height>409</height>
    </rect>
   </property>
@@ -27,38 +27,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbIdentifyMode">
-       <item>
-        <property name="text">
-         <string>Current Layer</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Top Down</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Top Down - Stop at first</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>-----</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Layer 1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Layer 2</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="cmbIdentifyMode"/>
      </item>
      <item>
       <spacer name="horizontalSpacer_43">
@@ -73,12 +42,8 @@
        </property>
       </spacer>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QToolButton" name="mExpandToolButton_2">
+      <widget class="QToolButton" name="mOpenFormButton">
        <property name="toolTip">
         <string>Expand tree.</string>
        </property>
@@ -94,22 +59,9 @@
      <item>
       <widget class="QCheckBox" name="cbxAutoFeatureForm">
        <property name="text">
-        <string>Auto open feature form, on single feature identified</string>
+        <string>Auto open form</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>

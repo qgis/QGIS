@@ -180,7 +180,11 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void on_cmbIdentifyMode_currentIndexChanged( int index );
+
     void on_mExpandNewToolButton_toggled( bool checked );
+
+    void on_cbxAutoFeatureForm_toggled( bool checked );
 
     void on_mExpandToolButton_clicked( bool checked ) { Q_UNUSED( checked ); expandAll(); }
     void on_mCollapseToolButton_clicked( bool checked ) { Q_UNUSED( checked ); collapseAll(); }

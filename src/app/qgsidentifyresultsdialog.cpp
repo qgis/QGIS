@@ -290,6 +290,15 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
     lstResults->setColumnWidth( 0, width );
   }
 
+  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
+  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
+  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
+  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
+
+  int identifyMode = mySettings.value( "/Map/identifyMode", 0 ).toInt();
+  cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
+  cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
+
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
@@ -303,6 +312,10 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 
   connect( mPrintToolButton, SIGNAL( clicked() ),
            this, SLOT( printCurrentItem() ) );
+
+  connect( mOpenFormButton, SIGNAL( clicked() ),
+           this, SLOT( featureForm() ) );
+
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -1514,6 +1527,18 @@ void QgsIdentifyResultsDialog::printCurrentItem()
   }
 
   wv->webView()->print();
+}
+
+void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index )
+{
+  QSettings settings;
+  settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( index ).toInt() );
+}
+
+void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
+{
+  QSettings settings;
+  settings.setValue( "/Map/identifyAutoFeatureForm", checked );
 }
 
 void QgsIdentifyResultsDialog::on_mExpandNewToolButton_toggled( bool checked )
