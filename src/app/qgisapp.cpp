@@ -9301,6 +9301,8 @@ void QgisApp::namSetup()
   connect( nam, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
            this, SLOT( namProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ) );
 
+  connect( nam, SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( namRequestTimedOut( QNetworkReply* ) ) );
+
 #ifndef QT_NO_OPENSSL
   connect( nam, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
            this, SLOT( namSslErrors( QNetworkReply *, const QList<QSslError> & ) ) );
@@ -9385,6 +9387,12 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   }
 }
 #endif
+
+void QgisApp::namRequestTimedOut( QNetworkReply *reply )
+{
+  QgsMessageLog::logMessage( tr( "The request '%1' timed out. Any data received is likely incomplete." ).arg( reply->url().toString() ), QString::null, QgsMessageLog::WARNING );
+  messageBar()->pushMessage( tr( "Network request timeout" ), tr( "A network request timed out, any data received is likely incomplete." ), QgsMessageBar::WARNING, messageTimeout() );
+}
 
 void QgisApp::namUpdate()
 {
