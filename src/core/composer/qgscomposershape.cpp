@@ -346,3 +346,11 @@ void QgsComposerShape::updateBoundingRect()
     mCurrentRectangle = rectangle;
   }
 }
+
+void QgsComposerShape::setSceneRect( const QRectF& rectangle )
+{
+  // Reimplemented from QgsComposerItem as we need to call updateBoundingRect after the shape's size changes
+  QgsComposerItem::setSceneRect( rectangle );
+  updateBoundingRect();
+  update();
+}

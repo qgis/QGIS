@@ -84,6 +84,11 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     @note this function was added in version 2.3*/
     QRectF boundingRect() const;
 
+    /**Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
+     * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
+    */
+    void setSceneRect( const QRectF& rectangle );
+
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
     virtual void drawFrame( QPainter* p );
