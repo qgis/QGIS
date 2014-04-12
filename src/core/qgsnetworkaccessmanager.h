@@ -24,8 +24,6 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
-class QTimer;
-
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -90,8 +88,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestTimedOut( QNetworkReply * );
 
   private slots:
-    void connectionProgress();
-    void connectionDestroyed( QObject* );
     void abortRequest();
 
   protected:
@@ -101,8 +97,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QList<QNetworkProxyFactory*> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
-
-    QMap<QNetworkReply*, QTimer*> mActiveRequests;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
