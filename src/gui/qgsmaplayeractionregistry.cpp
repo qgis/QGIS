@@ -13,13 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QUuid>
 #include "qgsmaplayeractionregistry.h"
 
 
 QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent ) : QAction( name, parent ),
     mSingleLayer( false ),
     mActionLayer( 0 ),
-    mSpecificLayerType( false )
+    mSpecificLayerType( false ),
+    mUuid( QUuid::createUuid().toString() )
 {
 
 }
@@ -28,7 +30,8 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent ) : QAction(
 QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer ) : QAction( name, parent ),
     mSingleLayer( true ),
     mActionLayer( layer ),
-    mSpecificLayerType( false )
+    mSpecificLayerType( false ),
+    mUuid( QUuid::createUuid().toString() )
 {
 
 }
@@ -38,7 +41,8 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer
     mSingleLayer( false ),
     mActionLayer( 0 ),
     mSpecificLayerType( true ),
-    mLayerType( layerType )
+    mLayerType( layerType ),
+    mUuid( QUuid::createUuid().toString() )
 {
 
 }
@@ -138,6 +142,8 @@ bool QgsMapLayerActionRegistry::removeMapLayerAction( QgsMapLayerAction* action 
 {
   if ( mMapLayerActionList.indexOf( action ) != -1 )
   {
+    emit actionRemoved( action );
+
     mMapLayerActionList.removeAll( action );
 
     //also remove this action from the default layer action map

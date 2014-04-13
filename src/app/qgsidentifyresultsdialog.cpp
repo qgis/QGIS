@@ -459,8 +459,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
       twi->setData( 0, Qt::UserRole, "map_layer_action" );
       twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      twi->setData( 0, Qt::UserRole + 2, action->id() );
       actionItem->addChild( twi );
     }
+    connect( QgsMapLayerActionRegistry::instance(), SIGNAL( actionRemoved( QgsMapLayerAction* ) ), this, SLOT( mapLayerActionRemoved( QgsMapLayerAction* ) ) );
+
   }
 
   highlightFeature( featItem );
@@ -1176,6 +1179,31 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
     close();
   }
 }
+
+void QgsIdentifyResultsDialog::mapLayerActionRemoved( QgsMapLayerAction* action )
+{
+  //map layer action has been removed, so remove corresponding list items
+  removeMapLayerActionItems( lstResults->invisibleRootItem(), action );
+}
+
+void QgsIdentifyResultsDialog::removeMapLayerActionItems( QTreeWidgetItem *item, QgsMapLayerAction* action )
+{
+  //recurses through items and removes any matching map layer action items
+  for ( int i = 0; i < item->childCount(); ++i )
+  {
+    if ( item->child( i )->data( 0, Qt::UserRole + 2 ) == action->id() )
+    {
+      delete mHighlights.take( item->child( i ) );
+      delete item->child( i );
+    }
+    else
+    {
+      //recurse through tree
+      removeMapLayerActionItems( item->child( i ), action );
+    }
+  }
+}
+
 
 void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &val )
 {
