@@ -229,10 +229,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //rotation
-  if ( itemElem.attribute( "itemRotation", "0" ).toDouble() != 0 )
-  {
-    setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
-  }
+  setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
 
   //uuid
   mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
