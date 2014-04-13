@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    MultipleExternalInputPanel.py
+    MultipleFileInputPanel.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -27,13 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
-from processing.gui.MultipleExternalInputDialog import MultipleExternalInputDialog
+from PyQt4 import  QtGui
+from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
 
-class MultipleExternalInputPanel(QtGui.QWidget):
+class MultipleFileInputPanel(QtGui.QWidget):
 
     def __init__(self, parent = None):
-        super(MultipleExternalInputPanel, self).__init__(parent)
+        super(MultipleFileInputPanel, self).__init__(parent)
         self.selectedoptions = []
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -54,21 +54,7 @@ class MultipleExternalInputPanel(QtGui.QWidget):
         self.label.setText(str(len(self.selectedoptions)) + " elements selected")
 
     def showSelectionDialog(self):
-        #=======================================================================
-        # #If there is a datatype, we use it to create the list of options
-        # if self.datatype is not None:
-        #    if self.datatype == ParameterMultipleInput.TYPE_RASTER:
-        #        options = QGisLayers.getRasterLayers()
-        #    elif self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-        #        options = QGisLayers.getVectorLayers()
-        #    else:
-        #        options = QGisLayers.getVectorLayers(self.datatype)
-        #    opts = []
-        #    for opt in options:
-        #        opts.append(opt.name())
-        #    self.options = opts
-        #=======================================================================
-        dlg = MultipleExternalInputDialog(self.selectedoptions)
+        dlg = MultipleFileInputDialog(self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions != None:
             self.selectedoptions = dlg.selectedoptions

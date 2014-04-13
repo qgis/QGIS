@@ -146,7 +146,7 @@ def get_inverted_parameters():
     inverted_parameters_clone['ParameterType_RAM'] = 'ParameterNumber'
     inverted_parameters_clone['ParameterType_InputProcessXML'] = 'ParameterFile'
     inverted_parameters_clone['ParameterType_OutputProcessXML'] = 'ParameterFile'
-    inverted_parameters_clone['ParameterType_InputFilenameList'] =  'ParameterMultipleExternalInput' # 'ParameterString'
+    inverted_parameters_clone['ParameterType_InputFilenameList'] =  'ParameterMultipleInput' # 'ParameterString'
 
     return inverted_parameters_clone
 

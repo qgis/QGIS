@@ -30,7 +30,8 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui
 import os
 
-class MultipleExternalInputDialog(QtGui.QDialog):
+class MultipleFileInputDialog(QtGui.QDialog):
+    
     def __init__(self, selectedoptions):
         self.selectedoptions = selectedoptions
         self.options=selectedoptions
@@ -68,7 +69,6 @@ class MultipleExternalInputDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def setTableContent(self):
-        # "self.options :", ['/temp/confmat1-1.csv', '/temp/confmat2-1.csv']
         self.table.setRowCount(len(self.options))
         for i in range(len(self.options)):
             item = QtGui.QLabel()
@@ -78,7 +78,6 @@ class MultipleExternalInputDialog(QtGui.QDialog):
     def okPressed(self):
         self.selectedoptions = []
         self.selectedoptions = self.options
-        # "self.selectedoptions :", ['/temp/confmat1-1.csv', '/temp/confmat2-1.csv']
         self.close()
 
     def cancelPressed(self):

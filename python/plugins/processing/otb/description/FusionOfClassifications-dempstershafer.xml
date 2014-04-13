@@ -25,10 +25,11 @@
     <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_InputFilenameList">ParameterMultipleExternalInput</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_InputFilenameList">ParameterMultipleInput</parameter_type>
     <key>method.dempstershafer.cmfl</key>
     <name>Confusion Matrices</name>
     <description>A list of confusion matrix files (*.CSV format) to define the masses of belief and the class labels. Each file should be formatted the following way: the first line, beginning with a '#' symbol, should be a list of the class labels present in the corresponding input classification image, organized in the same order as the confusion matrix rows/columns.</description>
+    <datatype />
     <optional>False</optional>
   </parameter>
   <parameter>

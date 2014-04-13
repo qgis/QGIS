@@ -54,7 +54,6 @@ from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterMultipleExternalInput import ParameterMultipleExternalInput
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
@@ -194,17 +193,14 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 return param.setValue(None)
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = dataobjects.getVectorLayers()
-            else:
-                options = dataobjects.getRasterLayers()
-            value = []
-            for index in widget.selectedoptions:
-                value.append(options[index])
-            return param.setValue(value)
-        elif isinstance(param, ParameterMultipleExternalInput):
-            value = widget.selectedoptions
-            return param.setValue(value)
+            if param.datatype == ParameterMultipleInput.TYPE_FILE:
+                return param.setValue(widget.selectedoptions)
+            else:                    
+                if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                    options = dataobjects.getVectorLayers()                
+                else:
+                    options = dataobjects.getRasterLayers()                
+                return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):
             return param.setValue(widget.getValue())
