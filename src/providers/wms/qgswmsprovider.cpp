@@ -509,7 +509,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
     setQueryItem( url, "LAYERS", layers );
     setQueryItem( url, "STYLES", styles );
-    setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
+    if( mSettings.mImageMimeType.contains( "+" ) )
+    {
+      QString format( mSettings.mImageMimeType );
+      format.replace( "+", "%2b" );
+      url.addEncodedQueryItem( "FORMAT", format.toUtf8() );
+    }
+    else
+      setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
 
     if ( mDpi != -1 )
     {
@@ -2895,6 +2902,14 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
   {
     QgsWmsSupportedFormat t1 = { "image/tiff", "TIFF" };
     formats << t1;
+  }
+
+  if ( supportedFormats.contains( "svg" ) )
+  {
+    QgsWmsSupportedFormat s1 = { "image/svg", "SVG" };
+    QgsWmsSupportedFormat s2 = { "image/svgz", "SVG" };
+    QgsWmsSupportedFormat s3 = { "image/svg+xml", "SVG" };
+    formats << s1 << s2 << s3;
   }
 
   return formats;
