@@ -605,6 +605,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //write general properties
   composerLegendElem.setAttribute( "title", mTitle );
+  composerLegendElem.setAttribute( "titleAlignment", QString::number(( int )mTitleAlignment ) );
   composerLegendElem.setAttribute( "columnCount", QString::number( mColumnCount ) );
   composerLegendElem.setAttribute( "splitLayer", QString::number( mSplitLayer ) );
   composerLegendElem.setAttribute( "equalColumnWidth", QString::number( mEqualColumnWidth ) );
@@ -648,6 +649,10 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   //read general properties
   mTitle = itemElem.attribute( "title" );
+  if ( !itemElem.attribute( "titleAlignment" ).isEmpty() )
+  {
+    mTitleAlignment = ( Qt::AlignmentFlag )itemElem.attribute( "titleAlignment" ).toInt();
+  }
   mColumnCount = itemElem.attribute( "columnCount", "1" ).toInt();
   if ( mColumnCount < 1 ) mColumnCount = 1;
   mSplitLayer = itemElem.attribute( "splitLayer", "0" ).toInt() == 1;
