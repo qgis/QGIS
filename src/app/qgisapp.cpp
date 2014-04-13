@@ -9118,7 +9118,10 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
 
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
   {
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
+    QString smalltext = tr( "This project file was saved by an older version of QGIS."
+                        " When saving this project file, QGIS will update it to the latest version, "
+                        "possibly rendering it useless for older versions of QGIS.");
+
     QString text =  tr( "<p>This project file was saved by an older version of QGIS."
                         " When saving this project file, QGIS will update it to the latest version, "
                         "possibly rendering it useless for older versions of QGIS."
@@ -9151,9 +9154,8 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
     );
     box.exec();
 #else
-    QMessageBox::warning( NULL, title, text );
+    messageBar()->pushMessage( title, smalltext);
 #endif
-    QApplication::restoreOverrideCursor();
   }
   return;
 }
