@@ -1225,7 +1225,7 @@ void QgisApp::showPythonDialog()
   {
     QString className, text;
     mPythonUtils->getError( className, text );
-    QMessageBox::critical( this, tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text );
+    messageBar()->pushMessage( tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text, QgsMessageBar::WARNING);
   }
 #ifdef Q_WS_MAC
   else
