@@ -47,6 +47,7 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
 
   setValuesForGuiElements();
   connect( mItem, SIGNAL( sizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
+  connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
   connect( mTransparencySpnBx, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
@@ -322,14 +323,12 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
   mHeightLineEdit->blockSignals( false );
 }
 
-void QgsComposerItemWidget::setValuesForGuiElements()
+void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
 {
   if ( !mItem )
   {
     return;
   }
-
-  setValuesForGuiPositionElements();
 
   mOutlineWidthSpinBox->blockSignals( true );
   mFrameGroupBox->blockSignals( true );
@@ -343,11 +342,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemRotationSpinBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mFrameColorButton->setColor( mItem->pen().color() );
-  mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
-  mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
@@ -367,6 +362,22 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mTransparencySlider->blockSignals( false );
   mTransparencySpnBx->blockSignals( false );
   mItemRotationSpinBox->blockSignals( false );
+}
+
+void QgsComposerItemWidget::setValuesForGuiElements()
+{
+  if ( !mItem )
+  {
+    return;
+  }
+
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
+  mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
+  setValuesForGuiPositionElements();
+  setValuesForGuiNonPositionElements();
 }
 
 void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
