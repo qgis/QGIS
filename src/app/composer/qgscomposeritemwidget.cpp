@@ -401,7 +401,9 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   Q_UNUSED( index );
   if ( mItem )
   {
+    mItem->beginCommand( tr( "Item blend mode changed" ) );
     mItem->setBlendMode( mBlendModeCombo->blendMode() );
+    mItem->endCommand();
   }
 }
 
@@ -409,7 +411,9 @@ void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
 {
   if ( mItem )
   {
+    mItem->beginCommand( tr( "Item transparency changed" ), QgsComposerMergeCommand::ItemTransparency );
     mItem->setTransparency( value );
+    mItem->endCommand();
   }
 }
 

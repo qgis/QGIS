@@ -773,12 +773,18 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
   QgsSymbolV2SelectorDialog d( mComposerMap->overviewFrameMapSymbol(), QgsStyleV2::defaultStyle(), 0 );
 
   //QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
   if ( d.exec() == QDialog::Accepted )
   {
     updateOverviewSymbolMarker();
+    mComposerMap->endCommand();
+  }
+  else
+  {
+    mComposerMap->cancelCommand();
   }
 }
 
@@ -892,10 +898,16 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
+  mComposerMap->beginCommand( tr( "Grid line style changed" ) );
   QgsSymbolV2SelectorDialog d( mComposerMap->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
   if ( d.exec() == QDialog::Accepted )
   {
     updateLineSymbolMarker();
+    mComposerMap->endCommand();
+  }
+  else
+  {
+    mComposerMap->cancelCommand();
   }
 
   mComposerMap->update();
