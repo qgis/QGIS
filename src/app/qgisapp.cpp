@@ -452,6 +452,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
+    , mComposerManager( 0 )
     , mpGpsWidget( 0 )
 {
   if ( smInstance )
@@ -776,6 +777,7 @@ QgisApp::QgisApp( )
     , mInternalClipboard( 0 )
     , mpMaptip( 0 )
     , mPythonUtils( 0 )
+    , mComposerManager( 0 )
     , mpGpsWidget( 0 )
 {
   smInstance = this;
@@ -844,6 +846,8 @@ QgisApp::~QgisApp()
   delete mpGpsWidget;
 
   delete mOverviewMapCursor;
+
+  delete mComposerManager;
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -3919,11 +3923,20 @@ void QgisApp::newPrintComposer()
 
 void QgisApp::showComposerManager()
 {
-  QgsComposerManager* m = new QgsComposerManager( this, Qt::Window );
-  connect( m, SIGNAL( finished( int ) ), m, SLOT( deleteLater() ) );
-  m->show();
-  m->raise();
-  m->activateWindow();
+  if ( !mComposerManager )
+  {
+    mComposerManager = new QgsComposerManager( this, Qt::Window );
+    connect( mComposerManager, SIGNAL( finished( int ) ), this, SLOT( deleteComposerManager() ) );
+  }
+  mComposerManager->show();
+  mComposerManager->raise();
+  mComposerManager->activateWindow();
+}
+
+void QgisApp::deleteComposerManager()
+{
+  delete mComposerManager;
+  mComposerManager = 0;
 }
 
 void QgisApp::saveMapAsImage()

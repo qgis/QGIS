@@ -101,6 +101,8 @@ QgsComposerManager::~QgsComposerManager()
 
 void QgsComposerManager::refreshComposers()
 {
+  QString selName = mComposerListWidget->currentItem() ? mComposerListWidget->currentItem()->text() : "";
+
   mItemComposerMap.clear();
   mComposerListWidget->clear();
 
@@ -113,6 +115,16 @@ void QgsComposerManager::refreshComposers()
     mItemComposerMap.insert( item, *it );
   }
   mComposerListWidget->sortItems();
+
+  // Restore selection
+  if ( !selName.isEmpty() )
+  {
+    QList<QListWidgetItem*> items = mComposerListWidget->findItems( selName, Qt::MatchExactly );
+    if ( !items.isEmpty() )
+    {
+      mComposerListWidget->setCurrentItem( items.first() );
+    }
+  }
 }
 
 QMap<QString, QString> QgsComposerManager::defaultTemplates( bool fromUser ) const
@@ -299,7 +311,6 @@ void QgsComposerManager::show_clicked()
       {
         // extra activation steps for Windows
         bool shown = c->isVisible();
-        hide();
 
         c->activate();
 
@@ -344,7 +355,6 @@ void QgsComposerManager::show_clicked()
     c->activate();
   }
 #endif //0
-  close();
 }
 
 void QgsComposerManager::duplicate_clicked()
@@ -388,11 +398,7 @@ void QgsComposerManager::duplicate_clicked()
   if ( newComposer )
   {
     // extra activation steps for Windows
-    hide();
     newComposer->activate();
-
-    // no need to add new composer to list widget, if just closing this->exec();
-    close();
   }
   else
   {
