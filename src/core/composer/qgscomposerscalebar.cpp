@@ -26,6 +26,7 @@
 #include "qgsticksscalebarstyle.h"
 #include "qgsrectangle.h"
 #include "qgsproject.h"
+#include "qgssymbollayerv2utils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
@@ -42,6 +43,8 @@ QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
     , mUnits( MapUnits )
+    , mLineJoinStyle( Qt::MiterJoin )
+    , mLineCapStyle( Qt::SquareCap )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -228,6 +231,32 @@ void QgsComposerScaleBar::setUnits( ScaleBarUnits u )
   emit itemChanged();
 }
 
+void QgsComposerScaleBar::setLineJoinStyle( Qt::PenJoinStyle style )
+{
+  if ( mLineJoinStyle == style )
+  {
+    //no change
+    return;
+  }
+  mLineJoinStyle = style;
+  mPen.setJoinStyle( mLineJoinStyle );
+  update();
+  emit itemChanged();
+}
+
+void QgsComposerScaleBar::setLineCapStyle( Qt::PenCapStyle style )
+{
+  if ( mLineCapStyle == style )
+  {
+    //no change
+    return;
+  }
+  mLineCapStyle = style;
+  mPen.setCapStyle( mLineCapStyle );
+  update();
+  emit itemChanged();
+}
+
 void QgsComposerScaleBar::applyDefaultSettings()
 {
   mNumSegments = 2;
@@ -242,7 +271,8 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mHeight = 3;
 
   mPen = QPen( QColor( 0, 0, 0 ) );
-  mPen.setJoinStyle( Qt::MiterJoin );
+  mPen.setJoinStyle( mLineJoinStyle );
+  mPen.setCapStyle( mLineCapStyle );
   mPen.setWidthF( 1.0 );
 
   mBrush.setColor( QColor( 0, 0, 0 ) );
@@ -487,6 +517,8 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
   composerScaleBarElem.setAttribute( "units", mUnits );
+  composerScaleBarElem.setAttribute( "lineJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mLineJoinStyle ) );
+  composerScaleBarElem.setAttribute( "lineCapStyle", QgsSymbolLayerV2Utils::encodePenCapStyle( mLineCapStyle ) );
 
   //style
   if ( mStyle )
@@ -529,6 +561,10 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );
+  mLineJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
+  mPen.setJoinStyle( mLineJoinStyle );
+  mLineCapStyle = QgsSymbolLayerV2Utils::decodePenCapStyle( itemElem.attribute( "lineCapStyle", "square" ) );
+  mPen.setCapStyle( mLineCapStyle );
   QString fontString = itemElem.attribute( "font", "" );
   if ( !fontString.isEmpty() )
   {
@@ -593,5 +629,4 @@ void QgsComposerScaleBar::correctXPositionAlignment( double width, double widthA
     move( -( widthAfter - width ), 0 );
   }
 }
-
 

@@ -50,6 +50,8 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     void on_mBoxSizeSpinBox_valueChanged( double d );
     void on_mAlignmentComboBox_currentIndexChanged( int index );
     void on_mUnitsComboBox_currentIndexChanged( int index );
+    void on_mLineJoinStyleCombo_currentIndexChanged( int index );
+    void on_mLineCapStyleCombo_currentIndexChanged( int index );
 
   private slots:
     void setGuiElements();

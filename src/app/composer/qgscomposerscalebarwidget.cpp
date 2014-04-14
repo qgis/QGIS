@@ -169,6 +169,8 @@ void QgsComposerScaleBarWidget::setGuiElements()
   mLabelBarSpaceSpinBox->setValue( mComposerScaleBar->labelBarSpace() );
   mBoxSizeSpinBox->setValue( mComposerScaleBar->boxContentSpace() );
   mUnitLabelLineEdit->setText( mComposerScaleBar->unitLabeling() );
+  mLineJoinStyleCombo->setPenJoinStyle( mComposerScaleBar->lineJoinStyle() );
+  mLineCapStyleCombo->setPenCapStyle( mComposerScaleBar->lineCapStyle() );
 
   //map combo box
   if ( mComposerScaleBar->composerMap() )
@@ -462,16 +464,29 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& styl
     mLineWidthSpinBox->setEnabled( false );
     mColorPushButton->setEnabled( false );
     mStrokeColorPushButton->setEnabled( false );
+    mLineJoinStyleCombo->setEnabled( false );
+    mLineCapStyleCombo->setEnabled( false );
   }
   else
   {
-    //Enable all controls
+    //Enable controls
     mGroupBoxUnits->setEnabled( true );
     mGroupBoxSegments->setEnabled( true );
     mLabelBarSpaceSpinBox->setEnabled( true );
     mLineWidthSpinBox->setEnabled( true );
     mColorPushButton->setEnabled( true );
     mStrokeColorPushButton->setEnabled( true );
+    if ( style == "Single Box" || style == "Double Box" )
+    {
+      mLineJoinStyleCombo->setEnabled( true );
+      mLineCapStyleCombo->setEnabled( false );
+    }
+    else
+    {
+      mLineJoinStyleCombo->setEnabled( false );
+      mLineCapStyleCombo->setEnabled( true );
+    }
+
   }
 }
 
@@ -583,6 +598,8 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mBoxSizeSpinBox->blockSignals( block );
   mAlignmentComboBox->blockSignals( block );
   mUnitsComboBox->blockSignals( block );
+  mLineJoinStyleCombo->blockSignals( block );
+  mLineCapStyleCombo->blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()
@@ -599,4 +616,30 @@ void QgsComposerScaleBarWidget::disconnectUpdateSignal()
   {
     QObject::disconnect( mComposerScaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
   }
+}
+
+void QgsComposerScaleBarWidget::on_mLineJoinStyleCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar line join style" ) );
+  mComposerScaleBar->setLineJoinStyle( mLineJoinStyleCombo->penJoinStyle() );
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mLineCapStyleCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar line cap style" ) );
+  mComposerScaleBar->setLineCapStyle( mLineCapStyleCombo->penCapStyle() );
+  mComposerScaleBar->endCommand();
 }

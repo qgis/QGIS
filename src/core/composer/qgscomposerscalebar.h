@@ -115,6 +115,34 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**@note: this method was added in version 1.9*/
     void setUnits( ScaleBarUnits u );
 
+    /** Returns the join style used for drawing lines in the scalebar
+     * @returns Join style for lines
+     * @note introduced in 2.3
+     * @see setLineJoinStyle
+     */
+    Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+    /** Sets join style used when drawing the lines in the scalebar
+     * @param style Join style for lines
+     * @returns nothing
+     * @note introduced in 2.3
+     * @see lineJoinStyle
+     */
+    void setLineJoinStyle( Qt::PenJoinStyle style );
+
+    /** Returns the cap style used for drawing lines in the scalebar
+     * @returns Cap style for lines
+     * @note introduced in 2.3
+     * @see setLineCapStyle
+     */
+    Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+    /** Sets cap style used when drawing the lines in the scalebar
+     * @param style Cap style for lines
+     * @returns nothing
+     * @note introduced in 2.3
+     * @see lineCapStyle
+     */
+    void setLineCapStyle( Qt::PenCapStyle style );
+
     /**Apply default settings*/
     void applyDefaultSettings();
     /**Apply default size (scale bar 1/5 of map item width)
@@ -202,6 +230,9 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     Alignment mAlignment;
 
     ScaleBarUnits mUnits;
+
+    Qt::PenJoinStyle mLineJoinStyle;
+    Qt::PenCapStyle mLineCapStyle;
 
     /**Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
     void refreshSegmentMillimeters();
