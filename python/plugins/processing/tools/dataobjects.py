@@ -66,7 +66,7 @@ def getSupportedOutputTableExtensions():
 
 def getRasterLayers():
     layers = QgsMapLayerRegistry.instance().mapLayers().values()
-    raster = list()
+    raster = []
 
     for layer in layers:
         if layer.type() == layer.RasterLayer:

@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.ProcessingResults import ProcessingResults
@@ -86,8 +86,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.buttonBox.addButton(self.deleteRowButton,
                                  QtGui.QDialogButtonBox.ActionRole)
 
+        nOutputs = self.alg.getVisibleOutputsCount() + 1
+        if nOutputs == 1: nOutputs = 0
         self.table.setColumnCount(self.alg.getVisibleParametersCount()
-                                  + self.alg.getVisibleOutputsCount() + 1)
+                                  + nOutputs)
         self.setTableContent()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
@@ -146,8 +148,9 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                         QtGui.QTableWidgetItem(out.description))
                 i += 1
 
-        self.table.setColumnWidth(i, 200)
-        self.table.setHorizontalHeaderItem(i,
+        if self.alg.getVisibleOutputsCount():
+            self.table.setColumnWidth(i, 200)
+            self.table.setHorizontalHeaderItem(i,
                 QtGui.QTableWidgetItem('Load in QGIS'))
 
         for i in range(3):
@@ -314,21 +317,26 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table.setRowHeight(self.table.rowCount() - 1, 22)
         i = 0
         for param in self.alg.parameters:
+            if param.hidden:
+                continue
             self.table.setCellWidget(self.table.rowCount() - 1, i,
                                      self.getWidgetFromParameter(param,
                                      self.table.rowCount() - 1, i))
             i += 1
         for out in self.alg.outputs:
+            if out.hidden:
+                continue
             self.table.setCellWidget(self.table.rowCount() - 1, i,
                                      BatchOutputSelectionPanel(out, self.alg,
                                      self.table.rowCount() - 1, i, self))
             i += 1
 
-        item = QtGui.QComboBox()
-        item.addItem('Yes')
-        item.addItem('No')
-        item.setCurrentIndex(0)
-        self.table.setCellWidget(self.table.rowCount() - 1, i, item)
+        if self.alg.getVisibleOutputsCount():
+            item = QtGui.QComboBox()
+            item.addItem('Yes')
+            item.addItem('No')
+            item.setCurrentIndex(0)
+            self.table.setCellWidget(self.table.rowCount() - 1, i, item)
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
