@@ -3935,7 +3935,7 @@ void QgisApp::showComposerManager()
 
 void QgisApp::deleteComposerManager()
 {
-  delete mComposerManager;
+  mComposerManager->deleteLater();
   mComposerManager = 0;
 }
 
