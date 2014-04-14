@@ -2775,9 +2775,17 @@ bool QgsPostgresProvider::getGeometryDetails()
   return mValid;
 }
 
-bool QgsPostgresProvider::convertField( QgsField &field )
+bool QgsPostgresProvider::convertField( QgsField &field , const QMap<QString, QVariant>* options )
 {
-  QString fieldType = "varchar"; //default to string
+  //determine field type to use for strings
+  QString stringFieldType = "varchar";
+  if ( options->contains( "useTextType" ) && options->value( "useTextType" ).toBool() )
+  {
+    //use PostgreSQL text type for strings
+    stringFieldType = "text";
+  }
+
+  QString fieldType = stringFieldType; //default to string
   int fieldSize = field.length();
   int fieldPrec = field.precision();
   switch ( field.type() )
@@ -2796,7 +2804,7 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::String:
-      fieldType = "varchar";
+      fieldType = stringFieldType;
       fieldPrec = -1;
       break;
 
@@ -2908,7 +2916,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       {
         // found, get the field type
         QgsField fld = fields[fldIdx];
-        if ( convertField( fld ) )
+        if ( convertField( fld, options ) )
         {
           primaryKeyType = fld.typeName();
         }
@@ -2959,6 +2967,13 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       result = conn->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
+    }
+
+    if ( options->contains( "lowercaseFieldNames" ) && options->value( "lowercaseFieldNames" ).toBool() )
+    {
+      //convert primary key name to lowercase
+      //this must happen after determining the field type of the primary key
+      primaryKey = primaryKey.toLower();
     }
 
     sql = QString( "CREATE TABLE %1(%2 %3 PRIMARY KEY)" )
@@ -3040,14 +3055,11 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
       QgsField fld = fields[fldIdx];
-      if ( fld.name() == primaryKey )
-      {
-        oldToNewAttrIdxMap->insert( fldIdx, 0 );
-        continue;
-      }
 
       if ( fld.name() == geometryColumn )
       {
+        //the "lowercaseFieldNames" option does not affect the name of the geometry column, so we perform
+        //this test before converting the field name to lowercase
         QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
         continue;
       }
@@ -3058,7 +3070,13 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         fld.setName( fld.name().toLower() );
       }
 
-      if ( !convertField( fld ) )
+      if ( fld.name() == primaryKey )
+      {
+        oldToNewAttrIdxMap->insert( fldIdx, 0 );
+        continue;
+      }
+
+      if ( !convertField( fld, options ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
