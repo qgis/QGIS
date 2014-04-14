@@ -71,22 +71,16 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mLayerComboBox</cstring>
-            </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="mLayerComboBox"/>
-          </item>
-          <item row="2" column="0" colspan="2">
+          <item row="8" column="0" colspan="2">
            <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Show only visible features</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="10" column="0">
            <widget class="QLabel" name="mComposerMapLabel">
             <property name="text">
              <string>Composer map</string>
@@ -99,17 +93,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="10" column="1">
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
-          <item row="4" column="0">
+          <item row="12" column="0">
            <widget class="QCheckBox" name="mFeatureFilterCheckBox">
             <property name="text">
              <string>Filter with</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="12" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mFeatureFilterEdit"/>
@@ -127,7 +121,7 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0">
+          <item row="14" column="0">
            <widget class="QLabel" name="mMaxNumFeaturesLabel">
             <property name="text">
              <string>Maximum rows</string>
@@ -140,10 +134,10 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="14" column="1">
            <widget class="QSpinBox" name="mMaximumColumnsSpinBox"/>
           </item>
-          <item row="6" column="0">
+          <item row="16" column="0">
            <widget class="QLabel" name="mMarginLabel">
             <property name="text">
              <string>Margin</string>
@@ -156,10 +150,20 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="16" column="1">
            <widget class="QDoubleSpinBox" name="mMarginSpinBox"/>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="0" column="1">
+           <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
@@ -260,15 +264,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

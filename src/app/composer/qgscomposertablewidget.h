@@ -40,7 +40,6 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void refreshMapComboBox();
 
   private slots:
-    void on_mLayerComboBox_currentIndexChanged( int index );
     void on_mAttributesPushButton_clicked();
     void on_mComposerMapComboBox_activated( int index );
     void on_mMaximumColumnsSpinBox_valueChanged( int i );
@@ -54,6 +53,7 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void on_mFeatureFilterCheckBox_stateChanged( int state );
     void on_mFeatureFilterEdit_editingFinished();
     void on_mFeatureFilterButton_clicked();
+    void changeLayer( QgsMapLayer* layer );
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );

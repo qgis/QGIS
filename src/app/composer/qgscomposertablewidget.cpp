@@ -34,19 +34,8 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
-
-  //insert vector layers into combo
-  QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
-
-  for ( ; mapIt != layerMap.constEnd(); ++mapIt )
-  {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( mapIt.value() );
-    if ( vl )
-    {
-      mLayerComboBox->addItem( vl->name(), mapIt.key() );
-    }
-  }
+  mLayerComboBox->setFilters( QgsMapLayerProxyModel::HasGeometry );
+  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
   refreshMapComboBox();
 
@@ -102,35 +91,6 @@ void QgsComposerTableWidget::refreshMapComboBox()
   {
     //the former entry is still present. Make it the current entry again
     mComposerMapComboBox->setCurrentIndex( mComposerMapComboBox->findText( saveCurrentComboText ) );
-  }
-}
-
-void QgsComposerTableWidget::on_mLayerComboBox_currentIndexChanged( int index )
-{
-  if ( !mComposerTable )
-  {
-    return;
-  }
-
-  //set new layer to table item
-  QVariant itemData = mLayerComboBox->itemData( index );
-  if ( itemData.type() == QVariant::Invalid )
-  {
-    return;
-  }
-
-  QString layerId = itemData.toString();
-  QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-  if ( ml )
-  {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
-    if ( vl )
-    {
-      mComposerTable->beginCommand( tr( "Table layer changed" ) );
-      mComposerTable->setVectorLayer( vl );
-      mComposerTable->update();
-      mComposerTable->endCommand();
-    }
   }
 }
 
@@ -303,15 +263,7 @@ void QgsComposerTableWidget::updateGuiElements()
   blockAllSignals( true );
 
   //layer combo box
-  const QgsVectorLayer* vl = mComposerTable->vectorLayer();
-  if ( vl )
-  {
-    int layerIndex = mLayerComboBox->findText( vl->name() );
-    if ( layerIndex != -1 )
-    {
-      mLayerComboBox->setCurrentIndex( layerIndex );
-    }
-  }
+  mLayerComboBox->setLayer( mComposerTable->vectorLayer() );
 
   //map combo box
   const QgsComposerMap* cm = mComposerTable->composerMap();
@@ -445,5 +397,22 @@ void QgsComposerTableWidget::on_mFeatureFilterButton_clicked()
       mComposerTable->update();
       mComposerTable->endCommand();
     }
+  }
+}
+
+void QgsComposerTableWidget::changeLayer( QgsMapLayer *layer )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( vl )
+  {
+    mComposerTable->beginCommand( tr( "Table layer changed" ) );
+    mComposerTable->setVectorLayer( vl );
+    mComposerTable->update();
+    mComposerTable->endCommand();
   }
 }
