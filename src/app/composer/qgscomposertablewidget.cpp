@@ -22,6 +22,7 @@
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionbuilderdialog.h"
 #include <QColorDialog>
 #include <QFontDialog>
 
@@ -345,6 +346,11 @@ void QgsComposerTableWidget::updateGuiElements()
   {
     mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Unchecked );
   }
+
+  mFeatureFilterEdit->setText( mComposerTable->featureFilter() );
+  mFeatureFilterCheckBox->setCheckState( mComposerTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
+  mFeatureFilterEdit->setEnabled( mComposerTable->filterFeatures() );
+  mFeatureFilterButton->setEnabled( mComposerTable->filterFeatures() );
   blockAllSignals( false );
 }
 
@@ -358,6 +364,8 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mGridStrokeWidthSpinBox->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
+  mFeatureFilterEdit->blockSignals( b );
+  mFeatureFilterCheckBox->blockSignals( b );
 }
 
 void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )
@@ -381,4 +389,61 @@ void QgsComposerTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( i
   mComposerTable->endCommand();
 }
 
+void QgsComposerTableWidget::on_mFeatureFilterCheckBox_stateChanged( int state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
 
+  if ( state == Qt::Checked )
+  {
+    mFeatureFilterEdit->setEnabled( true );
+    mFeatureFilterButton->setEnabled( true );
+  }
+  else
+  {
+    mFeatureFilterEdit->setEnabled( false );
+    mFeatureFilterButton->setEnabled( false );
+  }
+  mComposerTable->beginCommand( tr( "Table feature filter toggled" ) );
+  mComposerTable->setFilterFeatures( state == Qt::Checked );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+}
+
+void QgsComposerTableWidget::on_mFeatureFilterEdit_editingFinished()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table feature filter modified" ) );
+  mComposerTable->setFeatureFilter( mFeatureFilterEdit->text() );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+}
+
+void QgsComposerTableWidget::on_mFeatureFilterButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this );
+  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      mFeatureFilterEdit->setText( expression );
+      mComposerTable->beginCommand( tr( "Table feature filter modified" ) );
+      mComposerTable->setFeatureFilter( mFeatureFilterEdit->text() );
+      mComposerTable->update();
+      mComposerTable->endCommand();
+    }
+  }
+}

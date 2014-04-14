@@ -36,7 +36,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     void setVectorLayer( QgsVectorLayer* vl );
-    const QgsVectorLayer* vectorLayer() const;
+    QgsVectorLayer* vectorLayer() const;
 
     void setComposerMap( const QgsComposerMap* map /TransferThis/ );
     const QgsComposerMap* composerMap() const;
@@ -46,6 +46,38 @@ class QgsComposerAttributeTable : QgsComposerTable
 
     void setDisplayOnlyVisibleFeatures( bool b );
     bool displayOnlyVisibleFeatures() const;
+    
+    /*Returns true if a feature filter is active on the attribute table
+     * @returns bool state of the feature filter
+     * @note added in 2.3
+     * @see setFilterFeatures
+     * @see featureFilter
+    */
+    bool filterFeatures() const;
+    /**Sets whether the feature filter is active for the attribute table
+     * @param filter Set to true to enable the feature filter
+     * @note added in 2.3
+     * @see filterFeatures
+     * @see setFeatureFilter
+    */
+    void setFilterFeatures( bool filter );
+
+    /*Returns the current expression used to filter features for the table. The filter is only
+     * active if filterFeatures() is true.
+     * @returns feature filter expression
+     * @note added in 2.3
+     * @see setFeatureFilter
+     * @see filterFeatures
+    */
+    QString featureFilter() const;
+    /**Sets the expression used for filtering features in the table. The filter is only
+     * active if filterFeatures() is set to true.
+     * @param expression filter to use for selecting which features to display in the table
+     * @note added in 2.3
+     * @see featureFilter
+     * @see setFilterFeatures
+    */
+    void setFeatureFilter( const QString& expression );
 
     QSet<int> displayAttributes() const;
     void setDisplayAttributes( const QSet<int>& attr );

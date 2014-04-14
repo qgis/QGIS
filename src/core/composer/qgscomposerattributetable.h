@@ -54,7 +54,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     void setVectorLayer( QgsVectorLayer* vl );
-    const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap; }
@@ -64,6 +64,38 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 
     void setDisplayOnlyVisibleFeatures( bool b ) { mShowOnlyVisibleFeatures = b; }
     bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
+
+    /*Returns true if a feature filter is active on the attribute table
+     * @returns bool state of the feature filter
+     * @note added in 2.3
+     * @see setFilterFeatures
+     * @see featureFilter
+    */
+    bool filterFeatures() const { return mFilterFeatures; }
+    /**Sets whether the feature filter is active for the attribute table
+     * @param filter Set to true to enable the feature filter
+     * @note added in 2.3
+     * @see filterFeatures
+     * @see setFeatureFilter
+    */
+    void setFilterFeatures( bool filter ) { mFilterFeatures = filter; }
+
+    /*Returns the current expression used to filter features for the table. The filter is only
+     * active if filterFeatures() is true.
+     * @returns feature filter expression
+     * @note added in 2.3
+     * @see setFeatureFilter
+     * @see filterFeatures
+    */
+    QString featureFilter() const { return mFeatureFilter; }
+    /**Sets the expression used for filtering features in the table. The filter is only
+     * active if filterFeatures() is set to true.
+     * @param expression filter to use for selecting which features to display in the table
+     * @note added in 2.3
+     * @see featureFilter
+     * @see setFilterFeatures
+    */
+    void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
 
     QSet<int> displayAttributes() const { return mDisplayAttributes; }
     void setDisplayAttributes( const QSet<int>& attr ) { mDisplayAttributes = attr; }
@@ -99,6 +131,11 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 
     /**Shows only the features that are visible in the associated composer map (true by default)*/
     bool mShowOnlyVisibleFeatures;
+
+    // feature filtering
+    bool mFilterFeatures;
+    // feature expression filter
+    QString mFeatureFilter;
 
     /**List of attribute indices to display (or all attributes if list is empty)*/
     QSet<int> mDisplayAttributes;

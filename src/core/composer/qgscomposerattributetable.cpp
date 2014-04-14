@@ -50,6 +50,8 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
     , mComposerMap( 0 )
     , mMaximumNumberOfFeatures( 5 )
     , mShowOnlyVisibleFeatures( true )
+    , mFilterFeatures( false )
+    , mFeatureFilter( "" )
 {
   //set first vector layer from layer registry as default one
   QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
@@ -128,6 +130,18 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
 
   attributeMaps.clear();
 
+  //prepare filter expression
+  std::auto_ptr<QgsExpression> filterExpression;
+  bool activeFilter = false;
+  if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
+  {
+    filterExpression = std::auto_ptr<QgsExpression>( new QgsExpression( mFeatureFilter ) );
+    if ( !filterExpression->hasParserError() )
+    {
+      activeFilter = true;
+    }
+  }
+
   QgsRectangle selectionRect;
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
@@ -163,6 +177,17 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
+    //check feature against filter
+    if ( activeFilter )
+    {
+      QVariant result = filterExpression->evaluate( &f, mVectorLayer->pendingFields() );
+      // skip this feature if the filter evaluation if false
+      if ( !result.toBool() )
+      {
+        continue;
+      }
+    }
+
     attributeMaps.push_back( QgsAttributeMap() );
 
     for ( int i = 0; i < f.attributes().size(); i++ )
@@ -242,6 +267,8 @@ bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc 
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTable" );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
   composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
+  composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
+  composerTableElem.setAttribute( "featureFilter", mFeatureFilter );
 
   if ( mComposerMap )
   {
@@ -303,6 +330,8 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   }
 
   mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
+  mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
+  mFeatureFilter = itemElem.attribute( "featureFilter", "" );
 
   //composer map
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
