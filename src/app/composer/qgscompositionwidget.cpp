@@ -400,11 +400,18 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   {
     coverageLayer = mComposition->atlasComposition().coverageLayer();
   }
-  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
+
+  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposition->pageStyleSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
 
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposition->setPageStyleSymbol( newSymbol );
     updatePageStyle();
+  }
+  else
+  {
+    delete newSymbol;
   }
 }
 

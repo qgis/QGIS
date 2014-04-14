@@ -773,18 +773,20 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
-  mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
-  QgsSymbolV2SelectorDialog d( mComposerMap->overviewFrameMapSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerMap->overviewFrameMapSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
 
   //QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
+    mComposerMap->setOverviewFrameMapSymbol( newSymbol );
     updateOverviewSymbolMarker();
     mComposerMap->endCommand();
   }
   else
   {
-    mComposerMap->cancelCommand();
+    delete newSymbol;
   }
 }
 
@@ -898,19 +900,21 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  mComposerMap->beginCommand( tr( "Grid line style changed" ) );
-  QgsSymbolV2SelectorDialog d( mComposerMap->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( mComposerMap->gridLineSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposerMap->beginCommand( tr( "Grid line style changed" ) );
+    mComposerMap->setGridLineSymbol( newSymbol );
     updateLineSymbolMarker();
     mComposerMap->endCommand();
+    mComposerMap->update();
   }
   else
   {
-    mComposerMap->cancelCommand();
+    delete newSymbol;
   }
-
-  mComposerMap->update();
 }
 
 void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QString& text )
