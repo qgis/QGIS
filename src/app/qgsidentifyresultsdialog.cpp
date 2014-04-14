@@ -31,6 +31,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -242,6 +243,7 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 //     actions (if any) [userrole: "actions"]
 //       edit [userrole: "edit"]
 //       action [userrole: "action", idx]
+//       action [userrole: "map_layer_action", QgsMapLayerAction]
 //     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
 //     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
 //     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
@@ -421,9 +423,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   }
 
   //get valid QgsMapLayerActions for this layer
-  mMapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
 
-  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() || mMapLayerActions.size() )
+  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() || registeredActions.size() )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -452,18 +454,33 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
 
     //add actions from QgsMapLayerActionRegistry
-    for ( int i = 0; i < mMapLayerActions.size(); i++ )
+    for ( int i = 0; i < registeredActions.size(); i++ )
     {
-      QgsMapLayerAction* action = mMapLayerActions.at( i );
+      QgsMapLayerAction* action = registeredActions.at( i );
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action->text() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
       twi->setData( 0, Qt::UserRole, "map_layer_action" );
-      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      twi->setData( 0, Qt::UserRole + 1, qVariantFromValue( qobject_cast<QObject *>( action ) ) );
       actionItem->addChild( twi );
+
+      connect( action, SIGNAL( destroyed() ), this, SLOT( mapLayerActionDestroyed() ) );
     }
   }
 
   highlightFeature( featItem );
+}
+
+void QgsIdentifyResultsDialog::mapLayerActionDestroyed()
+{
+  QTreeWidgetItemIterator it( lstResults );
+  while( *it )
+  {
+    if( (*it)->data( 0, Qt::UserRole ) == "map_layer_action" &&
+        (*it)->data( 0, Qt::UserRole + 1 ).value< QObject *>() == sender() )
+      delete *it;
+    else
+      ++it;
+  }
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
@@ -692,11 +709,8 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == "map_layer_action" )
   {
-    QgsMapLayerAction* action = mMapLayerActions.at( item->data( 0, Qt::UserRole + 1 ).toInt() );
-    if ( action )
-    {
-      doMapLayerAction( item, action );
-    }
+    QObject *action = item->data( 0, Qt::UserRole + 1 ).value<QObject *>();
+    doMapLayerAction( item, qobject_cast<QgsMapLayerAction *>( action ) );
   }
 }
 
@@ -937,6 +951,9 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
   if ( !layer )
+    return;
+
+  if ( !action )
     return;
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();

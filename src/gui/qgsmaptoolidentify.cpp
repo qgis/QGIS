@@ -663,7 +663,9 @@ void QgsMapToolIdentify::handleMenuHover()
 
 void QgsMapToolIdentify::deleteRubberBands()
 {
-  qDeleteAll( mRubberBands );
+  QList<QgsHighlight*>::const_iterator it = mRubberBands.constBegin();
+  for ( ; it != mRubberBands.constEnd(); ++it )
+    delete *it;
 }
 
 void QgsMapToolIdentify::layerDestroyed()
