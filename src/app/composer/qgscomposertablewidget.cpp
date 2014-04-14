@@ -34,7 +34,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
-  mLayerComboBox->setFilters( QgsMapLayerProxyModel::HasGeometry );
+  mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
   refreshMapComboBox();
@@ -263,7 +263,20 @@ void QgsComposerTableWidget::updateGuiElements()
   blockAllSignals( true );
 
   //layer combo box
-  mLayerComboBox->setLayer( mComposerTable->vectorLayer() );
+  if ( mComposerTable->vectorLayer() )
+  {
+    mLayerComboBox->setLayer( mComposerTable->vectorLayer() );
+    if ( mComposerTable->vectorLayer()->geometryType() == QGis::NoGeometry )
+    {
+      //layer has no geometry, so uncheck & disable controls which require geometry
+      mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+    }
+    else
+    {
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
+    }
+  }
 
   //map combo box
   const QgsComposerMap* cm = mComposerTable->composerMap();
@@ -290,13 +303,17 @@ void QgsComposerTableWidget::updateGuiElements()
     mShowGridGroupCheckBox->setChecked( false );
   }
 
-  if ( mComposerTable->displayOnlyVisibleFeatures() )
+  if ( mComposerTable->displayOnlyVisibleFeatures() && mShowOnlyVisibleFeaturesCheckBox->isEnabled() )
   {
     mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Checked );
+    mComposerMapComboBox->setEnabled( true );
+    mComposerMapLabel->setEnabled( true );
   }
   else
   {
     mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Unchecked );
+    mComposerMapComboBox->setEnabled( false );
+    mComposerMapLabel->setEnabled( false );
   }
 
   mFeatureFilterEdit->setText( mComposerTable->featureFilter() );
@@ -339,6 +356,10 @@ void QgsComposerTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( i
   mComposerTable->setDisplayOnlyVisibleFeatures( showOnlyVisibleFeatures );
   mComposerTable->update();
   mComposerTable->endCommand();
+
+  //enable/disable map combobox based on state of checkbox
+  mComposerMapComboBox->setEnabled( state == Qt::Checked );
+  mComposerMapLabel->setEnabled( state == Qt::Checked );
 }
 
 void QgsComposerTableWidget::on_mFeatureFilterCheckBox_stateChanged( int state )
@@ -408,11 +429,24 @@ void QgsComposerTableWidget::changeLayer( QgsMapLayer *layer )
   }
 
   QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
+  if ( !vl )
   {
-    mComposerTable->beginCommand( tr( "Table layer changed" ) );
-    mComposerTable->setVectorLayer( vl );
-    mComposerTable->update();
-    mComposerTable->endCommand();
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table layer changed" ) );
+  mComposerTable->setVectorLayer( vl );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+
+  if ( vl->geometryType() == QGis::NoGeometry )
+  {
+    //layer has no geometry, so uncheck & disable controls which require geometry
+    mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
+    mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+  }
+  else
+  {
+    mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
   }
 }
