@@ -361,6 +361,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @note there is not setter since one can't manually set the id*/
     QString uuid() const { return mUuid; }
 
+    /**Get the number of layers that this item exports
+      @returns 0 if this item is to be placed on the same layer as the previous item
+      @note this method was added in version 2.4 */
+    virtual int numberExportLayers() const { return 0; }
+
+    /**Set the layer to export
+     @param layerIdx can be set to -1 to export all layerr and must be less than numberExportLayers()
+     @note this method was added in version 2.4 */
+    virtual void setCurrentExportLayer( int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
+
   public slots:
     /**Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
@@ -422,6 +432,11 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**The item's position mode
     @note: this member was added in version 2.0*/
     ItemPositionMode mLastUsedPositionMode;
+
+    /**The layer that needs to be exported
+    @note: if -1, all layers are to be exported
+    @note: this member was added in version 2.4*/
+    int mCurrentExportLayer;
 
     /**Draw selection boxes around item*/
     virtual void drawSelectionBoxes( QPainter* p );

@@ -182,7 +182,16 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setBackgroundColor( Qt::transparent );
 
   //set layers to render
-  jobMapSettings.setLayers( layersToRender() );
+  QStringList theLayerSet = layersToRender();
+  if ( -1 != mCurrentExportLayer )
+  {
+    const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
+    theLayerSet = 
+      ( layerIdx >= 0 && layerIdx < theLayerSet.length() )
+      ? QStringList( theLayerSet[ theLayerSet.length() - layerIdx - 1 ] )
+      : QStringList();
+  }
+  jobMapSettings.setLayers( theLayerSet );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
@@ -355,7 +364,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     }
 
     // Fill with background color
-    drawBackground( painter );
+    if ( exportLayer( Background ) )
+    {
+      drawBackground( painter );
+    }
 
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
@@ -395,22 +407,69 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
   painter->setClipRect( thisPaintRect , Qt::NoClip );
 
-  if ( mGridEnabled )
+  if ( mGridEnabled  && exportLayer( Grid ) )
   {
     drawGrid( painter );
   }
-  if ( mOverviewFrameMapId != -1 )
+  if ( mOverviewFrameMapId != -1 && exportLayer( OverviewMapExtent ) )
   {
     drawOverviewMapExtent( painter );
   }
-  drawFrame( painter );
-  if ( isSelected() )
+  if ( exportLayer( Frame ) )
+  {
+    drawFrame( painter );
+  }
+  if ( isSelected() &&  exportLayer( SelectionBoxes ) )
   {
     drawSelectionBoxes( painter );
   }
 
   painter->restore();
 }
+
+int QgsComposerMap::numberExportLayers() const
+{
+  return
+    ( hasBackground()           ? 1 : 0 )
+    + layersToRender().length()
+    + ( mGridEnabled              ? 1 : 0 )
+    + ( mOverviewFrameMapId != -1 ? 1 : 0 )
+    + ( hasFrame()                ? 1 : 0 )
+    + ( isSelected()              ? 1 : 0 )
+    ;
+}
+
+bool QgsComposerMap::exportLayer( ItemType type ) const
+{
+  if ( -1 == mCurrentExportLayer ) return true;
+  int idx = numberExportLayers();
+  if ( isSelected() )
+  {
+    --idx;
+    if ( SelectionBoxes == type ) return mCurrentExportLayer == idx;
+  }
+  if ( hasFrame() )
+  {
+    --idx;
+    if ( Frame == type ) return mCurrentExportLayer == idx;
+  }
+  if ( mOverviewFrameMapId )
+  {
+    --idx;
+    if ( OverviewMapExtent == type ) return mCurrentExportLayer == idx;
+  }
+  if ( mGridEnabled )
+  {
+    --idx;
+    if ( Grid == type ) return mCurrentExportLayer == idx;
+  }
+  if ( hasBackground() )
+  {
+    if ( Background == type ) return mCurrentExportLayer == 0;
+  }
+  return true; // for Layer
+}
+
 
 void QgsComposerMap::updateCachedImage( void )
 {
@@ -440,7 +499,7 @@ const QgsMapRenderer *QgsComposerMap::mapRenderer() const
   Q_NOWARN_DEPRECATED_POP
 }
 
-QStringList QgsComposerMap::layersToRender()
+QStringList QgsComposerMap::layersToRender() const
 {
   //use stored layer set or read current set from main canvas
   QStringList renderLayerSet;

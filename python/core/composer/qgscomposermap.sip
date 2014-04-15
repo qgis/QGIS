@@ -407,6 +407,11 @@ class QgsComposerMap : QgsComposerItem
     /** Returns whether updates to the composer map are enabled. */
     bool updatesEnabled() const;
 
+    /**Get the number of layers that this item exports
+      @returns 0 if this item is to be placed on the same layer as the previous item
+      @note this method was added in version 2.4 */
+    int numberExportLayers() const;
+
   signals:
     void extentChanged();
 
