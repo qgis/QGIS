@@ -15,8 +15,8 @@ SET (QT_FWVER @QT_VERSION_MAJOR@)
 # build list of Qt frameworks to bundle
 
 # core list, includes dependencies and used by extra plugins
-SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
-SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
+SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtScript QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
+SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtScript QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
 
 # add Qsci.so, if available
 IF (@QSCI_FOUND@)
