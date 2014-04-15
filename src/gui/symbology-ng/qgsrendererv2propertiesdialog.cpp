@@ -23,6 +23,7 @@
 #include "qgsgraduatedsymbolrendererv2widget.h"
 #include "qgsrulebasedrendererv2widget.h"
 #include "qgspointdisplacementrendererwidget.h"
+#include "qgsmaskrendererv2widget.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -66,6 +67,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
   _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
+  _initRenderer( "maskRenderer", QgsMaskRendererV2Widget::create );
   initialized = true;
 }
 

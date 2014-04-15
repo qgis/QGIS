@@ -20,6 +20,7 @@
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsrulebasedrendererv2.h"
 #include "qgspointdisplacementrenderer.h"
+#include "qgsmaskrendererv2.h"
 
 QgsRendererV2Registry::QgsRendererV2Registry()
 {
@@ -44,6 +45,10 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
                                           QObject::tr( "Point displacement" ),
                                           QgsPointDisplacementRenderer::create ) );
+
+  addRenderer( new QgsRendererV2Metadata( "maskRenderer",
+                                          QObject::tr( "Mask" ),
+                                          QgsMaskRendererV2::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()
