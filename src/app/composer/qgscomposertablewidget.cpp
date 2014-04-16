@@ -94,6 +94,16 @@ void QgsComposerTableWidget::refreshMapComboBox()
   }
 }
 
+void QgsComposerTableWidget::on_mRefreshPushButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->refreshAttributes();
+}
+
 void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
 {
   if ( !mComposerTable )
