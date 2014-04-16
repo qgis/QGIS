@@ -185,14 +185,18 @@ class ProcessingConfig:
 class Setting:
     """A simple config parameter that will appear on the config dialog.
     """
-
-    def __init__(self, group, name, description, default, hidden=False):
+    STRING = 0
+    FILE = 1
+    FOLDER = 2
+    
+    def __init__(self, group, name, description, default, hidden=False, valuetype = None):
         self.group = group
         self.name = name
         self.description = description
         self.default = default
         self.value = default
         self.hidden = hidden
+        self.valuetype = valuetype
 
     def __str__(self):
         return self.name + '=' + str(self.value)

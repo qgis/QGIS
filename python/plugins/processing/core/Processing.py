@@ -46,18 +46,18 @@ from processing.modeler.ModelerAlgorithmProvider import \
         ModelerAlgorithmProvider
 from processing.modeler.ModelerOnlyAlgorithmProvider import \
         ModelerOnlyAlgorithmProvider
-from processing.algs.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
-from processing.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.lidar.LidarToolsAlgorithmProvider import \
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
+from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from processing.algs.lidar.LidarToolsAlgorithmProvider import \
         LidarToolsAlgorithmProvider
-from processing.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
-from processing.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from processing.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from processing.admintools.AdminToolsAlgorithmProvider import \
+from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from processing.algs.admintools.AdminToolsAlgorithmProvider import \
         AdminToolsAlgorithmProvider
 from processing.tools import dataobjects
 
@@ -146,7 +146,7 @@ class Processing:
         Processing.addProvider(OTBAlgorithmProvider())
         Processing.addProvider(RAlgorithmProvider())
         Processing.addProvider(SagaAlgorithmProvider())
-        Processing.addProvider(GrassAlgorithmProvider())
+        Processing.addProvider(GrassAlgorithmProvider())        
         Processing.addProvider(Grass7AlgorithmProvider())
         Processing.addProvider(ScriptAlgorithmProvider())
         Processing.addProvider(TauDEMAlgorithmProvider())

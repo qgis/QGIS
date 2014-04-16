@@ -38,7 +38,7 @@ from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.commander.CommanderWindow import CommanderWindow
+from processing.gui.CommanderWindow import CommanderWindow
 from processing.tools import dataobjects
 from processing.tools.system import *
 import processing.resources_rc

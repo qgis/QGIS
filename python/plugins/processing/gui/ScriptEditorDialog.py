@@ -39,8 +39,8 @@ from processing import interface
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.modeler.Providers import Providers
-from processing.r.RAlgorithm import RAlgorithm
-from processing.r.RUtils import RUtils
+from processing.algs.r.RAlgorithm import RAlgorithm
+from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor

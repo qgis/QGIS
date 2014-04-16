@@ -31,7 +31,7 @@ from PyQt4.QtGui import *
 
 from processing.gui.ContextAction import ContextAction
 
-from processing.r.RAlgorithm import RAlgorithm
+from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 

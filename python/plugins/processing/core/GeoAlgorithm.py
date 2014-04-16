@@ -45,7 +45,7 @@ from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputTable import OutputTable
 from processing.outputs.OutputHTML import OutputHTML
-from processing.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
 from processing.tools.system import *
 
