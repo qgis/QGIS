@@ -445,9 +445,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Returns whether updates to the composer map are enabled. */
     bool updatesEnabled() const { return mUpdatesEnabled; }
 
-    /**Get the number of layers that this item exports
-      @returns 0 if this item is to be placed on the same layer as the previous item
-      @note this method was added in version 2.4 */
+    /**Get the number of layers that this item requires for exporting as layers
+     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
+     * @note this method was added in version 2.4
+    */
     int numberExportLayers() const;
 
   signals:
@@ -670,7 +672,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 
-    enum ItemType
+    enum PartType
     {
       Background,
       Layer,
@@ -680,8 +682,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       SelectionBoxes
     };
 
-    /**Test if this item needs to be exported considering mCurrentExportLayer*/
-    bool exportLayer( ItemType type ) const;
+    /**Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer*/
+    bool shouldDrawPart( PartType part ) const;
 };
 
 #endif

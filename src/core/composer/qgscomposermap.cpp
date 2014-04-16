@@ -185,11 +185,12 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   QStringList theLayerSet = layersToRender();
   if ( -1 != mCurrentExportLayer )
   {
+    //exporting with seperate layers (eg, to svg layers), so we only want to render a single map layer
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
-    theLayerSet = 
+    theLayerSet =
       ( layerIdx >= 0 && layerIdx < theLayerSet.length() )
       ? QStringList( theLayerSet[ theLayerSet.length() - layerIdx - 1 ] )
-      : QStringList();
+      : QStringList(); //exporting decorations such as map frame/grid/overview, so no map layers required
   }
   jobMapSettings.setLayers( theLayerSet );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
@@ -364,7 +365,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     }
 
     // Fill with background color
-    if ( exportLayer( Background ) )
+    if ( shouldDrawPart( Background ) )
     {
       drawBackground( painter );
     }
@@ -407,19 +408,19 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
   painter->setClipRect( thisPaintRect , Qt::NoClip );
 
-  if ( mGridEnabled  && exportLayer( Grid ) )
+  if ( mGridEnabled  && shouldDrawPart( Grid ) )
   {
     drawGrid( painter );
   }
-  if ( mOverviewFrameMapId != -1 && exportLayer( OverviewMapExtent ) )
+  if ( mOverviewFrameMapId != -1 && shouldDrawPart( OverviewMapExtent ) )
   {
     drawOverviewMapExtent( painter );
   }
-  if ( exportLayer( Frame ) )
+  if ( shouldDrawPart( Frame ) )
   {
     drawFrame( painter );
   }
-  if ( isSelected() &&  exportLayer( SelectionBoxes ) )
+  if ( isSelected() &&  shouldDrawPart( SelectionBoxes ) )
   {
     drawSelectionBoxes( painter );
   }
@@ -439,34 +440,56 @@ int QgsComposerMap::numberExportLayers() const
     ;
 }
 
-bool QgsComposerMap::exportLayer( ItemType type ) const
+bool QgsComposerMap::shouldDrawPart( PartType part ) const
 {
-  if ( -1 == mCurrentExportLayer ) return true;
+  if ( -1 == mCurrentExportLayer )
+  {
+    //all parts of the composer map are visible
+    return true;
+  }
+
   int idx = numberExportLayers();
   if ( isSelected() )
   {
     --idx;
-    if ( SelectionBoxes == type ) return mCurrentExportLayer == idx;
+    if ( SelectionBoxes == part )
+    {
+      return mCurrentExportLayer == idx;
+    }
   }
+
   if ( hasFrame() )
   {
     --idx;
-    if ( Frame == type ) return mCurrentExportLayer == idx;
+    if ( Frame == part )
+    {
+      return mCurrentExportLayer == idx;
+    }
   }
   if ( mOverviewFrameMapId )
   {
     --idx;
-    if ( OverviewMapExtent == type ) return mCurrentExportLayer == idx;
+    if ( OverviewMapExtent == part )
+    {
+      return mCurrentExportLayer == idx;
+    }
   }
   if ( mGridEnabled )
   {
     --idx;
-    if ( Grid == type ) return mCurrentExportLayer == idx;
+    if ( Grid == part )
+    {
+      return mCurrentExportLayer == idx;
+    }
   }
   if ( hasBackground() )
   {
-    if ( Background == type ) return mCurrentExportLayer == 0;
+    if ( Background == part )
+    {
+      return mCurrentExportLayer == 0;
+    }
   }
+
   return true; // for Layer
 }
 
