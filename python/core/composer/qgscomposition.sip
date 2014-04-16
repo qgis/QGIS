@@ -395,6 +395,11 @@ class QgsComposition : QGraphicsScene
     /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
     bool setAtlasMode( QgsComposition::AtlasMode mode );
 
+    /** Return pages in the correct order
+     @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
+     @note added in version 2.4*/
+    QList< QgsPaperItem* > pages();
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );

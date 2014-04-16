@@ -401,6 +401,16 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
 
+    /**Get the number of layers that this item exports
+      @returns 0 if this item is to be placed on the same layer as the previous item
+      @note this method was added in version 2.4 */
+    int numberExportLayers() const;
+
+    /**Set the layer to export
+     @param layerIdx can be set to -1 to export all layerr and must be less than numberExportLayers()
+     @note this method was added in version 2.4 */
+    void setCurrentExportLayer( int layerIdx = -1 );
+
   public slots:
     /**Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead

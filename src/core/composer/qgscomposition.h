@@ -32,11 +32,11 @@
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritemcommand.h"
 #include "qgsatlascomposition.h"
+#include "qgspaperitem.h"
 
 class QgisApp;
 class QgsComposerFrame;
 class QgsComposerMap;
-class QgsPaperItem;
 class QGraphicsRectItem;
 class QgsMapRenderer;
 class QDomElement;
@@ -450,6 +450,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
     /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
     bool setAtlasMode( QgsComposition::AtlasMode mode );
+
+    /** Return pages in the correct order
+     @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
+     @note added in version 2.4*/
+    QList< QgsPaperItem* > pages() { return mPages; }
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
