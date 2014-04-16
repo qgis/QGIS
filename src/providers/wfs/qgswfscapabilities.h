@@ -16,6 +16,7 @@
 #define QGSWFSCAPABILITIES_H
 
 #include <QObject>
+#include <QNetworkRequest>
 
 #include "qgsrectangle.h"
 #include "qgsdatasourceuri.h"
@@ -72,6 +73,9 @@ class QgsWFSCapabilities : public QObject
     //! return parsed capabilities - requestCapabilities() must be called before
     GetCapabilities capabilities() { return mCaps; }
 
+    //! set authorization header
+    void setAuthorization( QNetworkRequest &request ) const;
+
   signals:
     void gotCapabilities();
 
@@ -90,6 +94,12 @@ class QgsWFSCapabilities : public QObject
     GetCapabilities mCaps;
     ErrorCode mErrorCode;
     QString mErrorMessage;
+
+    //! Username for basic http authentication
+    QString mUserName;
+
+    //! Password for basic http authentication
+    QString mPassword;
 };
 
 #endif // QGSWFSCAPABILITIES_H
