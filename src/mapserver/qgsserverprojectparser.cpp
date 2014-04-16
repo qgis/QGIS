@@ -334,6 +334,11 @@ int QgsServerProjectParser::numberOfLayers() const
   return mProjectLayerElements.size();
 }
 
+bool QgsServerProjectParser::updateLegendDrawingOrder() const
+{
+  return legendElem().attribute( "updateDrawingOrder", "true" ).compare( "true", Qt::CaseInsensitive ) == 0;
+}
+
 QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
 {
   if ( layerElem.isNull() )
@@ -831,72 +836,11 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
   return restrictedLayerSet;
 }
 
-void QgsServerProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, QList<QgsMapLayer*>& layerList, bool useCache ) const
-{
-  if ( legendGroupElem.attribute( "embedded" ) == "1" ) //embedded group
-  {
-    //get project parser
-    //get group elements from project parser, find the group
-    //iterate over layers and add them (embedding in embedded groups does not work)
-    QString groupName = legendGroupElem.attribute( "name" );
-    QString project = convertToAbsolutePath( legendGroupElem.attribute( "project" ) );
-
-#if 0 //todo: fixme
-    QgsProjectParser* p = 0; //dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
-    if ( !p )
-    {
-      return;
-    }
-
-    QList<QDomElement>  pLegendGroupElems = p->mLegendGroupElements;
-    QList<QDomElement>::const_iterator pGroupIt = pLegendGroupElems.constBegin();
-    for ( ; pGroupIt != pLegendGroupElems.constEnd(); ++pGroupIt )
-    {
-      if ( pGroupIt->attribute( "name" ) == groupName )
-      {
-        p->addLayersFromGroup( *pGroupIt, layerList, useCache );
-        return;
-      }
-    }
-#endif //0
-  }
-  else //normal group
-  {
-    bool updateDrawingOrder = ( legendGroupElem.parentNode().toElement().attribute( "updateDrawingOrder" ) == "true" );
-    QMap< int, QDomElement > layerOrderList;
-    QDomNodeList groupElemChildren = legendGroupElem.childNodes();
-    for ( int i = 0; i < groupElemChildren.size(); ++i )
-    {
-      QDomElement elem = groupElemChildren.at( i ).toElement();
-      if ( elem.tagName() == "legendgroup" )
-      {
-        addLayersFromGroup( elem, layerList, useCache );
-      }
-      else if ( elem.tagName() == "legendlayer" )
-      {
-        int drawingOrder = updateDrawingOrder ? -1 : elem.attribute( "drawingOrder", "-1" ).toInt();
-        if ( drawingOrder == -1 )
-        {
-          addLayerFromLegendLayer( elem, layerList, useCache );
-        }
-        else
-        {
-          layerOrderList.insert( drawingOrder, elem );
-        }
-      }
-    }
-
-    QMap< int, QDomElement >::const_iterator layerOrderIt = layerOrderList.constBegin();
-    for ( ; layerOrderIt != layerOrderList.constEnd(); ++layerOrderIt )
-    {
-      addLayerFromLegendLayer( layerOrderIt.value(), layerList, useCache );
-    }
-  }
-}
-
-void QgsServerProjectParser::addLayerFromLegendLayer( const QDomElement& legendLayerElem, QList<QgsMapLayer*>& layerList, bool useCache ) const
+void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache ) const
 {
   QString id = legendLayerElem.firstChild().firstChild().toElement().attribute( "layerid" );
+  int drawingOrder = updateLegendDrawingOrder() ? -1 : legendLayerElem.attribute( "drawingOrder", "-1" ).toInt();
+
   QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( id );
   if ( layerIt != mProjectLayerElementsById.constEnd() )
   {
@@ -906,7 +850,7 @@ void QgsServerProjectParser::addLayerFromLegendLayer( const QDomElement& legendL
     QgsMapLayer* layer = createLayerFromElement( layerIt.value(), useCache );
     if ( layer )
     {
-      layerList.append( layer );
+      layers.insertMulti( drawingOrder, layer );
     }
   }
 }

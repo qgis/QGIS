@@ -86,10 +86,7 @@ class QgsServerProjectParser
 
     const QHash< QString, QDomElement >& projectLayerElementsByName() const { return mProjectLayerElementsByName; }
 
-    /**Adds layers from a legend group to list (could be embedded or a normal group)*/
-    void addLayersFromGroup( const QDomElement& legendGroupElem, QList<QgsMapLayer*>& layerList, bool useCache = true ) const;
-
-    void addLayerFromLegendLayer( const QDomElement& legendLayerElem, QList<QgsMapLayer*>& layerList, bool useCache = true ) const;
+    void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
     QStringList wfsLayerNames() const;
 
@@ -118,6 +115,8 @@ class QgsServerProjectParser
     QgsRectangle projectExtent() const;
 
     int numberOfLayers() const;
+
+    bool updateLegendDrawingOrder() const;
 
   private:
 

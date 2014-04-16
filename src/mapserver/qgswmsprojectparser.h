@@ -135,6 +135,9 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
                        const QMap<QString, QgsMapLayer *> &layerMap, const QStringList &nonIdentifiableLayers,
                        const QString& strHref, QgsRectangle& combinedBBox, QString strGroup ) const;
 
+    /**Adds layers from a legend group to list (could be embedded or a normal group)*/
+    void addLayersFromGroup( const QDomElement& legendGroupElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
+
     QDomElement composerByName( const QString& composerName ) const;
 
     static bool annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos );

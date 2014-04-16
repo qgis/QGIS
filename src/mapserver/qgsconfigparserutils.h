@@ -41,6 +41,8 @@ class QgsConfigParserUtils
 
     /**Returns default service capabilities from wms_metadata.xml if nothing else is defined*/
     static void fallbackServiceCapabilities( QDomElement& parentElement, QDomDocument& doc );
+
+    static QList<QgsMapLayer*> layerMapToList( const QMap< int, QgsMapLayer* >& layerMap, bool reverseOrder = false );
 };
 
 #endif // QGSCONFIGPARSERUTILS_H

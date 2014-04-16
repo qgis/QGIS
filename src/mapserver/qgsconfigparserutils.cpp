@@ -203,3 +203,20 @@ void QgsConfigParserUtils::fallbackServiceCapabilities( QDomElement& parentEleme
     }
   }
 }
+
+QList<QgsMapLayer*> QgsConfigParserUtils::layerMapToList( const QMap< int, QgsMapLayer* >& layerMap, bool reverseOrder )
+{
+  if ( reverseOrder ) //reverse order
+  {
+    QList<QgsMapLayer*> list;
+    QMapIterator< int, QgsMapLayer* > layerMapIt( layerMap );
+    layerMapIt.toBack();
+    while ( layerMapIt.hasPrevious() )
+    {
+      layerMapIt.previous();
+      list.append( layerMapIt.value() );
+    }
+    return list;
+  }
+  return layerMap.values(); //take numbered drawing order
+}

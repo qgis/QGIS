@@ -93,12 +93,12 @@ void QgsWMSProjectParser::layersAndStylesCapabilities( QDomElement& parentElemen
 QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache ) const
 {
   Q_UNUSED( styleName );
-  QList<QgsMapLayer*> layerList;
+  QMap< int, QgsMapLayer* > layers;
 
   //first check if the layer name refers an unpublished layer / group
   if ( mProjectParser.restrictedLayers().contains( lName ) )
   {
-    return layerList;
+    return QList<QgsMapLayer*>();
   }
 
   //does lName refer to a leaf layer
@@ -106,14 +106,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElementsByName.find( lName );
   if ( layerElemIt != projectLayerElementsByName.constEnd() )
   {
-    mProjectParser.addJoinLayersForElement( layerElemIt.value(), useCache );
-    mProjectParser.addValueRelationLayersForElement( layerElemIt.value(), useCache );
-    QgsMapLayer* layer = mProjectParser.createLayerFromElement( layerElemIt.value(), useCache );
-    if ( layer )
-    {
-      layerList.push_back( layer );
-      return layerList;
-    }
+    return ( QList<QgsMapLayer*>() << mProjectParser.createLayerFromElement( layerElemIt.value(), useCache ) );
   }
 
   //group or project name
@@ -138,28 +131,8 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
 
   if ( !groupElement.isNull() )
   {
-    //embedded group has no children in this project file
-    if ( groupElement.attribute( "embedded" ) == "1" )
-    {
-      mProjectParser.addLayersFromGroup( groupElement, layerList, useCache );
-      return layerList;
-    }
-
-    //group element found, iterate children and call addLayersFromGroup / addLayerFromLegendLayer for each
-    QDomNodeList childList = groupElement.childNodes();
-    for ( uint i = 0; i < childList.length(); ++i )
-    {
-      QDomElement childElem = childList.at( i ).toElement();
-      if ( childElem.tagName() == "legendgroup" )
-      {
-        mProjectParser.addLayersFromGroup( childElem, layerList, useCache );
-      }
-      else if ( childElem.tagName() == "legendlayer" )
-      {
-        mProjectParser.addLayerFromLegendLayer( childElem, layerList, useCache );
-      }
-    }
-    return layerList;
+    addLayersFromGroup( groupElement, layers, useCache );
+    return QgsConfigParserUtils::layerMapToList( layers, mProjectParser.updateLegendDrawingOrder() );
   }
 
   //still not found. Check if it is a single embedded layer (embedded layers are not contained in mProjectLayerElementsByName)
@@ -170,7 +143,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     QDomElement legendLayerElem = legendLayerList.at( i ).toElement();
     if ( legendLayerElem.attribute( "name" ) == lName )
     {
-      mProjectParser.addLayerFromLegendLayer( legendLayerElem, layerList, useCache );
+      mProjectParser.layerFromLegendLayer( legendLayerElem, layers, useCache );
     }
   }
 
@@ -193,9 +166,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
         QHash< QString, QDomElement >::const_iterator pLayerNameIt = pLayerByName.find( lName );
         if ( pLayerNameIt != pLayerByName.constEnd() )
         {
-          pp.addJoinLayersForElement( pLayerNameIt.value(), useCache );
-          pp.addValueRelationLayersForElement( pLayerNameIt.value(), useCache );
-          layerList.push_back( pp.createLayerFromElement( pLayerNameIt.value(), useCache ) );
+          pp.layerFromLegendLayer( pLayerNameIt.value(), layers, useCache );
           break;
         }
 
@@ -205,7 +176,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
         {
           if ( pLegendGroupIt->attribute( "name" ) == lName )
           {
-            pp.addLayersFromGroup( *pLegendGroupIt, layerList, useCache );
+            addLayersFromGroup( *pLegendGroupIt, layers, useCache );
             break;
           }
         }
@@ -213,7 +184,64 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     }
   }
 
-  return layerList;
+  return layers.values();
+}
+
+void QgsWMSProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, QMap< int, QgsMapLayer*>& layers, bool useCache ) const
+{
+  if ( legendGroupElem.isNull() )
+  {
+    return;
+  }
+
+  if ( legendGroupElem.attribute( "embedded" ) == "1" ) //embedded group
+  {
+    QString groupName = legendGroupElem.attribute( "name" );
+    int drawingOrder = mProjectParser.updateLegendDrawingOrder() ? legendGroupElem.attribute( "drawingOrder", "-1" ).toInt() : -1;
+
+    QString project = mProjectParser.convertToAbsolutePath( legendGroupElem.attribute( "project" ) );
+    QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+    if ( p )
+    {
+      QgsServerProjectParser& pp = p->mProjectParser;
+      const QList<QDomElement>& legendGroups = pp.legendGroupElements();
+      QList<QDomElement>::const_iterator legendIt = legendGroups.constBegin();
+      for ( ; legendIt != legendGroups.constEnd(); ++legendIt )
+      {
+        if ( legendIt->attribute( "name" ) == groupName )
+        {
+          QMap< int, QgsMapLayer*> embeddedGroupLayers;
+          p->addLayersFromGroup( *legendIt, embeddedGroupLayers, useCache );
+
+          //reverse order because it will be reversed again afterwards in insertMulti
+          QList< QgsMapLayer* > embeddedLayerList = QgsConfigParserUtils::layerMapToList( embeddedGroupLayers, pp.updateLegendDrawingOrder() );
+
+          QList< QgsMapLayer* >::const_iterator layerIt = embeddedLayerList.constBegin();
+          for ( ; layerIt != embeddedLayerList.constEnd(); ++layerIt )
+          {
+            layers.insertMulti( drawingOrder, *layerIt );
+          }
+        }
+      }
+    }
+  }
+  else //normal group
+  {
+    QMap< int, QDomElement > layerOrderList;
+    QDomNodeList groupElemChildren = legendGroupElem.childNodes();
+    for ( int i = 0; i < groupElemChildren.size(); ++i )
+    {
+      QDomElement elem = groupElemChildren.at( i ).toElement();
+      if ( elem.tagName() == "legendgroup" )
+      {
+        addLayersFromGroup( elem, layers, useCache );
+      }
+      else if ( elem.tagName() == "legendlayer" )
+      {
+        mProjectParser.layerFromLegendLayer( elem, layers, useCache );
+      }
+    }
+  }
 }
 
 QString QgsWMSProjectParser::serviceUrl() const
