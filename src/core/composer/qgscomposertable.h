@@ -28,6 +28,8 @@
 /**A class to display feature attributes in the print composer*/
 class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
     QgsComposerTable( QgsComposition* composition );
     virtual ~QgsComposerTable();
@@ -44,10 +46,10 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setLineTextDistance( double d ) { mLineTextDistance = d; }
     double lineTextDistance() const { return mLineTextDistance; }
 
-    void setHeaderFont( const QFont& f ) { mHeaderFont = f;}
+    void setHeaderFont( const QFont& f );
     QFont headerFont() const { return mHeaderFont; }
 
-    void setContentFont( const QFont& f ) { mContentFont = f; }
+    void setContentFont( const QFont& f );
     QFont contentFont() const { return mContentFont; }
 
     void setShowGrid( bool show ) { mShowGrid = show;}
@@ -59,9 +61,24 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
-    /**Adapts the size of the frame to match the content. This is normally done in the paint method, but sometimes
-    it needs to be done before the first render*/
-    void adjustFrameToSize();
+  public slots:
+
+    /**Refreshes the attributes shown in the table by querying the vector layer for new data.
+     * This also causes the column widths and size of the table to change to accomodate the
+     * new data.
+     * @note added in 2.3
+     * @see adjustFrameToSize
+    */
+    virtual void refreshAttributes();
+
+    /**Adapts the size of the frame to match the content. First, the optimal width of the columns
+     * is recalculated by checking the maximum width of attributes shown in the table. Then, the
+     * table is resized to fit its contents. This slot utilises the table's attribute cache so
+     * that a re-query of the vector layer is not required.
+     * @note added in 2.3
+     * @see refreshAttributes
+    */
+    virtual void adjustFrameToSize();
 
   protected:
     /**Distance between table lines and text*/
@@ -73,6 +90,9 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     bool mShowGrid;
     double mGridStrokeWidth;
     QColor mGridColor;
+
+    QList<QgsAttributeMap> mAttributeMaps;
+    QMap<int, double> mMaxColumnWidthMap;
 
     /**Retrieves feature attributes*/
     //! @note not available in python bindings
