@@ -94,11 +94,14 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext& context, const QgsFields& fields );
         //! get all used z-levels from this rule and children
+        //! @deprecated
         QSet<int> collectZLevels();
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
         //! @note not available in python bindings
+        //! @deprecated
         // void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
+        //! @deprecated
         bool renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
@@ -155,8 +158,6 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
-
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 

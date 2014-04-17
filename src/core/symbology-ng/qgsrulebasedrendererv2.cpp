@@ -706,28 +706,11 @@ QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
 }
 
 
-QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feat )
+QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& )
 {
   // not used at all
   return 0;
 }
-
-#if 0
-bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
-    QgsRenderContext& context,
-    int layer,
-    bool selected,
-    bool drawVertexMarker )
-{
-  Q_UNUSED( layer );
-
-  int flags = ( selected ? FeatIsSelected : 0 ) | ( drawVertexMarker ? FeatDrawMarkers : 0 );
-  mCurrentFeatures.append( FeatureToRender( feature, flags ) );
-
-  // check each active rule
-  return mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue );
-}
-#endif
 
 void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
