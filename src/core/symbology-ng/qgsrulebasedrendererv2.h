@@ -201,7 +201,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
+#if 0
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+#endif
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 

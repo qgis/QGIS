@@ -220,11 +220,23 @@ void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVect
 
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
-  QgsSymbolV2* symbol = symbolForFeature( feature );
-  if ( symbol == NULL )
+  QgsSymbolV2List syms;
+  if ( capabilities() & MoreSymbolsPerFeature ) {
+    syms = symbolsForFeature( feature );
+  }
+  else {
+    QgsSymbolV2* symbol = symbolForFeature( feature );
+    if ( symbol ) {
+      syms.append( symbol );
+    }
+  }
+  if ( syms.empty() )
     return false;
 
-  renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+  foreach( QgsSymbolV2* symbol, syms )
+  {
+    renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+  }
   return true;
 }
 

@@ -689,6 +689,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root )
     : QgsFeatureRendererV2( "RuleRenderer" ), mRootRule( root )
 {
+  setUsingSymbolLevels( true );
 }
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
@@ -696,6 +697,7 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
 {
   mRootRule = new Rule( NULL ); // root has no symbol, no filter etc - just a container
   mRootRule->appendChild( new Rule( defaultSymbol ) );
+  setUsingSymbolLevels( true );
 }
 
 QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
@@ -704,12 +706,13 @@ QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
 }
 
 
-QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& )
+QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feat )
 {
   // not used at all
   return 0;
 }
 
+#if 0
 bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
     QgsRenderContext& context,
     int layer,
@@ -724,7 +727,7 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
   // check each active rule
   return mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue );
 }
-
+#endif
 
 void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {

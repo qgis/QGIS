@@ -58,7 +58,7 @@ void QgsSimpleFillSymbolLayerV2::setIsExterior( bool isExterior )
 {
   mIsExterior = isExterior;
   // force the rendering as a whole layer, even if symbol levels are turned off
-  mForceRenderAsLayer = isExterior;
+  setForceRenderWithLevels( isExterior );
 }
 
 void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen )
@@ -536,7 +536,7 @@ void QgsGradientFillSymbolLayerV2::setIsExterior( bool isExterior )
 {
   mIsExterior = isExterior;
   // force rendering as a whole layer, even when symbol levels are turned off
-  mForceRenderAsLayer = isExterior;
+  setForceRenderWithLevels( isExterior );
 }
 
 void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points )

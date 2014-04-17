@@ -95,7 +95,16 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() = 0;
 
+    //! render a given feature. If layer is -1, all layers will be rendered
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+
+    //! render a given feature with a given symbol layer
+    virtual void renderFeatureWithSymbol( QgsFeature& feature,
+                                          QgsSymbolV2* symbol,
+                                          QgsRenderContext& context,
+                                          int layer,
+                                          bool selected,
+                                          bool drawVertexMarker );
 
     //! for debugging
     virtual QString dump() const;
@@ -179,13 +188,6 @@ class CORE_EXPORT QgsFeatureRendererV2
 
   protected:
     QgsFeatureRendererV2( QString type );
-
-    void renderFeatureWithSymbol( QgsFeature& feature,
-                                  QgsSymbolV2* symbol,
-                                  QgsRenderContext& context,
-                                  int layer,
-                                  bool selected,
-                                  bool drawVertexMarker );
 
     //! render editing vertex marker at specified point
     void renderVertexMarker( QPointF& pt, QgsRenderContext& context );

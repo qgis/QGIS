@@ -175,58 +175,39 @@ bool QgsVectorLayerRenderer::render()
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
 
-  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() ) {
-    // find out the order
-    PassSymbolMap levels;
-    QgsSymbolV2List symbols = mRendererV2->symbols();
-    for ( int i = 0; i < symbols.count(); i++ )
+  // find out the order
+  bool useLevels = false;
+  PassSymbolMap levels;
+  QgsSymbolV2List symbols = mRendererV2->symbols();
+  for ( int i = 0; i < symbols.count(); i++ )
+  {
+    QgsSymbolV2* sym = symbols[i];
+    for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
-      QgsSymbolV2* sym = symbols[i];
-      for ( int j = 0; j < sym->symbolLayerCount(); j++ )
-      {
-        int level = sym->symbolLayer( j )->renderingPass();
+      int level = j;
+      if ( mRendererV2->usingSymbolLevels() ) {
+        useLevels = true;
+        level = sym->symbolLayer( j )->renderingPass();
         if ( level < 0 || level >= 1000 ) // ignore invalid levels
           continue;
-
-        if ( ! levels.contains( level ) ) {
-          levels[level] = PassSymbols( /* renderAsLayer*/ true );
-        }
-        levels[level].levels.append( QgsSymbolV2LevelItem(sym,j) );
       }
-    }
+      else if ( sym->symbolLayer( j )->forceRenderWithLevels() ) {
+        useLevels = true;
+      }
 
+      if ( ! levels.contains( level ) ) {
+        levels[level] = QgsSymbolV2Level();
+      }
+      levels[level].append( QgsSymbolV2LevelItem(sym,j) );
+    }
+  }
+
+  if ( useLevels ) {
     drawRendererV2Levels( fit, levels );
   }
   else {
-    // no symbol levels defined
-    // do we have a layer that forces it ?
-    bool forceAsLayer = false;
-    QgsSymbolV2List symbols = mRendererV2->symbols();
-    PassSymbolMap levels;
-    for ( int i = 0; i < symbols.count(); i++ )
-    {
-      QgsSymbolV2* sym = symbols[i];
-      for ( int j = 0; j < sym->symbolLayerCount(); j++ )
-      {
-        if ( ! levels.contains( j ) ) {
-          levels[j] = PassSymbols();
-        }
-        if ( sym->symbolLayer( j )->forceRenderAsLayer() ) {
-          // mimick symbol levels
-          levels[j].renderAsLayer = true;
-          forceAsLayer = true;
-        }
-        levels[j].levels.append( QgsSymbolV2LevelItem(sym,j) );
-      }
-    }
-
-    if ( forceAsLayer ) {
-      drawRendererV2Levels( fit, levels );
-    }
-    else {
-      // no symbol levels (user-defined or forced)
-      drawRendererV2( fit );
-    }
+    // no symbol levels defined, call the fast drawRendererV2
+    drawRendererV2( fit );
   }
 
   //apply layer transparency for vector layers
@@ -255,73 +236,53 @@ void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
   }
 }
 
-/**
- * Render given symbol layers of a feature
- * If layers is empty, -1 is passed to the renderer (all layers will be rendered)
- */
-void QgsVectorLayerRenderer::renderFeature( const QgsFeature& feature, const QList<int>& layers )
-{
-  bool sel = mSelectedFeatureIds.contains( feature.id() );
-  bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
-
-  // render feature
-  QgsFeature& fet = const_cast<QgsFeature&>(feature);
-  bool rendered;
-  try
-  {
-    if ( ! layers.empty() ) {
-      for ( QList<int>::const_iterator lit = layers.begin(); lit != layers.end(); ++lit )
-      {
-        rendered = mRendererV2->renderFeature( fet, mContext, *lit, sel, drawMarker );
-      }
-    }
-    else {
-      rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
-    }
-  }
-  catch ( const QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
-                 .arg( fet.id() ).arg( cse.what() ) );
-  }
-
-  if ( mCache )
-  {
-    // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-    mCache->cacheGeometry( fet.id(), *fet.geometry() );
-  }
-
-  // labeling - register feature
-  if ( rendered && mContext.labelingEngine() )
-  {
-    if ( mLabeling )
-    {
-      mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
-    }
-    if ( mDiagrams )
-    {
-      mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
-    }
-  }
-}
-
 void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 {
   QgsFeature fet;
-  QList<int> layers;
   while ( fit.nextFeature( fet ) )
   {
-    if ( !fet.geometry() )
-      continue; // skip features without geometry
-
-    if ( mContext.renderingStopped() )
+    try
     {
-      qDebug( "breaking!" );
-      break;
-    }
+      if ( !fet.geometry() )
+        continue; // skip features without geometry
 
-    renderFeature( fet, layers );
+      if ( mContext.renderingStopped() )
+      {
+        qDebug( "breaking!" );
+        break;
+      }
+
+      bool sel = mSelectedFeatureIds.contains( fet.id() );
+      bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+
+      // render feature
+      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
+
+      if ( mCache )
+      {
+        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+        mCache->cacheGeometry( fet.id(), *fet.geometry() );
+      }
+
+      // labeling - register feature
+      if ( rendered && mContext.labelingEngine() )
+      {
+        if ( mLabeling )
+        {
+          mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
+        }
+        if ( mDiagrams )
+        {
+          mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
+        }
+      }
+    }
+    catch ( const QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                   .arg( fet.id() ).arg( cse.what() ) );
+    }
   }
 
   stopRendererV2( NULL );
@@ -360,18 +321,33 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit, cons
       return;
     }
 
-    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
-    if ( !sym )
+    // collect symbols for this feature
+    QgsSymbolV2List syms;
+    if ( mRendererV2->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature )
+    {
+      syms = mRendererV2->symbolsForFeature( fet );
+    }
+    else
+    {
+      QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
+      if ( sym ) {
+        syms.append( sym );
+      }
+    }
+    if ( syms.empty() )
     {
       continue;
     }
 
     allFeatures[ fet.id() ] = fet;
-    if ( !features.contains( sym ) )
+    foreach( QgsSymbolV2* sym, syms )
     {
-      features.insert( sym, FeatureIdList() );
+      if ( !features.contains( sym ) )
+      {
+        features.insert( sym, FeatureIdList() );
+      }
+      features[sym].append( fet.id() );
     }
-    features[sym].append( fet.id() );
 
     if ( mCache )
     {
@@ -379,7 +355,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit, cons
       mCache->cacheGeometry( fet.id(), *fet.geometry() );
     }
 
-    if ( sym && mContext.labelingEngine() )
+    if ( mContext.labelingEngine() )
     {
       if ( mLabeling )
       {
@@ -395,72 +371,67 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit, cons
   //
   // 2. draw features in correct order
   //
-  // Two types of renderings can be mixed :
-  // - the "regular" rendering where each feature is iterated over for each of its symbol layers, called "feature-wise" rendering
-  // - the "layer" rendering where, for one given symbol layer, features are iterated over,
-  //   this is needed for symbol layers that have pre- and a post-render phases (exterior fills for instance)
 
-  PassSymbolMap::const_iterator pit = passes.begin();
-  while ( pit != passes.end() )
+  // for each distinct rendering pass
+  for ( PassSymbolMap::const_iterator pit = passes.begin(); pit != passes.end(); ++pit )
   {
-    if ( ! pit.value().renderAsLayer )
+    const QgsSymbolV2Level& level = pit.value();
+    // call preRender for each symbol layer of the pass
+    for ( int i = 0; i < level.count(); i++ )
     {
-      // regroup layers and render them feature wise
-      QList<int> levels;
-      while ( pit != passes.end() && (! pit.value().renderAsLayer) ) {
-        levels.append( pit.key() );
-        pit++;
-      }
-      // render feature-wise
-      for ( QHash<QgsFeatureId, QgsFeature>::const_iterator fit = allFeatures.begin(); fit != allFeatures.end(); ++fit )
-      {
-        renderFeature( fit.value(), levels );
-      }
+      QgsSymbolV2LevelItem& item = const_cast<QgsSymbolV2LevelItem&>(level[i]);
+      item.symbol()->preRender( mContext, item.layer() );
     }
-    else
-    {
-      // render as a layer
-      QList<int> layers;
-      layers.append(0);
 
-      const QgsSymbolV2Level& level = pit.value().levels;
+    for ( QHash<QgsFeatureId, QgsFeature>::const_iterator fit = allFeatures.begin(); fit != allFeatures.end(); ++fit )
+    {
+      const QgsFeature& fet = fit.value();
+
+      // for each symbol layer of the same rendering pass
       for ( int i = 0; i < level.count(); i++ )
       {
         QgsSymbolV2LevelItem& item = const_cast<QgsSymbolV2LevelItem&>(level[i]);
         int layer = item.layer();
         QgsSymbolV2* symbol = item.symbol();
-        if ( !features.contains( item.symbol() ) )
+
+        // only call render on features defined for this symbol
+        SymbolFeatures::const_iterator existingSymbol = features.find( symbol );
+        if ( existingSymbol == features.end() )
         {
-          symbol->postRender( mContext, layer );
           QgsDebugMsg( "level item's symbol not found!" );
           continue;
         }
-        symbol->preRender( mContext, layer );
-        FeatureIdList& lst = features[item.symbol()];
-        FeatureIdList::iterator fit;
-        for ( fit = lst.begin(); fit != lst.end(); ++fit )
+        if ( ! existingSymbol.value().contains(fet.id()) )
         {
-          if ( mContext.renderingStopped() )
-          {
-            stopRendererV2( selRenderer );
-            return;
-          }
-
-          const QgsFeature& fet = allFeatures[*fit];
-          layers[0] = layer;
-          renderFeature( fet, layers );
+          QgsDebugMsg("no feature for this symbol");
+          continue;
         }
-        symbol->postRender( mContext, layer );
-      }
 
-      // next pass
-      pit++;
+        // render the proper symbol layer
+        bool selected = mSelectedFeatureIds.contains( fet.id() );
+        bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || selected ) );
+        try
+        {
+          mRendererV2->renderFeatureWithSymbol( const_cast<QgsFeature&>(fet), symbol, mContext, layer, selected, drawMarker );
+        }
+        catch ( const QgsCsException &cse )
+        {
+          Q_UNUSED( cse );
+          QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                       .arg( fet.id() ).arg( cse.what() ) );
+        }
+      }
+    }
+    // call postRender for each symbol layer
+    for ( int i = 0; i < level.count(); i++ )
+    {
+      QgsSymbolV2LevelItem& item = const_cast<QgsSymbolV2LevelItem&>(level[i]);
+      item.symbol()->postRender( mContext, item.layer() );
     }
   }
 
   stopRendererV2( selRenderer );
 }
-
 
 void QgsVectorLayerRenderer::stopRendererV2( QgsSingleSymbolRendererV2* selRenderer )
 {
