@@ -62,6 +62,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mShadowRadiusUnitWidget->setUnits( QStringList() << tr( "mm" ) << tr( "map units" ), 1 );
   mPointOffsetUnitWidget->setUnits( QStringList() << tr( "mm" ) << tr( "map units" ), 1 );
   mLineDistanceUnitWidget->setUnits( QStringList() << tr( "mm" ) << tr( "map units" ), 1 );
+  mRepeatDistanceUnitWidget->setUnits( QStringList() << tr( "mm" ) << tr( "map units" ), 1 );
 
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
@@ -307,6 +308,11 @@ void QgsLabelingGui::init()
     if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
       chkLineOrientationDependent->setChecked( true );
   }
+
+  // Label repeat distance
+  mRepeatDistanceSpinBox->setValue( lyr.repeatDistance );
+  mRepeatDistanceUnitWidget->setUnit( lyr.repeatDistanceUnit - 1 );
+  mRepeatDistanceUnitWidget->setMapUnitScale( lyr.repeatDistanceMapUnitScale );
 
   mPrioritySlider->setValue( lyr.priority );
   chkNoObstacle->setChecked( lyr.obstacle );
@@ -591,6 +597,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     qFatal( "Invalid settings" );
   }
 
+  lyr.repeatDistance = mRepeatDistanceSpinBox->value();
+  lyr.repeatDistanceUnit = static_cast<QgsPalLayerSettings::SizeUnit>(1 + mRepeatDistanceUnitWidget->getUnit());
+  lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
 
   lyr.textColor = btnTextColor->color();
   lyr.textFont = mRefFont;
@@ -779,6 +788,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //setDataDefinedProperty( mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation, lyr );
   setDataDefinedProperty( mMaxCharAngleDDBtn, QgsPalLayerSettings::CurvedCharAngleInOut, lyr );
+  setDataDefinedProperty( mRepeatDistanceDDBtn, QgsPalLayerSettings::RepeatDistance, lyr );
+  setDataDefinedProperty( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::RepeatDistanceUnit, lyr );
 
   // data defined-only
   setDataDefinedProperty( mCoordXDDBtn, QgsPalLayerSettings::PositionX, lyr );
@@ -1004,6 +1015,10 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   //                        QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
   mMaxCharAngleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::CurvedCharAngleInOut ),
                             QgsDataDefinedButton::AnyType, tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ) );
+  mRepeatDistanceDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::RepeatDistance ),
+                              QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doublePosDesc() );
+  mRepeatDistanceUnitDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::DistanceUnits ),
+                                QgsDataDefinedButton::String, QgsDataDefinedButton::unitsMmMuDesc() );
 
   // data defined-only
   QString ddPlaceInfo = tr( "In edit mode, layer's relevant labeling map tool is:<br>"

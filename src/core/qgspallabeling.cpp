@@ -322,6 +322,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   maxCurvedCharAngleIn = 20.0;
   maxCurvedCharAngleOut = -20.0;
   priority = 5;
+  repeatDistance = 0;
+  repeatDistanceUnit = MM;
 
   // rendering
   scaleVisibility = false;
@@ -513,6 +515,9 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   maxCurvedCharAngleIn = s.maxCurvedCharAngleIn;
   maxCurvedCharAngleOut = s.maxCurvedCharAngleOut;
   priority = s.priority;
+  repeatDistance = s.repeatDistance;
+  repeatDistanceUnit = s.repeatDistanceUnit;
+  repeatDistanceMapUnitScale = s.repeatDistanceMapUnitScale;
 
   // rendering
   scaleVisibility = s.scaleVisibility;
@@ -1007,6 +1012,10 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   maxCurvedCharAngleIn = layer->customProperty( "labeling/maxCurvedCharAngleIn", QVariant( 20.0 ) ).toDouble();
   maxCurvedCharAngleOut = layer->customProperty( "labeling/maxCurvedCharAngleOut", QVariant( -20.0 ) ).toDouble();
   priority = layer->customProperty( "labeling/priority" ).toInt();
+  repeatDistance = layer->customProperty( "labeling/repeatDistance", 0.0 ).toDouble();
+  repeatDistanceUnit = (SizeUnit) layer->customProperty( "labeling/repeatDistanceUnit", QVariant( MM )).toUInt();
+  repeatDistanceMapUnitScale.minScale = layer->customProperty( "labeling/repeatDistanceMapUnitMinScale", 0.0).toDouble();
+  repeatDistanceMapUnitScale.maxScale = layer->customProperty( "labeling/repeatDistanceMapUnitMaxScale", 0.0).toDouble();
 
   // rendering
   int scalemn = layer->customProperty( "labeling/scaleMin", QVariant( 0 ) ).toInt();
@@ -1173,6 +1182,10 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/maxCurvedCharAngleIn", maxCurvedCharAngleIn );
   layer->setCustomProperty( "labeling/maxCurvedCharAngleOut", maxCurvedCharAngleOut );
   layer->setCustomProperty( "labeling/priority", priority );
+  layer->setCustomProperty( "labeling/repeatDistance", repeatDistance );
+  layer->setCustomProperty( "labeling/repeatDistanceUnit", repeatDistanceUnit );
+  layer->setCustomProperty( "labeling/repeatDistanceMapUnitMinScale", repeatDistanceMapUnitScale.minScale );
+  layer->setCustomProperty( "labeling/repeatDistanceMapUnitMaxScale", repeatDistanceMapUnitScale.maxScale );
 
   // rendering
   layer->setCustomProperty( "labeling/scaleVisibility", scaleVisibility );
@@ -2213,12 +2226,48 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 #endif
   lbl->setDefinedFont( labelFont );
 
+  // data defined repeat distance?
+  double repeatDist = repeatDistance;
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal ) )
+  {
+    bool ok;
+    double distD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      repeatDist = distD;
+    }
+  }
+
+  // data defined label-repeat distance units?
+  bool repeatdistinmapunit = repeatDistanceUnit == MapUnits;
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal ) )
+  {
+    QString units = exprVal.toString().trimmed();
+    QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
+    if ( !units.isEmpty() )
+    {
+      repeatdistinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
+    }
+  }
+
+  if ( repeatDist != 0 )
+  {
+    if ( !repeatdistinmapunit ) //convert distance from mm/map units to pixels
+    {
+      repeatDist *= repeatDistanceMapUnitScale.computeMapUnitsPerPixel(context) * context.scaleFactor();
+    }
+    else //mm
+    {
+      repeatDist *= vectorScaleFactor;
+    }
+  }
+
   //  feature to the layer
   try
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
-                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow ) )
+                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
       return;
   }
   catch ( std::exception &e )
@@ -2272,6 +2321,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
     feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance );
   }
+
 
   //add parameters for data defined labeling to QgsPalGeometry
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();

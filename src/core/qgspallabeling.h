@@ -254,6 +254,8 @@ class CORE_EXPORT QgsPalLayerSettings
       Hali = 11, //horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //data defined rotation
+      RepeatDistance = 84,
+      RepeatDistanceUnit = 85,
 
       // rendering
       ScaleVisibility = 23,
@@ -376,6 +378,10 @@ class CORE_EXPORT QgsPalLayerSettings
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QgsMapUnitScale distMapUnitScale;
+
+    double repeatDistance;
+    SizeUnit repeatDistanceUnit;
+    QgsMapUnitScale repeatDistanceMapUnitScale;
 
     // offset labels of point/centroid features default to center
     // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
