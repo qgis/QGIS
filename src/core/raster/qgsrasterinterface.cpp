@@ -515,7 +515,14 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
 {
   QgsDebugMsg( QString( "theBandNo = %1 theLowerCount = %2 theUpperCount = %3 theSampleSize = %4" ).arg( theBandNo ).arg( theLowerCount ).arg( theUpperCount ).arg( theSampleSize ) );
 
-  QgsRasterHistogram myHistogram = histogram( theBandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), theExtent, theSampleSize );
+  int mySrcDataType = srcDataType( theBandNo );
+
+  //get band stats to specify real histogram min/max (fix #9793 Byte bands)
+  QgsRasterBandStats stats =  bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
+  // for byte bands make sure bin count == actual range
+  int myBinCount = ( mySrcDataType == QGis::Byte ) ? int( ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
+  QgsRasterHistogram myHistogram = histogram( theBandNo, myBinCount, stats.minimumValue, stats.maximumValue, theExtent, theSampleSize );
+  //QgsRasterHistogram myHistogram = histogram( theBandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), theExtent, theSampleSize );
 
   // Init to NaN is better than histogram min/max to catch errors
   theLowerValue = std::numeric_limits<double>::quiet_NaN();
@@ -537,12 +544,25 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
     {
       theLowerValue = myHistogram.minimum + myBin * myBinXStep;
       myLowerFound = true;
+      QgsDebugMsg( QString( "found lowerValue %1 at bin %2" ).arg( theLowerValue ).arg( myBin ) );
     }
     if ( myCount >= myMaxCount )
     {
       theUpperValue = myHistogram.minimum + myBin * myBinXStep;
+      QgsDebugMsg( QString( "found upperValue %1 at bin %2" ).arg( theUpperValue ).arg( myBin ) );
       break;
     }
+  }
+
+  // fix integer data - round down/up
+  if ( mySrcDataType == QGis::Byte ||
+       mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
+       mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 )
+  {
+    if ( theLowerValue != std::numeric_limits<double>::quiet_NaN() )
+      theLowerValue = floor( theLowerValue );
+    if ( theUpperValue != std::numeric_limits<double>::quiet_NaN() )
+      theUpperValue = ceil( theUpperValue );
   }
 }
 
