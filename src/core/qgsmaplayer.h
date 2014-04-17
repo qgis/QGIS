@@ -30,6 +30,7 @@
 #include "qgserror.h"
 #include "qgsrectangle.h"
 #include "qgsmaprenderer.h"
+#include "qgsobjectcustomproperties.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -543,8 +544,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Collection of undoable operations for this layer. **/
     QUndoStack mUndoStack;
 
-    QMap<QString, QVariant> mCustomProperties;
-
+    //! Layer's persistent storage of additional properties (may be used by plugins)
+    QgsObjectCustomProperties mCustomProperties;
 };
 
 #endif
