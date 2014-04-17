@@ -2422,7 +2422,7 @@ Are you sure you want to proceed?</source>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation>Actualmente QGIS no permite el acceso simultáneo desde 
+        <translation type="obsolete">Actualmente QGIS no permite el acceso simultáneo desde 
                                 distintos hilos a la misma fuente de datos. Asegúrese de que las 
                                 tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
     </message>
@@ -2575,6 +2575,10 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <message>
         <source>Please specify an input layer</source>
         <translation>Por favor, especifique una capa de entrada</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3642,6 +3646,10 @@ columna de geometría - columna con valores enteros únicos</translation>
     <message>
         <source>Wrong or missing parameter values</source>
         <translation>Valores de parámetro incorrectos o ausentes</translation>
+    </message>
+    <message>
+        <source>[Save to temporary file]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6312,6 +6320,10 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     <message>
         <source>Columns</source>
         <translation>Columnas</translation>
+    </message>
+    <message>
+        <source>Add generated file to map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11782,7 +11794,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation>Cuando se crean archivos CSV, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
+        <translation type="obsolete">Cuando se crean archivos CSV, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
     </message>
     <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
@@ -11794,7 +11806,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Field separator character. Default value : COMMA</source>
-        <translation>Caracter separador de campos: Valor predeterminado: COMA</translation>
+        <translation type="obsolete">Caracter separador de campos: Valor predeterminado: COMA</translation>
     </message>
     <message>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
@@ -12195,6 +12207,14 @@ La respuesta fue:
     <message>
         <source>Style was missing in capabilities</source>
         <translation type="unfinished">El estilo faltaba en las capacidades</translation>
+    </message>
+    <message>
+        <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on Win32 or LF on all other systems). This may be overridden through the use of the LINEFORMAT option.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field separator character.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15516,6 +15536,22 @@ Por favor, contacte con los desarrolladores.</translation>
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network request timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A network request timed out, any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -18295,6 +18331,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Landscape</source>
         <translation>Horizontal</translation>
     </message>
+    <message>
+        <source>Svg error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error in svg ouput for svg layer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> on page </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -19292,6 +19340,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Item rotation changed</source>
         <translation>cambiada la rotación del elemento</translation>
     </message>
+    <message>
+        <source>Item frame join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item transparency changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
@@ -19402,6 +19462,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Estilo de unión</translation>
     </message>
 </context>
 <context>
@@ -19701,6 +19765,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Wms Legend height</source>
         <translation>Altura de la leyenda WMS</translation>
     </message>
+    <message>
+        <source>Legend title alignment changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
@@ -19975,6 +20043,22 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Item font...</source>
         <translation>Tipo de letra de elemento...</translation>
+    </message>
+    <message>
+        <source>Title alignment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierda</translation>
+    </message>
+    <message>
+        <source>Center</source>
+        <translation type="unfinished">Centro</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecha</translation>
     </message>
 </context>
 <context>
@@ -20323,6 +20407,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Grid frame second fill color changed</source>
         <translation>Segundo color de relleno del marco de la cuadrícula cambiado</translation>
+    </message>
+    <message>
+        <source>Overview frame style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid line style changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21006,6 +21098,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Scalebar changed to meters</source>
         <translation>Barra de escala cambiada a metros</translation>
     </message>
+    <message>
+        <source>Scalebar line join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar line cap style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -21153,6 +21253,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Stroke color...</source>
         <translation>Color de marca...</translation>
     </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Estilo de unión</translation>
+    </message>
+    <message>
+        <source>Cap style</source>
+        <translation type="unfinished">Estilo de mayúsculas</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerShapeWidget</name>
@@ -21207,6 +21315,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Shape radius changed</source>
         <translation>Radio de forma cambiado</translation>
+    </message>
+    <message>
+        <source>Shape style changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21328,6 +21440,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Table visible only toggled</source>
         <translation>Objetos seleccionados visibles solamente conmutado</translation>
     </message>
+    <message>
+        <source>Table feature filter toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table feature filter modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression based filter</source>
+        <translation type="unfinished">Filtro basado en expresión</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerTableWidgetBase</name>
@@ -21414,6 +21538,14 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Content font...</source>
         <translation>Tipo de letra del contenido...</translation>
+    </message>
+    <message>
+        <source>Filter with</source>
+        <translation type="unfinished">Filtrar con</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -27389,6 +27521,10 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
     <message>
         <source>Pixel Size</source>
         <translation>Tamaño de píxel</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Banda</translation>
     </message>
 </context>
 <context>
@@ -33494,7 +33630,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="obsolete">Refresco de la vista del mapa: %1 ms</translation>
+        <translation type="unfinished">Refresco de la vista del mapa: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
@@ -33506,7 +33642,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>canvas</source>
-        <translation type="obsolete">lienzo</translation>
+        <translation type="unfinished">lienzo</translation>
     </message>
 </context>
 <context>
@@ -37647,6 +37783,10 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
         <source>Are you sure to reset the UI to default (needs restart)?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Identify highlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -38684,7 +38824,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation>&lt;b&gt;Nota:&lt;/b&gt; Establecer por debajo de 1000 para evitar actualizaciones de la visualización hasta que todos los objetos espaciales se hayan representado</translation>
+        <translation type="obsolete">&lt;b&gt;Nota:&lt;/b&gt; Establecer por debajo de 1000 para evitar actualizaciones de la visualización hasta que todos los objetos espaciales se hayan representado</translation>
     </message>
     <message>
         <source>Suppress attribute form pop-up after feature creation</source>
@@ -38848,6 +38988,30 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Enable feature simplification by default for newly added layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Highlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The color used to highlight identified feature. The alpha channel is only used for polygons fill, lines and outlines are fully opaque.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lines / outlines buffer in millimeters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum line / outline width in millimeters.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -41602,7 +41766,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
-        <translation>&lt;br/&gt;%1 voto(s) de valoración&lt;br/&gt;</translation>
+        <translation type="obsolete">&lt;br/&gt;%1 voto(s) de valoración&lt;br/&gt;</translation>
     </message>
     <message>
         <source>Category</source>
@@ -41744,6 +41908,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Complementos no instalados&lt;/h3&gt;&lt;p&gt;Aquí se ve la lista de todos los complementos disponibles en los repositorios, pero que aún &lt;b&gt;no están instalados&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Haga clic en el nombre para ver los detalles.&lt;/p&gt;&lt;p&gt;Puede cambiar el orden mediante el menú contextual (clic derecho).&lt;/p&gt;&lt;p&gt;Un complemento se puede descargar e instalar haciendo clic en su nombre y luego en el botón &apos;Instalar complemento&apos;.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>%1 rating vote(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vote sent successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sending vote to the plugin repository failed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42009,6 +42185,10 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Nota:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Los complementos en desuso normalmente no son adecuados para uso en producción. Estos complementos no son mantenidos y se deberían considerar herramientas «obsoletas». QGIS no recomienda instalar estos complementos a no ser que aún los necesite y no haya otras alternativas disponibles.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -44343,6 +44523,18 @@ Pulse el botón de ayuda para obtener opciones de creación válidas para este f
         <source>Actions</source>
         <translation>Acciones</translation>
     </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">Visualizar</translation>
+    </message>
+    <message>
+        <source>Draw as lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw as lines (only int layers)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterHistogramWidgetBase</name>
@@ -46136,6 +46328,17 @@ conjuntos de datos con anchura y altura máximos especificados abajo.</translati
     <message>
         <source>VRT Tiles</source>
         <translation>Teselas VRT</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterMinMaxWidget</name>
+    <message>
+        <source>No option selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select an option to load min/max values.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50444,6 +50647,21 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
 </context>
 <context>
+    <name>QgsSvgExportOptionsDialog</name>
+    <message>
+        <source>SVG export options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export map layers as svg groups (may affect label placement)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render text as outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Select SVG file</source>
@@ -50592,11 +50810,11 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Invalid Selection!</source>
-        <translation>Selección no válida!</translation>
+        <translation type="obsolete">Selección no válida!</translation>
     </message>
     <message>
         <source>Kindly select a symbol to add layer.</source>
-        <translation>Por favor seleccione un símbolo para añadir capa</translation>
+        <translation type="obsolete">Por favor seleccione un símbolo para añadir capa</translation>
     </message>
 </context>
 <context>
@@ -57400,6 +57618,10 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Border</source>
         <translation>Contorno</translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Estilo de unión</translation>
     </message>
 </context>
 <context>
@@ -66638,6 +66860,43 @@ Returns a string wrapped to a maximum/minimum number of characters.
 &lt;!-- Show example of function.--&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
+Returns the geometry of the current feature iterated in atlas.
+Can be used for rule based display of geometry when using atlas.
+For example to only show geometries of other layers when their geometry 
+intersects the iterated geometry of features using atlas.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
+Returns the feature id of the current row while using atlas.
+This enables you to use features of atlas in rules 
+and for example show or hide features based on their id.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+
 </source>
         <translation type="unfinished"></translation>
     </message>

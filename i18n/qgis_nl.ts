@@ -2333,7 +2333,7 @@ Weet u zeker dat u door wilt?</translation>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation>QGIS kan op dit moment nog niet gelijktijdig een databron
+        <translation type="obsolete">QGIS kan op dit moment nog niet gelijktijdig een databron
                                  benaderen vanuit twee verschillend programma-threads. Zorg a.u.b. 
                                  dat de attribuuttabellen zijn gesloten. Doorgaan?</translation>
     </message>
@@ -2510,6 +2510,10 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <message>
         <source>Please specify an input layer</source>
         <translation>Selecteer een laag als input</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3570,6 +3574,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>Wrong or missing parameter values</source>
         <translation>Foute of ontbrekende parameterwaarden</translation>
+    </message>
+    <message>
+        <source>[Save to temporary file]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6032,6 +6040,10 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     <message>
         <source>Columns</source>
         <translation>Kolommen</translation>
+    </message>
+    <message>
+        <source>Add generated file to map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11514,7 +11526,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation>Standaard worden nieuwe .csv bestanden aangemaakt met de standaard regeleinde conventies van het besturingssysteem (CR/LF op win32 of LF voor alle andere systemen). Dit kan worden overschreven door het gebruik van de optie LINEFORMAT.</translation>
+        <translation type="obsolete">Standaard worden nieuwe .csv bestanden aangemaakt met de standaard regeleinde conventies van het besturingssysteem (CR/LF op win32 of LF voor alle andere systemen). Dit kan worden overschreven door het gebruik van de optie LINEFORMAT.</translation>
     </message>
     <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
@@ -11526,7 +11538,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>Field separator character. Default value : COMMA</source>
-        <translation>Veldscheidingsteken. Standaard waarde : COMMA</translation>
+        <translation type="obsolete">Veldscheidingsteken. Standaard waarde : COMMA</translation>
     </message>
     <message>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
@@ -11931,6 +11943,14 @@ Antwoord was:
     <message>
         <source>Style was missing in capabilities</source>
         <translation type="unfinished">&apos;Style&apos; mist in de capabilities</translation>
+    </message>
+    <message>
+        <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on Win32 or LF on all other systems). This may be overridden through the use of the LINEFORMAT option.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field separator character.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14753,6 +14773,22 @@ Neem alstublieft contact op met de ontwikkelaars.
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network request timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A network request timed out, any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -17514,6 +17550,18 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Landscape</source>
         <translation type="unfinished">Liggend</translation>
     </message>
+    <message>
+        <source>Svg error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error in svg ouput for svg layer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> on page </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -18503,6 +18551,18 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Item rotation changed</source>
         <translation>Rotatie onderdeel aangepast</translation>
     </message>
+    <message>
+        <source>Item frame join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item transparency changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
@@ -18609,6 +18669,10 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Verbindingstijl</translation>
     </message>
 </context>
 <context>
@@ -18908,6 +18972,10 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Wms Legend height</source>
         <translation>Hoogte WMS legenda</translation>
     </message>
+    <message>
+        <source>Legend title alignment changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
@@ -19170,6 +19238,22 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Item font...</source>
         <translation>Item lettertype...</translation>
+    </message>
+    <message>
+        <source>Title alignment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Links</translation>
+    </message>
+    <message>
+        <source>Center</source>
+        <translation type="unfinished">Centreren</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Rechts</translation>
     </message>
 </context>
 <context>
@@ -19518,6 +19602,14 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Grid frame second fill color changed</source>
         <translation>Grid frame tweede vulkleur gewijzigd</translation>
+    </message>
+    <message>
+        <source>Overview frame style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid line style changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20169,6 +20261,14 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Scalebar changed to meters</source>
         <translation>Eenheid schaalbalk gewijzigd naar meter</translation>
     </message>
+    <message>
+        <source>Scalebar line join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar line cap style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -20312,6 +20412,14 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Stroke color...</source>
         <translation>Schaduwkleur...</translation>
     </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Verbindingstijl</translation>
+    </message>
+    <message>
+        <source>Cap style</source>
+        <translation type="unfinished">Eindstijl</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerShapeWidget</name>
@@ -20366,6 +20474,10 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Shape radius changed</source>
         <translation>Radius object aangepast</translation>
+    </message>
+    <message>
+        <source>Shape style changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20487,6 +20599,18 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Table visible only toggled</source>
         <translation>Tabel &apos;alleen zichtbare objecten tonen&apos; omgezet</translation>
     </message>
+    <message>
+        <source>Table feature filter toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table feature filter modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression based filter</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerTableWidgetBase</name>
@@ -20573,6 +20697,14 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Content font...</source>
         <translation>Inhoud lettertype...</translation>
+    </message>
+    <message>
+        <source>Filter with</source>
+        <translation type="unfinished">Filter met</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -26452,6 +26584,10 @@ Selecteer alstublieft een geldig bestand.</translation>
     <message>
         <source>Pixel Size</source>
         <translation>Pixelgrootte</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Band</translation>
     </message>
 </context>
 <context>
@@ -32540,7 +32676,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="obsolete">Kaartvenster versen: %1 ms</translation>
+        <translation type="unfinished">Kaartvenster versen: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
@@ -32552,7 +32688,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>canvas</source>
-        <translation type="obsolete">ondergrond</translation>
+        <translation type="unfinished">ondergrond</translation>
     </message>
 </context>
 <context>
@@ -36655,6 +36791,10 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
         <source>Are you sure to reset the UI to default (needs restart)?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Identify highlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -37673,7 +37813,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation>&lt;b&gt;Let op:&lt;/b&gt; Zet de waarde onder 1000 om te voorkomen dat de display wordt ververst voordat alle objecten binnen zijn</translation>
+        <translation type="obsolete">&lt;b&gt;Let op:&lt;/b&gt; Zet de waarde onder 1000 om te voorkomen dat de display wordt ververst voordat alle objecten binnen zijn</translation>
     </message>
     <message>
         <source>Suppress attribute form pop-up after feature creation</source>
@@ -37838,6 +37978,30 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Enable feature simplification by default for newly added layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Highlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The color used to highlight identified feature. The alpha channel is only used for polygons fill, lines and outlines are fully opaque.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation type="unfinished">Buffer</translation>
+    </message>
+    <message>
+        <source>Lines / outlines buffer in millimeters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum line / outline width in millimeters.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -40582,7 +40746,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
-        <translation>&lt;br/&gt;%1 stem(men)&lt;br/&gt;</translation>
+        <translation type="obsolete">&lt;br/&gt;%1 stem(men)&lt;br/&gt;</translation>
     </message>
     <message>
         <source>Category</source>
@@ -40727,6 +40891,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 rating vote(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vote sent successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sending vote to the plugin repository failed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -40980,6 +41156,10 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -43263,6 +43443,18 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
         <source>Actions</source>
         <translation>Acties</translation>
     </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">Tonen</translation>
+    </message>
+    <message>
+        <source>Draw as lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw as lines (only int layers)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterHistogramWidgetBase</name>
@@ -45035,6 +45227,17 @@ datasets met een maximale hoogte en breedte, hieronder gegeven.</translation>
     <message>
         <source>VRT Tiles</source>
         <translation>VRT Tiles</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterMinMaxWidget</name>
+    <message>
+        <source>No option selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select an option to load min/max values.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49355,6 +49558,21 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
 </context>
 <context>
+    <name>QgsSvgExportOptionsDialog</name>
+    <message>
+        <source>SVG export options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export map layers as svg groups (may affect label placement)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render text as outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Select SVG file</source>
@@ -49519,11 +49737,11 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>Invalid Selection!</source>
-        <translation>Ongeldige Selectie!</translation>
+        <translation type="obsolete">Ongeldige Selectie!</translation>
     </message>
     <message>
         <source>Kindly select a symbol to add layer.</source>
-        <translation>Selecteer een symbool om de laag toe te voegen.</translation>
+        <translation type="obsolete">Selecteer een symbool om de laag toe te voegen.</translation>
     </message>
 </context>
 <context>
@@ -56303,6 +56521,10 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     <message>
         <source>Border</source>
         <translation>Rand</translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Verbindingstijl</translation>
     </message>
 </context>
 <context>
@@ -63506,6 +63728,43 @@ Returns a string wrapped to a maximum/minimum number of characters.
 &lt;!-- Show example of function.--&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
+Returns the geometry of the current feature iterated in atlas.
+Can be used for rule based display of geometry when using atlas.
+For example to only show geometries of other layers when their geometry 
+intersects the iterated geometry of features using atlas.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
+Returns the feature id of the current row while using atlas.
+This enables you to use features of atlas in rules 
+and for example show or hide features based on their id.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+
 </source>
         <translation type="unfinished"></translation>
     </message>
