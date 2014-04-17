@@ -33,7 +33,7 @@
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
 : QgsFillSymbolLayerV2(),
   mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
-  mOffsetUnit( QgsSymbolV2::MM ), mIsExterior( false )
+  mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
 }
@@ -52,13 +52,6 @@ QgsSymbolV2::OutputUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
     return QgsSymbolV2::Mixed;
   }
   return unit;
-}
-
-void QgsSimpleFillSymbolLayerV2::setIsExterior( bool isExterior )
-{
-  mIsExterior = isExterior;
-  // force the rendering as a whole layer, even if symbol levels are turned off
-  setForceRenderWithLevels( isExterior );
 }
 
 void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen )
@@ -180,7 +173,7 @@ void QgsSimpleFillSymbolLayerV2::preRender( QgsSymbolV2RenderContext& context )
 
 void QgsSimpleFillSymbolLayerV2::postRender( QgsSymbolV2RenderContext& context )
 {
-  if ( mIsExterior ) {
+  if ( isExterior() ) {
     QPainter* p = context.renderContext().painter();
     if ( !p )
     {
@@ -230,7 +223,7 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
     return;
   }
 
-  if ( mIsExterior )
+  if ( isExterior() )
   {
     mExteriorPath.addPolygon( points );
     if ( rings ) {
@@ -419,8 +412,7 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor
     mReferencePoint2( QPointF( 0.5, 1 ) ),
     mReferencePoint2IsCentroid( false ),
     mAngle( 0 ),
-    mOffsetUnit( QgsSymbolV2::MM ),
-    mIsExterior( false )
+    mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
   mColor2 = color2;
@@ -530,13 +522,6 @@ void QgsGradientFillSymbolLayerV2::setColorRamp( QgsVectorColorRampV2* ramp )
 QString QgsGradientFillSymbolLayerV2::layerType() const
 {
   return "GradientFill";
-}
-
-void QgsGradientFillSymbolLayerV2::setIsExterior( bool isExterior )
-{
-  mIsExterior = isExterior;
-  // force rendering as a whole layer, even when symbol levels are turned off
-  setForceRenderWithLevels( isExterior );
 }
 
 void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points )
@@ -794,7 +779,7 @@ void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context
 
 void QgsGradientFillSymbolLayerV2::postRender( QgsSymbolV2RenderContext& context )
 {
-  if ( mIsExterior ) {
+  if ( isExterior() ) {
     QPainter* p = context.renderContext().painter();
     if ( !p )
     {
@@ -842,7 +827,7 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
     return;
   }
 
-  if ( mIsExterior )
+  if ( isExterior() )
   {
     mExteriorPath.addPolygon( points );
     if ( rings ) {
@@ -894,7 +879,7 @@ QgsStringMap QgsGradientFillSymbolLayerV2::properties() const
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
-  map["exterior_fill"] = QString::number( mIsExterior ? 1 : 0 );
+  map["exterior_fill"] = QString::number( isExterior() ? 1 : 0 );
   saveDataDefinedProperties( map );
   if ( mGradientRamp )
   {

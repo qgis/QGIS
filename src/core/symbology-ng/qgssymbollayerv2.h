@@ -286,12 +286,18 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
 
+    //! Sets to true if this is an exterior fill
+    void setIsExterior( bool isExterior );
+    bool isExterior() const { return mIsExterior; }
+
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
     /**Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     double mAngle;
+
+    bool mIsExterior;
 };
 
 class QgsSymbolLayerV2Widget;  // why does SIP fail, when this isn't here

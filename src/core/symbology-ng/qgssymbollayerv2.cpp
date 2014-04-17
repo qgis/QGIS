@@ -207,7 +207,7 @@ QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
 }
 
 QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked ), mAngle( 0.0 )
+    : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked ), mAngle( 0.0 ), mIsExterior( false )
 {
 }
 
@@ -371,11 +371,25 @@ double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2R
 }
 
 
+void QgsFillSymbolLayerV2::setIsExterior( bool isExterior )
+{
+  mIsExterior = isExterior;
+  // force rendering as a whole layer, even when symbol levels are turned off
+  setForceRenderWithLevels( isExterior );
+}
+
 void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
 {
   QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
+  if ( isExterior() ) {
+    // add a 15% margin around the rect
+    float margin = (size.width() + size.height()) / 2.0 * 0.15;
+    poly = QRectF( QPointF( margin, margin ), QPointF( size.width()-margin, size.height()-margin ) );
+  }
   startRender( context );
+  preRender( context );
   renderPolygon( poly, NULL, context );
+  postRender( context );
   stopRender( context );
 }
 

@@ -295,24 +295,28 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
 
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &p );
   startRender( context );
+  for ( int i = 0; i < symbolLayerCount(); i++ )
+  {
+    preRender( context, i );
 
-  if ( mType == QgsSymbolV2::Line )
-  {
-    QPolygonF poly;
-    poly << QPointF( 0, 50 ) << QPointF( 99, 50 );
-    static_cast<QgsLineSymbolV2*>( this )->renderPolyline( poly, 0, context );
+    if ( mType == QgsSymbolV2::Line )
+    {
+      QPolygonF poly;
+      poly << QPointF( 0, 50 ) << QPointF( 99, 50 );
+      static_cast<QgsLineSymbolV2*>( this )->renderPolyline( poly, 0, context, i );
+    }
+    else if ( mType == QgsSymbolV2::Fill )
+    {
+      QPolygonF polygon;
+      polygon << QPointF( 20, 20 ) << QPointF( 80, 20 ) << QPointF( 80, 80 ) << QPointF( 20, 80 ) << QPointF( 20, 20 );
+      static_cast<QgsFillSymbolV2*>( this )->renderPolygon( polygon, NULL, 0, context, i );
+    }
+    else // marker
+    {
+      static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( QPointF( 50, 50 ), 0, context, i );
+    }
+    postRender( context, i );
   }
-  else if ( mType == QgsSymbolV2::Fill )
-  {
-    QPolygonF polygon;
-    polygon << QPointF( 20, 20 ) << QPointF( 80, 20 ) << QPointF( 80, 80 ) << QPointF( 20, 80 ) << QPointF( 20, 20 );
-    static_cast<QgsFillSymbolV2*>( this )->renderPolygon( polygon, NULL, 0, context );
-  }
-  else // marker
-  {
-    static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( QPointF( 50, 50 ), 0, context );
-  }
-
   stopRender( context );
   return preview;
 }
