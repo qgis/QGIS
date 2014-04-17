@@ -25,9 +25,42 @@
 
 extern "C"
 {
+#include <grass/version.h>
+
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#define BOUND_BOX bound_box
+#endif
 }
 
+#if GRASS_VERSION_MAJOR < 7
+#else
+
+void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist * list )
+{
+  Vect_reset_list( list );
+  for ( int i = 0; i < blist->n_values; i++ )
+  {
+    Vect_list_append( list, blist->id[i] );
+  }
+  Vect_destroy_boxlist( blist );
+}
+
+#define Vect_select_lines_by_box(map, box, type, list) \
+  { \
+    struct boxlist *blist = Vect_new_boxlist(0);\
+    Vect_select_lines_by_box( (map), (box), (type), blist); \
+    copy_boxlist_and_destroy( blist, (list) );\
+  }
+#define Vect_select_areas_by_box(map, box, list) \
+  { \
+    struct boxlist *blist = Vect_new_boxlist(0);\
+    Vect_select_areas_by_box( (map), (box), blist); \
+    copy_boxlist_and_destroy( blist, (list) );\
+  }
+#endif
 
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )

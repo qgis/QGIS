@@ -37,10 +37,21 @@ extern "C"
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
-#include <grass/gprojects.h>
-#include <grass/Vect.h>
 #include <grass/version.h>
+#include <grass/gprojects.h>
+
+#if GRASS_VERSION_MAJOR < 7
+#include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#include <grass/raster.h>
+#endif
 }
+
+#if GRASS_VERSION_MAJOR >= 7
+#define G_suppress_masking Rast_suppress_masking
+#define BOUND_BOX bound_box
+#endif
 
 #if !defined(GRASS_VERSION_MAJOR) || \
     !defined(GRASS_VERSION_MINOR) || \
@@ -106,7 +117,10 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
 
   // I think that mask should not be used in QGIS as it can only confuses people,
   // anyway, I don't think anybody is using MASK
+  // TODO7: Rast_suppress_masking (see G_suppress_masking() macro above) needs MAPSET
+#if GRASS_VERSION_MAJOR < 7
   G_suppress_masking();
+#endif
 
   // Set program name
   G_set_program_name( "QGIS" );
@@ -1026,10 +1040,15 @@ bool GRASS_LIB_EXPORT QgsGrass::region( QString gisbase,
 {
   QgsGrass::setLocation( gisbase, location );
 
+#if GRASS_VERSION_MAJOR < 7
   if ( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) )
   {
     return false;
   }
+#else
+  // TODO7: unfortunately G__get_window does not return error code and calls G_fatal_error on error
+  G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() );
+#endif
   return true;
 }
 
@@ -1141,6 +1160,7 @@ bool GRASS_LIB_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   if ( type == Raster )
   {
 
+#if GRASS_VERSION_MAJOR < 7
     if ( G_get_cellhd( map.toUtf8().data(),
                        mapset.toUtf8().data(), window ) < 0 )
     {
@@ -1148,6 +1168,10 @@ bool GRASS_LIB_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
                             QObject::tr( "Cannot read raster map region" ) );
       return false;
     }
+#else
+    // TODO7: unfortunately Rast_get_cellhd does not return error code and calls G_fatal_error on error
+    Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
+#endif
   }
   else if ( type == Vector )
   {
@@ -1193,6 +1217,7 @@ bool GRASS_LIB_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   }
   else if ( type == Region )
   {
+#if GRASS_VERSION_MAJOR < 7
     if ( G__get_window( window, ( char * ) "windows",
                         map.toUtf8().data(),
                         mapset.toUtf8().data() ) != NULL )
@@ -1201,6 +1226,10 @@ bool GRASS_LIB_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
                             QObject::tr( "Cannot read region" ) );
       return false;
     }
+#else
+    // TODO7: unfortunately G__get_window does not return error code and calls G_fatal_error on error
+    G__get_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+#endif
   }
   return true;
 }

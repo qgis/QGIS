@@ -10,8 +10,26 @@ MACRO (CHECK_GRASS G_PREFIX)
 
   FIND_PATH (GRASS_INCLUDE_DIR grass/version.h ${G_PREFIX}/include)
 
+  FILE(READ ${GRASS_INCLUDE_DIR}/grass/version.h VERSIONFILE)
+  # We can avoid the following block using version_less version_equal and
+  # version_greater. Are there compatibility problems? 
+  STRING(REGEX MATCH "[0-9]+\\.[0-9]+\\.[^ ]+" GRASS_VERSION ${VERSIONFILE})
+  STRING(REGEX REPLACE "^([0-9]*)\\.[0-9]*\\..*$" "\\1" GRASS_MAJOR_VERSION ${GRASS_VERSION})
+  STRING(REGEX REPLACE "^[0-9]*\\.([0-9]*)\\..*$" "\\1" GRASS_MINOR_VERSION ${GRASS_VERSION})
+  STRING(REGEX REPLACE "^[0-9]*\\.[0-9]*\\.(.*)$" "\\1" GRASS_MICRO_VERSION ${GRASS_VERSION})
+  # Add micro version too?
+  # How to numerize RC versions?
+  MATH( EXPR GRASS_NUM_VERSION "${GRASS_MAJOR_VERSION}*10000 + ${GRASS_MINOR_VERSION}*100")
+
   SET (GRASS_LIBRARIES_FOUND TRUE)
-  SET (GRASS_LIB_NAMES gis vect dig2 dbmiclient dbmibase shape dgl rtree datetime linkm form gproj)
+  SET (GRASS_LIB_NAMES gis dig2 dbmiclient dbmibase shape dgl rtree datetime linkm gproj)
+  IF (GRASS_MAJOR_VERSION LESS 7 )
+    LIST(APPEND GRASS_LIB_NAMES vect)
+    LIST(APPEND GRASS_LIB_NAMES form)
+  ELSE (GRASS_MAJOR_VERSION LESS 7 )
+    LIST(APPEND GRASS_LIB_NAMES vector)
+    LIST(APPEND GRASS_LIB_NAMES raster)
+  ENDIF (GRASS_MAJOR_VERSION LESS 7 )
 
   FOREACH (LIB ${GRASS_LIB_NAMES})
     MARK_AS_ADVANCED ( GRASS_LIBRARY_${LIB} )
@@ -68,17 +86,6 @@ ENDIF (WITH_GRASS)
 ###################################
 
 IF (GRASS_FOUND)
-   FILE(READ ${GRASS_INCLUDE_DIR}/grass/version.h VERSIONFILE)
-   # We can avoid the following block using version_less version_equal and
-   # version_greater. Are there compatibility problems? 
-   STRING(REGEX MATCH "[0-9]+\\.[0-9]+\\.[^ ]+" GRASS_VERSION ${VERSIONFILE})
-   STRING(REGEX REPLACE "^([0-9]*)\\.[0-9]*\\..*$" "\\1" GRASS_MAJOR_VERSION ${GRASS_VERSION})
-   STRING(REGEX REPLACE "^[0-9]*\\.([0-9]*)\\..*$" "\\1" GRASS_MINOR_VERSION ${GRASS_VERSION})
-   STRING(REGEX REPLACE "^[0-9]*\\.[0-9]*\\.(.*)$" "\\1" GRASS_MICRO_VERSION ${GRASS_VERSION})
-   # Add micro version too?
-   # How to numerize RC versions?
-   MATH( EXPR GRASS_NUM_VERSION "${GRASS_MAJOR_VERSION}*10000 + ${GRASS_MINOR_VERSION}*100")
-
    IF (NOT GRASS_FIND_QUIETLY)
       MESSAGE(STATUS "Found GRASS: ${GRASS_PREFIX} (${GRASS_VERSION})")
    ENDIF (NOT GRASS_FIND_QUIETLY)
