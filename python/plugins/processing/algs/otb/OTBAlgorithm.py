@@ -74,11 +74,11 @@ class OTBAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return  PyQt4.QtGui.QIcon(os.path.dirname(__file__) + "/../../images/otb.png")
 
-    def helpFile(self):
+    def help(self):
         folder = os.path.join( OTBUtils.otbDescriptionPath(), 'doc' )
         helpfile = os.path.join( str(folder), self.appkey + ".html")
         if os.path.exists(helpfile):
-            return helpfile
+            return False, helpfile
         else:
             raise WrongHelpFileException("Could not find help file for this algorithm. \nIf you have it put it in: \n"+str(folder))
 

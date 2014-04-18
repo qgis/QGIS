@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.gui.Help2Html import getHtmlFromRstFile
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -501,9 +502,15 @@ class SagaAlgorithm(GeoAlgorithm):
                         + ' has more than one band.\n' \
                         + 'Multiband layers are not supported by SAGA'
 
-    def helpFile(self):
-        return os.path.join(os.path.dirname(__file__), 'help',
-                            self.name.replace(' ', '') + '.html')
+    def help(self):
+        name = self.cmdname.lower()
+        validChars = 'abcdefghijklmnopqrstuvwxyz'
+        name = ''.join(c for c in name if c in validChars)        
+        html = getHtmlFromRstFile(os.path.join(os.path.dirname(__file__), 'help',
+                            name + '.rst'))
+        imgpath = os.path.join(os.path.dirname(__file__),os.pardir, os.pardir, 'images', 'saga100x100.jpg')
+        html = ('<img src="%s"/>' % imgpath) + html
+        return True, html
 
     def getPostProcessingErrorMessage(self, wrongLayers):
         html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)

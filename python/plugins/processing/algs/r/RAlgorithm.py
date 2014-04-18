@@ -34,7 +34,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.Help2Html import Help2Html
+from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterTable import ParameterTable
 from processing.parameters.ParameterVector import ParameterVector
@@ -401,11 +401,10 @@ class RAlgorithm(GeoAlgorithm):
     def getRCommands(self):
         return self.commands
 
-    def helpFile(self):
+    def help(self):
         helpfile = unicode(self.descriptionFile) + '.help'
         if os.path.exists(helpfile):
-            h2h = Help2Html()
-            return h2h.getHtmlFile(self, helpfile)
+            return True, getHtmlFromHelpFile(self, helpfile)
         else:
             return None
 

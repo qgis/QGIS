@@ -37,7 +37,7 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.gui.Help2Html import Help2Html
+from processing.gui.Help2Html import  getHtmlFromHelpFile
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.parameters.ParameterFactory import ParameterFactory
@@ -736,11 +736,10 @@ class ModelerAlgorithm(GeoAlgorithm):
         if self.modelerdialog:
             self.modelerdialog.repaintModel()
 
-    def helpFile(self):
+    def help(self):
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
-            h2h = Help2Html()
-            return h2h.getHtmlFile(self, helpfile)
+            return True, getHtmlFromHelpFile(self, helpfile)
         else:
             return None
 
