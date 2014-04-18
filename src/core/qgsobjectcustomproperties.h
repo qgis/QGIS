@@ -26,7 +26,7 @@ class QDomNode;
 
 /**
  * Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
- * in <customproperties> element.
+ * in \verbatim <customproperties> \endverbatim element.
  *
  * \note added in 2.4
  */
