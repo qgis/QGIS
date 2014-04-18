@@ -2071,7 +2071,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             QString errorMsg;
             int errorLine;
             if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
-              QMessageBox::warning( 0, tr( "Svg error" ), tr( "There was an error in svg ouput for svg layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + "(" + errorMsg + ")" );
+              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + "(" + errorMsg + ")" );
             if ( 1 == svgLayerId )
             {
               svg = QDomDocument( doc.doctype() );
