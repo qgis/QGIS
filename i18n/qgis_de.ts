@@ -11943,7 +11943,8 @@ Fehler: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9121"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Dieses Projekt wurde mit einer älteren Version von QGIS gespeichtert.Wird dieses Projekt erneut gespeichert so wird QGIS die Projektdatei auf diese Version aktualisieren und es so möglicherweise unladbar für ältere Versionen von QGIS machen. </translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9147"/>
@@ -12613,17 +12614,17 @@ Fehler: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9395"/>
         <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitüberschreitung bei Anfrage &apos;%1&apos;. Empfangene Daten sind wahrscheinlich unvollständig.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9396"/>
         <source>Network request timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitüberschreitung bei Netzwerkanfrage.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9396"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitüberschreitung bei Netzwerkanfrage, empfangene Daten wahrscheinlich nicht vollständig.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="572"/>
@@ -15350,17 +15351,17 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source>Svg error</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG Error</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source>There was an error in svg ouput for svg layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler in der SVG Ausgabe für SVG Layer </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source> on page </source>
-        <translation type="unfinished"></translation>
+        <translation>auf Seite</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3085"/>
@@ -16604,7 +16605,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="212"/>
         <source>Item frame join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementrahmen Verbindungsstil</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="224"/>
@@ -16629,12 +16630,12 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="404"/>
         <source>Item blend mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Element Überblendungsmodus verändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="414"/>
         <source>Item transparency changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementtransparenz verändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="542"/>
@@ -16719,7 +16720,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="302"/>
         <source>Join style</source>
-        <translation type="unfinished">Verbindungsstil</translation>
+        <translation>Verbindungsstil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="315"/>
@@ -16944,7 +16945,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="232"/>
         <source>Legend title alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Legendentitelausrichtung geändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="243"/>
@@ -17194,22 +17195,22 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="139"/>
         <source>Title alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Titelausrichtung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="147"/>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Center</source>
-        <translation type="unfinished">Zentriert</translation>
+        <translation>Zentriert</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="157"/>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="182"/>
@@ -17641,7 +17642,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="782"/>
         <source>Overview frame style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Übersichtsrahmenstil verändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="816"/>
@@ -17668,7 +17669,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="908"/>
         <source>Grid line style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Gitterrahmenlinienstil geändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="935"/>
@@ -18404,12 +18405,12 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="629"/>
         <source>Scalebar line join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßstabsleistenlinienstil geändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="642"/>
         <source>Scalebar line cap style</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßstabsleistenlinienendenstil geändert</translation>
     </message>
 </context>
 <context>
@@ -18536,12 +18537,12 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="362"/>
         <source>Join style</source>
-        <translation type="unfinished">Verbindungsstil</translation>
+        <translation>Verbindungsstil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="372"/>
         <source>Cap style</source>
-        <translation type="unfinished">Endstil</translation>
+        <translation>Endenstil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="395"/>
@@ -18581,7 +18582,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="119"/>
         <source>Shape style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Formstil geändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="144"/>
@@ -18643,18 +18644,18 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="382"/>
         <source>Table feature filter toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabellenobjektfilter umgeschaltet</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="395"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="416"/>
         <source>Table feature filter modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabellenobjektfilter verändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="409"/>
         <source>Expression based filter</source>
-        <translation type="unfinished">Ausdrucksbasierter Filter</translation>
+        <translation>Ausdrucksbasierter Filter</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="437"/>
@@ -18761,12 +18762,12 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="102"/>
         <source>Filter with</source>
-        <translation type="unfinished">Filtern nach</translation>
+        <translation>Filtern nach</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="114"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="127"/>
@@ -41779,17 +41780,17 @@ Auf Hilfeknopf klicken um die gültigen Erzeugungsoptionen diese Formats zu erfa
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="170"/>
         <source>Display</source>
-        <translation type="unfinished">Anzeigen</translation>
+        <translation>Anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="178"/>
         <source>Draw as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichne als Linien</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="184"/>
         <source>Draw as lines (only int layers)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichne als Linien (nur int Layer)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="190"/>
@@ -43238,12 +43239,12 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>No option selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Option gewählt</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>Please select an option to load min/max values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle eine Option um min/max Werte zu laden.</translation>
     </message>
 </context>
 <context>
@@ -47605,17 +47606,17 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="14"/>
         <source>SVG export options</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG Exportoptionen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="22"/>
         <source>Export map layers as svg groups (may affect label placement)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportiere Kartenlayer als SVG Gruppen (beeinflusst Beschriftungsplatzierung)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="35"/>
         <source>Render text as outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Stelle Text als Outline dar</translation>
     </message>
 </context>
 <context>
@@ -60237,7 +60238,21 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$atlasgeometry Funktion&lt;/h3&gt;
+Gibt die Geometrie des in Atlas iterierten Objekts zurück.
+Wird verwendet für Regelbasierte Darstellung unter Benutzung von Atlas.
+Zum Beispiel um nur die Geometrien anderer Layer zu zeigen wenn deren 
+Geometrie den durch Atlas iterierten Layer in dessen Geomtrien schneidet.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Kein
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1668"/>
@@ -60256,7 +60271,20 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$atlasfeatureid Funktion&lt;/h3&gt;
+Gibt die Objektid der aktuellen Zeile bei benutzung von Atlas zurück.
+Dies ermöglicht Objekte in Atlas regelbasiert zu wählen um zum 
+Beispiel Objekte anhand deren id anzuzeigen oder zu verstecken.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+None
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1946"/>
