@@ -1,0 +1,15 @@
+i.atcorr
+i.atcorr - Performs atmospheric correction using the 6S algorithm.
+Imagery (i.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterBoolean|-a|Input from ETM+ image taken after July 1, 2000|False
+ParameterBoolean|-b|Input from ETM+ image taken before July 1, 2000|False
+ParameterRaster|elevation|Input altitude raster map in m (optional)|True
+ParameterRaster|visibility|Input visibility raster map in km (optional)|True
+ParameterFile|parameters|Name of input text file|False
+ParameterRange|range|Input imagery range [0,255]|0,255
+ParameterBoolean|-o|Try to increase computation speed when altitude and/or visibility map is used|True
+OutputRaster|output|Name for output raster map
+ParameterBoolean|-f|Output raster is floating point|False
+ParameterRange|rescale|Rescale output raster map [0,255]|0,255
+
