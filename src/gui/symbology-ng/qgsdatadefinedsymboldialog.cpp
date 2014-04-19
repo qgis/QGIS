@@ -6,7 +6,9 @@
 #include <QComboBox>
 #include <QPushButton>
 
-QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vl )
+QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -140,6 +142,7 @@ void QgsDataDefinedSymbolDialog::expressionButtonClicked()
     {
       attributeCombo->setItemText( 0, d.expressionText() );
       attributeCombo->setCurrentIndex( 0 );
+      Q_ASSERT( d.expressionText() == attributeCombo->currentText() );
     }
     else
     {
@@ -156,7 +159,7 @@ int QgsDataDefinedSymbolDialog::comboIndexForExpressionString( const QString& ex
 {
   QString attributeString = expr.trimmed();
   int comboIndex = cb->findText( attributeString );
-  if ( comboIndex == -1 )
+  if ( comboIndex == -1 && attributeString.startsWith( '"' ) && attributeString.endsWith( '"') )
   {
     attributeString.remove( 0, 1 ).chop( 1 );
     comboIndex = cb->findText( attributeString );
