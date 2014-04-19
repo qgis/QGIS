@@ -89,7 +89,7 @@ class OTBAlgorithm(GeoAlgorithm):
             if c_list[0] == "ParameterType_InputImageList":
                 a_list[3] = 3
             elif c_list[0] == "ParameterType_InputFilenameList":
-                a_list[3] = 4                
+                a_list[3] = 4
             else:
                 a_list[3] = -1
 

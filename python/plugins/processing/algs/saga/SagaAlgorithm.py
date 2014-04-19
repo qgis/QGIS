@@ -505,7 +505,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def help(self):
         name = self.cmdname.lower()
         validChars = 'abcdefghijklmnopqrstuvwxyz'
-        name = ''.join(c for c in name if c in validChars)        
+        name = ''.join(c for c in name if c in validChars)
         html = getHtmlFromRstFile(os.path.join(os.path.dirname(__file__), 'help',
                             name + '.rst'))
         imgpath = os.path.join(os.path.dirname(__file__),os.pardir, os.pardir, 'images', 'saga100x100.jpg')

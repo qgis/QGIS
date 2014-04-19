@@ -188,7 +188,7 @@ class Setting:
     STRING = 0
     FILE = 1
     FOLDER = 2
-    
+
     def __init__(self, group, name, description, default, hidden=False, valuetype = None):
         self.group = group
         self.name = name

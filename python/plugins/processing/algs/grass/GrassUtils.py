@@ -94,7 +94,7 @@ class GrassUtils:
                     for subfolder in os.listdir(testfolder):
                         if subfolder.startswith('grass'):
                             folder = os.path.join(testfolder, subfolder)
-                            break                
+                            break
             else:
                 folder = os.path.join(QgsApplication.prefixPath(), 'grass')
                 if not os.path.isdir(folder):

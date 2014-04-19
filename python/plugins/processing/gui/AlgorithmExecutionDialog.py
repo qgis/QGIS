@@ -108,21 +108,21 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         url = None
         try:
             isText, help = self.alg.help()
-            if help is not None:                
+            if help is not None:
                 if isText:
                     html = help;
                 else:
-                    url = QtCore.QUrl(help)                    
+                    url = QtCore.QUrl(help)
             else:
                 html = '<h2>Sorry, no help is available for this \
                         algorithm.</h2>'
         except WrongHelpFileException, e:
-            html = e.args[0]            
+            html = e.args[0]
         try:
             if html:
                 self.webView.setHtml(html)
-            elif url:   
-                print url             
+            elif url:
+                print url
                 self.webView.load(url)
         except:
             self.webView.setHtml('<h2>Could not open help file :-( </h2>')
@@ -199,11 +199,11 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 return param.setValue(widget.selectedoptions)
-            else:                    
+            else:
                 if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers()                
+                    options = dataobjects.getVectorLayers()
                 else:
-                    options = dataobjects.getRasterLayers()                
+                    options = dataobjects.getRasterLayers()
                 return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):

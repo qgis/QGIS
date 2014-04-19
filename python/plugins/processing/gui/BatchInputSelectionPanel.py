@@ -54,13 +54,13 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()
         self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showPopupMenu)                
+        self.pushButton.clicked.connect(self.showPopupMenu)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
-        
+
     def showPopupMenu(self):
         popupmenu = QtGui.QMenu()
-        if not (isinstance(self.param, ParameterMultipleInput) 
+        if not (isinstance(self.param, ParameterMultipleInput)
                     and self.param.datatype == ParameterMultipleInput.TYPE_FILE):
             selectLayerAction = QtGui.QAction('Select from open layers',
                 self.pushButton)
@@ -70,28 +70,28 @@ class BatchInputSelectionPanel(QtGui.QWidget):
                 self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
-        popupmenu.exec_(QtGui.QCursor.pos())        
+        popupmenu.exec_(QtGui.QCursor.pos())
 
     def showLayerSelectionDialog(self):
         if (isinstance(self.param, ParameterRaster)
-                or (isinstance(self.param, ParameterMultipleInput) 
+                or (isinstance(self.param, ParameterMultipleInput)
                     and self.param.datatype == ParameterMultipleInput.TYPE_RASTER)):
-            layers = dataobjects.getRasterLayers()  
+            layers = dataobjects.getRasterLayers()
         elif isinstance(self.param, ParameterTable):
-            layers = dataobjects.getTables()    
+            layers = dataobjects.getTables()
         else:
             if isinstance(self.param, ParameterVector):
                 datatype = self.param.shapetype
             else:
                 datatype = [self.param.datatype]
-            layers = dataobjects.getVectorLayers(datatype)            
+            layers = dataobjects.getVectorLayers(datatype)
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec_()
-        if dlg.selectedoptions is not None:            
-            selected = dlg.selectedoptions            
+        if dlg.selectedoptions is not None:
+            selected = dlg.selectedoptions
             if len(selected) == 1:
                 self.text.setText(layers[selected[0]])
-            else:                
+            else:
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(layers[idx].name() for idx in selected))
                 else:
@@ -101,7 +101,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
                     for i, layeridx in enumerate(selected):
                         self.table.cellWidget(i + self.row,
                                 self.col).setText(layers[layeridx].name())
-        
+
     def showFileSelectionDialog(self):
         settings = QtCore.QSettings()
         text = unicode(self.text.text())

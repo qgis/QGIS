@@ -146,7 +146,7 @@ class Processing:
         Processing.addProvider(OTBAlgorithmProvider())
         Processing.addProvider(RAlgorithmProvider())
         Processing.addProvider(SagaAlgorithmProvider())
-        Processing.addProvider(GrassAlgorithmProvider())        
+        Processing.addProvider(GrassAlgorithmProvider())
         Processing.addProvider(Grass7AlgorithmProvider())
         Processing.addProvider(ScriptAlgorithmProvider())
         Processing.addProvider(TauDEMAlgorithmProvider())

@@ -473,10 +473,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 void QgsIdentifyResultsDialog::mapLayerActionDestroyed()
 {
   QTreeWidgetItemIterator it( lstResults );
-  while( *it )
+  while ( *it )
   {
-    if( (*it)->data( 0, Qt::UserRole ) == "map_layer_action" &&
-        (*it)->data( 0, Qt::UserRole + 1 ).value< QObject *>() == sender() )
+    if (( *it )->data( 0, Qt::UserRole ) == "map_layer_action" &&
+        ( *it )->data( 0, Qt::UserRole + 1 ).value< QObject *>() == sender() )
       delete *it;
     else
       ++it;

@@ -89,6 +89,6 @@ class SagaGroupNameDecorator:
     groups['vigra'] = 'Vigra'
 
     @staticmethod
-    def getDecoratedName(groupName):        
+    def getDecoratedName(groupName):
         return SagaGroupNameDecorator.groups.get(groupName, groupName)
-        
+

@@ -36,7 +36,7 @@ ALG_CREATOR = 'ALG_CREATOR'
 ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
 
 exps = [(r"\*(.*?)\*", r"<i>\1</i>"),
-        ("``(.*?)``", r'<FONT FACE="courier">\1</FONT>'),        
+        ("``(.*?)``", r'<FONT FACE="courier">\1</FONT>'),
         ("(.*?)\n==+\n+?", r'<h2>\1</h2>'),
         ("(.*?)\n--+\n+?", r'<h3>\1</h3>'),
         (r"::(\s*\n(\s*\n)*((\s+).*?\n)(((\4).*?\n)|(\s*\n))*)",r"<pre>\1</pre>"),
@@ -45,14 +45,14 @@ exps = [(r"\*(.*?)\*", r"<i>\1</i>"),
 
 def getHtmlFromRstFile(rst):
     with open(rst) as f:
-        lines = f.readlines()            
+        lines = f.readlines()
     s = "".join(lines)
     for exp, replace in exps:
         p = re.compile(exp)
         s = p.sub(replace, s)
     print s
     return s
-    
+
 def getHtmlFromHelpFile(alg, helpFile):
     if not os.path.exists(helpFile):
         return None

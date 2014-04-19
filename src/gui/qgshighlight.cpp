@@ -344,7 +344,7 @@ void QgsHighlight::paint( QPainter* p )
   else if ( mFeature.geometry() )
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
-    if( !layer )
+    if ( !layer )
       return;
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );

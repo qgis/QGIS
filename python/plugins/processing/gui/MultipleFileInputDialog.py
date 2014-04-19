@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 import os
 
 class MultipleFileInputDialog(QtGui.QDialog):
-    
+
     def __init__(self, selectedoptions):
         self.selectedoptions = selectedoptions
         self.options=selectedoptions

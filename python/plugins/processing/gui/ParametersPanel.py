@@ -283,7 +283,7 @@ class ParametersPanel(QtGui.QWidget):
                 item = MultipleFileInputPanel()
             else:
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    options = dataobjects.getRasterLayers()                                    
+                    options = dataobjects.getRasterLayers()
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers()
                 else:

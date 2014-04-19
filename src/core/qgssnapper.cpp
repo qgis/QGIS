@@ -99,7 +99,7 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
   QgsSnappingResult returnResult = evalIt.value();
   for ( evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt )
   {
-    if( evalIt.value().snappedVertexNr != -1 )
+    if ( evalIt.value().snappedVertexNr != -1 )
     {
       returnResult = evalIt.value();
       snappingResultList.erase( evalIt );

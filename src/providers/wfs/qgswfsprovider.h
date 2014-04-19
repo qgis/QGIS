@@ -153,7 +153,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
   private:
     bool mNetworkRequestFinished;
     friend class QgsWFSFeatureSource;
-    
+
     //! http authorization details
     QgsWFSAuthorization mAuth;
 

@@ -138,8 +138,8 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
   //add authorization information
   if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
   {
-    uri += "&username="+mUri.param( "username" );
-    uri += "&password="+mUri.param( "password" );
+    uri += "&username=" + mUri.param( "username" );
+    uri += "&password=" + mUri.param( "password" );
   }
   QgsDebugMsg( uri );
   return uri;
