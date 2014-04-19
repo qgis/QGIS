@@ -89,7 +89,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/grass.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
 
     def helpFile(self):
         return 'http://grass.osgeo.org/grass70/manuals/' + self.grassName \

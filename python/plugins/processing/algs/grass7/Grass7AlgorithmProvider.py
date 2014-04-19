@@ -97,7 +97,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         return 'grass70'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/grass.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']
