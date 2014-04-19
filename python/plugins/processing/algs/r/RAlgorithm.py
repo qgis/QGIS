@@ -414,7 +414,7 @@ class RAlgorithm(GeoAlgorithm):
             html = '<p>This algorithm requires R to be run.Unfortunately, \
                    it seems that R is not installed in your system, or it \
                    is not correctly configured to be used from QGIS</p>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with QGIS</p>'
             return html
 
     def getPostProcessingErrorMessage(self, wrongLayers):
@@ -435,6 +435,6 @@ class RAlgorithm(GeoAlgorithm):
                      environment before trying to execute this script.</p>'
         else:
             html += msg + '</i></li></ul>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with QGIS</p>'
 
         return html

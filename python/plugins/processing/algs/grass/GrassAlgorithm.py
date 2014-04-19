@@ -512,7 +512,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 Unfortunately, it seems that GRASS is not installed in \
                 your system, or it is not correctly configured to be used \
                 from QGIS</p>'
-            html += '<p><a href="http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with QGIS</p>'
+            html += '<p><a href="http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with QGIS</p>'
             return html
 
     def checkParameterValuesBeforeExecuting(self):
@@ -537,6 +537,6 @@ class GrassAlgorithm(GeoAlgorithm):
                 configured</i></li></ul>'
         else:
             html += msg + '</i></li></ul>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with QGIS</p>'
 
         return html

@@ -514,7 +514,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 Unfortunately, it seems that GRASS GIS 7 is not installed in \
                 your system, or it is not correctly configured to be used \
                 from QGIS</p>'
-            html += '<p><a href="http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>' # FIXME update URL or page
+            html += '<p><a href="http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>' # FIXME update URL or page
             return html
 
     def checkParameterValuesBeforeExecuting(self):
@@ -539,6 +539,6 @@ class Grass7Algorithm(GeoAlgorithm):
                 configured</i></li></ul>'
         else:
             html += msg + '</i></li></ul>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>'
 
         return html

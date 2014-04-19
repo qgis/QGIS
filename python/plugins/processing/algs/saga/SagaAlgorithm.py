@@ -485,7 +485,7 @@ class SagaAlgorithm(GeoAlgorithm):
             html = '<p>This algorithm requires SAGA to be run.Unfortunately, \
                    it seems that SAGA is not installed in your system, or it \
                    is not correctly configured to be used from QGIS</p>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with QGIS</p>'
             return html
 
     def checkParameterValuesBeforeExecuting(self):
@@ -523,6 +523,6 @@ class SagaAlgorithm(GeoAlgorithm):
                      configured</li></ul>'
         else:
             html += msg + '</i></li></ul>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with QGIS</p>'
 
         return html
