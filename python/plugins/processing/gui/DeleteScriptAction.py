@@ -57,4 +57,7 @@ class DeleteScriptAction(ContextAction):
                 QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
-            self.toolbox.updateTree()
+            if self.scriptType == self.SCRIPT_PYTHON:
+                self.toolbox.updateProvider('script')
+            elif self.scriptType == self.SCRIPT_R:
+                self.toolbox.updateProvider('r')

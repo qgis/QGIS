@@ -51,4 +51,8 @@ class EditScriptAction(ContextAction):
         dlg.show()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
+                self.toolbox.updateProvider('script')
+            elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
+                self.toolbox.updateProvider('r')
+            
