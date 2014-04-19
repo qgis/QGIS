@@ -168,7 +168,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         html = None
         url = None
         try:
-			isText, help = self.alg.help()
+            isText, help = self.alg.help()
             if help is not None:                
                 if isText:
                     html = help;
