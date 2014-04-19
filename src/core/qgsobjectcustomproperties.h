@@ -49,8 +49,9 @@ class CORE_EXPORT QgsObjectCustomProperties
 
 
     /** Read store contents from XML
-      @param layerNode note to read from
-      @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
+      @param parentNode node to read from
+      @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+     */
     void readXml( const QDomNode& parentNode, const QString& keyStartsWith = QString() );
 
     /** Write store contents to XML */

@@ -54,6 +54,8 @@ class CORE_EXPORT QgsGml : public QObject
      *  @param uri GML URL
      *  @param wkbType wkbType to retrieve
      *  @param extent retrieved extents
+     *  @param userName username for authentification
+     *  @param password password for authentification
      *  @return 0 in case of success
      */
     int getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent = 0, const QString& userName = QString(), const QString& password = QString() );
