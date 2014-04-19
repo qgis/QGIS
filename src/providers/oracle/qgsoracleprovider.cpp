@@ -66,6 +66,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   mSqlWhereClause = mUri.sql();
   mSrid = mUri.srid().toInt();
   mRequestedGeomType = mUri.wkbType();
+  mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
   mConnection = QgsOracleConn::connectDb( mUri.connectionInfo() );
   if ( !mConnection )
@@ -545,6 +546,13 @@ bool QgsOracleProvider::loadFields()
     {
       if ( qry.next() )
         mDataComment = qry.value( 0 ).toString();
+      else if ( exec( qry, QString( "SELECT comments FROM all_mview_comments WHERE owner=%1 AND mview_name=%2" )
+                      .arg( quotedValue( mOwnerName ) )
+                      .arg( quotedValue( mTableName ) ) ) )
+      {
+        if ( qry.next() )
+          mDataComment = qry.value( 0 ).toString();
+      }
     }
     else
     {
@@ -2133,12 +2141,14 @@ bool QgsOracleProvider::getGeometryDetails()
     }
   }
 
-  if ( detectedType == QGis::WKBUnknown )
+  if ( detectedType == QGis::WKBUnknown || detectedSrid <= 0 )
   {
     QgsOracleLayerProperty layerProperty;
     layerProperty.ownerName = ownerName;
     layerProperty.tableName = tableName;
     layerProperty.geometryColName = mGeometryColumn;
+    layerProperty.types << detectedType;
+    layerProperty.srids << detectedSrid;
 
     QString delim = "";
 
@@ -2959,9 +2969,6 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   return true;
 }
 
-// vim: set sw=2 :
-
-
 // ----------
 
 
@@ -3014,3 +3021,5 @@ QVariant QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
     return it.value();
   return QVariant();
 }
+
+// vim: set sw=2 :
