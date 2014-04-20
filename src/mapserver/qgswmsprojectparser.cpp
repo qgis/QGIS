@@ -35,6 +35,7 @@
 #include "qgscomposershape.h"
 
 #include <QFileInfo>
+#include <QTextDocument>
 
 QgsWMSProjectParser::QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsWMSConfigParser(),
     mProjectParser( xmlDoc, filePath )
