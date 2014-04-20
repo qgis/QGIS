@@ -39,6 +39,7 @@ class QgsProjectParser: public QgsConfigParser
     QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     virtual ~QgsProjectParser();
 
+    //WMS
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
@@ -60,21 +61,25 @@ class QgsProjectParser: public QgsConfigParser
 
     int numberOfLayers() const;
 
+    //WMS
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const;
 
     /**Returns maplayers for a layer Id.*/
     virtual QgsMapLayer* mapLayerFromLayerId( const QString& lId, bool useCache = true ) const;
 
+    //WMS
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const;
 
+    //WMS
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
+    //WMS
     /**Returns the xml fragment of layers styles*/
     virtual QDomDocument getStyles( QStringList& layerList ) const;
 
-
+    //WMS
     /**Returns if output are MM or PIXEL*/
     virtual QgsMapRenderer::OutputUnits outputUnits() const;
 
@@ -106,6 +111,7 @@ class QgsProjectParser: public QgsConfigParser
     */
     virtual QStringList supportedOutputCrsList() const;
 
+    //WMS
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
 
@@ -120,9 +126,11 @@ class QgsProjectParser: public QgsConfigParser
 
     const QDomDocument* xmlDoc() const { return mXMLDoc; }
 
+    //WMS
     /**Creates a composition from the project file (probably delegated to the fallback parser)*/
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const;
 
+    //WMS
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
@@ -141,21 +149,28 @@ class QgsProjectParser: public QgsConfigParser
     /**Returns the names of the published wcs layers (not the ids as in wcsLayers() )*/
     QStringList wcsLayerNames() const;
 
+    //WMS
     /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
     virtual QHash<QString, QString> featureInfoLayerAliasMap() const;
 
+    //WMS
     virtual QString featureInfoDocumentElement( const QString& defaultValue ) const;
 
+    //WMS
     virtual QString featureInfoDocumentElementNS() const;
 
+    //WMS
     virtual QString featureInfoSchema() const;
 
+    //WMS
     /**Return feature info in format SIA2045?*/
     bool featureInfoFormatSIA2045() const;
 
+    //WMS
     /**Draw text annotation items from the QGIS projectfile*/
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
+    //WMS
     void loadLabelSettings( QgsLabelingEngineInterface* lbl );
 
     QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
