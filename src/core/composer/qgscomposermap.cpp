@@ -86,7 +86,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   int bgRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
   int bgGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
   int bgBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-  mBackgroundColor = QColor( bgRedInt, bgGreenInt, bgBlueInt );
+  setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
 
   connectUpdateSlot();
 
