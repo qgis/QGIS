@@ -1,3 +1,3 @@
 FILE(GLOB PY_FILES *.py)
 
-PLUGIN_INSTALL(processing ./gdal/scripts ${PY_FILES})
+PLUGIN_INSTALL(processing ./gdal/algs/scripts ${PY_FILES})

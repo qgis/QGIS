@@ -5,4 +5,4 @@ IF(WITH_INTERNAL_HTTPLIB)
   ADD_SUBDIRECTORY(httplib2)
 ENDIF(WITH_INTERNAL_HTTPLIB) 
 
-PLUGIN_INSTALL(processing ./admintools ${PY_FILES})
+PLUGIN_INSTALL(processing ./algs/admintools ${PY_FILES})
