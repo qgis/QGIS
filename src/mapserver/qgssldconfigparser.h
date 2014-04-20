@@ -23,6 +23,7 @@
 class QgsFeatureRendererV2;
 class QgsVectorLayer;
 class QgsRasterLayer;
+class QTemporaryFile;
 
 class QgsSLDConfigParser: public QgsWMSConfigParser
 {

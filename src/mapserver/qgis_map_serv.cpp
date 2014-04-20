@@ -31,8 +31,6 @@
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
-#include "qgsprojectparser.h"
-#include "qgssldparser.h"
 #include "qgsnetworkaccessmanager.h"
 
 #include <QDomDocument>

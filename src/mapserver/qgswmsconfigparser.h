@@ -18,7 +18,14 @@
 #ifndef QGSWMSCONFIGPARSER_H
 #define QGSWMSCONFIGPARSER_H
 
-#include "qgsconfigparser.h"
+#include "qgsmaprenderer.h"
+
+class QgsComposerHtml;
+class QgsComposerLabel;
+class QgsComposerMap;
+class QgsComposition;
+class QgsMapLayer;
+
 
 class QgsWMSConfigParser
 {
@@ -68,7 +75,7 @@ class QgsWMSConfigParser
     virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const = 0;
 
     //todo: fixme
-    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) {} //= 0;
+    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) { Q_UNUSED( lbl ); } //= 0;
 
     virtual QString serviceUrl() const = 0;
 

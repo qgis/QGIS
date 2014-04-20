@@ -17,7 +17,6 @@
 
 #include "qgswmsserver.h"
 #include "qgscapabilitiescache.h"
-#include "qgsconfigparser.h"
 #include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -46,6 +45,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
+#include <QTemporaryFile>
 #include <QTextStream>
 #include <QDir>
 

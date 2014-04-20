@@ -18,7 +18,6 @@
 #ifndef QGSOWSSERVER_H
 #define QGSOWSSERVER_H
 
-#include "qgsconfigparser.h"
 #include "qgsrequesthandler.h"
 
 class QgsOWSServer

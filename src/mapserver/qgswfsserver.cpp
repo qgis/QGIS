@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswfsserver.h"
-#include "qgsconfigparser.h"
 #include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsexpression.h"
@@ -34,7 +33,6 @@
 #include "qgsfilter.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
-#include "qgssldparser.h"
 #include "qgssymbolv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"

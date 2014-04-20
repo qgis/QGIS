@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 
+#include <QTemporaryFile>
 #include <QUrl>
 
 #ifndef Q_WS_WIN

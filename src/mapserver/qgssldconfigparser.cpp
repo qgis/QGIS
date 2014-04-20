@@ -48,6 +48,8 @@
 #include "qgsidwinterpolator.h"
 #include "qgstininterpolator.h"
 
+#include <QTemporaryFile>
+
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x) (x).toUtf8().constData()
 #else

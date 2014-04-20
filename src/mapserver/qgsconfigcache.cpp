@@ -21,6 +21,8 @@
 #include "qgswmsprojectparser.h"
 #include "qgssldconfigparser.h"
 
+#include <QFile>
+
 QgsConfigCache* QgsConfigCache::instance()
 {
   static QgsConfigCache mInstance;
