@@ -4,4 +4,4 @@ ADD_SUBDIRECTORY(mmqgisx)
 ADD_SUBDIRECTORY(ftools)
 ADD_SUBDIRECTORY(ui)
 
-PLUGIN_INSTALL(processing ./algs ${PY_FILES})
+PLUGIN_INSTALL(processing algs/qgis ${PY_FILES})
