@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from workspace import Workspace
 from resource import featuretype_from_index, \
     coverage_from_index
-from geoserver.support import ResourceInfo, \
+from support import ResourceInfo, \
     xml_property, key_value_pairs, write_bool, write_dict, write_string, url
 
 
