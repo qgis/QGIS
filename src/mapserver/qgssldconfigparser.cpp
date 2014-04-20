@@ -528,12 +528,12 @@ bool QgsSLDConfigParser::featureInfoFormatSIA2045() const
   return false;
 }
 
-void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+void QgsSLDConfigParser::drawOverlays( QPainter *, int , int, int ) const
 {
   //todo: fixme
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
+void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * )
 {
   //needs to be here?
 }
@@ -689,12 +689,12 @@ void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocu
   }
 }
 
-void QgsSLDConfigParser::setScaleDenominator( double denom )
+void QgsSLDConfigParser::setScaleDenominator( double )
 {
   //soon...
 }
 
-void QgsSLDConfigParser::addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc )
+void QgsSLDConfigParser::addExternalGMLData( const QString &, QDomDocument * )
 {
   //soon...
 }
