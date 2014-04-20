@@ -10,4 +10,4 @@ ADD_SUBDIRECTORY(taudem)
 ADD_SUBDIRECTORY(lidar)
 ADD_SUBDIRECTORY(qgis)
 
-PLUGIN_INSTALL(processing ./algs ${PY_FILES})
+PLUGIN_INSTALL(processing algs ${PY_FILES})
