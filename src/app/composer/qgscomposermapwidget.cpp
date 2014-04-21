@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
@@ -330,6 +332,22 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     mComposerMap->beginCommand( tr( "Map extent changed" ) );
     mComposerMap->setNewExtent( newExtent );
     mComposerMap->endCommand();
+  }
+}
+
+void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
+
+  if ( !currentMapExtent.isEmpty() )
+  {
+    QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
+    QgisApp::instance()->mapCanvas()->refresh();
   }
 }
 
