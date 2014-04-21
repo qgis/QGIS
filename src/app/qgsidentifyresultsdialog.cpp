@@ -267,6 +267,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.png" ) );
   mCopyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.png" ) );
   mPrintToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
+  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mOpenFormButton->setDisabled( true );
 
   QSettings mySettings;
   restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
@@ -664,6 +666,7 @@ void QgsIdentifyResultsDialog::show()
         // don't show the form dialog instead of the results window
         lstResults->setCurrentItem( featItem );
         featureForm();
+        return;
       }
     }
 
@@ -1098,6 +1101,7 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
   mCopyToolButton->setEnabled( featItem && featItem->feature().isValid() );
+  mOpenFormButton->setEnabled( featItem && featItem->feature().isValid() );
 
   if ( !current )
   {
