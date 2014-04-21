@@ -272,14 +272,11 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 
   QSettings mySettings;
   restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
-  bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
-  if ( myDockFlag )
-  {
-    mDock = new QgsIdentifyResultsDock( tr( "Identify Results" ) , QgisApp::instance() );
-    mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    mDock->setWidget( this );
-    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
-  }
+  mDock = new QgsIdentifyResultsDock( tr( "Identify Results" ) , QgisApp::instance() );
+  mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  mDock->setWidget( this );
+  QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+
   mExpandNewToolButton->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
   mCopyToolButton->setEnabled( false );
   lstResults->setColumnCount( 2 );
@@ -666,7 +663,6 @@ void QgsIdentifyResultsDialog::show()
         // don't show the form dialog instead of the results window
         lstResults->setCurrentItem( featItem );
         featureForm();
-        return;
       }
     }
 
@@ -696,8 +692,8 @@ void QgsIdentifyResultsDialog::close()
 
   saveWindowLocation();
   done( 0 );
-  if ( mDock )
-    mDock->close();
+
+  mDock->close();
 }
 
 // Save the current window size/position before closing
