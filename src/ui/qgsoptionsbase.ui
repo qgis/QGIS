@@ -2550,13 +2550,6 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_37">
                   <item>
-                   <widget class="QCheckBox" name="cbxIdentifyResultsDocked">
-                    <property name="text">
-                     <string>Open identify results in a dock window (QGIS restart required)</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="mIdentifyModeHorizontalLayout">
                     <item>
                      <widget class="QLabel" name="label_4">
