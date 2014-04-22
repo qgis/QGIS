@@ -4104,7 +4104,7 @@ bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr 
     if ( lyr->AuthInfos->IsReadOnly )
       mReadOnly = true;
   }
-  else if ( mViewBased == true )
+  else if ( mViewBased )
   {
     mReadOnly = !hasTriggers();
   }

@@ -990,7 +990,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       if ( !hrefString.isEmpty() )
       {
         QStringList getLayerLegendGraphicFormats;
-        if ( customHrefString == false )
+        if ( !customHrefString )
         {
           getLayerLegendGraphicFormats << "image/png"; // << "jpeg" << "image/jpeg"
 
@@ -1010,7 +1010,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         }
 
         // no parameters on custom hrefUrl, because should link directly to graphic
-        if ( customHrefString == false )
+        if ( !customHrefString )
         {
           QUrl mapUrl( hrefString );
           mapUrl.addQueryItem( "SERVICE", "WMS" );

@@ -313,7 +313,7 @@ bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc 
   {
     QDomElement columnElem = doc.createElement( "column" );
     columnElem.setAttribute( "index", QString::number( sortIt->first ) );
-    columnElem.setAttribute( "ascending", sortIt->second == true ? "true" : "false" );
+    columnElem.setAttribute( "ascending", sortIt->second ? "true" : "false" );
     sortColumnsElem.appendChild( columnElem );
   }
   composerTableElem.appendChild( sortColumnsElem );

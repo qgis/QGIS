@@ -45,7 +45,7 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
 
 void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 {
-  if ( mCtrl == true )
+  if ( mCtrl )
   {
     if ( !mAnchorPoint )
     {
@@ -76,7 +76,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
 {
   mRotation = 0;
-  if ( mCtrl == true )
+  if ( mCtrl )
   {
     return;
   }

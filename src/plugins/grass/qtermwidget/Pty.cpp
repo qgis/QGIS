@@ -213,7 +213,7 @@ int Pty::start( const QString& program,
 
   pty()->setWinSize( _windowLines, _windowColumns );
 
-  if ( K3Process::start( NotifyOnExit, ( Communication )( Stdin | Stdout ) ) == false )
+  if ( !K3Process::start( NotifyOnExit, ( Communication )( Stdin | Stdout ) ) )
     return -1;
 
   resume(); // Start...

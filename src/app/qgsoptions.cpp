@@ -483,7 +483,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   // set if base unit of measure tool should be changed
   bool baseUnit = settings.value( "qgis/measure/keepbaseunit", false ).toBool();
-  if ( baseUnit == true )
+  if ( baseUnit )
   {
     mKeepBaseUnitCheckBox->setChecked( true );
   }

@@ -1628,8 +1628,8 @@ bool DL_Dxf::handleHatchData( DL_CreationInterface* /*creationInterface*/ )
 // QgsDebugMsg(QString("92 flag: '%1'").arg(values[92]));
 // QgsDebugMsg(QString("92 flag (int): '%1'").arg(atoi(values[92])));
 
-    if ( hatchEdges[hatchLoopIndex]
-         [hatchEdgeIndex[hatchLoopIndex]].defined == false )
+    if ( !hatchEdges[hatchLoopIndex]
+          [hatchEdgeIndex[hatchLoopIndex]].defined )
     {
       if ( hatchEdges[hatchLoopIndex]
            [hatchEdgeIndex[hatchLoopIndex]].type == 1 )
@@ -2277,7 +2277,7 @@ int DL_Dxf::stringToInt( const char* s, bool* ok )
       }
       else if ( s[i] == '.' )
       {
-        if ( dot == true )
+        if ( dot )
         {
 // QgsDebugMsg("two dots");
           *ok = false;
@@ -2294,7 +2294,7 @@ int DL_Dxf::stringToInt( const char* s, bool* ok )
       }
       i++;
     }
-    while ( s[i] != '\0' && *ok == true );
+    while ( s[i] != '\0' && *ok );
   }
 
   return atoi( s );
@@ -3287,7 +3287,7 @@ void DL_Dxf::writeHatch1( DL_WriterA& dw,
   dw.dxfReal( 210, 0.0 );           // extrusion dir.
   dw.dxfReal( 220, 0.0 );
   dw.dxfReal( 230, 1.0 );
-  if ( data.solid == false )
+  if ( !data.solid )
   {
     dw.dxfString( 2, data.pattern );
   }
@@ -3316,7 +3316,7 @@ void DL_Dxf::writeHatch2( DL_WriterA& dw,
 
   dw.dxfInt( 75, 0 );              // odd parity
   dw.dxfInt( 76, 1 );              // pattern type
-  if ( data.solid == false )
+  if ( !data.solid )
   {
     dw.dxfReal( 52, data.angle );
     dw.dxfReal( 41, data.scale );

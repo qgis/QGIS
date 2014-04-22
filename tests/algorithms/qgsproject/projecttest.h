@@ -158,19 +158,19 @@ class ProjectTest : public CppUnit::TestFixture
       bool status;
 
       bool b = QgsProject::instance()->readBoolEntry( mScope, mBoolValueKey, false, &status );
-      CPPUNIT_ASSERT( false == b && ! status );
+      CPPUNIT_ASSERT( !b && !status );
 
       int i = QgsProject::instance()->readNumEntry( mScope, mNumValueKey, 13, &status );
-      CPPUNIT_ASSERT( 13 == i && ! status );
+      CPPUNIT_ASSERT( 13 == i && !status );
 
       double d = QgsProject::instance()->readDoubleEntry( mScope, mDoubleValueKey, 99.0, &status );
-      CPPUNIT_ASSERT( 99.0 == d && ! status );
+      CPPUNIT_ASSERT( 99.0 == d && !status );
 
       QString s = QgsProject::instance()->readEntry( mScope, mStringValueKey, "FOO", &status );
-      CPPUNIT_ASSERT( "FOO" == s && ! status );
+      CPPUNIT_ASSERT( "FOO" == s && !status );
 
       QStringList sl = QgsProject::instance()->readListEntry( mScope, mStringListValueKey, &status );
-      CPPUNIT_ASSERT( sl.empty() && ! status );
+      CPPUNIT_ASSERT( sl.empty() && !status );
 
     } // readNullEntries
 
