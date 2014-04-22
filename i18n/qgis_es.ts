@@ -2578,7 +2578,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualmente QGIS no permite el acceso simultáneo desde distintos hilos a la misma fuente de datos. Asegúrese de que las tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
     </message>
 </context>
 <context>
@@ -3649,7 +3649,7 @@ columna de geometría - columna con valores enteros únicos</translation>
     </message>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Guardar en archivo temporal]</translation>
     </message>
 </context>
 <context>
@@ -6323,7 +6323,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Add generated file to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir archivo generado al mapa</translation>
     </message>
 </context>
 <context>
@@ -7562,11 +7562,11 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Add from Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir desde archivo de definición de capa...</translation>
     </message>
     <message>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar como archivo de definición de capa...</translation>
     </message>
 </context>
 <context>
@@ -8906,7 +8906,7 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
     <message>
         <source>Python warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia de Python</translation>
     </message>
 </context>
 <context>
@@ -12130,15 +12130,15 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished">Error de transformación de simplificación capturado: %1</translation>
+        <translation>Error de transformación de simplificación capturado: %1</translation>
     </message>
     <message>
         <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished">No se pudo reproyectar la extensión de la vista: %1</translation>
+        <translation>No se pudo reproyectar la extensión de la vista: %1</translation>
     </message>
     <message>
         <source>Could not reproject layer extent: %1</source>
-        <translation type="unfinished">No se pudo reproyectar la extensión de la capa: %1</translation>
+        <translation>No se pudo reproyectar la extensión de la capa: %1</translation>
     </message>
     <message>
         <source>Shapeburst fill</source>
@@ -12146,7 +12146,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Error looking for style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al buscar estilo. Se registró la consulta.</translation>
     </message>
     <message>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
@@ -17623,11 +17623,11 @@ Base de datos: %2</translation>
     </message>
     <message>
         <source>Case Sensitive</source>
-        <translation type="unfinished">Distinguir mayúsculas</translation>
+        <translation>Distinguir mayúsculas</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished">Normal</translation>
+        <translation>Normal</translation>
     </message>
 </context>
 <context>
@@ -18333,14 +18333,22 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Svg error</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Error de SVG</translation>
     </message>
     <message>
         <source>There was an error in svg ouput for svg layer </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Hubo un error en la salida SVG para la capa SVG </translation>
     </message>
     <message>
         <source> on page </source>
+        <translation> en la página </translation>
+    </message>
+    <message>
+        <source>SVG error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error in SVG output for SVG layer </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19342,15 +19350,15 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Item frame join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo de unión de marco del elemento</translation>
     </message>
     <message>
         <source>Item blend mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el modo de mezcla del elemento</translation>
     </message>
     <message>
         <source>Item transparency changed</source>
-        <translation type="unfinished"></translation>
+        <translation>cambiada la transparencia del elemento</translation>
     </message>
 </context>
 <context>
@@ -19465,7 +19473,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Join style</source>
-        <translation type="unfinished">Estilo de unión</translation>
+        <translation>Estilo de unión</translation>
     </message>
 </context>
 <context>
@@ -19767,7 +19775,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Legend title alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiada la alineación del título de la leyenda</translation>
     </message>
 </context>
 <context>
@@ -20046,19 +20054,19 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Title alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineación del título:</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished">Centro</translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
 </context>
 <context>
@@ -20746,6 +20754,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Map rotation</source>
         <translation>Rotación del mapa</translation>
+    </message>
+    <message>
+        <source>View extent in map canvas</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31285,6 +31297,14 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Print selected HTML response.</source>
         <translation>Imprimir la respuesta HTML seleccionada.</translation>
     </message>
+    <message>
+        <source>Mode</source>
+        <translation type="unfinished">Modo</translation>
+    </message>
+    <message>
+        <source>Auto open form</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResultsDialog</name>
@@ -31399,6 +31419,22 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>Attributes changed</source>
         <translation>Atributos cambiados</translation>
+    </message>
+    <message>
+        <source>Current layer</source>
+        <translation type="unfinished">Capa actual</translation>
+    </message>
+    <message>
+        <source>Top down, stop at first</source>
+        <translation type="unfinished">De arriba a abajo, detenerse en el primero</translation>
+    </message>
+    <message>
+        <source>Top down</source>
+        <translation type="unfinished">De arriba a abajo</translation>
+    </message>
+    <message>
+        <source>Layer selection</source>
+        <translation type="unfinished">Selección de capa</translation>
     </message>
 </context>
 <context>
@@ -33383,7 +33419,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Guardar como archivo de definición de capa...</translation>
     </message>
 </context>
 <context>
@@ -37964,7 +38000,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation>Abrir resultados de identificación en una ventana adosable (requiere reiniciar QGIS)</translation>
+        <translation type="obsolete">Abrir resultados de identificación en una ventana adosable (requiere reiniciar QGIS)</translation>
     </message>
     <message>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
@@ -46075,11 +46111,35 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LegendUrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>image/png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>image/jpeg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>image/jpg</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53125,6 +53185,22 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Memory cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LegendUrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>image/png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>image/jpeg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>image/jpg</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
