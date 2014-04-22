@@ -248,7 +248,4 @@ class QgsFillSymbolV2 : QgsSymbolV2
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const /Factory/;
-
-    void setIsExterior( bool isExterior );
-    bool isExterior() const;
 };

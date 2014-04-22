@@ -264,6 +264,10 @@ class QgsFillSymbolLayerV2 : QgsSymbolLayerV2
     void setAngle( double angle );
     double angle() const;
 
+    //! Sets to true if this is an exterior fill
+    void setIsExterior( bool isExterior );
+    bool isExterior() const;
+
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
     /**Default method to render polygon*/
