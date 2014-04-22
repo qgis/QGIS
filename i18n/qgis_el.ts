@@ -6,7 +6,7 @@
     <message>
         <location filename="../python/console/console_compile_apis.ui" line="32"/>
         <source>Generating prepared API file (please wait)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργείται το αρχείο της προγραμματιστικής διεπαφής (παρακαλώ περιμένετε)...</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="130"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Χαρακτήρας: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Τιμή: 0x%3</translation>
     </message>
 </context>
 <context>
@@ -25,15 +25,15 @@
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished">Ρυθμίσεις</translation>
+        <translation>Ρύθμιση</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Τιμή</translation>
+        <translation>Τιμή</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished">Πάροχοι δεδομένων</translation>
+        <translation>Πάροχοι</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -314,7 +314,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Default</source>
-        <translation>Προεπιλογη</translation>
+        <translation>Προεπιλογή</translation>
     </message>
     <message>
         <source>Column(s)</source>
@@ -1595,7 +1595,7 @@ p, li { white-space: pre-wrap; }\n
     </message>
     <message>
         <source>Missing or invalid CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη ορισμένο ή μη έγκυρο ΣΑΣ</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
@@ -1603,16 +1603,16 @@ p, li { white-space: pre-wrap; }\n
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν υπάρχουν αρχεία shapefile με τον επιλεγμένο γεωμετρικό τύπο. Παρακαλώ επιλέξετε ένα διαθέσιμο γεωμετρικό τύπο.</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία διαγραφής αρχείου %s</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished">Σφάλμα κατά τη φόρτωση του αρχείου shapefile προορισμού: %s</translation>
+        <translation>Σφάλμα κατά τη φόρτωση του αρχείου shapefile προορισμού: %s</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
@@ -1623,7 +1623,7 @@ p, li { white-space: pre-wrap; }\n
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργήθηκε το αρχείο shapefile προορισμού: %s Θα θέλατε να προσθέσετε το νέο επίπεδο (layer) στον πίνακα περιεχομένων;</translation>
     </message>
     <message>
         <source>length field</source>
@@ -1644,7 +1644,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Defined Projection For:
 %s.shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Ορισμέno Προβολικό Σύστημα για:
+%s.shp</translation>
     </message>
     <message>
         <source>Random Points</source>
@@ -1652,23 +1653,23 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξάλειψη</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν υπάρχει επιλογή στο αρχείο εισόδου</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα κατά τη δημιουργία του αρχείου προορισμού</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία διαγραφής αντικειμένων</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία προσθήκης αντικειμένων</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1678,11 +1679,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Τελείωσε</translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Επεξεργασία ολοκληρώθηκε.</translation>
+        <translation>Η επεξεργασία ολοκληρώθηκε.</translation>
     </message>
     <message>
         <source>unstratified</source>
@@ -2108,7 +2109,7 @@ were reduced to %d vertices after simplification</source>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Η επεξεργασία των ακόλουθων επιπέδων/αρχείων ολοκληρώθηκε με σφάλμα: &lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -2121,7 +2122,7 @@ were reduced to %d vertices after simplification</source>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργήθηκαν τα αρχεία shapefile στον φάκελο: %s</translation>
     </message>
     <message>
         <source>CRS warning!</source>
@@ -2295,7 +2296,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία υπολογισμού γεωγραφικής έκτασης στο επιλεγμένο επίπεδο raster</translation>
     </message>
     <message>
         <source>Densify geometries</source>
@@ -2401,7 +2402,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation>Επιλέξατε φάκελο με αρχεία shapefiles για συγχώνευση</translation>
+        <translation>Επιλογή φακέλου με αρχεία shapefile για συγχώνευση</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
@@ -2719,7 +2720,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="145"/>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση θέσης σφαλμάτων</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="14"/>
@@ -2760,17 +2761,17 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="14"/>
         <source>Build spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία χωρικού ευρετηρίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
         <source>Select files from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή αρχείων από το δίσκο</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="29"/>
         <source>Select files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή αρχείων...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="53"/>
@@ -2823,32 +2824,32 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="14"/>
         <source>Autofill settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ρυθμίσεις αυτόματης συμπλήρωσης</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="20"/>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Λειτουργία αυτόματης συμπλήρωσης</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="28"/>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>Χωρίς αυτόματη συμπλήρωση</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="33"/>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Συμπλήρωση με αριθμούς</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="38"/>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Συμπλήρωση με τιμές παραμέτρων</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="49"/>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρήση παραμέτρου</translation>
     </message>
 </context>
 <context>
@@ -3106,7 +3107,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="34"/>
         <source>Open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα μοντέλου</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="37"/>
@@ -3182,7 +3183,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="14"/>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή αριθμού ή έκφρασης</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="26"/>
@@ -3579,7 +3580,7 @@ geometry column - column with unique integer values</source>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Αποθήκευση σε προσωρινό αρχείο]</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -3937,7 +3938,7 @@ p, li { white-space: pre-wrap; }
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation>Τελείωσε</translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
     <message>
         <source>Operation completed.</source>
@@ -3988,11 +3989,11 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation>Αποτυχία δημιουργίας αρχείου.</translation>
+        <translation>Δεν δημιουργήθηκε το αρχείο προορισμού.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation>Τελείωσε</translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
     <message>
         <source>Processing completed.</source>
@@ -4041,7 +4042,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation>Επιλέξατε το αρχείο raster για την αποθήκευση των αποτελεσμάτων</translation>
+        <translation>Επιλογή αρχείου raster για την αποθήκευση των αποτελεσμάτων</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
@@ -4141,7 +4142,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the file for DEM</source>
-        <translation>Επιλέξατε τα αρχεία για DEM</translation>
+        <translation>Επιλογή αρχείων για το ΨΜΥ (DEM)</translation>
     </message>
     <message>
         <source>Select the color configuration file</source>
@@ -4213,7 +4214,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the input directory with files to Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή φακέλου εισόδου με τα αρχεία για Συγχώνευση</translation>
     </message>
     <message>
         <source>Output size required</source>
@@ -4289,7 +4290,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="20"/>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished">Μαζικά (για επεξεργασία ολόκληρου φακέλου)</translation>
+        <translation>Μαζικά (για επεξεργασία ολόκληρου φακέλου)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="29"/>
@@ -4574,7 +4575,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="139"/>
         <source>Create an output alpha band</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία καναλιού άλφα (alpha band)</translation>
     </message>
     <message>
         <source>Re-Enable Clipping</source>
@@ -4956,7 +4957,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="145"/>
         <source>Mode Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Περισσότερες επιλογές</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="164"/>
@@ -5260,27 +5261,27 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="76"/>
         <source>Keep existing raster size and resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Διατήρηση τρέχοντος μεγέθους και ανάλυσης εικόνας</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="86"/>
         <source>Raster size in pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Μέγεθος εικόνας σε pixels</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="157"/>
         <source>Raster resolution in map units per pixel</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάλυση εικόνας σε μονάδες χάρτη ανά pixel</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="185"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Οριζόντια</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="211"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατακόρυφα</translation>
     </message>
     <message>
         <source>New size (required if output file doens&apos;t exist)</source>
@@ -6032,18 +6033,18 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="89"/>
         <source>Heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Χάρτης Έντασης</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="92"/>
         <source>Creates a heatmap raster for the input point vector.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργει χάρτη έντασης σε μορφή raster για το σημεικαό επίπεδο εισόδου.</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="97"/>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="445"/>
         <source>&amp;Heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Χάρτης Έντασης</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="138"/>
@@ -6053,12 +6054,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="138"/>
         <source>Cannot open the driver for the specified format</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία ανοίγματος προγράμματος οδήγησης για το συγκεκριμένο μορφότυπο</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="172"/>
         <source>Raster update error</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα ενημέρωσης εικόνας</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="172"/>
@@ -6068,7 +6069,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="215"/>
         <source>Creating heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργείται χάρτης έντασης</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="215"/>
@@ -6078,7 +6079,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="228"/>
         <source>Heatmap generation aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Η δημιουργία χάρτη έντασης ματαιώθηκε</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="228"/>
@@ -6091,7 +6092,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="252"/>
         <source>Save Heatmap as:</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση χάρτη έντασης ως:</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="279"/>
@@ -6129,7 +6130,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="20"/>
         <source>Heatmap Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρόσθετο Χάρτη Έντασης</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
@@ -9255,7 +9256,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3010"/>
         <source>Unable to goto next</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία μετάβσης στο επόμενο</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3092"/>
@@ -9759,7 +9760,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="341"/>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Επίεπδο&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Επίπεδο&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="362"/>
@@ -12148,12 +12149,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5420"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5533"/>
         <source>Connection to database failed</source>
-        <translation type="unfinished">Αποτυχία σύνδεσης στη Βάση Δεδομένων</translation>
+        <translation>Αποτυχία σύνδεσης στη Βάση Δεδομένων</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2408"/>
         <source>No owner name found</source>
-        <translation type="unfinished"></translation>
+        <translation>Δε βρέθηκε όνομα κατόχου</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2595"/>
@@ -12882,7 +12883,7 @@ Response was:
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="612"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished">Αδυναμία εκκίνησης δοσοληψίας</translation>
+        <translation>Αδυναμία εκκίνησης δοσοληψίας</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="627"/>
@@ -12917,7 +12918,7 @@ Response was:
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="370"/>
         <source>Unable to execute multiple statements at a time</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία ταυτόχρονης εκτέλεσης πολλαπλών ερωτημάτων</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="390"/>
@@ -12927,12 +12928,12 @@ Response was:
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="435"/>
         <source>Unable to bind parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία δέσμευσης παραμέτρων</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="442"/>
         <source>Parameter count mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναντιστοιχία απαρίθμησης παραμέτρων</translation>
     </message>
 </context>
 <context>
@@ -14233,7 +14234,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4294"/>
         <source>Open labeling dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα παραθύρου διαλόγου ετικετών</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="425"/>
@@ -14269,7 +14270,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3686"/>
         <source>Insufficient permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη επαρκή δικαιώματα</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3687"/>
@@ -14302,12 +14303,12 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <location filename="../src/app/qgisapp.cpp" line="4317"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλματα:%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4324"/>
         <source>Show more</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση περισσοτέρων</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4383"/>
@@ -14322,7 +14323,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4698"/>
         <source>Saving done</source>
-        <translation>Η αποθήκευση τελείωσε</translation>
+        <translation>Η αποθήκευση ολοκληρώθηκε</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4699"/>
@@ -14390,7 +14391,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4802"/>
         <source>No Features Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν έχουν επιλεγεί αντικείμενα</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4803"/>
@@ -14417,7 +14418,6 @@ Error: %1</source>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -14766,7 +14766,6 @@ Error: %1</source>
         <comment>number of legend items to remove</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -14774,7 +14773,6 @@ Error: %1</source>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -14810,7 +14808,6 @@ Always ignore these errors?</source>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -14966,7 +14963,7 @@ Ignore errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6844"/>
         <source>Unable to get current version information from server</source>
-        <translation>Αποτυχία λήψης πληροφοριών για την τρέχουσα έκδοση από το διακομιστή</translation>
+        <translation>Αδυναμία λήψης πληροφοριών για την τρέχουσα έκδοση από το διακομιστή</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6854"/>
@@ -15059,7 +15056,7 @@ Ignore errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="322"/>
         <source>QGIS </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to project CRS</source>
@@ -16126,7 +16123,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddtaborgroup.cpp" line="53"/>
         <source>Add tab or group for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη καρτέλας ή ομάδας για %1</translation>
     </message>
 </context>
 <context>
@@ -16154,7 +16151,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="62"/>
         <source>a group in container</source>
-        <translation type="unfinished"></translation>
+        <translation>ομάδα σε</translation>
     </message>
 </context>
 <context>
@@ -16184,7 +16181,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
         <source>Fixed map position</source>
-        <translation type="unfinished"></translation>
+        <translation>Μόνιμη θέση χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="36"/>
@@ -16272,7 +16269,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="722"/>
         <source>Filename parsing error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα ανάλυσης ονόματος αρχείου: %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="232"/>
@@ -16378,7 +16375,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="129"/>
         <source>Filter with</source>
-        <translation type="unfinished"></translation>
+        <translation>Φιλτράρισμα με</translation>
     </message>
     <message>
         <source>%</source>
@@ -16387,12 +16384,12 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="189"/>
         <source>Output</source>
-        <translation type="unfinished">Αποτέλεσμα</translation>
+        <translation>Αποτέλεσμα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="254"/>
         <source>Single file export when possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαγωγή ενός αρχείου όταν είναι δυνατό</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="204"/>
@@ -16411,7 +16408,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="178"/>
         <source>Insert expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή έκφρασης</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="229"/>
@@ -16431,7 +16428,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="338"/>
         <source>Run an application</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκτέλεση εφαρμογής</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="339"/>
@@ -17380,7 +17377,7 @@ User DB Path:	%9
         <location filename="../src/app/qgsattributetypedialog.cpp" line="269"/>
         <source>Could not open file %1
 Error was:%2</source>
-        <translation>Αποτυχία ανοίγματος αρχείου %1
+        <translation>Αδυναμία ανοίγματος αρχείου %1
 Το Σφάλμα ήταν:%2</translation>
     </message>
     <message>
@@ -17407,7 +17404,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="684"/>
         <source>Field contains an URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Το πεδίο περιέχει ένα URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
@@ -17543,7 +17540,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="640"/>
         <source>A calendar widget to enter a date.</source>
-        <translation>Ένας βοηθός ημερολογίου για εισαγωγή ημερομηνίας.</translation>
+        <translation>Γραφικό στοιχείο για εισαγωγή ημερομηνίας.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="650"/>
@@ -17553,12 +17550,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="677"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Επίπεδο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="690"/>
         <source>Key column</source>
-        <translation type="unfinished">Κλειδί στήλης</translation>
+        <translation>Στήλη μοναδικού αναγνωριστικού</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="749"/>
@@ -18725,42 +18722,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="225"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποκο&amp;πή</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="227"/>
         <source>Cut</source>
-        <translation type="unfinished">Αποκοπή</translation>
+        <translation>Αποκοπή</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="230"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Αντιγραφή</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="232"/>
         <source>Copy</source>
-        <translation type="unfinished">Αντιγραφή</translation>
+        <translation>Αντιγραφή</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="235"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Επικόλληση</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="237"/>
         <source>Paste</source>
-        <translation type="unfinished">Επικόλληση</translation>
+        <translation>Επικόλληση</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="240"/>
         <source>Edit</source>
-        <translation type="unfinished">Επεξεργασία</translation>
+        <translation>Επεξεργασία</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="320"/>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Άτλας</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="344"/>
@@ -18772,12 +18769,12 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="757"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="769"/>
         <source>%1%</source>
-        <translation type="unfinished">%1%</translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="462"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ιδιότητες αντικειμένου</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="724"/>
@@ -18831,7 +18828,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1668"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1935"/>
         <source>Abort</source>
-        <translation type="unfinished">Ματαίωση</translation>
+        <translation>Ματαίωση</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1535"/>
@@ -21164,7 +21161,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="63"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="78"/>
@@ -21174,12 +21171,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="91"/>
         <source>user</source>
-        <translation type="unfinished"></translation>
+        <translation>χρήστης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="104"/>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπιλογή</translation>
     </message>
 </context>
 <context>
@@ -21232,12 +21229,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="60"/>
         <source>Decimal</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεκαδικές μοίρες</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="61"/>
         <source>DegreeMinute</source>
-        <translation type="unfinished"></translation>
+        <translation>ΜοίρεςΛεπτά</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="62"/>
@@ -23809,7 +23806,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="33"/>
         <source>Password</source>
-        <translation>Κωδικός Χρήστη</translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="57"/>
@@ -28882,7 +28879,7 @@ gray = no data
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="185"/>
         <source>Could not create file</source>
-        <translation>Αποτυχία δημιουργίας αρχείου</translation>
+        <translation>Αδυναμία δημιουργίας αρχείου</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="186"/>
@@ -33574,7 +33571,6 @@ at line %2 column %3</source>
         <comment>unhandled layers</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -33745,7 +33741,6 @@ at line %2 column %3</source>
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -37458,7 +37453,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmeasuretool.cpp" line="81"/>
         <source>Incorrect measure results</source>
-        <translation type="unfinished"></translation>
+        <translation>Εσφαλμένα αποτελέσματα μετρήσεων</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuretool.cpp" line="82"/>
@@ -37639,7 +37634,6 @@ not displayed</source>
         <comment>unread messages</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -37743,7 +37737,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="86"/>
         <source>Saving passwords</source>
-        <translation>Αποθήκευση κωδικών</translation>
+        <translation>Αποθήκευση κωδικών πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="87"/>
@@ -37794,82 +37788,82 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
         <source>Create a New MSSQL connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία Νέας Σύνδεσης MSSQL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Πληροφορίες σύνδεσης</translation>
+        <translation>Πληροφορίες σύνδεσης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="66"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="76"/>
         <source>Provider/DSN</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάροχος/DSN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="86"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Κεντρικός υπολογιστής</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="96"/>
         <source>Database</source>
-        <translation type="unfinished">Βάση Δεδομένων</translation>
+        <translation>Βάση Δεδομένων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="113"/>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα Χρήστη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="123"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="143"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Όνομα της νέας σύνδεσης</translation>
+        <translation>Όνομα της νέας σύνδεσης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="159"/>
         <source>Trusted Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Αξιόπιστη σύνδεση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="188"/>
         <source>Save Username</source>
-        <translation type="unfinished">Αποθήκευση ονόματος χρήστη</translation>
+        <translation>Αποθήκευση ονόματος χρήστη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="195"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished">&amp;Έλεγχος σύνδεσης </translation>
+        <translation>&amp;Έλεγχος σύνδεσης </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="202"/>
         <source>Save Password</source>
-        <translation type="unfinished">Αποθήκευση κωδικού</translation>
+        <translation>Αποθήκευση κωδικού πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="211"/>
         <source>Only look in the geometry_columns metadata table</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση μόνο στον πίνακα μεταδεδομένων geometry_columns</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="221"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished">Απαρίθμηση πινάκων χωρίς γεωμετρία</translation>
+        <translation>Απαρίθμηση και πινάκων χωρίς γεωμετρία</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="228"/>
         <source>Use estimated table parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρήση εκτιμώμενων παραμέτρων πινάκων</translation>
     </message>
 </context>
 <context>
@@ -37877,22 +37871,22 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="147"/>
         <source>8 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ακέραιος 8 Bytes</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="148"/>
         <source>4 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ακέραιος 4 Bytes</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="149"/>
         <source>2 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ακέραιος 2 Bytes</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="150"/>
         <source>1 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ακέραιος 1 Bytes</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="151"/>
@@ -38380,7 +38374,7 @@ enhancement</source>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="173"/>
         <source>Saving passwords</source>
-        <translation type="unfinished">Αποθήκευση κωδικών</translation>
+        <translation>Αποθήκευση κωδικών πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="174"/>
@@ -38469,7 +38463,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="81"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
 </context>
 <context>
@@ -38527,47 +38521,47 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="147"/>
         <source>Save Password</source>
-        <translation type="unfinished">Αποθήκευση κωδικού</translation>
+        <translation>Αποθήκευση κωδικού πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="154"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished">&amp;Έλεγχος σύνδεσης </translation>
+        <translation>&amp;Έλεγχος σύνδεσης </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="74"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Κεντρικός υπολογιστής</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="87"/>
         <source>Database</source>
-        <translation type="unfinished">Βάση Δεδομένων</translation>
+        <translation>Βάση Δεδομένων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="100"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Θύρα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="117"/>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα Χρήστη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="130"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="67"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Όνομα της νέας σύνδεσης</translation>
+        <translation>Όνομα της νέας σύνδεσης</translation>
     </message>
 </context>
 <context>
@@ -39310,12 +39304,12 @@ Extended error information:
     <message>
         <location filename="../src/core/qgsowsconnection.cpp" line="62"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished">Κωδικός για WMS %1</translation>
+        <translation>Κωδικός πρόσβασης στην υπηρεσια WMS %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsowsconnection.cpp" line="62"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
 </context>
 <context>
@@ -39323,12 +39317,12 @@ Extended error information:
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="115"/>
         <source>Edit...</source>
-        <translation type="unfinished">Επεξεργασία...</translation>
+        <translation>Επεξεργασία...</translation>
     </message>
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="119"/>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
 </context>
 <context>
@@ -39336,7 +39330,7 @@ Extended error information:
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="198"/>
         <source>New Connection...</source>
-        <translation type="unfinished">Νέα Σύνδεση...</translation>
+        <translation>Νέα Σύνδεση...</translation>
     </message>
 </context>
 <context>
@@ -39349,17 +39343,17 @@ Extended error information:
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="74"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Προσθ&amp;ήκη</translation>
+        <translation>&amp;Προσθήκη</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="75"/>
         <source>Add selected layers to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη επιλεγμένων επιπέδων στο χάρτη</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="84"/>
         <source>Always cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάντα χρήση προσωρινής αποθήκευσης</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="85"/>
@@ -39401,7 +39395,6 @@ Extended error information:
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -40139,7 +40132,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="178"/>
         <source>Confirm Delete</source>
-        <translation>Επιβαιβεώστε την διαγραφή</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="303"/>
@@ -40157,7 +40150,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="323"/>
         <source>Password for </source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός πρόσβασης για</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="324"/>
@@ -41989,7 +41982,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4448"/>
         <source>Password</source>
-        <translation>Κωδικός</translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
     <message>
         <source>Enter attribute values</source>
@@ -42251,8 +42244,7 @@ error:%2
         <source>Failed to import some layers!
 
 </source>
-        <translation>Αποτυχία εισαγωγής μερικών επιπέδων! 
-</translation>
+        <translation>Αποτυχία εισαγωγής μερικών επιπέδων! </translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="273"/>
@@ -42302,19 +42294,19 @@ error:%2
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="146"/>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="155"/>
         <source>Test connection</source>
-        <translation type="unfinished">Έλεγχος σύνδεσης </translation>
+        <translation>Έλεγχος σύνδεσης </translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="147"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Η σύνδεση στην %1 ήταν επιτυχής</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="156"/>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Η σύνδεση απέτυχε - Ελέγξτε τις ρυθμίσεις και ξαναδοκιμάστε</translation>
     </message>
 </context>
 <context>
@@ -42322,42 +42314,42 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="20"/>
         <source>Create a New Oracle connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία Νέας Σύνδεσης Oracle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="45"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Πληροφορίες σύνδεσης</translation>
+        <translation>Πληροφορίες σύνδεσης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="67"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="84"/>
         <source>Save Username</source>
-        <translation type="unfinished">Αποθήκευση ονόματος χρήστη</translation>
+        <translation>Αποθήκευση ονόματος χρήστη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="91"/>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα Χρήστη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="101"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Όνομα της νέας σύνδεσης</translation>
+        <translation>Όνομα της νέας σύνδεσης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="108"/>
         <source>Database</source>
-        <translation type="unfinished">Βάση Δεδομένων</translation>
+        <translation>Βάση Δεδομένων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="118"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
@@ -42415,32 +42407,32 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="164"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Θύρα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="174"/>
         <source>1521</source>
-        <translation type="unfinished">1521</translation>
+        <translation>1521</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="184"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished">&amp;Έλεγχος σύνδεσης </translation>
+        <translation>&amp;Έλεγχος σύνδεσης </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="191"/>
         <source>Save Password</source>
-        <translation type="unfinished">Αποθήκευση κωδικού</translation>
+        <translation>Αποθήκευση κωδικού πρόσβασης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="198"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Κεντρικός υπολογιστής</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="51"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation type="unfinished">Χρησιμοποίηση των εκτιμώμενων στατιστικών του πίνακα για τα μεταΔεδομένα του επιπέδου.</translation>
+        <translation type="unfinished">Χρήση των εκτιμώμενων στατιστικών του πίνακα για τα μεταδεδομένα του επιπέδου.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
@@ -42480,7 +42472,7 @@ error:%2
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="57"/>
         <source>Add Oracle GeoRaster Layer...</source>
-        <translation>Προσθήκη ενός Oracle GeoRaster επιπέδου...</translation>
+        <translation>Προσθήκη  επιπέδου Oracle GeoRaster...</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="60"/>
@@ -42987,12 +42979,12 @@ Error: %2</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="132"/>
         <source>Confirm Delete</source>
-        <translation>Επιβαιβεώστε την διαγραφή</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="167"/>
         <source>Password for %1/&lt;password&gt;@%2</source>
-        <translation>Κωδικός για την %1/&lt;password&gt;@%2</translation>
+        <translation>Κωδικός πρόσβασης για την %1/&lt;password&gt;@%2</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="168"/>
@@ -43015,12 +43007,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="184"/>
         <source>Add Oracle Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη πίνακα(-ων) Oracle</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="187"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Προσθ&amp;ήκη</translation>
+        <translation>&amp;Προσθήκη</translation>
     </message>
     <message>
         <source>&amp;Build query</source>
@@ -43029,12 +43021,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="190"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">&amp;Ορισμός Φίλτρου</translation>
+        <translation>&amp;Ορισμός Φίλτρου</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="191"/>
         <source>Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ορισμός Φίλτρου</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="203"/>
@@ -43046,55 +43038,55 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="204"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="385"/>
         <source>RegExp</source>
-        <translation type="unfinished">RegExp</translation>
+        <translation>Κανονική παράσταση (RegExp)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="206"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="393"/>
         <source>All</source>
-        <translation type="unfinished">Όλα</translation>
+        <translation>Όλα</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="207"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="397"/>
         <source>Owner</source>
-        <translation type="unfinished">Κάτοχος</translation>
+        <translation>Κάτοχος</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="208"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="401"/>
         <source>Table</source>
-        <translation type="unfinished">Πίνακας</translation>
+        <translation>Πίνακας</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="209"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="405"/>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="210"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="409"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="211"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="413"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη πρωτεύοντος κλειδιού</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="212"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="417"/>
         <source>SRID</source>
-        <translation type="unfinished">Κωδικός Συστήματος Συν/νων</translation>
+        <translation>Κωδικός Συστήματος Συν/νων</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="213"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="421"/>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="272"/>
@@ -43872,7 +43864,7 @@ Extended error information:
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="256"/>
         <source>Confirm Delete</source>
-        <translation>Επιβαιβεώστε Διαγραφής</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="274"/>
@@ -47140,7 +47132,6 @@ Because of this the projection selector will not work...</source>
         <comment>returned test rows</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -49037,17 +49028,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="45"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Από</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="46"/>
         <source>To</source>
-        <translation type="unfinished">Σε</translation>
+        <translation>Σε</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="163"/>
         <source>Select output directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή φακέλου προορισμού</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="176"/>
@@ -49062,42 +49053,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="197"/>
         <source>Select output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή αρχείου προορισμού</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="197"/>
         <source>GeoTIFF</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoTIFF</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="405"/>
         <source>layer</source>
-        <translation type="unfinished"></translation>
+        <translation>επίπεδο</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="408"/>
         <source>user defined</source>
-        <translation type="unfinished"></translation>
+        <translation>ορισμένο από το χρήστη</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="413"/>
         <source>Resolution (current: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάλυση (τρέχουσα: %1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="493"/>
         <source>Layer (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Επίπεδο (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="496"/>
         <source>Project (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Προβολικό σύστημα (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="499"/>
         <source>Selected (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλεγμένα (%1, %2)</translation>
     </message>
 </context>
 <context>
@@ -49192,32 +49183,32 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="282"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Οριζόντια</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="295"/>
         <source>Columns</source>
-        <translation type="unfinished">Στήλες</translation>
+        <translation>Στήλες</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="305"/>
         <source>Rows</source>
-        <translation type="unfinished">Σειρές</translation>
+        <translation>Σειρές</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="318"/>
         <source>Layer resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάλυση επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="325"/>
         <source>Layer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Μέγεθος επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="332"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατακόρυφα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="353"/>
@@ -49227,7 +49218,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="414"/>
         <source>Create Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογές δημιουργίας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="371"/>
@@ -49277,7 +49268,7 @@ datasets with maximum width and height specified below.</source>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="607"/>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="621"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="587"/>
@@ -49602,17 +49593,17 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="47"/>
         <source>Output format</source>
-        <translation type="unfinished">Φορμάτ προορισμού</translation>
+        <translation>Μορφότυπος προορισμού</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="40"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Διάλογος</translation>
+        <translation>Διάλογος</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="20"/>
@@ -49672,12 +49663,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="167"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="174"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="182"/>
@@ -49692,7 +49683,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="192"/>
         <source>Color</source>
-        <translation type="unfinished">Χρώμα</translation>
+        <translation>Χρώμα</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="200"/>
@@ -49753,7 +49744,7 @@ standard deviation ×</source>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="186"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="205"/>
         <source>Abort</source>
-        <translation type="unfinished">Ματαίωση</translation>
+        <translation>Ματαίωση</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="148"/>
@@ -50078,7 +50069,6 @@ standard deviation ×</source>
         <comment>number of filtered features</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -50321,27 +50311,27 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="53"/>
         <source>Add rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη ανόνα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="67"/>
         <source>Edit rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία κανόνα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="81"/>
         <source>Remove rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Αφαίρεση κανόνα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="117"/>
         <source>Count features</source>
-        <translation type="unfinished"></translation>
+        <translation>Απαρίθμηση αντικειμένων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="137"/>
         <source>Rendering order...</source>
-        <translation type="unfinished"></translation>
+        <translation>Προτεραιότητα σχεδίασης...</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -50350,12 +50340,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="98"/>
         <source>Refine current rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκλέπτυνση τρέχοντων κανόνων</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="70"/>
         <source>Remove Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Αφαίρεση Κανόνα</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="77"/>
@@ -50370,12 +50360,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="79"/>
         <source>Add categories to rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη κατηγοριών στον κανόνα</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="80"/>
         <source>Add ranges to rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη εύρους στον κανόνα</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="253"/>
@@ -50406,7 +50396,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="335"/>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="335"/>
@@ -50416,12 +50406,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="507"/>
         <source>Calculating feature count.</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσδιορισμός αριθμού αντικειμένων.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="507"/>
         <source>Abort</source>
-        <translation type="unfinished">Ματαίωση</translation>
+        <translation>Ματαίωση</translation>
     </message>
 </context>
 <context>
@@ -50434,23 +50424,23 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="118"/>
         <source>Done</source>
-        <translation type="unfinished">Ολοκληρώθηκε</translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="53"/>
         <source>&lt;b&gt;Starting %1...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Έναρξη %1...&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="71"/>
         <source>Unable to run command
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία εκτέλεσης εντολής %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="151"/>
         <source>Unable to run command %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία εκτέλεσης εντολής %1</translation>
     </message>
 </context>
 <context>
@@ -50458,62 +50448,61 @@ standard deviation ×</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="114"/>
         <source>Database does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Η ΒΔ δεν υπάρχει</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="115"/>
         <source>Failed to open database</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία ανοίγματος της ΒΔ</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="116"/>
         <source>Failed to check metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία ελέγχου μεταδεδομένων</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="117"/>
         <source>Failed to get list of tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία ανάκητησης λίστας πινάκων</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="118"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Άγνωστο σφάλμα</translation>
+        <translation>Άγνωστο σφάλμα</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="157"/>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="194"/>
         <source>%1: Not a vector layer!</source>
-        <translation type="unfinished">%1: Μη Διανυσματικό επίπεδο!</translation>
+        <translation>%1: Μη Διανυσματικό επίπεδο!</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="210"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="219"/>
         <source>%1: OK!</source>
-        <translation type="unfinished">%1: OK!</translation>
+        <translation>%1: OK!</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="231"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="237"/>
         <source>Import to SpatiaLite database</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή σε ΒΔ SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="232"/>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished">Αδυναμία εισαγωγής μερικών επιπέδων! 
-</translation>
+        <translation>Αδυναμία εισαγωγής μερικών επιπέδων! </translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="237"/>
         <source>Import was successful.</source>
-        <translation type="unfinished">Η εισαγωγή ολοκληρώθηκε με επιτυχία.</translation>
+        <translation>Η εισαγωγή ολοκληρώθηκε με επιτυχία.</translation>
     </message>
 </context>
 <context>
@@ -50523,12 +50512,12 @@ standard deviation ×</source>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="56"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="60"/>
         <source>Delete layer</source>
-        <translation type="unfinished">Διαγραφή επιπέδου</translation>
+        <translation>Διαγραφή επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="60"/>
         <source>Layer deleted successfully.</source>
-        <translation type="unfinished">Το επίπεδο διαγράφηκε επιτυχώς.</translation>
+        <translation>Το επίπεδο διαγράφηκε επιτυχώς.</translation>
     </message>
 </context>
 <context>
@@ -50536,39 +50525,39 @@ standard deviation ×</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="277"/>
         <source>Create database...</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία ΒΔ...</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="311"/>
         <source>New SpatiaLite Database File</source>
-        <translation type="unfinished"></translation>
+        <translation>Νέο αρχείο ΒΔ SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="273"/>
         <source>New Connection...</source>
-        <translation type="unfinished">Νέα Σύνδεση...</translation>
+        <translation>Νέα Σύνδεση...</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="313"/>
         <source>SpatiaLite</source>
-        <translation type="unfinished">SpatiaLite</translation>
+        <translation>SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="320"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="331"/>
         <source>Create SpatiaLite database</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία ΒΔ SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="320"/>
         <source>The database has been created</source>
-        <translation type="unfinished"></translation>
+        <translation>Η ΒΔ δημιουργηθηκε</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="331"/>
         <source>Failed to create the database:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία δημιουργίας ΒΔ:</translation>
     </message>
 </context>
 <context>
@@ -50619,32 +50608,32 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2166"/>
         <source>Texture width</source>
-        <translation type="unfinished">Πλάτος υφής</translation>
+        <translation>Πλάτος υφής</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2168"/>
         <source>SVG file</source>
-        <translation type="unfinished"></translation>
+        <translation>Αρχείο SVG</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2170"/>
         <source>Rotation</source>
-        <translation type="unfinished">Περιστροφή</translation>
+        <translation>Περιστροφή</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2172"/>
         <source>Color</source>
-        <translation type="unfinished">Χρώμα</translation>
+        <translation>Χρώμα</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2174"/>
         <source>Border color</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρώμα περιγράμματος</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2176"/>
         <source>Border width</source>
-        <translation type="unfinished">Πάχος περιγράμματος</translation>
+        <translation>Πάχος περιγράμματος</translation>
     </message>
 </context>
 <context>
@@ -50652,32 +50641,32 @@ standard deviation ×</source>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="50"/>
         <source>Save style in database</source>
-        <translation type="unfinished">Αποθήκευση στυλ στη βάση δεδομενων</translation>
+        <translation>Αποθήκευση στυλ στη βάση δεδομενων</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="50"/>
         <source>A name is mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Το όνομα είναι υποχρεωτικό</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="61"/>
         <source>Attach Qt Designer UI file</source>
-        <translation type="unfinished"></translation>
+        <translation>Επισύναψη αρχείου  Qt Designer UI</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="61"/>
         <source>Qt Designer UI file .ui</source>
-        <translation type="unfinished"></translation>
+        <translation>Αρχείο Qt Designer UI .ui</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="82"/>
         <source>Wrong file</source>
-        <translation type="unfinished"></translation>
+        <translation>Λανθασμένο αρχείο</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="83"/>
         <source>The selected file does not appear to be a valid Qt Designer UI file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Το επιλεγμένο αρχείο δεν είναι έγκυρο αρχείο τύπου Qt Designer UI.</translation>
     </message>
 </context>
 <context>
@@ -50689,32 +50678,32 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="14"/>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση στυλ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="23"/>
         <source>Description</source>
-        <translation type="unfinished">Περιγραφή</translation>
+        <translation>Περιγραφή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="33"/>
         <source>UI</source>
-        <translation type="unfinished"></translation>
+        <translation>Διεπαφή Χρήστη (UI)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="43"/>
         <source>Style Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα Στυλ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="66"/>
         <source>Use as default style for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρήση ως προεπιλεγμένου στυλ για το επίπεδο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="88"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="97"/>
@@ -50858,32 +50847,32 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="42"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Δοκιμή</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="46"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Καθαρισμός</translation>
+        <translation>&amp;Καθαρισμός</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="50"/>
         <source>&amp;Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Αποθήκευση...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="52"/>
         <source>Save query to an xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση ερωτήματος σε αρχείο xml</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="55"/>
         <source>&amp;Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Φόρτωση</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="57"/>
         <source>Load query from xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρτωση ερωτήματος από αρχείο xml</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="182"/>
@@ -50904,7 +50893,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="231"/>
         <source>Error during search</source>
-        <translation type="unfinished">Σφάλμα κατά την αναζήτηση</translation>
+        <translation>Σφάλμα κατά την αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="256"/>
@@ -50919,7 +50908,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="365"/>
         <source>Save query to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση ερωτήματος σε αρχείο</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="379"/>
@@ -50927,7 +50916,7 @@ standard deviation ×</source>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="416"/>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="423"/>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="379"/>
@@ -50942,12 +50931,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="401"/>
         <source>Query files</source>
-        <translation type="unfinished"></translation>
+        <translation>Αρχεία ερωτημάτων</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="401"/>
         <source>All files</source>
-        <translation type="unfinished">Όλα τα αρχεία</translation>
+        <translation>Όλα τα αρχεία</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="410"/>
@@ -50980,7 +50969,6 @@ standard deviation ×</source>
         <comment>test result</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -50996,7 +50984,6 @@ standard deviation ×</source>
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -51412,7 +51399,7 @@ enhancement</source>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="107"/>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="121"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="48"/>
@@ -51442,22 +51429,22 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="163"/>
         <source>Value</source>
-        <translation type="unfinished">Τιμή</translation>
+        <translation>Τιμή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="168"/>
         <source>Color</source>
-        <translation type="unfinished">Χρώμα</translation>
+        <translation>Χρώμα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="173"/>
         <source>Label</source>
-        <translation type="unfinished">Ετικέτα</translation>
+        <translation>Ετικέτα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="181"/>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποκοπή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="192"/>
@@ -51472,7 +51459,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="224"/>
         <source>Classes</source>
-        <translation type="unfinished">Κλάσσεις</translation>
+        <translation>Κλάσεις</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="317"/>
@@ -51492,17 +51479,17 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="264"/>
         <source>Min</source>
-        <translation type="unfinished">Ελάχιστος</translation>
+        <translation>Ελάχιστο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="274"/>
         <source>Max</source>
-        <translation type="unfinished">Μέγιστος</translation>
+        <translation>Μέγιστο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="299"/>
         <source>Classify</source>
-        <translation type="unfinished">Ταξινόμηση</translation>
+        <translation>Ταξινόμηση</translation>
     </message>
     <message>
         <source>Color ramp</source>
@@ -51602,7 +51589,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssmartgroupconditionwidget.ui" line="31"/>
         <source>The Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύμβολο</translation>
     </message>
 </context>
 <context>
@@ -51648,12 +51635,12 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui" line="40"/>
         <source>Add Condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη συνθήκης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui" line="47"/>
         <source>Conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>Συνθήκες</translation>
     </message>
 </context>
 <context>
@@ -51683,12 +51670,12 @@ enhancement</source>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="274"/>
         <source>map units</source>
-        <translation type="unfinished">μονάδες χάρτη</translation>
+        <translation>μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="275"/>
         <source>pixels</source>
-        <translation type="unfinished">pixels</translation>
+        <translation>pixels</translation>
     </message>
 </context>
 <context>
@@ -51706,22 +51693,22 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="38"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Επίπεδο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="43"/>
         <source>Mode</source>
-        <translation type="unfinished">λειτουργία</translation>
+        <translation>Λειτουργία</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="48"/>
         <source>Tolerance</source>
-        <translation type="unfinished">Ανοχή</translation>
+        <translation>Ανοχή</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="53"/>
         <source>Units</source>
-        <translation type="unfinished">Μονάδες</translation>
+        <translation>Μονάδες</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="58"/>
@@ -52078,7 +52065,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="361"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Επιβαιβεώστε την διαγραφή</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="408"/>
@@ -52195,7 +52182,6 @@ but implies better performance thereafter.</source>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -52605,7 +52591,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="139"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Επιβαιβεώστε την διαγραφή</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="166"/>
@@ -53730,7 +53716,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="216"/>
         <source>Fill</source>
-        <translation type="unfinished">Γέμισμα</translation>
+        <translation>Γέμισμα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="231"/>
@@ -53740,17 +53726,17 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="287"/>
         <source>Tags</source>
-        <translation type="unfinished">Ετικέτες</translation>
+        <translation>Ετικέτες</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="328"/>
         <source>Add item</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη αντικειμένου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="370"/>
         <source>Share</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαμοιρασμός</translation>
     </message>
     <message>
         <source>Add</source>
@@ -53759,17 +53745,17 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="341"/>
         <source>Edit item</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία αντικειμένου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="344"/>
         <source>Edit</source>
-        <translation type="unfinished">Επεξεργασία</translation>
+        <translation>Επεξεργασία</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="354"/>
         <source>Remove item</source>
-        <translation type="unfinished"></translation>
+        <translation>Αφαίρεση αντικειμένου</translation>
     </message>
 </context>
 <context>
@@ -53777,51 +53763,51 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="33"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished">Επιλέξατε διανυσματικα επίπεδα για προσθήκη...</translation>
+        <translation>Επιλογή διανυσματικών επιπέδων για προσθήκη...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναγνωριστικό Επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer name</source>
-        <translation type="unfinished">Όνομα επιπέδου</translation>
+        <translation>Όνομα επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Number of features</source>
-        <translation type="unfinished"></translation>
+        <translation>Αριθμός αντικειμένων</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="39"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished">Επιλέξατε επίπεδα raster για προσθήκη...</translation>
+        <translation>Επιλογή επιπέδων raster για προσθήκη...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="44"/>
         <source>Select layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή επιπέδων για προσθήκη...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="46"/>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="50"/>
         <source>Select All</source>
-        <translation type="unfinished">Επιλογή όλων</translation>
+        <translation>Επιλογή όλων</translation>
     </message>
 </context>
 <context>
@@ -53829,12 +53815,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή επιπέδων για φόρτωση...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="33"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -53847,17 +53833,17 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgssvgannotationdialog.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
     <message>
         <location filename="../src/app/qgssvgannotationdialog.cpp" line="64"/>
         <source>Select SVG file</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή αρχείου SVG</translation>
     </message>
     <message>
         <location filename="../src/app/qgssvgannotationdialog.cpp" line="64"/>
         <source>SVG files</source>
-        <translation type="unfinished"></translation>
+        <translation>Αρχεία SVG</translation>
     </message>
 </context>
 <context>
@@ -53871,7 +53857,7 @@ There was a problem with your symbol database.</source>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="309"/>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="332"/>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="332"/>
@@ -55097,7 +55083,6 @@ p, li { white-space: pre-wrap; }
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55105,7 +55090,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -55115,7 +55099,6 @@ p, li { white-space: pre-wrap; }
         <comment>added attributes count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55123,7 +55106,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -55143,7 +55125,6 @@ p, li { white-space: pre-wrap; }
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55151,7 +55132,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -55161,7 +55141,6 @@ p, li { white-space: pre-wrap; }
         <comment>deleted features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55169,7 +55148,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -55179,7 +55157,6 @@ p, li { white-space: pre-wrap; }
         <comment>added features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55187,7 +55164,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -55197,7 +55173,6 @@ p, li { white-space: pre-wrap; }
         <comment>not added features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55206,7 +55181,6 @@ p, li { white-space: pre-wrap; }
         <comment>changed geometries count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -55214,7 +55188,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -56290,7 +56263,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="301"/>
         <source>Confirm Delete</source>
-        <translation>Επιβεβαιώστε την διαγραφή</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="529"/>
@@ -56482,7 +56455,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="199"/>
         <source>Confirm Delete</source>
-        <translation>Επιβαιβεώστε την διαγραφή</translation>
+        <translation>Επιβεβαίωση Διαγραφής</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="399"/>
@@ -56511,7 +56484,6 @@ p, li { white-space: pre-wrap; }
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -56542,7 +56514,6 @@ p, li { white-space: pre-wrap; }
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -56576,7 +56547,6 @@ p, li { white-space: pre-wrap; }
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -57228,7 +57198,6 @@ Response was:
         <comment>crs</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57490,7 +57459,6 @@ Response was:
         <comment>crs</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57750,7 +57718,6 @@ Response was:
         <source>%n missing row(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57763,7 +57730,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1977"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -58018,7 +57984,6 @@ Response was:
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -58026,7 +57991,6 @@ Response was:
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -58036,7 +58000,6 @@ Response was:
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -58044,7 +58007,6 @@ Response was:
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -58158,7 +58120,6 @@ Reason phrase: %2</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -58166,7 +58127,6 @@ Reason phrase: %2</source>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -58176,7 +58136,6 @@ Reason phrase: %2</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -58184,7 +58143,6 @@ Reason phrase: %2</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -58915,7 +58873,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="356"/>
         <source>Failed to load interface</source>
-        <translation type="unfinished">Αποτυχία φόρτωσης διεπαφής</translation>
+        <translation>Αποτυχία φόρτωσης διεπαφής</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="414"/>
@@ -68771,7 +68729,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="41"/>
         <source>Open number input dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα παραθύρου διαλόγου εισαγωγής αριθμού</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="44"/>
