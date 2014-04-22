@@ -352,6 +352,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposertable.h  
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
   composer/qgscomposereffect.h

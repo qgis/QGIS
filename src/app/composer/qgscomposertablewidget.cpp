@@ -106,9 +106,14 @@ void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
   {
     //change displayAttributes and aliases
     mComposerTable->beginCommand( tr( "Table attribute settings" ) );
-    mComposerTable->setDisplayAttributes( d.enabledAttributes() );
-    mComposerTable->setFieldAliasMap( d.aliasMap() );
-    mComposerTable->setSortAttributes( d.attributeSorting() );
+
+    //call these methods with update=false to prevent multiple refreshing of table attributes
+    mComposerTable->setDisplayAttributes( d.enabledAttributes(), false );
+    mComposerTable->setFieldAliasMap( d.aliasMap(), false );
+    mComposerTable->setSortAttributes( d.attributeSorting(), false );
+    //finally, force a single refresh of the attributes
+    mComposerTable->refreshAttributes();
+
     mComposerTable->update();
     mComposerTable->endCommand();
   }
