@@ -737,6 +737,7 @@ void QgsRasterLayerProperties::sync()
       mRasterLayer->dataUrlFormat()
     )
   );
+
   //layer attribution and metadataUrl
   mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
@@ -752,6 +753,8 @@ void QgsRasterLayerProperties::sync()
     )
   );
 
+  mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
+  mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 } // QgsRasterLayerProperties::sync()
 
 /*
@@ -925,6 +928,8 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   mRasterLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   mRasterLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  mRasterLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );

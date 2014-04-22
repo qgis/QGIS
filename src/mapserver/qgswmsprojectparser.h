@@ -146,6 +146,8 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
     void createSvgAnnotationItems();
     void cleanupSvgAnnotationItems();
     void cleanupTextAnnotationItems();
+
+    QString getCapaServiceUrl( QDomDocument& doc ) const;
 };
 
 #endif // QGSWMSPROJECTPARSER_H
