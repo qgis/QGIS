@@ -248,6 +248,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
         layer->metadataUrlFormat()
       )
     );
+    mLayerLegendUrlLineEdit->setText( layer->legendUrl() );
+    mLayerLegendUrlFormatComboBox->setCurrentIndex(
+      mLayerLegendUrlFormatComboBox->findText(
+        layer->legendUrlFormat()
+      )
+    );
   }
 
   QSettings settings;
@@ -556,6 +562,8 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  layer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  layer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;

@@ -969,6 +969,70 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       styleTitleElem.appendChild( styleTitleText );
       styleElem.appendChild( styleNameElem );
       styleElem.appendChild( styleTitleElem );
+
+      // QString LegendURL for explicit layerbased GetLegendGraphic request
+      QDomElement getLayerLegendGraphicElem = doc.createElement( "LegendURL" );
+      QString hrefString = currentLayer->legendUrl();
+      bool customHrefString;
+      if ( !hrefString.isEmpty() )
+      {
+        customHrefString = true;
+      }
+      else
+      {
+        customHrefString = false;
+        hrefString = serviceUrl();
+      }
+      if ( hrefString.isEmpty() )
+      {
+        hrefString = getCapaServiceUrl( doc );
+      }
+      if ( !hrefString.isEmpty() )
+      {
+        QStringList getLayerLegendGraphicFormats;
+        if ( customHrefString == false )
+        {
+          getLayerLegendGraphicFormats << "image/png"; // << "jpeg" << "image/jpeg"
+
+        }
+        else
+        {
+          getLayerLegendGraphicFormats << currentLayer->legendUrlFormat();
+        }
+
+        for ( int i = 0; i < getLayerLegendGraphicFormats.size(); ++i )
+        {
+          QDomElement getLayerLegendGraphicFormatElem = doc.createElement( "Format" );
+          QString getLayerLegendGraphicFormat = getLayerLegendGraphicFormats[i];
+          QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
+          getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
+          getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
+        }
+
+        // no parameters on custom hrefUrl, because should link directly to graphic
+        if ( customHrefString == false )
+        {
+          QUrl mapUrl( hrefString );
+          mapUrl.addQueryItem( "SERVICE", "WMS" );
+          mapUrl.addQueryItem( "VERSION", version );
+          mapUrl.addQueryItem( "REQUEST", "GetLegendGraphic" );
+          mapUrl.addQueryItem( "LAYER", currentLayer->name() );
+          mapUrl.addQueryItem( "FORMAT", "image/png" );
+          mapUrl.addQueryItem( "STYLE", styleNameText.data() );
+          if ( version == "1.3.0" )
+          {
+            mapUrl.addQueryItem( "SLD_VERSION", "1.1.0" );
+          }
+          hrefString = mapUrl.toString();
+        }
+
+        QDomElement getLayerLegendGraphicORElem = doc.createElement( "OnlineResource" );
+        getLayerLegendGraphicORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        getLayerLegendGraphicORElem.setAttribute( "xlink:type", "simple" );
+        getLayerLegendGraphicORElem.setAttribute( "xlink:href", hrefString );
+        getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
+        styleElem.appendChild( getLayerLegendGraphicElem );
+      }
       layerElem.appendChild( styleElem );
 
       //min/max scale denominatormScaleBasedVisibility
@@ -1801,4 +1865,22 @@ void QgsWMSProjectParser::cleanupTextAnnotationItems()
     delete it->first;
   }
   mTextAnnotationItems.clear();
+}
+
+QString QgsWMSProjectParser::getCapaServiceUrl( QDomDocument& doc ) const
+{
+  QString url;
+  QDomNodeList getCapNodeList = doc.elementsByTagName( "GetCapabilities" );
+  if ( getCapNodeList.count() > 0 )
+  {
+    QDomElement getCapElem = getCapNodeList.at( 0 ).toElement();
+    QDomNodeList getCapORNodeList = getCapElem.elementsByTagName( "OnlineResource" );
+    if ( getCapORNodeList.count() > 0 )
+    {
+      url = getCapORNodeList.at( 0 ).toElement().attribute( "xlink:href", "" );
+    }
+
+  }
+
+  return url;
 }

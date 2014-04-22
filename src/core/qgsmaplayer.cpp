@@ -376,6 +376,14 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     mDataUrlFormat = dataUrlElem.attribute( "format", "" );
   }
 
+  //legendUrl
+  QDomElement legendUrlElem = layerElement.firstChildElement( "legendUrl" );
+  if ( !legendUrlElem.isNull() )
+  {
+    mLegendUrl = legendUrlElem.text();
+    mLegendUrlFormat = legendUrlElem.attribute( "format", "" );
+  }
+
   //attribution
   QDomElement attribElem = layerElement.firstChildElement( "attribution" );
   if ( !attribElem.isNull() )
@@ -516,6 +524,17 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     layerDataUrl.appendChild( layerDataUrlText );
     layerDataUrl.setAttribute( "format", dataUrlFormat() );
     layerElement.appendChild( layerDataUrl );
+  }
+
+  // layer legendUrl
+  QString aLegendUrl = legendUrl();
+  if ( !aLegendUrl.isEmpty() )
+  {
+    QDomElement layerLegendUrl = document.createElement( "legendUrl" ) ;
+    QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
+    layerLegendUrl.appendChild( layerLegendUrlText );
+    layerLegendUrl.setAttribute( "format", legendUrlFormat() );
+    layerElement.appendChild( layerLegendUrl );
   }
 
   // layer attribution
