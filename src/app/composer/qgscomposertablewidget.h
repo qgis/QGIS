@@ -40,6 +40,7 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void refreshMapComboBox();
 
   private slots:
+    void on_mRefreshPushButton_clicked();
     void on_mAttributesPushButton_clicked();
     void on_mComposerMapComboBox_activated( int index );
     void on_mMaximumColumnsSpinBox_valueChanged( int i );
