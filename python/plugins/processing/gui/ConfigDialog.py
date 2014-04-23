@@ -145,8 +145,9 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                     return
             else:
                 setting.value = unicode(self.items[setting].text())
-            ProcessingConfig.addSetting(setting)
-        ProcessingConfig.saveSettings()
+            setting.save()
+            #ProcessingConfig.addSetting(setting)
+        #ProcessingConfig.saveSettings()
         self.toolbox.updateTree()
 
         QDialog.accept(self)

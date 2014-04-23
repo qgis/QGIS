@@ -90,7 +90,7 @@ class Processing:
         try:
             provider.initializeSettings()
             Processing.providers.append(provider)
-            ProcessingConfig.loadSettings()
+            ProcessingConfig.readSettings()
             if updateList:
                 Processing.updateAlgsList()
         except:
@@ -110,7 +110,7 @@ class Processing:
         try:
             provider.unload()
             Processing.providers.remove(provider)
-            ProcessingConfig.loadSettings()
+            ProcessingConfig.readSettings()
             Processing.updateAlgsList()
         except:
             # This try catch block is here to avoid problems if the
@@ -157,7 +157,7 @@ class Processing:
         AlgorithmDecorator.loadClassification()
         ProcessingLog.startLogging()
         ProcessingConfig.initialize()
-        ProcessingConfig.loadSettings()
+        ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
         Processing.loadFromProviders()
 
