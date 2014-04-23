@@ -73,7 +73,7 @@ class GeoAlgorithm:
         self.showInModeler = True
         #if true, will show only loaded layers in parameters dialog.
         #Also, if True, the algorithm does not run on the modeler
-		#or batch ptocessing interface
+        #or batch ptocessing interface
         self.allowOnlyOpenedLayers = False
 
         # False if it should not be run a a batch process
@@ -116,7 +116,7 @@ class GeoAlgorithm:
 
         Returns None if there is no help file available.
         """
-        return None
+        return False, None
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.
