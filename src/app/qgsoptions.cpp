@@ -623,9 +623,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   pbnCanvasColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   // set the default color for the measure tool
-  myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
+  myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
+  myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
+  myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
