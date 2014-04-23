@@ -1,3 +1,4 @@
+
 /***************************************************************************
    qgsfieldexpressionwidget.cpp
     --------------------------------------
@@ -18,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsfieldcombobox.h"
+#include "qgsfieldmodel.h"
 #include "qgsdistancearea.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
@@ -28,15 +29,22 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  mCombo = new QgsFieldComboBox( this );
-  mCombo->setAllowExpression( true );
+  mCombo = new QComboBox( this );
+  mCombo->setEditable( true );
   mCombo->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
-  layout->addWidget( mCombo );
+  mFieldModel = new QgsFieldModel( mCombo );
+  mFieldModel->setAllowExpression( true );
+  mCombo->setModel( mFieldModel );
+
   mButton = new QToolButton( this );
-  mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::MinimumExpanding );
+  mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionEditorOpen.svg" ) );
+
+  layout->addWidget( mCombo );
   layout->addWidget( mButton );
 
+  connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
+  connect( mCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 }
 
@@ -50,45 +58,88 @@ void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
   mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
 
-QgsFieldComboBox *QgsFieldExpressionWidget::fieldComboBox()
-{
-  return mCombo;
-}
-
-QToolButton *QgsFieldExpressionWidget::toolButton()
-{
-  return mButton;
-}
-
 QString QgsFieldExpressionWidget::currentField( bool *isExpression )
 {
-  return mCombo->currentField( isExpression );
+  if ( isExpression )
+  {
+    *isExpression = false;
+  }
+
+  int i = mCombo->currentIndex();
+
+  const QModelIndex index = mFieldModel->index( i, 0 );
+  if ( !index.isValid() )
+  {
+    return "";
+  }
+
+  if ( isExpression )
+  {
+    *isExpression = mFieldModel->data( index, QgsFieldModel::IsExpressionRole ).toBool();
+  }
+  QString expression = mFieldModel->data( index, QgsFieldModel::ExpressionRole ).toString();
+  return expression;
 }
 
 QgsVectorLayer *QgsFieldExpressionWidget::layer()
 {
-  return mCombo->layer();
+  QgsMapLayer* layer = mFieldModel->layer();
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( vl )
+    return vl;
+  else
+    return 0;
 }
 
-void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
+void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 {
-  mCombo->setLayer( layer );
+  mFieldModel->setLayer( layer );
 }
 
 void QgsFieldExpressionWidget::setField( QString fieldName )
 {
-  mCombo->setField( fieldName );
+  QModelIndex idx = mFieldModel->indexFromName( fieldName );
+  bool isExpression ;
+  if ( idx.isValid() )
+  {
+    isExpression = mFieldModel->data( idx, QgsFieldModel::IsExpressionRole ).toBool();
+  }
+  else
+  {
+    // new expression
+    idx = mFieldModel->setExpression( fieldName );
+    isExpression = true;
+  }
+  mCombo->setCurrentIndex( idx.row() );
+
+  QFont font;
+  font.setItalic( isExpression );
+  mCombo->lineEdit()->setFont( font );
+
+  QPalette palette;
+  palette.setColor( QPalette::Text, Qt::black );
+  if ( isExpression )
+  {
+    bool isValid = mFieldModel->data( idx, QgsFieldModel::ExpressionValidityRole ).toBool();
+    if ( !isValid )
+    {
+      palette.setColor( QPalette::Text, Qt::red );
+    }
+  }
+  mCombo->lineEdit()->setPalette( palette );
+
+  emit fieldChanged( currentField() );
 }
 
 void QgsFieldExpressionWidget::editExpression()
 {
-  QString currentExpression = mCombo->currentField();
-  QgsVectorLayer* layer = mCombo->layer();
+  QString currentExpression = currentField();
+  QgsVectorLayer* vl = layer();
 
-  if ( !layer )
+  if ( !vl )
     return;
 
-  QgsExpressionBuilderDialog dlg( layer, currentExpression );
+  QgsExpressionBuilderDialog dlg( vl, currentExpression );
   if ( !mDa.isNull() )
   {
     dlg.setGeomCalculator( *mDa );
@@ -98,7 +149,19 @@ void QgsFieldExpressionWidget::editExpression()
   if ( dlg.exec() )
   {
     QString newExpression = dlg.expressionText();
-    mCombo->setField( newExpression );
+    setField( newExpression );
   }
+}
 
+void QgsFieldExpressionWidget::expressionEdited( QString expression )
+{
+  mFieldModel->removeExpression();
+  setField( expression );
+}
+
+void QgsFieldExpressionWidget::indexChanged( int i )
+{
+  Q_UNUSED( i );
+  QString name = currentField();
+  emit fieldChanged( name );
 }

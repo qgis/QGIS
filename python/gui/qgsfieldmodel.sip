@@ -13,9 +13,12 @@ class QgsFieldModel : QAbstractItemModel
 
   public:
     enum FieldRoles {
-      FieldNameRole = 33, /* Qt::UserRole + 1, SIP does not accept any arithmetic" */
-      FieldIndexRole = 34,
-      ExpressionRole = 35
+      /* SIP does not accept any arithmetic" */
+      FieldNameRole = 33,  /* return field name if index corresponds to a field */
+      FieldIndexRole = 34, /* return field index if index corresponds to a field */
+      ExpressionRole = 35, /* return field name or expression */
+      IsExpressionRole = 36, /* return if index corresponds to an expression */
+      ExpressionValidityRole = 37 /* return if expression is valid or not */
     };
 
     /**
@@ -23,14 +26,10 @@ class QgsFieldModel : QAbstractItemModel
      */
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );
 
-    /**
-     * @brief indexFromName returns the index corresponding to a given fieldName
-     */
+    //! return the index corresponding to a given fieldName
     QModelIndex indexFromName( QString fieldName );
     
-    /**
-     * @brief setAllowExpression determines if expressions are allowed to be added to the model
-     */
+    //! returns the currently used layer
     void setAllowExpression( bool allowExpression );
     bool allowExpression();
 
@@ -39,19 +38,20 @@ class QgsFieldModel : QAbstractItemModel
      * @return the model index of the newly added expression
      */
     QModelIndex setExpression( QString expression );
+    
+    //! remove expressions from the model
+    void removeExpression();
 
-    /**
-     * @brief layer returns the currently used layer
-     */
+    //! returns the currently used layer
     QgsMapLayer* layer();
 
   public slots:
-    /**
-     * @brief setLayer sets the layer of whch fields are displayed
-     */
+    //! set the layer of whch fields are displayed
     void setLayer( QgsMapLayer *layer );
     
-
+  protected slots:
+    virtual void updateModel();
+    
     // QAbstractItemModel interface
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;

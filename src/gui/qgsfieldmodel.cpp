@@ -42,10 +42,6 @@ QModelIndex QgsFieldModel::indexFromName( QString fieldName )
     {
       return index( mFields.count() + exprIdx , 0 );
     }
-    else
-    {
-      return setExpression( fieldName );
-    }
   }
 
   return QModelIndex();
@@ -122,7 +118,20 @@ QModelIndex QgsFieldModel::setExpression( QString expression )
   mExpression = QList<QString>() << expression;
   endResetModel();
 
+  // fetch feature to be evaluate the expression
+  if ( !mFeature.isValid() )
+  {
+    mLayer->getFeatures().nextFeature( mFeature );
+  }
+
   return index( mFields.count() , 0 );
+}
+
+void QgsFieldModel::removeExpression()
+{
+  beginResetModel();
+  mExpression = QList<QString>();
+  endResetModel();
 }
 
 QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent ) const
@@ -160,57 +169,110 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   if ( !mLayer )
     return QVariant();
 
-  if ( role == FieldNameRole )
-  {
-    int exprIdx = index.internalId() - mFields.count();
-    if ( exprIdx >= 0 )
-    {
-      return "";
-    }
-    QgsField field = mFields[index.internalId()];
-    return field.name();
-  }
+  int exprIdx = index.internalId() - mFields.count();
 
-  if ( role == ExpressionRole )
+  switch ( role )
   {
-    int exprIdx = index.internalId() - mFields.count();
-    if ( exprIdx >= 0 )
+    case FieldNameRole:
     {
-      return mExpression[exprIdx];
+      if ( exprIdx >= 0 )
+      {
+        return "";
+      }
+      QgsField field = mFields[index.internalId()];
+      return field.name();
     }
-    return "";
-  }
 
-  if ( role == FieldIndexRole )
-  {
-    if ( index.internalId() >= mFields.count() )
+    case ExpressionRole:
     {
+      if ( exprIdx >= 0 )
+      {
+        return mExpression[exprIdx];
+      }
+      else
+      {
+        QgsField field = mFields[index.internalId()];
+        return field.name();
+      }
+    }
+
+    case FieldIndexRole:
+    {
+      if ( exprIdx >= 0 )
+      {
+        return QVariant();
+      }
+      return index.internalId();
+    }
+
+    case IsExpressionRole:
+    {
+      return exprIdx >= 0;
+    }
+
+    case ExpressionValidityRole:
+    {
+      if ( exprIdx >= 0 )
+      {
+        QgsExpression exp( mExpression[exprIdx] );
+        if ( mFeature.isValid() )
+        {
+          exp.evaluate( &mFeature, mLayer->pendingFields() );
+          return !exp.hasEvalError();
+        }
+        else
+        {
+          return QVariant();
+        }
+      }
+      return true;
+    }
+
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+    {
+      if ( exprIdx >= 0 )
+      {
+        return mExpression[exprIdx];
+      }
+      QgsField field = mFields[index.internalId()];
+      const QMap< QString, QString > aliases = mLayer->attributeAliases();
+      QString alias = aliases.value( field.name(), field.name() );
+      return alias;
+    }
+
+    case Qt::BackgroundRole:
+    {
+      if ( exprIdx >= 0 )
+      {
+        // if expression, test validity
+        QgsExpression exp( mExpression[exprIdx] );
+
+        if ( mFeature.isValid() )
+        {
+          exp.evaluate( &mFeature, mLayer->pendingFields() );
+          if ( exp.hasEvalError() )
+          {
+            return QBrush( QColor( 240, 60, 60, 180 ) );
+          }
+        }
+      }
       return QVariant();
     }
-    return index.internalId();
-  }
 
-  if ( role == Qt::DisplayRole )
-  {
-    int exprIdx = index.internalId() - mFields.count();
-    if ( exprIdx >= 0 )
+    case Qt::FontRole:
     {
-      return mExpression[exprIdx];
+      if ( exprIdx >= 0 )
+      {
+        // if the line is an expression, set it as italic
+        QFont font;
+        font.setItalic( true );
+        return font;
+      }
+      return QVariant();
     }
-    QgsField field = mFields[index.internalId()];
-    const QMap< QString, QString > aliases = mLayer->attributeAliases();
-    QString alias = aliases.value( field.name(), field.name() );
-    return alias;
-  }
 
-  if ( role == Qt::FontRole && index.internalId() >= mFields.count() )
-  {
-    // if the line is an expression, set it as italic
-    QFont font;
-    font.setItalic( true );
-    return font;
+    default:
+      return QVariant();
   }
-
-  return QVariant();
 }
-

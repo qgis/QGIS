@@ -24,10 +24,9 @@ class QgsVectorLayer;
 
 /**
  * @brief The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
- * If allowed, expression may also be added at the bottom of the list of fields.
- * It can be combined with a QgsExpressioButton to set the expression using the dedicated expression builder dialog.
- * It might also be combined with a QgsMapLayerComboBox and the fields will be automatically updated according to the chosen layer.
- * @see QgsExpressioButton, QgsMapLayerComboBox
+ * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
+ * If expression must be used, QgsFieldExpressionWidget shall be used instead.
+ * @see QgsMapLayerComboBox
  * @note added in 2.3
  */
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
@@ -40,38 +39,21 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     explicit QgsFieldComboBox( QWidget *parent = 0 );
 
-    /**
-     * @brief currentField returns the currently selected field or expression if allowed
-     * @param isExpression determines if the string returned is the name of a field or an expression
-     */
-    QString currentField( bool *isExpression = 0 );
-
-    //!! setAllowExpression sets if expression can be added the combo box
-    void setAllowExpression( bool allowExpression );
-    //! returns if the widget allows expressions to be added or not
-    bool allowExpression() { return mAllowExpression; }
+    //! return the currently selected field
+    QString currentField();
 
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
   signals:
-    /**
-     * @brief fieldChanged the signal is emitted when the currently selected field changes
-     */
+    //! the signal is emitted when the currently selected field changes
     void fieldChanged( QString fieldName );
 
   public slots:
-    /**
-     * @brief setLayer sets the layer of which the fields are listed
-     */
+    //! set the layer of which the fields are listed
     void setLayer( QgsMapLayer* layer );
 
-    /**
-     * @brief setField sets the currently selected field
-     * if expressions are allowed in the widget,
-     * then it will either set it as selected
-     * if it already exists, or it will add it otherwise
-     */
+    //! setField sets the currently selected field
     void setField( QString fieldName );
 
   protected slots:
@@ -79,8 +61,6 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
 
   private:
     QgsFieldModel* mFieldModel;
-    bool mAllowExpression;
-
 };
 
 #endif // QGSFIELDCOMBOBOX_H

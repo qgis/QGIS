@@ -19,12 +19,14 @@
 #include <QSharedPointer>
 #include <QWidget>
 #include <QToolButton>
+#include <QComboBox>
+#include <QColor>
 
 #include "qgsdistancearea.h"
 
-class QgsFieldComboBox;
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsFieldModel;
 
 
 class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
@@ -42,12 +44,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! set the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
 
-    //! return a pointer to the combo box in the widget
-    QgsFieldComboBox* fieldComboBox();
-
-    //! return a pointer to the tool button used in the widget
-    QToolButton* toolButton();
-
     /**
      * @brief currentField returns the currently selected field or expression if allowed
      * @param isExpression determines if the string returned is the name of a field or an expression
@@ -57,22 +53,34 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
+  signals:
+    //! the signal is emitted when the currently selected field changes
+    void fieldChanged( QString fieldName );
+
   public slots:
     //! set the layer used to display the fields and expression
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsVectorLayer* layer );
 
     //! sets the current field or expression in the widget
     void setField( QString fieldName );
 
+  protected slots:
     //! open the expression dialog to edit the current or add a new expression
     void editExpression();
 
+    //! when expression is edited by the user in the line edit
+    void expressionEdited( QString expression );
+
+    void indexChanged( int i );
+
   private:
-    QgsFieldComboBox* mCombo;
+    QComboBox* mCombo;
     QToolButton* mButton;
+    QgsFieldModel* mFieldModel;
     QString mExpressionDialogTitle;
     QSharedPointer<const QgsDistanceArea> mDa;
 
+    QString color2rgbaStr( QColor color );
 };
 
 #endif // QGSFIELDEXPRESSIONWIDGET_H

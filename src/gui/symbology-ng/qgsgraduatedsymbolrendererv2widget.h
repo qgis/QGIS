@@ -81,8 +81,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged();
-    void setExpression();
+    void graduatedColumnChanged( QString field );
     void classifyGraduated();
     void reapplyColorRamp();
     void rangesDoubleClicked( const QModelIndex & idx );
@@ -112,9 +111,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     //! return a list of indexes for the classes under selection
     QList<int> selectedClasses();
     QgsRangeList selectedRanges();
-
-    //! populate column combos in categorized and graduated page
-    void populateColumns();
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );

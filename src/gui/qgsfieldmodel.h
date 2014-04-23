@@ -22,6 +22,8 @@
 
 #include "qgsvectorlayer.h"
 
+class QgsFeature;
+
 /**
  * @brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
  * If allowed, expressions might be added to the end of the model.
@@ -34,9 +36,11 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
   public:
     enum  FieldRoles
     {
-      FieldNameRole = Qt::UserRole + 1,
-      FieldIndexRole = Qt::UserRole + 2,
-      ExpressionRole = Qt::UserRole + 3
+      FieldNameRole = Qt::UserRole + 1,  /* return field name if index corresponds to a field */
+      FieldIndexRole = Qt::UserRole + 2, /* return field index if index corresponds to a field */
+      ExpressionRole = Qt::UserRole + 3, /* return field name or expression */
+      IsExpressionRole = Qt::UserRole + 4, /* return if index corresponds to an expression */
+      ExpressionValidityRole = Qt::UserRole + 5 /* return if expression is valid or not */
     };
 
     /**
@@ -44,14 +48,10 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      */
     explicit QgsFieldModel( QObject *parent = 0 );
 
-    /**
-     * @brief indexFromName returns the index corresponding to a given fieldName
-     */
+    //! return the index corresponding to a given fieldName
     QModelIndex indexFromName( QString fieldName );
 
-    /**
-     * @brief setAllowExpression determines if expressions are allowed to be added to the model
-     */
+    //! returns the currently used layer
     void setAllowExpression( bool allowExpression );
     bool allowExpression() {return mAllowExpression;}
 
@@ -61,15 +61,14 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      */
     QModelIndex setExpression( QString expression );
 
-    /**
-     * @brief layer returns the currently used layer
-     */
+    //! remove expressions from the model
+    void removeExpression();
+
+    //! returns the currently used layer
     QgsMapLayer* layer() {return mLayer;}
 
   public slots:
-    /**
-     * @brief setLayer sets the layer of whch fields are displayed
-     */
+    //! set the layer of whch fields are displayed
     void setLayer( QgsMapLayer *layer );
 
   protected slots:
@@ -84,6 +83,11 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     QgsVectorLayer* mLayer;
     bool mAllowExpression;
+
+  private:
+    QgsFeature mFeature;
+
+    void fetchFeature();
 
     // QAbstractItemModel interface
   public:

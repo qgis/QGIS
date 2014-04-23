@@ -47,25 +47,15 @@ void QgsFieldComboBox::setField( QString fieldName )
   if ( idx.isValid() )
   {
     setCurrentIndex( idx.row() );
-    return;
   }
-
-  if ( mAllowExpression )
+  else
   {
-    mFieldModel->setExpression( fieldName );
-    setCurrentIndex( findText( fieldName ) );
-    return;
+    setCurrentIndex( -1 );
   }
-  setCurrentIndex( -1 );
 }
 
-QString QgsFieldComboBox::currentField( bool *isExpression )
+QString QgsFieldComboBox::currentField()
 {
-  if ( isExpression )
-  {
-    *isExpression = false;
-  }
-
   int i = currentIndex();
 
   const QModelIndex index = mFieldModel->index( i, 0 );
@@ -74,31 +64,8 @@ QString QgsFieldComboBox::currentField( bool *isExpression )
     return "";
   }
 
-  QString fieldName = mFieldModel->data( index, QgsFieldModel::FieldNameRole ).toString();
-  if ( !fieldName.isEmpty() )
-  {
-    return fieldName;
-  }
-
-  if ( mAllowExpression )
-  {
-    QString expression = mFieldModel->data( index, QgsFieldModel::ExpressionRole ).toString();
-    if ( !expression.isEmpty() )
-    {
-      if ( isExpression )
-      {
-        *isExpression = true;
-      }
-      return expression;
-    }
-  }
-
-  return "";
-}
-
-void QgsFieldComboBox::setAllowExpression( bool allowExpression )
-{
-  mFieldModel->setAllowExpression( allowExpression );
+  QString name = mFieldModel->data( index, QgsFieldModel::FieldNameRole ).toString();
+  return name;
 }
 
 void QgsFieldComboBox::indexChanged( int i )

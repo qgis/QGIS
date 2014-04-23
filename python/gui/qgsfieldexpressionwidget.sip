@@ -17,12 +17,6 @@ class QgsFieldExpressionWidget : QWidget
     //! set the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
 
-    //! return a pointer to the combo box in the widget
-    QgsFieldComboBox* fieldComboBox();
-
-    //! return a pointer to the tool button used in the widget
-    QToolButton* toolButton();
-
     /**
      * @brief currentField returns the currently selected field or expression if allowed
      * @param isExpression determines if the string returned is the name of a field or an expression
@@ -32,6 +26,10 @@ class QgsFieldExpressionWidget : QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
+  signals:
+     //! the signal is emitted when the currently selected field changes
+     void fieldChanged( QString fieldName );
+
   public slots:
     //! set the layer used to display the fields and expression
     void setLayer( QgsMapLayer* layer );
@@ -39,6 +37,12 @@ class QgsFieldExpressionWidget : QWidget
     //! sets the current field or expression in the widget
     void setField( QString fieldName );
 
+  protected slots:
     //! open the expression dialog to edit the current or add a new expression
     void editExpression();
+
+    //! when expression is edited by the user in the line edit
+    void expressionEdited( QString expression );
+
+    void indexChanged( int i );
 };
