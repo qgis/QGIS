@@ -52,6 +52,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
+    
+    hasChanged = False
 
     def __init__(self, algType, alg):
         QDialog.__init__(self)
@@ -86,6 +88,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.btnPaste.clicked.connect(self.editor.paste)
         self.btnUndo.clicked.connect(self.editor.undo)
         self.btnRedo.clicked.connect(self.editor.redo)
+        self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
         self.alg = alg
         self.algType = algType
@@ -98,6 +101,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.update = False
         self.help = None
+        
+        self.setHasChanged(False)
 
         self.editor.setLexerType(self.algType)
 
@@ -165,11 +170,14 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                 pickle.dump(self.help, f)
                 f.close()
                 self.help = None
-            QMessageBox.information(self, self.tr('Script saving'),
-                                    self.tr('Script was correctly saved.'))
+            self.setHasChanged(False)
         else:
             self.filename = None
 
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+        self.btnSave.setEnabled(hasChanged)
+        
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, unicode(self.editor.text()))
