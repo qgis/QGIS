@@ -90,6 +90,7 @@ from PointsDisplacement import PointsDisplacement
 from ZonalStatistics import ZonalStatistics
 from PointsFromPolygons import PointsFromPolygons
 from PointsFromLines import PointsFromLines
+from RandomPointsExtent import RandomPointsExtent
 
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
@@ -119,8 +120,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(), RandomExtractWithinSubsets(),
-                        ExtractByLocation(), SpatialJoin(),
+                        SelectByLocation(), RandomExtract(),
+                        RandomExtractWithinSubsets(), ExtractByLocation(),
+                        SpatialJoin(),
                         # ------ mmqgisx ------
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),
@@ -141,7 +143,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         StatisticsByCategories(), ConcaveHull(), Polygonize(),
                         RasterLayerStatistics(), PointsDisplacement(),
                         ZonalStatistics(), PointsFromPolygons(),
-                        PointsFromLines(),
+                        PointsFromLines(), RandomPointsExtent(),
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------
