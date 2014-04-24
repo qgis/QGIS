@@ -164,7 +164,7 @@ class QgisInterface : QObject
 
     //! Add a toolbar
     //! @note added in 2.3
-    virtual void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
+    virtual void addToolBar( QToolBar* toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
