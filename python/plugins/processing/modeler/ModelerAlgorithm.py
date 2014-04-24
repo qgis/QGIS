@@ -741,7 +741,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         if os.path.exists(helpfile):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
-            return None
+            return False, None
 
 
 class AlgorithmAndParameter:

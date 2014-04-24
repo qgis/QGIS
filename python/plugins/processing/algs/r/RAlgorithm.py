@@ -406,7 +406,7 @@ class RAlgorithm(GeoAlgorithm):
         if os.path.exists(helpfile):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
-            return None
+            return False, None
 
     def checkBeforeOpeningParametersDialog(self):
         msg = RUtils.checkRIsInstalled()

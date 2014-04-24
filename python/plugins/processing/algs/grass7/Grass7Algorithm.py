@@ -91,8 +91,8 @@ class Grass7Algorithm(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
 
-    def helpFile(self):
-        return 'http://grass.osgeo.org/grass70/manuals/' + self.grassName \
+    def help(self):
+        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grassName \
             + '.html'
 
     def getParameterDescriptions(self):
