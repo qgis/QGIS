@@ -38,7 +38,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
-
+from processing.tools import vector
 
 class RandomPointsExtent(GeoAlgorithm):
 
@@ -90,7 +90,7 @@ class RandomPointsExtent(GeoAlgorithm):
             pnt = QgsPoint(rx, ry)
             geom = QgsGeometry.fromPoint(pnt)
             if geom.within(extent) and \
-                    self.checkMinDistance(pnt, index, minDistance, points):
+                    vector.checkMinDistance(pnt, index, minDistance, points):
                 f = QgsFeature(nPoints)
                 f.initAttributes(1)
                 f.setFields(fields)
@@ -110,18 +110,3 @@ class RandomPointsExtent(GeoAlgorithm):
                  'number of attempts exceeded.')
 
         del writer
-
-    def checkMinDistance(self, point, index, distance, points):
-        if distance == 0:
-            return True
-
-        neighbors = index.nearestNeighbor(point, 1)
-        if len(neighbors) == 0:
-            return True
-
-        if neighbors[0] in points:
-            np = points[neighbors[0]]
-            if np.sqrDist(point) < (distance * distance):
-                return False
-
-        return True

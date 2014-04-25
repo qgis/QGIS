@@ -92,7 +92,7 @@ class RandomPointsLayer(GeoAlgorithm):
             geom = QgsGeometry.fromPoint(pnt)
             ids = idxLayer.intersects(geom.buffer(5, 5).boundingBox())
             if len(ids) > 0 and \
-                    self.checkMinDistance(pnt, index, minDistance, points):
+                    vector.checkMinDistance(pnt, index, minDistance, points):
                 for i in ids:
                     f = layer.getFeatures(request.setFilterFid(i)).next()
                     tmpGeom = QgsGeometry(f.geometry())
@@ -116,18 +116,3 @@ class RandomPointsLayer(GeoAlgorithm):
                  'number of attempts exceeded.')
 
         del writer
-
-    def checkMinDistance(self, point, index, distance, points):
-        if distance == 0:
-            return True
-
-        neighbors = index.nearestNeighbor(point, 1)
-        if len(neighbors) == 0:
-            return True
-
-        if neighbors[0] in points:
-            np = points[neighbors[0]]
-            if np.sqrDist(point) < (distance * distance):
-                return False
-
-        return True

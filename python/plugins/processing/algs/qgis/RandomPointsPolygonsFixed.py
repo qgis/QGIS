@@ -55,14 +55,15 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                  ]
 
     def defineCharacteristics(self):
-        self.name = 'Random points inside polygons'
+        self.name = 'Random points inside polygons (fixed)'
         self.group = 'Vector creation tools'
         self.addParameter(ParameterVector(self.VECTOR,
             'Input layer',[ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterSelection(
             self.STRATEGY, 'Sampling strategy', self.STRATEGIES, 0))
         self.addParameter(
-            ParameterNumber(self.VALUE, 'Number or density of points', 0.0001, 9999999.0, 1.0))
+            ParameterNumber(self.VALUE, 'Number or density of points',
+                0.0001, 9999999.0, 1.0))
         self.addParameter(ParameterNumber(
             self.MIN_DISTANCE, 'Minimum distance', 0.0, 9999999, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, 'Random points'))
@@ -107,7 +108,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                 pnt = QgsPoint(rx, ry)
                 geom = QgsGeometry.fromPoint(pnt)
                 if geom.within(fGeom) and \
-                        self.checkMinDistance(pnt, index, minDistance, points):
+                        vector.checkMinDistance(pnt, index, minDistance, points):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
                     f.setFields(fields)
@@ -129,18 +130,3 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
             progress.setPercentage(0)
 
         del writer
-
-    def checkMinDistance(self, point, index, distance, points):
-        if distance == 0:
-            return True
-
-        neighbors = index.nearestNeighbor(point, 1)
-        if len(neighbors) == 0:
-            return True
-
-        if neighbors[0] in points:
-            np = points[neighbors[0]]
-            if np.sqrDist(point) < (distance * distance):
-                return False
-
-        return True
