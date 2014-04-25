@@ -149,7 +149,7 @@ class Grass7Utils:
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
         output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
         output.write('\n')
-        output.write('set GRASS_VERSION=' + Grass7Utils.getGrass7Version()
+        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion()
                 + '\n')
         output.write('if not "%LANG%"=="" goto langset\n')
         output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
