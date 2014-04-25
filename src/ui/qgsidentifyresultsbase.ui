@@ -44,15 +44,8 @@
      </item>
      <item>
       <widget class="QToolButton" name="mOpenFormButton">
-       <property name="toolTip">
-        <string>Expand tree.</string>
-       </property>
        <property name="text">
         <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionToggleEditing.png</normaloff>:/images/themes/default/mActionToggleEditing.png</iconset>
        </property>
       </widget>
      </item>
@@ -189,7 +182,7 @@
         </sizepolicy>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+        <set>QDialogButtonBox::Help</set>
        </property>
        <property name="centerButtons">
         <bool>false</bool>
