@@ -84,6 +84,8 @@ class RandomPointsLayer(GeoAlgorithm):
 
         request = QgsFeatureRequest()
 
+        random.seed()
+
         while nIterations < maxIterations and nPoints < pointCount:
             rx = bbox.xMinimum() + bbox.width() * random.random()
             ry = bbox.yMinimum() + bbox.height() * random.random()

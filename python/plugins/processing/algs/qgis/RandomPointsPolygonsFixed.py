@@ -80,10 +80,9 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPoint, layer.dataProvider().crs())
 
-
         request = QgsFeatureRequest()
-
         da = QgsDistanceArea()
+
         features = vector.features(layer)
         for current, f in enumerate(features):
             fGeom = QgsGeometry(f.geometry())
@@ -100,6 +99,8 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
             nIterations = 0
             maxIterations = pointCount * 200
             total = 100.0 / pointCount
+
+            random.seed()
 
             while nIterations < maxIterations and nPoints < pointCount:
                 rx = bbox.xMinimum() + bbox.width() * random.random()

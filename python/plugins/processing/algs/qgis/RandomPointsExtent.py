@@ -83,6 +83,8 @@ class RandomPointsExtent(GeoAlgorithm):
         index = QgsSpatialIndex()
         points = dict()
 
+        random.seed()
+
         while nIterations < maxIterations and nPoints < pointCount:
             rx = xMin + (xMax - xMin) * random.random()
             ry = yMin + (yMax - yMin) * random.random()
