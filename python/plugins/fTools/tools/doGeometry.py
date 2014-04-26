@@ -393,7 +393,7 @@ class geometryThread( QThread ):
               idVarMod = idVar
           else:
             idVar = ""
-          if idVarMod == iMod or merge_all:
+          if merge_all or idVarMod == iMod:
             if first:
               atts = atMap
               first = False
