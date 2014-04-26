@@ -94,6 +94,7 @@ from RandomPointsExtent import RandomPointsExtent
 from RandomPointsLayer import RandomPointsLayer
 from RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
 from RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
+from RandomPointsAlongLines import RandomPointsAlongLines
 
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
@@ -149,6 +150,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PointsFromLines(), RandomPointsExtent(),
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
+                        RandomPointsAlongLines(),
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------
