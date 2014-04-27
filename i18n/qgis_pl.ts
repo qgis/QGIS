@@ -26057,7 +26057,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="56"/>
         <source>&amp;Placement</source>
-        <translation>U&amp;miejscowienie</translation>
+        <translation>Położenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="67"/>
@@ -26311,7 +26311,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="104"/>
         <source>Placement on screen</source>
-        <translation>Umiejscowienie na ekranie</translation>
+        <translation>Położenie na ekranie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui" line="108"/>
@@ -27953,7 +27953,7 @@ Pozostaw puste, aby program dostosował do wartości maksymalnej.</translation>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="541"/>
         <source>Placement</source>
-        <translation>Umiejscowienie</translation>
+        <translation>Położenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="551"/>
@@ -36361,7 +36361,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/ui/qgslabeldialogbase.ui" line="54"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="513"/>
         <source>Placement</source>
-        <translation>Umiejscowienie</translation>
+        <translation>Położenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="311"/>
@@ -43789,7 +43789,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1552"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation>Uprość wybór i dodawanie warstw &amp;PostGIS</translation>
+        <translation>Dodaj warstwy PostGIS podwójnym kliknięciem i wybierz w trybie rozszerzonym</translation>
     </message>
     <message>
         <source>Add new layers to selected group</source>
@@ -44065,7 +44065,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3346"/>
         <source>Reuse last entered attribute values</source>
-        <translation>Użyj ostatniej wprowadzonej wartości</translation>
+        <translation>Użyj ostatnio wprowadzonych wartości atrybutów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3316"/>
@@ -44318,12 +44318,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1634"/>
         <source>Render layers in parallel using all available CPU cores</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj wszystkich dostępnych rdzeni CPU</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1643"/>
         <source>Map update interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Odświeżaj widok mapy co </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
@@ -44333,7 +44333,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1681"/>
         <source>Enable feature simplification by default for newly added layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Uproszczone wyświetlanie dla nowo wczytanych warstw</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3863"/>
@@ -44377,12 +44377,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1929"/>
         <source>Multi band color (byte / band) </source>
-        <translation>Kolor wielokanałowy (bajtów/kanał)</translation>
+        <translation>Kolor wielokanałowy (bajt/kanał)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1961"/>
         <source>Multi band color (&gt; byte / band) </source>
-        <translation>Kolor wielokanałowy (&gt; bajtów/kanał)</translation>
+        <translation>Kolor wielokanałowy (&gt; bajt/kanał)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2000"/>
@@ -44417,32 +44417,32 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2648"/>
         <source>Highlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor wybranych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2673"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The color used to highlight identified feature. The alpha channel is only used for polygons fill, lines and outlines are fully opaque.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kolor umożliwiający odróżnienie wybranych obiektów. Kanał alfa ma zastosowanie tylko dla poligonów.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2686"/>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Otoczka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2693"/>
         <source>Lines / outlines buffer in millimeters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Otoczka linii/obrysu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2706"/>
         <source>Minimum width</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalna szerokość</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2713"/>
         <source>Minimum line / outline width in millimeters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalna szerokość linii/obrysu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2775"/>
@@ -44650,7 +44650,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="829"/>
         <source>Prompt for confirmation when a layer is to be removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pytaj o potwierdzenie przy usuwaniu warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1048"/>
@@ -63449,8 +63449,6 @@ Response was:
         <source>%n missing row(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -63463,8 +63461,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1977"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -69075,20 +69071,20 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Wtyczka Informacje o prawach autorskich&lt;/h3&gt;
+        <translation>&lt;h3&gt;Wtyczka Informacje o prawach autorskich&lt;/h3&gt;
 Za pomocą tej wtyczki możesz dodać do mapy jakikolwiek tekst, nie tylko prawa autorskie.
 &lt;p&gt;
-&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#text&quot;&gt;Text formatting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#howto&quot;&gt;Użycie&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Formatowanie tekstu&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;howto&quot;&gt;
-&lt;h4&gt;How to&lt;/h4&gt;
+&lt;h4&gt;Użycie&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ol&gt;
 &lt;li&gt;Upewnij się, że wtyczka jest włączona.
 &lt;li&gt;Kliknij &lt;label&gt;Wtyczki &gt; Dekoracje &gt; Informacja o prawach autorskich&lt;/label&gt; lub użyj przycisku &lt;label&gt;Informacja o prawach autorskich&lt;/label&gt; z paska narzędzi.
 &lt;li&gt;Wpisz tekst, który chcesz umieścić na mapie. Możesz użyć znaczników HTML.
-&lt;li&gt;Wybierz położenie etykiety z listy rozwijalnej &lt;label&gt;Umiejscowienie&lt;/label&gt;.
+&lt;li&gt;Wybierz położenie etykiety z listy rozwijalnej &lt;label&gt;Położenie&lt;/label&gt;.
 &lt;li&gt;Upewnij się, czy opcja &lt;label&gt;Włącz etykietę&lt;/label&gt; jest zaznaczona.
 &lt;li&gt;Kliknij &lt;label&gt;OK&lt;/label&gt;.
 &lt;/ol&gt;
