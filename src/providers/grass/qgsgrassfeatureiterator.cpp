@@ -62,9 +62,15 @@ void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist * list )
   }
 #endif
 
+
+QMutex QgsGrassFeatureIterator::sMutex;
+
+
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
 {
+  sMutex.lock();
+
   // Init structures
   mPoints = Vect_new_line_struct();
   mCats = Vect_new_cats_struct();
@@ -343,6 +349,8 @@ bool QgsGrassFeatureIterator::close()
   Vect_destroy_list( mList );
 
   free( mSelection );
+
+  sMutex.unlock();
 
   mClosed = true;
   return true;

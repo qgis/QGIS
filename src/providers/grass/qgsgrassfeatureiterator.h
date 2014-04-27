@@ -17,6 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 
+#include <QMutex>
 
 class QgsGrassProvider;
 
@@ -111,6 +112,12 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsG
      *  @param map pointer to map structure
      */
     void allocateSelection( struct Map_info *map );
+
+    //! Mutex that protects GRASS library from parallel access from multiple iterators at once.
+    //! The library uses static/global variables in various places when accessing vector data,
+    //! making it non-reentrant and thus impossible to use from multiple threads.
+    //! (e.g. static LocList in Vect_select_lines_by_box, global BranchBuf in RTreeGetBranches)
+    static QMutex sMutex;
 };
 
 #endif // QGSGRASSFEATUREITERATOR_H
