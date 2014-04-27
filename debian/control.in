@@ -259,7 +259,7 @@ Depends:
  python-qgis-common (= ${source:Version}),
  python-psycopg2,
  python-qscintilla2,
-#sid jessie quantal sid-oracle# python-pyspatialite,
+#sid jessie quantal trusty sid-oracle# python-pyspatialite,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},

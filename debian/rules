@@ -61,7 +61,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise raring saucy trusty"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise raring saucy"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
