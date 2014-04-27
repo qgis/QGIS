@@ -43,7 +43,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 
-    void setLineTextDistance( double d ) { mLineTextDistance = d; }
+    void setLineTextDistance( double d );
     double lineTextDistance() const { return mLineTextDistance; }
 
     void setHeaderFont( const QFont& f );
@@ -52,10 +52,10 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setContentFont( const QFont& f );
     QFont contentFont() const { return mContentFont; }
 
-    void setShowGrid( bool show ) { mShowGrid = show;}
+    void setShowGrid( bool show );
     bool showGrid() const { return mShowGrid; }
 
-    void setGridStrokeWidth( double w ) { mGridStrokeWidth = w; }
+    void setGridStrokeWidth( double w );
     double gridStrokeWidth() const { return mGridStrokeWidth; }
 
     void setGridColor( const QColor& c ) { mGridColor = c; }

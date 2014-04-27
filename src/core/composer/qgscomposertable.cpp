@@ -136,6 +136,13 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
+void QgsComposerTable::setLineTextDistance( double d )
+{
+  mLineTextDistance = d;
+  //since spacing has changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
 void QgsComposerTable::setHeaderFont( const QFont& f )
 {
   mHeaderFont = f;
@@ -147,6 +154,20 @@ void QgsComposerTable::setContentFont( const QFont& f )
 {
   mContentFont = f;
   //since font attributes have changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
+void QgsComposerTable::setShowGrid( bool show )
+{
+  mShowGrid = show;
+  //since grid spacing has changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
+void QgsComposerTable::setGridStrokeWidth( double w )
+{
+  mGridStrokeWidth = w;
+  //since grid spacing has changed, we need to recalculate the table size
   adjustFrameToSize();
 }
 
