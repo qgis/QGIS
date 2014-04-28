@@ -21,7 +21,6 @@
 #include "qgscomposershape.h"
 #include "qgscomposermap.h"
 #include "qgscomposerlabel.h"
-#include "qgscomposerpicture.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmaprenderer.h"
 #include "qgsrasterlayer.h"
@@ -50,9 +49,6 @@ class TestQgsComposerRotation: public QObject
     void mapRotation(); //test if composer map mapRotation is functioning
     void mapItemRotation(); //test if composer map item rotation is functioning
     //void oldMapRotationApi(); //test if old deprectated composer map rotation api is functioning
-    void pictureRotation(); //test if picture pictureRotation is functioning
-    void pictureItemRotation(); //test if composer picture item rotation is functioning
-    //void oldPictureRotationApi(); //test if old deprectated composer picture rotation api is functioning
 
   private:
     QgsComposition* mComposition;
@@ -61,7 +57,6 @@ class TestQgsComposerRotation: public QObject
     QgsMapRenderer* mMapRenderer;
     QgsComposerMap* mComposerMap;
     QgsMapSettings mMapSettings;
-    QgsComposerPicture* mComposerPicture;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
@@ -96,11 +91,6 @@ void TestQgsComposerRotation::initTestCase()
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
-
-  mComposerPicture = new QgsComposerPicture( mComposition );
-  mComposerPicture->setPictureFile( QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png" );
-  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
-  mComposerPicture->setFrameEnabled( true );
 
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -229,47 +219,6 @@ void TestQgsComposerRotation::oldMapRotationApi()
 
   mComposition->removeItem( mComposerMap );
   mComposerMap->setRotation( 0 );
-}
-#endif
-
-void TestQgsComposerRotation::pictureRotation()
-{
-  //test picture rotation
-  mComposition->addComposerPicture( mComposerPicture );
-  mComposerPicture->setPictureRotation( 45 );
-
-  QgsCompositionChecker checker( "composerrotation_picturerotation", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
-
-  mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setPictureRotation( 0 );
-}
-
-void TestQgsComposerRotation::pictureItemRotation()
-{
-  //test picture item rotation
-  mComposition->addComposerPicture( mComposerPicture );
-  mComposerPicture->setItemRotation( 45, true );
-
-  QgsCompositionChecker checker( "composerrotation_pictureitemrotation", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
-
-  mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setItemRotation( 0, true );
-}
-
-#if 0
-void TestQgsComposerRotation::oldPictureRotationApi()
-{
-  //test old style deprecated rotation api - remove test after 2.0 series
-  mComposition->addComposerPicture( mComposerPicture );
-  mComposerPicture->setRotation( 45 );
-
-  QgsCompositionChecker checker( "composerrotation_picturerotation_oldapi", mComposition );
-  QVERIFY( checker.testComposition( mReport ) );
-
-  mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setRotation( 0 );
 }
 #endif
 
