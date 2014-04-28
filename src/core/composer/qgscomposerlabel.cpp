@@ -53,6 +53,13 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
     //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
     setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
   }
+
+  //connect to atlas toggling on/off and coverage layer and feature changes
+  //to update the expression context
+  connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( refreshExpressionContext() ) );
+  connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( refreshExpressionContext() ) );
+  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
+
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -185,6 +192,20 @@ void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer
   mSubstitutions = substitutions;
   // Force label to redraw -- fixes label printing for labels with blend modes when used with atlas
   update();
+}
+
+void QgsComposerLabel::refreshExpressionContext()
+{
+  QgsVectorLayer * vl = 0;
+  QgsFeature* feature = 0;
+
+  if ( mComposition->atlasComposition().enabled() )
+  {
+    vl = mComposition->atlasComposition().coverageLayer();
+    feature = mComposition->atlasComposition().currentFeature();
+  }
+
+  setExpressionContext( feature, vl );
 }
 
 QString QgsComposerLabel::displayText() const

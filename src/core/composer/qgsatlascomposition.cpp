@@ -413,15 +413,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
 
   emit featureChanged( &mCurrentFeature );
 
-  // TODO - move these updates to label/shape/page item
-
-  // evaluate label expressions
-  QList<QgsComposerLabel*> labels;
-  mComposition->composerItems( labels );
-  for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
-  {
-    ( *lit )->setExpressionContext( &mCurrentFeature, mCoverageLayer );
-  }
+  // TODO - move these updates to shape/page item
 
   // update shapes (in case they use data defined symbology with atlas properties)
   QList<QgsComposerShape*> shapes;
