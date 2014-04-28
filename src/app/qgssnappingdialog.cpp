@@ -365,6 +365,7 @@ void QgsSnappingDialog::layersWillBeRemoved( QStringList thelayers )
     if ( item )
       delete item;
   }
+  apply();
 }
 
 void QgsSnappingDialog::setTopologicalEditingState()
@@ -384,3 +385,4 @@ void QgsSnappingDialog::setIntersectionSnappingState()
   cbxEnableIntersectionSnappingCheckBox->setChecked( intersectionSnapping );
   cbxEnableIntersectionSnappingCheckBox->blockSignals( false );
 }
+
