@@ -47,6 +47,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   if ( mComposition )
   {
     mNumPagesSpinBox->setValue( mComposition->numPages() );
+    connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( setNumberPages() ) );
 
     updatePageStyle();
 
@@ -429,6 +430,18 @@ void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
   mPrintAsRasterCheckBox->blockSignals( true );
   mPrintAsRasterCheckBox->setChecked( state );
   mPrintAsRasterCheckBox->blockSignals( false );
+}
+
+void QgsCompositionWidget::setNumberPages()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mNumPagesSpinBox->blockSignals( true );
+  mNumPagesSpinBox->setValue( mComposition->numPages() );
+  mNumPagesSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::displaySnapingSettings()
