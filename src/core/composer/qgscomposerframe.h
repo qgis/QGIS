@@ -43,7 +43,6 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
     QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
-
   private:
     QgsComposerFrame(); //forbidden
     QgsComposerMultiFrame* mMultiFrame;

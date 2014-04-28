@@ -20,6 +20,7 @@
 #include <QUrl>
 
 class QWebPage;
+class QImage;
 
 class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
@@ -40,6 +41,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
 
+    //overriden to break frames without dividing lines of text
+    double findNearbyPageBreak( double yPos );
+
   private slots:
     void frameLoaded( bool ok );
 
@@ -49,8 +53,12 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;
+    QImage* mRenderedPage;
 
     double htmlUnitsToMM(); //calculate scale factor
+
+    //renders a snapshot of the page to a cached image
+    void renderCachedImage();
 };
 
 #endif // QGSCOMPOSERHTML_H
