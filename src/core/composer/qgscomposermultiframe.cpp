@@ -16,6 +16,7 @@
 #include "qgscomposermultiframe.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
+#include <QtCore>
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ):
     mComposition( c ),
@@ -102,19 +103,21 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     while (( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = currentItem->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      int page = qFloor( (currentItem->pos().y() + currentItem->rect().height()) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
+
       if ( mResizeMode == RepeatOnEveryPage )
       {
-        if ( page > mComposition->numPages() - 2 )
+        if ( page >= mComposition->numPages() )
         {
           break;
         }
       }
       else
       {
-        if ( mComposition->numPages() < ( page + 2 ) )
+        //add an extra page if required
+        if ( mComposition->numPages() < ( page + 1 ) )
         {
-          mComposition->setNumPages( page + 2 );
+          mComposition->setNumPages( page + 1 );
         }
       }
 
@@ -128,10 +131,10 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
         frameHeight = ( currentY + mComposition->paperHeight() ) > totalHeight ?  totalHeight - currentY : mComposition->paperHeight();
       }
 
-      double newFrameY = ( page + 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      double newFrameY = page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
       if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
       {
-        newFrameY += currentItem->pos().y() - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+        newFrameY += currentItem->pos().y() - ( page - 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
       }
       QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->pos().x(),
           newFrameY,
