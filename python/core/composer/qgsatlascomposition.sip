@@ -187,4 +187,8 @@ public:
 
     /**Is emitted when atlas rendering has ended*/
     void renderEnded();
+    
+    /**Is emitted when the current atlas feature changes*/
+    void featureChanged( QgsFeature* feature );
+
 };

@@ -217,6 +217,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /**Is emitted when atlas rendering has ended*/
     void renderEnded();
 
+    /**Is emitted when the current atlas feature changes*/
+    void featureChanged( QgsFeature* feature );
+
   private:
     /**Updates the filename expression*/
     void updateFilenameExpression();

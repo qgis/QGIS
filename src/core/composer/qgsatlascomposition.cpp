@@ -411,6 +411,10 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   // generate filename for current feature
   evalFeatureFilename();
 
+  emit featureChanged( &mCurrentFeature );
+
+  // TODO - move these updates to label/shape/page item
+
   // evaluate label expressions
   QList<QgsComposerLabel*> labels;
   mComposition->composerItems( labels );
