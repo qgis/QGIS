@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>407</width>
-        <height>348</height>
+        <height>347</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -105,6 +105,13 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="mResizeModeComboBox"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mUseSmartBreaksCheckBox">
+            <property name="text">
+             <string>Use smart page breaks</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

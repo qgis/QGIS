@@ -24,7 +24,11 @@
 #include <QImage>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): QgsComposerMultiFrame( c, createUndoCommands ),
-    mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 ), mRenderedPage( 0 )
+    mWebPage( 0 ),
+    mLoaded( false ),
+    mHtmlUnitsToMM( 1.0 ),
+    mRenderedPage( 0 ),
+    mUseSmartBreaks( true )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
@@ -35,7 +39,12 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
   }
 }
 
-QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ), mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 ), mRenderedPage( 0 )
+QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ),
+    mWebPage( 0 ),
+    mLoaded( false ),
+    mHtmlUnitsToMM( 1.0 ),
+    mRenderedPage( 0 ),
+    mUseSmartBreaks( true )
 {
 }
 
@@ -154,7 +163,7 @@ bool candidateSort( const QPair<int, int> &c1, const QPair<int, int> &c2 )
 
 double QgsComposerHtml::findNearbyPageBreak( double yPos )
 {
-  if ( !mWebPage || !mRenderedPage )
+  if ( !mWebPage || !mRenderedPage || !mUseSmartBreaks )
   {
     return yPos;
   }
@@ -228,10 +237,18 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   return candidates[0].first / htmlUnitsToMM();
 }
 
+void QgsComposerHtml::setUseSmartBreaks( bool useSmartBreaks )
+{
+  mUseSmartBreaks = useSmartBreaks;
+  recalculateFrameSizes();
+}
+
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
   htmlElem.setAttribute( "url", mUrl.toString() );
+  htmlElem.setAttribute( "useSmartBreaks", mUseSmartBreaks ? "true" : "false" );
+
   bool state = _writeXML( htmlElem, doc, ignoreFrames );
   elem.appendChild( htmlElem );
   return state;
@@ -247,7 +264,9 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
     return false;
   }
 
-  //then load the set url
+  mUseSmartBreaks = itemElem.attribute( "useSmartBreaks", "true" ) == "true" ? true : false;
+
+  //finally load the set url
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )
   {

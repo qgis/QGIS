@@ -44,6 +44,21 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     //overriden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos );
 
+    /**Returns whether html item is using smart breaks. Smart breaks prevent
+     * the html frame contents from breaking mid-way though a line of text.
+     * @returns true if html item is using smart breaks
+     * @see setUseSmartBreaks
+     */
+    bool useSmartBreaks() const { return mUseSmartBreaks; }
+
+    /**Sets whether the html item should use smart breaks. Smart breaks prevent
+     * the html frame contents from breaking mid-way though a line of text.
+     * @param useSmartBreaks set to true to prevent content from breaking
+     * mid-way through a line of text
+     * @see useSmartBreaks
+     */
+    void setUseSmartBreaks( bool useSmartBreaks );
+
   private slots:
     void frameLoaded( bool ok );
 
@@ -54,6 +69,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;
     QImage* mRenderedPage;
+    bool mUseSmartBreaks;
 
     double htmlUnitsToMM(); //calculate scale factor
 

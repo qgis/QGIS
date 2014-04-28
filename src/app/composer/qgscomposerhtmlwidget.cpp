@@ -60,6 +60,7 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mUrlLineEdit->blockSignals( block );
   mFileToolButton->blockSignals( block );
   mResizeModeComboBox->blockSignals( block );
+  mUseSmartBreaksCheckBox->blockSignals( block );
 }
 
 void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
@@ -114,6 +115,24 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
   }
 }
 
+void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_stateChanged( int state )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "Use smart breaks changed" ) );
+    mHtml->setUseSmartBreaks( state );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
+}
+
 void QgsComposerHtmlWidget::setGuiElementValues()
 {
   if ( !mHtml )
@@ -124,7 +143,6 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   blockSignals( true );
   mUrlLineEdit->setText( mHtml->url().toString() );
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mHtml->resizeMode() ) );
+  mUseSmartBreaksCheckBox->setChecked( mHtml->useSmartBreaks() );
   blockSignals( false );
 }
-
-
