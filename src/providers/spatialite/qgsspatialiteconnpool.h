@@ -59,8 +59,6 @@ class QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle*, QgsSpat
   public:
     static QgsSpatiaLiteConnPool* instance();
 
-  protected:
-    static QgsSpatiaLiteConnPool* mInstance;
 };
 
 
