@@ -31,7 +31,7 @@ class QgsComposerLegend : QgsComposerItem
     void setTitle( const QString& t );
     QString title() const;
 
-    /*Returns the alignment of the legend title
+    /**Returns the alignment of the legend title
      * @returns Qt::AlignmentFlag for the legend title
      * @note added in 2.3
      * @see setTitleAlignment

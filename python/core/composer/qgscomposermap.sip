@@ -309,11 +309,12 @@ class QgsComposerMap : QgsComposerItem
       way the map is drawn within the item
      * @deprecated Use setMapRotation( double rotation ) instead
      */
-    void setRotation( double r );
+    void setRotation( double r ) /Deprecated/;
+    
     /**Returns the rotation used for drawing the map within the composer item
      * @deprecated Use mapRotation() instead
      */
-    double rotation() const;
+    double rotation() const /Deprecated/;
 
     /**Sets rotation for the map - this does not affect the composer item shape, only the
       way the map is drawn within the item
@@ -374,17 +375,19 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
+    
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
+    
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
 
     /** Returns true if the map extent is set to follow the current atlas feature */
     bool atlasDriven() const;

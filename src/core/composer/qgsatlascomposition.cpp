@@ -50,11 +50,11 @@ QgsAtlasComposition::~QgsAtlasComposition()
 {
 }
 
-void QgsAtlasComposition::setEnabled( bool e )
+void QgsAtlasComposition::setEnabled( bool enabled )
 {
-  mEnabled = e;
+  mEnabled = enabled;
   mComposition->setAtlasMode( QgsComposition::AtlasOff );
-  emit toggled( e );
+  emit toggled( enabled );
 }
 
 void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )

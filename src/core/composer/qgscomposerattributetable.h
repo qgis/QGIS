@@ -57,13 +57,14 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @param layer Vector layer for attribute table
      * @note added in 2.3
      * @see vectorLayer
-    */
+     */
     void setVectorLayer( QgsVectorLayer* layer );
-    /*Returns the vector layer the attribute table is currently using
+
+    /**Returns the vector layer the attribute table is currently using
      * @returns attribute table's current vector layer
      * @note added in 2.3
      * @see setVectorLayer
-    */
+     */
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
     /**Sets the composer map to use to limit the extent of features shown in the
@@ -75,15 +76,16 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @note added in 2.3
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
-    */
+     */
     void setComposerMap( const QgsComposerMap* map );
-    /*Returns the composer map whose extents are controlling the features shown in the
+
+    /**Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
      * @returns composer map controlling the attribute table
      * @note added in 2.3
      * @see setComposerMap
      * @see displayOnlyVisibleFeatures
-    */
+     */
     const QgsComposerMap* composerMap() const { return mComposerMap; }
 
     /**Sets the maximum number of features shown by the table. Changing this setting may result
@@ -92,13 +94,14 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @param features maximum number of features to show in the table
      * @note added in 2.3
      * @see maximumNumberOfFeatures
-    */
+     */
     void setMaximumNumberOfFeatures( int features );
-    /*Returns the maximum number of features to be shown by the table.
+
+    /**Returns the maximum number of features to be shown by the table.
      * @returns maximum number of features
      * @note added in 2.3
      * @see setMaximumNumberOfFeatures
-    */
+     */
     int maximumNumberOfFeatures() const { return mMaximumNumberOfFeatures; }
 
     /**Sets attribute table to only show features which are visible in a composer map item. Changing
@@ -108,24 +111,26 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @note added in 2.3
      * @see displayOnlyVisibleFeatures
      * @see setComposerMap
-    */
+     */
     void setDisplayOnlyVisibleFeatures( bool visibleOnly );
-    /*Returns true if the table is set to show only features visible on a corresponding
+
+    /**Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
      * @returns true if table only shows visible features
      * @note added in 2.3
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
-    */
+     */
     bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
 
-    /*Returns true if a feature filter is active on the attribute table
+    /**Returns true if a feature filter is active on the attribute table
      * @returns bool state of the feature filter
      * @note added in 2.3
      * @see setFilterFeatures
      * @see featureFilter
-    */
+     */
     bool filterFeatures() const { return mFilterFeatures; }
+
     /**Sets whether the feature filter is active for the attribute table. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
      * the table changing size to accomodate the new displayed feature attributes.
@@ -133,17 +138,18 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @note added in 2.3
      * @see filterFeatures
      * @see setFeatureFilter
-    */
+     */
     void setFilterFeatures( bool filter );
 
-    /*Returns the current expression used to filter features for the table. The filter is only
+    /**Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.
      * @returns feature filter expression
      * @note added in 2.3
      * @see setFeatureFilter
      * @see filterFeatures
-    */
+     */
     QString featureFilter() const { return mFeatureFilter; }
+
     /**Sets the expression used for filtering features in the table. The filter is only
      * active if filterFeatures() is set to true. Changing this setting forces the table
      * to refetch features from its vector layer, and may result in
@@ -152,28 +158,29 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @note added in 2.3
      * @see featureFilter
      * @see setFilterFeatures
-    */
+     */
     void setFeatureFilter( const QString& expression );
 
-    /*Returns the attributes fields which are shown by the table.
+    /**Returns the attributes fields which are shown by the table.
      * @returns a QSet of integers refering to the attributes in the vector layer
      * @see setDisplayAttributes
-    */
+     */
     QSet<int> displayAttributes() const { return mDisplayAttributes; }
+
     /**Sets the attributes to display in the table.
      * @param attr QSet of integer values refering to the attributes from the vector layer to show
      * @param refresh set to true to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
      * to accomodate the new displayed feature attributes.
      * @see displayAttributes
-    */
+     */
     void setDisplayAttributes( const QSet<int>& attr, bool refresh = true );
 
-    /*Returns the attribute field aliases, which control how fields are named in the table's
+    /**Returns the attribute field aliases, which control how fields are named in the table's
      * header row.
      * @returns a QMap of integers to strings, where the string is the field's alias.
      * @see setFieldAliasMap
-    */
+     */
     QMap<int, QString> fieldAliasMap() const { return mFieldAliasMap; }
 
     /**Sets the attribute field aliases, which control how fields are named in the table's
@@ -184,7 +191,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * and immediately update the display of the table. This may result in the table changing size
      * to accomodate the new displayed feature attributes and field aliases.
      * @see fieldAliasMap
-    */
+     */
     void setFieldAliasMap( const QMap<int, QString>& map, bool refresh = true );
 
     /**Adapts mMaximumNumberOfFeatures depending on the rectangle height. Calling this forces
@@ -192,7 +199,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * of the table.
      * @see maximumNumberOfFeatures
      * @see setMaximumNumberOfFeatures
-    */
+     */
     void setSceneRect( const QRectF& rectangle );
 
     /**Sets the attributes to use to sort the table's features.
@@ -206,16 +213,16 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * to accomodate the new displayed feature attributes and field aliases.l
      * @see sortAttributes
      * @note not available in python bindings
-    */
+     */
     void setSortAttributes( const QList<QPair<int, bool> > att, bool refresh = true );
 
-    /*Returns the attributes used to sort the table's features.
+    /**Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
      * the bool to the sort order for the attribute. If true the attribute is sorted ascending,
      * if false, the attribute is sorted in descending order.
      * @see setSortAttributes
      * @note not available in python bindings
-    */
+     */
     QList<QPair<int, bool> > sortAttributes() const { return mSortInformation; }
 
     QMap<int, QString> headerLabels() const;
@@ -233,9 +240,9 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     /**Shows only the features that are visible in the associated composer map (true by default)*/
     bool mShowOnlyVisibleFeatures;
 
-    // feature filtering
+    /**True if feature filtering enabled*/
     bool mFilterFeatures;
-    // feature expression filter
+    /**Feature filter expression*/
     QString mFeatureFilter;
 
     /**List of attribute indices to display (or all attributes if list is empty)*/

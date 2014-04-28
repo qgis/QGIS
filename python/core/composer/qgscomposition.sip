@@ -161,7 +161,7 @@ class QgsComposition : QGraphicsScene
      @return QgsComposerMap or 0 pointer if the composer map item does not exist*/
     const QgsComposerMap* getComposerMapById( int id ) const;
 
-    /*Returns the composer html with specified id (a string as named in the
+    /**Returns the composer html with specified id (a string as named in the
       composer user interface item properties).
       @note Added in QGIS 2.0
       @param id - A QString representing the id of the item.

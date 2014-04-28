@@ -42,7 +42,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */
     void setVectorLayer( QgsVectorLayer* layer );
     
-    /*Returns the vector layer the attribute table is currently using
+    /**Returns the vector layer the attribute table is currently using
      * @returns attribute table's current vector layer
      * @note added in 2.3
      * @see setVectorLayer
@@ -61,7 +61,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */
     void setComposerMap( const QgsComposerMap* map /TransferThis/ );
     
-    /*Returns the composer map whose extents are controlling the features shown in the
+    /**Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
      * @returns composer map controlling the attribute table
      * @note added in 2.3
@@ -79,7 +79,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */
     void setMaximumNumberOfFeatures( int features );
     
-    /*Returns the maximum number of features to be shown by the table.
+    /**Returns the maximum number of features to be shown by the table.
      * @returns maximum number of features
      * @note added in 2.3
      * @see setMaximumNumberOfFeatures
@@ -96,7 +96,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */
     void setDisplayOnlyVisibleFeatures( bool b );
     
-    /*Returns true if the table is set to show only features visible on a corresponding
+    /**Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
      * @returns true if table only shows visible features
      * @note added in 2.3
@@ -105,7 +105,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */   
     bool displayOnlyVisibleFeatures() const;
     
-    /*Returns true if a feature filter is active on the attribute table
+    /**Returns true if a feature filter is active on the attribute table
      * @returns bool state of the feature filter
      * @note added in 2.3
      * @see setFilterFeatures
@@ -123,7 +123,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */
     void setFilterFeatures( bool filter );
 
-    /*Returns the current expression used to filter features for the table. The filter is only
+    /**Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.
      * @returns feature filter expression
      * @note added in 2.3
@@ -143,7 +143,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */
     void setFeatureFilter( const QString& expression );
 
-    /*Returns the attributes fields which are shown by the table.
+    /**Returns the attributes fields which are shown by the table.
      * @returns a QSet of integers refering to the attributes in the vector layer
      * @see setDisplayAttributes
     */
@@ -158,7 +158,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     */    
     void setDisplayAttributes( const QSet<int>& attr );
 
-    /*Returns the attribute field aliases, which control how fields are named in the table's
+    /**Returns the attribute field aliases, which control how fields are named in the table's
      * header row.
      * @returns a QMap of integers to strings, where the string is the field's alias.
      * @see setFieldAliasMap

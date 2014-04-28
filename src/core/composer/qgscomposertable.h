@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
-    /*Returns the text used in the column headers for the table.
+    /**Returns the text used in the column headers for the table.
      * @returns QMap of int to QString, where the int is the column index (starting at 0),
      * and the string is the text to use for the column's header
      * @note added in 2.3
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     //TODO - make this more generic for next API break, eg rename as getRowValues, use QStringList rather than
     //QgsAttributeMap
 
-    /*Fetches the text used for the rows of the table.
+    /**Fetches the text used for the rows of the table.
      * @returns true if attribute text was successfully retrieved.
      * @param attributeMaps QList of QgsAttributeMap to store retrieved row data in
      * @note not available in python bindings

@@ -41,7 +41,7 @@ class QgsComposerPicture: QgsComposerItem
     /**Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead
      */
-    double rotation() const;
+    double rotation() const /Deprecated/;
 
     /**Returns the rotation used for drawing the picture within the item
       @note this function was added in version 2.1*/
@@ -58,17 +58,17 @@ class QgsComposerPicture: QgsComposerItem
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
 
   public slots:
     /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,

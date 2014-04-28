@@ -383,7 +383,7 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * @deprecated Use itemRotation()
      *             instead
      */
-    double rotation() const;
+    double rotation() const /Deprecated/;
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem();
@@ -471,11 +471,12 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
     bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
      * a specified amount
@@ -487,19 +488,21 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
+    
     /**Calculates corner point after rotation and scaling
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
+    
     void sizeChangedByRotation( double& width, double& height, double rotation );
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
 
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise

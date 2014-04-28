@@ -347,11 +347,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       way the map is drawn within the item
      * @deprecated Use setMapRotation( double rotation ) instead
      */
-    void setRotation( double r );
+    Q_DECL_DEPRECATED void setRotation( double r );
+
     /**Returns the rotation used for drawing the map within the composer item
      * @deprecated Use mapRotation() instead
      */
-    double rotation() const { return mMapRotation;};
+    Q_DECL_DEPRECATED double rotation() const { return mMapRotation;};
 
     /**Sets rotation for the map - this does not affect the composer item shape, only the
       way the map is drawn within the item
@@ -412,17 +413,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /** Returns true if the map extent is set to follow the current atlas feature */
     bool atlasDriven() const { return mAtlasDriven; }

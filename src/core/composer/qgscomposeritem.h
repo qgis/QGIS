@@ -343,7 +343,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use itemRotation()
      *             instead
      */
-    double rotation() const {return mItemRotation;}
+    Q_DECL_DEPRECATED double rotation() const {return mItemRotation;}
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
      * a specified amount
@@ -493,7 +493,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
     void sizeChangedByRotation( double& width, double& height, double rotation );
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise

@@ -58,7 +58,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitle( const QString& t ) {mTitle = t;}
     QString title() const {return mTitle;}
 
-    /*Returns the alignment of the legend title
+    /**Returns the alignment of the legend title
      * @returns Qt::AlignmentFlag for the legend title
      * @note added in 2.3
      * @see setTitleAlignment
