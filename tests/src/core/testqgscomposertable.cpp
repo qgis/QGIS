@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
+#include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
 #include "qgscomposerattributetable.h"
 #include "qgsmapsettings.h"
@@ -38,12 +39,24 @@ class TestQgsComposerTable: public QObject
 
     void textTableHeadings(); //test setting/retrieving text table headers
     void textTableRows(); //test adding and retrieving text table rows
+    void attributeTableHeadings(); //test retrieving attribute table headers
+    void attributeTableRows(); //test retrieving attribute table rows
+    void attributeTableFilterFeatures(); //test filtering attribute table rows
+    void attributeTableSetAttributes(); //test subset of attributes in table
+    void attributeTableAlias(); //test setting alias for attribute column
+    void attributeTableVisibleOnly(); //test displaying only visible attributes
+    void attributeTableSort(); //test sorting of attribute table
 
   private:
     QgsComposition* mComposition;
+    QgsComposerMap* mComposerMap;
     QgsComposerTextTable* mComposerTextTable;
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
+    QgsComposerAttributeTable* mComposerAttributeTable;
+
+    //compares rows in mComposerAttributeTable to expected rows
+    void compareTable( QList<QStringList> &expectedRows );
 };
 
 void TestQgsComposerTable::initTestCase()
@@ -52,7 +65,7 @@ void TestQgsComposerTable::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
@@ -66,6 +79,11 @@ void TestQgsComposerTable::initTestCase()
   mComposerTextTable = new QgsComposerTextTable( mComposition );
   mComposition->addItem( mComposerTextTable );
 
+  mComposerAttributeTable = new QgsComposerAttributeTable( mComposition );
+  mComposition->addComposerTable( mComposerAttributeTable );
+  mComposerAttributeTable->setVectorLayer( mVectorLayer );
+  mComposerAttributeTable->setDisplayOnlyVisibleFeatures( false );
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 10 );
 }
 
 void TestQgsComposerTable::cleanupTestCase()
@@ -144,8 +162,223 @@ void TestQgsComposerTable::textTableRows()
     }
     rowNumber++;
   }
+}
 
+void TestQgsComposerTable::attributeTableHeadings()
+{
+  //test retrieving attribute table headers
+  QStringList expectedHeaders;
+  expectedHeaders << "Class" << "Heading" << "Importance" << "Pilots" << "Cabin Crew" << "Staff";
+
+  //get header labels and compare
+  QMap<int, QString> headerMap = mComposerAttributeTable->headerLabels();
+  QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
+  QString expected;
+  QString evaluated;
+  for ( ; headerIt != headerMap.constEnd(); ++headerIt )
+  {
+    evaluated = headerIt.value();
+    expected = expectedHeaders.at( headerIt.key() );
+    QCOMPARE( evaluated, expected );
+  }
+}
+
+void TestQgsComposerTable::compareTable( QList<QStringList> &expectedRows )
+{
+  //retrieve rows and check
+  QList<QgsAttributeMap> evaluatedRows;
+  bool result = mComposerAttributeTable->getFeatureAttributes( evaluatedRows );
+  QCOMPARE( result, true );
+
+  QList<QgsAttributeMap>::const_iterator resultIt = evaluatedRows.constBegin();
+  int rowNumber = 0;
+  int colNumber = 0;
+
+  //check that number of rows matches expected
+  QCOMPARE( evaluatedRows.count(), expectedRows.count() );
+
+  for ( ; resultIt != evaluatedRows.constEnd(); ++resultIt )
+  {
+    colNumber = 0;
+    QgsAttributeMap::const_iterator cellIt = ( *resultIt ).constBegin();
+    for ( ; cellIt != ( *resultIt ).constEnd(); ++cellIt )
+    {
+      QCOMPARE(( *cellIt ).toString(), expectedRows.at( rowNumber ).at( colNumber ) );
+      colNumber++;
+    }
+    //also check that number of columns matches expected
+    QCOMPARE(( *resultIt ).count(), expectedRows.at( rowNumber ).count() );
+
+    rowNumber++;
+  }
+}
+
+void TestQgsComposerTable::attributeTableRows()
+{
+  //test retrieving attribute table rows
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "Jet" << "90" << "3" << "2" << "0" << "2";
+  expectedRows.append( row );
+  row.clear();
+  row << "Biplane" << "0" << "1" << "3" << "3" << "6";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "85" << "3" << "1" << "1" << "2";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
+  compareTable( expectedRows );
+}
+
+void TestQgsComposerTable::attributeTableFilterFeatures()
+{
+  //test filtering attribute table rows
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 10 );
+  mComposerAttributeTable->setFeatureFilter( QString( "\"Class\"='B52'" ) );
+  mComposerAttributeTable->setFilterFeatures( true );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "B52" << "0" << "10" << "2" << "1" << "3";
+  expectedRows.append( row );
+  row.clear();
+  row << "B52" << "12" << "10" << "1" << "1" << "2";
+  expectedRows.append( row );
+  row.clear();
+  row << "B52" << "34" << "10" << "2" << "1" << "3";
+  expectedRows.append( row );
+  row.clear();
+  row << "B52" << "80" << "10" << "2" << "1" << "3";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
+
+  mComposerAttributeTable->setFilterFeatures( false );
+}
+
+void TestQgsComposerTable::attributeTableSetAttributes()
+{
+  //test subset of attributes in table
+  QSet<int> attributes;
+  attributes << 0 << 3 << 4;
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "Jet" << "2" << "0";
+  expectedRows.append( row );
+  row.clear();
+  row << "Biplane" << "3" << "3";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "1" << "1";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
+
+  attributes.clear();
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+}
+
+void TestQgsComposerTable::attributeTableAlias()
+{
+  //test setting alias for attribute column
+  QMap<int, QString> fieldAliasMap;
+
+  fieldAliasMap.insert( 0, QString( "alias 0" ) );
+  fieldAliasMap.insert( 3, QString( "alias 3" ) );
+  mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+
+  QStringList expectedHeaders;
+  expectedHeaders << "alias 0" << "Heading" << "Importance" << "alias 3" << "Cabin Crew" << "Staff";
+
+  //get header labels and compare
+  QMap<int, QString> headerMap = mComposerAttributeTable->headerLabels();
+  QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
+  QString expected;
+  QString evaluated;
+  for ( ; headerIt != headerMap.constEnd(); ++headerIt )
+  {
+    evaluated = headerIt.value();
+    expected = expectedHeaders.at( headerIt.key() );
+    QCOMPARE( evaluated, expected );
+  }
+
+  fieldAliasMap.clear();
+  mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+}
+
+void TestQgsComposerTable::attributeTableSort()
+{
+  //test sorting of attribute table
+  QList< QPair<int, bool> > sort;
+  sort.append( qMakePair( 0, true ) );
+  sort.append( qMakePair( 1, false ) );
+  sort.append( qMakePair( 3, true ) );
+  mComposerAttributeTable->setSortAttributes( sort );
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 5 );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "Biplane" << "0" << "1" << "3" << "3" << "6";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "95" << "3" << "1" << "1" << "2";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "90" << "3" << "2" << "0" << "2";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "90" << "3" << "1" << "0" << "1";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "85" << "3" << "1" << "1" << "2";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
+
+  sort.clear();
+  mComposerAttributeTable->setSortAttributes( sort );
+}
+
+void TestQgsComposerTable::attributeTableVisibleOnly()
+{
+  //test displaying only visible attributes
+
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addComposerMap( mComposerMap );
+  mComposerMap->setNewExtent( QgsRectangle( -131.767, 30.558, -110.743, 41.070 ) );
+
+  mComposerAttributeTable->setComposerMap( mComposerMap );
+  mComposerAttributeTable->setDisplayOnlyVisibleFeatures( true );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "Jet" << "90" << "3" << "2" << "0" << "2";
+  expectedRows.append( row );
+  row.clear();
+  row << "Biplane" << "240" << "1" << "3" << "2" << "5";
+  expectedRows.append( row );
+  row.clear();
+  row << "Jet" << "180" << "3" << "1" << "0" << "1";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
+
+  mComposerAttributeTable->setDisplayOnlyVisibleFeatures( false );
+  mComposerAttributeTable->setComposerMap( 0 );
+  mComposition->removeItem( mComposerMap );
 }
 
 QTEST_MAIN( TestQgsComposerTable )
 #include "moc_testqgscomposertable.cxx"
+
