@@ -87,7 +87,7 @@ void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
   QSettings s;
   QString lastDir = s.value( "/UI/lastHtmlDir", "" ).toString();
-  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html)" );
+  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html *.htm);;All files (*.*)" );
   if ( !file.isEmpty() )
   {
     QUrl url = QUrl::fromLocalFile( file );
