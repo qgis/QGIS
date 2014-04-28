@@ -357,7 +357,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
   mFrameColorButton->setColor( mItem->pen().color() );
-  mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
+  mOutlineWidthSpinBox->setValue( mItem->frameOutlineWidth() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );

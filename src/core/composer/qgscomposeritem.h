@@ -197,6 +197,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     virtual void setFrameOutlineWidth( double outlineWidth );
 
+    /** Returns the frame's outline width. Only used if hasFrame is true.
+     * @returns Frame outline width
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameOutlineWidth
+     */
+    double frameOutlineWidth() const { return pen().widthF(); }
+
     /** Returns the join style used for drawing the item's frame
      * @returns Join style for outline frame
      * @note introduced in 2.3
