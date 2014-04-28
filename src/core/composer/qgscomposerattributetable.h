@@ -220,10 +220,6 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 
     QMap<int, QString> headerLabels() const;
 
-  protected:
-    /**Retrieves feature attributes
-     * @note not available in python bindings
-     */
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
 
   private:

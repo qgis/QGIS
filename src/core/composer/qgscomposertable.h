@@ -69,6 +69,16 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     */
     virtual QMap<int, QString> headerLabels() const { return QMap<int, QString>(); } //= 0;
 
+    //TODO - make this more generic for next API break, eg rename as getRowValues, use QStringList rather than
+    //QgsAttributeMap
+
+    /*Fetches the text used for the rows of the table.
+     * @returns true if attribute text was successfully retrieved.
+     * @param attributeMaps QList of QgsAttributeMap to store retrieved row data in
+     * @note not available in python bindings
+    */
+    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
+
   public slots:
 
     /**Refreshes the attributes shown in the table by querying the vector layer for new data.
@@ -101,10 +111,6 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 
     QList<QgsAttributeMap> mAttributeMaps;
     QMap<int, double> mMaxColumnWidthMap;
-
-    /**Retrieves feature attributes*/
-    //! @note not available in python bindings
-    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
 
     /**Calculate the maximum width values of the vector attributes*/
     virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const;
