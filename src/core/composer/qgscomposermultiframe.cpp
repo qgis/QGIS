@@ -144,6 +144,16 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       {
         newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
       }
+
+      //copy some settings from the parent frame
+      newFrame->setBackgroundColor( currentItem->backgroundColor() );
+      newFrame->setBackgroundEnabled( currentItem->hasBackground() );
+      newFrame->setBlendMode( currentItem->blendMode() );
+      newFrame->setFrameEnabled( currentItem->hasFrame() );
+      newFrame->setFrameJoinStyle( currentItem->frameJoinStyle() );
+      newFrame->setFrameOutlineWidth( currentItem->frameOutlineWidth() );
+      newFrame->setOpacity( currentItem->opacity() );
+
       currentY += frameHeight;
       currentItem = newFrame;
       addFrame( newFrame, false );
