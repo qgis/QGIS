@@ -48,6 +48,9 @@ class TestQgsComposerPicture: public QObject
     void pictureSvgZoomAndResize();
     void pictureSvgFrameToImage();
 
+    void pictureExpression();
+    void pictureInvalidExpression();
+
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
@@ -273,6 +276,39 @@ void TestQgsComposerPicture::pictureSvgFrameToImage()
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
   mComposerPicture->setPictureFile( mPngImage );
+}
+
+void TestQgsComposerPicture::pictureExpression()
+{
+  //test picture source via expression
+  mComposition->addComposerPicture( mComposerPicture );
+
+  QString expr = QString( "'" ) + QString( TEST_DATA_DIR ) + QDir::separator()
+                 + QString( "' || 'sample_svg.svg'" );
+  mComposerPicture->setPictureExpression( expr );
+  mComposerPicture->setUsePictureExpression( true );
+
+  QgsCompositionChecker checker( "composerpicture_expression", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setUsePictureExpression( false );
+}
+
+void TestQgsComposerPicture::pictureInvalidExpression()
+{
+  //test picture source via bad expression
+  mComposition->addComposerPicture( mComposerPicture );
+
+  QString expr = QString( "bad expression" );
+  mComposerPicture->setPictureExpression( expr );
+  mComposerPicture->setUsePictureExpression( true );
+
+  QgsCompositionChecker checker( "composerpicture_badexpression", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setUsePictureExpression( false );
 }
 
 QTEST_MAIN( TestQgsComposerPicture )
