@@ -62,7 +62,7 @@ bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributeMap>& attribu
   return true;
 }
 
-QMap<int, QString> QgsComposerTextTable::getHeaderLabels() const
+QMap<int, QString> QgsComposerTextTable::headerLabels() const
 {
   QMap<int, QString> header;
   QStringList::const_iterator it = mHeaderLabels.constBegin();

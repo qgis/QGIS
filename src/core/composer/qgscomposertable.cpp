@@ -83,7 +83,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double currentX = mGridStrokeWidth;
   double currentY;
 
-  QMap<int, QString> headerMap = getHeaderLabels();
+  QMap<int, QString> headerMap = headerLabels();
   QMap<int, QString>::const_iterator columnIt = headerMap.constBegin();
 
   for ( ; columnIt != headerMap.constEnd(); ++columnIt )
@@ -229,7 +229,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
 bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const
 {
   maxWidthMap.clear();
-  QMap<int, QString> headerMap = getHeaderLabels();
+  QMap<int, QString> headerMap = headerLabels();
   QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
   for ( ; headerIt != headerMap.constEnd(); ++headerIt )
   {

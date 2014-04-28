@@ -58,7 +58,7 @@ class QgsComposerTable: QgsComposerItem
   protected:
     /**Retrieves feature attributes*/
     // virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
-    virtual QMap<int, QString> getHeaderLabels() const;
+
     /**Calculate the maximum width values of the vector attributes*/
     // virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList< QMap<int, QVariant> >& attributeMaps ) const;
     /**Adapts the size of the item frame to match the content*/

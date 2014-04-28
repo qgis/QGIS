@@ -218,14 +218,13 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     */
     QList<QPair<int, bool> > sortAttributes() const { return mSortInformation; }
 
+    QMap<int, QString> headerLabels() const;
+
   protected:
     /**Retrieves feature attributes
      * @note not available in python bindings
      */
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
-
-    //! @note not available in python bindings
-    QMap<int, QString> getHeaderLabels() const;
 
   private:
     /**Associated vector layer*/

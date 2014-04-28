@@ -61,6 +61,14 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
+    /*Returns the text used in the column headers for the table.
+     * @returns QMap of int to QString, where the int is the column index (starting at 0),
+     * and the string is the text to use for the column's header
+     * @note added in 2.3
+     * @note not available in python bindings
+    */
+    virtual QMap<int, QString> headerLabels() const { return QMap<int, QString>(); } //= 0;
+
   public slots:
 
     /**Refreshes the attributes shown in the table by querying the vector layer for new data.
@@ -97,7 +105,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     /**Retrieves feature attributes*/
     //! @note not available in python bindings
     virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
-    virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
+
     /**Calculate the maximum width values of the vector attributes*/
     virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const;
     /**Adapts the size of the item frame to match the content*/

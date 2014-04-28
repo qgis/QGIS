@@ -36,11 +36,11 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    QMap<int, QString> headerLabels() const;
+
   protected:
     //! @note not available in python bindings
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
-
-    QMap<int, QString> getHeaderLabels() const;
 
   private:
     /**Column titles*/

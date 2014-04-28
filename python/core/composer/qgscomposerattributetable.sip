@@ -190,9 +190,6 @@ class QgsComposerAttributeTable : QgsComposerTable
     // @note not available in python bindings
     // QList<QPair<int, bool> > sortAttributes() const;
 
-  protected:
-    virtual QMap<int, QString> getHeaderLabels() const;
-
   signals:
     /**This signal is emitted if the maximum number of feature changes (interactively)*/
     void maximumNumberOfFeaturesChanged( int n );

@@ -297,7 +297,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   return true;
 }
 
-QMap<int, QString> QgsComposerAttributeTable::getHeaderLabels() const
+QMap<int, QString> QgsComposerAttributeTable::headerLabels() const
 {
   QMap<int, QString> header;
   if ( mVectorLayer )
