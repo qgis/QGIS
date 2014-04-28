@@ -18,7 +18,11 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgsatlascomposition.h"
 #include "qgsproject.h"
+#include "qgsexpression.h"
+#include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileInfo>
@@ -27,16 +31,43 @@
 #include <QSvgRenderer>
 
 
-QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
-    : QgsComposerItem( composition ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 ),
-    mResizeMode( QgsComposerPicture::Zoom )
+QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ) :
+    QgsComposerItem( composition ),
+    mMode( Unknown ),
+    mUseSourceExpression( false ),
+    mPictureRotation( 0 ),
+    mRotationMap( 0 ),
+    mResizeMode( QgsComposerPicture::Zoom ),
+    mPictureExpr( 0 )
 {
   mPictureWidth = rect().width();
+  init();
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 ), mResizeMode( QgsComposerPicture::Zoom )
+QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( 0 ),
+    mMode( Unknown ),
+    mUseSourceExpression( false ),
+    mPictureRotation( 0 ),
+    mRotationMap( 0 ),
+    mResizeMode( QgsComposerPicture::Zoom ),
+    mPictureExpr( 0 )
 {
   mPictureHeight = rect().height();
+  init();
+}
+
+void QgsComposerPicture::init()
+{
+  //connect some signals
+
+  //connect to atlas toggling on/off and coverage layer changes
+  //to update the picture source expression
+  connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updatePictureExpression() ) );
+  connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updatePictureExpression() ) );
+
+  //connect to atlas feature changing
+  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshPicture() ) );
+
 }
 
 QgsComposerPicture::~QgsComposerPicture()
@@ -116,17 +147,106 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 void QgsComposerPicture::setPictureFile( const QString& path )
 {
   mSourceFile.setFileName( path );
-  if ( !mSourceFile.exists() )
+  refreshPicture();
+}
+
+void QgsComposerPicture::updatePictureExpression()
+{
+  QgsVectorLayer * vl = 0;
+  if ( mComposition->atlasComposition().enabled() )
+  {
+    vl = mComposition->atlasComposition().coverageLayer();
+  }
+
+  if ( mSourceExpression.size() > 0 )
+  {
+    if ( mPictureExpr )
+    {
+      delete mPictureExpr;
+    }
+    mPictureExpr = new QgsExpression( mSourceExpression );
+    // expression used to evaluate picture source
+    // test for evaluation errors
+    if ( mPictureExpr->hasParserError() )
+    {
+      QgsMessageLog::logMessage( tr( "Picture expression parsing error: %1" ).arg( mPictureExpr->parserErrorString() ), tr( "Composer" ) );
+    }
+
+    if ( vl )
+    {
+      const QgsFields& fields = vl->pendingFields();
+      mPictureExpr->prepare( fields );
+    }
+  }
+}
+
+QString QgsComposerPicture::evalPictureExpression()
+{
+  //generate filename for picture
+  if ( mSourceExpression.size() > 0 && mUseSourceExpression )
+  {
+    if ( ! mPictureExpr )
+    {
+      return QString();
+    }
+
+    QVariant filenameRes;
+    QgsAtlasComposition* atlas = &( mComposition->atlasComposition() );
+    if ( atlas->enabled() )
+    {
+      //expression needs to be evaluated considering the current atlas feature
+      filenameRes = mPictureExpr->evaluate( atlas->currentFeature(),
+                                            atlas->coverageLayer()->pendingFields() );
+    }
+    else
+    {
+      filenameRes = mPictureExpr->evaluate();
+    }
+
+    if ( mPictureExpr->hasEvalError() )
+    {
+      QgsMessageLog::logMessage( tr( "Picture expression eval error: %1" ).arg( mPictureExpr->evalErrorString() ), tr( "Composer" ) );
+    }
+
+    return filenameRes.toString();
+  }
+  else
+  {
+    return QString();
+  }
+}
+
+void QgsComposerPicture::refreshPicture()
+{
+  if ( mUseSourceExpression )
+  {
+    //using expression for picture source file
+
+    //evaluate expression
+    QFile path;
+    path.setFileName( evalPictureExpression() );
+    loadPicture( path );
+  }
+  else
+  {
+    //using a static picture path
+    loadPicture( mSourceFile );
+  }
+}
+
+void QgsComposerPicture::loadPicture( const QFile& file )
+{
+  if ( !file.exists() )
   {
     mMode = Unknown;
   }
 
-  QFileInfo sourceFileInfo( mSourceFile );
+  QFileInfo sourceFileInfo( file );
   QString sourceFileSuffix = sourceFileInfo.suffix();
   if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
   {
     //try to open svg
-    mSVG.load( mSourceFile.fileName() );
+    mSVG.load( file.fileName() );
     if ( mSVG.isValid() )
     {
       mMode = SVG;
@@ -142,7 +262,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   else
   {
     //try to open raster with QImageReader
-    QImageReader imageReader( mSourceFile.fileName() );
+    QImageReader imageReader( file.fileName() );
     if ( imageReader.read( &mImage ) )
     {
       mMode = RASTER;
@@ -345,6 +465,38 @@ void QgsComposerPicture::setResizeMode( QgsComposerPicture::ResizeMode mode )
   update();
 }
 
+void QgsComposerPicture::setUsePictureExpression( bool useExpression )
+{
+  if ( useExpression == mUseSourceExpression )
+  {
+    return;
+  }
+
+  mUseSourceExpression = useExpression;
+  if ( useExpression )
+  {
+    updatePictureExpression();
+  }
+
+  refreshPicture();
+}
+
+void QgsComposerPicture::setPictureExpression( QString expression )
+{
+  if ( expression == mSourceExpression )
+  {
+    return;
+  }
+
+  mSourceExpression = expression;
+
+  if ( mUseSourceExpression )
+  {
+    updatePictureExpression();
+    refreshPicture();
+  }
+}
+
 QString QgsComposerPicture::pictureFile() const
 {
   return mSourceFile.fileName();
@@ -361,6 +513,15 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( "resizeMode", QString::number(( int )mResizeMode ) );
+  if ( mUseSourceExpression )
+  {
+    composerPictureElem.setAttribute( "useExpression", "true" );
+  }
+  else
+  {
+    composerPictureElem.setAttribute( "useExpression", "false" );
+  }
+  composerPictureElem.setAttribute( "sourceExpression", mSourceExpression );
 
   //rotation
   composerPictureElem.setAttribute( "pictureRotation",  QString::number( mPictureRotation ) );
@@ -405,8 +566,23 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
 
   mDefaultSvgSize = QSize( 0, 0 );
 
+
+  mSourceExpression = itemElem.attribute( "sourceExpression", "" );
+  QString useExpression = itemElem.attribute( "useExpression" );
+  if ( useExpression.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    mUseSourceExpression = true;
+    updatePictureExpression();
+  }
+  else
+  {
+    mUseSourceExpression = false;
+  }
+
   QString fileName = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
-  setPictureFile( fileName );
+  mSourceFile.setFileName( fileName );
+
+  refreshPicture();
 
   //picture rotation
   if ( itemElem.attribute( "pictureRotation", "0" ).toDouble() != 0 )

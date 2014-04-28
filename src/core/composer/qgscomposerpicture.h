@@ -23,6 +23,7 @@
 #include <QSvgRenderer>
 
 class QgsComposerMap;
+class QgsExpression;
 
 /** \ingroup MapComposer
  * A composer class that displays svg files or raster format (jpg, png, ...)
@@ -101,6 +102,25 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     */
     ResizeMode resizeMode() const { return mResizeMode;}
 
+    /**Returns whether the picture item is using an expression for the image source.
+     * @returns true if the picture is using an expression for the source, false if
+     * it is using a single static file path for the source.
+     * @note added in 2.3
+     * @see setUsePictureExpression
+     * @see pictureFile
+     * @see pictureExpression
+    */
+    bool usePictureExpression() const { return mUseSourceExpression;}
+
+    /**Returns the expression the item is using for the picture source. This is only
+     * used if usePictureExpression() is true.
+     * @returns expression for the picture item's image path
+     * @note added in 2.3
+     * @see setPictureExpression
+     * @see usePictureExpression
+    */
+    QString pictureExpression() const { return mSourceExpression;}
+
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
@@ -138,6 +158,29 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     */
     virtual void setResizeMode( ResizeMode mode );
 
+    /**Sets whether the picture should use an expression based image source path
+     * @param useExpression set to true to use an expression based image source,
+     * set to false to use a single image source path
+     * @note added in 2.3
+     * @see usePictureExpression
+     * @see setPictureFile
+     * @see setPictureExpression
+    */
+    virtual void setUsePictureExpression( bool useExpression );
+
+    /**Sets an expression to use for the picture source. This expression is only
+     * used if usePictureExpression() is true.
+     * @param expression to use for picture path
+     * @note added in 2.3
+     * @see setUsePictureExpression
+     * @see pictureExpression
+    */
+    virtual void setPictureExpression( QString expression );
+
+    void refreshPicture();
+
+    void updatePictureExpression();
+
   signals:
     /**Is emitted on picture rotation change*/
     void pictureRotationChanged( double newRotation );
@@ -158,6 +201,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QSvgRenderer mSVG;
     QFile mSourceFile;
     Mode mMode;
+    bool mUseSourceExpression;
+    QString mSourceExpression;
 
     QSize mDefaultSvgSize;
 
@@ -171,6 +216,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     double mPictureHeight;
 
     ResizeMode mResizeMode;
+
+    QgsExpression* mPictureExpr;
+
+    void loadPicture( const QFile &file );
+
+    QString evalPictureExpression();
+    void init();
 };
 
 #endif
