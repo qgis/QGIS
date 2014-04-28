@@ -507,6 +507,11 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) 
   return 0;
 }
 
+void QgsComposition::setPrintResolution( int dpi )
+{
+  mPrintResolution = dpi;
+  emit printResolutionChanged();
+}
 
 void QgsComposition::setUseAdvancedEffects( bool effectsEnabled )
 {

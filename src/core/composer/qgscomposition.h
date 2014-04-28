@@ -241,7 +241,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
     int printResolution() const {return mPrintResolution;}
-    void setPrintResolution( int dpi ) {mPrintResolution = dpi;}
+    void setPrintResolution( int dpi );
 
     bool printAsRaster() const {return mPrintAsRaster;}
     void setPrintAsRaster( bool enabled ) { mPrintAsRaster = enabled; }
@@ -569,6 +569,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
   signals:
     void paperSizeChanged();
     void nPagesChanged();
+
+    /**Is emitted when the compositions print resolution changes*/
+    void printResolutionChanged();
 
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );

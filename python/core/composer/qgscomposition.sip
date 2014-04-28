@@ -416,6 +416,9 @@ class QgsComposition : QGraphicsScene
     void paperSizeChanged();
     void nPagesChanged();
 
+    /**Is emitted when the compositions print resolution changes*/
+    void printResolutionChanged();
+
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
     /**Is emitted when new composer arrow has been added to the view*/
