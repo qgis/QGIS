@@ -93,9 +93,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**True if the rotation is taken from a map item*/
     bool useRotationMap() const {return mRotationMap;}
 
-    /**Returns the resize mode used for drawing the picture within the composer item
-     */
-    ResizeMode resizeMode() const { return mResizeMode;};
+    /**Returns the resize mode used for drawing the picture within the composer item's
+     * frame.
+     * @returns resize mode of picture
+     * @note added in 2.3
+     * @see setResizeMode
+    */
+    ResizeMode resizeMode() const { return mResizeMode;}
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
@@ -127,8 +131,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       @note this function was added in version 2.1*/
     virtual void setPictureRotation( double r );
 
-    /**Sets the resize mode used for drawing the picture within the item bounds
-      @note this function was added in version 2.1*/
+    /**Sets the resize mode used for drawing the picture within the item bounds.
+     * @param mode ResizeMode to use for image file
+     * @note added in 2.3
+     * @see resizeMode
+    */
     virtual void setResizeMode( ResizeMode mode );
 
   signals:
