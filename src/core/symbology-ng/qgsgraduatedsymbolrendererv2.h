@@ -124,14 +124,15 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
 
-    static QgsGraduatedSymbolRendererV2* createRenderer(
-      QgsVectorLayer* vlayer,
-      QString attrName,
-      int classes,
-      Mode mode,
-      QgsSymbolV2* symbol,
-      QgsVectorColorRampV2* ramp,
-      bool inverted = false );
+    static QgsGraduatedSymbolRendererV2* createRenderer( QgsVectorLayer* vlayer,
+        QString attrName,
+        int classes,
+        Mode mode,
+        QgsSymbolV2* symbol,
+        QgsVectorColorRampV2* ramp,
+        bool inverted = false,
+        int noDecimals = 3,
+        bool useBrackets = false );
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );

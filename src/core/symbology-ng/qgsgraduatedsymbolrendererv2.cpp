@@ -767,7 +767,9 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   Mode mode,
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp,
-  bool inverted )
+  bool inverted,
+  int noDecimals,
+  bool useBrackets )
 {
   if ( classes < 1 )
     return NULL;
@@ -880,8 +882,11 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
     else
     {
-	  QString firstBdr = ( i > 0 ) ? "] ": "[ ";
-      label = firstBdr + QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 ) + " ]" ;
+      label = ( useBrackets ? ( i > 0 ? "] " : "[ " ) : "" )
+                  + QString::number( lower, 'f', noDecimals )
+                  + " - "
+                  + QString::number( upper, 'f', noDecimals )
+                  + ( useBrackets ? " ]" : "" );
     }
 
     QgsSymbolV2* newSymbol = symbol->clone();
