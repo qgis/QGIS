@@ -68,6 +68,8 @@ void QgsComposerPicture::init()
   //connect to atlas feature changing
   connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshPicture() ) );
 
+  //connect to composer print resolution changing
+  connect( mComposition, SIGNAL( printResolutionChanged() ), this, SLOT( recalculateSize() ) );
 }
 
 QgsComposerPicture::~QgsComposerPicture()
@@ -275,7 +277,7 @@ void QgsComposerPicture::loadPicture( const QFile& file )
 
   if ( mMode != Unknown ) //make sure we start with a new QImage
   {
-    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
+    recalculateSize();
   }
   emit itemChanged();
 }
@@ -463,9 +465,16 @@ void QgsComposerPicture::setResizeMode( QgsComposerPicture::ResizeMode mode )
        || ( mode == QgsComposerPicture::Zoom && mPictureRotation != 0 ) )
   {
     //call set scene rect to force item to resize to fit picture
-    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
+    recalculateSize();
   }
   update();
+}
+
+void QgsComposerPicture::recalculateSize()
+{
+  //call set scene rect with current position/size, as this will trigger the
+  //picture item to recalculate its frame and image size
+  setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
 }
 
 void QgsComposerPicture::setUsePictureExpression( bool useExpression )

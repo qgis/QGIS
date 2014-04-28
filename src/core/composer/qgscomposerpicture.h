@@ -181,6 +181,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     void updatePictureExpression();
 
+    void recalculateSize();
+
   signals:
     /**Is emitted on picture rotation change*/
     void pictureRotationChanged( double newRotation );
