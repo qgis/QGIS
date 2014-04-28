@@ -880,7 +880,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
     else
     {
-      label = QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 );
+	  QString firstBdr = ( i > 0 ) ? "] ": "[ ";
+      label = firstBdr + QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 ) + " ]" ;
     }
 
     QgsSymbolV2* newSymbol = symbol->clone();
