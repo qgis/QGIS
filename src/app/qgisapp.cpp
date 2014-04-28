@@ -7091,7 +7091,7 @@ void QgisApp::apiDocumentation()
 
 void QgisApp::supportProviders()
 {
-  openURL( tr( "http://qgis.org/de/site/forusers/commercial_support.html" ), false );
+  openURL( tr( "http://qgis.org/en/site/forusers/commercial_support.html" ), false );
 }
 
 void QgisApp::helpQgisHomePage()
