@@ -17,13 +17,20 @@
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ): mComposition( c ), mResizeMode( UseExistingFrames ), mCreateUndoCommands( createUndoCommands )
+QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ):
+    mComposition( c ),
+    mResizeMode( UseExistingFrames ),
+    mCreateUndoCommands( createUndoCommands ),
+    mIsRecalculatingSize( false )
 {
   mComposition->addMultiFrame( this );
   connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
 }
 
-QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( UseExistingFrames )
+QgsComposerMultiFrame::QgsComposerMultiFrame():
+    mComposition( 0 ),
+    mResizeMode( UseExistingFrames ),
+    mIsRecalculatingSize( false )
 {
 }
 
@@ -159,6 +166,13 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   mFrameItems.removeAt( index );
   if ( mFrameItems.size() > 0 )
   {
+    if ( resizeMode() != QgsComposerMultiFrame::RepeatOnEveryPage && !mIsRecalculatingSize )
+    {
+      //removing a frame forces the multi frame to UseExistingFrames resize mode
+      //otherwise the frame may not actually be removed, leading to confusing ui behaviour
+      mResizeMode = QgsComposerMultiFrame::UseExistingFrames;
+      emit changed();
+    }
     recalculateFrameSizes();
   }
 }
@@ -206,10 +220,17 @@ void QgsComposerMultiFrame::handlePageChange()
 
 void QgsComposerMultiFrame::removeFrame( int i )
 {
+  if ( i >= mFrameItems.count() )
+  {
+    return;
+  }
+
   QgsComposerFrame* frameItem = mFrameItems[i];
   if ( mComposition )
   {
+    mIsRecalculatingSize = true;
     mComposition->removeComposerItem( frameItem );
+    mIsRecalculatingSize = false;
   }
   mFrameItems.removeAt( i );
 }

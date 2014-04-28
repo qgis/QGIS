@@ -92,6 +92,8 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
   private:
     QgsComposerMultiFrame(); //forbidden
 
+    bool mIsRecalculatingSize;
+
   signals:
     void changed();
 };
