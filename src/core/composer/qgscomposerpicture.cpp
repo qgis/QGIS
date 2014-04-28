@@ -28,12 +28,13 @@
 
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
-    : QgsComposerItem( composition ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 )
+    : QgsComposerItem( composition ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 ),
+    mResizeMode( QgsComposerPicture::Zoom )
 {
   mPictureWidth = rect().width();
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 )
+QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 ), mResizeMode( QgsComposerPicture::Zoom )
 {
   mPictureHeight = rect().height();
 }
@@ -58,13 +59,39 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
   if ( mMode != Unknown )
   {
-    double boundRectWidthMM = mPictureWidth;
-    double boundRectHeightMM = mPictureHeight;
-
+    double boundRectWidthMM;
+    double boundRectHeightMM;
+    double imageRectWidthMM;
+    double imageRectHeightMM;
+    if ( mResizeMode == QgsComposerPicture::Zoom || mResizeMode == QgsComposerPicture::ZoomResizeFrame )
+    {
+      boundRectWidthMM = mPictureWidth;
+      boundRectHeightMM = mPictureHeight;
+      imageRectWidthMM = mImage.width();
+      imageRectHeightMM = mImage.height();
+    }
+    else if ( mResizeMode == QgsComposerPicture::Stretch )
+    {
+      boundRectWidthMM = rect().width();
+      boundRectHeightMM = rect().height();
+      imageRectWidthMM = mImage.width();
+      imageRectHeightMM = mImage.height();
+    }
+    else
+    {
+      boundRectWidthMM = rect().width();
+      boundRectHeightMM = rect().height();
+      imageRectWidthMM = rect().width() * mComposition->printResolution() / 25.4;
+      imageRectHeightMM = rect().height() * mComposition->printResolution() / 25.4;
+    }
     painter->save();
-    painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-    painter->rotate( mPictureRotation );
-    painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
+
+    if ( mResizeMode == Zoom )
+    {
+      painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
+      painter->rotate( mPictureRotation );
+      painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
+    }
 
     if ( mMode == SVG )
     {
@@ -72,7 +99,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     }
     else if ( mMode == RASTER )
     {
-      painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+      painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, QRectF( 0, 0, imageRectWidthMM, imageRectHeightMM ) );
     }
 
     painter->restore();
@@ -204,14 +231,53 @@ QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeig
 
 void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 {
-  QgsComposerItem::setSceneRect( rectangle );
+
+  QSizeF currentPictureSize = pictureSize();
+
+  if ( mResizeMode == QgsComposerPicture::Clip )
+  {
+    QgsComposerItem::setSceneRect( rectangle );
+    mPictureWidth = rectangle.width();
+    mPictureHeight = rectangle.height();
+    return;
+  }
+
+  QRectF newRect = rectangle;
+
+  if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() )
+  {
+    //if width has changed less than height, then fix width and set height correspondingly
+    //else, do the opposite
+    if ( qAbs( rect().width() - rectangle.width() ) <
+         qAbs( rect().height() - rectangle.height() ) )
+    {
+      newRect.setHeight( currentPictureSize.height() * newRect.width() / currentPictureSize.width() );
+    }
+    else
+    {
+      newRect.setWidth( currentPictureSize.width() * newRect.height() / currentPictureSize.height() );
+    }
+  }
+  else if ( mResizeMode == FrameToImageSize )
+  {
+    newRect.setWidth( currentPictureSize.width() * 25.4 / mComposition->printResolution() );
+    newRect.setHeight( currentPictureSize.height() * 25.4 / mComposition->printResolution() );
+  }
 
   //find largest scaling of picture with this rotation which fits in item
-  QSizeF currentPictureSize = pictureSize();
-  QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rectangle, mPictureRotation );
-  mPictureWidth = rotatedImageRect.width();
-  mPictureHeight = rotatedImageRect.height();
+  if ( mResizeMode == Zoom )
+  {
+    QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
+    mPictureWidth = rotatedImageRect.width();
+    mPictureHeight = rotatedImageRect.height();
+  }
+  else
+  {
+    mPictureWidth = newRect.width();
+    mPictureHeight = newRect.height();
+  }
 
+  QgsComposerItem::setSceneRect( newRect );
   emit itemChanged();
 }
 
@@ -225,13 +291,16 @@ void QgsComposerPicture::setPictureRotation( double r )
 {
   mPictureRotation = r;
 
-  //find largest scaling of picture with this rotation which fits in item
-  QSizeF currentPictureSize = pictureSize();
-  QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
-  mPictureWidth = rotatedImageRect.width();
-  mPictureHeight = rotatedImageRect.height();
+  if ( mResizeMode == Zoom )
+  {
+    //find largest scaling of picture with this rotation which fits in item
+    QSizeF currentPictureSize = pictureSize();
+    QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
+    mPictureWidth = rotatedImageRect.width();
+    mPictureHeight = rotatedImageRect.height();
+    update();
+  }
 
-  update();
   emit pictureRotationChanged( mPictureRotation );
 }
 
@@ -264,6 +333,18 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   emit pictureRotationChanged( mPictureRotation );
 }
 
+void QgsComposerPicture::setResizeMode( QgsComposerPicture::ResizeMode mode )
+{
+  mResizeMode = mode;
+  if ( mode == QgsComposerPicture::ZoomResizeFrame || mode == QgsComposerPicture::FrameToImageSize
+       || ( mode == QgsComposerPicture::Zoom && mPictureRotation != 0 ) )
+  {
+    //call set scene rect to force item to resize to fit picture
+    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
+  }
+  update();
+}
+
 QString QgsComposerPicture::pictureFile() const
 {
   return mSourceFile.fileName();
@@ -279,6 +360,7 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
+  composerPictureElem.setAttribute( "resizeMode", QString::number(( int )mResizeMode ) );
 
   //rotation
   composerPictureElem.setAttribute( "pictureRotation",  QString::number( mPictureRotation ) );
@@ -305,6 +387,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
 
   mPictureWidth = itemElem.attribute( "pictureWidth", "10" ).toDouble();
   mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
+  mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )

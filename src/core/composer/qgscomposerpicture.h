@@ -31,6 +31,23 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 {
     Q_OBJECT
   public:
+
+    enum ResizeMode
+    {
+      Zoom,
+      Stretch,
+      Clip,
+      ZoomResizeFrame,
+      FrameToImageSize
+    };
+
+    enum Mode //SVG or raster graphic format
+    {
+      SVG,
+      RASTER,
+      Unknown
+    };
+
     QgsComposerPicture( QgsComposition *composition );
     ~QgsComposerPicture();
 
@@ -76,6 +93,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**True if the rotation is taken from a map item*/
     bool useRotationMap() const {return mRotationMap;}
 
+    /**Returns the resize mode used for drawing the picture within the composer item
+     */
+    ResizeMode resizeMode() const { return mResizeMode;};
+
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
@@ -92,6 +113,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     */
     Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
+    Mode mode() const { return mMode; };
+
   public slots:
     /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,
       only the way the picture is drawn within the item.
@@ -104,18 +127,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       @note this function was added in version 2.1*/
     virtual void setPictureRotation( double r );
 
+    /**Sets the resize mode used for drawing the picture within the item bounds
+      @note this function was added in version 2.1*/
+    virtual void setResizeMode( ResizeMode mode );
+
   signals:
     /**Is emitted on picture rotation change*/
     void pictureRotationChanged( double newRotation );
 
   private:
-
-    enum Mode //SVG or raster graphic format
-    {
-      SVG,
-      RASTER,
-      Unknown
-    };
 
     //default constructor is forbidden
     QgsComposerPicture();
@@ -142,6 +162,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     double mPictureWidth;
     /**Height of the picture (in mm)*/
     double mPictureHeight;
+
+    ResizeMode mResizeMode;
 };
 
 #endif

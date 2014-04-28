@@ -198,6 +198,21 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
   s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
 }
 
+void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture resize mode changed" ) );
+  mPicture->setResizeMode(( QgsComposerPicture::ResizeMode )index );
+  mPicture->endCommand();
+
+  //disable picture rotation for non-zoom modes
+  mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
+}
+
 void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged( int state )
 {
   if ( !mPicture )
@@ -326,6 +341,7 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureLineEdit->blockSignals( true );
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
+    mResizeModeComboBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
 //    QRectF pictureRect = mPicture->rect();
@@ -352,11 +368,15 @@ void QgsComposerPictureWidget::setGuiElementValues()
       mComposerMapComboBox->setEnabled( false );
     }
 
+    mResizeModeComboBox->setCurrentIndex(( int )mPicture->resizeMode() );
+    //disable picture rotation for non-zoom modes
+    mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
 
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
+    mResizeModeComboBox->blockSignals( false );
   }
 }
 

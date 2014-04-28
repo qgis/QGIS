@@ -105,6 +105,42 @@
             </item>
            </layout>
           </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Resize mode</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mResizeModeComboBox">
+            <item>
+             <property name="text">
+              <string>Zoom</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Stretch</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Clip</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Zoom and resize frame</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Resize frame to image size</string>
+             </property>
+            </item>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -211,7 +247,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
          <property name="title">
           <string>Image rotation</string>
          </property>

@@ -45,6 +45,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mRemoveDirectoryButton_clicked();
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
     void on_mComposerMapComboBox_activated( const QString & text );
+    void on_mResizeModeComboBox_currentIndexChanged( int index );
 
   protected:
     void showEvent( QShowEvent * event );
