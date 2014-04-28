@@ -79,8 +79,8 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
         {
           removeFrame( j - 1 );
         }
+        return;
       }
-      return;
     }
 
     currentItem = mFrameItems.value( i );
