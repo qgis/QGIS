@@ -91,6 +91,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     }
     else
     {
+      currentHeight = findNearbyPageBreak( currentY + currentHeight ) - currentY;
       currentItem->setContentSection( QRectF( 0, currentY, currentItem->rect().width(), currentHeight ) );
     }
     currentItem->update();
@@ -103,7 +104,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     while (( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = qFloor( (currentItem->pos().y() + currentItem->rect().height()) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
+      int page = qFloor(( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
 
       if ( mResizeMode == RepeatOnEveryPage )
       {

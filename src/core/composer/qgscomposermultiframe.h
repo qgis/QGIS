@@ -48,6 +48,13 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
 
+    /**Finds the optimal position to break a frame at.
+     * @param yPos maximum vertical position for break
+     * @returns the optimal breakable position which occurs in the multi frame close
+     * to and before the specified yPos
+     * Note: added in version 2.3*/
+    virtual double findNearbyPageBreak( double yPos ) { return yPos; }
+
     void removeFrame( int i );
 
     void update();
