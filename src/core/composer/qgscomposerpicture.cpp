@@ -364,7 +364,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 
   QRectF newRect = rectangle;
 
-  if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() )
+  if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
   {
     //if width has changed less than height, then fix width and set height correspondingly
     //else, do the opposite
@@ -380,8 +380,11 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   }
   else if ( mResizeMode == FrameToImageSize )
   {
-    newRect.setWidth( currentPictureSize.width() * 25.4 / mComposition->printResolution() );
-    newRect.setHeight( currentPictureSize.height() * 25.4 / mComposition->printResolution() );
+    if ( !( currentPictureSize.isEmpty() ) )
+    {
+      newRect.setWidth( currentPictureSize.width() * 25.4 / mComposition->printResolution() );
+      newRect.setHeight( currentPictureSize.height() * 25.4 / mComposition->printResolution() );
+    }
   }
 
   //find largest scaling of picture with this rotation which fits in item
