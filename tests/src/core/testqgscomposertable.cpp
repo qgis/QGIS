@@ -22,6 +22,7 @@
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeature.h"
 
 #include <QObject>
 #include <QtTest>
@@ -36,6 +37,7 @@ class TestQgsComposerTable: public QObject
     void cleanup();// will be called after every testfunction.
 
     void textTableHeadings(); //test setting/retrieving text table headers
+    void textTableRows(); //test adding and retrieving text table rows
 
   private:
     QgsComposition* mComposition;
@@ -100,6 +102,49 @@ void TestQgsComposerTable::textTableHeadings()
     expected = headers.at( col );
     QCOMPARE( evaluated, expected );
   }
+}
+
+void TestQgsComposerTable::textTableRows()
+{
+  //test adding and retrieving text table rows
+
+  //add some rows to the table
+  QList<QStringList> rows;
+  QStringList row;
+  row << "a1" << "b1" << "c1";
+  rows.append( row );
+  row.clear();
+  row << "a2" << "b2" << "c2";
+  rows.append( row );
+  row.clear();
+  row << "a3" << "b3" << "c3";
+  rows.append( row );
+  QList<QStringList>::const_iterator rowIt = rows.constBegin();
+  for ( ; rowIt != rows.constEnd(); ++rowIt )
+  {
+    mComposerTextTable->addRow( *rowIt );
+  }
+
+  //now retrieve rows and check
+  QList<QgsAttributeMap> evaluatedRows;
+  bool result = mComposerTextTable->getFeatureAttributes( evaluatedRows );
+  QCOMPARE( result, true );
+
+  QList<QgsAttributeMap>::const_iterator resultIt = evaluatedRows.constBegin();
+  int rowNumber = 0;
+  int colNumber = 0;
+  for ( ; resultIt != evaluatedRows.constEnd(); ++resultIt )
+  {
+    colNumber = 0;
+    QgsAttributeMap::const_iterator cellIt = ( *resultIt ).constBegin();
+    for ( ; cellIt != ( *resultIt ).constEnd(); ++cellIt )
+    {
+      QCOMPARE(( *cellIt ).toString(), rows.at( rowNumber ).at( colNumber ) );
+      colNumber++;
+    }
+    rowNumber++;
+  }
+
 }
 
 QTEST_MAIN( TestQgsComposerTable )
