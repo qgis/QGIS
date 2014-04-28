@@ -33,16 +33,20 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     Q_OBJECT
   public:
 
+    /*! Controls how pictures are scaled within the item's frame
+     */
     enum ResizeMode
     {
-      Zoom,
-      Stretch,
-      Clip,
-      ZoomResizeFrame,
-      FrameToImageSize
+      Zoom, /*!< enlarges image to fit frame while maintaining aspect ratio of picture */
+      Stretch, /*!< stretches image to fit frame, ignores aspect ratio */
+      Clip, /*!< draws image at original size and clips any portion which falls outside frame */
+      ZoomResizeFrame, /*!< enlarges image to fit frame, then resizes frame to fit resultant image */
+      FrameToImageSize /*!< sets size of frame to match original size of image without scaling */
     };
 
-    enum Mode //SVG or raster graphic format
+    /*! Format of source image
+     */
+    enum Mode
     {
       SVG,
       RASTER,
@@ -58,8 +62,20 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /**Sets the source file of the image (may be svg or a raster format)*/
+    /**Sets the source file of the image (may be svg or a raster format). This is only used if
+     * usePictureExpression() is false.
+     * @param path full path to the source image
+     * @see usePictureExpression
+     * @see pictureFile
+    */
     void setPictureFile( const QString& path );
+
+    /**Returns the path of the source image file. This is only used if
+     * usePictureExpression() is false.
+     * @returns path to the source image
+     * @see usePictureExpression
+     * @see setPictureFile
+    */
     QString pictureFile() const;
 
     /**Sets this items bound in scene coordinates such that 1 item size units
@@ -81,18 +97,40 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead
      */
-    Q_DECL_DEPRECATED double rotation() const { return mPictureRotation;};
+    Q_DECL_DEPRECATED double rotation() const { return mPictureRotation; }
 
-    /**Returns the rotation used for drawing the picture within the item
-      @note this function was added in version 2.1*/
-    double pictureRotation() const { return mPictureRotation;};
+    /**Returns the rotation used for drawing the picture within the item's frame
+     * @returns picture rotation in degrees
+     * @note added in 2.2
+     * @see setPictureRotation
+     * @see rotationMap
+    */
+    double pictureRotation() const { return mPictureRotation; }
 
-    /**Sets the map object for rotation (by id). A value of -1 disables the map rotation*/
+    /**Sets the map object for rotation (by id). A value of -1 disables the map rotation.
+     * If this is set then the picture will be rotated by the same amount as the specified
+     * map object. This is useful especially for syncing north arrows with a map item.
+     * @param id composer map id to sync rotation with
+     * @see setPictureRotation
+     * @see rotationMap
+    */
     void setRotationMap( int composerMapId );
-    /**Returns the id of the rotation map*/
+
+    /**Returns the id of the rotation map.  A value of -1 means map rotation is disabled.
+     * If this is set then the picture is rotated by the same amount as the specified
+     * map object.
+     * @returns id of map object
+     * @see setRotationMap
+     * @see useRotationMap
+    */
     int rotationMap() const;
-    /**True if the rotation is taken from a map item*/
-    bool useRotationMap() const {return mRotationMap;}
+
+    /**True if the picture rotation is matched to a map item.
+     * @returns true if rotation map is in use
+     * @see rotationMap
+     * @see setRotationMap
+    */
+    bool useRotationMap() const { return mRotationMap; }
 
     /**Returns the resize mode used for drawing the picture within the composer item's
      * frame.
@@ -100,7 +138,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note added in 2.3
      * @see setResizeMode
     */
-    ResizeMode resizeMode() const { return mResizeMode;}
+    ResizeMode resizeMode() const { return mResizeMode; }
 
     /**Returns whether the picture item is using an expression for the image source.
      * @returns true if the picture is using an expression for the source, false if
@@ -110,7 +148,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see pictureFile
      * @see pictureExpression
     */
-    bool usePictureExpression() const { return mUseSourceExpression;}
+    bool usePictureExpression() const { return mUseSourceExpression; }
 
     /**Returns the expression the item is using for the picture source. This is only
      * used if usePictureExpression() is true.
@@ -119,7 +157,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see setPictureExpression
      * @see usePictureExpression
     */
-    QString pictureExpression() const { return mSourceExpression;}
+    QString pictureExpression() const { return mSourceExpression; }
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
@@ -137,7 +175,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     */
     Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
-    Mode mode() const { return mMode; };
+    /**Returns the current picture mode (image format).
+     * @returns picture mode
+     * @note added in 2.3
+    */
+    Mode mode() const { return mMode; }
 
   public slots:
     /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,
@@ -146,9 +188,12 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     virtual void setRotation( double r );
 
-    /**Sets the picture rotation within the item bounds. This does not affect the item rectangle,
-      only the way the picture is drawn within the item.
-      @note this function was added in version 2.1*/
+    /**Sets the picture rotation within the item bounds. This does not affect the item's frame,
+     * only the way the picture is drawn within the item.
+     * @param r rotation in degrees clockwise
+     * @see pictureRotation
+     * @note added in 2.2
+    */
     virtual void setPictureRotation( double r );
 
     /**Sets the resize mode used for drawing the picture within the item bounds.
@@ -177,10 +222,21 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     */
     virtual void setPictureExpression( QString expression );
 
+    /**Recalculates the source image (if using an expression for picture's source)
+     * and reloads and redraws the picture.
+     * @note added in 2.3
+    */
     void refreshPicture();
 
+    /**Prepares the picture's source expression after it is altered or the compositions
+     * atlas coverage layer changes.
+     * @note added in 2.3
+    */
     void updatePictureExpression();
 
+    /**Forces a recalculation of the picture's frame size
+     * @note added in 2.3
+    */
     void recalculateSize();
 
   signals:
@@ -221,9 +277,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     QgsExpression* mPictureExpr;
 
+    /**loads an image file into the picture item and redraws the item*/
     void loadPicture( const QFile &file );
 
+    /**evaluates the picture expression and returns the calculated image path*/
     QString evalPictureExpression();
+
+    /**sets up the picture item and connects to relevant signals*/
     void init();
 };
 
