@@ -49,6 +49,13 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
 
+#ifdef Q_WS_MAC
+    void showEvent(QShowEvent *event);
+    void changeEvent(QEvent *);
+
+    QAction* mWindowAction;
+#endif
+
   private slots:
     void on_mAddButton_clicked();
     /** Slot to track combobox to use specific template path

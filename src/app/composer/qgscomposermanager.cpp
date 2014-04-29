@@ -61,6 +61,12 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
 
+#ifdef Q_WS_MAC
+  // Create action to select this window
+  mWindowAction = new QAction( windowTitle(), this );
+  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+#endif
+
   mTemplate->addItem( tr( "Empty composer" ) );
   mTemplate->addItem( tr( "Specific" ) );
 
@@ -269,6 +275,32 @@ void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
   }
   QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
 }
+
+#ifdef Q_WS_MAC
+void QgsComposerManager::showEvent(QShowEvent* event)
+{
+  if(!event->spontaneous()) {
+    QgisApp::instance()->addWindow( mWindowAction );
+  }
+}
+
+void QgsComposerManager::changeEvent( QEvent* event )
+{
+  QDialog::changeEvent( event );
+  switch ( event->type() )
+  {
+    case QEvent::ActivationChange:
+      if ( QApplication::activeWindow() == this )
+      {
+        mWindowAction->setChecked( true );
+      }
+      break;
+
+    default:
+      break;
+  }
+}
+#endif
 
 void QgsComposerManager::remove_clicked()
 {
