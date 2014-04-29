@@ -65,7 +65,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     void removeExpression();
 
     //! returns the currently used layer
-    QgsMapLayer* layer() {return mLayer;}
+    QgsVectorLayer* layer() {return mLayer;}
 
   public slots:
     //! set the layer of whch fields are displayed

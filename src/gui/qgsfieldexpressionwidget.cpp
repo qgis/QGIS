@@ -83,12 +83,7 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression )
 
 QgsVectorLayer *QgsFieldExpressionWidget::layer()
 {
-  QgsMapLayer* layer = mFieldModel->layer();
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
-    return vl;
-  else
-    return 0;
+  return mFieldModel->layer();
 }
 
 void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )

@@ -43,7 +43,7 @@ class QgsFieldModel : QAbstractItemModel
     void removeExpression();
 
     //! returns the currently used layer
-    QgsMapLayer* layer();
+    QgsVectorLayer* layer();
 
   public slots:
     //! set the layer of whch fields are displayed

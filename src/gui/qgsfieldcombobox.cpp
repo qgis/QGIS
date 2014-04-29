@@ -33,12 +33,7 @@ void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
 
 QgsVectorLayer *QgsFieldComboBox::layer()
 {
-  QgsMapLayer* layer = mFieldModel->layer();
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
-    return vl;
-  else
-    return 0;
+  return mFieldModel->layer();
 }
 
 void QgsFieldComboBox::setField( QString fieldName )
