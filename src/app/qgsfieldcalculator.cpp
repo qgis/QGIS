@@ -208,6 +208,13 @@ void QgsFieldCalculator::accept()
     }
     else
     {
+
+      const QgsField& field = feature.fields()->field(mAttributeId);
+      if(field.type() == QVariant::Double && field.precision() > 0) {
+        double scaler = pow( 10.0, field.precision() );
+        value = QVariant( qRound( value.toDouble() * scaler ) / scaler );
+      }
+
       mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
     }
 
