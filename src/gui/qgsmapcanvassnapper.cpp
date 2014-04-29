@@ -127,16 +127,9 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
   //snapping on intersection on?
   int intersectionSnapping = QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 );
 
-  if ( topologicalEditing == 0 )
+  if ( intersectionSnapping == 0 )
   {
-    if ( intersectionSnapping == 0 )
-      mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
-    else
-      mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
-  }
-  else if ( intersectionSnapping == 0 )
-  {
-    mSnapper->setSnapMode( QgsSnapper::SnapWithResultsForSamePosition );
+    mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
   }
   else
   {

@@ -39,7 +39,7 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
     void deactivate();
 
   private:
-    QgsVertexMarker* mCross;
+    QgsVectorLayer* vlayer;
 
     //! delete inner ring from the geometry
     void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
@@ -49,6 +49,10 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
 
     //! return ring number in multipolygon and set parNum to index of the part
     int ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, int& partNum );
+
+    int partNumberOfPoint(QgsGeometry* g, QgsPoint point );
+    int ringNumberOfPoint(QgsGeometry* g, QgsPoint point, int part );
+
 };
 
 #endif
