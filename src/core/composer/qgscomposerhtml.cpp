@@ -185,7 +185,8 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   QRgb currentColor;
   QRgb pixelColor;
   QList< QPair<int, int> > candidates;
-  for ( int candidateRow = idealPos; candidateRow >= idealPos - maxSearchDistance; --candidateRow )
+  int minRow = qMax( idealPos - maxSearchDistance, 0 );
+  for ( int candidateRow = idealPos; candidateRow >= minRow; --candidateRow )
   {
     changes = 0;
     currentColor = qRgba( 0, 0, 0, 0 );
