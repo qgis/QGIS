@@ -35,7 +35,4 @@ class QgsFieldComboBox : QComboBox
 
     //! setField sets the currently selected field
     void setField( QString fieldName );
-
-  protected slots:
-    void indexChanged( int i );
 };

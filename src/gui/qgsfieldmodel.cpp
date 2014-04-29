@@ -13,6 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
+#include <QFont>
+
 #include "qgsfieldmodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
@@ -51,7 +53,7 @@ void QgsFieldModel::setLayer( QgsMapLayer *layer )
 {
   if ( mLayer )
   {
-    disconnect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateFields() ) );
+    disconnect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
     disconnect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   }
 
@@ -70,7 +72,7 @@ void QgsFieldModel::setLayer( QgsMapLayer *layer )
   }
 
   mLayer = vl;
-  connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateFields() ) );
+  connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   updateModel();
 }
@@ -241,7 +243,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return alias;
     }
 
-    case Qt::BackgroundRole:
+    case Qt::ForegroundRole:
     {
       if ( exprIdx >= 0 )
       {
@@ -253,7 +255,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
           exp.evaluate( &mFeature, mLayer->pendingFields() );
           if ( exp.hasEvalError() )
           {
-            return QBrush( QColor( 240, 60, 60, 180 ) );
+            return QBrush( QColor( Qt::red ) );
           }
         }
       }
@@ -265,7 +267,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         // if the line is an expression, set it as italic
-        QFont font;
+        QFont font = QFont();
         font.setItalic( true );
         return font;
       }

@@ -36,13 +36,4 @@ class QgsFieldExpressionWidget : QWidget
 
     //! sets the current field or expression in the widget
     void setField( QString fieldName );
-
-  protected slots:
-    //! open the expression dialog to edit the current or add a new expression
-    void editExpression();
-
-    //! when expression is edited by the user in the line edit
-    void expressionEdited( QString expression );
-
-    void indexChanged( int i );
 };

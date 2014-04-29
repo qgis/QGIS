@@ -98,37 +98,16 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsFieldExpressionWidget::setField( QString fieldName )
 {
+  if ( fieldName.isEmpty() )
+    return;
+
   QModelIndex idx = mFieldModel->indexFromName( fieldName );
-  bool isExpression ;
-  if ( idx.isValid() )
-  {
-    isExpression = mFieldModel->data( idx, QgsFieldModel::IsExpressionRole ).toBool();
-  }
-  else
+  if ( !idx.isValid() )
   {
     // new expression
     idx = mFieldModel->setExpression( fieldName );
-    isExpression = true;
   }
   mCombo->setCurrentIndex( idx.row() );
-
-  QFont font;
-  font.setItalic( isExpression );
-  mCombo->lineEdit()->setFont( font );
-
-  QPalette palette;
-  palette.setColor( QPalette::Text, Qt::black );
-  if ( isExpression )
-  {
-    bool isValid = mFieldModel->data( idx, QgsFieldModel::ExpressionValidityRole ).toBool();
-    if ( !isValid )
-    {
-      palette.setColor( QPalette::Text, Qt::red );
-    }
-  }
-  mCombo->lineEdit()->setPalette( palette );
-
-  emit fieldChanged( currentField() );
 }
 
 void QgsFieldExpressionWidget::editExpression()
@@ -162,6 +141,28 @@ void QgsFieldExpressionWidget::expressionEdited( QString expression )
 void QgsFieldExpressionWidget::indexChanged( int i )
 {
   Q_UNUSED( i );
-  QString name = currentField();
-  emit fieldChanged( name );
+  bool isExpression;
+  QString fieldName = currentField( &isExpression );
+
+  QFont font = mCombo->lineEdit()->font();
+  font.setItalic( isExpression );
+  mCombo->lineEdit()->setFont( font );
+
+  QPalette palette;
+  palette.setColor( QPalette::Text, Qt::black );
+  if ( isExpression )
+  {
+    QModelIndex idx = mFieldModel->indexFromName( fieldName );
+    if ( idx.isValid() )
+    {
+      bool isValid = mFieldModel->data( idx, QgsFieldModel::ExpressionValidityRole ).toBool();
+      if ( !isValid )
+      {
+        palette.setColor( QPalette::Text, Qt::red );
+      }
+    }
+  }
+  mCombo->lineEdit()->setPalette( palette );
+
+  emit fieldChanged( fieldName );
 }
