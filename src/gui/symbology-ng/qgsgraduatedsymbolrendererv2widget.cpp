@@ -112,8 +112,11 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
 {
   if ( !index.isValid() || !mRenderer ) return QVariant();
 
-  const QgsRendererRangeV2 range = mRenderer->ranges().value( index.row() );
-  QString rangeStr = QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 );
+  const QgsRendererRangeV2 range =  mRenderer->ranges().value( index.row() );
+
+  QString firstBdr = ( index.row() > 0 ) ? "] " : "[ ";
+
+  QString rangeStr = firstBdr + QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 ) + " ]";
 
   if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
@@ -541,7 +544,8 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   // create and set new renderer
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
-                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp, cbxInvertedColorRamp->isChecked() );
+                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp, cbxInvertedColorRamp->isChecked(),
+                                      mDecimalSpinBox->value(), mUseBracketCheckBox->isChecked() );
   QApplication::restoreOverrideCursor();
   if ( !r )
   {
