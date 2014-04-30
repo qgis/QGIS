@@ -150,7 +150,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QgsFieldExpressionWidget" name="mExprressionWidget" native="true"/>
+        <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true"/>
        </item>
        <item>
         <spacer name="horizontalSpacer">

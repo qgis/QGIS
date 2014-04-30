@@ -358,7 +358,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   // setup user interface
   setupUi( this );
 
-  mExprressionWidget->setLayer( mLayer );
+  mExpressionWidget->setLayer( mLayer );
 
   cboGraduatedColorRamp->populate( mStyle );
 
@@ -382,7 +382,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
-  connect( mExprressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
+  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
@@ -438,10 +438,10 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
     spinGraduatedClasses->setValue( mRenderer->ranges().count() );
 
   // set column
-  disconnect( mExprressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
+  disconnect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
   QString attrName = mRenderer->classAttribute();
-  mExprressionWidget->setField( attrName );
-  connect( mExprressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
+  mExpressionWidget->setField( attrName );
+  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
 
   // set source symbol
   if ( mRenderer->sourceSymbol() )
@@ -467,7 +467,7 @@ void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( QString field )
 
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 {
-  QString attrName = mExprressionWidget->currentField();
+  QString attrName = mExpressionWidget->currentField();
 
   int classes = spinGraduatedClasses->value();
 
