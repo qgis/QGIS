@@ -31,6 +31,10 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QgsComposerManager( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
+  public slots:
+    /** Raise, unminimize and activate this window */
+    void activate();
+
   private:
     /**Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/

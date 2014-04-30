@@ -133,6 +133,13 @@ void QgsComposerManager::refreshComposers()
   }
 }
 
+void QgsComposerManager::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
+}
+
 QMap<QString, QString> QgsComposerManager::defaultTemplates( bool fromUser ) const
 {
   QMap<QString, QString> templateMap;

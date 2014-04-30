@@ -3929,8 +3929,7 @@ void QgisApp::showComposerManager()
     connect( mComposerManager, SIGNAL( finished( int ) ), this, SLOT( deleteComposerManager() ) );
   }
   mComposerManager->show();
-  mComposerManager->raise();
-  mComposerManager->activateWindow();
+  mComposerManager->activate();
 }
 
 void QgisApp::deleteComposerManager()
