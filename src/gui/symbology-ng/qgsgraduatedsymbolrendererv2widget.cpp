@@ -462,7 +462,6 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
 void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( QString field )
 {
   mRenderer->setClassAttribute( field );
-  classifyGraduated();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
