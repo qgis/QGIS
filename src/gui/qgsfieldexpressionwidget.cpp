@@ -147,6 +147,7 @@ void QgsFieldExpressionWidget::indexChanged( int i )
   Q_UNUSED( i );
   bool isExpression;
   QString fieldName = currentField( &isExpression );
+  bool isValid = true;
 
   QFont font = mCombo->lineEdit()->font();
   font.setItalic( isExpression );
@@ -159,7 +160,7 @@ void QgsFieldExpressionWidget::indexChanged( int i )
     QModelIndex idx = mFieldModel->indexFromName( fieldName );
     if ( idx.isValid() )
     {
-      bool isValid = mFieldModel->data( idx, QgsFieldModel::ExpressionValidityRole ).toBool();
+      isValid = mFieldModel->data( idx, QgsFieldModel::ExpressionValidityRole ).toBool();
       if ( !isValid )
       {
         palette.setColor( QPalette::Text, Qt::red );
@@ -169,4 +170,5 @@ void QgsFieldExpressionWidget::indexChanged( int i )
   mCombo->lineEdit()->setPalette( palette );
 
   emit fieldChanged( fieldName );
+  emit fieldChanged( fieldName, isValid );
 }

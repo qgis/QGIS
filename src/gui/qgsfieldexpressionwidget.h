@@ -57,6 +57,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! the signal is emitted when the currently selected field changes
     void fieldChanged( QString fieldName );
 
+    //! fieldChanged signal with indication of the validity of the expression
+    void fieldChanged( QString fieldName, bool isValid );
+
   public slots:
     //! set the layer used to display the fields and expression
     void setLayer( QgsVectorLayer* layer );
