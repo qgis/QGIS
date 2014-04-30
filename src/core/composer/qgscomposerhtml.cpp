@@ -177,7 +177,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
     return yPos;
   }
 
-  int maxSearchDistance = 200;
+  int maxSearchDistance = 100;
 
   //loop through all lines just before ideal break location, up to max distance
   //of maxSearchDistance
