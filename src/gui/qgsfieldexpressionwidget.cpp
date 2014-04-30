@@ -86,6 +86,15 @@ QgsVectorLayer *QgsFieldExpressionWidget::layer()
   return mFieldModel->layer();
 }
 
+void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
+{
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( vl )
+  {
+    setLayer( vl );
+  }
+}
+
 void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 {
   mFieldModel->setLayer( layer );

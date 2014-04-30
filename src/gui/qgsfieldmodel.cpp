@@ -49,7 +49,7 @@ QModelIndex QgsFieldModel::indexFromName( QString fieldName )
   return QModelIndex();
 }
 
-void QgsFieldModel::setLayer( QgsMapLayer *layer )
+void QgsFieldModel::setLayer( QgsVectorLayer *layer )
 {
   if ( mLayer )
   {
@@ -63,15 +63,8 @@ void QgsFieldModel::setLayer( QgsMapLayer *layer )
     updateModel();
     return;
   }
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( !vl )
-  {
-    mLayer = 0;
-    updateModel();
-    return;
-  }
 
-  mLayer = vl;
+  mLayer = layer;
   connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   updateModel();

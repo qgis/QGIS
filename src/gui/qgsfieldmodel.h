@@ -69,7 +69,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
   public slots:
     //! set the layer of whch fields are displayed
-    void setLayer( QgsMapLayer *layer );
+    void setLayer( QgsVectorLayer *layer );
 
   protected slots:
     virtual void updateModel();

@@ -61,6 +61,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! set the layer used to display the fields and expression
     void setLayer( QgsVectorLayer* layer );
 
+    //! convenience slot to connect QgsMapLayerComboBox layer signal
+    void setLayer( QgsMapLayer* layer );
+
     //! sets the current field or expression in the widget
     void setField( QString fieldName );
 
