@@ -86,6 +86,9 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @param cacheSize indicates the maximum number of features to keep in the cache
      */
+
+    ~QgsVectorLayerCache();
+
     void setCacheSize( int cacheSize );
 
     /**
@@ -136,6 +139,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @brief
      * Adds a {@link QgsAbstractCacheIndex} to this cache. Cache indices know about features present
      * in this cache and decide, if enough information is present in the cache to respond to a {@link QgsFeatureRequest}.
+     * The layer cache will take ownership of the index.
      *
      * @param cacheIndex  The cache index to add.
      */
