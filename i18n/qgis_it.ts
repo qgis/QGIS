@@ -3717,7 +3717,7 @@ colonna geometrica, colonna con valori interi univoci</translation>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Salva in un file temporaneo]</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -6289,7 +6289,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="309"/>
         <source>Add generated file to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi il file generato alla mappa</translation>
     </message>
     <message>
         <source>0.1</source>
@@ -7274,7 +7274,7 @@ Agisce su tutti i vettori editabili attivi al momento
         <location filename="../src/ui/qgisapp.ui" line="1898"/>
         <location filename="../src/ui/qgisapp.ui" line="1901"/>
         <source>Duplicate Layer(s)</source>
-        <translation>Vettore duplicato/i</translation>
+        <translation>Duplica vettore/i</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1913"/>
@@ -7394,12 +7394,12 @@ Agisce su tutti i vettori editabili attivi al momento
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2163"/>
         <source>Add from Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi da un file di definizione del layer...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2168"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva come file di definizione del layer...</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -10543,12 +10543,12 @@ Verrà disabilitato.</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="31"/>
         <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished">Impossibile riproiettare estensione vista: %1</translation>
+        <translation>Impossibile riproiettare estensione vista: %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="41"/>
         <source>Could not reproject layer extent: %1</source>
-        <translation type="unfinished">Impossibile riproiettare estensione layer: %1</translation>
+        <translation>Impossibile riproiettare estensione layer: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
@@ -13308,7 +13308,6 @@ La risposta è stata:
         <comment>number of legend items to remove</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -13316,7 +13315,6 @@ La risposta è stata:
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -17135,7 +17133,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="255"/>
         <source>Case Sensitive</source>
-        <translation type="unfinished">Maiusc/minusc</translation>
+        <translation>Maiusc/minusc</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="262"/>
@@ -17145,7 +17143,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="265"/>
         <source>Normal</source>
-        <translation type="unfinished">Normale</translation>
+        <translation>Normale</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="270"/>
@@ -17891,7 +17889,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source>Svg error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
@@ -19377,7 +19375,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="302"/>
         <source>Join style</source>
-        <translation type="unfinished">Stile unione</translation>
+        <translation>Stile unione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="315"/>
@@ -19647,7 +19645,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="232"/>
         <source>Legend title alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Allineamento titolo della legenda modificato</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="243"/>
@@ -19794,22 +19792,22 @@ Secondo me si (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="139"/>
         <source>Title alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineamento del titolo:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="147"/>
         <source>Left</source>
-        <translation type="unfinished">Sinistra</translation>
+        <translation>Sinistra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Center</source>
-        <translation type="unfinished">Centro</translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="157"/>
         <source>Right</source>
-        <translation type="unfinished">Destra</translation>
+        <translation>Destra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="182"/>
@@ -21453,7 +21451,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="362"/>
         <source>Join style</source>
-        <translation type="unfinished">Stile unione</translation>
+        <translation>Stile unione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="372"/>
@@ -21701,7 +21699,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="409"/>
         <source>Expression based filter</source>
-        <translation type="unfinished">Filtro basato su espressione</translation>
+        <translation>Filtro basato su espressione</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="437"/>
@@ -21816,12 +21814,12 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="102"/>
         <source>Filter with</source>
-        <translation type="unfinished">Filtra con</translation>
+        <translation>Filtra con</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="114"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="127"/>
@@ -23724,7 +23722,7 @@ ed il file attuale è [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="134"/>
         <source>Hold dialog open</source>
-        <translation type="unfinished"></translation>
+        <translation>Mantieni aperta la finestra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="143"/>
@@ -26679,22 +26677,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="82"/>
         <source>layer</source>
-        <translation type="unfinished">vettore</translation>
+        <translation>vettore</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="85"/>
         <source>map view</source>
-        <translation type="unfinished">Vista mappa</translation>
+        <translation>vista mappa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="88"/>
         <source>user defined</source>
-        <translation type="unfinished">definito dall&apos;utente</translation>
+        <translation>definito dall&apos;utente</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="93"/>
         <source>Extent (current: %1)</source>
-        <translation type="unfinished">Estensione (attuale: %1)</translation>
+        <translation>Estensione (attuale: %1)</translation>
     </message>
 </context>
 <context>
@@ -26702,37 +26700,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="22"/>
         <source>West</source>
-        <translation type="unfinished">Ovest</translation>
+        <translation>Ovest</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="35"/>
         <source>East</source>
-        <translation type="unfinished">Est</translation>
+        <translation>Est</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="48"/>
         <source>North</source>
-        <translation type="unfinished">Nord</translation>
+        <translation>Nord</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="65"/>
         <source>South</source>
-        <translation type="unfinished">Sud</translation>
+        <translation>Sud</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="102"/>
         <source>Layer extent</source>
-        <translation type="unfinished">Estensione del raster</translation>
+        <translation>Estensione del raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui" line="131"/>
         <source>Map view extent</source>
-        <translation type="unfinished">Estensione della vista</translation>
+        <translation>Estensione della vista</translation>
     </message>
 </context>
 <context>
@@ -28469,7 +28467,7 @@ Scegli un file valido.</translation>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="941"/>
         <source>Band</source>
-        <translation type="unfinished">Banda</translation>
+        <translation>Banda</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="959"/>
@@ -29673,12 +29671,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1009"/>
         <source>Color (start)</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore (inizio)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1010"/>
         <source>Color (end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore (fine)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1011"/>
@@ -35487,7 +35485,7 @@ Numero di geometrie inviate al sistema di etichettatura, anche se non tutte poss
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1208"/>
         <source>On the fly reprojection enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Riproiezione al volo abilitata.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="2094"/>
@@ -35580,7 +35578,7 @@ non visualizzati</translation>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="438"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="454"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva come file di definizione del layer...</translation>
     </message>
     <message>
         <source>Save Selection As...</source>
@@ -35873,12 +35871,12 @@ non visualizzati</translation>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="605"/>
         <source>canvas</source>
-        <translation type="unfinished">mappa</translation>
+        <translation>mappa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="662"/>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="unfinished">Aggiornamento mappa: %1 ms</translation>
+        <translation>Aggiornamento mappa: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
@@ -36223,7 +36221,7 @@ non visualizzati</translation>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="65"/>
         <source>Could not add part. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aggiungere la parte. %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="104"/>
@@ -38755,7 +38753,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="261"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Salva il vettore come...</translation>
+        <translation>Salva il vettore come...</translation>
     </message>
     <message>
         <source>Save As</source>
@@ -38827,7 +38825,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="270"/>
         <source>File encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Codifica file</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="117"/>
@@ -41889,7 +41887,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1681"/>
@@ -41914,7 +41912,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2686"/>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2693"/>
@@ -41924,7 +41922,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2706"/>
         <source>Minimum width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza minima</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2713"/>
@@ -45538,7 +45536,7 @@ metterei &quot;questa&quot; al posto di &quot;vostra&quot; (ght)
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="376"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>informazioni:vuoto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="392"/>
@@ -48187,7 +48185,7 @@ Clicca sul pulsante di aiuto per avere opzioni di creazione valide per questo fo
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="170"/>
         <source>Display</source>
-        <translation type="unfinished">Visualizza</translation>
+        <translation>Visualizza</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="178"/>
@@ -50212,12 +50210,12 @@ multipli con larghezza e altezza massima specificate sotto.</translation>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>No option selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuna opzione scelta</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>Please select an option to load min/max values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli un&apos;opzione per caricare i valori min/max.</translation>
     </message>
 </context>
 <context>
@@ -51876,17 +51874,17 @@ L´errore era:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1270"/>
         <source>Color (start)</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore (inizio)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1271"/>
         <source>Color (end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore (fine)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1272"/>
         <source>Blur radius</source>
-        <translation type="unfinished">Raggio di sfumatura</translation>
+        <translation>Raggio di sfumatura</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1273"/>
@@ -57832,7 +57830,7 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="134"/>
         <source>Save only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva solo le geometrie selezionate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="160"/>
@@ -58794,7 +58792,7 @@ Risposta ricevuta:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1715"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Errore nella richiesta della mappa (Stato: %1; Motivo: %2; URL: %3)</translation>
+        <translation>Errore nella richiesta della mappa (Stato: %1; Motivo: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1718"/>
@@ -58808,32 +58806,32 @@ Risposta ricevuta:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1876"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1880"/>
         <source>WCS</source>
-        <translation type="unfinished">WCS</translation>
+        <translation>WCS</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1747"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation type="unfinished">Errore nella richiesta della mappa:&lt;br&gt;Titolo: %1&lt;br&gt;Errore: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+        <translation>Errore nella richiesta della mappa:&lt;br&gt;Titolo: %1&lt;br&gt;Errore: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1753"/>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation type="unfinished">Errore nella richiesta della mappa (Stato: %1; Risposta: %2; URL: %3)</translation>
+        <translation>Errore nella richiesta della mappa (Stato: %1; Risposta: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1774"/>
         <source>Cannot parse multipart response: %1</source>
-        <translation type="unfinished">Impossibile analizzare risposte multiparte: %1</translation>
+        <translation>Impossibile analizzare risposte multiparte: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1784"/>
         <source>Expected 2 parts, %1 received</source>
-        <translation type="unfinished">Attese 2 parti, ricevute %1</translation>
+        <translation>Attese 2 parti, ricevute %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1794"/>
         <source>More than 2 parts (%1) received</source>
-        <translation type="unfinished">Più di 2 (%1) parti ricevute</translation>
+        <translation>Più di 2 (%1) parti ricevute</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1809"/>
@@ -58843,12 +58841,12 @@ Risposta ricevuta:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1815"/>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation type="unfinished">Errore nella richiesta della mappa (Risposta: %1; URL: %2)</translation>
+        <translation>Errore nella richiesta della mappa (Risposta: %1; URL: %2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
         <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation type="unfinished">Codifica trasferimento contenuti %1 non supportata</translation>
+        <translation>Codifica trasferimento contenuti %1 non supportata</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1876"/>
@@ -58858,12 +58856,12 @@ Risposta ricevuta:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1880"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">Impossibile registrare più di 100 errori di richiesta.</translation>
+        <translation>Impossibile registrare più di 100 errori di richiesta.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1892"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished">%1 di %2 bytes di mappa scaricati.</translation>
+        <translation>%1 di %2 bytes di mappa scaricati.</translation>
     </message>
 </context>
 <context>
@@ -59019,7 +59017,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="973"/>
         <source>Service Exception</source>
-        <translation type="unfinished">Eccezione servizio</translation>
+        <translation>Eccezione servizio</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="982"/>
@@ -59267,33 +59265,33 @@ ho provato a aggiungerla.. (ght)
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1884"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation type="unfinished">%1 di %2 bytes di capabilities scaricato.</translation>
+        <translation>%1 di %2 bytes di capabilities scaricati.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1898"/>
         <source>Capabilities request redirected.</source>
-        <translation type="unfinished">Richiesta capabilities reindirizzata.</translation>
+        <translation>Richiesta capabilities reindirizzata.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1904"/>
         <source>Redirect loop detected: %1</source>
-        <translation type="unfinished">Ciclo reindirizzato individuato : %1 </translation>
+        <translation>Ciclo reindirizzato individuato : %1 </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1905"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1937"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1930"/>
         <source>empty of capabilities: %1</source>
-        <translation type="unfinished">assenza di capabilities: %1</translation>
+        <translation>assenza di capabilities: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1936"/>
         <source>Download of capabilities failed: %1</source>
-        <translation type="unfinished">Download di capabilities non riuscito: %1</translation>
+        <translation>Download di capabilities non riuscito: %1</translation>
     </message>
 </context>
 <context>
@@ -59301,7 +59299,7 @@ ho provato a aggiungerla.. (ght)
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3190"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Errore nella richiesta della mappa (Stato: %1; Motivo: %2; URL: %3)</translation>
+        <translation>Errore nella richiesta della mappa (Stato: %1; Motivo: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3193"/>
@@ -59311,12 +59309,12 @@ ho provato a aggiungerla.. (ght)
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3254"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3258"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3214"/>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation type="unfinished">Immagine restituita errata [Tipo contenuti:%1; URL: %2]</translation>
+        <translation>Immagine restituita errata [Tipo contenuti:%1; URL: %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3222"/>
@@ -59326,7 +59324,7 @@ ho provato a aggiungerla.. (ght)
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3228"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation type="unfinished">Errore nella richiesta della mappa (Stato: %1; Risposta: %2; Content-Type: %3; URL: %4)</translation>
+        <translation>Errore nella richiesta della mappa (Stato: %1; Risposta: %2; Content-Type: %3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3254"/>
@@ -59336,12 +59334,12 @@ ho provato a aggiungerla.. (ght)
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3258"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">Impossibile registrare più di 100 errori di richiesta.</translation>
+        <translation>Impossibile registrare più di 100 errori di richiesta.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3270"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished">%1 di %2 bytes di mappa scaricati.</translation>
+        <translation>%1 di %2 bytes di mappa scaricati.</translation>
     </message>
 </context>
 <context>
@@ -59625,7 +59623,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Scale</source>
-        <translation type="unfinished">Scala</translation>
+        <translation>Scala</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1901"/>
@@ -59688,7 +59686,6 @@ Response was:
         <source>%n missing row(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -59701,7 +59698,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1977"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -60283,19 +60279,19 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3412"/>
         <source>Tile request error</source>
-        <translation type="unfinished">Errore di richiesta tile</translation>
+        <translation>Errore di richiesta tile</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3412"/>
         <source>Status: %1
 Reason phrase: %2</source>
-        <translation type="unfinished">Stato: %1
+        <translation>Stato: %1
 Motivo: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3432"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Errore richiesta piastrelle (Titolo:%1; Errore:%2; URL: %3)</translation>
+        <translation>Errore richiesta piastrelle (Titolo:%1; Errore:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3434"/>
@@ -60305,23 +60301,23 @@ Motivo: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3561"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3570"/>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3438"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation type="unfinished">Errore richiesta piastrelle (Stato:%1; Tipo-contenuti:%2; Lunghezza:%3; URL: %4)</translation>
+        <translation>Errore richiesta piastrelle (Stato:%1; Tipo-contenuti:%2; Lunghezza:%3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3494"/>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished">Immagine restituita errata [Tipo contenuti:%1; URL: %2]</translation>
+        <translation>Immagine restituita errata [Tipo contenuti:%1; URL: %2]</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3528"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n tile richiesta in background</numerusform>
             <numerusform>%n tile richieste in background</numerusform>
         </translation>
@@ -60330,7 +60326,7 @@ Motivo: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3529"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n trovato in cache</numerusform>
             <numerusform>, %n trovati in cache</numerusform>
         </translation>
@@ -60339,7 +60335,7 @@ Motivo: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3530"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, % non trovato in cache.</numerusform>
             <numerusform>, %n non trovati in cache.</numerusform>
         </translation>
@@ -60348,7 +60344,7 @@ Motivo: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3531"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n errore.</numerusform>
             <numerusform>, %n errori.</numerusform>
         </translation>
@@ -60356,17 +60352,17 @@ Motivo: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3543"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">Impossibile registrare più di 100 errori di richiesta.</translation>
+        <translation>Impossibile registrare più di 100 errori di richiesta.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3560"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished">Errore numero massimo di richieste di mattonelle. Fallite %1 richieste per le mattonelle %2 della richiesta %3 (url: %4)</translation>
+        <translation>Errore numero massimo di richieste di mattonelle. Fallite %1 richieste per le mattonelle %2 della richiesta %3 (url: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3569"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished">ripeti la richiesta %1 mattonelle %2(tentativo %3)</translation>
+        <translation>ripeti la richiesta %1 mattonelle %2(tentativo %3)</translation>
     </message>
 </context>
 <context>
@@ -62556,22 +62552,22 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulo</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="20"/>
         <source>Gradient colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradiente colori</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="29"/>
         <source>Two color</source>
-        <translation type="unfinished">Due colori</translation>
+        <translation>Due colori</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="85"/>
         <source>Color ramp</source>
-        <translation type="unfinished">Scala di colori</translation>
+        <translation>Scala di colori</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="98"/>
@@ -62597,13 +62593,13 @@ Vuoi aggiungerlo alla legenda?</translation>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="147"/>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="262"/>
         <source>Millimeter</source>
-        <translation type="unfinished">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="152"/>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="267"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unità mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="165"/>
@@ -62613,12 +62609,12 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="208"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Offset X,Y</translation>
+        <translation>Offset X,Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="283"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished">Proprietà definite dai dati...</translation>
+        <translation>Proprietà definite dai dati...</translation>
     </message>
 </context>
 <context>
@@ -62654,7 +62650,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="128"/>
         <source>Join style</source>
-        <translation type="unfinished">Stile unione</translation>
+        <translation>Stile unione</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="138"/>
