@@ -408,6 +408,12 @@ class QgsComposition : QGraphicsScene
     @note added in version 2.2*/
     void updateBounds();
 
+    /**Forces items in the composition to refresh. For instance, this causes maps to redraw
+     * and rebuild cached images, html items to reload their source url, and attribute tables
+     * to refresh their contents.
+    @note added in version 2.3*/
+    void refreshItems();
+
   protected:
     void init();
 
@@ -441,4 +447,7 @@ class QgsComposition : QGraphicsScene
     void composerTableAdded( QgsComposerAttributeTable* table );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
+    
+    /**Is emitted when item in the composition must be refreshed*/
+    void refreshItemsTriggered();    
 };

@@ -181,6 +181,11 @@ void QgsComposition::updateBounds()
   setSceneRect( compositionBounds() );
 }
 
+void QgsComposition::refreshItems()
+{
+  emit refreshItemsTriggered();
+}
+
 QRectF QgsComposition::compositionBounds() const
 {
   //start with an empty rectangle

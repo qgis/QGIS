@@ -66,6 +66,11 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
     }
   }
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
+
+  if ( mComposition )
+  {
+    connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshAttributes() ) );
+  }
 }
 
 QgsComposerAttributeTable::~QgsComposerAttributeTable()
