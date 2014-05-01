@@ -61,6 +61,12 @@ QgsQueryBuilder::~QgsQueryBuilder()
   settings.setValue( "/Windows/QueryBuilder/geometry", saveGeometry() );
 }
 
+void QgsQueryBuilder::showEvent( QShowEvent *event )
+{
+  txtSQL->setFocus();
+  QDialog::showEvent( event );
+}
+
 void QgsQueryBuilder::populateFields()
 {
   const QgsFields& fields = mLayer->pendingFields();
