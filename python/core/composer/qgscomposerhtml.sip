@@ -10,7 +10,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
     ~QgsComposerHtml();
 
     void setUrl( const QUrl& url );
-    const QUrl& url() const;
+    const QUrl& url() const;  
 
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );
@@ -34,4 +34,12 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see useSmartBreaks
      */
     void setUseSmartBreaks( bool useSmartBreaks );
+    
+ public slots:
+    
+    /**Reloads the html source from the url and redraws the item.
+     * @see setUrl
+     * @see url
+     */
+    void loadHtml();  
 };

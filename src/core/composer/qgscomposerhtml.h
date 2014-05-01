@@ -59,6 +59,14 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     void setUseSmartBreaks( bool useSmartBreaks );
 
+  public slots:
+
+    /**Reloads the html source from the url and redraws the item.
+     * @see setUrl
+     * @see url
+     */
+    void loadHtml();
+
   private slots:
     void frameLoaded( bool ok );
 

@@ -93,7 +93,7 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="mResizeModeLabel">
             <property name="text">
              <string>Resize mode</string>
@@ -103,13 +103,20 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QComboBox" name="mResizeModeComboBox"/>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mUseSmartBreaksCheckBox">
             <property name="text">
              <string>Use smart page breaks</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="mReloadPushButton">
+            <property name="text">
+             <string>Refresh HTML</string>
             </property>
            </widget>
           </item>

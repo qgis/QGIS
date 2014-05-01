@@ -133,6 +133,16 @@ void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_stateChanged( int state )
   }
 }
 
+void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->loadHtml();
+}
+
 void QgsComposerHtmlWidget::setGuiElementValues()
 {
   if ( !mHtml )

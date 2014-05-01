@@ -60,9 +60,19 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   {
     return;
   }
-  mLoaded = false;
 
   mUrl = url;
+  loadHtml();
+}
+
+void QgsComposerHtml::loadHtml()
+{
+  if ( !mWebPage || mUrl.isEmpty() )
+  {
+    return;
+  }
+
+  mLoaded = false;
   mWebPage->mainFrame()->load( mUrl );
   while ( !mLoaded )
   {
