@@ -402,25 +402,19 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
     if ( ml->hasScaleBasedVisibility() && ( settings.scale() < ml->minimumScale() || settings.scale() > ml->maximumScale() ) )
       continue;
 
-    bool split = false;
     const QgsCoordinateTransform* ct = 0;
     QgsRectangle r1 = settings.visibleExtent(), r2;
 
     if ( settings.hasCrsTransformEnabled() )
     {
       ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), settings.destinationCrs().authid() );
-      split = reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+      reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
     }
 
     renderContext.setCoordinateTransform( ct );
     renderContext.setExtent( r1 );
 
     ml->drawLabels( renderContext );
-    if ( split )
-    {
-      renderContext.setExtent( r2 );
-      ml->drawLabels( renderContext );
-    }
   }
 }
 
@@ -498,10 +492,14 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct
 
       if ( ll.x() > ur.x() )
       {
-        r2 = extent;
-        extent.setXMinimum( splitCoord );
-        r2.setXMaximum( splitCoord );
-        split = true;
+        // the coordinates projected in reverse order than what one would expect.
+        // we are probably looking at an area that includes longitude of 180 degrees.
+        // we need to take into account coordinates from two intervals: (-180,x1) and (x2,180)
+        // so let's use (-180,180). This hopefully does not add too much overhead. It is
+        // more straightforward than rendering with two separate extents and more consistent
+        // for rendering, labeling and caching as everything is rendered just in one go
+        extent.setXMinimum( -splitCoord );
+        extent.setXMaximum( splitCoord );
       }
     }
     else // can't cross 180
@@ -574,8 +572,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     {
       ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mSettings.destinationCrs().authid() );
       reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
-      QgsDebugMsg( "  extent 1: " + r1.toString() );
-      QgsDebugMsg( "  extent 2: " + r2.toString() );
+      QgsDebugMsg( "extent: " + r1.toString() );
       if ( !r1.isFinite() || !r2.isFinite() )
       {
         mErrors.append( Error( layerId, "There was a problem transforming layer's' extent. Layer skipped." ) );
@@ -649,14 +646,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       }
     }
 
-#if 0
-    // TODO: split extent
-    if ( split )
-    {
-      mRenderContext.setExtent( r2 );
-      ml->draw( mRenderContext );
-    }
-#endif
   } // while (li.hasPrevious())
 
   return layerJobs;
