@@ -2878,14 +2878,35 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     return 7;
 
   //make sure splitLine is valid
-  if ( splitLine.size() < 2 )
+  if ( splitLine.size() < 1 )
     return 1;
+
+  // Treat the special case of a single point to split a line without geos
+  if ( splitLine.size() == 1 )
+  {
+    //A point cannot split a polygon
+    if ( type() == QGis::Polygon )
+      return 1;
+    //return splitLinearGeometryAtPoint( splitLine[0], newGeometries );
+  }
 
   newGeometries.clear();
 
   try
   {
-    GEOSGeometry *splitLineGeos = createGeosLineString( splitLine.toVector() );
+    GEOSGeometry* splitLineGeos;
+    if ( splitLine.size() > 1 )
+    {
+      splitLineGeos = createGeosLineString( splitLine.toVector() );
+    }
+    else if ( splitLine.size() == 1 )
+    {
+      splitLineGeos = createGeosPoint( splitLine.at( 0 ) );
+    }
+    else
+    {
+      return 1;
+    }
     if ( !GEOSisValid( splitLineGeos ) || !GEOSisSimple( splitLineGeos ) )
     {
       GEOSGeom_destroy( splitLineGeos );
@@ -4549,6 +4570,105 @@ void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QgsCoordinateTransfo
 
 }
 
+GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
+{
+  int type = GEOSGeomTypeId( mGeos );
+  QgsMultiPolyline multiLine;
+
+  if ( type == GEOS_MULTILINESTRING )
+    multiLine = asMultiPolyline();
+  else if ( type == GEOS_LINESTRING )
+    multiLine = QgsMultiPolyline() << asPolyline();
+  else
+    return 0;
+
+  QgsPoint splitPoint = fromGeosGeom( GEOSsplitPoint )->asPoint();
+
+  QgsPoint p1, p2;
+  QgsGeometry* g;
+  QgsMultiPolyline lines;
+  QgsPolyline line;
+  QgsPolyline newline;
+
+  //For each part
+  for ( int i = 0; i < multiLine.size() ; ++i )
+  {
+    line = multiLine[i];
+    //For each segment
+    newline = QgsPolyline();
+    for ( int j = 1; j < line.size() ; ++j )
+    {
+      p1 = line[j-1];
+      p2 = line[j];
+      g = QgsGeometry::fromPolyline( QgsPolyline() << p1 << p2 );
+      QgsDebugMsg( g->exportToWkt() );
+      QgsDebugMsg( splitPoint.toString() );
+
+      newline.append( p1 );
+
+      double x1 = p1.x();
+      double y1 = p1.y();
+      double x2 = p2.x();
+      double y2 = p2.y();
+      double xt = splitPoint.x();
+      double yt = splitPoint.y();
+      double k;
+      double diff;
+      if ( x2 == x1 )
+      {
+        if ( y2 == y1 )
+        {
+          k = -1;
+          diff = 1e50;
+        }
+        else
+        {
+          k = ( yt - y1 ) / ( y2 - y1 );
+          diff = k * ( x2 - x1 ) - ( xt - x1 );
+        }
+      }
+      else
+      {
+        k = ( xt - x1 ) / ( x2 - x1 );
+        diff = k * ( y2 - y1 ) - ( yt - y1 );
+      }
+      if ( abs( diff ) < 1e-7 )
+      {
+        if ( k == 0 )
+        {
+          lines.append( newline );
+          newline = QgsPolyline();
+          newline.append( p1 );
+        }
+        if ( k == 1 )
+        {
+          newline.append( p2 );
+          lines.append( newline );
+          newline = QgsPolyline();
+        }
+        if ( k > 0 && k < 1 )
+        {
+          newline.append( splitPoint );
+          lines.append( newline );
+          newline = QgsPolyline();
+          newline.append( splitPoint );
+        }
+        if ( k < 0 || k > 1 )
+        {
+          //Nothing happens, we are on the line but not the segment
+        }
+      }
+    }
+    newline.append( line.last() );
+    lines.append( newline );
+  }
+  QgsGeometry* splitLines = fromMultiPolyline( lines );
+  GEOSGeometry* splitGeom = GEOSGeom_clone( splitLines->asGeos() );
+
+  return splitGeom;
+
+}
+
 int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries )
 {
   if ( !splitLine )
@@ -4560,16 +4680,25 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
   if ( !mGeos )
     return 5;
 
-  //first test if linestring intersects geometry. If not, return straight away
-  if ( !GEOSIntersects( splitLine, mGeos ) )
-    return 1;
 
   //check that split line has no linear intersection
   int linearIntersect = GEOSRelatePattern( mGeos, splitLine, "1********" );
   if ( linearIntersect > 0 )
     return 3;
 
-  GEOSGeometry* splitGeom = GEOSDifference( mGeos, splitLine );
+  int splitGeomType = GEOSGeomTypeId( splitLine );
+  //first test if linestring intersects geometry. If not, return straight away
+  if ( splitGeomType == GEOS_LINESTRING && !GEOSIntersects( splitLine, mGeos ) )
+    return 1;
+  GEOSGeometry* splitGeom;
+  if ( splitGeomType == GEOS_LINESTRING )
+  {
+    splitGeom = GEOSDifference( mGeos, splitLine );
+  }
+  else
+  {
+    splitGeom = linePointDifference( splitLine );
+  }
   QVector<GEOSGeometry*> lineGeoms;
 
   int splitType = GEOSGeomTypeId( splitGeom );

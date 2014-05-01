@@ -232,7 +232,11 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
       else
       {
-        return 2;
+        //If we have a single point, we still create a non-null box
+        bBox.setXMinimum( bBox.xMinimum() - 1 );
+        bBox.setXMaximum( bBox.xMaximum() + 1 );
+        bBox.setYMinimum( bBox.yMinimum() - 1 );
+        bBox.setYMaximum( bBox.yMaximum() + 1 );
       }
     }
 
@@ -362,7 +366,11 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       }
       else
       {
-        return 2;
+        //If we have a single point, we still create a non-null box
+        bBox.setXMinimum( bBox.xMinimum() - 1 );
+        bBox.setXMaximum( bBox.xMaximum() + 1 );
+        bBox.setYMinimum( bBox.yMinimum() - 1 );
+        bBox.setYMaximum( bBox.yMaximum() + 1 );
       }
     }
 

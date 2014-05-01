@@ -562,6 +562,9 @@ class CORE_EXPORT QgsGeometry
     /**Splits polygon/multipolygon geometries
        @return 0 in case of success, 1 if geometry has not been split, error else*/
     int splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries );
+    /**Splits line/multiline geometries following a single point*/
+    GEOSGeometry* linePointDifference( GEOSGeometry* GEOSsplitPoint );
+
     /**Finds out the points that need to be tested for topological correctnes if this geometry will be split
      @return 0 in case of success*/
     int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints ) const;
