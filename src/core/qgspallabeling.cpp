@@ -449,9 +449,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // temp stuff for when drawing label components (don't copy)
   showingShadowRects = false;
-
-  QSettings settings;
-  mNullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -459,7 +456,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   // copy only permanent stuff
 
   enabled = s.enabled;
-  mNullValue = s.mNullValue;
 
   // text style
   fieldName = s.fieldName;
@@ -1706,12 +1702,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       QgsDebugMsgLevel( QString( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ), 4 );
       return;
     }
-    labelText = result.isNull() ? mNullValue : result.toString();
+    labelText = result.isNull() ? "" : result.toString();
   }
   else
   {
     const QVariant &v = f.attribute( fieldIndex );
-    labelText = v.isNull() ? mNullValue : v.toString();
+    labelText = v.isNull() ? "" : v.toString();
   }
 
   // data defined format numbers?

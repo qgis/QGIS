@@ -550,7 +550,6 @@ class CORE_EXPORT QgsPalLayerSettings
     QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > mDataDefinedNames;
 
     QFontDatabase mFontDB;
-    QString mNullValue;
 };
 
 class CORE_EXPORT QgsLabelCandidate
