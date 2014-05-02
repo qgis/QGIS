@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgscustomwidgets.cpp
+   qgsfieldcomboboxplugin.h
     --------------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
@@ -13,30 +13,34 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qplugin.h"
+#ifndef QGSFIELDCOMBOBOXPLUGIN_H
+#define QGSFIELDCOMBOBOXPLUGIN_H
 
-#include "qgiscustomwidgets.h"
+#include <QDesignerCustomWidgetInterface>
 
-#include "qgscollapsiblegroupboxplugin.h"
-#include "qgsfieldcomboboxplugin.h"
-#include "qgsfieldexpressionwidgetplugin.h"
-#include "qgsmaplayercomboboxplugin.h"
-#include "qgsscalevisibilitywidgetplugin.h"
-
-
-QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
-    : QObject( parent )
+class CUSTOMWIDGETS_EXPORT QgsFieldComboBoxPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
-  mWidgets.append( new QgsCollapsibleGroupBoxPlugin );
-  mWidgets.append( new QgsFieldComboBoxPlugin );
-  mWidgets.append( new QgsFieldExpressionWidgetPlugin );
-  mWidgets.append( new QgsMapLayerComboBoxPlugin );
-  mWidgets.append( new QgsScaleVisibilityWidgetPlugin );
-}
+    Q_OBJECT
+    Q_INTERFACES( QDesignerCustomWidgetInterface )
 
-QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
-{
-  return mWidgets;
-}
+  public:
+    explicit QgsFieldComboBoxPlugin( QObject *parent = 0 );
 
-Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
+  private:
+    bool mInitialized;
+
+    // QDesignerCustomWidgetInterface interface
+  public:
+    QString name() const;
+    QString group() const;
+    QString includeFile() const;
+    QIcon icon() const;
+    bool isContainer() const;
+    QWidget *createWidget( QWidget *parent );
+    bool isInitialized() const;
+    void initialize( QDesignerFormEditorInterface *core );
+    QString toolTip() const;
+    QString whatsThis() const;
+    QString domXml() const;
+};
+#endif // QGSFIELDCOMBOBOXPLUGIN_H

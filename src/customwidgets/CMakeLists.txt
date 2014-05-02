@@ -5,12 +5,18 @@
 SET (QGIS_CUSTOMWIDGETS_SRCS
    qgiscustomwidgets.cpp
    qgscollapsiblegroupboxplugin.cpp
+   qgsfieldcomboboxplugin.cpp
+   qgsfieldexpressionwidgetplugin.cpp
+   qgsmaplayercomboboxplugin.cpp
    qgsscalevisibilitywidgetplugin.cpp
 )
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
    qgiscustomwidgets.h
    qgscollapsiblegroupboxplugin.h
+   qgsfieldcomboboxplugin.h
+   qgsfieldexpressionwidgetplugin.h
+   qgsmaplayercomboboxplugin.h
    qgsscalevisibilitywidgetplugin.h
 )
 
@@ -23,6 +29,9 @@ ENDIF(UNIX)
 SET(QGIS_CUSTOMWIDGETS_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
+  qgsfieldcomboboxplugin.h
+  qgsfieldexpressionwidgetplugin.h
+  qgsmaplayercomboboxplugin.h
   qgsscalevisibilitywidgetplugin.h
 )
 
