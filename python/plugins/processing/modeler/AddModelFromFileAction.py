@@ -41,7 +41,7 @@ class AddModelFromFileAction(ToolboxAction):
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
-        
+
     def execute(self):
         filename = QtGui.QFileDialog.getOpenFileName(self.toolbox, 'model files', None,
                 '*.model')

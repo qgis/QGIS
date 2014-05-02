@@ -7,8 +7,8 @@
 #include <QPushButton>
 
 QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f )
-  : QDialog( parent, f )
-  , mVectorLayer( vl )
+    : QDialog( parent, f )
+    , mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -159,7 +159,7 @@ int QgsDataDefinedSymbolDialog::comboIndexForExpressionString( const QString& ex
 {
   QString attributeString = expr.trimmed();
   int comboIndex = cb->findText( attributeString );
-  if ( comboIndex == -1 && attributeString.startsWith( '"' ) && attributeString.endsWith( '"') )
+  if ( comboIndex == -1 && attributeString.startsWith( '"' ) && attributeString.endsWith( '"' ) )
   {
     attributeString.remove( 0, 1 ).chop( 1 );
     comboIndex = cb->findText( attributeString );

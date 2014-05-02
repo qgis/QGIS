@@ -105,7 +105,7 @@ class QgsMapTool : QObject
 
     //! returns pointer to the tool's map canvas
     QgsMapCanvas* canvas();
-    
+
     /** return the tool name
     * @note added in 2.3
     */

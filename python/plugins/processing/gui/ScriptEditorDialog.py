@@ -52,7 +52,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
-    
+
     hasChanged = False
 
     def __init__(self, algType, alg):
@@ -101,7 +101,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.update = False
         self.help = None
-        
+
         self.setHasChanged(False)
 
         self.editor.setLexerType(self.algType)
@@ -177,7 +177,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
         self.btnSave.setEnabled(hasChanged)
-        
+
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, unicode(self.editor.text()))

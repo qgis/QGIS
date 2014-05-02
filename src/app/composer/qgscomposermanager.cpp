@@ -284,9 +284,10 @@ void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
 }
 
 #ifdef Q_WS_MAC
-void QgsComposerManager::showEvent(QShowEvent* event)
+void QgsComposerManager::showEvent( QShowEvent* event )
 {
-  if(!event->spontaneous()) {
+  if ( !event->spontaneous() )
+  {
     QgisApp::instance()->addWindow( mWindowAction );
   }
 }

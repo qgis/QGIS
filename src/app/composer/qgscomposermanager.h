@@ -54,8 +54,8 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QString mUserTemplatesDir;
 
 #ifdef Q_WS_MAC
-    void showEvent(QShowEvent *event);
-    void changeEvent(QEvent *);
+    void showEvent( QShowEvent *event );
+    void changeEvent( QEvent * );
 
     QAction* mWindowAction;
 #endif

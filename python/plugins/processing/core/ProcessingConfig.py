@@ -142,10 +142,10 @@ class ProcessingConfig:
 
 
     @staticmethod
-    def readSettings():        
+    def readSettings():
         for setting in ProcessingConfig.settings.values():
             setting.read()
-                   
+
 
     @staticmethod
     def getSetting(name):
@@ -177,15 +177,15 @@ class Setting:
         self.value = default
         self.hidden = hidden
         self.valuetype = valuetype
-        
+
     def read(self):
-        qsettings = QSettings()        
+        qsettings = QSettings()
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
                 value = str(value).lower() == str(True).lower()
             self.value = value
-    
+
     def save(self):
         QSettings().setValue(self.qname, self.value)
 

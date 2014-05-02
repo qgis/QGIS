@@ -28,7 +28,7 @@ for i in xrange(1, bands + 1):
 
   # create dictionary for unique values count
   count = {}
-  
+
   # count unique values for the given band
   for col in range( xsize ):
     for row in range( ysize ):
@@ -37,7 +37,7 @@ for i in xrange(1, bands + 1):
       # check if cell_value is NaN
       if math.isnan(cell_value):
         cell_value = 'Null'
-      
+
       # round floats if needed
       elif round_values_to_ndigits:
         try:
@@ -51,12 +51,11 @@ for i in xrange(1, bands + 1):
       except:
         count[cell_value] = 1
 
-  # print results sorted by cell_value  
+  # print results sorted by cell_value
   for key in sorted(count.iterkeys()):
     line = "<TD>%s</TD> <TD>%s</TD> <TD>%s</TD>" %(i, key, count[key])
     f.write('<TR>'+ line + '</TR>' + '\n')
-  
+
 f.write('</TABLE>')
 f.close
 
-    

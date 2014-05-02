@@ -28,7 +28,7 @@ class QgsFieldModel : QAbstractItemModel
 
     //! return the index corresponding to a given fieldName
     QModelIndex indexFromName( QString fieldName );
-    
+
     //! returns the currently used layer
     void setAllowExpression( bool allowExpression );
     bool allowExpression();
@@ -38,7 +38,7 @@ class QgsFieldModel : QAbstractItemModel
      * @return the model index of the newly added expression
      */
     QModelIndex setExpression( QString expression );
-    
+
     //! remove expressions from the model
     void removeExpression();
 
@@ -48,10 +48,10 @@ class QgsFieldModel : QAbstractItemModel
   public slots:
     //! set the layer of whch fields are displayed
     void setLayer( QgsVectorLayer *layer );
-    
+
   protected slots:
     virtual void updateModel();
-    
+
     // QAbstractItemModel interface
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;

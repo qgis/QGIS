@@ -40,7 +40,7 @@ class AddScriptFromFileAction(ToolboxAction):
 
     def getIcon(self):
         return QtGui.QIcon(':/processing/images/script.png')
-        
+
     def execute(self):
         filename = QtGui.QFileDialog.getOpenFileName(self.toolbox, 'Script files', None,
                 '*.py')

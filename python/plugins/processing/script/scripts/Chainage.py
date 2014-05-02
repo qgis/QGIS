@@ -10,24 +10,24 @@ from PyQt4.QtCore import *
 from processing.core.VectorWriter import VectorWriter
 
 
-def create_points(feat):  
-    geom = feat.geometry()  
+def create_points(feat):
+    geom = feat.geometry()
     length = geom.length()
     currentdistance = 0
 
     if endpoint > 0:
         length = endpoint
-        
+
     out = QgsFeature()
 
-    while startpoint + currentdistance <= length:        
-        point = geom.interpolate(startpoint + currentdistance)                
+    while startpoint + currentdistance <= length:
+        point = geom.interpolate(startpoint + currentdistance)
         currentdistance = currentdistance + distance
-        out.setGeometry(point)    
-        attrs = feat.attributes()                  
-        attrs.append(currentdistance)    
+        out.setGeometry(point)
+        attrs = feat.attributes()
+        attrs.append(currentdistance)
         out.setAttributes(attrs)
-        writer.addFeature(out)    
+        writer.addFeature(out)
 
 
 layer = processing.getObject(lines)
@@ -39,7 +39,7 @@ writer = VectorWriter(output, None, fields, QGis.WKBPoint,
 feats = processing.features(layer)
 nFeat = len(feats)
 for i, feat in enumerate(feats):
-    progress.setPercentage(int(100 * i / nFeat))    
+    progress.setPercentage(int(100 * i / nFeat))
     create_points(feat)
 
 del writer
