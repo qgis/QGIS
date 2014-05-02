@@ -72,6 +72,7 @@ from ftools.SpatialJoin import SpatialJoin
 
 from mmqgisx.MMQGISXAlgorithms import *
 
+from ConcaveHull import ConcaveHull
 from Polygonize import Polygonize
 from RasterLayerStatistics import RasterLayerStatistics
 from StatisticsByCategories import StatisticsByCategories
@@ -137,7 +138,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),
                         EquivalentNumField(), PointsLayerFromTable(),
-                        StatisticsByCategories(), Polygonize(),
+                        StatisticsByCategories(), ConcaveHull(), Polygonize(),
                         RasterLayerStatistics(), PointsDisplacement(),
                         ZonalStatistics(), PointsFromPolygons(),
                         PointsFromLines(),
