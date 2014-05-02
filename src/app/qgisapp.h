@@ -635,6 +635,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       * @note added in 2.1 */
     void refreshActionFeatureAction();
 
+    QMenu *panelMenu() { return mPanelMenu; }
+
   protected:
 
     //! Handle state changes (WindowTitleChange)

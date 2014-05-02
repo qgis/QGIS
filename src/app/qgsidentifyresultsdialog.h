@@ -127,8 +127,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     /** map tool was activated */
     void activate();
 
-    void closeEvent( QCloseEvent *e );
-
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
@@ -145,7 +143,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void show();
 
-    void close();
     void contextMenuEvent( QContextMenuEvent* );
 
     void layerDestroyed();
@@ -178,7 +175,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_cmbIdentifyMode_currentIndexChanged( int index );
 
@@ -221,7 +218,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void setColumnText( int column, const QString & label );
     void expandColumnsToFit();
-    void saveWindowLocation();
 
     void highlightFeature( QTreeWidgetItem *item );
 

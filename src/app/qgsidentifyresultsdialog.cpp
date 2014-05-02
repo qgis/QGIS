@@ -177,22 +177,6 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   return s;
 }
 
-class QgsIdentifyResultsDock : public QDockWidget
-{
-  public:
-    QgsIdentifyResultsDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
-        : QDockWidget( title, parent, flags )
-    {
-      setObjectName( "IdentifyResultsTableDock" ); // set object name so the position can be saved
-    }
-
-    virtual void closeEvent( QCloseEvent *e )
-    {
-      Q_UNUSED( e );
-      deleteLater();
-    }
-};
-
 QgsIdentifyResultsFeatureItem::QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings )
     : QTreeWidgetItem( strings )
     , mFields( fields )
@@ -271,11 +255,14 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mOpenFormButton->setDisabled( true );
 
   QSettings mySettings;
-  restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
-  mDock = new QgsIdentifyResultsDock( tr( "Identify Results" ) , QgisApp::instance() );
+  mDock = new QDockWidget( tr( "Identify Results" ) , QgisApp::instance() );
+  mDock->setObjectName( "IdentifyResultsDock" );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
-  QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+  if ( !QgisApp::instance()->restoreDockWidget( mDock ) )
+    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+  else
+    QgisApp::instance()->panelMenu()->addAction( mDock->toggleViewAction() );
 
   mExpandNewToolButton->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
   mCopyToolButton->setEnabled( false );
@@ -299,8 +286,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
 
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
            this, SLOT( itemExpanded( QTreeWidgetItem* ) ) );
 
@@ -310,17 +295,19 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( lstResults, SIGNAL( itemClicked( QTreeWidgetItem*, int ) ),
            this, SLOT( itemClicked( QTreeWidgetItem*, int ) ) );
 
-  connect( mPrintToolButton, SIGNAL( clicked() ),
-           this, SLOT( printCurrentItem() ) );
-
-  connect( mOpenFormButton, SIGNAL( clicked() ),
-           this, SLOT( featureForm() ) );
-
+  connect( mPrintToolButton, SIGNAL( clicked() ), this, SLOT( printCurrentItem() ) );
+  connect( mOpenFormButton, SIGNAL( clicked() ), this, SLOT( featureForm() ) );
+  connect( mClearToolButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( mHelpToolButton, SIGNAL( clicked() ), this, SLOT( helpRequested() ) );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
 {
   clearHighlights();
+
+  QSettings settings;
+  settings.setValue( "/Windows/Identify/columnWidth", lstResults->columnWidth( 0 ) );
+
   if ( mActionPopup )
     delete mActionPopup;
 }
@@ -653,17 +640,19 @@ void QgsIdentifyResultsDialog::show()
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
     QTreeWidgetItem *featItem = layItem->child( 0 );
 
-    if ( lstResults->topLevelItemCount() == 1 &&
-         layItem->childCount() == 1 &&
-         QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+    if ( lstResults->topLevelItemCount() == 1 && layItem->childCount() == 1 )
     {
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
-      if ( layer )
+      lstResults->setCurrentItem( featItem );
+
+      if ( QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
       {
-        // if this is the only feature and it's on a vector layer
-        // don't show the form dialog instead of the results window
-        lstResults->setCurrentItem( featItem );
-        featureForm();
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
+        if ( layer )
+        {
+          // if this is the only feature and it's on a vector layer
+          // don't show the form dialog instead of the results window
+          featureForm();
+        }
       }
     }
 
@@ -680,30 +669,6 @@ void QgsIdentifyResultsDialog::show()
 
   QDialog::show();
   raise();
-}
-
-// Slot called when user clicks the Close button
-// (saves the current window size/position)
-void QgsIdentifyResultsDialog::close()
-{
-  clear();
-
-  delete mActionPopup;
-  mActionPopup = 0;
-
-  saveWindowLocation();
-  done( 0 );
-
-  mDock->close();
-}
-
-// Save the current window size/position before closing
-// from window menu or X in titlebar
-void QgsIdentifyResultsDialog::closeEvent( QCloseEvent *e )
-{
-  // We'll close in our own good time thanks...
-  e->ignore();
-  close();
 }
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
@@ -850,15 +815,6 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   }
 
   mActionPopup->popup( event->globalPos() );
-}
-
-// Save the current window location (store in ~/.qt/qgisrc)
-void QgsIdentifyResultsDialog::saveWindowLocation()
-{
-  QSettings settings;
-  settings.setValue( "/Windows/Identify/geometry", saveGeometry() );
-  // first column width
-  settings.setValue( "/Windows/Identify/columnWidth", lstResults->columnWidth( 0 ) );
 }
 
 void QgsIdentifyResultsDialog::setColumnText( int column, const QString & label )
@@ -1154,11 +1110,6 @@ void QgsIdentifyResultsDialog::layerDestroyed()
 
   disconnectLayer( theSender );
   delete layerItem( theSender );
-
-  if ( lstResults->topLevelItemCount() == 0 )
-  {
-    close();
-  }
 }
 
 void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
@@ -1204,11 +1155,6 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
   if ( layItem->childCount() == 0 )
   {
     delete layItem;
-  }
-
-  if ( lstResults->topLevelItemCount() == 0 )
-  {
-    close();
   }
 }
 
