@@ -27,6 +27,12 @@
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
     : QObject( parent )
 {
+
+  // !!!!!!!!!!!!!!!!!!!!!
+  // do not forget to add the corresponding line in python/customwidgets.py
+  // to make the custom widget available from python
+  // !!!!!!!!!!!!!!!!!!!!!
+
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin );
   mWidgets.append( new QgsFieldComboBoxPlugin );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin );

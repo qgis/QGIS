@@ -179,6 +179,7 @@ ENDIF(WITH_QSCIAPI)
 SET(PY_FILES
   __init__.py
   utils.py
+  customwidgets.py
 )
 
 ADD_CUSTOM_TARGET(pyutils ALL)
