@@ -43,4 +43,5 @@ class CUSTOMWIDGETS_EXPORT QgsMapLayerComboBoxPlugin : public QObject, public QD
     QString whatsThis() const;
     QString domXml() const;
 };
+
 #endif // QGSMAPLAYERCOMBOBOXPLUGIN_H
