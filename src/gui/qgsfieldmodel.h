@@ -22,51 +22,80 @@
 
 #include "qgsvectorlayer.h"
 
+class QgsFeature;
+
 /**
  * @brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
+ * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
  * @note added in 2.3
  */
-
 class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    enum { FieldNameRole = Qt::UserRole + 1, FieldIndexRole = Qt::UserRole + 2 };
+    enum  FieldRoles
+    {
+      FieldNameRole = Qt::UserRole + 1,  /* return field name if index corresponds to a field */
+      FieldIndexRole = Qt::UserRole + 2, /* return field index if index corresponds to a field */
+      ExpressionRole = Qt::UserRole + 3, /* return field name or expression */
+      IsExpressionRole = Qt::UserRole + 4, /* return if index corresponds to an expression */
+      ExpressionValidityRole = Qt::UserRole + 5 /* return if expression is valid or not */
+    };
 
     /**
      * @brief QgsFieldModel creates a model to display the fields of a given layer
      */
     explicit QgsFieldModel( QObject *parent = 0 );
 
-    /**
-     * @brief indexFromName returns the index corresponding to a given fieldName
-     */
+    //! return the index corresponding to a given fieldName
     QModelIndex indexFromName( QString fieldName );
 
-  public slots:
+    //! returns the currently used layer
+    void setAllowExpression( bool allowExpression );
+    bool allowExpression() {return mAllowExpression;}
+
     /**
-     * @brief setLayer sets the layer of whch fields are displayed
+     * @brief setExpression sets a single expression to be added after the fields at the end of the model
+     * @return the model index of the newly added expression
      */
-    void setLayer( QgsMapLayer *layer );
+    QModelIndex setExpression( QString expression );
+
+    //! remove expressions from the model
+    void removeExpression();
+
+    //! returns the currently used layer
+    QgsVectorLayer* layer() {return mLayer;}
+
+  public slots:
+    //! set the layer of whch fields are displayed
+    void setLayer( QgsVectorLayer *layer );
 
   protected slots:
-    void updateFields();
+    virtual void updateModel();
+
+  private slots:
     void layerDeleted();
 
   protected:
     QgsFields mFields;
+    QList<QString> mExpression;
+
     QgsVectorLayer* mLayer;
+    bool mAllowExpression;
+
+  private:
+    QgsFeature mFeature;
+
+    void fetchFeature();
 
     // QAbstractItemModel interface
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent ) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent ) const;
     QVariant data( const QModelIndex &index, int role ) const;
-
-
 };
 
 #endif // QGSFIELDMODEL_H

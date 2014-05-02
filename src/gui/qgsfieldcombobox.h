@@ -20,9 +20,13 @@
 
 class QgsFieldModel;
 class QgsMapLayer;
+class QgsVectorLayer;
 
 /**
  * @brief The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
+ * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
+ * If expression must be used, QgsFieldExpressionWidget shall be used instead.
+ * @see QgsMapLayerComboBox
  * @note added in 2.3
  */
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
@@ -35,25 +39,24 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     explicit QgsFieldComboBox( QWidget *parent = 0 );
 
-    /**
-     * @brief currentField returns the currently selected field
-     */
+    //! return the currently selected field
     QString currentField();
 
+    //! Returns the currently used layer
+    QgsVectorLayer* layer();
+
   signals:
-    /**
-     * @brief fieldChanged the signal is emitted when the currently selected field changes
-     */
+    //! the signal is emitted when the currently selected field changes
     void fieldChanged( QString fieldName );
 
   public slots:
-    /**
-     * @brief setLayer sets the layer of which the fields are listed
-     */
+    //! set the layer of which the fields are listed
+    void setLayer( QgsVectorLayer* layer );
+
+    //! convenience slot to connect QgsMapLayerComboBox layer signal
     void setLayer( QgsMapLayer* layer );
-    /**
-     * @brief setField sets the currently selected field
-     */
+
+    //! setField sets the currently selected field
     void setField( QString fieldName );
 
   protected slots:
@@ -61,7 +64,6 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
 
   private:
     QgsFieldModel* mFieldModel;
-
 };
 
 #endif // QGSFIELDCOMBOBOX_H

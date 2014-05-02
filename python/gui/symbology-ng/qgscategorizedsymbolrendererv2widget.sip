@@ -14,13 +14,12 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
   public slots:
     void changeCategorizedSymbol();
-    void categoryColumnChanged();
+    void categoryColumnChanged( QString field );
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
     void deleteCategories();
     void deleteAllCategories();
-    void setExpression();
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
@@ -38,9 +37,6 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
     // Called by virtual refreshSymbolView()
     void populateCategories();
-
-    //! populate column combo
-    void populateColumns();
 
     //! return row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();

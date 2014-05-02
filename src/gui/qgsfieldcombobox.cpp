@@ -28,7 +28,21 @@ QgsFieldComboBox::QgsFieldComboBox( QWidget *parent ) :
 
 void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
 {
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( vl )
+  {
+    setLayer( vl );
+  }
+}
+
+void QgsFieldComboBox::setLayer( QgsVectorLayer *layer )
+{
   mFieldModel->setLayer( layer );
+}
+
+QgsVectorLayer *QgsFieldComboBox::layer()
+{
+  return mFieldModel->layer();
 }
 
 void QgsFieldComboBox::setField( QString fieldName )
