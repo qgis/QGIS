@@ -47,7 +47,7 @@ class QgsFieldModel : QAbstractItemModel
 
   public slots:
     //! set the layer of whch fields are displayed
-    void setLayer( QgsMapLayer *layer );
+    void setLayer( QgsVectorLayer *layer );
     
   protected slots:
     virtual void updateModel();
@@ -56,7 +56,7 @@ class QgsFieldModel : QAbstractItemModel
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent ) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent ) const;
     QVariant data( const QModelIndex &index, int role ) const;
 

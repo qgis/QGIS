@@ -31,6 +31,9 @@ class QgsFieldComboBox : QComboBox
 
   public slots:
     //! set the layer of which the fields are listed
+    void setLayer( QgsVectorLayer* layer );
+    
+    //! convenience slot to connect QgsMapLayerComboBox layer signal
     void setLayer( QgsMapLayer* layer );
 
     //! setField sets the currently selected field
