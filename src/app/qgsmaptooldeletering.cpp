@@ -18,20 +18,20 @@
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
-#include "qgsmessagebar.h"
-#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <QMessageBox>
+#include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
-    : QgsMapToolVertexEdit( canvas )
+    : QgsMapToolVertexEdit( canvas ), mRubberBand( 0 )
 {
   mToolName = tr( "Delete ring" );
 }
 
 QgsMapToolDeleteRing::~QgsMapToolDeleteRing()
 {
+  delete mRubberBand;
 }
 
 void QgsMapToolDeleteRing::canvasMoveEvent( QMouseEvent *e )
@@ -42,16 +42,11 @@ void QgsMapToolDeleteRing::canvasMoveEvent( QMouseEvent *e )
 
 void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
 {
-  //do snap -> new recent snapping results
-  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SnapToVertexAndSegment ) != 0 )
-  {
-    //error
-  }
-}
-
-void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
-{
-  Q_UNUSED( e );
+  delete mRubberBand;
+  mRubberBand = 0;
+  mPressedFid = -1;
+  mPressedPartNum = -1;
+  mPressedRingNum = -1;
 
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
@@ -76,22 +71,70 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
     return;
   }
 
-  QgsPoint p = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(),e->y());
-  p = toLayerCoordinates(vlayer, p);
+  QgsPoint p = toLayerCoordinates( vlayer, e->pos() );
 
-  //There is no easy way to find if we are inside the ring of a feature,
+  QgsGeometry* ringGeom = ringUnderPoint( p, mPressedFid, mPressedPartNum, mPressedRingNum );
+
+  if ( mPressedFid != -1 )
+  {
+    QgsFeature f;
+    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
+    mRubberBand = createRubberBand( vlayer->geometryType() );
+
+    mRubberBand->setToGeometry( ringGeom, vlayer );
+    mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
+    mRubberBand->setWidth( 2 );
+    mRubberBand->show();
+  }
+}
+
+void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
+{
+
+  delete mRubberBand;
+  mRubberBand = 0;
+
+  if ( mPressedFid == -1 )
+    return;
+
+  QgsPoint p = toLayerCoordinates( vlayer, e->pos() );
+
+  int fid, partNum, ringNum;
+  QgsFeature f;
+  QgsGeometry* g;
+  ringUnderPoint( p, fid, partNum, ringNum );
+
+  if ( fid == mPressedFid && partNum == mPressedPartNum && ringNum == mPressedRingNum )
+  {
+    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
+
+    g = f.geometry();
+    if ( g->deleteRing( ringNum, partNum ) )
+    {
+      vlayer->beginEditCommand( tr( "Ring deleted" ) );
+      vlayer->changeGeometry( fid, g );
+      vlayer->endEditCommand();
+      mCanvas->refresh();
+    }
+  }
+}
+
+QgsGeometry* QgsMapToolDeleteRing::ringUnderPoint( QgsPoint p, int& fid, int& partNum, int& ringNum )
+{
+  //There is no clean way to find if we are inside the ring of a feature,
   //so we iterate over all the features visible in the canvas
+  //If several rings are found at this position, the smallest one is chosen,
+  //in order to be able to delete a ring inside another ring
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( mCanvas->extent() ) );
   QgsFeature f;
   QgsGeometry* g;
+  QgsGeometry* ringGeom;
   QgsMultiPolygon pol;
   QgsPolygon tempPol;
   QgsGeometry* tempGeom;
-  int fid, partNum, ringNum;
   double area = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
   {
-    QgsDebugMsg(QString("Feature %1").arg(f.id()));
     g = f.geometry();
     if ( !g )
       continue;
@@ -104,49 +147,29 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
       pol = g->asMultiPolygon();
     }
 
-    for (int i = 0; i < pol.size() ; ++i)
+    for ( int i = 0; i < pol.size() ; ++i )
     {//for each part
-      QgsDebugMsg(QString("Feature %1 part %2").arg(f.id()).arg(i));
       if ( pol[i].size() > 1 )
       {
-        QgsDebugMsg(QString("%1 has a ring in part %2").arg(f.id()).arg(i));
-        for ( int j = 1; j<pol[i].size();++j)
+        for ( int j = 1; j < pol[i].size();++j )
         {
-          tempPol = QgsPolygon()<<pol[i][j];
+          tempPol = QgsPolygon() << pol[i][j];
           tempGeom = QgsGeometry::fromPolygon( tempPol );
-          if (tempGeom->area() < area && tempGeom->contains(&p) )
+          if ( tempGeom->area() < area && tempGeom->contains( &p ) )
           {
-            QgsDebugMsg(QString("%1, part %2, ring %3 contains the cursor").arg(f.id()).arg(i).arg(j));
-            fid=f.id();
-            partNum=i;
-            ringNum=j;
-            area=tempGeom->area();
+            fid = f.id();
+            partNum = i;
+            ringNum = j;
+            ringGeom = tempGeom;
+            area = tempGeom->area();
           }
         }
       }
     }
   }
-
-  vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f );
-
-  g = f.geometry();
-  if ( g->deleteRing( ringNum, partNum ) )
-  {
-    vlayer->beginEditCommand( tr( "Ring deleted" ) );
-    vlayer->changeGeometry( fid, g );
-    vlayer->endEditCommand();
-    mCanvas->refresh();
-  }
-/*
-  if ( g->deleteRing( ringNum, partNum ) )
-  {
-    vlayer->beginEditCommand( tr( "Ring deleted" ) );
-    vlayer->changeGeometry( f.id(), g );
-    vlayer->endEditCommand();
-    mCanvas->refresh();
-  }
-*/
+  return ringGeom;
 }
+
 
 void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer )
 {
@@ -177,17 +200,6 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
   }
 
 }
-
-int QgsMapToolDeleteRing::partNumberOfPoint(QgsGeometry* g, QgsPoint p)
-{
-  return 0;
-}
-
-int QgsMapToolDeleteRing::ringNumberOfPoint(QgsGeometry* g, QgsPoint p, int partNum)
-{
-  return 0;
-}
-
 
 int QgsMapToolDeleteRing::ringNumInPolygon( QgsGeometry* g, int vertexNr )
 {

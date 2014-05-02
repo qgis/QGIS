@@ -17,6 +17,7 @@
 #define QGSMAPTOOLDELETEPART_H
 
 #include "qgsmaptooledit.h"
+#include "qgsrubberband.h"
 
 class QgsVertexMarker;
 
@@ -42,17 +43,15 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
     QgsVectorLayer* vlayer;
     QList<QgsSnappingResult> mRecentSnappingResults;
 
-    //! find out the part number of geometry given the vertex number
-    int partNumberOfVertex( QgsGeometry* g, int beforeVertexNr );
+    QgsGeometry* partUnderPoint( QPoint p, int &fid, int &partNum );
 
-    //! find out the part number of geometry including the point
-    int partNumberOfPoint( QgsGeometry* g, QgsPoint point );
+    /* Rubberband that shows the part being deleted*/
+    QgsRubberBand* mRubberBand;
 
-    //! find which feature is under the point position (different from snapping as we allow the whole polygon surface)
-    QgsFeature featureUnderPoint(QgsPoint p);
-
-    void notifySinglePart();
-
+    //The feature and part where the mouse cursor was pressed
+    //This is used to check whether we are still in the same part at cursor release
+    int mPressedFid;
+    int mPressedPartNum;
 };
 
 #endif

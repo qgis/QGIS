@@ -17,6 +17,7 @@
 #define QGSMAPTOOLDELETERING_H
 
 #include "qgsmaptoolvertexedit.h"
+#include "qgsrubberband.h"
 
 class QgsVertexMarker;
 /**Map tool to delete vertices from line/polygon features*/
@@ -50,9 +51,18 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
     //! return ring number in multipolygon and set parNum to index of the part
     int ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, int& partNum );
 
-    int partNumberOfPoint(QgsGeometry* g, QgsPoint point );
-    int ringNumberOfPoint(QgsGeometry* g, QgsPoint point, int part );
+    /*! return the geometry of the ring under the point p and sets fid to the feature id,
+     * partNum to the part number in the feature and ringNum to the ring number in the part
+     */
+    QgsGeometry* ringUnderPoint( QgsPoint p, int& fid, int& partNum, int& ringNum );
 
+    /* Rubberband that shows the ring being deleted*/
+    QgsRubberBand* mRubberBand;
+
+    //The feature, part and ring the mouse was pressed in, to  check we are still in the same ring at release
+    int mPressedFid;
+    int mPressedPartNum;
+    int mPressedRingNum;
 };
 
 #endif
