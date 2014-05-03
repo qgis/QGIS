@@ -1,3 +1,9 @@
+qgis (2.2.0-2) UNRELEASED; urgency=medium
+
+  * fix python-spatialite dependency on trusty
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 03 May 2014 17:01:05 +0200
+
 qgis (2.2.0-1) UNRELEASED; urgency=medium
 
   * enable globe on jessie

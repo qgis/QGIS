@@ -138,6 +138,7 @@ Depends:
  python-qgis-common (= ${source:Version}),
  python-psycopg2,
  python-qscintilla2,
+ python-spatialite,
  ${python:Depends},
  ${misc:Depends},
  ${sip:Depends}
