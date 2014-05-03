@@ -50,10 +50,11 @@ class ConcaveHull(GeoAlgorithm):
         self.group = 'Vector geometry tools'
         self.addParameter(ParameterVector(ConcaveHull.INPUT, 'Input point layer',
                           [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterNumber(self.ALPHA, 'Threshold (0-1, where 1 is equivalent with Convex Hull)', 0,
-                          1, 0.3))
+        self.addParameter(ParameterNumber(self.ALPHA,
+                            'Threshold (0-1, where 1 is equivalent with Convex Hull)', 0, 1, 0.3))
         self.addParameter(ParameterBoolean(self.HOLES, 'Allow holes', True))
-        self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY, 'Split multipart geometry into singleparts geometries', False))
+        self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY,
+                            'Split multipart geometry into singleparts geometries', False))
         self.addOutput(OutputVector(ConcaveHull.OUTPUT, 'Convex hull'))
 
     def processAlgorithm(self, progress):
@@ -96,18 +97,17 @@ class ConcaveHull(GeoAlgorithm):
         delaunay_layer.commitChanges()
         #dissolve all Delaunay triangles
         progress.setText('Dissolving Delaunay triangles ...')
-        dissolved = processing.runalg("qgis:dissolve", delaunay_layer, True, '', None)['OUTPUT']
+        dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
+                                      True, '', None)['OUTPUT']
         dissolved_layer = processing.getObject(dissolved)
-        #Beacause of dissolve bug we must take only last polygon
-        count = dissolved_layer.featureCount()
+        #save result
+        progress.setText('Saving data ...')
         feat = QgsFeature()
-        dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(count-1)).nextFeature(feat)
+        dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(0)).nextFeature(feat)
         writer = self.getOutputFromName(
                 self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                                              QGis.WKBPolygon, layer.crs())
-        #save result
-        progress.setText('Saving data ...')
-        geom = feat.geometry() 
+        geom = feat.geometry()
         if no_multigeom and geom.isMultipart():
             #only singlepart geometries are allowed
             geom_list = geom.asMultiPolygon()
@@ -122,7 +122,7 @@ class ConcaveHull(GeoAlgorithm):
                 single_feature.setGeometry(single_geom)
                 writer.addFeature(single_feature)
         else:
-            #multipart geomtries are allowed
+            #multipart geometries are allowed
             if not holes:
                 #delete holes
                 deleted = True
