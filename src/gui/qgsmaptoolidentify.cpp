@@ -120,7 +120,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator resultIt = mLayerIdResults.constBegin();
     for ( ; resultIt != mLayerIdResults.constEnd(); ++resultIt )
     {
-      QAction* action = new QAction( resultIt.key()->name(), 0 );
+      QAction* action = new QAction( QString( "%1 (%2)" ).arg( resultIt.key()->name() ).arg( resultIt.value().size() ), 0 );
       action->setData( resultIt.key()->id() );
       //add point/line/polygon icon
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( resultIt.key() );
@@ -145,20 +145,31 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       {
         action->setIcon( QgsApplication::getThemeIcon( "/mIconRaster.png" ) );
       }
-      QObject::connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
       layerSelectionMenu.addAction( action );
     }
+
+    QAction *action = new QAction( tr( "All (%1)" ).arg( idResult.size() ), 0 );
+    connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+    layerSelectionMenu.addAction( action );
 
     // exec layer selection menu
     QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
     QAction* selectedAction = layerSelectionMenu.exec( globalPos );
     if ( selectedAction )
     {
-      QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
-      QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
-      if ( sIt != mLayerIdResults.constEnd() )
+      if( selectedAction->data().toString().isEmpty() )
       {
-        results = sIt.value();
+        results = idResult;
+      }
+      else
+      {
+        QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
+        QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
+        if ( sIt != mLayerIdResults.constEnd() )
+        {
+          results = sIt.value();
+        }
       }
     }
 
@@ -651,6 +662,22 @@ void QgsMapToolIdentify::handleMenuHover()
         for ( ; idListIt != idList.constEnd(); ++idListIt )
         {
           QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
+          hl->setColor( QColor( 255, 0, 0 ) );
+          hl->setWidth( 2 );
+          mRubberBands.append( hl );
+          connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+        }
+      }
+    }
+    else
+    {
+      for( QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.constBegin(); lIt != mLayerIdResults.constEnd(); ++lIt )
+      {
+        const QList<IdentifyResult>& idList = lIt.value();
+        QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
+        for ( ; idListIt != idList.constEnd(); ++idListIt )
+        {
+          QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), lIt.key() );
           hl->setColor( QColor( 255, 0, 0 ) );
           hl->setWidth( 2 );
           mRubberBands.append( hl );
