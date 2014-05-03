@@ -754,7 +754,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
 
   if ( ! metadata->value( "about" ).isEmpty() )
   {
-    html += metadata->value( "about" );
+    QString about = metadata->value( "about" );
+    html += about.replace( "\n", "<br/>" );
   }
 
   html += "<br/><br/>";
