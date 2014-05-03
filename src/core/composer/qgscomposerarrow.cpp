@@ -113,7 +113,7 @@ void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
   double margin = computeMarkerMargin();
 
   // Ensure the rectangle is at least as large as needed to include the markers
-  QRectF rect = rectangle.unite( QRectF( rectangle.x(), rectangle.y(), 2. * margin, 2. * margin ) );
+  QRectF rect = rectangle.united( QRectF( rectangle.x(), rectangle.y(), 2. * margin, 2. * margin ) );
 
   // Compute new start and stop positions
   double x[2] = {rect.x(), rect.x() + rect.width()};
