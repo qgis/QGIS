@@ -85,8 +85,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QgsFieldModel* mFieldModel;
     QString mExpressionDialogTitle;
     QSharedPointer<const QgsDistanceArea> mDa;
-
-    QString color2rgbaStr( QColor color );
 };
 
 #endif // QGSFIELDEXPRESSIONWIDGET_H
