@@ -561,6 +561,8 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
   mOffset = 0;
   mOffsetUnit = QgsSymbolV2::MM;
   mPlacement = Interval;
+  mOffsetAlongLine = 0;
+  mOffsetAlongLineUnit = QgsSymbolV2::MM;
 
   setSubSymbol( new QgsMarkerSymbolV2() );
 }
@@ -574,6 +576,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
   double interval = DEFAULT_MARKERLINE_INTERVAL;
+
 
   if ( props.contains( "interval" ) )
     interval = props["interval"].toDouble();
@@ -592,6 +595,14 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "interval_unit" ) )
   {
     x->setIntervalUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["interval_unit"] ) );
+  }
+  if ( props.contains( "offset_along_line" ) )
+  {
+    x->setOffsetAlongLine( props["offset_along_line"].toDouble() );
+  }
+  if ( props.contains( "offset_along_line_unit" ) )
+  {
+    x->setOffsetAlongLineUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_along_line_unit"] ) );
   }
 
   if ( props.contains( "placement" ) )
@@ -620,6 +631,10 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "placement_expression" ) )
   {
     x->setDataDefinedProperty( "placement", props["placement_expression"] );
+  }
+  if ( props.contains( "offset_along_line_expression" ) )
+  {
+    x->setDataDefinedProperty( "offset_along_line", props["offset_along_line_expression"] );
   }
 
   return x;
@@ -723,7 +738,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
 
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
-  bool first = true;
+  bool first = mOffsetAlongLine ? false : true; //only draw marker at first vertex when no offset along line is set
   double origAngle = mMarker->angle();
 
   QgsRenderContext& rc = context.renderContext();
@@ -738,8 +753,15 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   {
     interval = 0.1;
   }
+  double offsetAlongLine = mOffsetAlongLine;
+  QgsExpression* offsetAlongLineExpression = expression( "offset_along_line" );
+  if ( offsetAlongLineExpression )
+  {
+    offsetAlongLine = offsetAlongLineExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
 
   double painterUnitInterval = interval * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mIntervalUnit );
+  lengthLeft = painterUnitInterval - offsetAlongLine * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mIntervalUnit );
 
   for ( int i = 1; i < points.count(); ++i )
   {
@@ -810,6 +832,18 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   int i, maxCount;
   bool isRing = false;
 
+  double offsetAlongLine = mOffsetAlongLine;
+  QgsExpression* offsetAlongLineExpression = expression( "offset_along_line" );
+  if ( offsetAlongLineExpression )
+  {
+    offsetAlongLine = offsetAlongLineExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  if ( offsetAlongLine != 0 )
+  {
+    //scale offset along line
+    offsetAlongLine *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mOffsetAlongLineUnit );
+  }
+
   if ( placement == FirstVertex )
   {
     i = 0;
@@ -826,6 +860,16 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     maxCount = points.count();
     if ( points.first() == points.last() )
       isRing = true;
+  }
+
+  if ( offsetAlongLine > 0 && ( placement == FirstVertex || placement == LastVertex ) )
+  {
+    double distance;
+    distance = placement == FirstVertex ? offsetAlongLine : -offsetAlongLine;
+    renderOffsetVertexAlongLine( points, i, distance, context );
+    // restore original rotation
+    mMarker->setAngle( origAngle );
+    return;
   }
 
   for ( ; i < maxCount; ++i )
@@ -923,6 +967,65 @@ double QgsMarkerLineSymbolLayerV2::markerAngle( const QPolygonF& points, bool is
   return angle;
 }
 
+void QgsMarkerLineSymbolLayerV2::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolV2RenderContext& context )
+{
+  if ( points.isEmpty() )
+    return;
+
+  QgsRenderContext& rc = context.renderContext();
+  double origAngle = mMarker->angle();
+  if ( distance == 0 )
+  {
+    // rotate marker (if desired)
+    if ( mRotateMarker )
+    {
+      bool isRing = false;
+      if ( points.first() == points.last() )
+        isRing = true;
+      double angle = markerAngle( points, isRing, vertex );
+      mMarker->setAngle( origAngle + angle * 180 / M_PI );
+    }
+    mMarker->renderPoint( points[vertex], context.feature(), rc, -1, context.selected() );
+    return;
+  }
+
+  int pointIncrement = distance > 0 ? 1 : -1;
+  QPointF previousPoint = points[vertex];
+  int startPoint = distance > 0 ? qMin( vertex + 1, points.count() - 1 ) : qMax( vertex - 1, 0 );
+  int endPoint = distance > 0 ? points.count() - 1 : 0;
+  double distanceLeft = qAbs( distance );
+
+  for ( int i = startPoint; pointIncrement > 0 ? i <= endPoint : i >= endPoint; i += pointIncrement )
+  {
+    const QPointF& pt = points[i];
+
+    if ( previousPoint == pt ) // must not be equal!
+      continue;
+
+    // create line segment
+    MyLine l( previousPoint, pt );
+
+    if ( distanceLeft < l.length() )
+    {
+      //destination point is in current segment
+      QPointF markerPoint = previousPoint + l.diffForInterval( distanceLeft );
+      // rotate marker (if desired)
+      if ( mRotateMarker )
+      {
+        mMarker->setAngle( origAngle + ( l.angle() * 180 / M_PI ) );
+      }
+      mMarker->renderPoint( markerPoint, context.feature(), rc, -1, context.selected() );
+      return;
+    }
+
+    distanceLeft -= l.length();
+    previousPoint = pt;
+  }
+
+  //didn't find point
+  return;
+}
+
 void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
   if ( points.size() > 0 )
@@ -978,6 +1081,8 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   map["rotate"] = ( mRotateMarker ? "1" : "0" );
   map["interval"] = QString::number( mInterval );
   map["offset"] = QString::number( mOffset );
+  map["offset_along_line"] = QString::number( mOffsetAlongLine );
+  map["offset_along_line_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetAlongLineUnit );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["interval_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mIntervalUnit );
   if ( mPlacement == Vertex )
@@ -1022,6 +1127,8 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setPlacement( mPlacement );
   x->setOffsetUnit( mOffsetUnit );
   x->setIntervalUnit( mIntervalUnit );
+  x->setOffsetAlongLine( mOffsetAlongLine );
+  x->setOffsetAlongLineUnit( mOffsetAlongLineUnit );
   copyDataDefinedProperties( x );
   return x;
 }

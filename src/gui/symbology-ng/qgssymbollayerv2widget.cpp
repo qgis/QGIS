@@ -1311,6 +1311,7 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVec
   setupUi( this );
 
   connect( spinInterval, SIGNAL( valueChanged( double ) ), this, SLOT( setInterval( double ) ) );
+  connect( mSpinOffsetAlongLine, SIGNAL( valueChanged( double ) ), this, SLOT( setOffsetAlongLine( double ) ) );
   connect( chkRotateMarker, SIGNAL( clicked() ), this, SLOT( setRotate() ) );
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( radInterval, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
@@ -1332,6 +1333,9 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinInterval->blockSignals( true );
   spinInterval->setValue( mLayer->interval() );
   spinInterval->blockSignals( false );
+  mSpinOffsetAlongLine->blockSignals( true );
+  mSpinOffsetAlongLine->setValue( mLayer->offsetAlongLine() );
+  mSpinOffsetAlongLine->blockSignals( false );
   chkRotateMarker->blockSignals( true );
   chkRotateMarker->setChecked( mLayer->rotateMarker() );
   chkRotateMarker->blockSignals( false );
@@ -1356,6 +1360,9 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+  mOffsetAlongLineUnitComboBox->blockSignals( true );
+  mOffsetAlongLineUnitComboBox->setCurrentIndex( mLayer->offsetAlongLineUnit() );
+  mOffsetAlongLineUnitComboBox->blockSignals( false );
 
   setPlacement(); // update gui
 }
@@ -1368,6 +1375,12 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2Widget::symbolLayer()
 void QgsMarkerLineSymbolLayerV2Widget::setInterval( double val )
 {
   mLayer->setInterval( val );
+  emit changed();
+}
+
+void QgsMarkerLineSymbolLayerV2Widget::setOffsetAlongLine( double val )
+{
+  mLayer->setOffsetAlongLine( val );
   emit changed();
 }
 
@@ -1387,6 +1400,7 @@ void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
 {
   bool interval = radInterval->isChecked();
   spinInterval->setEnabled( interval );
+  mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
   //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayerV2::Interval : QgsMarkerLineSymbolLayerV2::Vertex );
   if ( radInterval->isChecked() )
     mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::Interval );
@@ -1420,6 +1434,15 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   emit changed();
 }
 
+void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetAlongLineUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetAlongLineUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+  emit changed();
+}
+
 void QgsMarkerLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
 {
   if ( !mLayer )
@@ -1434,6 +1457,8 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "placement", tr( "Placement" ), mLayer->dataDefinedPropertyString( "placement" ),
       tr( "'vertex'|'lastvertex'|'firstvertex'|'centerpoint'" ) );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset_along_line", tr( "Offset along line" ), mLayer->dataDefinedPropertyString( "offset_along_line" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {

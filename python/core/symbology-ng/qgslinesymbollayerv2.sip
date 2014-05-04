@@ -141,6 +141,45 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     Placement placement() const;
     void setPlacement( Placement p );
+    
+    /**Returns the offset along the line for the marker placement. For Interval placements, this is the distance
+     * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
+     * distance between the marker and the start of the line or the end of the line respectively.
+     * This setting has no effect for Vertex or CentralPoint placements.
+     * @returns The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
+     * @note added in 2.3
+     * @see setOffsetAlongLine
+     * @see offsetAlongLineUnit
+     * @see placement
+    */
+    double offsetAlongLine() const;
+
+    /**Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
+     * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
+     * distance between the marker and the start of the line or the end of the line respectively.
+     * This setting has no effect for Vertex or CentralPoint placements.
+     * @param offsetAlongLine Distance to offset markers along the line. The offset
+     * unit is set via setOffsetAlongLineUnit.
+     * @note added in 2.3
+     * @see offsetAlongLine
+     * @see setOffsetAlongLineUnit
+     * @see setPlacement
+    */
+    void setOffsetAlongLine( double offsetAlongLine );
+    
+    /**Returns the unit used for calculating the offset along line for markers.
+     * @returns Offset along line unit type.
+     * @see setOffsetAlongLineUnit
+     * @see offsetAlongLine
+    */
+    QgsSymbolV2::OutputUnit offsetAlongLineUnit() const;
+
+    /**Sets the unit used for calculating the offset along line for markers.
+     * @param unit Offset along line unit type.
+     * @see offsetAlongLineUnit
+     * @see setOffsetAlongLine
+    */
+    void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit );
 
     QgsSymbolV2::OutputUnit intervalUnit() const;
     void setIntervalUnit( QgsSymbolV2::OutputUnit unit );

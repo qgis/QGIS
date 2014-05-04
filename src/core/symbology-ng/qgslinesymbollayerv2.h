@@ -195,6 +195,45 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Placement placement() const { return mPlacement; }
     void setPlacement( Placement p ) { mPlacement = p; }
 
+    /**Returns the offset along the line for the marker placement. For Interval placements, this is the distance
+     * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
+     * distance between the marker and the start of the line or the end of the line respectively.
+     * This setting has no effect for Vertex or CentralPoint placements.
+     * @returns The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
+     * @note added in 2.3
+     * @see setOffsetAlongLine
+     * @see offsetAlongLineUnit
+     * @see placement
+    */
+    double offsetAlongLine() const { return mOffsetAlongLine; }
+
+    /**Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
+     * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
+     * distance between the marker and the start of the line or the end of the line respectively.
+     * This setting has no effect for Vertex or CentralPoint placements.
+     * @param offsetAlongLine Distance to offset markers along the line. The offset
+     * unit is set via setOffsetAlongLineUnit.
+     * @note added in 2.3
+     * @see offsetAlongLine
+     * @see setOffsetAlongLineUnit
+     * @see setPlacement
+    */
+    void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
+
+    /**Returns the unit used for calculating the offset along line for markers.
+     * @returns Offset along line unit type.
+     * @see setOffsetAlongLineUnit
+     * @see offsetAlongLine
+    */
+    QgsSymbolV2::OutputUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
+
+    /**Sets the unit used for calculating the offset along line for markers.
+     * @param unit Offset along line unit type.
+     * @see offsetAlongLineUnit
+     * @see setOffsetAlongLine
+    */
+    void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetAlongLineUnit = unit; }
+
     QgsSymbolV2::OutputUnit intervalUnit() const { return mIntervalUnit; }
     void setIntervalUnit( QgsSymbolV2::OutputUnit unit ) { mIntervalUnit = unit; }
 
@@ -218,6 +257,22 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
     Placement mPlacement;
+    double mOffsetAlongLine; //distance to offset along line before marker is drawn
+    QgsSymbolV2::OutputUnit mOffsetAlongLineUnit; //unit for offset along line
+
+  private:
+
+    /**Renders a marker by offseting a vertex along the line by a specified distance.
+     * @param points vertices making up the line
+     * @param vertex vertex number to begin offset at
+     * @param distance distance to offset from vertex. If distance is positive, offset is calculated
+     * moving forward along the line. If distance is negative, offset is calculated moving backward
+     * along the line's vertices.
+     * @param context render context
+     * @see setoffsetAlongLine
+     * @see setOffsetAlongLineUnit
+    */
+    void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance , QgsSymbolV2RenderContext &context );
 };
 
 #endif

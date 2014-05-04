@@ -254,11 +254,13 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   public slots:
 
     void setInterval( double val );
+    void setOffsetAlongLine( double val );
     void setRotate();
     void setOffset();
     void setPlacement();
     void on_mIntervalUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetAlongLineUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
