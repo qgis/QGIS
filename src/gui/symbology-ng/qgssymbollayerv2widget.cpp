@@ -1999,8 +1999,17 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mSvgOutlineWidthUnitComboBox->blockSignals( true );
     mSvgOutlineWidthUnitComboBox->setCurrentIndex( mLayer->svgOutlineWidthUnit() );
     mSvgOutlineWidthUnitComboBox->blockSignals( false );
+    mChangeColorButton->blockSignals( true );
+    mChangeColorButton->setColor( mLayer->svgFillColor() );
+    mChangeColorButton->blockSignals( false );
+    mChangeBorderColorButton->blockSignals( true );
+    mChangeBorderColorButton->setColor( mLayer->svgOutlineColor() );
+    mChangeBorderColorButton->blockSignals( false );
+    mBorderWidthSpinBox->blockSignals( true );
+    mBorderWidthSpinBox->setValue( mLayer->svgOutlineWidth() );
+    mBorderWidthSpinBox->blockSignals( false );
   }
-  updateParamGui();
+  updateParamGui( false );
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
@@ -2115,19 +2124,27 @@ void QgsSVGFillSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
   }
 }
 
-void QgsSVGFillSymbolLayerWidget::updateParamGui()
+void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
 {
   //activate gui for svg parameters only if supported by the svg file
   bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
   QColor defaultFill, defaultOutline;
   double defaultOutlineWidth;
   QgsSvgCache::instance()->containsParams( mSVGLineEdit->text(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
-  if ( hasFillParam )
+  if ( hasFillParam && resetValues )
+  {
     mChangeColorButton->setColor( defaultFill );
+  }
   mChangeColorButton->setEnabled( hasFillParam );
-  if ( hasOutlineParam )
+  if ( hasOutlineParam && resetValues )
+  {
     mChangeBorderColorButton->setColor( defaultOutline );
+  }
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  if ( hasOutlineWidthParam && resetValues )
+  {
+    mBorderWidthSpinBox->setValue( defaultOutlineWidth );
+  }
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 }
 

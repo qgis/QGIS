@@ -270,7 +270,13 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 
   protected:
     void insertIcons();
-    void updateParamGui();
+    
+    /**Enables or disables svg fill color, border color and border width based on whether the
+     * svg file supports custom parameters.
+     * @param resetValues set to true to overwrite existing layer fill color, border color and border width
+     * with default values from svg file
+    */
+    void updateParamGui( bool resetValues = true );
 };
 
 //////////

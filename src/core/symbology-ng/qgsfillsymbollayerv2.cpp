@@ -1559,11 +1559,11 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   //svg parameters
   if ( properties.contains( "svgFillColor" ) )
   {
-    symbolLayer->setSvgFillColor( QColor( properties["svgFillColor"] ) );
+    symbolLayer->setSvgFillColor( QgsSymbolLayerV2Utils::decodeColor( properties["svgFillColor"] ) );
   }
   if ( properties.contains( "svgOutlineColor" ) )
   {
-    symbolLayer->setSvgOutlineColor( QColor( properties["svgOutlineColor"] ) );
+    symbolLayer->setSvgOutlineColor( QgsSymbolLayerV2Utils::decodeColor( properties["svgOutlineColor"] ) );
   }
   if ( properties.contains( "svgOutlineWidth" ) )
   {
@@ -1698,8 +1698,8 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   map.insert( "angle", QString::number( mAngle ) );
 
   //svg parameters
-  map.insert( "svgFillColor", mSvgFillColor.name() );
-  map.insert( "svgOutlineColor", mSvgOutlineColor.name() );
+  map.insert( "svgFillColor", QgsSymbolLayerV2Utils::encodeColor( mSvgFillColor ) );
+  map.insert( "svgOutlineColor", QgsSymbolLayerV2Utils::encodeColor( mSvgOutlineColor ) );
   map.insert( "svgOutlineWidth", QString::number( mSvgOutlineWidth ) );
 
   //units
