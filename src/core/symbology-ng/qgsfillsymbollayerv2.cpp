@@ -1586,11 +1586,11 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   if ( properties.contains( "angle_expression" ) )
     symbolLayer->setDataDefinedProperty( "angle", properties["angle_expression"] );
   if ( properties.contains( "svgFillColor_expression" ) )
-    symbolLayer->setDataDefinedProperty( "svgFillColor", "svgFillColor_expression" );
+    symbolLayer->setDataDefinedProperty( "svgFillColor", properties["svgFillColor_expression"] );
   if ( properties.contains( "svgOutlineColor_expression" ) )
-    symbolLayer->setDataDefinedProperty( "svgOutlineColor", "svgOutlineColor_expression" );
-  if ( properties.contains( "svgOutlineWidth" ) )
-    symbolLayer->setDataDefinedProperty( "svgOutlineWidth", "svgOutlineWidth_expression" );
+    symbolLayer->setDataDefinedProperty( "svgOutlineColor", properties["svgOutlineColor_expression"] );
+  if ( properties.contains( "svgOutlineWidth_expression" ) )
+    symbolLayer->setDataDefinedProperty( "svgOutlineWidth", properties["svgOutlineWidth_expression"] );
 
   return symbolLayer;
 }
