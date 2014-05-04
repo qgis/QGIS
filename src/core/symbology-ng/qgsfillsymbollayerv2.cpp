@@ -1477,8 +1477,8 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): QgsImageFillSymbolLayer(),
     mPatternWidth( width ),
-    mSvgData( svgData ),
     mPatternWidthUnit( QgsSymbolV2::MM ),
+    mSvgData( svgData ),
     mSvgOutlineWidthUnit( QgsSymbolV2::MM )
 {
   storeViewBox();
