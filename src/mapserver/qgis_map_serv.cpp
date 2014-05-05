@@ -293,7 +293,11 @@ int main( int argc, char * argv[] )
   {
     if ( !logFile.isEmpty() )
     {
-      setenv( "QGIS_LOG_FILE", logFile.toLocal8Bit().data(), 1 );
+#ifdef Q_WS_WIN
+      putenv( QString( "QGIS_LOG_FILE=%1" ).arg( logFile ).toLocal8Bit().constData() );
+#else
+      setenv( "QGIS_LOG_FILE", logFile.toLocal8Bit().constData(), 1 );
+#endif
     }
 
     printRequestInfos(); //print request infos if in debug mode
