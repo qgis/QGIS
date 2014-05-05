@@ -51,6 +51,10 @@ SET(QGIS_CORE_SRCS
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
 
+  layertree/qgslayertreenode.cpp
+  layertree/qgslayertreeregistrybridge.cpp
+  layertree/qgslayertreeutils.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
@@ -375,6 +379,9 @@ SET(QGIS_CORE_MOC_HDRS
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
   symbology-ng/qgsstylev2.h
+
+  layertree/qgslayertreenode.h
+  layertree/qgslayertreeregistrybridge.h
 )
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
@@ -582,6 +589,10 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorcolorrampv2.h
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgsvectorfieldsymbollayer.h
+
+  layertree/qgslayertreenode.h
+  layertree/qgslayertreeregistrybridge.h
+  layertree/qgslayertreeutils.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
@@ -595,6 +606,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   composer
   dxf
+  layertree
   pal
   raster
   renderer

@@ -58,6 +58,11 @@ editorwidgets/qgsrelationreferencewidget.cpp
 editorwidgets/qgsrelationreferencefactory.cpp
 editorwidgets/qgsrelreferenceconfigdlg.cpp
 
+layertree/qgscustomlayerorderwidget.cpp
+layertree/qgslayertreemapcanvasbridge.cpp
+layertree/qgslayertreemodel.cpp
+layertree/qgslayertreeview.cpp
+
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
@@ -213,6 +218,11 @@ editorwidgets/core/qgseditorwidgetregistry.h
 editorwidgets/core/qgseditorwidgetwrapper.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelreferenceconfigdlg.h
+
+layertree/qgscustomlayerorderwidget.h
+layertree/qgslayertreemapcanvasbridge.h
+layertree/qgslayertreemodel.h
+layertree/qgslayertreeview.h
 
 qgisinterface.h
 qgsattributedialog.h
@@ -381,6 +391,11 @@ editorwidgets/qgsrelationreferencefactory.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelreferenceconfigdlg.h
 
+layertree/qgscustomlayerorderwidget.h
+layertree/qgslayertreemapcanvasbridge.h
+layertree/qgslayertreemodel.h
+layertree/qgslayertreeview.h
+
 raster/qgsrasterrendererwidget.h
 )
 
@@ -426,8 +441,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ../core
   ../core/composer
+  ../core/layertree
   ../core/raster
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}

@@ -428,11 +428,21 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ../analysis/raster ../analysis/openstreetmap
+  ../analysis/raster
+  ../analysis/openstreetmap
   ../core
   ../core/gps
-  ../core/composer ../core/dxf ../core/raster ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster ../gui/editorwidgets ../gui/editorwidgets/core
+  ../core/composer
+  ../core/dxf
+  ../core/layertree
+  ../core/raster
+  ../core/symbology-ng
+  ../gui
+  ../gui/symbology-ng
+  ../gui/attributetable
+  ../gui/raster
+  ../gui/editorwidgets
+  ../gui/editorwidgets/core
   ../plugins
   ../python
   gps
