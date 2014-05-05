@@ -11,7 +11,7 @@ class CORE_EXPORT QgsLayerTreeUtils
 {
 public:
 
-  // return a new instance
+  // return a new instance - or null on error
   static QgsLayerTreeGroup* readOldLegend(const QDomElement& legendElem);
 
   static QString checkStateToXml(Qt::CheckState state);

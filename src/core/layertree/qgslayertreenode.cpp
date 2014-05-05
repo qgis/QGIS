@@ -8,9 +8,9 @@
 QgsLayerTreeNode* QgsLayerTreeNode::readXML(QDomElement& element)
 {
   QgsLayerTreeNode* node = 0;
-  if (element.tagName() == "tree-group")
+  if (element.tagName() == "layer-tree-group")
     node = QgsLayerTreeGroup::readXML(element);
-  else if (element.tagName() == "tree-layer")
+  else if (element.tagName() == "layer-tree-layer")
     node = QgsLayerTreeLayer::readXML(element);
 
   return node;
@@ -129,8 +129,8 @@ void QgsLayerTreeGroup::connectToChildNode(QgsLayerTreeNode* node)
   if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
   {
     // TODO: this could be handled directly by LayerTreeLayer by listening to QgsMapLayerRegistry...
-    QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
-    connect(nodeLayer->layer(), SIGNAL(destroyed()), this, SLOT(layerDestroyed()));
+    //QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+    //connect(nodeLayer->layer(), SIGNAL(destroyed()), this, SLOT(layerDestroyed()));
   }
 
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(updateVisibilityFromChildren()));
@@ -211,7 +211,7 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer(const QString& layerId)
 
 QgsLayerTreeGroup* QgsLayerTreeGroup::readXML(QDomElement& element)
 {
-  if (element.tagName() != "tree-group")
+  if (element.tagName() != "layer-tree-group")
     return 0;
 
   QString name = element.attribute("name");
@@ -239,7 +239,7 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::readXML(QDomElement& element)
 void QgsLayerTreeGroup::writeXML(QDomElement& parentElement)
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement("tree-group");
+  QDomElement elem = doc.createElement("layer-tree-group");
   elem.setAttribute("name", mName);
   elem.setAttribute("expanded", mExpanded ? "1" : "0");
   elem.setAttribute("checked", QgsLayerTreeUtils::checkStateToXml(mChecked));
@@ -250,6 +250,17 @@ void QgsLayerTreeGroup::writeXML(QDomElement& parentElement)
     node->writeXML(elem);
 
   parentElement.appendChild(elem);
+}
+
+QString QgsLayerTreeGroup::dump() const
+{
+  QString header = QString( "GROUP: %1 visible=%2 expanded=%3\n" ).arg( name() ).arg( mChecked ).arg( mExpanded );
+  QStringList childrenDump;
+  foreach (QgsLayerTreeNode* node, mChildren)
+    childrenDump << node->dump().split( "\n" );
+  for (int i = 0; i < childrenDump.count(); ++i)
+    childrenDump[i].prepend( "  " );
+  return header + childrenDump.join( "\n" );
 }
 
 void QgsLayerTreeGroup::setVisible(Qt::CheckState state)
@@ -360,7 +371,7 @@ void QgsLayerTreeLayer::setVisible(bool state)
 
 QgsLayerTreeLayer* QgsLayerTreeLayer::readXML(QDomElement& element)
 {
-  if (element.tagName() != "tree-layer")
+  if (element.tagName() != "layer-tree-layer")
     return 0;
 
   QString layerID = element.attribute("id");
@@ -388,7 +399,7 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML(QDomElement& element)
 void QgsLayerTreeLayer::writeXML(QDomElement& parentElement)
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement("tree-layer");
+  QDomElement elem = doc.createElement("layer-tree-layer");
   elem.setAttribute("id", mLayerId);
   elem.setAttribute("name", layerName());
   elem.setAttribute("visible", mVisible ? "1" : "0");
@@ -397,6 +408,11 @@ void QgsLayerTreeLayer::writeXML(QDomElement& parentElement)
   writeCommonXML(elem);
 
   parentElement.appendChild(elem);
+}
+
+QString QgsLayerTreeLayer::dump() const
+{
+  return QString( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( layerName() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
 }
 
 void QgsLayerTreeLayer::registryLayersAdded(QList<QgsMapLayer*> layers)

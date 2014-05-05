@@ -22,6 +22,8 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsexception.h"
+#include "qgslayertreenode.h"
+#include "qgslayertreeutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgspluginlayer.h"
@@ -304,7 +306,7 @@ struct QgsProject::Imp
   bool dirty;
 
   Imp()
-      : title( "" )
+      : title( )
       , dirty( false )
   {                             // top property node is the root
     // "properties" that contains all plug-in
@@ -318,14 +320,10 @@ struct QgsProject::Imp
   {
     //QgsDebugMsg( "Clearing project properties Impl->clear();" );
 
+    file.setFileName( QString() );
     properties_.clearKeys();
-    title = "";
-
-    // reset some default project properties
-    // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", true );
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
-    QgsProject::instance()->writeEntry( "Paths", "/Absolute", false );
+    title.clear();
+    dirty = false;
   }
 
 };  // struct QgsProject::Imp
@@ -336,15 +334,10 @@ QgsProject::QgsProject()
     : imp_( new QgsProject::Imp )
     , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
     , mRelationManager( new QgsRelationManager( this ) )
+    , mRootGroup( 0 )
 {
-  // Set some default project properties
-  // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
-  writeEntry( "PositionPrecision", "/Automatic", true );
-  writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
-  writeEntry( "Paths", "/Absolute", false );
-  // XXX writeEntry() makes the project dirty, but it doesn't make sense
-  // for a new project to be dirty, so let's clean it up
-  dirty( false );
+  clear();
+
 } // QgsProject ctor
 
 
@@ -353,6 +346,7 @@ QgsProject::~QgsProject()
 {
   delete mBadLayerHandler;
   delete mRelationManager;
+  delete mRootGroup;
 
   // note that std::auto_ptr automatically deletes imp_ when it's destroyed
 } // QgsProject dtor
@@ -375,6 +369,11 @@ void QgsProject::title( QString const &title )
   dirty( true );
 } // void QgsProject::title
 
+void QgsProject::setTitle( const QString& t )
+{
+  title( t );
+}
+
 
 QString const & QgsProject::title() const
 {
@@ -393,6 +392,11 @@ void QgsProject::dirty( bool b )
   imp_->dirty = b;
 } // bool QgsProject::isDirty()
 
+void QgsProject::setDirty(bool b)
+{
+  dirty( b );
+}
+
 
 
 void QgsProject::setFileName( QString const &name )
@@ -408,6 +412,24 @@ QString QgsProject::fileName() const
 {
   return imp_->file.fileName();
 } // QString QgsProject::fileName() const
+
+void QgsProject::clear()
+{
+  imp_->clear();
+  mEmbeddedLayers.clear();
+  mRelationManager->clear();
+
+  delete mRootGroup;
+  mRootGroup = new QgsLayerTreeGroup;
+
+  // reset some default project properties
+  // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
+  writeEntry( "PositionPrecision", "/Automatic", true );
+  writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
+  writeEntry( "Paths", "/Absolute", false );
+
+  setDirty( false );
+}
 
 
 
@@ -858,13 +880,11 @@ bool QgsProject::read()
 
   }
 
-  // before we start loading everything, let's clear out the current set of
-  // properties first so that we don't have the properties from the previous
-  // project still hanging around
+  // start new project, just keep the file name
 
-  imp_->clear();
-  mEmbeddedLayers.clear();
-  mRelationManager->clear();
+  QString fileName = imp_->file.fileName();
+  clear();
+  imp_->file.setFileName(fileName);
 
   // now get any properties
   _getProperties( *doc, imp_->properties_ );
@@ -873,12 +893,28 @@ bool QgsProject::read()
 
   dump_( imp_->properties_ );
 
-
-  // restore the canvas' area of interest
-
   // now get project title
   _getTitle( *doc, imp_->title );
 
+  // read the layer tree from project file
+
+  QgsLayerTreeGroup* newRoot = 0;
+  QDomElement layerTreeElem = doc->documentElement().firstChildElement( "layer-tree-group" );
+  if ( !layerTreeElem.isNull() )
+  {
+    newRoot = QgsLayerTreeGroup::readXML( layerTreeElem );
+  }
+  else
+  {
+    newRoot = QgsLayerTreeUtils::readOldLegend( doc->documentElement().firstChildElement( "legend" ) );
+  }
+
+  if ( newRoot )
+  {
+    delete mRootGroup;
+    mRootGroup = newRoot;
+    QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
+  }
 
   // get the map layers
   QPair< bool, QList<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );
@@ -992,6 +1028,9 @@ bool QgsProject::write()
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
 
+  // write layer tree
+  mRootGroup->writeXML( qgisNode );
+
   // let map canvas and legend write their information
   emit writeProject( *doc );
 
@@ -1093,9 +1132,7 @@ bool QgsProject::write()
 
 void QgsProject::clearProperties()
 {
-  //QgsDebugMsg("entered.");
-
-  imp_->clear();
+  clear();
 
   dirty( true );
 } // QgsProject::clearProperties()
@@ -1829,4 +1866,9 @@ QString QgsProject::homePath() const
 QgsRelationManager* QgsProject::relationManager() const
 {
   return mRelationManager;
+}
+
+QgsLayerTreeGroup* QgsProject::layerTreeRoot() const
+{
+  return mRootGroup;
 }

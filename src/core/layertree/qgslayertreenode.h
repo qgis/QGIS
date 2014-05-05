@@ -30,6 +30,8 @@ public:
   static QgsLayerTreeNode* readXML(QDomElement& element);
   virtual void writeXML(QDomElement& parentElement) = 0;
 
+  virtual QString dump() const = 0;
+
   bool isExpanded() const { return mExpanded; }
   void setExpanded(bool expanded) { mExpanded = expanded; }
 
@@ -109,6 +111,8 @@ public:
   static QgsLayerTreeLayer* readXML(QDomElement& element);
   virtual void writeXML(QDomElement& parentElement);
 
+  virtual QString dump() const;
+
 protected slots:
   void registryLayersAdded(QList<QgsMapLayer*> layers);
 
@@ -147,6 +151,8 @@ public:
 
   static QgsLayerTreeGroup* readXML(QDomElement& element);
   virtual void writeXML(QDomElement& parentElement);
+
+  virtual QString dump() const;
 
   Qt::CheckState isVisible() const { return mChecked; }
   void setVisible(Qt::CheckState state);

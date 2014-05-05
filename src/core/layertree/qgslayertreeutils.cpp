@@ -6,6 +6,9 @@
 
 QgsLayerTreeGroup* QgsLayerTreeUtils::readOldLegend(const QDomElement& legendElem)
 {
+  if (legendElem.isNull())
+    return 0;
+
   QDomNodeList legendChildren = legendElem.childNodes();
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
 

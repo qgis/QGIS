@@ -39,6 +39,7 @@ class QDomDocument;
 class QDomElement;
 class QDomNode;
 
+class QgsLayerTreeGroup;
 class QgsMapLayer;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
@@ -79,10 +80,14 @@ class CORE_EXPORT QgsProject : public QObject
     /**
        Every project has an associated title string
 
-       @todo However current dialogs don't allow setting of it yet
+       ### QGIS 3: remove in favor of setTitle(...)
      */
     //@{
     void title( const QString & title );
+
+    /** Set project title
+     *  @note added in 2.4 */
+    void setTitle( const QString& title );
 
     /** returns title */
     const QString & title() const;
@@ -95,7 +100,12 @@ class CORE_EXPORT QgsProject : public QObject
     //@{
     bool isDirty() const;
 
+    // ### QGIS 3: remove in favor of setDirty(...)
     void dirty( bool b );
+
+    /** Set project as dirty (modified).
+     *  @note added in 2.4 */
+    void setDirty( bool b );
     //@}
 
 
@@ -109,6 +119,11 @@ class CORE_EXPORT QgsProject : public QObject
     QString fileName() const;
     //@}
 
+    /** Clear the project
+     * @note added in 2.4
+     */
+    void clear();
+
 
     /** read project file
 
@@ -117,15 +132,6 @@ class CORE_EXPORT QgsProject : public QObject
        @note dirty set to false after successful invocation
 
        @note file name argument implicitly sets file
-
-       (Is that really desirable behavior?  Maybe prompt to save before
-       reading new one?)
-
-       Should we presume the file is opened elsewhere?  Or do we open it
-       ourselves?
-
-       XXX How to best get modify access to Qgis state?  Actually we can finagle
-       that by searching for qgisapp in object hiearchy.
 
        @note
 
@@ -202,6 +208,8 @@ class CORE_EXPORT QgsProject : public QObject
 
     /**
        removes all project properties
+
+       ### QGIS 3: remove in favor of clear()
     */
     void clearProperties();
 
@@ -318,6 +326,10 @@ class CORE_EXPORT QgsProject : public QObject
 
     QgsRelationManager* relationManager() const;
 
+    /** Return pointer to the root (invisible) node of the project's layer tree
+     * @node added in 2.4 */
+    QgsLayerTreeGroup* layerTreeRoot() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -402,6 +414,8 @@ class CORE_EXPORT QgsProject : public QObject
                        QStringList& avoidIntersectionList ) const;
 
     QgsRelationManager* mRelationManager;
+
+    QgsLayerTreeGroup* mRootGroup;
 
 }; // QgsProject
 

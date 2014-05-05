@@ -3201,9 +3201,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   closeProject();
 
   QgsProject* prj = QgsProject::instance();
-  prj->title( QString::null );
-  prj->setFileName( QString::null );
-  prj->clearProperties(); // why carry over properties from previous projects?
+  prj->clear();
 
   //set the color for selections
   //the default can be set in qgisoptions
