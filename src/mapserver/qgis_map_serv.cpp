@@ -283,14 +283,19 @@ int main( int argc, char * argv[] )
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
-  printRequestInfos();
-
 #ifdef QGSMSDEBUG
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
+  QString logFile = QgsLogger::logFile();
+
   while ( fcgi_accept() >= 0 )
   {
+    if ( !logFile.isEmpty() )
+    {
+      setenv( "QGIS_LOG_FILE", logFile.toLocal8Bit().data(), 1 );
+    }
+
     printRequestInfos(); //print request infos if in debug mode
 
     //Request handler
