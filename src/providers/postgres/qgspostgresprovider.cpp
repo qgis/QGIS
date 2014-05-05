@@ -3093,7 +3093,14 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
 {
   QgsCoordinateReferenceSystem srs;
-  srs.createFromSrid( mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt() );
+  int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
+  srs.createFromSrid( srid );
+  if ( !srs.isValid() )
+  {
+    QgsPostgresResult result = mConnectionRO->PQexec( QString( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      srs.createFromProj4( result.PQgetvalue( 0, 0 ) );
+  }
   return srs;
 }
 
