@@ -109,9 +109,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
-                alg = ScriptAlgorithm(None, unicode(self.editor.toPlainText()))
+                alg = ScriptAlgorithm(None, unicode(self.editor.text()))
             elif self.algType == self.SCRIPT_R:
-                alg = RAlgorithm(None, unicode(self.editor.toPlainText()))
+                alg = RAlgorithm(None, unicode(self.editor.text()))
         else:
             alg = self.alg
 
