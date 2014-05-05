@@ -24,6 +24,7 @@
 #include "qgsexception.h"
 #include "qgslayertreenode.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgspluginlayer.h"
@@ -334,9 +335,14 @@ QgsProject::QgsProject()
     : imp_( new QgsProject::Imp )
     , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
     , mRelationManager( new QgsRelationManager( this ) )
-    , mRootGroup( 0 )
+    , mRootGroup( new QgsLayerTreeGroup )
 {
   clear();
+
+  // bind the layer tree to the map layer registry.
+  // whenever layers are added to or removed from the registry,
+  // layer tree will be updated
+  new QgsLayerTreeRegistryBridge(mRootGroup, this);
 
 } // QgsProject ctor
 
@@ -419,8 +425,7 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
 
-  delete mRootGroup;
-  mRootGroup = new QgsLayerTreeGroup;
+  mRootGroup->removeChildren(0, mRootGroup->children().count());
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -898,23 +903,17 @@ bool QgsProject::read()
 
   // read the layer tree from project file
 
-  QgsLayerTreeGroup* newRoot = 0;
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
   {
-    newRoot = QgsLayerTreeGroup::readXML( layerTreeElem );
+    mRootGroup->readChildrenFromXML( layerTreeElem );
   }
   else
   {
-    newRoot = QgsLayerTreeUtils::readOldLegend( doc->documentElement().firstChildElement( "legend" ) );
+    QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( "legend" ) );
   }
 
-  if ( newRoot )
-  {
-    delete mRootGroup;
-    mRootGroup = newRoot;
-    QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
-  }
+  QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
 
   // get the map layers
   QPair< bool, QList<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );

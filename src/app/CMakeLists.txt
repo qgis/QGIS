@@ -443,6 +443,7 @@ INCLUDE_DIRECTORIES(
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
+  ../gui/layertree
   ../plugins
   ../python
   gps

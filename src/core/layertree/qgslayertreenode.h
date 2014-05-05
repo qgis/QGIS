@@ -152,6 +152,8 @@ public:
   static QgsLayerTreeGroup* readXML(QDomElement& element);
   virtual void writeXML(QDomElement& parentElement);
 
+  void readChildrenFromXML(QDomElement& element);
+
   virtual QString dump() const;
 
   Qt::CheckState isVisible() const { return mChecked; }

@@ -223,15 +223,7 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::readXML(QDomElement& element)
 
   groupNode->readCommonXML(element);
 
-  QDomElement childElem = element.firstChildElement();
-  while (!childElem.isNull())
-  {
-    QgsLayerTreeNode* newNode = QgsLayerTreeNode::readXML(childElem);
-    if (newNode)
-      groupNode->addChildNode(newNode);
-
-    childElem = childElem.nextSiblingElement();
-  }
+  groupNode->readChildrenFromXML(element);
 
   return groupNode;
 }
@@ -250,6 +242,19 @@ void QgsLayerTreeGroup::writeXML(QDomElement& parentElement)
     node->writeXML(elem);
 
   parentElement.appendChild(elem);
+}
+
+void QgsLayerTreeGroup::readChildrenFromXML(QDomElement& element)
+{
+  QDomElement childElem = element.firstChildElement();
+  while (!childElem.isNull())
+  {
+    QgsLayerTreeNode* newNode = QgsLayerTreeNode::readXML(childElem);
+    if (newNode)
+      addChildNode(newNode);
+
+    childElem = childElem.nextSiblingElement();
+  }
 }
 
 QString QgsLayerTreeGroup::dump() const

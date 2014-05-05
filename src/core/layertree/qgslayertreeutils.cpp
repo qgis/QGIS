@@ -4,13 +4,12 @@
 
 #include <QDomElement>
 
-QgsLayerTreeGroup* QgsLayerTreeUtils::readOldLegend(const QDomElement& legendElem)
+bool QgsLayerTreeUtils::readOldLegend(QgsLayerTreeGroup* root, const QDomElement& legendElem)
 {
   if (legendElem.isNull())
-    return 0;
+    return false;
 
   QDomNodeList legendChildren = legendElem.childNodes();
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
 
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
@@ -25,7 +24,7 @@ QgsLayerTreeGroup* QgsLayerTreeUtils::readOldLegend(const QDomElement& legendEle
     }
   }
 
-  return root;
+  return true;
 }
 
 QString QgsLayerTreeUtils::checkStateToXml(Qt::CheckState state)

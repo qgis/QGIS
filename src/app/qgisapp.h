@@ -46,7 +46,7 @@ class QgsComposerManager;
 class QgsContrastEnhancement;
 class QgsGeometry;
 class QgsFeature;
-
+class QgsLayerTreeView;
 class QgsLegend;
 class QgsLayerOrder;
 class QgsMapCanvas;
@@ -1310,6 +1310,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createToolBars();
     void createStatusBar();
     void setupConnections();
+    void initLayerTreeView();
     void initLegend();
     void createOverview();
     void createCanvasTools();
@@ -1353,6 +1354,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mToolbarMenu;
 
     // docks ------------------------------------------
+    QDockWidget *mLayerTreeDock;
     QDockWidget *mLegendDock;
     QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
@@ -1451,6 +1453,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *toolPopupDisplay;
     //! Map canvas
     QgsMapCanvas *mMapCanvas;
+    //! Table of contents (legend) for the map
+    QgsLayerTreeView* mLayerTreeView;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
     //! Table of contents (legend) to order layers of the map

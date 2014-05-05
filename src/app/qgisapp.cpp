@@ -134,6 +134,8 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
 #include "qgslabelinggui.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
 #include "qgslegend.h"
 #include "qgslayerorder.h"
 #include "qgslegendlayer.h"
@@ -538,6 +540,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   createStatusBar();
   createCanvasTools();
   mMapCanvas->freeze();
+  initLayerTreeView();
   initLegend();
   createOverview();
   createMapTips();
@@ -2168,6 +2171,21 @@ QgsMessageBar* QgisApp::messageBar()
 {
   Q_ASSERT( mInfoBar );
   return mInfoBar;
+}
+
+void QgisApp::initLayerTreeView()
+{
+  mLayerTreeDock = new QDockWidget( tr( "Layers NEW" ), this );
+  mLayerTreeDock->setObjectName( "LayersNEW" );
+  mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  QgsLayerTreeModel* model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
+
+  mLayerTreeView = new QgsLayerTreeView( this );
+  mLayerTreeView->setModel( model );
+
+  mLayerTreeDock->setWidget( mLayerTreeView );
+  addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 }
 
 void QgisApp::initLegend()
