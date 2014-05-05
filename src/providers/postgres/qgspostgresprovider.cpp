@@ -637,6 +637,7 @@ bool QgsPostgresProvider::loadFields()
     int fieldPrec = -1;
     QString fieldComment( "" );
     int tableoid = result.PQftable( i );
+    int attnum = result.PQftablecol( i );
 
     sql = QString( "SELECT typname,typtype,typelem,typlen FROM pg_type WHERE oid=%1" ).arg( typOid );
     // just oid; needs more work to support array type
@@ -652,22 +653,19 @@ bool QgsPostgresProvider::loadFields()
     QString formattedFieldType;
     if ( tableoid > 0 )
     {
-      sql = QString( "SELECT attnum,pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
-            .arg( tableoid ).arg( quotedValue( fieldName ) );
+      sql = QString( "SELECT pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" )
+            .arg( tableoid ).arg( quotedValue( attnum ) );
 
       QgsPostgresResult tresult = mConnectionRO->PQexec( sql );
-      QString attnum = tresult.PQgetvalue( 0, 0 );
-      formattedFieldType = tresult.PQgetvalue( 0, 1 );
+      if ( tresult.PQntuples() > 0 )
+        formattedFieldType = tresult.PQgetvalue( 0, 0 );
 
-      if ( !attnum.isEmpty() )
-      {
-        sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
-              .arg( tableoid ).arg( attnum );
+      sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
+            .arg( tableoid ).arg( attnum );
 
-        tresult = mConnectionRO->PQexec( sql );
-        if ( tresult.PQntuples() > 0 )
-          fieldComment = tresult.PQgetvalue( 0, 0 );
-      }
+      tresult = mConnectionRO->PQexec( sql );
+      if ( tresult.PQntuples() > 0 )
+        fieldComment = tresult.PQgetvalue( 0, 0 );
     }
 
     QVariant::Type fieldType;
