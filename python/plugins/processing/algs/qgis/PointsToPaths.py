@@ -38,7 +38,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterNumber import ParameterNumber
+#from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -48,7 +48,7 @@ class PointsToPaths(GeoAlgorithm):
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
     DATE_FORMAT = 'DATE_FORMAT'
-    GAP_PERIOD = 'GAP_PERIOD'
+    #GAP_PERIOD = 'GAP_PERIOD'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
@@ -62,9 +62,9 @@ class PointsToPaths(GeoAlgorithm):
             ParameterTableField(self.ORDER_FIELD, 'Order field', self.VECTOR))
         self.addParameter(ParameterString(self.DATE_FORMAT,
             'Date format (if order field is DateTime)', '', optional=True))
-        self.addParameter(ParameterNumber(
-            self.GAP_PERIOD,
-            'Gap period (if order field is DateTime)', 0, 60, 0))
+        #self.addParameter(ParameterNumber(
+        #    self.GAP_PERIOD,
+        #    'Gap period (if order field is DateTime)', 0, 60, 0))
         self.addOutput(OutputVector(self.OUTPUT, 'Paths'))
 
     def processAlgorithm(self, progress):
@@ -73,7 +73,7 @@ class PointsToPaths(GeoAlgorithm):
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)
         dateFormat = unicode(self.getParameterValue(self.DATE_FORMAT))
-        gap = int(self.getParameterValue(self.GAP_PERIOD))
+        #gap = int(self.getParameterValue(self.GAP_PERIOD))
 
         fields = QgsFields()
         fields.append(QgsField('group', QVariant.String, '', 254, 0))
