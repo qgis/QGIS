@@ -44,7 +44,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   layout->addWidget( mButton );
 
   connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
-  connect( mCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
+  connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged( int ) ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 }
 
@@ -58,15 +58,18 @@ void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
   mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
 
-QString QgsFieldExpressionWidget::currentField( bool *isExpression )
+QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isValid )
 {
   if ( isExpression )
   {
     *isExpression = false;
   }
+  if ( isValid )
+  {
+    *isValid = true;
+  }
 
   int i = mCombo->currentIndex();
-
   const QModelIndex index = mFieldModel->index( i, 0 );
   if ( !index.isValid() )
   {
@@ -76,6 +79,10 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression )
   if ( isExpression )
   {
     *isExpression = mFieldModel->data( index, QgsFieldModel::IsExpressionRole ).toBool();
+  }
+  if ( isValid )
+  {
+    *isValid = mFieldModel->data( index, QgsFieldModel::ExpressionValidityRole ).toBool();
   }
   QString expression = mFieldModel->data( index, QgsFieldModel::ExpressionRole ).toString();
   return expression;
@@ -100,7 +107,7 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
   mFieldModel->setLayer( layer );
 }
 
-void QgsFieldExpressionWidget::setField( QString fieldName )
+void QgsFieldExpressionWidget::setField( const QString fieldName )
 {
   if ( fieldName.isEmpty() )
     return;
@@ -112,6 +119,8 @@ void QgsFieldExpressionWidget::setField( QString fieldName )
     idx = mFieldModel->setExpression( fieldName );
   }
   mCombo->setCurrentIndex( idx.row() );
+
+  currentFieldChanged();
 }
 
 void QgsFieldExpressionWidget::editExpression()
@@ -136,39 +145,57 @@ void QgsFieldExpressionWidget::editExpression()
   }
 }
 
-void QgsFieldExpressionWidget::expressionEdited( QString expression )
+void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 {
-  mFieldModel->removeExpression();
-  setField( expression );
+  QModelIndex idx = mFieldModel->setExpression( expression );
+  mCombo->setCurrentIndex( idx.row() );
+  currentFieldChanged();
 }
 
-void QgsFieldExpressionWidget::indexChanged( int i )
+void QgsFieldExpressionWidget::changeEvent( QEvent* event )
+{
+  if ( event->type() == QEvent::EnabledChange )
+  {
+    updateLineEditStyle();
+  }
+}
+
+void QgsFieldExpressionWidget::currentFieldChanged( int i /* =0 */ )
 {
   Q_UNUSED( i );
-  bool isExpression;
-  QString fieldName = currentField( &isExpression );
-  bool isValid = true;
 
-  QFont font = mCombo->lineEdit()->font();
-  font.setItalic( isExpression );
-  mCombo->lineEdit()->setFont( font );
+  updateLineEditStyle();
 
+  bool isExpression, isValid;
+  QString fieldName = currentField( &isExpression, &isValid );
+  emit fieldChanged( fieldName );
+  emit fieldChanged( fieldName, isValid );
+}
+
+void QgsFieldExpressionWidget::updateLineEditStyle()
+{
   QPalette palette;
-  palette.setColor( QPalette::Text, Qt::black );
-  if ( isExpression )
+  if ( !isEnabled() )
   {
-    QModelIndex idx = mFieldModel->indexFromName( fieldName );
-    if ( idx.isValid() )
+    palette.setColor( QPalette::Text, Qt::gray );
+  }
+  else
+  {
+    bool isExpression, isValid;
+    currentField( &isExpression, &isValid );
+
+    QFont font = mCombo->lineEdit()->font();
+    font.setItalic( isExpression );
+    mCombo->lineEdit()->setFont( font );
+
+    if ( isExpression && !isValid )
     {
-      isValid = mFieldModel->data( idx, QgsFieldModel::ExpressionValidityRole ).toBool();
-      if ( !isValid )
-      {
-        palette.setColor( QPalette::Text, Qt::red );
-      }
+      palette.setColor( QPalette::Text, Qt::red );
+    }
+    else
+    {
+      palette.setColor( QPalette::Text, Qt::black );
     }
   }
   mCombo->lineEdit()->setPalette( palette );
-
-  emit fieldChanged( fieldName );
-  emit fieldChanged( fieldName, isValid );
 }

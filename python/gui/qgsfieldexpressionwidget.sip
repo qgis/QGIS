@@ -20,11 +20,14 @@ class QgsFieldExpressionWidget : QWidget
     /**
      * @brief currentField returns the currently selected field or expression if allowed
      * @param isExpression determines if the string returned is the name of a field or an expression
+     * @param isValid determines if the expression (or field) returned is valid
      */
-    QString currentField( bool *isExpression = 0 );
+    QString currentField( bool *isExpression = 0, bool *isValid = 0 );
 
     //! Returns the currently used layer
     QgsVectorLayer* layer();
+    
+    void changeEvent( QEvent* event );
 
   signals:
     //! the signal is emitted when the currently selected field changes

@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     explicit QgsFieldModel( QObject *parent = 0 );
 
     //! return the index corresponding to a given fieldName
-    QModelIndex indexFromName( QString fieldName );
+    QModelIndex indexFromName( const QString fieldName );
 
     //! returns the currently used layer
     void setAllowExpression( bool allowExpression );
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * @brief setExpression sets a single expression to be added after the fields at the end of the model
      * @return the model index of the newly added expression
      */
-    QModelIndex setExpression( QString expression );
+    QModelIndex setExpression( const QString expression );
 
     //! remove expressions from the model
     void removeExpression();

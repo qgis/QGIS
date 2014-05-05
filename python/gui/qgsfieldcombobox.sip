@@ -24,6 +24,8 @@ class QgsFieldComboBox : QComboBox
 
     //! Returns the currently used layer
     QgsVectorLayer* layer();
+    
+    void changeEvent( QEvent* event );
 
   signals:
     //! the signal is emitted when the currently selected field changes
