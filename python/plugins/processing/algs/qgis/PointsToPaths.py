@@ -25,6 +25,7 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 from datetime import datetime
 from datetime import timedelta
 
@@ -40,7 +41,9 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterString import ParameterString
 #from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
-from processing.tools import dataobjects, vector
+from processing.outputs.OutputDirectory import OutputDirectory
+from processing.tools import dataobjects, vector, system
+
 
 class PointsToPaths(GeoAlgorithm):
 
@@ -49,7 +52,8 @@ class PointsToPaths(GeoAlgorithm):
     ORDER_FIELD = 'ORDER_FIELD'
     DATE_FORMAT = 'DATE_FORMAT'
     #GAP_PERIOD = 'GAP_PERIOD'
-    OUTPUT = 'OUTPUT'
+    OUTPUT_LINES = 'OUTPUT_LINES'
+    OUTPUT_TEXT = 'OUTPUT_TEXT'
 
     def defineCharacteristics(self):
         self.name = 'Points to path'
@@ -65,7 +69,8 @@ class PointsToPaths(GeoAlgorithm):
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT, 'Paths'))
+        self.addOutput(OutputVector(self.OUTPUT_LINES, 'Paths'))
+        self.addOutput(OutputDirectory(self.OUTPUT_TEXT, 'Directory'))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -74,12 +79,13 @@ class PointsToPaths(GeoAlgorithm):
         orderField = self.getParameterValue(self.ORDER_FIELD)
         dateFormat = unicode(self.getParameterValue(self.DATE_FORMAT))
         #gap = int(self.getParameterValue(self.GAP_PERIOD))
+        dirName = self.getOutputValue(self.OUTPUT_TEXT)
 
         fields = QgsFields()
         fields.append(QgsField('group', QVariant.String, '', 254, 0))
         fields.append(QgsField('begin', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+        writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(
             fields, QGis.WKBLineString, layer.dataProvider().crs())
 
         points = dict()
@@ -100,22 +106,49 @@ class PointsToPaths(GeoAlgorithm):
 
         progress.setPercentage(0)
 
+        da = QgsDistanceArea()
+
         count = 0
         total = 100.0 / len(points)
-        for k, v in points.iteritems():
-            v.sort()
+        for group, vertices in points.iteritems():
+            vertices.sort()
             f = QgsFeature()
             f.initAttributes(len(fields))
             f.setFields(fields)
-            f['group'] = k
-            f['begin'] = v[0][0]
-            f['end'] = v[-1][0]
+            f['group'] = group
+            f['begin'] = vertices[0][0]
+            f['end'] = vertices[-1][0]
+
+            if dirName == '':
+                fileName = system.getTempFilenameInTempFolder('%s.txt' % group)
+            else:
+                fileName = os.path.join(dirName, '%s.txt' % group)
+
+            fl = open(fileName, 'w')
+            fl.write('angle=Azimuth\n')
+            fl.write('heading=Coordinate_System\n')
+            fl.write('dist_units=Default\n')
+
             line = []
-            for node in v:
+            i = 0
+            for node in vertices:
                 line.append(node[1])
+
+                if i == 0:
+                    fl.write('startAt=%f;%f;90\n' % (node[1].x(), node[1].y()))
+                    fl.write('survey=Polygonal\n')
+                    fl.write('[data]\n')
+                else:
+                    angle = line[i-1].azimuth(line[i])
+                    distance = da.measureLine(line[i-1], line[i])
+                    fl.write('%f;%f;90\n' % (angle, distance))
+
+                i += 1
+
             f.setGeometry(QgsGeometry.fromPolyline(line))
             writer.addFeature(f)
             count += 1
             progress.setPercentage(int(count * total))
 
         del writer
+        fl.close()
