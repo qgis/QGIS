@@ -149,9 +149,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       layerSelectionMenu.addAction( action );
     }
 
-    QAction *action = new QAction( tr( "All (%1)" ).arg( idResult.size() ), 0 );
-    connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-    layerSelectionMenu.addAction( action );
+    if ( mLayerIdResults.size() > 1 )
+    {
+      QAction *action = new QAction( tr( "All (%1)" ).arg( idResult.size() ), 0 );
+      connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      layerSelectionMenu.addAction( action );
+    }
 
     // exec layer selection menu
     QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
