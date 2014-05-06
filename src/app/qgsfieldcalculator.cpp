@@ -88,6 +88,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   bool hasselection = vl->selectedFeaturesIds().size() > 0;
   mOnlyUpdateSelectedCheckBox->setChecked( hasselection );
   mOnlyUpdateSelectedCheckBox->setEnabled( hasselection );
+  mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeaturesIds().size() ) );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
