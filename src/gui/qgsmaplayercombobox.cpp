@@ -16,6 +16,7 @@
 #include "qgsmaplayercombobox.h"
 #include "qgsmaplayermodel.h"
 
+
 QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
     QComboBox( parent )
 {
@@ -39,11 +40,11 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
+      emit layerChanged( currentLayer() );
       return;
     }
   }
   setCurrentIndex( -1 );
-
   emit layerChanged( currentLayer() );
 }
 
