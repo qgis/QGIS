@@ -27,6 +27,7 @@ class QgsFieldExpressionWidget : QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer();
     
+  protected:
     void changeEvent( QEvent* event );
 
   signals:

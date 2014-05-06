@@ -54,6 +54,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
+  protected:
     void changeEvent( QEvent* event );
 
   signals:
