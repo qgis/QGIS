@@ -63,12 +63,6 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="mUrlLabel">
             <property name="text">
@@ -93,7 +87,14 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0">
+          <item row="1" column="0" colspan="2">
+           <widget class="QPushButton" name="mReloadPushButton">
+            <property name="text">
+             <string>Refresh HTML</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QLabel" name="mResizeModeLabel">
             <property name="text">
              <string>Resize mode</string>
@@ -103,20 +104,20 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="2" column="1">
            <widget class="QComboBox" name="mResizeModeComboBox"/>
           </item>
           <item row="4" column="0" colspan="2">
-           <widget class="QCheckBox" name="mUseSmartBreaksCheckBox">
+           <widget class="QPushButton" name="mAddFramePushButton">
             <property name="text">
-             <string>Use smart page breaks</string>
+             <string>Add Frame</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QPushButton" name="mReloadPushButton">
+          <item row="5" column="0" colspan="2">
+           <widget class="QCheckBox" name="mUseSmartBreaksCheckBox">
             <property name="text">
-             <string>Refresh HTML</string>
+             <string>Use smart page breaks</string>
             </property>
            </widget>
           </item>

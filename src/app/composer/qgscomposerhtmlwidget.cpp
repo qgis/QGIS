@@ -113,6 +113,8 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
     mHtml->setResizeMode(( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
     composition->endMultiFrameCommand();
   }
+
+  mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 }
 
 void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_stateChanged( int state )
@@ -143,6 +145,29 @@ void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
   mHtml->loadHtml();
 }
 
+void QgsComposerHtmlWidget::on_mAddFramePushButton_clicked()
+{
+  if ( !mHtml || !mFrame )
+  {
+    return;
+  }
+
+  //create a new frame based on the current frame
+  QPointF pos = mFrame->pos();
+  //shift new frame so that it sits 10 units below current frame
+  pos.ry() += mFrame->rect().height() + 10;
+
+  QgsComposerFrame * newFrame = mHtml->createNewFrame( mFrame, pos, mFrame->rect().size() );
+  mHtml->recalculateFrameSizes();
+
+  //set new frame as selection
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    composition->setSelectedItem( newFrame );
+  }
+}
+
 void QgsComposerHtmlWidget::setGuiElementValues()
 {
   if ( !mHtml )
@@ -154,5 +179,7 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mUrlLineEdit->setText( mHtml->url().toString() );
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mHtml->resizeMode() ) );
   mUseSmartBreaksCheckBox->setChecked( mHtml->useSmartBreaks() );
+
+  mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
   blockSignals( false );
 }

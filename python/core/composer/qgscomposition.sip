@@ -413,6 +413,11 @@ class QgsComposition : QGraphicsScene
      * to refresh their contents.
     @note added in version 2.3*/
     void refreshItems();
+    
+    /**Clears any selected items and sets an item as the current selection.
+     * @param item item to set as selected
+     * @note added in version 2.3*/
+    void setSelectedItem( QgsComposerItem* item );
 
   protected:
     void init();

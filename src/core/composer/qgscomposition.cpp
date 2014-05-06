@@ -186,6 +186,13 @@ void QgsComposition::refreshItems()
   emit refreshItemsTriggered();
 }
 
+void QgsComposition::setSelectedItem( QgsComposerItem *item )
+{
+  clearSelection();
+  item->setSelected( true );
+  emit selectedItemChanged( item );
+}
+
 QRectF QgsComposition::compositionBounds() const
 {
   //start with an empty rectangle
