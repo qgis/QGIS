@@ -36,7 +36,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
 )
 
 SET(QGIS_CUSTOMWIDGETS_UI_HDRS
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsscalevisibilitygroupbox.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsscalevisibilitywidget.h
 )
 
 INCLUDE_DIRECTORIES(
