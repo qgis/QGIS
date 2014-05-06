@@ -23,6 +23,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QDomElement>
 #include <QDir>
@@ -39,6 +40,8 @@ QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
     mHasAssociatedFeature( hasFeature ), mFeatureId( feature )
 {
   mWebView = new QWebView();
+  mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+
   mWidgetContainer = new QGraphicsProxyWidget( this );
   mWidgetContainer->setWidget( mWebView );
 
