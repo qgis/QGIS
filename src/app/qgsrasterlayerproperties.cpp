@@ -1622,6 +1622,9 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
 
 void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
 {
+
+  apply(); // make sure the style to save is uptodate
+
   // a flag passed by reference
   bool defaultSavedFlag = false;
   // after calling this the above flag will be set true for success
@@ -1690,6 +1693,8 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   // ensure the user never omits the extension from the file name
   if ( !outputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
     outputFileName += ".qml";
+
+  apply(); // make sure the style to save is uptodate
 
   bool defaultLoadedFlag = false;
   QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
