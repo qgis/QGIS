@@ -28,6 +28,14 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsFieldModel;
 
+/**
+ * @brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
+ * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
+ * The combo box is editable, allowing expressions to be edited inline.
+ * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
+ * The expression will be added to the model (and the fieldChanged signals emitted)
+ * only when editing in the line edit is finished (focus lost, enter key pressed).
+ */
 class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
