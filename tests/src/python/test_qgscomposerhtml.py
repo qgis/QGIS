@@ -103,6 +103,40 @@ class TestQgsComposerHtml(TestCase):
 
         assert myTestResult, myMessage
 
+    def testHtmlSmartBreaks(self):
+        """Test rendering to multiframes with smart breaks."""
+        composerHtml = QgsComposerHtml(self.mComposition, False)
+        htmlFrame = QgsComposerFrame(self.mComposition, composerHtml,
+                                     10, 10, 100, 50)
+        composerHtml.addFrame(htmlFrame)
+        composerHtml.setResizeMode(
+            QgsComposerMultiFrame.RepeatUntilFinished)
+        composerHtml.setUseSmartBreaks( True )
+        composerHtml.setUrl(self.htmlUrl())
+        composerHtml.frame(0).setFrameEnabled(True)
+
+        print "Checking page 1"
+        myPage = 0
+        checker1 = QgsCompositionChecker('composerhtml_smartbreaks1', self.mComposition)
+        myTestResult, myMessage = checker1.testComposition( myPage )
+        assert myTestResult, myMessage
+
+        print "Checking page 2"
+        myPage = 1
+        checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
+        myTestResult, myMessage = checker2.testComposition( myPage )
+        assert myTestResult, myMessage
+
+        print "Checking page 3"
+        myPage = 2
+        checker3 = QgsCompositionChecker('composerhtml_smartbreaks3', self.mComposition)
+        myTestResult, myMessage = checker3.testComposition( myPage )
+
+        self.mComposition.removeMultiFrame( composerHtml )
+        composerHtml = None
+
+        assert myTestResult, myMessage
+
     def testComposerHtmlAccessor(self):
         """Test that we can retrieve the ComposerHtml instance given an item.
         """
