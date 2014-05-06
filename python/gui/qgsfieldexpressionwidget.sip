@@ -17,6 +17,9 @@ class QgsFieldExpressionWidget : QWidget
     //! set the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
 
+    //! return the title used for the expression dialog
+    const QString expressionDialogTitle();
+
     /**
      * @brief currentField returns the currently selected field or expression if allowed
      * @param isExpression determines if the string returned is the name of a field or an expression
@@ -27,9 +30,6 @@ class QgsFieldExpressionWidget : QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer();
     
-  protected:
-    void changeEvent( QEvent* event );
-
   signals:
     //! the signal is emitted when the currently selected field changes
     void fieldChanged( QString fieldName );

@@ -28,6 +28,7 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsFieldModel;
 
+
 /**
  * @brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
  * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
@@ -39,6 +40,8 @@ class QgsFieldModel;
 class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
+
   public:
     /**
      * @brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
@@ -47,6 +50,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( QString title );
+
+    //! return the title used for the expression dialog
+    const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
     //! set the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -60,9 +66,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! Returns the currently used layer
     QgsVectorLayer* layer();
-
-  protected:
-    void changeEvent( QEvent* event );
 
   signals:
     //! the signal is emitted when the currently selected field changes
@@ -101,6 +104,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void updateLineEditStyle( const QString expression = QString() );
 
     bool isExpressionValid( const QString expressionStr );
+
+  protected:
+    void changeEvent( QEvent* event );
 
   private:
     QComboBox* mCombo;
