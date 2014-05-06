@@ -17,6 +17,8 @@
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
 #include "qgsaddremovemultiframecommand.h"
+#include "qgsnetworkaccessmanager.h"
+
 #include <QCoreApplication>
 #include <QPainter>
 #include <QWebFrame>
@@ -32,6 +34,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
+  mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
   if ( mComposition )
   {
