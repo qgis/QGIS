@@ -212,7 +212,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Symbols in library</string>
+        <string>Symbols in group</string>
        </property>
       </widget>
      </item>
