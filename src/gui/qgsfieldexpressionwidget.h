@@ -28,7 +28,6 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsFieldModel;
 
-
 class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
@@ -78,12 +77,22 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! open the expression dialog to edit the current or add a new expression
     void editExpression();
 
-    //! when expression is edited by the user in the line edit
+    //! when expression is edited by the user in the line edit, it will be checked for validity
     void expressionEdited( const QString expression );
+
+    //! when expression has been edited (finished) it will be added to the model
+    void expressionEditingFinished();
 
     void currentFieldChanged( int i = 0 );
 
-    void updateLineEditStyle();
+    /**
+     * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
+     * @param expression if expression is given it will be evaluated for the given string, otherwise it takes
+     * current expression from the model
+     */
+    void updateLineEditStyle( const QString expression = QString() );
+
+    bool isExpressionValid( const QString expressionStr );
 
   private:
     QComboBox* mCombo;

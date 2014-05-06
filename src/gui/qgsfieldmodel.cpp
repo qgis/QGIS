@@ -113,12 +113,6 @@ QModelIndex QgsFieldModel::setExpression( const QString expression )
   mExpression = QList<QString>() << expression;
   endResetModel();
 
-  // fetch feature to be evaluate the expression
-  if ( !mFeature.isValid() )
-  {
-    mLayer->getFeatures().nextFeature( mFeature );
-  }
-
   return index( mFields.count() , 0 );
 }
 
@@ -209,16 +203,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx >= 0 )
       {
+        if ( !mLayer )
+          return false;
         QgsExpression exp( mExpression[exprIdx] );
-        if ( mFeature.isValid() )
-        {
-          exp.evaluate( &mFeature, mLayer->pendingFields() );
-          return !exp.hasEvalError();
-        }
-        else
-        {
-          return QVariant();
-        }
+        exp.prepare( mLayer->pendingFields() );
+        return !exp.hasParserError();
       }
       return true;
     }
@@ -241,15 +230,13 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         // if expression, test validity
+        if ( !mLayer )
+          return false;
         QgsExpression exp( mExpression[exprIdx] );
-
-        if ( mFeature.isValid() )
+        exp.prepare( mLayer->pendingFields() );
+        if ( exp.hasParserError() )
         {
-          exp.evaluate( &mFeature, mLayer->pendingFields() );
-          if ( exp.hasEvalError() )
-          {
-            return QBrush( QColor( Qt::red ) );
-          }
+          return QBrush( QColor( Qt::red ) );
         }
       }
       return QVariant();

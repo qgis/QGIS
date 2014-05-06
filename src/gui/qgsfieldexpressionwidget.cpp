@@ -44,6 +44,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   layout->addWidget( mButton );
 
   connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
+  connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
   connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged( int ) ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 }
@@ -147,6 +148,12 @@ void QgsFieldExpressionWidget::editExpression()
 
 void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 {
+  updateLineEditStyle( expression );
+}
+
+void QgsFieldExpressionWidget::expressionEditingFinished()
+{
+  const QString expression = mCombo->lineEdit()->text();
   QModelIndex idx = mFieldModel->setExpression( expression );
   mCombo->setCurrentIndex( idx.row() );
   currentFieldChanged();
@@ -172,7 +179,7 @@ void QgsFieldExpressionWidget::currentFieldChanged( int i /* =0 */ )
   emit fieldChanged( fieldName, isValid );
 }
 
-void QgsFieldExpressionWidget::updateLineEditStyle()
+void QgsFieldExpressionWidget::updateLineEditStyle( const QString expression )
 {
   QPalette palette;
   if ( !isEnabled() )
@@ -182,8 +189,15 @@ void QgsFieldExpressionWidget::updateLineEditStyle()
   else
   {
     bool isExpression, isValid;
-    currentField( &isExpression, &isValid );
-
+    if ( !expression.isEmpty() )
+    {
+      isExpression = true;
+      isValid = isExpressionValid( expression );
+    }
+    else
+    {
+      currentField( &isExpression, &isValid );
+    }
     QFont font = mCombo->lineEdit()->font();
     font.setItalic( isExpression );
     mCombo->lineEdit()->setFont( font );
@@ -198,4 +212,15 @@ void QgsFieldExpressionWidget::updateLineEditStyle()
     }
   }
   mCombo->lineEdit()->setPalette( palette );
+}
+
+bool QgsFieldExpressionWidget::isExpressionValid( const QString expressionStr )
+{
+  QgsVectorLayer* vl = layer();
+  if ( !vl )
+    return false;
+
+  QgsExpression expression( expressionStr );
+  expression.prepare( vl->pendingFields() );
+  return !expression.hasParserError();
 }

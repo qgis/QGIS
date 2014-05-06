@@ -22,8 +22,6 @@
 
 #include "qgsvectorlayer.h"
 
-class QgsFeature;
-
 /**
  * @brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
  * If allowed, expressions might be added to the end of the model.
@@ -85,8 +83,6 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     bool mAllowExpression;
 
   private:
-    QgsFeature mFeature;
-
     void fetchFeature();
 
     // QAbstractItemModel interface
