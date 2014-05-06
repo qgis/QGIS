@@ -77,6 +77,7 @@ class TestQgsComposerHtml(TestCase):
         composerHtml.addFrame(htmlFrame)
         composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
+        composerHtml.setUseSmartBreaks( False )
         composerHtml.setUrl(self.htmlUrl())
         composerHtml.frame(0).setFrameEnabled(True)
 
