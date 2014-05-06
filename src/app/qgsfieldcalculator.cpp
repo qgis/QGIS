@@ -85,7 +85,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     mNewFieldGroupBox->setCheckable( false );
   }
 
-  mOnlyUpdateSelectedCheckBox->setChecked( vl->selectedFeaturesIds().size() > 0 );
+  bool hasselection = vl->selectedFeaturesIds().size() > 0;
+  mOnlyUpdateSelectedCheckBox->setChecked( hasselection );
+  mOnlyUpdateSelectedCheckBox->setEnabled( hasselection );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
