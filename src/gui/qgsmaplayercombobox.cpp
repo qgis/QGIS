@@ -22,7 +22,7 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );
 
-  connect( this, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
+  connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
 }
 
 void QgsMapLayerComboBox::setFilters( QgsMapLayerProxyModel::Filters filters )
@@ -43,6 +43,8 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
     }
   }
   setCurrentIndex( -1 );
+
+  emit layerChanged( currentLayer() );
 }
 
 QgsMapLayer* QgsMapLayerComboBox::currentLayer()
@@ -75,5 +77,3 @@ void QgsMapLayerComboBox::indexChanged( int i )
   QgsMapLayer* layer = currentLayer();
   emit layerChanged( layer );
 }
-
-
