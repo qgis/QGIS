@@ -63,6 +63,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # the atlas
         self.mAtlas = self.mComposition.atlasComposition()
         self.mAtlas.setCoverageLayer( mVectorLayer )
+        self.mAtlas.setEnabled( True )
         self.mComposition.setAtlasMode( QgsComposition.ExportAtlas )
 
         # an overview
