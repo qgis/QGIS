@@ -129,6 +129,7 @@ Oid QgsPostgresResult::PQoidValue()
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
+QMap<QString, QgsPostgresConn *> QgsPostgresConn::sTransactionConnections;
 const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bool shared )
@@ -285,6 +286,62 @@ void QgsPostgresConn::disconnect()
   }
 
   delete this;
+}
+
+bool QgsPostgresConn::beginTransaction( const QString& id, const QString& connString, QString& error )
+{
+  QgsPostgresConn* conn = connectDb( connString, false /*readonly*/, false /*shared*/ );
+  if ( !conn )
+  {
+    return false;
+  }
+
+  sTransactionConnections.insert( id, conn );
+  QgsPostgresResult r = conn->PQexec( "BEGIN TRANSACTION", true );
+  if ( r.PQresultStatus() == PGRES_COMMAND_OK )
+  {
+    return true;
+  }
+  else
+  {
+    error = r.PQresultErrorMessage();
+    return false;
+  }
+}
+
+bool QgsPostgresConn::executeTransactionSql( const QString& id, const QString& sql, QString& error )
+{
+  QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( id );
+  if ( it == sTransactionConnections.end() )
+  {
+    return false;
+  }
+
+  QgsPostgresConn* conn = it.value();
+  QgsPostgresResult r = conn->PQexec( sql, true );
+  if ( r.PQresultStatus() == PGRES_COMMAND_OK )
+  {
+    return true;
+  }
+  else
+  {
+    error = r.PQresultErrorMessage();
+    return false;
+  }
+}
+
+bool QgsPostgresConn::removeTransaction( const QString& id )
+{
+  QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( id );
+  if ( it == sTransactionConnections.end() )
+  {
+    return false;
+  }
+
+  QgsPostgresConn* conn = it.value();
+  sTransactionConnections.remove( id );
+  conn->disconnect();
+  return true;
 }
 
 /* private */
@@ -1608,6 +1665,16 @@ void QgsPostgresConn::deleteConnection( QString theConnName )
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
   settings.remove( key );
+}
+
+QgsPostgresConn* QgsPostgresConn::transactionConnection( const QString& transactionId )
+{
+  QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( transactionId );
+  if ( it == sTransactionConnections.end() )
+  {
+    return 0;
+  }
+  return it.value();
 }
 
 bool QgsPostgresConn::cancel()

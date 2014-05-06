@@ -75,8 +75,22 @@ class QgsConnectionPoolGroup
       }
     }
 
-    T acquire()
+    T acquire( const QString& transactionId = QString() )
     {
+      if ( !transactionId.isEmpty() )
+      {
+        //create mutex for transaction if it does not yet exist
+        if ( !transactionMutexes.contains( transactionId ) )
+        {
+          transactionMutexes.insert( transactionId, new QMutex() );
+        }
+
+        transactionMutexes[ transactionId ]->lock();
+        T c;
+        qgsConnectionPool_TransactionConnection( c, transactionId );
+        return c;
+      }
+
       // we are going to acquire a resource - if no resource is available, we will block here
       sem.acquire();
 
@@ -111,8 +125,17 @@ class QgsConnectionPoolGroup
       return c;
     }
 
-    void release( T conn )
+    void release( T conn, const QString& transactionId = QString() )
     {
+      if ( !transactionId.isEmpty() )
+      {
+        if ( transactionMutexes.contains( transactionId ) )
+        {
+          transactionMutexes[transactionId]->unlock();
+        }
+        return;
+      }
+
       connMutex.lock();
       Item i;
       i.c = conn;
@@ -175,6 +198,7 @@ class QgsConnectionPoolGroup
     QString connInfo;
     QStack<Item> conns;
     QMutex connMutex;
+    QMap< QString, QMutex* > transactionMutexes;
     QSemaphore sem;
     QTimer* expirationTimer;
 };
@@ -204,7 +228,7 @@ class QgsConnectionPool
 
     //! Try to acquire a connection: if no connections are available, the thread will get blocked.
     //! @return initialized connection or null on error
-    T acquireConnection( const QString& connInfo )
+    T acquireConnection( const QString& connInfo, const QString& transactionId = QString() )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -215,11 +239,11 @@ class QgsConnectionPool
       T_Group* group = *it;
       mMutex.unlock();
 
-      return group->acquire();
+      return group->acquire( transactionId );
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused
-    void releaseConnection( T conn )
+    void releaseConnection( T conn, const QString& transactionId = QString() )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( qgsConnectionPool_ConnectionToName( conn ) );
@@ -227,7 +251,7 @@ class QgsConnectionPool
       T_Group* group = *it;
       mMutex.unlock();
 
-      group->release( conn );
+      group->release( conn, transactionId );
     }
 
   protected:

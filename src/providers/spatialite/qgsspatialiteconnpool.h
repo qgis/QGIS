@@ -30,6 +30,12 @@ inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsSqliteHandl
   c = QgsSqliteHandle::openDb( connInfo, false );
 }
 
+inline void qgsConnectionPool_TransactionConnection( QgsSqliteHandle*& c, QString transactionId )
+{
+  Q_UNUSED( transactionId );
+  c = 0; //spatialite does not support transactions
+}
+
 inline void qgsConnectionPool_ConnectionDestroy( QgsSqliteHandle* c )
 {
   QgsSqliteHandle::closeDb( c );  // will delete itself

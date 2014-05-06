@@ -125,6 +125,7 @@ SET(QGIS_CORE_SRCS
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
   qgssnapper.cpp
+  qgstransaction.cpp
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp

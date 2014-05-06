@@ -26,11 +26,18 @@
 const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 
 
-QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
+QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request, const QString& transactionId )
     : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
-    , mFeatureQueueSize( sFeatureQueueSize )
+    , mFeatureQueueSize( sFeatureQueueSize ), mTransactionId( transactionId )
 {
-  mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+  if ( transactionId.isEmpty() )
+  {
+    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+  }
+  else
+  {
+    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo, transactionId );
+  }
 
   if ( !mConn )
   {
@@ -197,7 +204,7 @@ bool QgsPostgresFeatureIterator::close()
 
   mConn->closeCursor( mCursorName );
 
-  QgsPostgresConnPool::instance()->releaseConnection( mConn );
+  QgsPostgresConnPool::instance()->releaseConnection( mConn, mTransactionId );
   mConn = 0;
 
   while ( !mFeatureQueue.empty() )
@@ -545,10 +552,11 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
     , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
     , mQuery( p->mQuery )
     , mShared( p->mShared )
+    , mTransactionId( p->transactionId() )
 {
 }
 
 QgsFeatureIterator QgsPostgresFeatureSource::getFeatures( const QgsFeatureRequest& request )
 {
-  return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, false, request ) );
+  return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, false, request, mTransactionId ) );
 }

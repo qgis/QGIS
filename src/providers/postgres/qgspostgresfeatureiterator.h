@@ -47,6 +47,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QgsPostgresPrimaryKeyType mPrimaryKeyType;
     QList<int> mPrimaryKeyAttrs;
     QString mQuery;
+    QString mTransactionId;
     // TODO: loadFields()
 
     QSharedPointer<QgsPostgresSharedData> mShared;
@@ -60,7 +61,7 @@ class QgsPostgresConn;
 class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
 {
   public:
-    QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request, const QString& transactionId = QString() );
 
     ~QgsPostgresFeatureIterator();
 
@@ -101,6 +102,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
+
+    QString mTransactionId;
 
     static const int sFeatureQueueSize;
 

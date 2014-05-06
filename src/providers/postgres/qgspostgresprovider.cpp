@@ -334,7 +334,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& re
     return QgsFeatureIterator();
   }
 
-  return QgsFeatureIterator( new QgsPostgresFeatureIterator( static_cast<QgsPostgresFeatureSource*>( featureSource() ), false, request ) );
+  return QgsFeatureIterator( new QgsPostgresFeatureIterator( static_cast<QgsPostgresFeatureSource*>( featureSource() ), false, request, mTransactionId ) );
 }
 
 
@@ -3148,6 +3148,38 @@ QString  QgsPostgresProvider::description() const
 
   return tr( "PostgreSQL/PostGIS provider\n%1\nPostGIS %2" ).arg( pgVersion ).arg( postgisVersion );
 } //  QgsPostgresProvider::description()
+
+QGISEXTERN bool beginTransaction( const QString& id, const QString& connString, QString& error )
+{
+  return QgsPostgresConn::beginTransaction( id, connString, error );
+}
+
+QGISEXTERN bool commitTransaction( const QString& id, QString& error )
+{
+  bool ok = QgsPostgresConn::executeTransactionSql( id, "COMMIT TRANSACTION", error );
+  if ( ok )
+  {
+    QgsPostgresConn::removeTransaction( id );
+    return true;
+  }
+  return false;
+}
+
+QGISEXTERN bool rollbackTransaction( const QString& id, QString& error )
+{
+  bool ok = QgsPostgresConn::executeTransactionSql( id, "ROLLBACK TRANSACTION", error );
+  if ( ok )
+  {
+    QgsPostgresConn::removeTransaction( id );
+    return true;
+  }
+  return false;
+}
+
+QGISEXTERN bool executeTransactionSql( const QString& id, const QString& sql, QString& error )
+{
+  return QgsPostgresConn::executeTransactionSql( id, sql, error );
+}
 
 /**
  * Class factory to return a pointer to a newly created
