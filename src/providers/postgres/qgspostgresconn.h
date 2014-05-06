@@ -163,6 +163,11 @@ class QgsPostgresConn : public QObject
     static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true );
     void disconnect();
 
+    //transaction handling
+    static bool beginTransaction( const QString& id, const QString& connString, QString& error );
+    static bool executeTransactionSql( const QString& id, const QString& sql, QString& error );
+    static bool removeTransaction( const QString& id );
+
     //! get postgis version string
     QString postgisVersion();
 
@@ -270,6 +275,8 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 
+    static QgsPostgresConn* transactionConnection( const QString& transactionId );
+
   private:
     QgsPostgresConn( QString conninfo, bool readOnly, bool shared );
     ~QgsPostgresConn();
@@ -313,6 +320,7 @@ class QgsPostgresConn : public QObject
 
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
+    static QMap<QString, QgsPostgresConn *> sTransactionConnections;
 
     /** count number of spatial columns in a given relation */
     void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );

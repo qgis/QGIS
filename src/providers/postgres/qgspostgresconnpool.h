@@ -31,6 +31,11 @@ inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsPostgresCon
   c = QgsPostgresConn::connectDb( connInfo, true, false );
 }
 
+inline void qgsConnectionPool_TransactionConnection( QgsPostgresConn*& c, QString transactionId )
+{
+  c = QgsPostgresConn::transactionConnection( transactionId );
+}
+
 inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn* c )
 {
   c->disconnect(); // will delete itself

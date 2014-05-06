@@ -942,6 +942,15 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& render
   return false;
 }
 
+void QgsVectorLayer::setTransactionId( const QString& id )
+{
+  mTransactionId = id;
+  if ( mDataProvider )
+  {
+    mDataProvider->setTransactionId( id );
+  }
+}
+
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
 {
   if ( !mDataProvider )

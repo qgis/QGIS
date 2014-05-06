@@ -1386,6 +1386,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
+    void setTransactionId( const QString& id );
+    QString transactionId() const { return mTransactionId; }
+
   public slots:
     /**
      * Select feature by its ID
@@ -1723,6 +1726,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
+
+    // Transaction id or empty string if not in transactional mode
+    QString mTransactionId;
 
     friend class QgsVectorLayerFeatureSource;
 };

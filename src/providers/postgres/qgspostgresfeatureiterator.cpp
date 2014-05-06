@@ -26,11 +26,18 @@
 const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 
 
-QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
+QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request, const QString& transactionId )
     : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
     , mFeatureQueueSize( sFeatureQueueSize )
 {
-  mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+  if ( transactionId.isEmpty() )
+  {
+    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+  }
+  else
+  {
+    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo, transactionId );
+  }
 
   if ( !mConn )
   {
