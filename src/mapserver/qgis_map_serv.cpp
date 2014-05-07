@@ -32,12 +32,14 @@
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsmaplayerregistry.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
 #include <QImage>
 #include <QSettings>
 #include <QDateTime>
+#include <QScopedPointer>
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
@@ -280,7 +282,7 @@ int main( int argc, char * argv[] )
   QgsCapabilitiesCache capabilitiesCache;
 
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
-  QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
+  QScopedPointer< QgsMapRenderer > theMapRenderer( new QgsMapRenderer );
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef QGSMSDEBUG
@@ -291,6 +293,10 @@ int main( int argc, char * argv[] )
 
   while ( fcgi_accept() >= 0 )
   {
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    qgsapp.processEvents();
+
+
     if ( !logFile.isEmpty() )
     {
 #ifdef Q_WS_WIN
@@ -303,7 +309,7 @@ int main( int argc, char * argv[] )
     printRequestInfos(); //print request infos if in debug mode
 
     //Request handler
-    QgsRequestHandler* theRequestHandler = createRequestHandler();
+    QScopedPointer<QgsRequestHandler> theRequestHandler( createRequestHandler() );
     QMap<QString, QString> parameterMap;
     try
     {
@@ -327,7 +333,6 @@ int main( int argc, char * argv[] )
     if ( paramIt == parameterMap.constEnd() )
     {
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
-      delete theRequestHandler;
       continue;
     }
     else
@@ -342,7 +347,7 @@ int main( int argc, char * argv[] )
       {
         //error handling
       }
-      QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler );
+      QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.take() );
       wcsServer.executeRequest();
     }
     else if ( serviceString == "WFS" )
@@ -352,7 +357,7 @@ int main( int argc, char * argv[] )
       {
         //error handling
       }
-      QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler );
+      QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.take() );
       wfsServer.executeRequest();
     }
     else    //WMS else
@@ -363,12 +368,11 @@ int main( int argc, char * argv[] )
         //error handling
       }
       //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
-      QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler, theMapRenderer, &capabilitiesCache );
+      QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.take(), theMapRenderer.data(), &capabilitiesCache );
       wmsServer.executeRequest();
     }
   }
 
-  delete theMapRenderer;
   return 0;
 }
 
