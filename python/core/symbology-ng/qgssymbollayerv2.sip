@@ -110,8 +110,8 @@ class QgsSymbolLayerV2
 
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     virtual QgsSymbolV2::OutputUnit outputUnit() const;
-    
-    virtual void setMapUnitScale( const QgsMapUnitScale& mapUnitScale );
+
+    virtual void setMapUnitScale( const QgsMapUnitScale& scale );
     virtual QgsMapUnitScale mapUnitScale() const;
 
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
@@ -200,20 +200,20 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
-    
+
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
     void setSizeUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit sizeUnit() const;
-    
+
     void setSizeMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& sizeMapUnitScale() const;
 
-    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    virtual QgsSymbolV2::OutputUnit outputUnit() const;
-    
-    void setMapUnitScale( const QgsMapUnitScale& scale);
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h );
@@ -232,7 +232,7 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
                        double& offsetX, double& offsetY,
-                       const QgsMapUnitScale& widthMapUnitScale, const QgsMapUnitScale& heightMapUnitScale ) const /PyName=markerOffset2/;
+                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
 
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 };
@@ -254,9 +254,15 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 
     void setWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit widthUnit() const;
-    
+
     void setWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& widthMapUnitScale() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
@@ -285,5 +291,3 @@ class QgsFillSymbolLayerV2 : QgsSymbolLayerV2
     /**Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 };
- 
- 

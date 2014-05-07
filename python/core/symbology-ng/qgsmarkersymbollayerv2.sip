@@ -61,13 +61,19 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     double outlineWidth() const;
     void setOutlineWidth( double w );
 
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u );
-    
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& outlineWidthMapUnitScale() const;
 
     bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
   protected:
 
@@ -127,12 +133,15 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outlineWidthUnit() const;
-    
+
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& outlineWidthMapUnitScale() const;
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 };
@@ -179,5 +188,3 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QChar character() const;
     void setCharacter( QChar ch );
 };
- 
- 

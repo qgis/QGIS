@@ -42,6 +42,9 @@ class QgsSymbolLayerV2Utils
     static QString encodePoint( QPointF point );
     static QPointF decodePoint( QString str );
 
+    static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
+    static QgsMapUnitScale decodeMapUnitScale( const QString& str );
+
     static QString encodeRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeRealVector( const QString& s );
 
@@ -148,7 +151,7 @@ class QgsSymbolLayerV2Utils
                                        double offset = 0.0,
                                        const QVector<qreal>* dashPattern = 0 );
     /**Create ogr feature style string for brush
-        @param fillColr fill color*/
+     @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, QString rotationFunc );
@@ -190,9 +193,9 @@ class QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
@@ -248,5 +251,3 @@ class QgsSymbolLayerV2Utils
      */
     static QString fieldOrExpressionFromExpression( QgsExpression* expression );
 };
- 
- 

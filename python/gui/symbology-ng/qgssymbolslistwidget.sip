@@ -31,5 +31,3 @@ class QgsSymbolsListWidget : QWidget
     void updateSymbolColor();
     void updateSymbolInfo();
 };
- 
- 

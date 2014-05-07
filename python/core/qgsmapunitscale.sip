@@ -22,6 +22,3 @@ public:
 
   double computeMapUnitsPerPixel(const QgsRenderContext& c) const;
 };
- 
- 
- 

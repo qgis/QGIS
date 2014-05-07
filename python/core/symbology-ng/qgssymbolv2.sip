@@ -92,7 +92,7 @@ class QgsSymbolV2
 
     OutputUnit outputUnit() const;
     void setOutputUnit( OutputUnit u );
-    
+
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );
 
@@ -139,7 +139,7 @@ class QgsSymbolV2RenderContext
 
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
-    
+
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale& scale);
 
@@ -255,5 +255,3 @@ class QgsFillSymbolV2 : QgsSymbolV2
 
     virtual QgsSymbolV2* clone() const /Factory/;
 };
- 
- 
