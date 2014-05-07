@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsscalevisibilitywidgetplugin.h
+   qgsscalerangewidgetplugin.h
     --------------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
@@ -13,20 +13,20 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSSCALEVISIBILITYWIDGETPLUGIN_H
-#define QGSSCALEVISIBILITYWIDGETPLUGIN_H
+#ifndef QGSSCALERANGEWIDGETPLUGIN_H
+#define QGSSCALERANGEWIDGETPLUGIN_H
 
 #include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
 
 
-class QDESIGNER_WIDGET_EXPORT QgsScaleVisibilityWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
+class QDESIGNER_WIDGET_EXPORT QgsScaleRangeWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsScaleVisibilityWidgetPlugin( QObject *parent = 0 );
+    explicit QgsScaleRangeWidgetPlugin( QObject *parent = 0 );
 
   private:
     bool mInitialized;
@@ -45,4 +45,4 @@ class QDESIGNER_WIDGET_EXPORT QgsScaleVisibilityWidgetPlugin : public QObject, p
     QString whatsThis() const;
     QString domXml() const;
 };
-#endif // QGSSCALEVISIBILITYWIDGETPLUGIN_H
+#endif // QGSSCALERANGEWIDGETPLUGIN_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsscalevisibilitywidgetplugin.cpp
+   qgsscalerangewidgetplugin.cpp
     --------------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
@@ -14,53 +14,53 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsscalevisibilitywidgetplugin.h"
-#include "qgsscalevisibilitywidget.h"
+#include "qgsscalerangewidgetplugin.h"
+#include "qgsscalerangewidget.h"
 
 
-QgsScaleVisibilityWidgetPlugin::QgsScaleVisibilityWidgetPlugin( QObject *parent )
+QgsScaleRangeWidgetPlugin::QgsScaleRangeWidgetPlugin( QObject *parent )
     : QObject( parent )
     , mInitialized( false )
 {
 }
 
 
-QString QgsScaleVisibilityWidgetPlugin::name() const
+QString QgsScaleRangeWidgetPlugin::name() const
 {
-  return "QgsScaleVisibilityWidget";
+  return "QgsScaleRangeWidget";
 }
 
-QString QgsScaleVisibilityWidgetPlugin::group() const
+QString QgsScaleRangeWidgetPlugin::group() const
 {
   return QgisCustomWidgets::groupName();
 }
 
-QString QgsScaleVisibilityWidgetPlugin::includeFile() const
+QString QgsScaleRangeWidgetPlugin::includeFile() const
 {
-  return "qgsscalevisibilitywidget.h";
+  return "qgsscalerangewidget.h";
 }
 
-QIcon QgsScaleVisibilityWidgetPlugin::icon() const
+QIcon QgsScaleRangeWidgetPlugin::icon() const
 {
   return QIcon();
 }
 
-bool QgsScaleVisibilityWidgetPlugin::isContainer() const
+bool QgsScaleRangeWidgetPlugin::isContainer() const
 {
   return false;
 }
 
-QWidget *QgsScaleVisibilityWidgetPlugin::createWidget( QWidget *parent )
+QWidget *QgsScaleRangeWidgetPlugin::createWidget( QWidget *parent )
 {
-  return new QgsScaleVisibilityWidget( parent );
+  return new QgsScaleRangeWidget( parent );
 }
 
-bool QgsScaleVisibilityWidgetPlugin::isInitialized() const
+bool QgsScaleRangeWidgetPlugin::isInitialized() const
 {
   return mInitialized;
 }
 
-void QgsScaleVisibilityWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsScaleRangeWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
   Q_UNUSED( core );
   if ( mInitialized )
@@ -69,20 +69,20 @@ void QgsScaleVisibilityWidgetPlugin::initialize( QDesignerFormEditorInterface *c
 }
 
 
-QString QgsScaleVisibilityWidgetPlugin::toolTip() const
+QString QgsScaleRangeWidgetPlugin::toolTip() const
 {
-  return "A widget to define the scale visibility";
+  return "A widget to define the scale range";
 }
 
-QString QgsScaleVisibilityWidgetPlugin::whatsThis() const
+QString QgsScaleRangeWidgetPlugin::whatsThis() const
 {
-  return "A widget to define the scale visibility";
+  return "A widget to define the scale range.";
 }
 
-QString QgsScaleVisibilityWidgetPlugin::domXml() const
+QString QgsScaleRangeWidgetPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mScaleVisibilityWidget\">\n"
+                  " <widget class=\"%1\" name=\"mScaleRangeWidget\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"

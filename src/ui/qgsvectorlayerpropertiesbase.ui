@@ -465,7 +465,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleVisibilityWidget" name="mScaleVisibilityWidget">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
                     <property name="toolTip">
                      <string>A widget to define the scale visibility</string>
                     </property>
@@ -1647,9 +1647,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleVisibilityWidget</class>
+   <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
-   <header>qgsscalevisibilitywidget.h</header>
+   <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>

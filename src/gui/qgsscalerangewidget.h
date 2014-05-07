@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsscalevisibilitywidget.h
+   qgsscalerangewidget.h
     --------------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
@@ -13,22 +13,27 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSSCALEVISIBILITYWIDGET_H
-#define QGSSCALEVISIBILITYWIDGET_H
+#ifndef QGSSCALERANGEWIDGET_H
+#define QGSSCALERANGEWIDGET_H
 
-#include "ui_qgsscalevisibilitywidget.h"
+#include <QGridLayout>
+#include <QLabel>
+#include <QToolButton>
+
+
 #include "qgscollapsiblegroupbox.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsscalecombobox.h"
 
 
-class GUI_EXPORT QgsScaleVisibilityWidget : public QWidget, private Ui::QgsScaleVisibilityWidget
+class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 {
     Q_OBJECT
 
   public:
-    explicit QgsScaleVisibilityWidget( QWidget *parent = 0 );
-    ~QgsScaleVisibilityWidget();
+    explicit QgsScaleRangeWidget( QWidget *parent = 0 );
+    ~QgsScaleRangeWidget();
 
     void showEvent( QShowEvent * );
 
@@ -49,12 +54,21 @@ class GUI_EXPORT QgsScaleVisibilityWidget : public QWidget, private Ui::QgsScale
     void setFromLayer( QgsMapLayer* layer );
 
   private slots:
-    void on_mMinimumScaleSetCurrentPushButton_clicked();
-    void on_mMaximumScaleSetCurrentPushButton_clicked();
+    void setMaxScaleFromCanvas();
+    void setMinScaleFromCanvas();
 
   private:
     //! pointer to the map canvas used for current buttons.
     QgsMapCanvas* mCanvas;
+
+    // ui
+    QGridLayout* mLayout;
+    QLabel* mMaximumScaleIconLabel;
+    QLabel* mMinimumScaleIconLabel;
+    QToolButton* mMaximumScaleSetCurrentPushButton;
+    QToolButton* mMinimumScaleSetCurrentPushButton;
+    QgsScaleComboBox* mMaximumScaleComboBox;
+    QgsScaleComboBox* mMinimumScaleComboBox;
 };
 
-#endif // QGSSCALEVISIBILITYWIDGET_H
+#endif // QGSSCALERANGEWIDGET_H

@@ -21,7 +21,7 @@
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
-#include "qgsscalevisibilitywidgetplugin.h"
+#include "qgsscalerangewidgetplugin.h"
 
 
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
@@ -37,7 +37,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsFieldComboBoxPlugin );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin );
   mWidgets.append( new QgsMapLayerComboBoxPlugin );
-  mWidgets.append( new QgsScaleVisibilityWidgetPlugin );
+  mWidgets.append( new QgsScaleRangeWidgetPlugin );
 }
 
 QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const

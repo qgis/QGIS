@@ -12,7 +12,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
    qgsfieldcomboboxplugin.cpp
    qgsfieldexpressionwidgetplugin.cpp
    qgsmaplayercomboboxplugin.cpp
-   qgsscalevisibilitywidgetplugin.cpp
+   qgsscalerangewidgetplugin.cpp
 )
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
@@ -21,7 +21,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
    qgsfieldcomboboxplugin.h
    qgsfieldexpressionwidgetplugin.h
    qgsmaplayercomboboxplugin.h
-   qgsscalevisibilitywidgetplugin.h
+   qgsscalerangewidgetplugin.h
 )
 
 QT4_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
@@ -36,11 +36,11 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsmaplayercomboboxplugin.h
-  qgsscalevisibilitywidgetplugin.h
+  qgsscalerangewidgetplugin.h
 )
 
 SET(QGIS_CUSTOMWIDGETS_UI_HDRS
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsscalevisibilitywidget.h
+  # ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsXXXwidget.h
 )
 
 INCLUDE_DIRECTORIES(

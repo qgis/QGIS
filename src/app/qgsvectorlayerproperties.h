@@ -20,7 +20,7 @@
 #define QGSVECTORLAYERPROPERTIES
 
 #include "qgsoptionsdialogbase.h"
-#include "qgsscalevisibilitywidget.h"
+#include "qgsscalerangewidget.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgsaddattrdialog.h"

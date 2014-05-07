@@ -385,9 +385,9 @@ void QgsVectorLayerProperties::syncToLayer( void )
   setDisplayField( layer-> displayField() );
 
   // set up the scale based layer visibility stuff....
-  mScaleVisibilityWidget->setFromLayer( layer );
+  mScaleRangeWidget->setFromLayer( layer );
   mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
-  mScaleVisibilityWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
   // get simplify drawing configuration
   const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
@@ -494,8 +494,8 @@ void QgsVectorLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   layer->toggleScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
-  layer->setMinimumScale( 1.0 / mScaleVisibilityWidget->minimumScale() );
-  layer->setMaximumScale( 1.0 / mScaleVisibilityWidget->maximumScale() );
+  layer->setMinimumScale( 1.0 / mScaleRangeWidget->minimumScale() );
+  layer->setMaximumScale( 1.0 / mScaleRangeWidget->maximumScale() );
 
   // provider-specific options
   if ( layer->dataProvider() )

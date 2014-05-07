@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsscalevisibilitywidget.cpp
+   qgsscalerangewidget.cpp
     --------------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
@@ -13,28 +13,42 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgsscalevisibilitywidget.h"
+#include "qgsscalerangewidget.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 
-QgsScaleVisibilityWidget::QgsScaleVisibilityWidget( QWidget *parent )
+
+QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
     : QWidget( parent )
     , mCanvas( 0 )
 {
-  setupUi( this );
+  mLayout = new QGridLayout( this );
+  mLayout->setContentsMargins( 0, 0, 0, 0 );
 
+  QLabel* maxLbl = new QLabel( tr("Maximimum (inclusive)"), this);
+  QLabel* minLbl = new QLabel( tr("Minimimum (exclusive)"), this);
+
+  mMaximumScaleIconLabel = new QLabel(this);
   mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.svg" ) );
+  mMinimumScaleIconLabel = new QLabel(this);
   mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.svg" ) );
 
-  mMinimumScaleSetCurrentPushButton->hide();
-  mMaximumScaleSetCurrentPushButton->hide();
+  mMaximumScaleComboBox = new QgsScaleComboBox(this);
+  mMinimumScaleComboBox = new QgsScaleComboBox(this);
+
+  mLayout->addWidget(maxLbl, 0, 0);
+  mLayout->addWidget(mMaximumScaleIconLabel, 0, 1);
+  mLayout->addWidget(mMaximumScaleComboBox, 0, 2);
+  mLayout->addWidget(minLbl, 0, 3);
+  mLayout->addWidget(mMinimumScaleIconLabel, 0, 4);
+  mLayout->addWidget(mMinimumScaleComboBox, 0, 5);
 }
 
-QgsScaleVisibilityWidget::~QgsScaleVisibilityWidget()
+QgsScaleRangeWidget::~QgsScaleRangeWidget()
 {
 }
 
-void QgsScaleVisibilityWidget::showEvent( QShowEvent * )
+void QgsScaleRangeWidget::showEvent( QShowEvent * )
 {
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
   if ( projectScales )
@@ -45,47 +59,57 @@ void QgsScaleVisibilityWidget::showEvent( QShowEvent * )
   }
 }
 
-void QgsScaleVisibilityWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
+void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
+  if (mMinimumScaleSetCurrentPushButton)
+    delete mMinimumScaleSetCurrentPushButton;
+  if (mMaximumScaleSetCurrentPushButton)
+    delete mMaximumScaleSetCurrentPushButton;
   if ( !mapCanvas )
     return;
 
   mCanvas = mapCanvas;
-  mMinimumScaleSetCurrentPushButton->show();
-  mMaximumScaleSetCurrentPushButton->show();
+
+  mMaximumScaleSetCurrentPushButton = new QToolButton();
+  connect( mMaximumScaleSetCurrentPushButton, SIGNAL(clicked()), this, SLOT(setMaxScaleFromCanvas()));
+  mMinimumScaleSetCurrentPushButton = new QToolButton();
+  connect( mMinimumScaleSetCurrentPushButton, SIGNAL(clicked()), this, SLOT(setMinScaleFromCanvas()));
+
+  mLayout->addWidget(mMaximumScaleSetCurrentPushButton, 1,2);
+  mLayout->addWidget(mMinimumScaleSetCurrentPushButton, 1,5);
 }
 
-void QgsScaleVisibilityWidget::setMinimumScale( double scale )
+void QgsScaleRangeWidget::setMinimumScale( double scale )
 {
   mMinimumScaleComboBox->setScale( scale );
 }
 
-double QgsScaleVisibilityWidget::minimumScale()
+double QgsScaleRangeWidget::minimumScale()
 {
   return mMinimumScaleComboBox->scale();
 }
 
-void QgsScaleVisibilityWidget::setMaximumScale( double scale )
+void QgsScaleRangeWidget::setMaximumScale( double scale )
 {
   mMaximumScaleComboBox->setScale( scale );
 }
 
-double QgsScaleVisibilityWidget::maximumScale()
+double QgsScaleRangeWidget::maximumScale()
 {
   return mMaximumScaleComboBox->scale();
 }
 
-void QgsScaleVisibilityWidget::on_mMinimumScaleSetCurrentPushButton_clicked()
+void QgsScaleRangeWidget::setMinScaleFromCanvas()
 {
   mMinimumScaleComboBox->setScale( 1.0 / mCanvas->mapSettings().scale() );
 }
 
-void QgsScaleVisibilityWidget::on_mMaximumScaleSetCurrentPushButton_clicked()
+void QgsScaleRangeWidget::setMaxScaleFromCanvas()
 {
   mMaximumScaleComboBox->setScale( 1.0 / mCanvas->mapSettings().scale() );
 }
 
-void QgsScaleVisibilityWidget::setFromLayer( QgsMapLayer *layer )
+void QgsScaleRangeWidget::setFromLayer( QgsMapLayer *layer )
 {
   mMinimumScaleComboBox->setScale( 1.0 / layer->minimumScale() );
   mMaximumScaleComboBox->setScale( 1.0 / layer->maximumScale() );
