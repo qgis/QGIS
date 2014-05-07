@@ -29,6 +29,7 @@
 
 #include "qgsproject.h"
 #include "qgsexpression.h"
+#include "qgsfieldmodel.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -369,6 +370,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   setupUi( this );
 
   mExpressionWidget->setLayer( mLayer );
+  mExpressionWidget->fieldModel()->setNumericFieldValidation();
 
   cboCategorizedColorRamp->populate( mStyle );
   int randomIndex = cboCategorizedColorRamp->findText( tr( "Random colors" ) );

@@ -67,6 +67,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
+    //! Returns the currently used field model
+    QgsFieldModel* fieldModel();
+
   signals:
     //! the signal is emitted when the currently selected field changes
     void fieldChanged( QString fieldName );

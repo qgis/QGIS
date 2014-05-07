@@ -25,6 +25,7 @@ QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )
     , mLayer( NULL )
     , mAllowExpression( false )
+    , mCustomFieldValidation( NULL )
 {
 }
 
@@ -80,7 +81,20 @@ void QgsFieldModel::updateModel()
 {
   beginResetModel();
   mExpression = QList<QString>();
-  if ( mLayer )
+
+  if ( mLayer && mCustomFieldValidation )
+  {
+    const QgsFields& layerFields = mLayer->pendingFields();
+    QgsFields fields = QgsFields();
+
+    for ( int idx = 0, fieldCount = layerFields.count(); idx < fieldCount; ++idx )
+    {
+      const QgsField& layerField = layerFields.at( idx );
+      if ( mCustomFieldValidation( layerField ) ) fields.append( layerField );
+    }
+    mFields = fields;
+  }
+  else if ( mLayer )
     mFields = mLayer->pendingFields();
   else
     mFields = QgsFields();
@@ -102,6 +116,37 @@ void QgsFieldModel::setAllowExpression( bool allowExpression )
     mExpression = QList<QString>();
     endRemoveRows();
   }
+}
+
+void QgsFieldModel::setCustomFieldValidation(customFieldValidationProc func)
+{
+  mCustomFieldValidation = func;
+  updateModel();
+}
+
+static bool customNumericFieldValidationProc( const QgsField& field )
+{
+  return field.type() == QVariant::Int || field.type() == QVariant::Double;
+}
+void QgsFieldModel::setNumericFieldValidation()
+{
+  setCustomFieldValidation( customNumericFieldValidationProc );
+}
+static bool customIntegerFieldValidationProc( const QgsField& field )
+{
+  return field.type() == QVariant::Int || ( field.type() == QVariant::Double && field.precision() == 0 );
+}
+void QgsFieldModel::setIntegerFieldValidation()
+{
+  setCustomFieldValidation( customIntegerFieldValidationProc );
+}
+static bool customStringFieldValidationProc( const QgsField& field )
+{
+  return field.type() == QVariant::String;
+}
+void QgsFieldModel::setStringFieldValidation()
+{
+  setCustomFieldValidation( customStringFieldValidationProc );
 }
 
 QModelIndex QgsFieldModel::setExpression( const QString expression )

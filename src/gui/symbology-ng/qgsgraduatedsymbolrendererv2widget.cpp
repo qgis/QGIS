@@ -27,6 +27,7 @@
 #include "qgsludialog.h"
 
 #include "qgsproject.h"
+#include "qgsfieldmodel.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -359,6 +360,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   setupUi( this );
 
   mExpressionWidget->setLayer( mLayer );
+  mExpressionWidget->fieldModel()->setNumericFieldValidation();
 
   cboGraduatedColorRamp->populate( mStyle );
 

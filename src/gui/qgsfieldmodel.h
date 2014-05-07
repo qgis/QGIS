@@ -22,6 +22,9 @@
 
 #include "qgsvectorlayer.h"
 
+// Defines a custom field validation proc
+typedef bool ( *customFieldValidationProc )( const QgsField& );
+
 /**
  * @brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
  * If allowed, expressions might be added to the end of the model.
@@ -65,6 +68,18 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     //! returns the currently used layer
     QgsVectorLayer* layer() {return mLayer;}
 
+    //! sets the custom field validation
+    void setCustomFieldValidation(customFieldValidationProc func);
+    //! gets the custom field validation
+    customFieldValidationProc customFieldValidation() const { return mCustomFieldValidation; }
+
+    //! sets the custom field validation passing only the numeric fields
+    void setNumericFieldValidation();
+    //! sets the custom field validation passing only the integer fields
+    void setIntegerFieldValidation();
+    //! sets the custom field validation passing only the string fields
+    void setStringFieldValidation();
+
   public slots:
     //! set the layer of whch fields are displayed
     void setLayer( QgsVectorLayer *layer );
@@ -81,6 +96,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     QgsVectorLayer* mLayer;
     bool mAllowExpression;
+    customFieldValidationProc mCustomFieldValidation;
 
   private:
     void fetchFeature();
