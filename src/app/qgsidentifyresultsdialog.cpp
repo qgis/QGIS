@@ -668,7 +668,9 @@ void QgsIdentifyResultsDialog::show()
   }
 
   QDialog::show();
-  raise();
+
+  mDock->show();
+  mDock->raise();
 }
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
