@@ -1637,10 +1637,6 @@ QString createFilters( QString type )
       {
         myDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
       }
-      else if ( driverName.startsWith( "OpenFileGDB" ) )
-      {
-        myDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
-      }
       else if ( driverName.startsWith( "PGeo" ) )
       {
         myDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
@@ -1745,6 +1741,10 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "OGDI" ) )
       {
         myDatabaseDrivers += QObject::tr( "OGDI Vectors" ) + ",OGDI;";
+      }
+      else if ( driverName.startsWith( "OpenFileGDB" ) )
+      {
+        myDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
       }
       else if ( driverName.startsWith( "PostgreSQL" ) )
       {
