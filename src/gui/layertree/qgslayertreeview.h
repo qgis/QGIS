@@ -5,6 +5,7 @@
 
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
+class QgsMapLayer;
 
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
@@ -16,6 +17,9 @@ public:
 
   QgsLayerTreeModel* layerTreeModel();
 
+  QgsMapLayer* currentLayer() const;
+  void setCurrentLayer(QgsMapLayer* layer);
+
 protected:
   void contextMenuEvent(QContextMenuEvent* event);
 
@@ -26,6 +30,7 @@ protected:
   void updateExpandedStateFromNode(QgsLayerTreeNode* node);
 
 signals:
+  void currentLayerChanged(QgsMapLayer* layer);
 
 public slots:
 
@@ -38,6 +43,10 @@ protected slots:
 
   void updateExpandedStateToNode(QModelIndex index);
 
+  void onCurrentChanged(QModelIndex current);
+
+protected:
+  QgsMapLayer* mCurrentLayer;
 };
 
 #endif // QGSLAYERTREEVIEW_H

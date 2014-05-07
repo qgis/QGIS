@@ -6,8 +6,9 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 
-QgsLayerTreeView::QgsLayerTreeView(QWidget *parent) :
-  QTreeView(parent)
+QgsLayerTreeView::QgsLayerTreeView(QWidget *parent)
+  : QTreeView(parent)
+  , mCurrentLayer(0)
 {
   setHeaderHidden(true);
 
@@ -19,6 +20,7 @@ QgsLayerTreeView::QgsLayerTreeView(QWidget *parent) :
 
   connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(updateExpandedStateToNode(QModelIndex)));
   connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(updateExpandedStateToNode(QModelIndex)));
+  connect(this, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onCurrentChanged(QModelIndex)));
 }
 
 void QgsLayerTreeView::setModel(QAbstractItemModel* model)
@@ -36,6 +38,20 @@ void QgsLayerTreeView::setModel(QAbstractItemModel* model)
 QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel()
 {
   return qobject_cast<QgsLayerTreeModel*>(model());
+}
+
+QgsMapLayer* QgsLayerTreeView::currentLayer() const
+{
+  return mCurrentLayer;
+}
+
+void QgsLayerTreeView::setCurrentLayer(QgsMapLayer* layer)
+{
+  if (mCurrentLayer == layer)
+    return;
+
+  mCurrentLayer = layer;
+  emit currentLayerChanged(mCurrentLayer);
 }
 
 
@@ -142,6 +158,19 @@ void QgsLayerTreeView::updateExpandedStateToNode(QModelIndex index)
     return;
 
   node->setExpanded(isExpanded(index));
+}
+
+void QgsLayerTreeView::onCurrentChanged(QModelIndex current)
+{
+  QgsLayerTreeNode* node = layerTreeModel()->index2node(current);
+  if (!node)
+    return; // TODO: maybe also support symbology nodes
+
+  QgsMapLayer* layer = 0;
+  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    layer = static_cast<QgsLayerTreeLayer*>(node)->layer();
+
+  setCurrentLayer(layer);
 }
 
 void QgsLayerTreeView::updateExpandedStateFromNode(QgsLayerTreeNode* node)
