@@ -40,6 +40,7 @@ class QDomElement;
 class QDomNode;
 
 class QgsLayerTreeGroup;
+class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
@@ -416,6 +417,8 @@ class CORE_EXPORT QgsProject : public QObject
     QgsRelationManager* mRelationManager;
 
     QgsLayerTreeGroup* mRootGroup;
+
+    QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
 
 }; // QgsProject
 

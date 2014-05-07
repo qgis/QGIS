@@ -17,6 +17,9 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 public:
   explicit QgsLayerTreeRegistryBridge(QgsLayerTreeGroup* root, QObject *parent = 0);
 
+  void setEnabled(bool enabled) { mEnabled = enabled; }
+  bool isEnabled() const { return mEnabled; }
+
 signals:
 
 protected slots:
@@ -33,6 +36,7 @@ protected:
 protected:
   QgsLayerTreeGroup* mRoot;
   QStringList mLayerIdsForRemoval;
+  bool mEnabled;
 };
 
 #endif // QGSLAYERTREEREGISTRYBRIDGE_H

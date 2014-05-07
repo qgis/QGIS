@@ -342,7 +342,7 @@ QgsProject::QgsProject()
   // bind the layer tree to the map layer registry.
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
-  new QgsLayerTreeRegistryBridge(mRootGroup, this);
+  mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge(mRootGroup, this);
 
 } // QgsProject ctor
 
@@ -915,6 +915,8 @@ bool QgsProject::read()
 
   QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
 
+  mLayerTreeRegistryBridge->setEnabled( false );
+
   // get the map layers
   QPair< bool, QList<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );
 
@@ -934,6 +936,8 @@ bool QgsProject::read()
     // (default implementation ignores them, there's also a GUI handler that lets user choose correct path)
     mBadLayerHandler->handleBadLayers( getMapLayersResults.second, *doc );
   }
+
+  mLayerTreeRegistryBridge->setEnabled( true );
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );

@@ -7,6 +7,7 @@
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge(QgsLayerTreeGroup *root, QObject *parent)
   : QObject(parent)
   , mRoot(root)
+  , mEnabled(true)
 {
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layersAdded(QList<QgsMapLayer*>)), this, SLOT(layersAdded(QList<QgsMapLayer*>)));
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layersWillBeRemoved(QStringList)), this, SLOT(layersWillBeRemoved(QStringList)));
@@ -16,6 +17,9 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge(QgsLayerTreeGroup *root, 
 
 void QgsLayerTreeRegistryBridge::layersAdded(QList<QgsMapLayer*> layers)
 {
+  if (!mEnabled)
+    return;
+
   foreach (QgsMapLayer* layer, layers)
   {
     mRoot->addLayer(layer);
@@ -24,6 +28,9 @@ void QgsLayerTreeRegistryBridge::layersAdded(QList<QgsMapLayer*> layers)
 
 void QgsLayerTreeRegistryBridge::layersWillBeRemoved(QStringList layerIds)
 {
+  if (!mEnabled)
+    return;
+
   foreach (QString layerId, layerIds)
   {
     QgsLayerTreeLayer* nodeLayer = mRoot->findLayer(layerId);
