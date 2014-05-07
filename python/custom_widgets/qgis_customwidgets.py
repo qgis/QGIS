@@ -17,17 +17,21 @@
 ***************************************************************************
 """
 
-import sys
-import qgis
-from qgis import gui
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The
+# variable MODULE is inserted into the local namespace by the plugin loader.
+pluginType = MODULE
 
-"""
-	This allow to redirect the custom widget include header file to qgis.gui
-"""
 
-def referenceCustomWidgets():
-	sys.modules["qgscollapsiblegroupboxplugin"] = qgis.gui
-	sys.modules["qgsfieldcomboboxplugin"] = qgis.gui
-	sys.modules["qgsfieldexpressionwidgetplugin"] = qgis.gui
-	sys.modules["qgsmaplayercomboboxplugin"] = qgis.gui
-	sys.modules["qgsscalevisibilitywidgetplugin"] = qgis.gui
+# moduleInformation() must return a tuple (module, widget_list).  If "module"
+# is "A" and any widget from this module is used, the code generator will write
+# "import A".  If "module" is "A[.B].C", the code generator will write
+# "from A[.B] import C".  Each entry in "widget_list" must be unique.
+def moduleInformation():
+    return "qgis.gui", \
+        ("QgsCollapsibleGroupbox"  ,\
+         "QgsFieldComboBox"        ,\
+         "QgsFieldExpressionWidget",\
+         "QgsMapLayerComboBox"     ,\
+         "QgsMapLayerProxyModel"     ,\
+         "QgsScalevisibilityWidget",\
+        )

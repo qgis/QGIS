@@ -24,7 +24,6 @@ __copyright__ = '(C) 2007, Martin Dobias'
 __revision__ = '$Format:%H$'
 
 import sip
-from customwidgets import referenceCustomWidgets
 
 try:
     apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
@@ -35,8 +34,6 @@ except ValueError:
     pass
 
 from qgis.core import QgsFeature, QgsGeometry
-
-referenceCustomWidgets()
 
 try:
     # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
