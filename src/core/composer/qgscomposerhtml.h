@@ -59,6 +59,31 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     void setUseSmartBreaks( bool useSmartBreaks );
 
+    /**Sets the maximum distance allowed when calculating where to place page breaks
+     * in the html. This distance is the maximum amount of empty space allowed
+     * at the bottom of a frame after calculating the optimum break location. Setting
+     * a larger value will result in better choice of page break location, but more
+     * wasted space at the bottom of frames. This setting is only effective if
+     * useSmartBreaks is true.
+     * @param maxBreakDistance maximum amount of empty space to leave when calculating
+     * page break locations
+     * @note added in 2.3
+     * @see maxBreakDistance
+     * @see setUseSmartBreaks
+     */
+    void setMaxBreakDistance( double maxBreakDistance );
+
+    /**Returns the maximum distance allowed when calculating where to place page breaks
+     * in the html. This distance is the maximum amount of empty space allowed
+     * at the bottom of a frame after calculating the optimum break location. This setting
+     * is only effective if useSmartBreaks is true.
+     * @returns maximum amount of empty space to leave when calculating page break locations
+     * @note added in 2.3
+     * @see setMaxBreakDistance
+     * @see useSmartBreaks
+     */
+    double maxBreakDistance() const { return mMaxBreakDistance; }
+
   public slots:
 
     /**Reloads the html source from the url and redraws the item.
@@ -78,6 +103,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     double mHtmlUnitsToMM;
     QImage* mRenderedPage;
     bool mUseSmartBreaks;
+    double mMaxBreakDistance;
 
     double htmlUnitsToMM(); //calculate scale factor
 

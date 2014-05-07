@@ -61,6 +61,7 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mFileToolButton->blockSignals( block );
   mResizeModeComboBox->blockSignals( block );
   mUseSmartBreaksCheckBox->blockSignals( block );
+  mMaxDistanceSpinBox->blockSignals( block );
 }
 
 void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
@@ -117,7 +118,7 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 }
 
-void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_stateChanged( int state )
+void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_toggled( bool checked )
 {
   if ( !mHtml )
   {
@@ -129,10 +130,20 @@ void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_stateChanged( int state )
   {
     blockSignals( true );
     composition->beginMultiFrameCommand( mHtml, tr( "Use smart breaks changed" ) );
-    mHtml->setUseSmartBreaks( state );
+    mHtml->setUseSmartBreaks( checked );
     composition->endMultiFrameCommand();
     blockSignals( false );
   }
+}
+
+void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->setMaxBreakDistance( val );
 }
 
 void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
@@ -179,6 +190,7 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mUrlLineEdit->setText( mHtml->url().toString() );
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mHtml->resizeMode() ) );
   mUseSmartBreaksCheckBox->setChecked( mHtml->useSmartBreaks() );
+  mMaxDistanceSpinBox->setValue( mHtml->maxBreakDistance() );
 
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
   blockSignals( false );
