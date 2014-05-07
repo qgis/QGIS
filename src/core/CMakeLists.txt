@@ -437,6 +437,7 @@ SET(QGIS_CORE_HDRS
   qgsmaprenderer.h
   qgsmapsettings.h
   qgsmaptopixel.h
+  qgsmapunitscale.h
   qgsmessageoutput.h
   qgsmimedatautils.h
   qgsnetworkreplyparser.h

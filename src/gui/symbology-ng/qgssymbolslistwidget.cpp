@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbolslist.cpp
-    ---------------------
-    begin                : June 2012
-    copyright            : (C) 2012 by Arunmozhi
-    email                : aruntheguy at gmail.com
+ qgssymbolslist.cpp
+ ---------------------
+ begin                : June 2012
+ copyright            : (C) 2012 by Arunmozhi
+ email                : aruntheguy at gmail.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -42,6 +42,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   setupUi( this );
 
+  mSymbolUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
   {
@@ -71,9 +73,10 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   if ( mSymbol )
   {
     // output unit
-    mSymbolUnitComboBox->blockSignals( true );
-    mSymbolUnitComboBox->setCurrentIndex( mSymbol->outputUnit() );
-    mSymbolUnitComboBox->blockSignals( false );
+    mSymbolUnitWidget->blockSignals( true );
+    mSymbolUnitWidget->setUnit( mSymbol->outputUnit() );
+    mSymbolUnitWidget->setMapUnitScale( mSymbol->mapUnitScale() );
+    mSymbolUnitWidget->blockSignals( false );
 
     mTransparencySlider->blockSignals( true );
     double transparency = 1 - symbol->alpha();
@@ -237,12 +240,13 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   populateSymbolView();
 }
 
-void QgsSymbolsListWidget::on_mSymbolUnitComboBox_currentIndexChanged( const QString & text )
+void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed( )
 {
-  Q_UNUSED( text );
   if ( mSymbol )
   {
-    mSymbol->setOutputUnit(( QgsSymbolV2::OutputUnit ) mSymbolUnitComboBox->currentIndex() );
+    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mSymbolUnitWidget->getUnit() );
+    mSymbol->setOutputUnit( unit );
+    mSymbol->setMapUnitScale( mSymbolUnitWidget->getMapUnitScale() );
 
     emit changed();
   }
@@ -342,3 +346,5 @@ void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
   QStringList symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, text );
   populateSymbols( symbols );
 }
+
+

@@ -34,6 +34,9 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+    
+    void setMapUnitScale(const QgsMapUnitScale &scale);
+    QgsMapUnitScale mapUnitScale() const;
 
     double estimateMaxBleed() const;
 
@@ -51,14 +54,20 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     double offset() const;
     void setOffset( double offset );
 
-    QgsSymbolV2::OutputUnit offsetUnit() const;
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+    
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& offsetMapUnitScale() const;
 
     bool useCustomDashPattern() const;
     void setUseCustomDashPattern( bool b );
 
     QgsSymbolV2::OutputUnit customDashPatternUnit() const;
     void setCustomDashPatternUnit( QgsSymbolV2::OutputUnit unit );
+    
+    const QgsMapUnitScale& customDashPatternMapUnitScale() const;
+    void setCustomDashPatternMapUnitScale( const QgsMapUnitScale& scale);
 
     QVector<qreal> customDashVector() const;
     void setCustomDashVector( const QVector<qreal>& vector );
@@ -180,15 +189,34 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      * @see setOffsetAlongLine
     */
     void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit );
+    
+    /**Returns the map unit scale used for calculating the offset in map units along line for markers.
+     * @returns Offset along line map unit scale.
+     */
+    const QgsMapUnitScale& offsetAlongLineMapUnitScale() const;
+
+    /**Sets the map unit scale used for calculating the offset in map units along line for markers.
+     * @param scale Offset along line map unit scale.
+     */
+    void setOffsetAlongLineMapUnitScale(const QgsMapUnitScale& scale);
 
     QgsSymbolV2::OutputUnit intervalUnit() const;
     void setIntervalUnit( QgsSymbolV2::OutputUnit unit );
+    
+    void setIntervalMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& intervalMapUnitScale() const;
 
     QgsSymbolV2::OutputUnit offsetUnit() const;
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& offsetMapUnitScale() const;
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+    
+    void setMapUnitScale( const QgsMapUnitScale& scale);
+    QgsMapUnitScale mapUnitScale() const;
 
   protected:
 
@@ -197,3 +225,5 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
     double markerAngle( const QPolygonF& points, bool isRing, int vertex );
 };
+ 
+ 

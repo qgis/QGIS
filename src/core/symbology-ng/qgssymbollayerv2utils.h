@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbollayerv2utils.h
-    ---------------------
-    begin                : November 2009
-    copyright            : (C) 2009 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+ qgssymbollayerv2utils.h
+ ---------------------
+ begin                : November 2009
+ copyright            : (C) 2009 by Martin Dobias
+ email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,6 +24,7 @@
 #include <QColor>
 #include "qgssymbolv2.h"
 #include "qgis.h"
+#include "qgsmapunitscale.h"
 
 class QgsExpression;
 class QgsSymbolLayerV2;
@@ -79,6 +80,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodePoint( QPointF point );
     static QPointF decodePoint( QString str );
 
+    static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
+    static QgsMapUnitScale decodeMapUnitScale( const QString& str );
+
     static QString encodeRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeRealVector( const QString& s );
 
@@ -95,7 +99,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static void drawStippledBackround( QPainter* painter, QRect rect );
@@ -183,7 +187,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                        double offset = 0.0,
                                        const QVector<qreal>* dashPattern = 0 );
     /**Create ogr feature style string for brush
-        @param fillColr fill color*/
+     @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, QString rotationFunc );
@@ -225,9 +229,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
@@ -291,3 +295,5 @@ QPolygonF offsetLine( QPolygonF polyline, double dist );
 
 
 #endif
+
+

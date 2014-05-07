@@ -142,6 +142,7 @@ qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
+qgsunitselectionwidget.cpp
 )
 
 IF (WITH_TOUCH)
@@ -275,6 +276,7 @@ qgsrelationmanagerdialog.h
 qgsscalecombobox.h
 qgssearchquerybuilder.h
 qgssublayersdialog.h
+qgsunitselectionwidget.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -345,6 +347,7 @@ qgstextannotationitem.h
 qgssvgannotationitem.h
 qgscomposerruler.h
 qgsdetaileditemdata.h
+qgsunitselectionwidget.h
 
 attributetable/qgsattributetabledelegate.h
 attributetable/qgsattributetablefiltermodel.h

@@ -62,10 +62,10 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mFontStrikethroughBtn_toggled( bool ckd );
     void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
     void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
-    void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mFontSizeUnitWidget_changed();
     void on_mFontMinPixelSpinBox_valueChanged( int px );
     void on_mFontMaxPixelSpinBox_valueChanged( int px );
-    void on_mBufferUnitComboBox_currentIndexChanged( int index );
+    void on_mBufferUnitWidget_changed();
     void on_mCoordXDDBtn_dataDefinedActivated( bool active );
     void on_mCoordYDDBtn_dataDefinedActivated( bool active );
 
@@ -126,3 +126,5 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 };
 
 #endif
+
+

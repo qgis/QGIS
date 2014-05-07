@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgspointdisplacementrenderer.cpp
-                              --------------------------------
+         qgspointdisplacementrenderer.cpp
+         --------------------------------
   begin                : January 26, 2010
   copyright            : (C) 2010 by Marco Hugentobler
   email                : marco at hugis dot net
@@ -149,7 +149,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   {
     if ( *it )
     {
-      currentWidthFactor = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, ( *it )->outputUnit() );
+      currentWidthFactor = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, ( *it )->outputUnit(), ( *it )->mapUnitScale() );
       double currentDiagonal = sqrt( 2 * (( *it )->size() * ( *it )->size() ) ) * currentWidthFactor;
       if ( currentDiagonal > diagonal )
       {
@@ -516,3 +516,5 @@ QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRend
 
   return symbolList.at( 0 );
 }
+
+

@@ -58,7 +58,7 @@ class QgsSymbolLayerV2Utils
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static void drawStippledBackround( QPainter* painter, QRect rect );
@@ -190,9 +190,9 @@ class QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
@@ -248,3 +248,5 @@ class QgsSymbolLayerV2Utils
      */
     static QString fieldOrExpressionFromExpression( QgsExpression* expression );
 };
+ 
+ 
