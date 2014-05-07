@@ -682,7 +682,8 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 
   QgsPolyline tempPolyline( pointCount );
   QPointF* tempPtr = polyline.data();
-  for ( i = 0; i < pointCount; ++i, tempPtr++ ) tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
+  for ( i = 0; i < pointCount; ++i, tempPtr++ )
+    tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
   QgsGeometry* tempGeometry = QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
@@ -702,7 +703,8 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
         newLine.resize( pointCount );
 
         QgsPoint* tempPtr2 = tempPolyline.data();
-        for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+        for ( i = 0; i < pointCount; ++i, tempPtr2++ )
+          newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
         resultLine.append( newLine );
 
         delete tempGeometry;
@@ -710,23 +712,24 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
       }
       else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBMultiLineString )
       {
-	QgsMultiPolyline tempMPolyline = tempGeometry->asMultiPolyline();
+        QgsMultiPolyline tempMPolyline = tempGeometry->asMultiPolyline();
 
-	for ( int part = 0; part < tempMPolyline.count(); ++part )
-	{
-	  tempPolyline = tempMPolyline[ part ];
+        for ( int part = 0; part < tempMPolyline.count(); ++part )
+        {
+          tempPolyline = tempMPolyline[ part ];
 
-	  pointCount = tempPolyline.count();
-	  newLine.resize( pointCount );
+          pointCount = tempPolyline.count();
+          newLine.resize( pointCount );
 
-	  QgsPoint* tempPtr2 = tempPolyline.data();
-	  for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
-	  resultLine.append( newLine );
+          QgsPoint* tempPtr2 = tempPolyline.data();
+          for ( i = 0; i < pointCount; ++i, tempPtr2++ )
+            newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+          resultLine.append( newLine );
 
-	  newLine = QPolygonF();
-	}
-	delete tempGeometry;
-	return resultLine;
+          newLine = QPolygonF();
+        }
+        delete tempGeometry;
+        return resultLine;
       }
     }
     delete tempGeometry;
