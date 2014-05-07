@@ -31,7 +31,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {
     Q_OBJECT
     Q_FLAGS( QgsMapLayerProxyModel::Filters )
-    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ getFilters WRITE setFilters )
+    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:
     /**
@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setFilters( QgsMapLayerProxyModel::Filters filters );
 
     //! currently used filter on list layers
-    QgsMapLayerProxyModel::Filters getFilters() {return mProxyModel->filters();}
+    QgsMapLayerProxyModel::Filters filters() {return mProxyModel->filters();}
 
     //! currentLayer returns the current layer selected in the combo box
     QgsMapLayer* currentLayer();

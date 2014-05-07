@@ -20,7 +20,7 @@ class QgsMapLayerComboBox : QComboBox
     void setFilters( QgsMapLayerProxyModel::Filters filters );
 
     //! currently used filter on list layers
-    QgsMapLayerProxyModel::Filters getFilters();
+    QgsMapLayerProxyModel::Filters filters();
 
     ///! currentLayer returns the current layer selected in the combo box
     QgsMapLayer* currentLayer();
