@@ -29,4 +29,4 @@ from processing.outputs.Output import Output
 
 
 class OutputDirectory(Output):
-    pass
+    directory = True

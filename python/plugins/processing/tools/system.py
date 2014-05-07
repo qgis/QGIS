@@ -29,7 +29,9 @@ import os
 import time
 import sys
 import uuid
+
 from PyQt4.QtCore import *
+
 from qgis.core import *
 
 numExported = 1
@@ -61,8 +63,11 @@ def tempFolder():
 
 
 def setTempOutput(out, alg):
-    ext = out.getDefaultFileExtension(alg)
-    out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
+    if hasattr(out, 'directory'):
+        out.value = getTempDirInTempFolder()
+    else:
+        ext = out.getDefaultFileExtension(alg)
+        out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
 
 
 def getTempFilename(ext):
@@ -87,6 +92,16 @@ def getTempFilenameInTempFolder(basename):
     basename = removeInvalidChars(basename)
     filename = os.path.join(path, basename)
     return filename
+
+
+def getTempDirInTempFolder():
+    """Returns a temporary directory, putting it into a temp folder.
+    """
+
+    path = tempFolder()
+    path = os.path.join(path, str(uuid.uuid4()).replace('-', ''))
+    mkdir(path)
+    return path
 
 
 def removeInvalidChars(string):

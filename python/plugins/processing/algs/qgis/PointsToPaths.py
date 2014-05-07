@@ -119,10 +119,7 @@ class PointsToPaths(GeoAlgorithm):
             f['begin'] = vertices[0][0]
             f['end'] = vertices[-1][0]
 
-            if dirName == '':
-                fileName = system.getTempFilenameInTempFolder('%s.txt' % group)
-            else:
-                fileName = os.path.join(dirName, '%s.txt' % group)
+            fileName = os.path.join(dirName, '%s.txt' % group)
 
             fl = open(fileName, 'w')
             fl.write('angle=Azimuth\n')
