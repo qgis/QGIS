@@ -41,7 +41,11 @@ from layergroup import LayerGroup, \
     UnsavedLayerGroup
 from workspace import workspace_from_index, \
     Workspace
-from processing.algs.admintools import httplib2
+try:
+    from processing.algs.admintools import httplib2
+except ImportError:
+    # If compiled without internal httplib2: Load external
+    import httplib2
 
 
 logger = logging.getLogger('gsconfig.catalog')
