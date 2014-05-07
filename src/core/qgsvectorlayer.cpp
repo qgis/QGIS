@@ -2902,18 +2902,30 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 
 void QgsVectorLayer::beginEditCommand( QString text )
 {
+  if ( !mTransactionId.isEmpty() )
+  {
+    return;
+  }
   undoStack()->beginMacro( text );
   emit editCommandStarted( text );
 }
 
 void QgsVectorLayer::endEditCommand()
 {
+  if ( !mTransactionId.isEmpty() )
+  {
+    return;
+  }
   undoStack()->endMacro();
   emit editCommandEnded();
 }
 
 void QgsVectorLayer::destroyEditCommand()
 {
+  if ( !mTransactionId.isEmpty() )
+  {
+    return;
+  }
   undoStack()->endMacro();
   undoStack()->undo();
   emit editCommandDestroyed();

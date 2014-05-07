@@ -103,8 +103,15 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
     return false;
 
   // TODO: check correct geometry type
-
-  L->undoStack()->push( new QgsVectorLayerUndoCommandAddFeature( this, f ) );
+  if ( L->transactionId().isEmpty() )
+  {
+    L->undoStack()->push( new QgsVectorLayerUndoCommandAddFeature( this, f ) );
+  }
+  else
+  {
+    QStringList errors;
+    commitChanges( errors );
+  }
   return true;
 }
 
@@ -141,7 +148,15 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
       return false;
   }
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandDeleteFeature( this, fid ) );
+  if ( L->transactionId().isEmpty() )
+  {
+    L->undoStack()->push( new QgsVectorLayerUndoCommandDeleteFeature( this, fid ) );
+  }
+  else
+  {
+    QStringList errors;
+    commitChanges( errors );
+  }
   return true;
 }
 
@@ -163,8 +178,15 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
   }
 
   // TODO: check compatible geometry
-
-  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeGeometry( this, fid, geom ) );
+  if ( L->transactionId().isEmpty() )
+  {
+    L->undoStack()->push( new QgsVectorLayerUndoCommandChangeGeometry( this, fid, geom ) );
+  }
+  else
+  {
+    QStringList errors;
+    commitChanges( errors );
+  }
   return true;
 }
 
@@ -184,7 +206,15 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
        L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin )
     return false;
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
+  if ( L->transactionId().isEmpty() )
+  {
+    L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
+  }
+  else
+  {
+    QStringList errors;
+    commitChanges( errors );
+  }
   return true;
 }
 
@@ -207,7 +237,15 @@ bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
   if ( !L->dataProvider()->supportedType( field ) )
     return false;
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandAddAttribute( this, field ) );
+  if ( L->transactionId().isEmpty() )
+  {
+    L->undoStack()->push( new QgsVectorLayerUndoCommandAddAttribute( this, field ) );
+  }
+  else
+  {
+    QStringList errors;
+    commitChanges( errors );
+  }
   return true;
 }
 
@@ -230,7 +268,15 @@ bool QgsVectorLayerEditBuffer::deleteAttribute( int index )
   if ( origin == QgsFields::OriginJoin )
     return false;
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandDeleteAttribute( this, index ) );
+  if ( L->transactionId().isEmpty() )
+  {
+    L->undoStack()->push( new QgsVectorLayerUndoCommandDeleteAttribute( this, index ) );
+  }
+  else
+  {
+    QStringList errors;
+    commitChanges( errors );
+  }
   return true;
 }
 
@@ -489,9 +535,12 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
 
   // for shapes run a REPACK after each transaction
   // TODO: enhance provider interface to allow moving this there
-  if ( success && hadPendingDeletes && L->providerType() == "ogr" && L->storageType() == "ESRI Shapefile" )
+  if ( L->transactionId().isEmpty() )
   {
-    provider->createSpatialIndex();
+    if ( success && hadPendingDeletes && L->providerType() == "ogr" && L->storageType() == "ESRI Shapefile" )
+    {
+      provider->createSpatialIndex();
+    }
   }
 
   if ( !success && provider->hasErrors() )
