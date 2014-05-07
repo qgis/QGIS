@@ -64,7 +64,7 @@ class ConcaveHull(GeoAlgorithm):
         holes = self.getParameterValue(self.HOLES)
         no_multigeom = self.getParameterValue(self.NO_MULTIGEOMETRY)
         #Delaunay triangulation from input point layer
-        progress.setText('Creating Delaunay triangles ...') 
+        progress.setText('Creating Delaunay triangles ...')
         delone_triangles = processing.runalg("qgis:delaunaytriangulation", layer, None)['OUTPUT']
         delaunay_layer = processing.getObject(delone_triangles)
         #get max edge length from Delaunay triangles

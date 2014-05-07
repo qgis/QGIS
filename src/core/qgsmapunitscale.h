@@ -21,7 +21,7 @@
 #include <QtCore>
 #include "qgsrendercontext.h"
 
-class QgsMapUnitScale
+class CORE_EXPORT QgsMapUnitScale
 {
   public:
     QgsMapUnitScale() : minScale( 0.0 ), maxScale( 0.0 ) {}

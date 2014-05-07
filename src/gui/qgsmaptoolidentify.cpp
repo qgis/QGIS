@@ -161,7 +161,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     QAction* selectedAction = layerSelectionMenu.exec( globalPos );
     if ( selectedAction )
     {
-      if( selectedAction->data().toString().isEmpty() )
+      if ( selectedAction->data().toString().isEmpty() )
       {
         results = idResult;
       }
@@ -674,7 +674,7 @@ void QgsMapToolIdentify::handleMenuHover()
     }
     else
     {
-      for( QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.constBegin(); lIt != mLayerIdResults.constEnd(); ++lIt )
+      for ( QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.constBegin(); lIt != mLayerIdResults.constEnd(); ++lIt )
       {
         const QList<IdentifyResult>& idList = lIt.value();
         QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();

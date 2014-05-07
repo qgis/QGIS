@@ -65,7 +65,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
   connect( mStyle, SIGNAL( symbolSaved( QString, QgsSymbolV2* ) ), this, SLOT( symbolAddedToStyle( QString, QgsSymbolV2* ) ) );
-  connect(  openStyleManagerButton, SIGNAL( pressed() ), this, SLOT( openStyleManager() ) );
+  connect( openStyleManagerButton, SIGNAL( pressed() ), this, SLOT( openStyleManager() ) );
 
   lblSymbolName->setText( "" );
   populateSymbolView();
@@ -206,7 +206,7 @@ void QgsSymbolsListWidget::setLineWidth( double width )
   emit changed();
 }
 
-void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol)
+void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
 {
   populateSymbolView();
 }

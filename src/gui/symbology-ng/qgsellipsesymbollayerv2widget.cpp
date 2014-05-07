@@ -78,7 +78,7 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
     mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
     mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
-    mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale());
+    mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
     mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
     mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
   }
