@@ -662,10 +662,15 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 #endif
 
 
-QPolygonF offsetLine( QPolygonF polyline, double dist )
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 {
+  QList<QPolygonF> resultLine;
+
   if ( polyline.count() < 2 )
-    return polyline;
+  {
+    resultLine.append( polyline );
+    return resultLine;
+  }
 
   QPolygonF newLine;
 
@@ -688,22 +693,48 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
     if ( offsetGeom )
     {
       tempGeometry->fromGeos( offsetGeom );
-      tempPolyline = tempGeometry->asPolyline();
 
-      pointCount = tempPolyline.count();
-      newLine.resize( pointCount );
+      if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBLineString )
+      {
+        tempPolyline = tempGeometry->asPolyline();
 
-      QgsPoint* tempPtr2 = tempPolyline.data();
-      for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+        pointCount = tempPolyline.count();
+        newLine.resize( pointCount );
 
-      delete tempGeometry;
-      return newLine;
+        QgsPoint* tempPtr2 = tempPolyline.data();
+        for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+        resultLine.append( newLine );
+
+        delete tempGeometry;
+        return resultLine;
+      }
+      else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBMultiLineString )
+      {
+	QgsMultiPolyline tempMPolyline = tempGeometry->asMultiPolyline();
+
+	for ( int part = 0; part < tempMPolyline.count(); ++part )
+	{
+	  tempPolyline = tempMPolyline[ part ];
+
+	  pointCount = tempPolyline.count();
+	  newLine.resize( pointCount );
+
+	  QgsPoint* tempPtr2 = tempPolyline.data();
+	  for ( i = 0; i < pointCount; ++i, tempPtr2++ ) newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
+	  resultLine.append( newLine );
+
+	  newLine = QPolygonF();
+	}
+	delete tempGeometry;
+	return resultLine;
+      }
     }
     delete tempGeometry;
   }
 
   // returns original polyline when 'GEOSOffsetCurve' fails!
-  return polyline;
+  resultLine.append( polyline );
+  return resultLine;
 
 #else
 
@@ -741,7 +772,9 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
   // last line segment:
   pt_new = offsetPoint( p2, angle + M_PI / 2, dist );
   newLine.append( pt_new );
-  return newLine;
+
+  resultLine.append( newLine );
+  return resultLine;
 
 #endif
 }
