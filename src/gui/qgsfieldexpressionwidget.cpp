@@ -43,6 +43,11 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
 
+  // give focus to the combo
+  // hence if the widget is used as a delegate
+  // it will allow pressing on the expression dialog button
+  setFocusProxy( mCombo );
+
   connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
   connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
   connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged( int ) ) );
