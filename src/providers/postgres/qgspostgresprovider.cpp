@@ -31,6 +31,7 @@
 #include "qgsproviderextentcalcevent.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
+#include "qgspostgresconnpool.h"
 #include "qgspgsourceselect.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
@@ -1569,14 +1570,27 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
   if ( mIsQuery )
     return false;
 
-  if ( !connectRW() )
-    return false;
-
   bool returnvalue = true;
+  bool transactionMode = !mTransactionId.isEmpty();
+  QgsPostgresConn* conn = transactionMode ? QgsPostgresConnPool::instance()->acquireConnection( mUri.connectionInfo(), mTransactionId ) : mConnectionRW;
+  if ( !conn )
+  {
+    return false;
+  }
+
+  if ( !transactionMode && !connectRW() )
+    return false;
 
   try
   {
-    mConnectionRW->PQexecNR( "BEGIN" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "SAVEPOINT add_features_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "BEGIN" );
+    }
 
     // Prepare the INSERT statement
     QString insert = QString( "INSERT INTO %1(" ).arg( mQuery );
@@ -1712,7 +1726,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     insert += values + ")";
 
     QgsDebugMsg( QString( "prepare addfeatures: %1" ).arg( insert ) );
-    QgsPostgresResult stmt = mConnectionRW->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, NULL );
+    QgsPostgresResult stmt = conn->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, NULL );
     if ( stmt.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( stmt );
 
@@ -1751,7 +1765,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         params << v;
       }
 
-      QgsPostgresResult result = mConnectionRW->PQexecPrepared( "addfeatures", params );
+      QgsPostgresResult result = conn->PQexecPrepared( "addfeatures", params );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
@@ -1788,19 +1802,38 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
-    mConnectionRW->PQexecNR( "COMMIT" );
+    conn->PQexecNR( "DEALLOCATE addfeatures" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "RELEASE SAVEPOINT add_features_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "COMMIT" );
+    }
 
     mShared->addFeaturesCounted( flist.size() );
   }
   catch ( PGException &e )
   {
     pushError( tr( "PostGIS error while adding features: %1" ).arg( e.errorMessage() ) );
-    mConnectionRW->PQexecNR( "ROLLBACK" );
-    mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "ROLLBACK TO SAVEPOINT add_features_savepoint" );
+      conn->PQexecNR( "RELEASE SAVEPOINT add_features_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "ROLLBACK" );
+    }
+    conn->PQexecNR( "DEALLOCATE addfeatures" );
     returnvalue = false;
   }
 
+  if ( transactionMode )
+  {
+    QgsPostgresConnPool::instance()->releaseConnection( conn, mTransactionId );
+  }
   return returnvalue;
 }
 
@@ -1811,12 +1844,28 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   if ( mIsQuery )
     return false;
 
-  if ( !connectRW() )
+  bool transactionMode = !mTransactionId.isEmpty();
+  if ( !transactionMode && !connectRW() )
+  {
     return false;
+  }
+
+  QgsPostgresConn* conn = transactionMode ? QgsPostgresConnPool::instance()->acquireConnection( mUri.connectionInfo(), mTransactionId ) : mConnectionRW;
+  if ( !conn )
+  {
+    return false;
+  }
 
   try
   {
-    mConnectionRW->PQexecNR( "BEGIN" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "SAVEPOINT delete_features_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "BEGIN" );
+    }
 
     for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
     {
@@ -1825,14 +1874,21 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       QgsDebugMsg( "delete sql: " + sql );
 
       //send DELETE statement and do error handling
-      QgsPostgresResult result = mConnectionRW->PQexec( sql );
+      QgsPostgresResult result = conn->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
       mShared->removeFid( *it );
     }
 
-    mConnectionRW->PQexecNR( "COMMIT" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "COMMIT" );
+    }
+    else
+    {
+      conn->PQexecNR( "RELEASE SAVEPOINT delete_features_savepoint" );
+    }
 
     if ( mSpatialColType == sctTopoGeometry )
     {
@@ -1850,10 +1906,22 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   catch ( PGException &e )
   {
     pushError( tr( "PostGIS error while deleting features: %1" ).arg( e.errorMessage() ) );
-    mConnectionRW->PQexecNR( "ROLLBACK" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "ROLLBACK TO SAVEPOINT delete_features_savepoint" );
+      conn->PQexecNR( "RELEASE SAVEPOINT delete_features_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "ROLLBACK" );
+    }
     returnvalue = false;
   }
 
+  if ( transactionMode )
+  {
+    QgsPostgresConnPool::instance()->releaseConnection( conn, mTransactionId );
+  }
   return returnvalue;
 }
 
@@ -1864,12 +1932,27 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   if ( mIsQuery )
     return false;
 
-  if ( !connectRW() )
+  bool transactionMode = !mTransactionId.isEmpty();
+  if ( !transactionMode && !connectRW() )
+  {
     return false;
+  }
+  QgsPostgresConn* conn = transactionMode ? QgsPostgresConnPool::instance()->acquireConnection( mUri.connectionInfo(), mTransactionId ) : mConnectionRW;
+  if ( !conn )
+  {
+    return false;
+  }
 
   try
   {
-    mConnectionRW->PQexecNR( "BEGIN" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "SAVEPOINT add_attributes_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "BEGIN" );
+    }
 
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
@@ -1892,7 +1975,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       QgsDebugMsg( sql );
 
       //send sql statement and do error handling
-      QgsPostgresResult result = mConnectionRW->PQexec( sql );
+      QgsPostgresResult result = conn->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
@@ -1902,22 +1985,41 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
               .arg( mQuery )
               .arg( quotedIdentifier( iter->name() ) )
               .arg( quotedValue( iter->comment() ) );
-        result = mConnectionRW->PQexec( sql );
+        result = conn->PQexec( sql );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK )
           throw PGException( result );
       }
     }
 
-    mConnectionRW->PQexecNR( "COMMIT" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "RELEASE SAVEPOINT add_attributes_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "COMMIT" );
+    }
   }
   catch ( PGException &e )
   {
     pushError( tr( "PostGIS error while adding attributes: %1" ).arg( e.errorMessage() ) );
-    mConnectionRW->PQexecNR( "ROLLBACK" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "ROLLBACK TO SAVEPOINT add_attributes_savepoint" );
+      conn->PQexecNR( "RELEASE SAVEPOINT add_attributes_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "ROLLBACK" );
+    }
     returnvalue = false;
   }
 
   loadFields();
+  if ( transactionMode )
+  {
+    QgsPostgresConnPool::instance()->releaseConnection( conn, mTransactionId );
+  }
   return returnvalue;
 }
 
@@ -1928,12 +2030,29 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   if ( mIsQuery )
     return false;
 
-  if ( !connectRW() )
+  bool transactionMode = !mTransactionId.isEmpty();
+  if ( !transactionMode && !connectRW() )
+  {
     return false;
+  }
+
+  QgsPostgresConn* conn = transactionMode ? QgsPostgresConnPool::instance()->acquireConnection( mUri.connectionInfo(), mTransactionId ) : mConnectionRW;
+  if ( !conn )
+  {
+    return false;
+  }
+
 
   try
   {
-    mConnectionRW->PQexecNR( "BEGIN" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "SAVEPOINT delete_attributes_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "BEGIN" );
+    }
 
     QList<int> idsList = ids.values();
     qSort( idsList.begin(), idsList.end(), qGreater<int>() );
@@ -1950,7 +2069,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
                     .arg( quotedIdentifier( column ) );
 
       //send sql statement and do error handling
-      QgsPostgresResult result = mConnectionRW->PQexec( sql );
+      QgsPostgresResult result = conn->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
@@ -1958,16 +2077,35 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
       mAttributeFields.remove( index );
     }
 
-    mConnectionRW->PQexecNR( "COMMIT" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "RELEASE SAVEPOINT delete_attributes_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "COMMIT" );
+    }
   }
   catch ( PGException &e )
   {
     pushError( tr( "PostGIS error while deleting attributes: %1" ).arg( e.errorMessage() ) );
-    mConnectionRW->PQexecNR( "ROLLBACK" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "ROLLBACK TO SAVEPOINT delete_attributes_savepoint" );
+      conn->PQexecNR( "RELEASE SAVEPOINT delete_attributes_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "ROLLBACK" );
+    }
     returnvalue = false;
   }
 
   loadFields();
+  if ( transactionMode )
+  {
+    QgsPostgresConnPool::instance()->releaseConnection( conn, mTransactionId );
+  }
   return returnvalue;
 }
 
@@ -1978,12 +2116,28 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
   if ( mIsQuery )
     return false;
 
-  if ( !connectRW() )
+  bool transactionMode = !mTransactionId.isEmpty();
+  if ( !transactionMode && !connectRW() )
+  {
     return false;
+  }
+
+  QgsPostgresConn* conn = transactionMode ? QgsPostgresConnPool::instance()->acquireConnection( mUri.connectionInfo(), mTransactionId ) : mConnectionRW;
+  if ( !conn )
+  {
+    return false;
+  }
 
   try
   {
-    mConnectionRW->PQexecNR( "BEGIN" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "SAVEPOINT change_attribute_value_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "BEGIN" );
+    }
 
     // cycle through the features
     for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
@@ -2036,7 +2190,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
       sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
-      QgsPostgresResult result = mConnectionRW->PQexec( sql );
+      QgsPostgresResult result = conn->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
@@ -2060,15 +2214,34 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       }
     }
 
-    mConnectionRW->PQexecNR( "COMMIT" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "RELEASE SAVEPOINT change_attribute_value_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "COMMIT" );
+    }
   }
   catch ( PGException &e )
   {
     pushError( tr( "PostGIS error while changing attributes: %1" ).arg( e.errorMessage() ) );
-    mConnectionRW->PQexecNR( "ROLLBACK" );
+    if ( transactionMode )
+    {
+      conn->PQexecNR( "ROLLBACK TO SAVEPOINT change_attribute_value_savepoint" );
+      conn->PQexecNR( "RELEASE SAVEPOINT change_attribute_value_savepoint" );
+    }
+    else
+    {
+      conn->PQexecNR( "ROLLBACK" );
+    }
     returnvalue = false;
   }
 
+  if ( transactionMode )
+  {
+    QgsPostgresConnPool::instance()->releaseConnection( conn, mTransactionId );
+  }
   return returnvalue;
 }
 
