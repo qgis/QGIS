@@ -46,6 +46,7 @@ IF(WITH_MAPSERVER)
   SET (MAPSERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS mapserver should disable ECW (ECW in server apps requires a special license)")
 ENDIF(WITH_MAPSERVER)
 
+# Custom widgets
 SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
 
 # build our version of astyle
@@ -287,14 +288,7 @@ IF (ENABLE_TESTS)
   add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10,1024x768x24" ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
-
 INCLUDE( ${QT_USE_FILE} )
-
-IF (WITH_CUSTOM_WIDGETS)
-  ADD_DEFINITIONS(-DQT_PLUGIN)
-  ADD_DEFINITIONS(-DQT_NO_DEBUG)
-  ADD_DEFINITIONS(-DQT_SHARED)
-ENDIF (WITH_CUSTOM_WIDGETS)
 
 # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
 # (Keeps code compatible with Qt/Mac/64bit)
@@ -517,7 +511,6 @@ ADD_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DPYTHON_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
 
 #############################################################
@@ -602,7 +595,7 @@ ENDIF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
 # installed with app target
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
-INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 # Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
 # that may be in the same install prefix
