@@ -92,14 +92,12 @@ QString QgsCollapsibleGroupBoxPlugin::domXml() const
                   "   </rect>\n"
                   "  </property>\n"
                   "  <property name=\"toolTip\" >\n"
-                  "   <string>%2</string>\n"
+                  "   <string></string>\n"
                   "  </property>\n"
                   "  <property name=\"whatsThis\" >\n"
-                  "   <string>%3.</string>\n"
+                  "   <string></string>\n"
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() )
-         .arg( toolTip() )
-         .arg( whatsThis() );
+         .arg( name() );
 }
