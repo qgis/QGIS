@@ -146,12 +146,15 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       if ( mResizeMode == RepeatOnEveryPage )
       {
         newFrame->setContentSection( QRectF( 0, 0, newFrame->rect().width(), newFrame->rect().height() ) );
+        currentY += frameHeight;
       }
       else
       {
-        newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
+        double contentHeight = findNearbyPageBreak( currentY + newFrame->rect().height() ) - currentY;
+        newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), contentHeight ) );
+        currentY += contentHeight;
       }
-      currentY += frameHeight;
+
       currentItem = newFrame;
     }
   }
