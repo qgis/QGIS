@@ -385,7 +385,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   setDisplayField( layer-> displayField() );
 
   // set up the scale based layer visibility stuff....
-  mScaleRangeWidget->setFromLayer( layer );
+  mScaleRangeWidget->setScaleRange( 1.0 / layer->maximumScale(), 1.0 / layer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
   mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
@@ -494,8 +494,9 @@ void QgsVectorLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   layer->toggleScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
-  layer->setMinimumScale( 1.0 / mScaleRangeWidget->minimumScale() );
-  layer->setMaximumScale( 1.0 / mScaleRangeWidget->maximumScale() );
+  // caution: layer uses scale denoms, widget uses true scales
+  layer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
+  layer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );
 
   // provider-specific options
   if ( layer->dataProvider() )

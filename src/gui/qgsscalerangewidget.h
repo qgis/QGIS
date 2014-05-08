@@ -18,7 +18,7 @@
 
 #include <QGridLayout>
 #include <QLabel>
-#include <QToolButton>
+#include <QPushButton>
 
 
 #include "qgscollapsiblegroupbox.h"
@@ -35,8 +35,6 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     explicit QgsScaleRangeWidget( QWidget *parent = 0 );
     ~QgsScaleRangeWidget();
 
-    void showEvent( QShowEvent * );
-
     //! set the map canvas which will be used for the current scale buttons
     /**
      * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
@@ -44,14 +42,27 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
      */
     void setMapCanvas( QgsMapCanvas* mapCanvas );
 
-  public slots:
-    void setMinimumScale( double scale );
+    //! return the minimum scale
     double minimumScale();
 
-    void setMaximumScale( double scale );
+    //! return the maximum scale
     double maximumScale();
 
-    void setFromLayer( QgsMapLayer* layer );
+    //! return the minimum scale denominator ( = 1 / maximum scale )
+    double minimumScaleDenom();
+
+    //! return the maximum scale denominator ( = 1 / minimum scale )
+    double maximumScaleDenom();
+
+    //! call to reload the project scales and apply them to the 2 scales combo boxes
+    void reloadProjectScales();
+
+  public slots:
+    void setMinimumScale( double scale );
+
+    void setMaximumScale( double scale );
+
+    void setScaleRange( double min, double max );
 
   private slots:
     void setMaxScaleFromCanvas();
@@ -65,8 +76,8 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     QGridLayout* mLayout;
     QLabel* mMaximumScaleIconLabel;
     QLabel* mMinimumScaleIconLabel;
-    QToolButton* mMaximumScaleSetCurrentPushButton;
-    QToolButton* mMinimumScaleSetCurrentPushButton;
+    QPushButton* mMaximumScaleSetCurrentPushButton;
+    QPushButton* mMinimumScaleSetCurrentPushButton;
     QgsScaleComboBox* mMaximumScaleComboBox;
     QgsScaleComboBox* mMinimumScaleComboBox;
 };

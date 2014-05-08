@@ -576,8 +576,9 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    spinMinScale->setValue( rule->scaleMinDenom() );
-    spinMaxScale->setValue( rule->scaleMaxDenom() );
+    // caution: rule uses scale denom, scale widget uses true scales
+    mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
+    mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
   }
 
   if ( mRule->symbol() )
@@ -655,8 +656,9 @@ void QgsRendererRulePropsDialog::accept()
   mRule->setFilterExpression( editFilter->text() );
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
-  mRule->setScaleMinDenom( groupScale->isChecked() ? spinMinScale->value() : 0 );
-  mRule->setScaleMaxDenom( groupScale->isChecked() ? spinMaxScale->value() : 0 );
+  // caution: rule uses scale denom, scale widget uses true scales
+  mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
+  mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
   mRule->setSymbol( groupSymbol->isChecked() ? mSymbol->clone() : NULL );
 
   QDialog::accept();
@@ -723,8 +725,8 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
         {
           return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
         }
-      case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
-      case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
+      case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
+      case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
       case 4:
         if ( mFeatureCountMap.count( rule ) == 1 )
         {
