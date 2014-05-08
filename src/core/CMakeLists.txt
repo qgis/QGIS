@@ -718,3 +718,18 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+
+#############################################################
+# qgis_vsipreload library from GDAL/OGR
+# g++ -Wall -fPIC port/vsipreload.cpp -shared -o vsipreload.so -Iport -L. -L.libs -lgdal 
+
+IF (CMAKE_SYSTEM_NAME STREQUAL Linux)
+  ADD_LIBRARY(qgis_vsipreload SHARED vsipreload.cpp)
+  SET_TARGET_PROPERTIES(qgis_vsipreload PROPERTIES
+    VERSION ${COMPLETE_VERSION}
+    SOVERSION ${COMPLETE_VERSION}
+  )
+  TARGET_LINK_LIBRARIES(qgis_vsipreload ${GDAL_LIBRARY} ${CMAKE_DL_LIBS})
+  INSTALL(TARGETS qgis_vsipreload LIBRARY DESTINATION ${QGIS_LIB_DIR})
+#  ARCHIVE DESTINATION ${QGIS_LIB_DIR})
+ENDIF (CMAKE_SYSTEM_NAME STREQUAL Linux)

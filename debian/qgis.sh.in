@@ -5,7 +5,13 @@ if [ "$LD_LIBRARY_PATH" = "" ]; then
 else
 	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/{GRASS}/lib
 fi
-
 export LD_LIBRARY_PATH
+
+if [ "$LD_PRELOAD" = "" ]; then
+	LD_PRELOAD=/usr/lib/libqgis_vsipreload.so.{QGIS_ABI}
+else
+	LD_PRELOAD=$LD_PRELOAD:/usr/lib/libqgis_vsipreload.so.{QGIS_ABI}
+fi
+export LD_PRELOAD
 
 exec $0.bin "$@"

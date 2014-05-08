@@ -1,1 +1,2 @@
 usr/lib/libqgis_core.so.{QGIS_ABI}
+usr/lib/libqgis_vsipreload.so.{QGIS_ABI}
