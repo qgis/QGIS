@@ -617,18 +617,6 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
     rotate = ( props["rotate"] == "1" );
 
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( rotate, interval );
-  if ( props.contains( "width" ) )
-  {
-    x->setWidth( props["width"].toDouble() );
-  }
-  if ( props.contains( "width_unit" ) )
-  {
-    x->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
-  }
-  if ( props.contains( "width_map_unit_scale" ) )
-  {
-    x->setWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["width_map_unit_scale"] ) );
-  }
   if ( props.contains( "offset" ) )
   {
     x->setOffset( props["offset"].toDouble() );
@@ -1145,9 +1133,6 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   map["rotate"] = ( mRotateMarker ? "1" : "0" );
   map["interval"] = QString::number( mInterval );
   map["offset"] = QString::number( mOffset );
-  map["width"] = QString::number( mWidth );
-  map["width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
-  map["width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mWidthMapUnitScale );
   map["offset_along_line"] = QString::number( mOffsetAlongLine );
   map["offset_along_line_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetAlongLineUnit );
   map["offset_along_line_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetAlongLineMapUnitScale );
@@ -1195,9 +1180,6 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setSubSymbol( mMarker->clone() );
   x->setOffset( mOffset );
   x->setPlacement( mPlacement );
-  x->setWidth( mWidth );
-  x->setWidthUnit( mWidthUnit );
-  x->setWidthMapUnitScale( mWidthMapUnitScale );
   x->setOffsetUnit( mOffsetUnit );
   x->setOffsetMapUnitScale( mOffsetMapUnitScale );
   x->setIntervalUnit( mIntervalUnit );
