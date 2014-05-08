@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from PyQt4 import QtGui
+from PyQt4 import QtGui,QtCore
 from processing.tools.system import *
 
 
@@ -150,7 +150,10 @@ class ProcessingConfig:
     @staticmethod
     def getSetting(name):
         if name in ProcessingConfig.settings.keys():
-            return ProcessingConfig.settings[name].value
+            v = ProcessingConfig.settings[name].value
+            if isinstance(v, QtCore.QPyNullVariant):
+                v = None
+            return v
         else:
             return None
 

@@ -232,7 +232,7 @@ class GeoAlgorithm:
         self.runHookScript(scriptFile, progress)
 
     def runHookScript(self, filename, progress):
-        if not os.path.exists(filename):
+        if filename is None or not os.path.exists(filename):
             return
         try:
             script = 'import processing\n'
