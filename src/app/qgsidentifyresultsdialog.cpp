@@ -311,8 +311,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mPlot->setSizePolicy( sizePolicy );
   mPlot->updateGeometry();
 
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
            this, SLOT( itemExpanded( QTreeWidgetItem* ) ) );
 
@@ -653,6 +651,7 @@ QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
     delete mPlotCurve;
   }
 }
+#endif
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QString label,
@@ -1030,7 +1029,6 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 void QgsIdentifyResultsDialog::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/Windows/Identify/geometry", saveGeometry() );
   // first column width
   settings.setValue( "/Windows/Identify/columnWidth", lstResults->columnWidth( 0 ) );
   settings.setValue( "/Windows/Identify/columnWidthTable", tblResults->columnWidth( 0 ) );
