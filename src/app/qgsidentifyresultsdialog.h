@@ -231,6 +231,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void layerProperties( QTreeWidgetItem *object );
     void disconnectLayer( QObject *object );
 
+    void saveWindowLocation();
+
     void setColumnText( int column, const QString & label );
     void expandColumnsToFit();
 
