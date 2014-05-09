@@ -1685,6 +1685,11 @@ QString createFilters( QString type )
         myFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), "*.gpx" );
         myExtensions << "gpx";
       }
+      else if ( driverName.startsWith( "GPKG" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), "*.gpkg" );
+        myExtensions << "gpkg";
+      }
       else if ( driverName.startsWith( "GRASS" ) )
       {
         myDirectoryDrivers += QObject::tr( "Grass Vector" ) + ",GRASS;";
