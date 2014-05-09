@@ -1580,7 +1580,8 @@ QString  QgsOgrProvider::description() const
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  // return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
 } // createFileFilter_
 
 
@@ -1834,7 +1835,14 @@ QString createFilters( QString type )
 
     }                          // each loaded OGR driver
 
-    // VSIFileHandler (.zip and .gz files)
+    // sort file filters alphabetically
+    QgsDebugMsg( "myFileFilters: " + myFileFilters );
+    QStringList filters = myFileFilters.split( ";;", QString::SkipEmptyParts );
+    filters.sort();
+    myFileFilters = filters.join( ";;" ) + ";;";
+    QgsDebugMsg( "myFileFilters: " + myFileFilters );
+
+    // VSIFileHandler (.zip and .gz files) - second
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
@@ -1842,15 +1850,19 @@ QString createFilters( QString type )
     QSettings settings;
     if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
     {
-      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
+      myFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" ) );
       myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
 
     }
 #endif
 
-    // can't forget the default case
+    // can't forget the default case - first
+    myFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
 
-    myFileFilters += QObject::tr( "All files" ) + " (*)";
+    // cleanup
+    if ( myFileFilters.endsWith( ";;" ) ) myFileFilters.chop( 2 );
+
+    QgsDebugMsg( "myFileFilters: " + myFileFilters );
   }
 
   if ( type == "file" )
