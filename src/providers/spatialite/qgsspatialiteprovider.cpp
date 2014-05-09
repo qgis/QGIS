@@ -3983,7 +3983,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
   {
     // looping on each feature to change
     // empty QgsGeometry has asWkb == NULL. It's not a Geos Empty Geometry
-    if ( iter->asWkb() or iter->asWkb() == NULL )
+    if ( iter->asWkb() || iter->asWkb() == NULL )
     {
 
       // resetting Prepared Statement and bindings
