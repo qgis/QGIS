@@ -261,6 +261,8 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , extent_( 0 )
     , ogrLayer( 0 )
     , ogrOrigLayer( 0 )
+    , mLayerIndex( 0 )
+    , mIsSubLayer( false )
     , mOgrGeometryTypeFilter( wkbUnknown )
     , ogrDriver( 0 )
     , valid( false )
@@ -276,7 +278,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // make connection to the data source
 
-  QgsDebugMsg( "Data source uri is " + uri );
+  QgsDebugMsg( "Data source uri is [" + uri + "]" );
 
   // try to open for update, but disable error messages to avoid a
   // message if the file is read only, because we cope with that
@@ -315,10 +317,15 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
         {
           mLayerIndex = -1;
         }
+        else
+        {
+          mIsSubLayer = true;
+        }
       }
       else if ( field == "layername" )
       {
         mLayerName = value;
+        mIsSubLayer = true;
       }
 
       if ( field == "subset" )
@@ -397,7 +404,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       setEncoding( encoding() );
 
       valid = setSubsetString( mSubsetString );
-      QgsDebugMsg( "Data source is valid" );
+      if ( valid )
+      {
+        QgsDebugMsg( "Data source is valid" );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), tr( "OGR" ) );
+      }
     }
     else
     {
@@ -594,7 +608,16 @@ QStringList QgsOgrProvider::subLayers() const
     QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
-    QgsDebugMsg( QString( "layerGeomType = %1" ).arg( layerGeomType ) );
+    // ignore this layer if a sublayer was requested and it is not this one
+    if ( mIsSubLayer &&
+         (( !mLayerName.isNull() && theLayerName != mLayerName ) ||
+          ( mLayerName.isNull() && mLayerIndex >= 0 && i != ( unsigned int )mLayerIndex ) ) )
+    {
+      QgsDebugMsg( QString( "subLayers() ignoring layer #%1 (%2)" ).arg( i ).arg( theLayerName ) );
+      continue;
+    }
+
+    QgsDebugMsg( QString( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( theLayerName ).arg( layerGeomType ) );
 
     if ( layerGeomType != wkbUnknown )
     {
