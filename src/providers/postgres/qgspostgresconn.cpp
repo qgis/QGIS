@@ -297,6 +297,7 @@ bool QgsPostgresConn::beginTransaction( const QString& id, const QString& connSt
   }
 
   sTransactionConnections.insert( id, conn );
+  conn->setTransactionId( id );
   QgsPostgresResult r = conn->PQexec( "BEGIN TRANSACTION", true );
   if ( r.PQresultStatus() == PGRES_COMMAND_OK )
   {
@@ -339,6 +340,7 @@ bool QgsPostgresConn::removeTransaction( const QString& id )
   }
 
   QgsPostgresConn* conn = it.value();
+  conn->setTransactionId( QString() );
   sTransactionConnections.remove( id );
   conn->disconnect();
   return true;
@@ -890,13 +892,14 @@ PGresult *QgsPostgresConn::PQexec( QString query, bool logError )
 
 bool QgsPostgresConn::openCursor( QString cursorName, QString sql )
 {
-  if ( mOpenCursors++ == 0 )
+  if ( mOpenCursors++ == 0 && mTransactionId.isEmpty() )
   {
     QgsDebugMsg( "Starting read-only transaction" );
     PQexecNR( "BEGIN READ ONLY" );
   }
   QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName ).arg( sql ), 3 );
-  return PQexecNR( QString( "DECLARE %1 BINARY CURSOR FOR %2" ).arg( cursorName ).arg( sql ) );
+  return PQexecNR( QString( "DECLARE %1 BINARY CURSOR %2 FOR %3" ).
+                   arg( cursorName ).arg( mTransactionId.isEmpty() ? QString() : QString( "WITH HOLD" ) ).arg( sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( QString cursorName )
@@ -904,7 +907,7 @@ bool QgsPostgresConn::closeCursor( QString cursorName )
   if ( !PQexecNR( QString( "CLOSE %1" ).arg( cursorName ) ) )
     return false;
 
-  if ( --mOpenCursors == 0 )
+  if ( --mOpenCursors == 0 && mTransactionId.isEmpty() )
   {
     QgsDebugMsg( "Committing read-only transaction" );
     PQexecNR( "COMMIT" );

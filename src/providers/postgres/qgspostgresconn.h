@@ -277,6 +277,9 @@ class QgsPostgresConn : public QObject
 
     static QgsPostgresConn* transactionConnection( const QString& transactionId );
 
+    QString transactionId() const { return mTransactionId; }
+    void setTransactionId( const QString& id ) { mTransactionId = id; }
+
   private:
     QgsPostgresConn( QString conninfo, bool readOnly, bool shared );
     ~QgsPostgresConn();
@@ -344,6 +347,8 @@ class QgsPostgresConn : public QObject
     int mNextCursorId;
 
     bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+
+    QString mTransactionId;
 };
 
 
