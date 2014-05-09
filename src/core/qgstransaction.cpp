@@ -27,9 +27,8 @@ typedef bool commitTransaction_t( const QString& id, QString& error );
 typedef bool rollbackTransaction_t( const QString& id, QString& error );
 typedef bool executeTransactionSql_t( const QString& id, const QString& sql, QString& error );
 
-QgsTransaction::QgsTransaction( const QString& connString, const QString& providerKey ): mConnString( connString ), mProviderKey( providerKey )
+QgsTransaction::QgsTransaction( const QString& connString, const QString& providerKey ): mId( QUuid::createUuid() ), mConnString( connString ), mProviderKey( providerKey )
 {
-
 }
 
 QgsTransaction::~QgsTransaction()
