@@ -2171,18 +2171,12 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       throw PGException( result );
     }
 
+    QgsDebugMsg( "iterating over the map of changed geometries..." );
+
     for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
           iter != geometry_map.end();
           ++iter )
     {
-      QgsDebugMsg( "iterating over the map of changed geometries..." );
-
-      if ( !iter->asWkb() )
-      {
-        QgsDebugMsg( "empty geometry" );
-        continue;
-      }
-
       QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
 
       // Save the id of the current topogeometry
