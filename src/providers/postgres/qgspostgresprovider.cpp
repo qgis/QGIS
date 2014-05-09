@@ -2180,7 +2180,6 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       if ( !iter->asWkb() )
       {
         QgsDebugMsg( "empty geometry" );
-        continue;
       }
 
       QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
