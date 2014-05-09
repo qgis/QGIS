@@ -1,4 +1,4 @@
-class QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
+class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
 {
 %TypeHeaderCode
 #include "qgsmaptopixelgeometrysimplifier.h"
