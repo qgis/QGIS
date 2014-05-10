@@ -2180,6 +2180,7 @@ void QgisApp::initLayerTreeView()
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   QgsLayerTreeModel* model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
+  model->setFlag(QgsLayerTreeModel::AllowVisibilityManagement);
 
   mLayerTreeView = new QgsLayerTreeView( this );
   mLayerTreeView->setModel( model );

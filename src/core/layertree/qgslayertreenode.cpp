@@ -189,6 +189,11 @@ void QgsLayerTreeGroup::removeChildren(int from, int count)
   updateVisibilityFromChildren();
 }
 
+void QgsLayerTreeGroup::removeAllChildren()
+{
+  removeChildren(0, mChildren.count());
+}
+
 QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer(const QString& layerId)
 {
   foreach (QgsLayerTreeNode* child, mChildren)

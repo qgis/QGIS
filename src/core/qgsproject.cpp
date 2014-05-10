@@ -425,7 +425,7 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
 
-  mRootGroup->removeChildren(0, mRootGroup->children().count());
+  mRootGroup->removeAllChildren();
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE

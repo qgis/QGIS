@@ -55,11 +55,13 @@ public:
   {
     AllowTreeManagement,
     ShowSymbology,
+    AllowVisibilityManagement,
     ShowFeatureCounts, // TODO: this is per-layer
   };
   Q_DECLARE_FLAGS(Flags, Flag)
 
   void setFlags(Flags f) { mFlags = f; }
+  void setFlag(Flag f, bool on = true) { if (on) mFlags |= f; else mFlags &= ~f; }
   Flags flags() const { return mFlags; }
   bool testFlag(Flag f) const { return mFlags.testFlag(f); }
 

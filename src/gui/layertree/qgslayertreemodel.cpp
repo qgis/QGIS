@@ -190,6 +190,9 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
   }
   else if ( role == Qt::CheckStateRole )
   {
+    if (!testFlag(AllowVisibilityManagement))
+      return QVariant();
+
     if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
     {
       QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
@@ -215,7 +218,7 @@ Qt::ItemFlags QgsLayerTreeModel::flags(const QModelIndex& index) const
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
   QgsLayerTreeNode* node = index2node(index);
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (testFlag(AllowVisibilityManagement) && node->nodeType() == QgsLayerTreeNode::NodeLayer)
     f |= Qt::ItemIsUserCheckable;
   else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
     f |= Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
@@ -230,6 +233,9 @@ bool QgsLayerTreeModel::setData(const QModelIndex& index, const QVariant& value,
 
   if (role == Qt::CheckStateRole)
   {
+    if (!testFlag(AllowVisibilityManagement))
+      return false;
+
     if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
     {
       QgsLayerTreeLayer* layer = static_cast<QgsLayerTreeLayer*>(node);

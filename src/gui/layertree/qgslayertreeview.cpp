@@ -20,7 +20,6 @@ QgsLayerTreeView::QgsLayerTreeView(QWidget *parent)
 
   connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(updateExpandedStateToNode(QModelIndex)));
   connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(updateExpandedStateToNode(QModelIndex)));
-  connect(this, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onCurrentChanged(QModelIndex)));
 }
 
 void QgsLayerTreeView::setModel(QAbstractItemModel* model)
@@ -31,6 +30,8 @@ void QgsLayerTreeView::setModel(QAbstractItemModel* model)
   connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(modelRowsInserted(QModelIndex,int,int)));
 
   QTreeView::setModel(model);
+
+  connect(selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onCurrentChanged(QModelIndex)));
 
   updateExpandedStateFromNode(layerTreeModel()->rootGroup());
 }

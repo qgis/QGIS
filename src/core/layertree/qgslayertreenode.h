@@ -147,6 +147,8 @@ public:
 
   void removeChildren(int from, int count);
 
+  void removeAllChildren();
+
   QgsLayerTreeLayer* findLayer(const QString& layerId);
 
   static QgsLayerTreeGroup* readXML(QDomElement& element);
