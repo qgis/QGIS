@@ -82,6 +82,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
+    bool useSystemProxy() { return mUseSystemProxy; }
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
@@ -97,6 +99,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QList<QNetworkProxyFactory*> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
+    bool mUseSystemProxy;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

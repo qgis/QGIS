@@ -860,6 +860,14 @@ void QgsOptions::setCurrentPage( QString pageWidgetName )
   }
 }
 
+void QgsOptions::on_mProxyTypeComboBox_currentIndexChanged( int idx )
+{
+  leProxyHost->setEnabled( idx != 0 );
+  leProxyPort->setEnabled( idx != 0 );
+  leProxyUser->setEnabled( idx != 0 );
+  leProxyPassword->setEnabled( idx != 0 );
+}
+
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
 {
   if ( checked )
