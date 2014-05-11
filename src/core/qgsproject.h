@@ -302,6 +302,11 @@ class CORE_EXPORT QgsProject : public QObject
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
+    /** Create layer group instance defined in an arbitrary project file.
+     * @note: added in version 2.4
+     */
+    bool createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+
     /** Convenience function to set snap settings per layer
       @note added in version 1.9*/
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
@@ -344,6 +349,8 @@ class CORE_EXPORT QgsProject : public QObject
     //Creates layer and adds it to maplayer registry
     //! @note not available in python bindings
     bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+
+    void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read

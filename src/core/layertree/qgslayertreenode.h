@@ -20,7 +20,6 @@ public:
     NodeLayer
   };
 
-  QgsLayerTreeNode(NodeType t): mNodeType(t), mParent(0), mExpanded(true) {}
   ~QgsLayerTreeNode() { qDeleteAll(mChildren); }
 
   NodeType nodeType() { return mNodeType; }
@@ -31,6 +30,8 @@ public:
   virtual void writeXML(QDomElement& parentElement) = 0;
 
   virtual QString dump() const = 0;
+
+  virtual QgsLayerTreeNode* clone() const = 0;
 
   bool isExpanded() const { return mExpanded; }
   void setExpanded(bool expanded) { mExpanded = expanded; }
@@ -57,6 +58,9 @@ signals:
   void visibilityChanged(Qt::CheckState state);
 
 protected:
+
+  QgsLayerTreeNode(NodeType t);
+  QgsLayerTreeNode(const QgsLayerTreeNode& other);
 
   // low-level utility functions
 
@@ -95,6 +99,7 @@ class QgsLayerTreeLayer : public QgsLayerTreeNode
   Q_OBJECT
 public:
   explicit QgsLayerTreeLayer(QgsMapLayer* layer);
+  QgsLayerTreeLayer(const QgsLayerTreeLayer& other);
 
   explicit QgsLayerTreeLayer(QString layerId, QString name = QString());
 
@@ -113,10 +118,13 @@ public:
 
   virtual QString dump() const;
 
+  virtual QgsLayerTreeNode* clone() const;
+
 protected slots:
   void registryLayersAdded(QList<QgsMapLayer*> layers);
 
 protected:
+  void attachToLayer();
 
   QString mLayerId;
   QString mLayerName; // only used if layer does not exist
@@ -130,6 +138,7 @@ class QgsLayerTreeGroup : public QgsLayerTreeNode
   Q_OBJECT
 public:
   QgsLayerTreeGroup(const QString& name = QString(), Qt::CheckState checked = Qt::Checked);
+  QgsLayerTreeGroup(const QgsLayerTreeGroup& other);
 
   QString name() const { return mName; }
   void setName(const QString& n) { mName = n; }
@@ -150,6 +159,7 @@ public:
   void removeAllChildren();
 
   QgsLayerTreeLayer* findLayer(const QString& layerId);
+  QgsLayerTreeGroup* findGroup(const QString& name);
 
   static QgsLayerTreeGroup* readXML(QDomElement& element);
   virtual void writeXML(QDomElement& parentElement);
@@ -158,8 +168,12 @@ public:
 
   virtual QString dump() const;
 
+  virtual QgsLayerTreeNode* clone() const;
+
   Qt::CheckState isVisible() const { return mChecked; }
   void setVisible(Qt::CheckState state);
+
+  QStringList childLayerIds() const;
 
 protected slots:
   void layerDestroyed();

@@ -204,6 +204,15 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
       return nodeGroup->isVisible();
     }
   }
+  else if ( role == Qt::FontRole )
+  {
+    QFont f;
+    if (node->customProperty("embedded", false).toBool())
+      f.setItalic(true);
+    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+      f.setBold(true);
+    return f;
+  }
 
   return QVariant();
 }

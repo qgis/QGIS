@@ -53,12 +53,16 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
 {
   QDomNodeList groupChildren = groupElem.childNodes();
 
-  // TODO: embedded
-  //if ( !mShowEmbeddedContent && groupElem.attribute( "embedded" ) == "1" )
-  //  return;
-
   QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup(groupElem.attribute( "name" ));
   parent->addChildNode(groupNode);
+
+  groupNode->setVisible(checkStateFromXml(groupElem.attribute("checked")));
+
+  if (groupElem.attribute("embedded") == "1")
+  {
+    groupNode->setCustomProperty("embedded", true);
+    groupNode->setCustomProperty("embedded_project", groupElem.attribute("project"));
+  }
 
   for ( int i = 0; i < groupChildren.size(); ++i )
   {
@@ -76,11 +80,15 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
 
 void QgsLayerTreeUtils::addLegendLayerToTreeWidget( const QDomElement& layerElem, QgsLayerTreeGroup* parent )
 {
-  // TODO: embedded
-  //if ( !mShowEmbeddedContent && layerElem.attribute( "embedded" ) == "1" )
-  //  return;
-
   QString layerId = layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" );
   QgsLayerTreeLayer* layerNode = new QgsLayerTreeLayer(layerId, layerElem.attribute( "name" ) );
+
+  layerNode->setVisible(checkStateFromXml(layerElem.attribute("checked")));
+
+  if (layerElem.attribute("embedded") == "1")
+    layerNode->setCustomProperty("embedded", true);
+
+  // TODO: is in overview, drawing order, show feature count
+
   parent->addChildNode(layerNode);
 }

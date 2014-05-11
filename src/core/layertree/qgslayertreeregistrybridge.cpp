@@ -4,6 +4,8 @@
 
 #include "qgslayertreenode.h"
 
+#include "qgsproject.h"
+
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge(QgsLayerTreeGroup *root, QObject *parent)
   : QObject(parent)
   , mRoot(root)
@@ -22,7 +24,15 @@ void QgsLayerTreeRegistryBridge::layersAdded(QList<QgsMapLayer*> layers)
 
   foreach (QgsMapLayer* layer, layers)
   {
-    mRoot->addLayer(layer);
+    QgsLayerTreeLayer* nodeLayer = mRoot->addLayer(layer);
+
+    // check whether the layer is marked as embedded
+    QString projectFile = QgsProject::instance()->layerIsEmbedded(nodeLayer->layerId());
+    if (!projectFile.isEmpty())
+    {
+      nodeLayer->setCustomProperty("embedded", true);
+      nodeLayer->setCustomProperty("embedded_project", projectFile);
+    }
   }
 }
 

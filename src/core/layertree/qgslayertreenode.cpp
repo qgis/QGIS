@@ -5,6 +5,26 @@
 #include "qgslayertreeutils.h"
 
 
+QgsLayerTreeNode::QgsLayerTreeNode(QgsLayerTreeNode::NodeType t)
+  : mNodeType(t)
+  , mParent(0)
+  , mExpanded(true)
+{
+}
+
+QgsLayerTreeNode::QgsLayerTreeNode(const QgsLayerTreeNode& other)
+  : QObject()
+  , mNodeType(other.mNodeType)
+  , mParent(0)
+  , mExpanded(other.mExpanded)
+  , mProperties(other.mProperties)
+{
+  QList<QgsLayerTreeNode*> clonedChildren;
+  foreach (QgsLayerTreeNode* child, other.mChildren)
+    clonedChildren << child->clone();
+  insertChildren(-1, clonedChildren);
+}
+
 QgsLayerTreeNode* QgsLayerTreeNode::readXML(QDomElement& element)
 {
   QgsLayerTreeNode* node = 0;
@@ -105,6 +125,14 @@ QgsLayerTreeGroup::QgsLayerTreeGroup(const QString& name, Qt::CheckState checked
   : QgsLayerTreeNode(NodeGroup)
   , mName(name)
   , mChecked(checked)
+  , mChangingChildVisibility(false)
+{
+}
+
+QgsLayerTreeGroup::QgsLayerTreeGroup(const QgsLayerTreeGroup& other)
+  : QgsLayerTreeNode(other)
+  , mName(other.mName)
+  , mChecked(other.mChecked)
   , mChangingChildVisibility(false)
 {
 }
@@ -214,6 +242,26 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer(const QString& layerId)
   return 0;
 }
 
+QgsLayerTreeGroup* QgsLayerTreeGroup::findGroup(const QString& name)
+{
+  foreach (QgsLayerTreeNode* child, mChildren)
+  {
+    if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
+    {
+      QgsLayerTreeGroup* childGroup = static_cast<QgsLayerTreeGroup*>(child);
+      if (childGroup->name() == name)
+        return childGroup;
+      else
+      {
+        QgsLayerTreeGroup* grp = childGroup->findGroup(name);
+        if (grp)
+          return grp;
+      }
+    }
+  }
+  return 0;
+}
+
 QgsLayerTreeGroup* QgsLayerTreeGroup::readXML(QDomElement& element)
 {
   if (element.tagName() != "layer-tree-group")
@@ -273,6 +321,11 @@ QString QgsLayerTreeGroup::dump() const
   return header + childrenDump.join( "\n" );
 }
 
+QgsLayerTreeNode* QgsLayerTreeGroup::clone() const
+{
+  return new QgsLayerTreeGroup(*this);
+}
+
 void QgsLayerTreeGroup::setVisible(Qt::CheckState state)
 {
   if (mChecked == state)
@@ -296,6 +349,19 @@ void QgsLayerTreeGroup::setVisible(Qt::CheckState state)
 
     mChangingChildVisibility = false;
   }
+}
+
+QStringList QgsLayerTreeGroup::childLayerIds() const
+{
+  QStringList lst;
+  foreach (QgsLayerTreeNode* child, mChildren)
+  {
+    if (child->nodeType() == NodeGroup)
+      lst << static_cast<QgsLayerTreeGroup*>(child)->childLayerIds();
+    else if (child->nodeType() == NodeLayer)
+      lst << static_cast<QgsLayerTreeLayer*>(child)->layerId();
+  }
+  return lst;
 }
 
 
@@ -353,10 +419,29 @@ QgsLayerTreeLayer::QgsLayerTreeLayer(QgsMapLayer *layer)
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer(QString layerId, QString name)
-  : QgsLayerTreeNode(NodeLayer), mLayerId(layerId), mLayer(0), mVisible(true)
+  : QgsLayerTreeNode(NodeLayer)
+  , mLayerId(layerId)
+  , mLayerName(name)
+  , mLayer(0)
+  , mVisible(true)
+{
+  attachToLayer();
+}
+
+QgsLayerTreeLayer::QgsLayerTreeLayer(const QgsLayerTreeLayer& other)
+  : QgsLayerTreeNode(other)
+  , mLayerId(other.mLayerId)
+  , mLayerName(other.mLayerName)
+  , mLayer(0)
+  , mVisible(other.mVisible)
+{
+  attachToLayer();
+}
+
+void QgsLayerTreeLayer::attachToLayer()
 {
   // layer is not necessarily already loaded
-  QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer(layerId);
+  QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer(mLayerId);
   if (l)
   {
     mLayer = l;
@@ -364,7 +449,8 @@ QgsLayerTreeLayer::QgsLayerTreeLayer(QString layerId, QString name)
   }
   else
   {
-    mLayerName = name.isEmpty() ? "(?)" : name;
+    if (mLayerName.isEmpty())
+      mLayerName = "(?)";
     // wait for the layer to be eventually loaded
     connect(QgsMapLayerRegistry::instance(), SIGNAL(layersAdded(QList<QgsMapLayer*>)), this, SLOT(registryLayersAdded(QList<QgsMapLayer*>)));
   }
@@ -423,6 +509,11 @@ void QgsLayerTreeLayer::writeXML(QDomElement& parentElement)
 QString QgsLayerTreeLayer::dump() const
 {
   return QString( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( layerName() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
+}
+
+QgsLayerTreeNode* QgsLayerTreeLayer::clone() const
+{
+  return new QgsLayerTreeLayer(*this);
 }
 
 void QgsLayerTreeLayer::registryLayersAdded(QList<QgsMapLayer*> layers)

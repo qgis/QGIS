@@ -939,6 +939,8 @@ bool QgsProject::read()
 
   mLayerTreeRegistryBridge->setEnabled( true );
 
+  // TODO: load embedded groups / layers
+
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 
@@ -1715,6 +1717,105 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   }
 
   return false;
+}
+
+
+bool QgsProject::createEmbeddedGroup( const QString& groupName, const QString& projectFilePath )
+{
+  //open project file, get layer ids in group, add the layers
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  QDomDocument projectDocument;
+  if ( !projectDocument.setContent( &projectFile ) )
+  {
+    return false;
+  }
+
+  //store identify disabled layers of the embedded project
+  QSet<QString> embeddedIdentifyDisabledLayers;
+  QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( "properties" ).firstChildElement( "Identify" ).firstChildElement( "disabledLayers" );
+  if ( !disabledLayersElem.isNull() )
+  {
+    QDomNodeList valueList = disabledLayersElem.elementsByTagName( "value" );
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      embeddedIdentifyDisabledLayers.insert( valueList.at( i ).toElement().text() );
+    }
+  }
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
+
+  QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( "layer-tree-group" );
+  if ( !layerTreeElem.isNull() )
+  {
+    root->readChildrenFromXML( layerTreeElem );
+  }
+  else
+  {
+    QgsLayerTreeUtils::readOldLegend( root, projectDocument.documentElement().firstChildElement( "legend" ) );
+  }
+
+  QgsLayerTreeGroup* group = root->findGroup( groupName );
+  if ( !group || group->customProperty( "embedded" ).toBool() )
+  {
+    // embedded groups cannot be embedded again
+    delete root;
+    return false;
+  }
+
+  // clone the group sub-tree (it is used already in a tree, we cannot just tear it off)
+  QgsLayerTreeGroup* newGroup = static_cast<QgsLayerTreeGroup*>( group->clone() );
+  delete root;
+  root = 0;
+
+  newGroup->setCustomProperty( "embedded", true );
+  newGroup->setCustomProperty( "embedded_project", projectFilePath );
+
+  // set "embedded" to all children + load embedded layers
+  mLayerTreeRegistryBridge->setEnabled( false );
+  initializeEmbeddedSubtree( projectFilePath, newGroup );
+  mLayerTreeRegistryBridge->setEnabled( true );
+
+  // consider the layers might be identify disabled in its project
+  foreach ( QString layerId, newGroup->childLayerIds() )
+  {
+    if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
+    {
+      QStringList thisProjectIdentifyDisabledLayers = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+      thisProjectIdentifyDisabledLayers.append( layerId );
+      QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", thisProjectIdentifyDisabledLayers );
+    }
+  }
+
+  // add to the project
+  mRootGroup->addChildNode( newGroup );
+
+  return true;
+}
+
+void QgsProject::initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group )
+{
+  foreach ( QgsLayerTreeNode* child, group->children() )
+  {
+    // all nodes in the subtree will have "embedded" custom property set
+    child->setCustomProperty( "embedded", true );
+
+    if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
+    {
+      initializeEmbeddedSubtree( projectFilePath, static_cast<QgsLayerTreeGroup*>( child ) );
+    }
+    else if ( child->nodeType() == QgsLayerTreeNode::NodeLayer )
+    {
+      // load the layer into our project
+      QList<QDomNode> brokenNodes;
+      QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+      createEmbeddedLayer( static_cast<QgsLayerTreeLayer*>( child )->layerId(), projectFilePath, brokenNodes, vectorLayerList, false );
+    }
+  }
 }
 
 void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection )

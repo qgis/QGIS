@@ -7320,7 +7320,7 @@ void QgisApp::embedLayers()
     QStringList::const_iterator groupIt = groups.constBegin();
     for ( ; groupIt != groups.constEnd(); ++groupIt )
     {
-      mMapLegend->addEmbeddedGroup( *groupIt, projectFile );
+      QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile );
     }
 
     //layer ids
