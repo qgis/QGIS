@@ -88,7 +88,7 @@ ENDIF(PYQT4_VERSION_NUM LESS 264196)
 FILE(GLOB_RECURSE sip_files_core core/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
-ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
+ADD_SIP_PYTHON_MODULE(qgis._core core/core.sip qgis_core)
 
 # additional gui includes
 INCLUDE_DIRECTORIES(
@@ -109,7 +109,7 @@ IF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   ADD_DEFINITIONS(-Dprotected=public)
 ENDIF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
 
-ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
+ADD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip qgis_core qgis_gui)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(
@@ -132,13 +132,13 @@ FILE(GLOB sip_files_analysis
 )
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
-ADD_SIP_PYTHON_MODULE(qgis.analysis analysis/analysis.sip qgis_core qgis_analysis)
+ADD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip qgis_core qgis_analysis)
 
 # network-analysis module
 FILE(GLOB_RECURSE sip_files_network_analysis analysis/network/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_network_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.networkanalysis.api)
-ADD_SIP_PYTHON_MODULE(qgis.networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
+ADD_SIP_PYTHON_MODULE(qgis._networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
 
 SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
@@ -147,7 +147,7 @@ IF(WITH_QSCIAPI)
   SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
 
   ADD_CUSTOM_TARGET(qsci-api ALL
-    DEPENDS python_module_qgis_gui python_module_qgis_core python_module_qgis_analysis python_module_qgis_networkanalysis)
+    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis python_module_qgis__networkanalysis)
 
   # run update/concatenate command
   ADD_CUSTOM_COMMAND(TARGET qsci-api
@@ -179,6 +179,10 @@ ENDIF(WITH_QSCIAPI)
 SET(PY_FILES
   __init__.py
   utils.py
+  core.py
+  gui.py
+  analysis.py
+  networkanalysis.py
 )
 
 ADD_CUSTOM_TARGET(pyutils ALL)
