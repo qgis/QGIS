@@ -24,7 +24,7 @@ QgsFieldComboBox::QgsFieldComboBox( QWidget *parent ) :
   mFieldProxyModel = new QgsFieldProxyModel( this );
   setModel( mFieldProxyModel );
 
-  connect( this, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
+  connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
 }
 
 void QgsFieldComboBox::setFilters( QgsFieldProxyModel::Filters filters )
@@ -60,6 +60,7 @@ void QgsFieldComboBox::setField( QString fieldName )
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( idx.row() );
+      emit fieldChanged( currentField() );
       return;
     }
   }
