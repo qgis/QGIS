@@ -59,6 +59,8 @@ class PYTHON_EXPORT QgsPythonUtils
 
     virtual bool evalString( const QString& command, QString& result ) = 0;
 
+    virtual void* evalToObject( const QString& command, const QString& siptype ) = 0;
+
     //! get information about error to the supplied arguments
     //! @return false if there was no python error
     virtual bool getError( QString& errorClassName, QString& errorText ) = 0;

@@ -16,12 +16,13 @@
 #define QGSPYTHONRUNNER_H
 
 #include <QString>
+#include <typeinfo>
 
 /**
   Utility class for running python commands from various parts of QGIS.
   There is no direct python support in the core library, so it is expected
   that application with python support creates a subclass that implements
-  pure virtual function(s) during the initialization. The static methods
+  pure virtual functions during the initialization. The static methods
   will then work as expected.
 
   Added in QGIS v?
@@ -40,12 +41,20 @@ class CORE_EXPORT QgsPythonRunner
     /** Eval a python statement */
     static bool eval( QString command, QString& result );
 
+    template <typename T>
+    static T evalToSipObject( const QString& command, const QString& siptype )
+    {
+      return static_cast<T>( evalToObjectHelper( command, siptype ) );
+    }
+
     /** assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
     static void setInstance( QgsPythonRunner* runner );
 
   protected:
+    static void* evalToObjectHelper( const QString& command, const QString& siptype );
+
     /** protected constructor: can be instantiated only from children */
     QgsPythonRunner();
     virtual ~QgsPythonRunner();
@@ -53,6 +62,8 @@ class CORE_EXPORT QgsPythonRunner
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
 
     virtual bool evalCommand( QString command, QString& result ) = 0;
+
+    virtual void* evalToObject( const QString& command, const QString& siptype ) = 0;
 
     static QgsPythonRunner* mInstance;
 };

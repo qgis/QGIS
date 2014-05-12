@@ -60,6 +60,8 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     bool evalString( const QString& command, QString& result );
 
+    void* evalToObject( const QString& command, const QString& siptype );
+
     //! @return object's type name as a string
     QString getTypeAsString( PyObject* obj );
 
