@@ -119,6 +119,11 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
   mFieldProxyModel->sourceFieldModel()->setLayer( layer );
 }
 
+QgsFieldModel* QgsFieldExpressionWidget::fieldModel()
+{
+  return mFieldModel;
+}
+
 void QgsFieldExpressionWidget::setField( const QString fieldName )
 {
   if ( fieldName.isEmpty() )
