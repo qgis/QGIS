@@ -30,14 +30,15 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
   public:
     enum Filter
     {
-      NoFilter = 1,
-      RasterLayer = 2,
-      NoGeometry = 4,
-      PointLayer = 8,
-      LineLayer = 16,
-      PolygonLayer = 32,
+      RasterLayer = 1,
+      NoGeometry = 2,
+      PointLayer = 4,
+      LineLayer = 8,
+      PolygonLayer = 16,
       HasGeometry = PointLayer | LineLayer | PolygonLayer,
-      VectorLayer = NoGeometry | HasGeometry
+      VectorLayer = NoGeometry | HasGeometry,
+      PluginLayer = 32,
+      All = RasterLayer | PolygonLayer | PluginLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 
