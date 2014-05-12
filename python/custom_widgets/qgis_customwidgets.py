@@ -17,21 +17,33 @@
 ***************************************************************************
 """
 
-# If pluginType is MODULE, the plugin loader will call moduleInformation.  The
-# variable MODULE is inserted into the local namespace by the plugin loader.
+"""
+This file is used by pyuic to redirect includes
+in custom widgets to the correct QGIS python packages.
+It is copied on installation in /pythonX/dist-packages/PyQt4/uic/widget-plugins/
+"""
+
+#pluginType = CW_FILTER
+#def getFilter():
+#	import qgis.gui
+#
+#	QGIS_widgets = {}
+#	for pyClass in dir(qgis.gui):
+#		QGIS_widgets[pyClass] = 'qgis.gui'
+#
+#	def _QGISfilter(widgetname, baseclassname, module):
+#		print widgetname, baseclassname, module
+#		if widgetname in QGIS_widgets:
+#			return (MATCH, (widgetname, baseclassname, QGIS_widgets[widgetname]))
+#		else:
+#			return (NO_MATCH, None)
+#			
+#	return _QGISfilter
+
+
+
 pluginType = MODULE
-
-
-# moduleInformation() must return a tuple (module, widget_list).  If "module"
-# is "A" and any widget from this module is used, the code generator will write
-# "import A".  If "module" is "A[.B].C", the code generator will write
-# "from A[.B] import C".  Each entry in "widget_list" must be unique.
 def moduleInformation():
-    return "qgis.gui", \
-        ("QgsCollapsibleGroupbox"  ,\
-         "QgsFieldComboBox"        ,\
-         "QgsFieldExpressionWidget",\
-         "QgsMapLayerComboBox"     ,\
-         "QgsMapLayerProxyModel"     ,\
-         "QgsScalevisibilityWidget",\
-        )
+	import qgis.gui
+	return "qgis.gui", dir(qgis.gui)
+
