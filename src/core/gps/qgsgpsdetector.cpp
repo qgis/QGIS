@@ -21,6 +21,7 @@
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
+#include "qgsgpsudpconnection.h"
 
 #ifdef HAVE_QT_MOBILITY_LOCATION
 #include "qgsqtlocationconnection.h"
@@ -40,7 +41,10 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 #endif
   // try local gpsd first
   devs << QPair<QString, QString>( "localhost:2947:", tr( "local gpsd" ) );
-
+  
+  // try udp?
+  devs << QPair<QString, QString>( "localhost_5002:", tr( "UDP" ) );
+  
 #ifdef linux
   // look for linux serial devices
   foreach ( QString linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" << "/dev/ttyACM%1" )
@@ -150,9 +154,22 @@ void QgsGPSDetector::advance()
       QStringList gpsParams = mPortList[ mPortIndex ].first.split( ":" );
 
       Q_ASSERT( gpsParams.size() >= 3 );
-
-      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
+      QgsDebugMsg( "Conexion GPSD"+gpsParams.size());
+      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), 
+gpsParams[2] );
+      
     }
+    else if ( mPortList[ mPortIndex ].first.contains( "_" ) )
+    {
+      mBaudIndex = mBaudList.size() - 1;
+
+      QStringList gpsParams = mPortList[ mPortIndex ].first.split( "_" );
+      //What is this???
+      Q_ASSERT( gpsParams.size() >= 3 );
+      QgsDebugMsg( "Conexion UDP");
+         mConn = new QgsGpsUdpConnection(gpsParams[1].toShort() );     
+    }
+    
     else if ( mPortList[ mPortIndex ].first.contains( "internalGPS" ) )
     {
 #ifdef HAVE_QT_MOBILITY_LOCATION
