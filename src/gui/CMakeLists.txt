@@ -92,6 +92,7 @@ qgsfieldcombobox.cpp
 qgsfieldexpressionwidget.cpp
 qgsfieldmodel.cpp
 qgsfieldvalidator.cpp
+qgsfieldproxymodel.cpp
 qgsfiledropedit.cpp
 qgsfilterlineedit.cpp
 qgsformannotationitem.cpp
@@ -238,6 +239,7 @@ qgsfieldcombobox.h
 qgsfieldexpressionwidget.h
 qgsfieldmodel.h
 qgsfieldvalidator.h
+qgsfieldproxymodel.h
 qgsfilterlineedit.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
@@ -310,6 +312,7 @@ qgsfieldcombobox.h
 qgsfieldexpressionwidget.h
 qgsfieldmodel.h
 qgsfieldvalidator.h
+qgsfieldproxymodel.h
 qgsfiledropedit.h
 qgsfilterlineedit.h
 qgsgenericprojectionselector.h

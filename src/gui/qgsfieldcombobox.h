@@ -18,7 +18,8 @@
 
 #include <QComboBox>
 
-class QgsFieldModel;
+#include "qgsfieldproxymodel.h"
+
 class QgsMapLayer;
 class QgsVectorLayer;
 
@@ -32,12 +33,20 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
 {
     Q_OBJECT
+    Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
+
   public:
     /**
      * @brief QgsFieldComboBox creates a combo box to display the fields of a layer.
      * The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox::layerChanged to the slot setLayer.
      */
     explicit QgsFieldComboBox( QWidget *parent = 0 );
+
+    //! setFilters allows fitering according to the type of field
+    void setFilters( QgsFieldProxyModel::Filters filters );
+
+    //! currently used filter on list of fields
+    QgsFieldProxyModel::Filters filters() { return mFieldProxyModel->filters(); }
 
     //! return the currently selected field
     QString currentField();
@@ -63,7 +72,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     void indexChanged( int i );
 
   private:
-    QgsFieldModel* mFieldModel;
+    QgsFieldProxyModel* mFieldProxyModel;
 };
 
 #endif // QGSFIELDCOMBOBOX_H

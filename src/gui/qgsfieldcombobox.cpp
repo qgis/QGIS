@@ -14,16 +14,22 @@
 ***************************************************************************/
 
 #include "qgsfieldcombobox.h"
-#include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 
 QgsFieldComboBox::QgsFieldComboBox( QWidget *parent ) :
     QComboBox( parent )
 {
-  mFieldModel = new QgsFieldModel( this );
-  setModel( mFieldModel );
+  mFieldProxyModel = new QgsFieldProxyModel( this );
+  setModel( mFieldProxyModel );
 
   connect( this, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
+}
+
+void QgsFieldComboBox::setFilters( QgsFieldProxyModel::Filters filters )
+{
+  mFieldProxyModel->setFilters( filters );
 }
 
 void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
@@ -37,38 +43,46 @@ void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
 
 void QgsFieldComboBox::setLayer( QgsVectorLayer *layer )
 {
-  mFieldModel->setLayer( layer );
+  mFieldProxyModel->sourceFieldModel()->setLayer( layer );
 }
 
 QgsVectorLayer *QgsFieldComboBox::layer()
 {
-  return mFieldModel->layer();
+  return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
 void QgsFieldComboBox::setField( QString fieldName )
 {
-  QModelIndex idx = mFieldModel->indexFromName( fieldName );
+  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( idx.isValid() )
   {
-    setCurrentIndex( idx.row() );
+    QModelIndex proxyIdx = mFieldProxyModel->mapFromSource( idx );
+    if ( proxyIdx.isValid() )
+    {
+      setCurrentIndex( idx.row() );
+      return;
+    }
   }
-  else
-  {
-    setCurrentIndex( -1 );
-  }
+  setCurrentIndex( -1 );
 }
 
 QString QgsFieldComboBox::currentField()
 {
   int i = currentIndex();
 
-  const QModelIndex index = mFieldModel->index( i, 0 );
+  const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
+  if ( !proxyIndex.isValid() )
+  {
+    return "";
+  }
+
+  const QModelIndex index = mFieldProxyModel->mapToSource( proxyIndex );
   if ( !index.isValid() )
   {
     return "";
   }
 
-  QString name = mFieldModel->data( index, QgsFieldModel::FieldNameRole ).toString();
+  QString name = mFieldProxyModel->data( index, QgsFieldModel::FieldNameRole ).toString();
   return name;
 }
 

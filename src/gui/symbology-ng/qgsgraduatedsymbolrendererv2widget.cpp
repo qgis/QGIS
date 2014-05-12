@@ -358,6 +358,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   // setup user interface
   setupUi( this );
 
+  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );
 
   cboGraduatedColorRamp->populate( mStyle );

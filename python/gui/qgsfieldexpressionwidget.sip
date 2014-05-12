@@ -13,13 +13,19 @@ class QgsFieldExpressionWidget : QWidget
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( QString title );
+    
+    //! setFilters allows fitering according to the type of field
+    void setFilters( QgsFieldProxyModel::Filters filters );
 
-    //! set the geometry calculator used in the expression dialog
-    void setGeomCalculator( const QgsDistanceArea &da );
+    //! currently used filter on list of fields
+    QgsFieldProxyModel::Filters filters();
 
     //! return the title used for the expression dialog
     const QString expressionDialogTitle();
 
+    //! set the geometry calculator used in the expression dialog
+    void setGeomCalculator( const QgsDistanceArea &da );
+    
     /**
      * @brief currentField returns the currently selected field or expression if allowed
      * @param isExpression determines if the string returned is the name of a field or an expression

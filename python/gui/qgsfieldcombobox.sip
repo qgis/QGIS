@@ -19,6 +19,12 @@ class QgsFieldComboBox : QComboBox
      */
     explicit QgsFieldComboBox( QWidget *parent /TransferThis/ = 0 );
 
+    //! setFilters allows fitering according to the type of field
+    void setFilters( QgsFieldProxyModel::Filters filters );
+
+    //! currently used filter on list of fields
+    QgsFieldProxyModel::Filters filters();
+
     //! return the currently selected field
     QString currentField();
 

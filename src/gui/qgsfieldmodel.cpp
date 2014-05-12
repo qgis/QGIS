@@ -212,6 +212,15 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return true;
     }
 
+    case FieldTypeRole:
+    {
+      if ( exprIdx < 0 )
+      {
+        QgsField field = mFields[index.internalId()];
+        return ( int )field.type();
+      }
+    }
+
     case Qt::DisplayRole:
     case Qt::EditRole:
     {

@@ -23,10 +23,10 @@
 #include <QColor>
 
 #include "qgsdistancearea.h"
+#include "qgsfieldproxymodel.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;
-class QgsFieldModel;
 
 
 /**
@@ -41,6 +41,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
+    Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:
     /**
@@ -53,6 +54,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! return the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
+
+    //! setFilters allows fitering according to the type of field
+    void setFilters( QgsFieldProxyModel::Filters filters );
+
+    //! currently used filter on list of fields
+    QgsFieldProxyModel::Filters filters() { return mFieldProxyModel->filters(); }
 
     //! set the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -111,7 +118,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
   private:
     QComboBox* mCombo;
     QToolButton* mButton;
-    QgsFieldModel* mFieldModel;
+    QgsFieldProxyModel* mFieldProxyModel;
     QString mExpressionDialogTitle;
     QSharedPointer<const QgsDistanceArea> mDa;
 };

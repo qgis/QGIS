@@ -32,6 +32,7 @@
 %Include qgsfieldexpressionwidget.sip
 %Include qgsfieldmodel.sip
 %Include qgsfieldvalidator.sip
+%Include qgsfieldproxymodel.sip
 %Include qgsfiledropedit.sip
 %Include qgsfilterlineedit.sip
 %Include qgsformannotationitem.sip

@@ -18,7 +18,8 @@ class QgsFieldModel : QAbstractItemModel
       FieldIndexRole = 34, /* return field index if index corresponds to a field */
       ExpressionRole = 35, /* return field name or expression */
       IsExpressionRole = 36, /* return if index corresponds to an expression */
-      ExpressionValidityRole = 37 /* return if expression is valid or not */
+      ExpressionValidityRole = 37, /* return if expression is valid or not */
+      FieldTypeRole = 38 /* return the field type (if a field, return QVariant if expression) */
     };
 
     /**

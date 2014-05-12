@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
 #include "qgsdistancearea.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
@@ -32,9 +32,9 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   mCombo = new QComboBox( this );
   mCombo->setEditable( true );
   mCombo->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
-  mFieldModel = new QgsFieldModel( mCombo );
-  mFieldModel->setAllowExpression( true );
-  mCombo->setModel( mFieldModel );
+  mFieldProxyModel = new QgsFieldProxyModel( mCombo );
+  mFieldProxyModel->sourceFieldModel()->setAllowExpression( true );
+  mCombo->setModel( mFieldProxyModel );
 
   mButton = new QToolButton( this );
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -59,6 +59,11 @@ void QgsFieldExpressionWidget::setExpressionDialogTitle( QString title )
   mExpressionDialogTitle = title;
 }
 
+void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
+{
+  mFieldProxyModel->setFilters( filters );
+}
+
 void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
 {
   mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
@@ -76,27 +81,28 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isVal
   }
 
   int i = mCombo->currentIndex();
-  const QModelIndex index = mFieldModel->index( i, 0 );
-  if ( !index.isValid() )
-  {
+  const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
+  if ( !proxyIndex.isValid() )
     return "";
-  }
+  const QModelIndex index = mFieldProxyModel->mapToSource( proxyIndex );
+  if ( !index.isValid() )
+    return "";
 
   if ( isExpression )
   {
-    *isExpression = mFieldModel->data( index, QgsFieldModel::IsExpressionRole ).toBool();
+    *isExpression = mFieldProxyModel->data( index, QgsFieldModel::IsExpressionRole ).toBool();
   }
   if ( isValid )
   {
-    *isValid = mFieldModel->data( index, QgsFieldModel::ExpressionValidityRole ).toBool();
+    *isValid = mFieldProxyModel->data( index, QgsFieldModel::ExpressionValidityRole ).toBool();
   }
-  QString expression = mFieldModel->data( index, QgsFieldModel::ExpressionRole ).toString();
+  QString expression = mFieldProxyModel->data( index, QgsFieldModel::ExpressionRole ).toString();
   return expression;
 }
 
 QgsVectorLayer *QgsFieldExpressionWidget::layer()
 {
-  return mFieldModel->layer();
+  return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
@@ -110,7 +116,7 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 
 void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 {
-  mFieldModel->setLayer( layer );
+  mFieldProxyModel->sourceFieldModel()->setLayer( layer );
 }
 
 void QgsFieldExpressionWidget::setField( const QString fieldName )
@@ -118,13 +124,16 @@ void QgsFieldExpressionWidget::setField( const QString fieldName )
   if ( fieldName.isEmpty() )
     return;
 
-  QModelIndex idx = mFieldModel->indexFromName( fieldName );
+  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
   {
     // new expression
-    idx = mFieldModel->setExpression( fieldName );
+    idx = mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
   }
-  mCombo->setCurrentIndex( idx.row() );
+
+  QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
+
+  mCombo->setCurrentIndex( proxyIndex.row() );
 
   currentFieldChanged();
 }
@@ -159,7 +168,7 @@ void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 void QgsFieldExpressionWidget::expressionEditingFinished()
 {
   const QString expression = mCombo->lineEdit()->text();
-  QModelIndex idx = mFieldModel->setExpression( expression );
+  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->setExpression( expression );
   mCombo->setCurrentIndex( idx.row() );
   currentFieldChanged();
 }
