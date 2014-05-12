@@ -481,10 +481,27 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     return;
   }
 
+  QgsExpression *sizeExpression = expression( "size" );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
+
+  double scaledSize = mSize;
+  if ( hasDataDefinedSize )
+  {
+    if ( sizeExpression )
+    {
+      scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    }
+
+    if ( mScaleMethod == QgsSymbolV2::ScaleArea )
+    {
+      scaledSize = sqrt( scaledSize );
+    }
+  }
+
   //offset
   double offsetX = 0;
   double offsetY = 0;
-  markerOffset( context, offsetX, offsetY );
+  markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
   QPointF off( offsetX, offsetY );
 
   //angle
@@ -522,30 +539,13 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     // move to the desired position
     transform.translate( point.x() + off.x(), point.y() + off.y() );
 
-    QgsExpression *sizeExpression = expression( "size" );
-    bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
-
     // resize if necessary
     if ( hasDataDefinedSize )
     {
-      double scaledSize = mSize;
-      if ( sizeExpression )
-      {
-        scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
-      }
 
-      switch ( mScaleMethod )
-      {
-        case QgsSymbolV2::ScaleArea:
-          scaledSize = sqrt( scaledSize );
-          break;
-        case QgsSymbolV2::ScaleDiameter:
-          break;
-      }
+      double s = scaledSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale );
 
-      scaledSize *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale );
-
-      double half = scaledSize / 2.0;
+      double half = s / 2.0;
       transform.scale( half, half );
     }
 
@@ -1140,13 +1140,13 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( !p )
     return;
 
-  double size = mSize;
+  double scaledSize = mSize;
   QgsExpression* sizeExpression = expression( "size" );
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
 
   if ( sizeExpression )
   {
-    size = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
 
   if ( hasDataDefinedSize )
@@ -1154,13 +1154,14 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     switch ( mScaleMethod )
     {
       case QgsSymbolV2::ScaleArea:
-        size = sqrt( size );
+        scaledSize = sqrt( scaledSize );
         break;
       case QgsSymbolV2::ScaleDiameter:
         break;
     }
   }
-  size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale );
+
+  double size = scaledSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale );
 
   //don't render symbols with size below one or above 10,000 pixels
   if (( int )size < 1 || 10000.0 < size )
@@ -1173,7 +1174,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   //offset
   double offsetX = 0;
   double offsetY = 0;
-  markerOffset( context, offsetX, offsetY );
+  markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
   QPointF outputOffset( offsetX, offsetY );
 
   double angle = mAngle;

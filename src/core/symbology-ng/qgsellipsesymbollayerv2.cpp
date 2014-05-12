@@ -236,6 +236,8 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     QString colorString = outlineColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     mPen.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
   }
+  double scaledWidth = mSymbolWidth;
+  double scaledHeight = mSymbolHeight;
   if ( widthExpression || heightExpression || symbolNameExpression )
   {
     QString symbolName =  mSymbolName;
@@ -243,13 +245,13 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     {
       symbolName = symbolNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     }
-    preparePath( symbolName, context, context.feature() );
+    preparePath( symbolName, context, &scaledWidth, &scaledHeight, context.feature() );
   }
 
   //offset
   double offsetX = 0;
   double offsetY = 0;
-  markerOffset( context, mSymbolWidth, mSymbolHeight, mSymbolWidthUnit, mSymbolHeightUnit, offsetX, offsetY, mSymbolWidthMapUnitScale, mSymbolHeightMapUnitScale );
+  markerOffset( context, scaledWidth, scaledHeight, mSymbolWidthUnit, mSymbolHeightUnit, offsetX, offsetY, mSymbolWidthMapUnitScale, mSymbolHeightMapUnitScale );
   QPointF off( offsetX, offsetY );
 
   QPainter* p = context.renderContext().painter();
@@ -459,7 +461,7 @@ bool QgsEllipseSymbolLayerV2::hasDataDefinedProperty() const
            || dataDefinedProperty( "symbol_name" ) || dataDefinedProperty( "offset" ) );
 }
 
-void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f )
+void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth, double* scaledHeight, const QgsFeature* f )
 {
   mPainterPath = QPainterPath();
   const QgsRenderContext& ct = context.renderContext();
@@ -479,6 +481,10 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   {
     width = mSymbolWidth;
   }
+  if ( scaledWidth )
+  {
+    *scaledWidth = width;
+  }
   width *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit, mSymbolHeightMapUnitScale );
 
   double height = 0;
@@ -494,6 +500,10 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   else //3. priority: global height setting
   {
     height = mSymbolHeight;
+  }
+  if ( scaledHeight )
+  {
+    *scaledHeight = height;
   }
   height *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit, mSymbolHeightMapUnitScale );
 
