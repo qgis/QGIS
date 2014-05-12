@@ -91,12 +91,6 @@ QString QgsFieldComboBoxPlugin::domXml() const
                   "    <height>27</height>\n"
                   "   </rect>\n"
                   "  </property>\n"
-                  "  <property name=\"toolTip\" >\n"
-                  "   <string></string>\n"
-                  "  </property>\n"
-                  "  <property name=\"whatsThis\" >\n"
-                  "   <string></string>\n"
-                  "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
          .arg( name() );
