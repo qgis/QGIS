@@ -17,10 +17,14 @@
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <QTemporaryFile>
+#include <QMouseEvent>
+#include <QMenu>
+#include <QClipboard>
 
 /*!
   \class QgsColorButton
@@ -85,6 +89,86 @@ void QgsColorButton::onButtonClicked()
 
   // reactivate button's window
   activateWindow();
+}
+
+void QgsColorButton::mousePressEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::RightButton )
+  {
+    showContextMenu( e );
+  }
+  else
+  {
+    QPushButton::mousePressEvent( e );
+  }
+}
+
+void QgsColorButton::showContextMenu( QMouseEvent *event )
+{
+  QMenu colorContextMenu;
+
+  QAction* copyAsHexAction = new QAction( tr( "Copy color" ), 0 );
+  colorContextMenu.addAction( copyAsHexAction );
+  QAction* copyAsRgbAction = new QAction( tr( "Copy as rgb" ), 0 );
+  colorContextMenu.addAction( copyAsRgbAction );
+  QAction* copyAsRgbaAction = new QAction( tr( "Copy as rgba" ), 0 );
+  if ( mColorDialogOptions & QColorDialog::ShowAlphaChannel )
+  {
+    //alpha enabled, so add rgba action
+    colorContextMenu.addAction( copyAsRgbaAction );
+  }
+
+  QString clipboardText = QApplication::clipboard()->text();
+  QAction* pasteColorAction = new QAction( tr( "Paste color" ), 0 );
+  pasteColorAction->setEnabled( false );
+  colorContextMenu.addSeparator();
+  colorContextMenu.addAction( pasteColorAction );
+  QColor clipColor;
+  if ( !( clipboardText.isEmpty() ) )
+  {
+    bool hasAlpha = false;
+    clipColor = QgsSymbolLayerV2Utils::parseColorWithAlpha( clipboardText, hasAlpha );
+
+    if ( clipColor.isValid() )
+    {
+      if ( !hasAlpha )
+      {
+        //clipboard color has no explicit alpha component, so keep existing alpha
+        clipColor.setAlpha( mColor.alpha() );
+      }
+      pasteColorAction->setEnabled( true );
+    }
+  }
+
+  QAction* selectedAction = colorContextMenu.exec( event->globalPos( ) );
+  if ( selectedAction == copyAsHexAction )
+  {
+    //copy color as hex code
+    QString colorString = mColor.name();
+    QApplication::clipboard()->setText( colorString );
+  }
+  else if ( selectedAction == copyAsRgbAction )
+  {
+    //copy color as rgb
+    QString colorString = QString( "rgb(%1,%2,%3)" ).arg( mColor.red() ). arg( mColor.green() ).arg( mColor.blue() );
+    QApplication::clipboard()->setText( colorString );
+  }
+  else if ( selectedAction == copyAsRgbaAction )
+  {
+    //copy color as rgba
+    QString colorString = QString( "rgba(%1,%2,%3,%4)" ).arg( mColor.red() ).arg( mColor.green() ).arg( mColor.blue() ).arg( QString::number( mColor.alphaF(), 'f', 2 ) );
+    QApplication::clipboard()->setText( colorString );
+  }
+  else if ( selectedAction == pasteColorAction )
+  {
+    //paste color
+    setColor( clipColor );
+  }
+
+  delete copyAsHexAction;
+  delete copyAsRgbAction;
+  delete copyAsRgbaAction;
+  delete pasteColorAction;
 }
 
 void QgsColorButton::setValidColor( const QColor& newColor )

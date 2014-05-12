@@ -134,6 +134,11 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
 
+    /**
+     * Reimplemented to detect right mouse button clicks on the color button.
+     */
+    void mousePressEvent( QMouseEvent* e );
+
   private:
     QString mColorDialogTitle;
     QColor mColor;
@@ -141,6 +146,11 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     bool mAcceptLiveUpdates;
     QTemporaryFile mTempPNG;
     bool mColorSet; // added in QGIS 2.1
+
+    /**
+     * Shows the color button context menu and handles copying and pasting color values.
+     */
+    void showContextMenu( QMouseEvent* event );
 
   private slots:
     void onButtonClicked();

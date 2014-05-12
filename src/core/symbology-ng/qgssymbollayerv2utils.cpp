@@ -2657,18 +2657,105 @@ QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRa
   return rampEl;
 }
 
-// parse color definition with format "rgb(0,0,0)" or "0,0,0"
-// should support other formats like FFFFFF
 QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
 {
-  if ( colorStr.startsWith( "rgb(" ) )
+  bool hasAlpha;
+  return parseColorWithAlpha( colorStr, hasAlpha );
+}
+
+QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool &containsAlpha )
+{
+  QColor parsedColor;
+
+  //color in hex format "#aabbcc"
+  if ( QColor::isValidColor( colorStr ) )
   {
-    colorStr = colorStr.mid( 4, colorStr.size() - 5 ).trimmed();
+    //string is a valid hex color string
+    parsedColor.setNamedColor( colorStr );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = false;
+      return parsedColor;
+    }
   }
-  QStringList p = colorStr.split( QChar( ',' ) );
-  if ( p.count() != 3 )
-    return QColor();
-  return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
+
+  //color in hex format, without #
+  QRegExp hexColorRx2( "^\\s*(?:[0-9a-fA-F]{3}){1,2}\\s*$" );
+  if ( hexColorRx2.indexIn( colorStr ) != -1 )
+  {
+    //add "#" and parse
+    parsedColor.setNamedColor( QString( "#" ) + colorStr );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = false;
+      return parsedColor;
+    }
+  }
+
+  //color in (rrr,ggg,bbb) format, brackets and rgb prefix optional
+  QRegExp rgbFormatRx( "^\\s*(?:rgb)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*\\)?\\s*;?\\s*$" );
+  if ( rgbFormatRx.indexIn( colorStr ) != -1 )
+  {
+    int r = rgbFormatRx.cap( 1 ).toInt();
+    int g = rgbFormatRx.cap( 2 ).toInt();
+    int b = rgbFormatRx.cap( 3 ).toInt();
+    parsedColor.setRgb( r, g, b );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = false;
+      return parsedColor;
+    }
+  }
+
+  //color in (r%,g%,b%) format, brackets and rgb prefix optional
+  QRegExp rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" );
+  if ( rgbPercentFormatRx.indexIn( colorStr ) != -1 )
+  {
+    int r = qRound( rgbPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
+    int g = qRound( rgbPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
+    int b = qRound( rgbPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    parsedColor.setRgb( r, g, b );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = false;
+      return parsedColor;
+    }
+  }
+
+  //color in (r,g,b,a) format, brackets and rgba prefix optional
+  QRegExp rgbaFormatRx( "^\\s*(?:rgba)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
+  if ( rgbaFormatRx.indexIn( colorStr ) != -1 )
+  {
+    int r = rgbaFormatRx.cap( 1 ).toInt();
+    int g = rgbaFormatRx.cap( 2 ).toInt();
+    int b = rgbaFormatRx.cap( 3 ).toInt();
+    int a = qRound( rgbaFormatRx.cap( 4 ).toDouble() * 255.0 );
+    parsedColor.setRgb( r, g, b, a );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = true;
+      return parsedColor;
+    }
+  }
+
+  //color in (r%,g%,b%,a) format, brackets and rgba prefix optional
+  QRegExp rgbaPercentFormatRx( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
+  if ( rgbaPercentFormatRx.indexIn( colorStr ) != -1 )
+  {
+    int r = qRound( rgbaPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
+    int g = qRound( rgbaPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
+    int b = qRound( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    int a = qRound( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
+    parsedColor.setRgb( r, g, b, a );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = true;
+      return parsedColor;
+    }
+  }
+
+  //couldn't parse string as color
+  return QColor();
 }
 
 double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
