@@ -31,7 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing import interface
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import *
 
 ALL_TYPES = [-1]
@@ -66,7 +66,7 @@ def getSupportedOutputTableExtensions():
 
 def getRasterLayers():
     layers = QgsMapLayerRegistry.instance().mapLayers().values()
-    raster = list()
+    raster = []
 
     for layer in layers:
         if layer.type() == layer.RasterLayer:

@@ -17,12 +17,9 @@
 
 #include "qgspostgresconn.h"
 
-QgsPostgresConnPool* QgsPostgresConnPool::mInstance = 0;
-
 
 QgsPostgresConnPool* QgsPostgresConnPool::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsPostgresConnPool;
-  return mInstance;
+  static QgsPostgresConnPool sInstance;
+  return &sInstance;
 }

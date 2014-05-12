@@ -31,7 +31,7 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     Q_OBJECT
 
   public:
-    QgsGlobePluginDialog( QWidget * parent, GlobePlugin* globe, Qt::WFlags fl = 0 );
+    QgsGlobePluginDialog( QWidget * parent, GlobePlugin* globe, Qt::WindowFlags fl = 0 );
     ~QgsGlobePluginDialog();
     void resetElevationDatasources();
     void readElevationDatasources();

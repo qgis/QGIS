@@ -25,7 +25,8 @@ from qgis.core import (QgsComposerMap,
                        QgsComposition,
                        QgsMapRenderer,
                        QgsMapLayerRegistry,
-                       QgsMultiBandColorRenderer
+                       QgsMultiBandColorRenderer,
+                       QgsFontUtils
                      )
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
@@ -78,6 +79,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.setShowGridAnnotation(True)
         self.mComposerMap.setGridPenWidth(0.5)
         self.mComposerMap.setGridPenColor(QColor(0,255,0))
+        self.mComposerMap.setGridAnnotationFont( QgsFontUtils.getStandardTestFont() )
         self.mComposerMap.setGridAnnotationPrecision(0)
         self.mComposerMap.setGridAnnotationPosition(QgsComposerMap.Disabled,
                                                     QgsComposerMap.Left)

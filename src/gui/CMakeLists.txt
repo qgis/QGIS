@@ -88,7 +88,11 @@ qgsexpressionhighlighter.cpp
 qgsexpressionselectiondialog.cpp
 qgsextentgroupbox.cpp
 qgsfeatureselectiondlg.cpp
+qgsfieldcombobox.cpp
+qgsfieldexpressionwidget.cpp
+qgsfieldmodel.cpp
 qgsfieldvalidator.cpp
+qgsfieldproxymodel.cpp
 qgsfiledropedit.cpp
 qgsfilterlineedit.cpp
 qgsformannotationitem.cpp
@@ -103,6 +107,9 @@ qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
 qgsmapcanvassnapper.cpp
 qgsmaplayeractionregistry.cpp
+qgsmaplayercombobox.cpp
+qgsmaplayermodel.cpp
+qgsmaplayerproxymodel.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptip.cpp
 qgsmaptool.cpp
@@ -136,6 +143,7 @@ qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
+qgsunitselectionwidget.cpp
 )
 
 IF (WITH_TOUCH)
@@ -227,7 +235,11 @@ qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
 qgsextentgroupbox.h
 qgsfeatureselectiondlg.h
+qgsfieldcombobox.h
+qgsfieldexpressionwidget.h
+qgsfieldmodel.h
 qgsfieldvalidator.h
+qgsfieldproxymodel.h
 qgsfilterlineedit.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
@@ -238,6 +250,9 @@ qgsludialog.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmaplayeractionregistry.h
+qgsmaplayercombobox.h
+qgsmaplayermodel.h
+qgsmaplayerproxymodel.h
 qgsmapoverviewcanvas.h
 qgsmaptool.h
 qgsmaptoolemitpoint.h
@@ -263,6 +278,7 @@ qgsrelationmanagerdialog.h
 qgsscalecombobox.h
 qgssearchquerybuilder.h
 qgssublayersdialog.h
+qgsunitselectionwidget.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -292,7 +308,11 @@ qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsexpressionselectiondialog.h
 qgsfeatureselectiondlg.h
+qgsfieldcombobox.h
+qgsfieldexpressionwidget.h
+qgsfieldmodel.h
 qgsfieldvalidator.h
+qgsfieldproxymodel.h
 qgsfiledropedit.h
 qgsfilterlineedit.h
 qgsgenericprojectionselector.h
@@ -301,6 +321,9 @@ qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h
 qgsmapcanvassnapper.h
+qgsmaplayercombobox.h
+qgsmaplayermodel.h
+qgsmaplayerproxymodel.h
 qgsmapoverviewcanvas.h
 qgsmaptip.h
 qgsmaptool.h
@@ -327,6 +350,7 @@ qgstextannotationitem.h
 qgssvgannotationitem.h
 qgscomposerruler.h
 qgsdetaileditemdata.h
+qgsunitselectionwidget.h
 
 attributetable/qgsattributetabledelegate.h
 attributetable/qgsattributetablefiltermodel.h

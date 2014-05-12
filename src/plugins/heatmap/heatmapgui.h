@@ -25,7 +25,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 {
     Q_OBJECT
   public:
-    HeatmapGui( QWidget* parent, Qt::WFlags fl, QMap<QString, QVariant>* temporarySettings );
+    HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVariant>* temporarySettings );
     ~HeatmapGui();
 
     // Buffer unit type
@@ -59,6 +59,9 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 
     /** Returns the attrinute field for weighted heat */
     int weightField();
+
+    /** Returns state of the add to canvas checkbox*/
+    bool addToCanvas();
 
     /** Returns the output filename/path */
     QString outputFilename();

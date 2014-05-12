@@ -18,6 +18,7 @@
 #include "qgscomposertable.h"
 #include "qgslogger.h"
 #include <QPainter>
+#include <QSettings>
 
 QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     : QgsComposerItem( composition )
@@ -41,6 +42,23 @@ QgsComposerTable::~QgsComposerTable()
 
 }
 
+void QgsComposerTable::refreshAttributes()
+{
+
+  mMaxColumnWidthMap.clear();
+  mAttributeMaps.clear();
+
+  //getFeatureAttributes
+  if ( !getFeatureAttributes( mAttributeMaps ) )
+  {
+    return;
+  }
+
+  //since attributes have changed, we also need to recalculate the column widths
+  //and size of table
+  adjustFrameToSize();
+}
+
 void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
@@ -50,18 +68,13 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     return;
   }
 
-  //getFeatureAttributes
-  QList<QgsAttributeMap> attributeMaps;
-  if ( !getFeatureAttributes( attributeMaps ) )
+  if ( mComposition->plotStyle() == QgsComposition::Print ||
+       mComposition->plotStyle() == QgsComposition::Postscript )
   {
-    return;
+    //exporting composition, so force an attribute refresh
+    //we do this in case vector layer has changed via an external source (eg, another database user)
+    refreshAttributes();
   }
-
-  QMap<int, double> maxColumnWidthMap;
-  //check how much space each column needs
-  calculateMaxColumnWidths( maxColumnWidthMap, attributeMaps );
-  //adapt item frame to max width / height
-  adaptItemFrame( maxColumnWidthMap, attributeMaps );
 
   drawBackground( painter );
   painter->setPen( Qt::SolidLine );
@@ -70,7 +83,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double currentX = mGridStrokeWidth;
   double currentY;
 
-  QMap<int, QString> headerMap = getHeaderLabels();
+  QMap<int, QString> headerMap = headerLabels();
   QMap<int, QString>::const_iterator columnIt = headerMap.constBegin();
 
   for ( ; columnIt != headerMap.constEnd(); ++columnIt )
@@ -85,8 +98,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
-    QList<QgsAttributeMap>::const_iterator attIt = attributeMaps.begin();
-    for ( ; attIt != attributeMaps.end(); ++attIt )
+    QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.begin();
+    for ( ; attIt != mAttributeMaps.end(); ++attIt )
     {
       currentY += fontAscentMillimeters( mContentFont );
       currentY += mLineTextDistance;
@@ -98,7 +111,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
       currentY += mGridStrokeWidth;
     }
 
-    currentX += maxColumnWidthMap[columnIt.key()];
+    currentX += mMaxColumnWidthMap[columnIt.key()];
     currentX += mLineTextDistance;
     currentX += mGridStrokeWidth;
   }
@@ -111,8 +124,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     gridPen.setColor( mGridColor );
     gridPen.setJoinStyle( Qt::MiterJoin );
     painter->setPen( gridPen );
-    drawHorizontalGridLines( painter, attributeMaps.size() );
-    drawVerticalGridLines( painter, maxColumnWidthMap );
+    drawHorizontalGridLines( painter, mAttributeMaps.size() );
+    drawVerticalGridLines( painter, mMaxColumnWidthMap );
   }
 
   //draw frame and selection boxes if necessary
@@ -123,17 +136,52 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
+void QgsComposerTable::setLineTextDistance( double d )
+{
+  mLineTextDistance = d;
+  //since spacing has changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
+void QgsComposerTable::setHeaderFont( const QFont& f )
+{
+  mHeaderFont = f;
+  //since font attributes have changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
+void QgsComposerTable::setContentFont( const QFont& f )
+{
+  mContentFont = f;
+  //since font attributes have changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
+void QgsComposerTable::setShowGrid( bool show )
+{
+  mShowGrid = show;
+  //since grid spacing has changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
+void QgsComposerTable::setGridStrokeWidth( double w )
+{
+  mGridStrokeWidth = w;
+  //since grid spacing has changed, we need to recalculate the table size
+  adjustFrameToSize();
+}
+
 void QgsComposerTable::adjustFrameToSize()
 {
-  QList<QgsAttributeMap> attributes;
-  if ( !getFeatureAttributes( attributes ) )
+  //check how much space each column needs
+  if ( !calculateMaxColumnWidths( mMaxColumnWidthMap, mAttributeMaps ) )
+  {
     return;
+  }
+  //adapt item frame to max width / height
+  adaptItemFrame( mMaxColumnWidthMap, mAttributeMaps );
 
-  QMap<int, double> maxWidthMap;
-  if ( !calculateMaxColumnWidths( maxWidthMap, attributes ) )
-    return;
-
-  adaptItemFrame( maxWidthMap, attributes );
+  repaint();
 }
 
 bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
@@ -181,7 +229,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
 bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const
 {
   maxWidthMap.clear();
-  QMap<int, QString> headerMap = getHeaderLabels();
+  QMap<int, QString> headerMap = headerLabels();
   QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
   for ( ; headerIt != headerMap.constEnd(); ++headerIt )
   {

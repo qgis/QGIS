@@ -43,7 +43,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @param name name for the widget
      * @param modal true for modal dialog
      */
-    QgsOptions( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsOptions( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOptions();
     /**
@@ -134,6 +134,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @note added in QGIS 1.9
      */
     void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
+
+    void on_mProxyTypeComboBox_currentIndexChanged( int idx );
 
     /**Add a new URL to exclude from Proxy*/
     void on_mAddUrlPushButton_clicked();

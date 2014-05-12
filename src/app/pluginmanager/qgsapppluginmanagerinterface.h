@@ -57,6 +57,9 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     //! show the Plugin Manager window and optionally open tab tabIndex
     void showPluginManager( int tabIndex = -1 );
 
+    //! show the given message in the Plugin Manager internal message bar
+    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 );
+
   private:
 
     //! Pointer to QgsPluginManager object

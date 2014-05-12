@@ -30,7 +30,6 @@
 QgsRenderChecker::QgsRenderChecker( ) :
     mReport( "" ),
     mMatchTarget( 0 ),
-    mpMapRenderer( NULL ),
     mElapsedTime( 0 ),
     mRenderedImageFile( "" ),
     mExpectedImageFile( "" ),
@@ -39,7 +38,6 @@ QgsRenderChecker::QgsRenderChecker( ) :
     mElapsedTimeTarget( 0 ),
     mControlPathPrefix( "" )
 {
-
 }
 
 QString QgsRenderChecker::controlImagePath() const

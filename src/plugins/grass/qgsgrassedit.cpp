@@ -144,7 +144,7 @@ void QgsGrassEditAttributeTableItemDelegate::setModelData( QWidget *editor,
 bool QgsGrassEdit::mRunning = false;
 
 QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMap,
-                            QWidget * parent, Qt::WFlags f )
+                            QWidget * parent, Qt::WindowFlags f )
     : QMainWindow( parent, f ), QgsGrassEditBase(), mInited( false ),
     mMapTool( 0 ), mCanvasEdit( 0 ), mRubberBandLine( 0 ), mRubberBandIcon( 0 )
 {

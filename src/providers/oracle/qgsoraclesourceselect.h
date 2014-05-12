@@ -53,10 +53,22 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
-    void setConn( QgsOracleConn *conn ) { if ( mConn ) mConn->disconnect();  mConn = conn; }
+    void setConnectionInfo( const QString& connInfo ) { mConnInfo = connInfo; }
+
+  protected:
+    void setConn( QgsOracleConn *conn ) const { if ( mConn ) mConn->disconnect();  mConn = conn; }
+
+    QgsOracleConn* conn() const
+    {
+      if ( !mConn )
+        setConn( QgsOracleConn::connectDb( mConnInfo ) );
+      return mConn;
+    }
 
   private:
-    QgsOracleConn *mConn;
+    QString mConnInfo;
+    //! lazily initialized connection (to detect possible primary keys)
+    mutable QgsOracleConn *mConn;
 };
 
 
@@ -73,7 +85,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box
@@ -135,6 +147,9 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Embedded mode, without 'Close'
     bool mEmbeddedMode;
+
+    //! try to load list of tables from local cache
+    void loadTableFromCache();
 
     // queue another query for the thread
     void addSearchGeometryColumn( QgsOracleLayerProperty layerProperty );

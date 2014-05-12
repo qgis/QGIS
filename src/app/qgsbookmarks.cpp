@@ -34,7 +34,7 @@
 
 QgsBookmarks *QgsBookmarks::sInstance = 0;
 
-QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
+QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

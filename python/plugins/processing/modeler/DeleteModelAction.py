@@ -46,4 +46,4 @@ class DeleteModelAction(ContextAction):
                 QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
-            self.toolbox.updateTree()
+            self.toolbox.updateProvider('model')

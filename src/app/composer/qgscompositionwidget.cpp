@@ -47,6 +47,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   if ( mComposition )
   {
     mNumPagesSpinBox->setValue( mComposition->numPages() );
+    connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( setNumberPages() ) );
 
     updatePageStyle();
 
@@ -139,7 +140,6 @@ void QgsCompositionWidget::createPaperEntries()
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );
   }
-  mPaperSizeComboBox->setCurrentIndex( 2 ); //A4
 }
 
 void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QString& text )
@@ -380,6 +380,12 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     //custom
     mPaperSizeComboBox->setCurrentIndex( 0 );
   }
+  else
+  {
+    mPaperWidthDoubleSpinBox->setEnabled( false );
+    mPaperHeightDoubleSpinBox->setEnabled( false );
+    mPaperUnitsComboBox->setEnabled( false );
+  }
 }
 
 void QgsCompositionWidget::on_mPageStyleButton_clicked()
@@ -395,11 +401,18 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   {
     coverageLayer = mComposition->atlasComposition().coverageLayer();
   }
-  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
+
+  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposition->pageStyleSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
 
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposition->setPageStyleSymbol( newSymbol );
     updatePageStyle();
+  }
+  else
+  {
+    delete newSymbol;
   }
 }
 
@@ -417,6 +430,18 @@ void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
   mPrintAsRasterCheckBox->blockSignals( true );
   mPrintAsRasterCheckBox->setChecked( state );
   mPrintAsRasterCheckBox->blockSignals( false );
+}
+
+void QgsCompositionWidget::setNumberPages()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mNumPagesSpinBox->blockSignals( true );
+  mNumPagesSpinBox->setValue( mComposition->numPages() );
+  mNumPagesSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::displaySnapingSettings()
@@ -567,3 +592,4 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridToleranceSpinBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }
+

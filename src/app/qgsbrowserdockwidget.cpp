@@ -76,7 +76,7 @@ class QgsBrowserTreeView : public QTreeView
 
       QTreeView::dragMoveEvent( e );
 
-      if ( !e->provides( "application/x-vnd.qgis.qgis.uri" ) )
+      if ( !e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
       {
         e->ignore();
         return;

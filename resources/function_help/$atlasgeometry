@@ -1,0 +1,15 @@
+<h3>$atlasgeometry function</h3>
+Returns the geometry of the current feature iterated in atlas.
+Can be used for rule based display of geometry when using atlas.
+For example to only show geometries of other layers when their geometry 
+intersects the iterated geometry of features using atlas.
+
+<h4>Syntax</h4>
+<pre>$atlasgeometry</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre> intersects(  $atlasgeometry,  $geometry ) </pre>
+

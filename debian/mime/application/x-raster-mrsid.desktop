@@ -4,5 +4,5 @@ MimeType=application/x-raster-mrsid
 Hidden=false
 Comment=MrSID raster data
 Comment[de]=MrSID-Rasterdaten
-Icon=qgis-mime-icon
+Icon=qgis-mime
 Patterns=*.sid;

@@ -434,6 +434,17 @@ void QgsCoordinateTransform::transformInPlace(
   }
 }
 
+#ifdef QT_ARCH_ARM
+void QgsCoordinateTransform::transformInPlace( qreal& x, qreal& y, double& z,
+    TransformDirection direction ) const
+{
+  double xd = ( double ) x, yd = ( double ) y;
+  transformInPlace( xd, yd, z, direction );
+  x = xd;
+  y = yd;
+}
+#endif
+
 #ifdef ANDROID
 void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
     TransformDirection direction ) const

@@ -1504,15 +1504,22 @@ QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
           }
           embeddedGroupChildren.insert( ll );
         }
-        QMap<int, QgsMapCanvasLayer >::iterator orderedLayersIt = orderedLayers.begin();
-        for ( ; orderedLayersIt != orderedLayers.end(); ++orderedLayersIt )
+
+        if ( mUpdateDrawingOrder )
         {
-          if ( mUpdateDrawingOrder )
+          QMap<int, QgsMapCanvasLayer >::iterator orderedLayersIt = orderedLayers.begin();
+          for ( ; orderedLayersIt != orderedLayers.end(); ++orderedLayersIt )
           {
             layers.insert( layers.size(), orderedLayersIt.value() );
           }
-          else
+        }
+        else //consider items are prepended with insertMulti
+        {
+          QMapIterator<int, QgsMapCanvasLayer > orderedLayersIt( orderedLayers );
+          orderedLayersIt.toBack();
+          while ( orderedLayersIt.hasPrevious() )
           {
+            orderedLayersIt.previous();
             layers.insertMulti( groupDrawingOrder,  orderedLayersIt.value() );
           }
         }

@@ -22,6 +22,8 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QGridLayout>
+#include <QScrollBar>
+#include <QDesktopWidget>
 
 #include "qgsapplication.h"
 #include "qgscomposerview.h"
@@ -44,7 +46,7 @@
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 #include "qgscursors.h"
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )

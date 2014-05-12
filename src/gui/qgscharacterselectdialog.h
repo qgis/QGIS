@@ -32,7 +32,7 @@ class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCha
     Q_OBJECT
 
   public:
-    QgsCharacterSelectorDialog( QWidget* parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsCharacterSelectorDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsCharacterSelectorDialog();
 
   public slots:

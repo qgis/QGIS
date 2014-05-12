@@ -500,7 +500,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
 
     QgsGeometry* g1 = it->feature.geometry();
 
-    if ( g1->isGeosValid() == false )
+    if ( !g1->isGeosValid() )
     {
       qDebug() << "invalid geometry(g1) found..skipping.." << it->feature.id();
       continue;
@@ -538,7 +538,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         continue;
       }
 
-      if ( g2->isGeosValid() == false )
+      if ( !g2->isGeosValid() )
       {
         QgsMessageLog::logMessage( tr( "Skipping invalid second geometry of feature %1 in overlaps test." ).arg( it->feature.id() ), tr( "Topology plugin" ) );
         continue;
@@ -633,7 +633,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       continue;
     }
 
-    if ( g1->isGeosValid() == false )
+    if ( !g1->isGeosValid() )
     {
       qDebug() << "invalid geometry found..skipping.." << it->feature.id();
       continue;

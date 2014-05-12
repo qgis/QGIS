@@ -6,7 +6,7 @@ class QgsMessageViewer: QDialog, QgsMessageOutput //, Ui::QgsMessageViewer
 %End
 
   public:
-    QgsMessageViewer( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageViewer( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsMessageViewer();
 
     virtual void setMessage( const QString& message, MessageType msgType );

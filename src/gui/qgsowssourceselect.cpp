@@ -54,7 +54,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
+QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )
     , mService( service )
     , mManagerMode( managerMode )

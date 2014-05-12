@@ -55,6 +55,9 @@
 #include "qgscursors.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
+#include "qgspaperitem.h"
+#include "qgsmaplayerregistry.h"
+#include "ui_qgssvgexportoptions.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -82,6 +85,7 @@
 #include <QPaintEngine>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QShortcut>
 
 
 // sort function for QList<QAction*>, e.g. menu listings
@@ -1018,6 +1022,7 @@ void QgsComposer::on_mActionRefreshView_triggered()
     }
   }
 
+  mComposition->refreshItems();
   mComposition->update();
 }
 
@@ -1747,6 +1752,37 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   exportCompositionAsSVG( QgsComposer::Single );
 }
 
+// utility class that will hide all items until it's destroyed
+struct QgsItemTempHider
+{
+  explicit QgsItemTempHider( const QList<QGraphicsItem *> & items )
+  {
+    QList<QGraphicsItem *>::const_iterator it = items.begin();
+    for ( ; it != items.end(); ++it )
+    {
+      mItemVisibility[*it] = ( *it )->isVisible();
+      ( *it )->hide();
+    }
+  }
+  void hideAll()
+  {
+    QgsItemVisibilityHash::iterator it = mItemVisibility.begin();
+    for ( ; it != mItemVisibility.end(); ++it ) it.key()->hide();
+  }
+  ~QgsItemTempHider()
+  {
+    QgsItemVisibilityHash::iterator it = mItemVisibility.begin();
+    for ( ; it != mItemVisibility.end(); ++it )
+    {
+      it.key()->setVisible( it.value() );
+    }
+  }
+private:
+  Q_DISABLE_COPY( QgsItemTempHider )
+  typedef QHash<QGraphicsItem*, bool> QgsItemVisibilityHash;
+  QgsItemVisibilityHash mItemVisibility;
+};
+
 void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 {
   if ( containsWMSLayer() )
@@ -1784,6 +1820,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
   QString outputFileName;
   QString outputDir;
+  bool groupLayers = false;
 
   if ( mode == QgsComposer::Single )
   {
@@ -1799,13 +1836,24 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       outputFileName = file.path();
     }
 
+    // open file dialog
     outputFileName = QFileDialog::getSaveFileName(
                        this,
                        tr( "Choose a file name to save the map as" ),
                        outputFileName,
                        tr( "SVG Format" ) + " (*.svg *.SVG)" );
+
     if ( outputFileName.isEmpty() )
       return;
+
+    // open otions dialog
+    {
+      QDialog dialog;
+      Ui::QgsSvgExportOptionsDialog options;
+      options.setupUi( &dialog );
+      dialog.exec();
+      groupLayers = options.chkMapLayersAsGroup->isChecked();
+    }
 
     if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
     {
@@ -1833,10 +1881,12 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     QSettings myQSettings;
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", "." ).toString();
 
+    // open file dialog
     outputDir = QFileDialog::getExistingDirectory( this,
                 tr( "Directory where to save SVG files" ),
                 lastUsedDir,
                 QFileDialog::ShowDirsOnly );
+
     if ( outputDir.isEmpty() )
     {
       return;
@@ -1850,6 +1900,16 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok );
       return;
     }
+
+    // open otions dialog
+    {
+      QDialog dialog;
+      Ui::QgsSvgExportOptionsDialog options;
+      options.setupUi( &dialog );
+      dialog.exec();
+      groupLayers = options.chkMapLayersAsGroup->isChecked();
+    }
+
 
     myQSettings.setValue( "/UI/lastSaveAtlasAsSvgDir", outputDir );
   }
@@ -1906,32 +1966,142 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".svg";
     }
 
-    for ( int i = 0; i < mComposition->numPages(); ++i )
+    if ( !groupLayers )
     {
-      QSvgGenerator generator;
-      generator.setTitle( QgsProject::instance()->title() );
-      if ( i == 0 )
+      for ( int i = 0; i < mComposition->numPages(); ++i )
       {
-        generator.setFileName( outputFileName );
+        QSvgGenerator generator;
+        generator.setTitle( QgsProject::instance()->title() );
+        if ( i == 0 )
+        {
+          generator.setFileName( outputFileName );
+        }
+        else
+        {
+          QFileInfo fi( outputFileName );
+          generator.setFileName( fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix() );
+        }
+
+        //width in pixel
+        int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+        //height in pixel
+        int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+        generator.setSize( QSize( width, height ) );
+        generator.setViewBox( QRect( 0, 0, width, height ) );
+        generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
+
+        QPainter p( &generator );
+
+        mComposition->renderPage( &p, i );
+        p.end();
       }
-      else
+    }
+    else
+    {
+      //width and height in pixel
+      const int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+      const int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+      QList< QgsPaperItem* > paperItems( mComposition->pages() ) ;
+
+      for ( int i = 0; i < mComposition->numPages(); ++i )
       {
+        QDomDocument svg;
+        QDomNode svgDocRoot;
+        QgsPaperItem * paperItem = paperItems[i];
+        const QRectF paperRect = QRectF( paperItem->pos().x(),
+                                         paperItem->pos().y(),
+                                         paperItem->rect().width(),
+                                         paperItem->rect().height() );
+
+        QList<QGraphicsItem *> items = mComposition->items( paperRect,
+                                       Qt::IntersectsItemBoundingRect,
+                                       Qt::AscendingOrder );
+        if ( ! items.isEmpty()
+             && dynamic_cast<QgsPaperGrid*>( items.last() )
+             && !mComposition->gridVisible() ) items.pop_back();
+        QgsItemTempHider itemsHider( items );
+        int composerItemLayerIdx = 0;
+        QList<QGraphicsItem *>::const_iterator it = items.begin();
+        for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
+        {
+          itemsHider.hideAll();
+          QgsComposerItem * composerItem = dynamic_cast<QgsComposerItem*>( *it );
+          QString layerName( "Layer " + QString::number( svgLayerId ) );
+          if ( composerItem && composerItem->numberExportLayers() )
+          {
+            composerItem->show();
+            composerItem->setCurrentExportLayer( composerItemLayerIdx );
+            ++composerItemLayerIdx;
+          }
+          else
+          {
+            // show all items until the next item that renders on a separate layer
+            for ( ; it != items.end(); ++it )
+            {
+              composerItem = dynamic_cast<QgsComposerMap*>( *it );
+              if ( composerItem && composerItem->numberExportLayers() )
+              {
+                break;
+              }
+              else
+              {
+                ( *it )->show();
+              }
+            }
+          }
+
+          QBuffer svgBuffer;
+          {
+            QSvgGenerator generator;
+            generator.setTitle( QgsProject::instance()->title() );
+            generator.setOutputDevice( &svgBuffer );
+            generator.setSize( QSize( width, height ) );
+            generator.setViewBox( QRect( 0, 0, width, height ) );
+            generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
+
+            QPainter p( &generator );
+            mComposition->renderPage( &p, i );
+          }
+          // post-process svg output to create groups in a single svg file
+          // we create inkscape layers since it's nice and clean and free
+          // and fully svg compatible
+          {
+            svgBuffer.close();
+            svgBuffer.open( QIODevice::ReadOnly );
+            QDomDocument doc;
+            QString errorMsg;
+            int errorLine;
+            if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
+              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + "(" + errorMsg + ")" );
+            if ( 1 == svgLayerId )
+            {
+              svg = QDomDocument( doc.doctype() );
+              svg.appendChild( svg.importNode( doc.firstChild(), false ) );
+              svgDocRoot = svg.importNode( doc.elementsByTagName( "svg" ).at( 0 ), false );
+              svgDocRoot.toElement().setAttribute( "xmlns:inkscape", "http://www.inkscape.org/namespaces/inkscape" );
+              svg.appendChild( svgDocRoot );
+            }
+            QDomNode mainGroup = svg.importNode( doc.elementsByTagName( "g" ).at( 0 ), true );
+            mainGroup.toElement().setAttribute( "id", layerName );
+            mainGroup.toElement().setAttribute( "inkscape:label", layerName );
+            mainGroup.toElement().setAttribute( "inkscape:groupmode", "layer" );
+            QDomNode defs = svg.importNode( doc.elementsByTagName( "defs" ).at( 0 ), true );
+            svgDocRoot.appendChild( defs );
+            svgDocRoot.appendChild( mainGroup );
+          }
+
+          if ( composerItem && composerItem->numberExportLayers() && composerItem->numberExportLayers() == composerItemLayerIdx ) // restore and pass to next item
+          {
+            composerItem->setCurrentExportLayer();
+            composerItemLayerIdx = 0;
+            ++it;
+          }
+        }
         QFileInfo fi( outputFileName );
-        generator.setFileName( fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix() );
+        QFile out( i == 0 ? outputFileName : fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix() );
+        out.open( QIODevice::WriteOnly | QIODevice::Text );
+        out.write( svg.toByteArray() );
       }
-
-      //width in pixel
-      int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
-      //height in pixel
-      int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
-      generator.setSize( QSize( width, height ) );
-      generator.setViewBox( QRect( 0, 0, width, height ) );
-      generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
-
-      QPainter p( &generator );
-
-      mComposition->renderPage( &p, i );
-      p.end();
     }
     featureI++;
   }
@@ -3111,16 +3281,33 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat )
 
   emit atlasPreviewFeatureChanged();
 
-  //check if composition has atlas preview
+  //check if composition atlas settings match
   QgsAtlasComposition& atlas = mComposition->atlasComposition();
-  if ( ! atlas.enabled() || ! mComposition->atlasMode() == QgsComposition::PreviewAtlas || atlas.coverageLayer() != layer )
+  if ( ! atlas.enabled() || atlas.coverageLayer() != layer )
   {
-    //either atlas preview isn't enabled, or layer doesn't match
+    //either atlas isn't enabled, or layer doesn't match
     return;
   }
 
+  if ( mComposition->atlasMode() != QgsComposition::PreviewAtlas )
+  {
+    mComposition->setAtlasMode( QgsComposition::PreviewAtlas );
+    //update gui controls
+    mActionAtlasPreview->blockSignals( true );
+    mActionAtlasPreview->setChecked( true );
+    mActionAtlasPreview->blockSignals( false );
+    mActionAtlasFirst->setEnabled( true );
+    mActionAtlasLast->setEnabled( true );
+    mActionAtlasNext->setEnabled( true );
+    mActionAtlasPrev->setEnabled( true );
+  }
+
+  //bring composer window to foreground
+  activate();
+
   //set current preview feature id
   atlas.prepareForFeature( feat );
+  emit( atlasPreviewFeatureChanged() );
 }
 
 void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
@@ -3183,3 +3370,4 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
   }
 }
+

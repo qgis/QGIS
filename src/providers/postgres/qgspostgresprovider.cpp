@@ -637,6 +637,7 @@ bool QgsPostgresProvider::loadFields()
     int fieldPrec = -1;
     QString fieldComment( "" );
     int tableoid = result.PQftable( i );
+    int attnum = result.PQftablecol( i );
 
     sql = QString( "SELECT typname,typtype,typelem,typlen FROM pg_type WHERE oid=%1" ).arg( typOid );
     // just oid; needs more work to support array type
@@ -652,22 +653,19 @@ bool QgsPostgresProvider::loadFields()
     QString formattedFieldType;
     if ( tableoid > 0 )
     {
-      sql = QString( "SELECT attnum,pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
-            .arg( tableoid ).arg( quotedValue( fieldName ) );
+      sql = QString( "SELECT pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" )
+            .arg( tableoid ).arg( quotedValue( attnum ) );
 
       QgsPostgresResult tresult = mConnectionRO->PQexec( sql );
-      QString attnum = tresult.PQgetvalue( 0, 0 );
-      formattedFieldType = tresult.PQgetvalue( 0, 1 );
+      if ( tresult.PQntuples() > 0 )
+        formattedFieldType = tresult.PQgetvalue( 0, 0 );
 
-      if ( !attnum.isEmpty() )
-      {
-        sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
-              .arg( tableoid ).arg( attnum );
+      sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
+            .arg( tableoid ).arg( attnum );
 
-        tresult = mConnectionRO->PQexec( sql );
-        if ( tresult.PQntuples() > 0 )
-          fieldComment = tresult.PQgetvalue( 0, 0 );
-      }
+      tresult = mConnectionRO->PQexec( sql );
+      if ( tresult.PQntuples() > 0 )
+        fieldComment = tresult.PQgetvalue( 0, 0 );
     }
 
     QVariant::Type fieldType;
@@ -2173,18 +2171,12 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       throw PGException( result );
     }
 
+    QgsDebugMsg( "iterating over the map of changed geometries..." );
+
     for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
           iter != geometry_map.end();
           ++iter )
     {
-      QgsDebugMsg( "iterating over the map of changed geometries..." );
-
-      if ( !iter->asWkb() )
-      {
-        QgsDebugMsg( "empty geometry" );
-        continue;
-      }
-
       QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
 
       // Save the id of the current topogeometry
@@ -2788,7 +2780,13 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::DateTime:
+      fieldType = "timestamp without time zone";
+      break;
+
     case QVariant::Time:
+      fieldType = "time";
+      break;
+
     case QVariant::String:
       fieldType = "varchar";
       fieldPrec = -1;
@@ -3089,7 +3087,14 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
 {
   QgsCoordinateReferenceSystem srs;
-  srs.createFromSrid( mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt() );
+  int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
+  srs.createFromSrid( srid );
+  if ( !srs.isValid() )
+  {
+    QgsPostgresResult result = mConnectionRO->PQexec( QString( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      srs.createFromProj4( result.PQgetvalue( 0, 0 ) );
+  }
   return srs;
 }
 
@@ -3173,7 +3178,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WFlags fl )
+QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
 {
   return new QgsPgSourceSelect( parent, fl );
 }

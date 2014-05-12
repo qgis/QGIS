@@ -5,7 +5,7 @@
 /*! \mainpage QGIS
 
 \section index_intro Introduction
-\htmlonly<img src="http://hub.qgis.org/projects/quantum-gis/repository/revisions/master/entry/images/icons/qgis-icon-60x60.png" alt="QGIS"
+\htmlonly<img src="qgis-icon-60x60.png" alt="QGIS"
 align="left"><a href="http://qgis.org">QGIS</a>\endhtmlonly\latexonly
 QGIS \endlatexonly  is a user friendly Open Source Geographic
 Information System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS
@@ -18,6 +18,9 @@ contributions from our user community in the form of code contributions, bug
 fixes, bug reports, contributed documentation, advocacy and supporting other
 users on our mailing lists and forums. Financial contributions are also
 welcome.
+
+You can also <a href="http://qgis.org/downloads/qgis-api-doc.zip">download</a>
+the the documentation for offline use.
 
 \section index_APIStability Earlier versions of the API
 

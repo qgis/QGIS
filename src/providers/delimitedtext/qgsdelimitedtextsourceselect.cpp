@@ -33,7 +33,7 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded ):
     QDialog( parent, fl ),
     mFile( new QgsDelimitedTextFile() ),
     mExampleRowCount( 20 ),

@@ -312,8 +312,11 @@ void Heatmap::run()
     // Finally close the dataset
     GDALClose(( GDALDatasetH ) heatmapDS );
 
-    // Open the file in QGIS window
-    mQGisIface->addRasterLayer( d.outputFilename(), QFileInfo( d.outputFilename() ).baseName() );
+    // Open the file in QGIS window if requested
+    if ( d.addToCanvas() )
+    {
+      mQGisIface->addRasterLayer( d.outputFilename(), QFileInfo( d.outputFilename() ).baseName() );
+    }
   }
 }
 

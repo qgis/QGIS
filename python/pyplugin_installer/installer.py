@@ -26,6 +26,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from qgis.gui import QgsMessageBar
 from qgis.utils import iface, startPlugin, unloadPlugin, loadPlugin, reloadPlugin, updateAvailablePlugins
 from installer_data import *
 from qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -187,6 +188,7 @@ class QgsPluginInstaller(QObject):
       plugin = plugins.all()[key]
       iface.pluginManagerInterface().addPluginMetadata({
         "id" : key,
+        "plugin_id" : plugin["plugin_id"] or "",
         "name" : plugin["name"],
         "description" : plugin["description"],
         "about" : plugin["about"],
@@ -273,6 +275,7 @@ class QgsPluginInstaller(QObject):
   # ----------------------------------------- #
   def installPlugin(self, key, quiet=False):
     """ Install given plugin """
+    error = False
     infoString = ('','')
     plugin = plugins.all()[key]
     previousStatus = plugin["status"]
@@ -286,8 +289,10 @@ class QgsPluginInstaller(QObject):
     dlg.exec_()
 
     if dlg.result():
+      error = True
       infoString = (self.tr("Plugin installation failed"), dlg.result())
     elif not QDir( qgis.utils.home_plugin_path + "/" + key ).exists():
+      error = True
       infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
       QApplication.setOverrideCursor(Qt.WaitCursor)
       plugins.getAllInstalled()
@@ -305,7 +310,7 @@ class QgsPluginInstaller(QObject):
       plugin = plugins.all()[key]
       if not plugin["error"]:
         if previousStatus in ["not installed", "new"]:
-          infoString = (self.tr("Plugin installed successfully"), self.tr("Plugin installed successfully"))
+          infoString = (self.tr("Plugin installed successfully"), "")
           if startPlugin(plugin["id"]):
             settings = QSettings()
             settings.setValue("/PythonPlugins/"+plugin["id"], True)
@@ -313,7 +318,7 @@ class QgsPluginInstaller(QObject):
           settings = QSettings()
           if settings.value("/PythonPlugins/"+key, False, type=bool): # plugin will be reloaded on the fly only if currently loaded
             reloadPlugin(key) # unloadPlugin + loadPlugin + startPlugin
-            infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Plugin reinstalled successfully"))
+            infoString = (self.tr("Plugin reinstalled successfully"), "")
           else:
             unloadPlugin(key) # Just for a case. Will exit quietly if really not loaded
             loadPlugin(key)
@@ -339,6 +344,7 @@ class QgsPluginInstaller(QObject):
           pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
           removeDir(pluginDir)
           if QDir(pluginDir).exists():
+            error = True
             infoString = (self.tr("Plugin uninstall failed"), result)
             try:
               exec ("sys.path_importer_cache.clear()")
@@ -357,7 +363,9 @@ class QgsPluginInstaller(QObject):
       self.exportPluginsToManager()
 
     if infoString[0]:
-      QMessageBox.information(iface.mainWindow(), infoString[0], infoString[1])
+      level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
+      msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
+      iface.pluginManagerInterface().pushMessage(msg, level)
 
 
   # ----------------------------------------- #
@@ -376,6 +384,7 @@ class QgsPluginInstaller(QObject):
       if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
         return
     # unload the plugin
+    QApplication.setOverrideCursor(Qt.WaitCursor)
     try:
       unloadPlugin(key)
     except:
@@ -383,7 +392,9 @@ class QgsPluginInstaller(QObject):
     pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
     result = removeDir(pluginDir)
     if result:
-      QMessageBox.warning(iface.mainWindow(), self.tr("Plugin uninstall failed"), result)
+      QApplication.restoreOverrideCursor()
+      msg = "<b>%s:</b>%s" % (self.tr("Plugin uninstall failed"), result)
+      iface.pluginManagerInterface().pushMessage(msg, QgsMessageBar.CRITICAL)
     else:
       # safe remove
       try:
@@ -402,7 +413,8 @@ class QgsPluginInstaller(QObject):
       plugins.getAllInstalled()
       plugins.rebuild()
       self.exportPluginsToManager()
-      QMessageBox.information(iface.mainWindow(), self.tr("Plugin uninstalled successfully"), self.tr("Plugin uninstalled successfully"))
+      QApplication.restoreOverrideCursor()
+      iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), QgsMessageBar.INFO)
 
 
   # ----------------------------------------- #
@@ -415,7 +427,7 @@ class QgsPluginInstaller(QObject):
       return
     for i in repositories.all().values():
       if dlg.editURL.text().strip() == i["url"]:
-        QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Unable to add another repository with the same URL!"))
+        iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)
         return
     settings = QSettings()
     settings.beginGroup(reposGroup)
@@ -424,7 +436,7 @@ class QgsPluginInstaller(QObject):
     if repositories.all().has_key(reposName):
       reposName = reposName + "(2)"
     # add to settings
-    settings.setValue(reposName+"/url", reposURL )
+    settings.setValue(reposName+"/url", reposURL)
     settings.setValue(reposName+"/enabled", bool(dlg.checkBoxEnabled.checkState()))
     # refresh lists and populate widgets
     plugins.removeRepository(reposName)
@@ -454,7 +466,7 @@ class QgsPluginInstaller(QObject):
       return # nothing to do if cancelled
     for i in repositories.all().values():
       if dlg.editURL.text().strip() == i["url"] and dlg.editURL.text().strip() != repositories.all()[reposName]["url"]:
-        QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Unable to add another repository with the same URL!"))
+        iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)
         return
     # delete old repo from QSettings and create new one
     settings = QSettings()
@@ -482,7 +494,7 @@ class QgsPluginInstaller(QObject):
     settings = QSettings()
     settings.beginGroup(reposGroup)
     if settings.value(reposName+"/url", "", type=unicode) == officialRepo[1]:
-      QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("You can't remove the official QGIS Plugin Repository. You can disable it if needed."))
+      iface.pluginManagerInterface().pushMessage(self.tr("You can't remove the official QGIS Plugin Repository. You can disable it if needed."), QgsMessageBar.WARNING)
       return
     warning = self.tr("Are you sure you want to remove the following repository?") + "\n" + reposName
     if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
@@ -501,3 +513,17 @@ class QgsPluginInstaller(QObject):
       reposName = reposName.decode("utf-8")
     repositories.setInspectionFilter(reposName)
     self.reloadAndExportData()
+
+
+  # ----------------------------------------- #
+  def sendVote(self, plugin_id, vote):
+    """ send vote via the RPC """
+
+    if not plugin_id or not vote:
+      return False
+    url = "http://plugins.qgis.org/plugins/RPC2/"
+    params = "{\"id\":\"djangorpc\",\"method\":\"plugin.vote\",\"params\":[%s,%s]}" % (str(plugin_id), str(vote))
+    req = QNetworkRequest(QUrl(url))
+    req.setRawHeader("Content-Type", "application/json");
+    reply = QgsNetworkAccessManager.instance().post(req, params)
+    return True

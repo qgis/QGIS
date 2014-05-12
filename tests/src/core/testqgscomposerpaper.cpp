@@ -49,6 +49,7 @@ class TestQgsComposerPaper: public QObject
     QgsMarkerLineSymbolLayerV2* mMarkerLine;
     QgsFillSymbolV2* mFillSymbol;
     QgsFillSymbolV2* mMarkerLineSymbol;
+    QgsMapSettings mMapSettings;
     // QgsSingleSymbolRendererV2* mSymbolRenderer;
 
 };
@@ -59,7 +60,7 @@ void TestQgsComposerPaper::initTestCase()
   QgsApplication::initQgis();
 
   //create empty composition
-  mComposition = new QgsComposition( 0 );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   //setup simple fill
@@ -127,7 +128,7 @@ void TestQgsComposerPaper::markerLinePaper()
 {
   mComposition->setPageStyleSymbol( mMarkerLineSymbol );
   QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
-  QVERIFY( checker.testComposition( mReport ) );
+  QVERIFY( checker.testComposition( mReport, 0, 60 ) );
 }
 
 QTEST_MAIN( TestQgsComposerPaper )

@@ -21,16 +21,7 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -925,7 +916,10 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
    </property>
    <property name="text">
-    <string>Export Atlas As PDF...</string>
+    <string>Export Atlas as PDF...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Atlas as PDF</string>
    </property>
   </action>
   <action name="mActionAtlasSettings">

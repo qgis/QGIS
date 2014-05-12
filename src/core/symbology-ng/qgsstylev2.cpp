@@ -38,7 +38,7 @@
 QgsStyleV2 *QgsStyleV2::mDefaultStyle = 0;
 
 
-QgsStyleV2::QgsStyleV2()
+QgsStyleV2::QgsStyleV2() : QObject()
 {
   mCurrentDB = 0;
 }
@@ -129,6 +129,8 @@ bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QSt
     QgsDebugMsg( "Couldn't insert symbol into the database!" );
     return false;
   }
+
+  emit symbolSaved( name, symbol );
 
   return true;
 }

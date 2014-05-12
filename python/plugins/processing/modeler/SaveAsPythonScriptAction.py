@@ -34,7 +34,6 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, \
 from processing.script.ScriptUtils import ScriptUtils
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 
-
 class SaveAsPythonScriptAction(ContextAction):
 
     def __init__(self):
@@ -57,7 +56,7 @@ class SaveAsPythonScriptAction(ContextAction):
                 fout.close()
                 if filename.replace('\\', '/').startswith(
                         ScriptUtils.scriptsFolder().replace('\\', '/')):
-                    self.toolbox.updateTree()
+                    self.toolbox.updateProvider('script')
             except:
                 QMessageBox.warning(self, self.tr('I/O error'),
                         self.tr('Unable to save edits. Reason:\n %s')
@@ -78,7 +77,7 @@ class SaveAsPythonScriptAction(ContextAction):
         iMultiple = 0
         for alg in model.algs:
             multiple = []
-            runline = 'outputs_' + str(i) + '=Processing.runalg("' \
+            runline = 'outputs_' + str(i) + '=processing.runalg("' \
                 + alg.commandLineName() + '"'
             for param in alg.parameters:
                 aap = model.algParameters[i][param.name]

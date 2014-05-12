@@ -48,9 +48,11 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * @param fl dialog flags
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = 0,
-                     Qt::WFlags fl = QgisGui::ModalDialogFlags );
+                     Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsQueryBuilder();
+
+    void showEvent( QShowEvent *event );
 
   public slots:
     void accept();

@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
@@ -330,6 +332,22 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     mComposerMap->beginCommand( tr( "Map extent changed" ) );
     mComposerMap->setNewExtent( newExtent );
     mComposerMap->endCommand();
+  }
+}
+
+void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
+
+  if ( !currentMapExtent.isEmpty() )
+  {
+    QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
+    QgisApp::instance()->mapCanvas()->refresh();
   }
 }
 
@@ -773,12 +791,20 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
-  QgsSymbolV2SelectorDialog d( mComposerMap->overviewFrameMapSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerMap->overviewFrameMapSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
 
   //QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
+    mComposerMap->setOverviewFrameMapSymbol( newSymbol );
     updateOverviewSymbolMarker();
+    mComposerMap->endCommand();
+  }
+  else
+  {
+    delete newSymbol;
   }
 }
 
@@ -892,13 +918,21 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  QgsSymbolV2SelectorDialog d( mComposerMap->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( mComposerMap->gridLineSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposerMap->beginCommand( tr( "Grid line style changed" ) );
+    mComposerMap->setGridLineSymbol( newSymbol );
     updateLineSymbolMarker();
+    mComposerMap->endCommand();
+    mComposerMap->update();
   }
-
-  mComposerMap->update();
+  else
+  {
+    delete newSymbol;
+  }
 }
 
 void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QString& text )

@@ -50,11 +50,16 @@
 
 extern "C"
 {
+#include <grass/version.h>
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
-#include <grass/version.h>
+#else
+#include <grass/vector.h>
+#define BOUND_BOX bound_box
+#endif
 }
 
 #ifdef _MSC_VER
@@ -1041,7 +1046,12 @@ struct Map_info *QgsGrassProvider::layerMap( int layerId )
 
 QgsCoordinateReferenceSystem QgsGrassProvider::crs()
 {
+// TODO7: enable/fix qgis.g.info
+#if GRASS_VERSION_MAJOR < 7
   return QgsGrass::crs( mGisdbase, mLocation );
+#else
+  return QgsCoordinateReferenceSystem();
+#endif
 }
 
 int QgsGrassProvider::grassLayer()

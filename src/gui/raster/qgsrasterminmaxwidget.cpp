@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QSettings>
+#include <QMessageBox>
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
@@ -28,10 +29,21 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget 
   setupUi( this );
 
   QSettings mySettings;
+
+  // set contrast enhancement setting to default
+  // ideally we should set it actual method last used to get min/max, but there is no way to know currently
+  QString contrastEnchacementLimits = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
+  if ( contrastEnchacementLimits == "MinMax" )
+    mMinMaxRadioButton->setChecked( true );
+  else if ( contrastEnchacementLimits == "StdDev" )
+    mStdDevRadioButton->setChecked( true );
+
   double myLower = 100.0 * mySettings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble();
   double myUpper = 100.0 * mySettings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble();
   mCumulativeCutLowerDoubleSpinBox->setValue( myLower );
   mCumulativeCutUpperDoubleSpinBox->setValue( myUpper );
+
+  mStdDevSpinBox->setValue( mySettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
 }
 
 QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()
@@ -98,6 +110,11 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
       myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
       myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
       origin |= QgsRasterRenderer::MinMaxStdDev;
+    }
+    else
+    {
+      QMessageBox::warning( this, tr( "No option selected" ), tr( "Please select an option to load min/max values." ) );
+      return;
     }
 
     emit load( myBand, myMin, myMax, origin );

@@ -42,7 +42,6 @@
 #include <QLibrary>
 #include <QMenu>
 #include <QMenuBar>
-#include <QMenuItem>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPictureIO>
@@ -443,17 +442,18 @@ static bool cmpByText_( QAction* a, QAction* b )
 QgisApp *QgisApp::smInstance = 0;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mSplash( splash )
     , mMousePrecisionDecimalPlaces( 0 )
     , mInternalClipboard( 0 )
     , mShowProjectionTab( false )
-    , mPythonUtils( NULL )
+    , mPythonUtils( 0 )
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
-    , mpGpsWidget( NULL )
+    , mComposerManager( 0 )
+    , mpGpsWidget( 0 )
 {
   if ( smInstance )
   {
@@ -777,6 +777,7 @@ QgisApp::QgisApp( )
     , mInternalClipboard( 0 )
     , mpMaptip( 0 )
     , mPythonUtils( 0 )
+    , mComposerManager( 0 )
     , mpGpsWidget( 0 )
 {
   smInstance = this;
@@ -786,6 +787,7 @@ QgisApp::QgisApp( )
   mMapCanvas->freeze();
   mMapLegend = new QgsLegend( mMapCanvas );
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
+  mInfoBar = new QgsMessageBar( centralWidget() );
   // More tests may need more members to be initialized
 }
 
@@ -844,6 +846,8 @@ QgisApp::~QgisApp()
   delete mpGpsWidget;
 
   delete mOverviewMapCursor;
+
+  delete mComposerManager;
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -1225,7 +1229,7 @@ void QgisApp::showPythonDialog()
   {
     QString className, text;
     mPythonUtils->getError( className, text );
-    QMessageBox::critical( this, tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text );
+    messageBar()->pushMessage( tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text, QgsMessageBar::WARNING );
   }
 #ifdef Q_WS_MAC
   else
@@ -2133,6 +2137,13 @@ QToolBar *QgisApp::addToolBar( QString name )
   // add to the Toolbar submenu
   mToolbarMenu->addAction( toolBar->toggleViewAction() );
   return toolBar;
+}
+
+void QgisApp::addToolBar( QToolBar* toolBar , Qt::ToolBarArea area )
+{
+  QMainWindow::addToolBar( area, toolBar );
+  // add to the Toolbar submenu
+  mToolbarMenu->addAction( toolBar->toggleViewAction() );
 }
 
 QgsLegend *QgisApp::legend()
@@ -3284,6 +3295,11 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
 bool QgisApp::fileNewFromTemplate( QString fileName )
 {
+  if ( !saveDirty() )
+  {
+    return false; //cancel pressed
+  }
+
   QgsDebugMsg( QString( "loading project template: %1" ).arg( fileName ) );
   if ( addProject( fileName ) )
   {
@@ -3758,40 +3774,17 @@ void QgisApp::fileSaveAs()
 
 void QgisApp::dxfExport()
 {
-  QgsLegend* mapLegend = legend();
-  if ( !mapLegend )
-  {
-    return;
-  }
-
-  QgsDxfExportDialog d( mapLegend->layers() );
+  QgsDxfExportDialog d;
   if ( d.exec() == QDialog::Accepted )
   {
     QgsDxfExport dxfExport;
-
-    QList<QgsMapLayer*> layerList;
-    QList<QString> layerIdList = d.layers();
-    QList<QString>::const_iterator layerIt = layerIdList.constBegin();
-    for ( ; layerIt != layerIdList.constEnd(); ++layerIt )
-    {
-      QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
-      if ( l )
-      {
-        layerList.append( l );
-      }
-    }
-
+    QList<QgsMapLayer*> layerList = d.layers();
     dxfExport.addLayers( layerList );
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
     if ( mapCanvas() )
     {
-      QgsMapRenderer* r = mapCanvas()->mapRenderer();
-      if ( r )
-      {
-        dxfExport.setMapUnits( r->mapUnits() );
-      }
-
+      dxfExport.setMapUnits( mapCanvas()->mapUnits() );
       //extent
       if ( d.exportMapExtent() )
       {
@@ -3942,8 +3935,19 @@ void QgisApp::newPrintComposer()
 
 void QgisApp::showComposerManager()
 {
-  QgsComposerManager m( this );
-  m.exec();
+  if ( !mComposerManager )
+  {
+    mComposerManager = new QgsComposerManager( this, Qt::Window );
+    connect( mComposerManager, SIGNAL( finished( int ) ), this, SLOT( deleteComposerManager() ) );
+  }
+  mComposerManager->show();
+  mComposerManager->activate();
+}
+
+void QgisApp::deleteComposerManager()
+{
+  mComposerManager->deleteLater();
+  mComposerManager = 0;
 }
 
 void QgisApp::saveMapAsImage()
@@ -5027,6 +5031,7 @@ void QgisApp::deleteComposer( QgsComposer* c )
   mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
   markDirty();
+  emit composerRemoved( c->view() );
   delete c;
 }
 
@@ -5940,6 +5945,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       }
 
       mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );
+      mMapCanvas->clearCache();
       mMapCanvas->refresh();
     }
   }
@@ -7108,7 +7114,7 @@ void QgisApp::apiDocumentation()
 
 void QgisApp::supportProviders()
 {
-  openURL( tr( "http://qgis.org/de/site/forusers/commercial_support.html" ), false );
+  openURL( tr( "http://qgis.org/en/site/forusers/commercial_support.html" ), false );
 }
 
 void QgisApp::helpQgisHomePage()
@@ -9135,7 +9141,10 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
 
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
   {
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
+    QString smalltext = tr( "This project file was saved by an older version of QGIS."
+                            " When saving this project file, QGIS will update it to the latest version, "
+                            "possibly rendering it useless for older versions of QGIS." );
+
     QString text =  tr( "<p>This project file was saved by an older version of QGIS."
                         " When saving this project file, QGIS will update it to the latest version, "
                         "possibly rendering it useless for older versions of QGIS."
@@ -9168,9 +9177,8 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
     );
     box.exec();
 #else
-    QMessageBox::warning( NULL, title, text );
+    messageBar()->pushMessage( title, smalltext );
 #endif
-    QApplication::restoreOverrideCursor();
   }
   return;
 }
@@ -9318,6 +9326,8 @@ void QgisApp::namSetup()
   connect( nam, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
            this, SLOT( namProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ) );
 
+  connect( nam, SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( namRequestTimedOut( QNetworkReply* ) ) );
+
 #ifndef QT_NO_OPENSSL
   connect( nam, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
            this, SLOT( namSslErrors( QNetworkReply *, const QList<QSslError> & ) ) );
@@ -9402,6 +9412,12 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   }
 }
 #endif
+
+void QgisApp::namRequestTimedOut( QNetworkReply *reply )
+{
+  QgsMessageLog::logMessage( tr( "The request '%1' timed out. Any data received is likely incomplete." ).arg( reply->url().toString() ), QString::null, QgsMessageLog::WARNING );
+  messageBar()->pushMessage( tr( "Network request timeout" ), tr( "A network request timed out, any data received is likely incomplete." ), QgsMessageBar::WARNING, messageTimeout() );
+}
 
 void QgisApp::namUpdate()
 {
@@ -9582,3 +9598,4 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
   return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
+

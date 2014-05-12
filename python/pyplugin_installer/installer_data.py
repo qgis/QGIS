@@ -413,8 +413,14 @@ class Repositories(QObject):
           if icon and not icon.startswith("http"):
             icon = "http://%s/%s" % ( QUrl(self.mRepositories[reposName]["url"]).host() , icon )
 
+          if pluginNodes.item(i).toElement().hasAttribute("plugin_id"):
+            plugin_id = pluginNodes.item(i).toElement().attribute("plugin_id")
+          else:
+            plugin_id = None
+
           plugin = {
             "id"            : name,
+            "plugin_id"     : plugin_id,
             "name"          : pluginNodes.item(i).toElement().attribute("name"),
             "version_available" : pluginNodes.item(i).toElement().attribute("version"),
             "description"   : pluginNodes.item(i).firstChildElement("description").text().strip(),
@@ -647,6 +653,7 @@ class Plugins(QObject):
 
     plugin = {
         "id"                : key,
+        "plugin_id"         : None,
         "name"              : pluginMetadata("name") or key,
         "description"       : pluginMetadata("description"),
         "about"             : pluginMetadata("about"),
@@ -749,7 +756,7 @@ class Plugins(QObject):
                 if not self.mPlugins[key][attrib] and plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
             # other remote metadata is preffered:
-            for attrib in ["name", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
+            for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
                            "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
               if ( not attrib in translatableAttributes ) or ( attrib == "name" ): # include name!

@@ -197,6 +197,30 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     virtual void setFrameOutlineWidth( double outlineWidth );
 
+    /** Returns the frame's outline width. Only used if hasFrame is true.
+     * @returns Frame outline width
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameOutlineWidth
+     */
+    double frameOutlineWidth() const { return pen().widthF(); }
+
+    /** Returns the join style used for drawing the item's frame
+     * @returns Join style for outline frame
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameJoinStyle
+     */
+    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+    /** Sets join style used when drawing the item's frame
+     * @param style Join style for outline frame
+     * @returns nothing
+     * @note introduced in 2.3
+     * @see setFrameEnabled
+     * @see frameJoinStyle
+     */
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
+
     /** Returns the estimated amount the item's frame bleeds outside the item's
      *  actual rectangle. For instance, if the item has a 2mm frame outline, then
      *  1mm of this frame is drawn outside the item's rect. In this case the
@@ -327,7 +351,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use itemRotation()
      *             instead
      */
-    double rotation() const {return mItemRotation;}
+    Q_DECL_DEPRECATED double rotation() const {return mItemRotation;}
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -344,6 +368,19 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const { return mUuid; }
+
+    /**Get the number of layers that this item requires for exporting as layers
+     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
+     * @note this method was added in version 2.4
+    */
+    virtual int numberExportLayers() const { return 0; }
+
+    /**Sets the current layer to draw for exporting
+     * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
+     * @note this method was added in version 2.4
+    */
+    virtual void setCurrentExportLayer( int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
   public slots:
     /**Sets the item rotation
@@ -382,6 +419,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool mBackground;
     /**Background color*/
     QColor mBackgroundColor;
+    /**Frame join style*/
+    Qt::PenJoinStyle mFrameJoinStyle;
 
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
@@ -404,6 +443,11 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**The item's position mode
     @note: this member was added in version 2.0*/
     ItemPositionMode mLastUsedPositionMode;
+
+    /**The layer that needs to be exported
+    @note: if -1, all layers are to be exported
+    @note: this member was added in version 2.4*/
+    int mCurrentExportLayer;
 
     /**Draw selection boxes around item*/
     virtual void drawSelectionBoxes( QPainter* p );
@@ -441,7 +485,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
      * a specified amount
@@ -457,7 +501,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
     void sizeChangedByRotation( double& width, double& height, double rotation );
@@ -465,7 +509,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise

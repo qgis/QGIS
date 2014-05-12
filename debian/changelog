@@ -3,8 +3,10 @@ qgis (2.3.0) UNRELEASED; urgency=medium
   * New development version 2.3 after branch of 2.2
   * enable globe on jessie
   * add dependency on libqt4-sql-sqlite to qgis-provider
+  * merge debian packageing changes
+  * merge distribution specific file templates into one file template
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 23 Feb 2014 11:36:30 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 06 Apr 2014 00:30:34 +0200
 
 qgis (2.2.0) unstable; urgency=medium
 

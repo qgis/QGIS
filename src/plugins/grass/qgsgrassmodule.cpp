@@ -149,7 +149,7 @@ QStringList QgsGrassModule::execArguments( QString module )
 }
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                                QString path, bool direct, QWidget * parent, Qt::WFlags f )
+                                QString path, bool direct, QWidget * parent, Qt::WindowFlags f )
     : QgsGrassModuleBase( ), mSuccess( false ), mDirect( direct )
 {
   Q_UNUSED( f );
@@ -308,7 +308,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
   QString xname, QDomElement qDocElem,
-  bool direct, QWidget * parent, Qt::WFlags f )
+  bool direct, QWidget * parent, Qt::WindowFlags f )
     : QWidget( parent, f ),
     QgsGrassModuleOptions( tools, module, iface, direct )
 {

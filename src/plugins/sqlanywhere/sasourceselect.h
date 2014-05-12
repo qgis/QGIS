@@ -101,7 +101,7 @@ class SaSourceSelect : public QDialog, private Ui::SaSourceSelectBase
   public:
 
     //! Constructor
-    SaSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    SaSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~SaSourceSelect();
     //! Populate the connection list combo box

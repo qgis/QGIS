@@ -37,7 +37,7 @@ class QgsGrassBrowser: public QMainWindow
 
   public:
     //! Constructor
-    QgsGrassBrowser( QgisInterface *iface, QWidget * parent = 0, Qt::WFlags f = 0 );
+    QgsGrassBrowser( QgisInterface *iface, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassBrowser();

@@ -26,16 +26,22 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WFlags fl )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
     : QWidget( parent, fl )
     , mProjListDone( false )
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
     , mSearchColumn( NONE )
-    , mSkipFirstRecent( true )
+    , mPushProjectionToFront( false )
 {
   Q_UNUSED( name );
   setupUi( this );
+
+  if ( qobject_cast<QDialog*>( parent ) )
+  {
+    // mark selected projection for push to front if parent dialog is accepted
+    connect( parent, SIGNAL( accepted() ), this, SLOT( pushProjectionToFront() ) );
+  }
 
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
@@ -94,6 +100,11 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
 
 QgsProjectionSelector::~QgsProjectionSelector()
 {
+  if ( !mPushProjectionToFront )
+  {
+    return;
+  }
+
   // Push current projection to front, only if set
   long crsId = selectedCrsId();
   if ( crsId == 0 )
@@ -750,12 +761,6 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
 {
   QgsDebugMsg( "Entered." );
 
-  if ( mSkipFirstRecent )
-  {
-    mSkipFirstRecent = false;
-    return;
-  }
-
   if ( !current )
   {
     QgsDebugMsg( "no current item" );
@@ -859,6 +864,13 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
     }
     ++it;
   }
+}
+
+
+void QgsProjectionSelector::pushProjectionToFront()
+{
+  // set flag to push selected projection to front in destructor
+  mPushProjectionToFront = true;
 }
 
 

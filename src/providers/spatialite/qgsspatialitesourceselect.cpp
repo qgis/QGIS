@@ -39,7 +39,7 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
-QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
+QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded ):
     QDialog( parent, fl )
 {
   setupUi( this );
@@ -156,7 +156,7 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
 
   // trying to connect to SpatiaLite DB
   QgsSpatiaLiteConnection conn( subKey );
-  if ( conn.updateStatistics() == true )
+  if ( conn.updateStatistics() )
   {
     QMessageBox::information( this, tr( "Update Statistics" ),
                               tr( "Internal statistics successfully updated for: %1" ).arg( subKey ) );

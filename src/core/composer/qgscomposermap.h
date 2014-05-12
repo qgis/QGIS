@@ -347,11 +347,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       way the map is drawn within the item
      * @deprecated Use setMapRotation( double rotation ) instead
      */
-    void setRotation( double r );
+    Q_DECL_DEPRECATED void setRotation( double r );
+
     /**Returns the rotation used for drawing the map within the composer item
      * @deprecated Use mapRotation() instead
      */
-    double rotation() const { return mMapRotation;};
+    Q_DECL_DEPRECATED double rotation() const { return mMapRotation;};
 
     /**Sets rotation for the map - this does not affect the composer item shape, only the
       way the map is drawn within the item
@@ -412,17 +413,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /** Returns true if the map extent is set to follow the current atlas feature */
     bool atlasDriven() const { return mAtlasDriven; }
@@ -438,6 +439,19 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double atlasMargin() const { return mAtlasMargin; }
     /** Sets the margin size (percentage) used when the map is in atlas mode */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
+
+    /** Sets whether updates to the composer map are enabled. */
+    void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
+
+    /** Returns whether updates to the composer map are enabled. */
+    bool updatesEnabled() const { return mUpdatesEnabled; }
+
+    /**Get the number of layers that this item requires for exporting as layers
+     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
+     * @note this method was added in version 2.4
+    */
+    int numberExportLayers() const;
 
   signals:
     void extentChanged();
@@ -518,6 +532,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Centering mode for overview */
     bool mOverviewCentered;
 
+    /** Whether updates to the map are enabled */
+    bool mUpdatesEnabled;
+
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
 
@@ -597,7 +614,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mAtlasMargin;
 
     /**Returns a list of the layers to render for this map item*/
-    QStringList layersToRender();
+    QStringList layersToRender() const;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
@@ -656,6 +673,19 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 
+    enum PartType
+    {
+      Background,
+      Layer,
+      Grid,
+      OverviewMapExtent,
+      Frame,
+      SelectionBoxes
+    };
+
+    /**Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer*/
+    bool shouldDrawPart( PartType part ) const;
 };
 
 #endif
+

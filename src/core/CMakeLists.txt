@@ -62,6 +62,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp.cpp
   qgscontexthelp_texts.cpp
   qgscoordinatetransform.cpp
+  qgscredentials.cpp
   qgscrscache.cpp
   qgsdatadefined.cpp
   qgsdatasourceuri.cpp
@@ -99,7 +100,7 @@ SET(QGIS_CORE_SRCS
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
   qgsnetworkreplyparser.cpp
-  qgscredentials.cpp
+  qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
   qgsowsconnection.cpp
@@ -351,6 +352,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposertable.h  
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
   composer/qgscomposereffect.h
@@ -368,6 +370,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
+  symbology-ng/qgsstylev2.h
 )
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
@@ -405,6 +408,7 @@ SET(QGIS_CORE_HDRS
   qgsclipper.h
   qgscontexthelp.h
   qgscoordinatetransform.h
+  qgscredentials.h
   qgsdatadefined.h
   qgsdatasourceuri.h
   qgsdataitem.h
@@ -433,10 +437,11 @@ SET(QGIS_CORE_HDRS
   qgsmaprenderer.h
   qgsmapsettings.h
   qgsmaptopixel.h
+  qgsmapunitscale.h
   qgsmessageoutput.h
   qgsmimedatautils.h
   qgsnetworkreplyparser.h
-  qgscredentials.h
+  qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
   qgsowsconnection.h

@@ -105,11 +105,17 @@ class QgsMapTool : QObject
 
     //! returns pointer to the tool's map canvas
     QgsMapCanvas* canvas();
-    
+
     /** return the tool name
     * @note added in 2.3
     */
     QString toolName();
+
+    static double searchRadiusMM();
+
+    static double searchRadiusMU( const QgsRenderContext& context );
+
+    static double searchRadiusMU( QgsMapCanvas * canvas );
 
   signals:
     //! emit a message

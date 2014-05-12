@@ -36,6 +36,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mMeasureArea = measureArea;
 
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QGis::Polygon : QGis::Line );
+  mRubberBandPoints = new QgsRubberBand( canvas, QGis::Point );
 
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
@@ -55,6 +56,7 @@ QgsMeasureTool::~QgsMeasureTool()
 {
   delete mDialog;
   delete mRubberBand;
+  delete mRubberBandPoints;
 }
 
 
@@ -95,6 +97,7 @@ void QgsMeasureTool::deactivate()
 {
   mDialog->close();
   mRubberBand->reset();
+  mRubberBandPoints->reset();
   QgsMapTool::deactivate();
 }
 
@@ -104,6 +107,7 @@ void QgsMeasureTool::restart()
   mPoints.clear();
 
   mRubberBand->reset( mMeasureArea ? QGis::Polygon : QGis::Line );
+  mRubberBandPoints->reset( QGis::Point );
 
   // re-read settings
   updateSettings();
@@ -117,10 +121,14 @@ void QgsMeasureTool::updateSettings()
 {
   QSettings settings;
 
-  int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 65 ) );
+  int myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
+  int myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
+  int myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
+  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
+  mRubberBand->setWidth( 3 );
+  mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mRubberBandPoints->setIconSize( 10 );
+  mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
   mDialog->updateSettings();
 }
 
@@ -199,6 +207,7 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
   mPoints.append( pnt );
 
   mRubberBand->addPoint( point );
+  mRubberBandPoints->addPoint( point );
   if ( ! mDone )
   {
     mDialog->addPoint( point );

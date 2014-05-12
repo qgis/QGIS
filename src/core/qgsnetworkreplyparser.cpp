@@ -53,7 +53,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
 
     QRegExp re( ".*boundary=\"?([^\"]+)\"?\\s?", Qt::CaseInsensitive );
 
-    if ( !re.indexIn( contentType ) == 0 )
+    if ( !( re.indexIn( contentType ) == 0 ) )
     {
       mError = tr( "Cannot find boundary in multipart content type" );
       return;

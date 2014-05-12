@@ -64,6 +64,8 @@ class ANALYSIS_EXPORT QgsInterpolator
        @return 0 in case of success*/
     virtual int interpolatePoint( double x, double y, double& result ) = 0;
 
+    const QList<LayerData>& layerData() const { return mLayerData; }
+
   protected:
     /**Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
@@ -86,8 +88,6 @@ class ANALYSIS_EXPORT QgsInterpolator
        @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
      @return 0 in case of success*/
     int addVerticesToCache( QgsGeometry* geom, bool zCoord, double attributeValue );
-
-
 };
 
 #endif

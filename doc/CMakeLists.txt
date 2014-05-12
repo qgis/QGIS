@@ -23,7 +23,7 @@ ENDIF(TXT2TAGS_EXECUTABLE)
 SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html favicon.ico style.css AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
 
 INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
-INSTALL(FILES images/qgis_new_80pct.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
+INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
 
 IF(WITH_APIDOC)
   FIND_PACKAGE(Doxygen)
@@ -35,6 +35,7 @@ IF(WITH_APIDOC)
             DEPENDS qgis_core qgis_gui qgis_analysis
             COMMENT "Generating API documentation" VERBATIM)
     INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
+    INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/api)
   ELSE(DOXYGEN_FOUND)
     MESSAGE(STATUS "QGIS api documentation not built - Doxygen not found")
   ENDIF(DOXYGEN_FOUND)

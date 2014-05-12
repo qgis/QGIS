@@ -2239,12 +2239,6 @@ were reduced to %2 vertices after simplification</source>
         <translation>Brīdinājums</translation>
     </message>
     <message>
-        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
-                                 different threads to the same datasource. Make sure your layer&apos;s 
-                                 attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Eliminate sliver polygons</source>
         <translation>Novērst skaidu poligonus</translation>
     </message>
@@ -2375,6 +2369,10 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     <message>
         <source>Please specify an input layer</source>
         <translation>Norādiet ievades slāni</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3366,6 +3364,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>Wrong or missing parameter values</source>
         <translation>Nepareiza  vai trūkstoša parametra vērtība</translation>
+    </message>
+    <message>
+        <source>[Save to temporary file]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5685,6 +5687,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <message>
         <source>Columns</source>
         <translation>Kolonnas</translation>
+    </message>
+    <message>
+        <source>Add generated file to map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10807,19 +10813,11 @@ It will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Field separator character. Default value : COMMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11212,6 +11210,14 @@ Response was:
     </message>
     <message>
         <source>Style was missing in capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on Win32 or LF on all other systems). This may be overridden through the use of the LINEFORMAT option.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field separator character.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13573,6 +13579,22 @@ Please contact the developers.
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network request timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A network request timed out, any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16200,6 +16222,18 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Landscape</source>
         <translation type="unfinished">Ainava</translation>
     </message>
+    <message>
+        <source>Svg error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error in svg ouput for svg layer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> on page </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -17185,6 +17219,18 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Item rotation changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Item frame join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item blend mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item transparency changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
@@ -17291,6 +17337,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message utf8="true">
         <source> °</source>
         <translation type="unfinished"> °</translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17582,6 +17632,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Wms Legend height</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Legend title alignment changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
@@ -17852,6 +17906,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Item font...</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title alignment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Pa kreisi</translation>
+    </message>
+    <message>
+        <source>Center</source>
+        <translation type="unfinished">Centrā</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Pa labi</translation>
     </message>
 </context>
 <context>
@@ -18199,6 +18269,14 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grid frame second fill color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview frame style changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid line style changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18835,6 +18913,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Scalebar changed to meters</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scalebar line join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar line cap style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -18978,6 +19064,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Stroke color...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cap style</source>
+        <translation type="unfinished">Galu stils</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerShapeWidget</name>
@@ -19031,6 +19125,10 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Shape radius changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shape style changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19153,6 +19251,18 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Table visible only toggled</source>
         <translation>Tikai redzamā tabula ir pārslēgta</translation>
     </message>
+    <message>
+        <source>Table feature filter toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table feature filter modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression based filter</source>
+        <translation type="unfinished">Izteiksmju bāzēts filtrs</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerTableWidgetBase</name>
@@ -19239,6 +19349,14 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Content font...</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter with</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -25053,6 +25171,10 @@ Lūdzu izvēlēties derīgu.</translation>
     <message>
         <source>Pixel Size</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Kanāls</translation>
     </message>
 </context>
 <context>
@@ -31073,6 +31195,14 @@ not displayed</source>
         <source>Rendering</source>
         <translation type="unfinished">Renderēšana</translation>
     </message>
+    <message>
+        <source>canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canvas refresh: %1 ms</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapCoordsDialog</name>
@@ -35032,6 +35162,10 @@ Always network: always load from network and do not check if the cache has a val
         <source>Are you sure to reset the UI to default (needs restart)?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Identify highlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -35980,10 +36114,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Add predefined scale</source>
         <translation type="unfinished"></translation>
     </message>
@@ -36161,6 +36291,30 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Enable feature simplification by default for newly added layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Highlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The color used to highlight identified feature. The alpha channel is only used for polygons fill, lines and outlines are fully opaque.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation type="unfinished">Buferis</translation>
+    </message>
+    <message>
+        <source>Lines / outlines buffer in millimeters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum line / outline width in millimeters.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -38732,7 +38886,7 @@ Jums ir nepieciešams pārstartēt QGIS, lai varētu sākt izmantot šo spraudni
     </message>
     <message>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
-        <translation>&lt;br/&gt;%1 reitinga balsojums(-i)&lt;br/&gt;</translation>
+        <translation type="obsolete">&lt;br/&gt;%1 reitinga balsojums(-i)&lt;br/&gt;</translation>
     </message>
     <message>
         <source>Category</source>
@@ -38865,6 +39019,18 @@ Jums ir nepieciešams pārstartēt QGIS, lai varētu sākt izmantot šo spraudni
     </message>
     <message>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 rating vote(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vote sent successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sending vote to the plugin repository failed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -39094,6 +39260,10 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished">about:blank</translation>
     </message>
 </context>
 <context>
@@ -41154,6 +41324,18 @@ Click on help button to get valid creation options for this format.</source>
         <source>Actions</source>
         <translation type="unfinished">Darbības</translation>
     </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">Ekrāns</translation>
+    </message>
+    <message>
+        <source>Draw as lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw as lines (only int layers)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterHistogramWidgetBase</name>
@@ -42766,6 +42948,17 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>VRT Tiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterMinMaxWidget</name>
+    <message>
+        <source>No option selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select an option to load min/max values.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -46845,6 +47038,21 @@ There was a problem with your symbol database.</source>
     </message>
 </context>
 <context>
+    <name>QgsSvgExportOptionsDialog</name>
+    <message>
+        <source>SVG export options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export map layers as svg groups (may affect label placement)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render text as outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Select SVG file</source>
@@ -46993,11 +47201,11 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Invalid Selection!</source>
-        <translation>Nederīga izvēle!</translation>
+        <translation type="obsolete">Nederīga izvēle!</translation>
     </message>
     <message>
         <source>Kindly select a symbol to add layer.</source>
-        <translation>Lūdzu, izvēlieties simbolu, lai pievienotu slānim.</translation>
+        <translation type="obsolete">Lūdzu, izvēlieties simbolu, lai pievienotu slānim.</translation>
     </message>
 </context>
 <context>
@@ -53270,6 +53478,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <source>Border</source>
         <translation>Malas</translation>
     </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>WidgetSimpleLine</name>
@@ -58782,6 +58994,43 @@ Returns a string wrapped to a maximum/minimum number of characters.
 &lt;!-- Show example of function.--&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
+Returns the geometry of the current feature iterated in atlas.
+Can be used for rule based display of geometry when using atlas.
+For example to only show geometries of other layers when their geometry 
+intersects the iterated geometry of features using atlas.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
+Returns the feature id of the current row while using atlas.
+This enables you to use features of atlas in rules 
+and for example show or hide features based on their id.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+
 </source>
         <translation type="unfinished"></translation>
     </message>

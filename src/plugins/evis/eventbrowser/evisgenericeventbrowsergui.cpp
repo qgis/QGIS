@@ -50,7 +50,7 @@
 * @param interface - Pointer to the application interface
 * @param fl - Window flags
 */
-eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WFlags fl )
+eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -83,7 +83,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInt
 * @param canvas - Pointer to the map canvas
 * @param fl - Window flags
 */
-eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WFlags fl )
+eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

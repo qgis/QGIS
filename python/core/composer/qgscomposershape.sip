@@ -55,6 +55,11 @@ class QgsComposerShape: QgsComposerItem
     /**Controls whether the shape should be drawn using a QgsFillSymbolV2.
      * Note: Added in v2.1 */
     void setUseSymbolV2( bool useSymbolV2 );
+    
+    /**Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
+     * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
+    */
+    void setSceneRect( const QRectF& rectangle );
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */

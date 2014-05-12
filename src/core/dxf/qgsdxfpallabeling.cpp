@@ -19,21 +19,25 @@
 #include "qgsdxfexport.h"
 #include "qgsmaplayerregistry.h"
 #include "qgspalgeometry.h"
+#include "qgsmapsettings.h"
+
 #include "pal/pointset.h"
 #include "pal/labelposition.h"
 
 using namespace pal;
 
-QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits ): QgsPalLabeling(), mDxfExport( dxf )
+QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits )
+    : QgsPalLabeling()
+    , mDxfExport( dxf )
 {
-  mMapRenderer.setExtent( bbox );
+  QgsMapSettings settings;
+  settings.setExtent( bbox );
 
   int dpi = 96;
   double factor = 1000 * dpi / scale / 25.4 * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters );
-  mMapRenderer.setOutputSize( QSizeF( bbox.width() * factor, bbox.height() * factor ), dpi );
-  mMapRenderer.setScale( scale );
-  mMapRenderer.setOutputUnits( QgsMapRenderer::Pixels );
-  init( &mMapRenderer );
+  settings.setOutputSize( QSize( bbox.width() * factor, bbox.height() * factor ) );
+  settings.setOutputDpi( dpi );
+  init( settings );
 
   mImage = new QImage( 10, 10, QImage::Format_ARGB32_Premultiplied );
   mImage->setDotsPerMeterX( 96 / 25.4 * 1000 );

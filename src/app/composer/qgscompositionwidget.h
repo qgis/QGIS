@@ -64,6 +64,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void displayCompositionWidthHeight();
     /**Sets Print as raster checkbox value*/
     void setPrintAsRasterCheckBox( bool state );
+    /**Sets number of pages spin box value*/
+    void setNumberPages();
 
   signals:
     /**Is emitted when page orientation changes*/

@@ -39,7 +39,7 @@
 #include "qgslogger.h"
 
 
-QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
+QgsSpit::QgsSpit( QWidget *parent, Qt::WindowFlags fl ) : QDialog( parent, fl )
 {
   setupUi( this );
 

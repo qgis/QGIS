@@ -50,11 +50,11 @@ QgsAtlasComposition::~QgsAtlasComposition()
 {
 }
 
-void QgsAtlasComposition::setEnabled( bool e )
+void QgsAtlasComposition::setEnabled( bool enabled )
 {
-  mEnabled = e;
+  mEnabled = enabled;
   mComposition->setAtlasMode( QgsComposition::AtlasOff );
-  emit toggled( e );
+  emit toggled( enabled );
 }
 
 void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
@@ -65,7 +65,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 
   // Grab the first feature so that user can use it to test the style in rules.
-  if( layer )
+  if ( layer )
   {
     QgsFeature fet;
     layer->getFeatures().nextFeature( fet );
@@ -155,6 +155,29 @@ void QgsAtlasComposition::setMargin( float margin )
   map->setAtlasMargin(( double ) margin );
 }
 
+int QgsAtlasComposition::sortKeyAttributeIndex() const
+{
+  if ( !mCoverageLayer )
+  {
+    return -1;
+  }
+  return mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
+}
+
+void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
+{
+  if ( mCoverageLayer )
+  {
+    const QgsFields fields = mCoverageLayer->pendingFields();
+    if ( idx >= 0 && idx < fields.count() )
+    {
+      mSortKeyAttributeName = fields[idx].name();
+      return;
+    }
+  }
+  mSortKeyAttributeName = "";
+}
+
 //
 // Private class only used for the sorting of features
 class FieldSorter
@@ -215,6 +238,7 @@ int QgsAtlasComposition::updateFeatures()
   QgsFeature feat;
   mFeatureIds.clear();
   mFeatureKeys.clear();
+  int sortIdx = mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
   while ( fit.nextFeature( feat ) )
   {
     if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
@@ -233,14 +257,14 @@ int QgsAtlasComposition::updateFeatures()
     }
     mFeatureIds.push_back( feat.id() );
 
-    if ( mSortFeatures )
+    if ( mSortFeatures && sortIdx != -1 )
     {
-      mFeatureKeys.insert( feat.id(), feat.attributes()[ mSortKeyAttributeIdx ] );
+      mFeatureKeys.insert( feat.id(), feat.attributes()[ sortIdx ] );
     }
   }
 
   // sort features, if asked for
-  if ( mSortFeatures )
+  if ( mFeatureKeys.count() )
   {
     FieldSorter sorter( mFeatureKeys, mSortAscending );
     qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
@@ -326,36 +350,34 @@ int QgsAtlasComposition::numFeatures() const
 
 void QgsAtlasComposition::nextFeature()
 {
-  mCurrentFeatureNo++;
-  if ( mCurrentFeatureNo >= mFeatureIds.size() )
+  int newFeatureNo = mCurrentFeatureNo + 1;
+  if ( newFeatureNo >= mFeatureIds.size() )
   {
-    mCurrentFeatureNo = mFeatureIds.size() - 1;
+    newFeatureNo = mFeatureIds.size() - 1;
   }
 
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( newFeatureNo );
 }
 
 void QgsAtlasComposition::prevFeature()
 {
-  mCurrentFeatureNo--;
-  if ( mCurrentFeatureNo < 0 )
+  int newFeatureNo = mCurrentFeatureNo - 1;
+  if ( newFeatureNo < 0 )
   {
-    mCurrentFeatureNo = 0;
+    newFeatureNo = 0;
   }
 
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( newFeatureNo );
 }
 
 void QgsAtlasComposition::firstFeature()
 {
-  mCurrentFeatureNo = 0;
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( 0 );
 }
 
 void QgsAtlasComposition::lastFeature()
 {
-  mCurrentFeatureNo = mFeatureIds.size() - 1;
-  prepareForFeature( mCurrentFeatureNo );
+  prepareForFeature( mFeatureIds.size() - 1 );
 }
 
 void QgsAtlasComposition::prepareForFeature( QgsFeature * feat )
@@ -377,6 +399,8 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
     return;
   }
 
+  mCurrentFeatureNo = featureI;
+
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
 
@@ -387,13 +411,9 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   // generate filename for current feature
   evalFeatureFilename();
 
-  // evaluate label expressions
-  QList<QgsComposerLabel*> labels;
-  mComposition->composerItems( labels );
-  for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
-  {
-    ( *lit )->setExpressionContext( &mCurrentFeature, mCoverageLayer );
-  }
+  emit featureChanged( &mCurrentFeature );
+
+  // TODO - move these updates to shape/page item
 
   // update shapes (in case they use data defined symbology with atlas properties)
   QList<QgsComposerShape*> shapes;
@@ -567,7 +587,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   atlasElem.setAttribute( "sortFeatures", mSortFeatures ? "true" : "false" );
   if ( mSortFeatures )
   {
-    atlasElem.setAttribute( "sortKey", QString::number( mSortKeyAttributeIdx ) );
+    atlasElem.setAttribute( "sortKey", mSortKeyAttributeName );
     atlasElem.setAttribute( "sortAscending", mSortAscending ? "true" : "false" );
   }
   atlasElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
@@ -637,7 +657,20 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   mSortFeatures = atlasElem.attribute( "sortFeatures", "false" ) == "true" ? true : false;
   if ( mSortFeatures )
   {
-    mSortKeyAttributeIdx = atlasElem.attribute( "sortKey", "0" ).toInt();
+    mSortKeyAttributeName = atlasElem.attribute( "sortKey", "" );
+    // since 2.3, the field name is saved instead of the field index
+    // following code keeps compatibility with version 2.2 projects
+    // to be removed in QGIS 3.0
+    bool isIndex;
+    int idx = mSortKeyAttributeName.toInt( &isIndex );
+    if ( isIndex && mCoverageLayer )
+    {
+      const QgsFields fields = mCoverageLayer->pendingFields();
+      if ( idx >= 0 && idx < fields.count() )
+      {
+        mSortKeyAttributeName = fields[idx].name();
+      }
+    }
     mSortAscending = atlasElem.attribute( "sortAscending", "true" ) == "true" ? true : false;
   }
   mFilterFeatures = atlasElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;

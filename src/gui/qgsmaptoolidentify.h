@@ -127,6 +127,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );
+    void layerDestroyed();
 
   signals:
     void identifyProgress( int, int );

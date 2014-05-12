@@ -241,8 +241,8 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
         int fontID = QFontDatabase::addApplicationFont( fontPath );
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
-        QgsDebugMsg( QString( "Test font '%1' %2 from filesystem" )
-                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
+        QgsDebugMsg( QString( "Test font '%1' %2 from filesystem [%3]" )
+                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ).arg( fontPath ) );
       }
       else
       {

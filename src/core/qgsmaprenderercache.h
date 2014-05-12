@@ -15,7 +15,7 @@
  * the cache listens to repaintRequested() signals from layer. If triggered, the cache
  * removes the rendered image (and disconnects from the layer).
  *
- * The class is thread-safe (multiple classes can access the same instance safely). 
+ * The class is thread-safe (multiple classes can access the same instance safely).
  *
  * @note added in 2.4
  */

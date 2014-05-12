@@ -65,7 +65,11 @@ for i in xrange(bandCount):
     progress.setPercentage(int(current * total))
 
     rasterBand = raster.GetRasterBand(i + 1)
-    data = rasterBand.ReadAsArray()
+    try:
+        data = rasterBand.ReadAsArray()
+    except:
+        raise GeoAlgorithmExecutionException(
+                'Error reading raster data. File might be too big.')
     layer.ResetReading()
     feature = layer.GetNextFeature()
     col = []

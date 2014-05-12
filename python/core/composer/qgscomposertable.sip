@@ -35,15 +35,30 @@ class QgsComposerTable: QgsComposerItem
 
     void setGridColor( const QColor& c );
     QColor gridColor() const;
+    
+  public slots:
 
-    /**Adapts the size of the frame to match the content. This is normally done in the paint method, but sometimes
-    it needs to be done before the first render*/
-    void adjustFrameToSize();
+    /**Refreshes the attributes shown in the table by querying the vector layer for new data.
+     * This also causes the column widths and size of the table to change to accomodate the
+     * new data.
+     * @note added in 2.3
+     * @see adjustFrameToSize
+    */
+    virtual void refreshAttributes();
+
+    /**Adapts the size of the frame to match the content. First, the optimal width of the columns
+     * is recalculated by checking the maximum width of attributes shown in the table. Then, the
+     * table is resized to fit its contents. This slot utilises the table's attribute cache so
+     * that a re-query of the vector layer is not required.
+     * @note added in 2.3
+     * @see refreshAttributes
+    */
+    virtual void adjustFrameToSize();   
 
   protected:
     /**Retrieves feature attributes*/
     // virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
-    virtual QMap<int, QString> getHeaderLabels() const;
+
     /**Calculate the maximum width values of the vector attributes*/
     // virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList< QMap<int, QVariant> >& attributeMaps ) const;
     /**Adapts the size of the item frame to match the content*/

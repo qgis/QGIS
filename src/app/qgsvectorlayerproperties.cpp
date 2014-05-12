@@ -68,7 +68,7 @@
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget * parent,
-  Qt::WFlags fl
+  Qt::WindowFlags fl
 )
     : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
     , layer( lyr )
@@ -246,6 +246,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLayerMetadataUrlFormatComboBox->setCurrentIndex(
       mLayerMetadataUrlFormatComboBox->findText(
         layer->metadataUrlFormat()
+      )
+    );
+    mLayerLegendUrlLineEdit->setText( layer->legendUrl() );
+    mLayerLegendUrlFormatComboBox->setCurrentIndex(
+      mLayerLegendUrlFormatComboBox->findText(
+        layer->legendUrlFormat()
       )
     );
   }
@@ -556,6 +562,8 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  layer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  layer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
@@ -1025,7 +1033,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
     joinItem->setText( 2, join.targetFieldName );
 
   if ( join.memoryCache )
-    joinItem->setText( 3, QString::fromUtf8( "\u2714" ) );
+    joinItem->setText( 3, QChar( 0x2714 ) );
 
   mJoinTreeWidget->addTopLevelItem( joinItem );
   for ( int c = 0; c < 3; c++ )

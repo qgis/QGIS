@@ -29,7 +29,6 @@ from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerDialog import ModelerDialog
 
-
 class EditModelAction(ContextAction):
 
     def __init__(self):
@@ -42,4 +41,4 @@ class EditModelAction(ContextAction):
         dlg = ModelerDialog(self.alg.getCopy())
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            self.toolbox.updateProvider('model')

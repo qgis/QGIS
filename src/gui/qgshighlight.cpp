@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <typeinfo>
-
 #include <QImage>
 
 #include "qgsmarkersymbollayerv2.h"
@@ -134,7 +132,7 @@ void QgsHighlight::setFillColor( const QColor & fillColor )
 QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & context, const QColor & color, const QColor & fillColor )
 {
   QgsFeatureRendererV2 *renderer = 0;
-  QgsVectorLayer *layer = vectorLayer();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
   if ( layer && layer->rendererV2() )
   {
     renderer = layer->rendererV2()->clone();
@@ -345,7 +343,9 @@ void QgsHighlight::paint( QPainter* p )
   }
   else if ( mFeature.geometry() )
   {
-    QgsVectorLayer *layer = vectorLayer();
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
+    if ( !layer )
+      return;
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
 
@@ -380,7 +380,7 @@ void QgsHighlight::paint( QPainter* p )
       imagePainter->end();
 
       QColor color( mPen.color() );  // true output color
-      // coeficient to subtract alpha using green (temporary fill)
+      // coefficient to subtract alpha using green (temporary fill)
       double k = ( 255. - mBrush.color().alpha() ) / 255.;
       for ( int r = 0; r < image.height(); r++ )
       {
@@ -391,7 +391,7 @@ void QgsHighlight::paint( QPainter* p )
           if ( alpha > 0 )
           {
             int green = qGreen( rgba );
-            color.setAlpha( alpha - ( green * k ) );
+            color.setAlpha( qBound<int>( 0, alpha - ( green * k ), 255 ) );
 
             image.setPixel( c, r, color.rgba() );
           }
@@ -438,9 +438,3 @@ void QgsHighlight::updateRect()
     setRect( QgsRectangle() );
   }
 }
-
-QgsVectorLayer * QgsHighlight::vectorLayer()
-{
-  return dynamic_cast<QgsVectorLayer *>( mLayer );
-}
-

@@ -182,6 +182,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   connect( btnAddLayer, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
   connect( btnRemoveLayer, SIGNAL( clicked() ), this, SLOT( removeLayer() ) );
   connect( btnLock, SIGNAL( clicked() ), this, SLOT( lockLayer() ) );
+  connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
 
   updateUi();
 
@@ -256,7 +257,6 @@ void QgsSymbolV2SelectorDialog::updateUi()
     btnDown->setEnabled( false );
     btnRemoveLayer->setEnabled( false );
     btnLock->setEnabled( false );
-    btnAddLayer->setEnabled( true );
     return;
   }
 
@@ -267,7 +267,6 @@ void QgsSymbolV2SelectorDialog::updateUi()
   btnDown->setEnabled( currentRow < rowCount - 1 );
   btnRemoveLayer->setEnabled( rowCount > 1 );
   btnLock->setEnabled( true );
-  btnAddLayer->setEnabled( false );
 }
 
 void QgsSymbolV2SelectorDialog::updatePreview()
@@ -398,19 +397,22 @@ void QgsSymbolV2SelectorDialog::addLayer()
   if ( !idx.isValid() )
     return;
 
+  int insertIdx = -1;
   SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
   if ( item->isLayer() )
   {
-    QMessageBox::critical( this, tr( "Invalid Selection!" ), tr( "Kindly select a symbol to add layer." ) );
-    return;
+    insertIdx = item->row();
+    item = static_cast<SymbolLayerItem*>( item->parent() );
   }
 
   QgsSymbolV2* parentSymbol = item->symbol();
   QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( parentSymbol->type() );
-  parentSymbol->appendSymbolLayer( newLayer );
-  // XXX Insane behaviour of the appendSymbolLayer, it actually "pushes" into the list
+  if ( insertIdx == -1 )
+    parentSymbol->appendSymbolLayer( newLayer );
+  else
+    parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
-  item->insertRow( 0, newLayerItem );
+  item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
   layersTree->setCurrentIndex( model->indexFromItem( newLayerItem ) );
@@ -482,6 +484,34 @@ void QgsSymbolV2SelectorDialog::lockLayer()
   if ( !layer )
     return;
   layer->setLocked( btnLock->isChecked() );
+}
+
+void QgsSymbolV2SelectorDialog::saveSymbol()
+{
+  bool ok;
+  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+                                        tr( "Please enter name for the symbol:" ) , QLineEdit::Normal, tr( "New symbol" ), &ok );
+  if ( !ok || name.isEmpty() )
+    return;
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( name ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
+
+  // add new symbol to style and re-populate the list
+  mStyle->addSymbol( name, mSymbol->clone() );
+
+  // make sure the symbol is stored
+  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
 }
 
 void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )

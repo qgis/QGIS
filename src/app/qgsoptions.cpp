@@ -66,7 +66,7 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
+QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     QgsOptionsDialogBase( "Options", parent, fl )
 {
   setupUi( this );
@@ -100,32 +100,24 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     cmbStyle->addItem( style );
   }
 
-  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
-  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
-  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
-  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
-
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   QSettings settings;
 
-  int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
-  cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
-  cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
-  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
+  double identifyValue = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   if ( identifyValue <= 0.0 )
-    identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
-  spinBoxIdentifyValue->setMinimum( 0.01 );
+    identifyValue = QGis::DEFAULT_SEARCH_RADIUS_MM;
+  spinBoxIdentifyValue->setMinimum( 0.0 );
   spinBoxIdentifyValue->setValue( identifyValue );
-  QColor highlightColor = QColor( settings.value( "/Map/identify/highlight/color", "#ff0000" ).toString() );
-  int highlightAlpha = settings.value( "/Map/identify/highlight/colorAlpha", "63" ).toInt();
+  QColor highlightColor = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int highlightAlpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
   highlightColor.setAlpha( highlightAlpha );
   mIdentifyHighlightColorButton->setColor( highlightColor );
-  double highlightBuffer = settings.value( "/Map/identify/highlight/buffer", "0.5" ).toDouble();
+  double highlightBuffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
   mIdentifyHighlightBufferSpinBox->setValue( highlightBuffer );
-  double highlightMinWidth = settings.value( "/Map/identify/highlight/minWidth", "1." ).toDouble();
+  double highlightMinWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
   mIdentifyHighlightMinWidthSpinBox->setValue( highlightMinWidth );
 
   // custom environment variables
@@ -483,7 +475,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set if base unit of measure tool should be changed
   bool baseUnit = settings.value( "qgis/measure/keepbaseunit", false ).toBool();
-  if ( baseUnit == true )
+  if ( baseUnit )
   {
     mKeepBaseUnitCheckBox->setChecked( true );
   }
@@ -576,7 +568,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
   cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
-  cbxIdentifyResultsDocked->setChecked( settings.value( "/qgis/dockIdentifyResults", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
@@ -632,9 +623,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   pbnCanvasColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   // set the default color for the measure tool
-  myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
+  myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
+  myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
+  myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
@@ -869,6 +860,14 @@ void QgsOptions::setCurrentPage( QString pageWidgetName )
   }
 }
 
+void QgsOptions::on_mProxyTypeComboBox_currentIndexChanged( int idx )
+{
+  leProxyHost->setEnabled( idx != 0 );
+  leProxyPort->setEnabled( idx != 0 );
+  leProxyUser->setEnabled( idx != 0 );
+  leProxyPassword->setEnabled( idx != 0 );
+}
+
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
 {
   if ( checked )
@@ -1043,13 +1042,11 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/WMSSearchUrl", leWmsSearch->text() );
 
   //general settings
-  settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
-  settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
-  settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
-  settings.setValue( "/Map/identify/highlight/color", mIdentifyHighlightColorButton->color().name() );
-  settings.setValue( "/Map/identify/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
-  settings.setValue( "/Map/identify/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
-  settings.setValue( "/Map/identify/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
+  settings.setValue( "/Map/searchRadiusMM", spinBoxIdentifyValue->value() );
+  settings.setValue( "/Map/highlight/color", mIdentifyHighlightColorButton->color().name() );
+  settings.setValue( "/Map/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
+  settings.setValue( "/Map/highlight/buffer", mIdentifyHighlightBufferSpinBox->value() );
+  settings.setValue( "/Map/highlight/minWidth", mIdentifyHighlightMinWidthSpinBox->value() );
 
   bool showLegendClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
@@ -1068,7 +1065,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/scanZipInBrowser2",
                      cmbScanZipInBrowser->itemData( cmbScanZipInBrowser->currentIndex() ).toString() );
   settings.setValue( "/qgis/ignoreShapeEncoding", cbxIgnoreShapeEncoding->isChecked() );
-  settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );

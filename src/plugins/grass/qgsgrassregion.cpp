@@ -192,7 +192,7 @@ void QgsGrassRegionEdit::setSrcRegion( const QgsRectangle &rect )
 }
 
 QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
-                                QWidget * parent, Qt::WFlags f )
+                                QWidget * parent, Qt::WindowFlags f )
     : QDialog( parent, f ), QgsGrassRegionBase( )
 {
   QgsDebugMsg( "QgsGrassRegion()" );

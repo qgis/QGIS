@@ -1,0 +1,5 @@
+v.in.wfs
+v.in.wfs - Import GetFeature from WFS
+Vector (v.*)
+ParameterString|url|GetFeature URL starting with 'http'|http://
+OutputVector|output|Name for output vector map

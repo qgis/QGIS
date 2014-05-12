@@ -43,6 +43,9 @@ class ParameterString(Parameter):
 
     def setValue(self, obj):
         if obj is None:
+            if self.optional:
+                self.value = ''
+                return True
             self.value = self.default
             return True
         self.value = unicode(obj).replace(ParameterString.ESCAPED_NEWLINE,

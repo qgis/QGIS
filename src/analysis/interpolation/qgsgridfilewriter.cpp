@@ -17,7 +17,9 @@
 
 #include "qgsgridfilewriter.h"
 #include "qgsinterpolator.h"
+#include "qgsvectorlayer.h"
 #include <QFile>
+#include <QFileInfo>
 #include <QProgressDialog>
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows , double cellSizeX, double cellSizeY )
@@ -95,6 +97,23 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
       progressDialog->setValue( i );
     }
   }
+
+  // create prj file
+  QgsInterpolator::LayerData ld;
+  ld = mInterpolator->layerData().first();
+  QgsVectorLayer* vl = ld.vectorLayer;
+  QString crs = vl->crs().toWkt();
+  QFileInfo fi( mOutputFilePath );
+  QString fileName = fi.absolutePath() + "/" + fi.completeBaseName() + ".prj";
+  QFile prjFile( fileName );
+  if ( !prjFile.open( QFile::WriteOnly ) )
+  {
+    return 1;
+  }
+  QTextStream prjStream( &prjFile );
+  prjStream << crs;
+  prjStream << endl;
+  prjFile.close();
 
   delete progressDialog;
   return 0;

@@ -65,7 +65,62 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
         self.view.setScene(self.scene)
+        self.view.setAcceptDrops(True)
         self.view.ensureVisible(0, 0, 10, 10)
+
+        def _dragEnterEvent(event):
+            if event.mimeData().hasText():
+                event.acceptProposedAction()
+            else:
+                event.ignore()
+
+        def _dropEvent(event):
+            if event.mimeData().hasText():
+                text = event.mimeData().text()
+                print text
+                if text in ModelerParameterDefinitionDialog.paramTypes:
+                    self.addInputOfType(text)
+                else:
+                    alg = ModelerUtils.getAlgorithm(text);
+                    if alg is not None:
+                        self._addAlgorithm(alg)
+                event.accept()
+            else:
+                event.ignore()
+
+        def _dragMoveEvent(event):
+            if event.mimeData().hasText():
+                event.accept()
+            else:
+                event.ignore()
+
+        self.view.dragEnterEvent = _dragEnterEvent
+        self.view.dropEvent = _dropEvent
+        self.view.dragMoveEvent = _dragMoveEvent
+
+
+        def _mimeDataInput(items):
+            mimeData = QMimeData()
+            text = items[0].text(0)
+            mimeData.setText(text)
+            return mimeData
+
+        self.inputsTree.mimeData = _mimeDataInput
+
+        self.inputsTree.setDragDropMode(QTreeWidget.DragOnly)
+        self.inputsTree.setDropIndicatorShown(True)
+
+        def _mimeDataAlgorithm(items):
+            item = items[0]
+            if isinstance(item, TreeAlgorithmItem):
+                mimeData = QMimeData()
+                mimeData.setText(item.alg.commandLineName())
+            return mimeData
+
+        self.algorithmTree.mimeData = _mimeDataAlgorithm
+
+        self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
+        self.algorithmTree.setDropIndicatorShown(True)
 
         # Set icons
         self.btnOpen.setIcon(
@@ -94,6 +149,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.inputsTree.doubleClicked.connect(self.addInput)
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
+        self.scene.changed.connect(self.changeModel)
 
         self.btnOpen.clicked.connect(self.openModel)
         self.btnSave.clicked.connect(self.save)
@@ -116,6 +172,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         # Indicates whether to update or not the toolbox after
         # closing this dialog
         self.update = False
+
+    def changeModel(self):
+        self.hasChanged = True
 
     def closeEvent(self, evt):
         if self.hasChanged:
@@ -162,6 +221,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             self.alg.descriptionFile = None
             alg.descriptionFile = None
         else:
+            self.save()
             if self.alg.provider is None:
                 # Might happen if model is opened from modeler dialog
                 self.alg.provider = Providers.providers['model']
@@ -285,9 +345,13 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
 
+
     def addInput(self):
         item = self.inputsTree.currentItem()
         paramType = str(item.text(0))
+        self.addInputOfType(paramType)
+
+    def addInputOfType(self, paramType):
         if paramType in ModelerParameterDefinitionDialog.paramTypes:
             dlg = ModelerParameterDefinitionDialog(self.alg, paramType)
             dlg.exec_()
@@ -306,6 +370,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         for paramType in ModelerParameterDefinitionDialog.paramTypes:
             paramItem = QTreeWidgetItem()
             paramItem.setText(0, paramType)
+            paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
             parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
@@ -314,6 +379,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = ModelerUtils.getAlgorithm(item.alg.commandLineName())
+            self._addAlgorithm(alg)
+
+    def _addAlgorithm(self, alg):
             alg = alg.getCopy()
             dlg = alg.getCustomModelerParametersDialog(self.alg)
             if not dlg:

@@ -38,7 +38,7 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         self.setupUi(self)
 
         self.options = options
-        self.selectedoptions = selectedoptions
+        self.selectedoptions = selectedoptions or []
 
         # Additional buttons
         self.btnSelectAll = QPushButton(self.tr('Select all'))

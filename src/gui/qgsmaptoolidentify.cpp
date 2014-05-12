@@ -120,7 +120,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator resultIt = mLayerIdResults.constBegin();
     for ( ; resultIt != mLayerIdResults.constEnd(); ++resultIt )
     {
-      QAction* action = new QAction( resultIt.key()->name(), 0 );
+      QAction* action = new QAction( QString( "%1 (%2)" ).arg( resultIt.key()->name() ).arg( resultIt.value().size() ), 0 );
       action->setData( resultIt.key()->id() );
       //add point/line/polygon icon
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( resultIt.key() );
@@ -145,7 +145,14 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       {
         action->setIcon( QgsApplication::getThemeIcon( "/mIconRaster.png" ) );
       }
-      QObject::connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      layerSelectionMenu.addAction( action );
+    }
+
+    if ( mLayerIdResults.size() > 1 )
+    {
+      QAction *action = new QAction( tr( "All (%1)" ).arg( idResult.size() ), 0 );
+      connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
       layerSelectionMenu.addAction( action );
     }
 
@@ -154,11 +161,18 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     QAction* selectedAction = layerSelectionMenu.exec( globalPos );
     if ( selectedAction )
     {
-      QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
-      QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
-      if ( sIt != mLayerIdResults.constEnd() )
+      if ( selectedAction->data().toString().isEmpty() )
       {
-        results = sIt.value();
+        results = idResult;
+      }
+      else
+      {
+        QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
+        QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
+        if ( sIt != mLayerIdResults.constEnd() )
+        {
+          results = sIt.value();
+        }
       }
     }
 
@@ -265,13 +279,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
 
-  // load identify radius from settings
-  QSettings settings;
-  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-
-  if ( identifyValue <= 0.0 )
-    identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
-
   int featureCount = 0;
 
   QgsFeatureList featureList;
@@ -282,7 +289,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   try
   {
     // create the search rectangle
-    double searchRadius = mCanvas->extent().width() * ( identifyValue / 100.0 );
+    double searchRadius = searchRadiusMU( mCanvas );
 
     QgsRectangle r;
     r.setXMinimum( point.x() - searchRadius );
@@ -657,10 +664,27 @@ void QgsMapToolIdentify::handleMenuHover()
         QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
         for ( ; idListIt != idList.constEnd(); ++idListIt )
         {
-          QgsHighlight* hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
+          QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
           hl->setColor( QColor( 255, 0, 0 ) );
           hl->setWidth( 2 );
           mRubberBands.append( hl );
+          connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+        }
+      }
+    }
+    else
+    {
+      for ( QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.constBegin(); lIt != mLayerIdResults.constEnd(); ++lIt )
+      {
+        const QList<IdentifyResult>& idList = lIt.value();
+        QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
+        for ( ; idListIt != idList.constEnd(); ++idListIt )
+        {
+          QgsHighlight *hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), lIt.key() );
+          hl->setColor( QColor( 255, 0, 0 ) );
+          hl->setWidth( 2 );
+          mRubberBands.append( hl );
+          connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
         }
       }
     }
@@ -671,8 +695,23 @@ void QgsMapToolIdentify::deleteRubberBands()
 {
   QList<QgsHighlight*>::const_iterator it = mRubberBands.constBegin();
   for ( ; it != mRubberBands.constEnd(); ++it )
-  {
     delete *it;
-  }
   mRubberBands.clear();
+}
+
+void QgsMapToolIdentify::layerDestroyed()
+{
+  QList<QgsHighlight*>::iterator it = mRubberBands.begin();
+  while ( it != mRubberBands.end() )
+  {
+    if (( *it )->layer() == sender() )
+    {
+      delete *it;
+      it = mRubberBands.erase( it );
+    }
+    else
+    {
+      ++it;
+    }
+  }
 }

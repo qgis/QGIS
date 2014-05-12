@@ -21,7 +21,7 @@
 
 QgsOracleConnect::QgsOracleConnect( QWidget* parent,
                                     const QString& connName,
-                                    Qt::WFlags fl ) : QDialog( parent, fl )
+                                    Qt::WindowFlags fl ) : QDialog( parent, fl )
 {
   setupUi( this );
 

@@ -53,7 +53,7 @@ class TestQgsRenderers: public QObject
     bool mTestHasError;
     bool setQml( QString theType ); //uniquevalue / continuous / single /
     bool imageCheck( QString theType ); //as above
-    QgsMapRenderer * mpMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
     QgsMapLayer * mpPolysLayer;
@@ -113,12 +113,8 @@ void TestQgsRenderers::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpPointsLayer->id();
-  myLayers << mpPolysLayer->id();
-  myLayers << mpLinesLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mMapSettings.setLayers(
+    QStringList() << mpPointsLayer->id() << mpPolysLayer->id() << mpLinesLayer->id() );
   mReport += "<h1>Vector Renderer Tests</h1>\n";
 }
 void TestQgsRenderers::cleanupTestCase()
@@ -214,11 +210,11 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   // the same wrong value is reported by ogrinfo). Since QGIS 2.1, the provider
   // gives correct extent. Forced to fixed extend however to avoid problems in future.
   QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
-  mpMapRenderer->setExtent( extent );
-  mpMapRenderer->rendererContext()->setForceVectorOutput( true );
+  mMapSettings.setExtent( extent );
+  mMapSettings.setFlag( QgsMapSettings::ForceVectorOutput );
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapRenderer( mpMapRenderer );
+  myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 15 );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();

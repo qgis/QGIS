@@ -39,7 +39,7 @@
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
-  QWidget * parent, Qt::WFlags f )
+  QWidget * parent, Qt::WindowFlags f )
     : QMainWindow( iface->mainWindow(), Qt::Dialog )
     , QgsGrassMapcalcBase( )
     , QgsGrassModuleOptions( tools, module, iface, false )
@@ -2135,7 +2135,7 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
 /******************** CANVAS VIEW ******************************/
 
 QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc,
-    QWidget * parent, Qt::WFlags f ) :
+    QWidget * parent, Qt::WindowFlags f ) :
     QGraphicsView( parent )
 {
   Q_UNUSED( f );

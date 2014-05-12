@@ -364,6 +364,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );
 
+    //! add image FORMAT parameter to url
+    void setFormatQueryItem( QUrl &url );
+
     //! Name of the stored connection
     QString mConnectionName;
 

@@ -4,7 +4,7 @@
 #include "qgsrasterblock.h"
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget* parent )
-  : QgsCollapsibleGroupBox( parent )
+    : QgsCollapsibleGroupBox( parent )
 {
   setupUi( this );
 

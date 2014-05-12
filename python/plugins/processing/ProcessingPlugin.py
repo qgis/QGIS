@@ -38,7 +38,7 @@ from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.commander.CommanderWindow import CommanderWindow
+from processing.gui.CommanderWindow import CommanderWindow
 from processing.tools import dataobjects
 from processing.tools.system import *
 import processing.resources_rc
@@ -59,13 +59,15 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         interface.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
-        Processing.addAlgListListener(self.toolbox)
+        #Processing.addAlgListListener(self.toolbox)
 
-        self.menu = QMenu(interface.iface.mainWindow())
+        self.menu = QMenu(interface.iface.mainWindow().menuBar())
+        self.menu.setObjectName( 'processing' )
         self.menu.setTitle(QCoreApplication.translate('Processing',
                            'Processing'))
 
         self.toolboxAction = self.toolbox.toggleViewAction()
+        self.toolboxAction.setObjectName( 'toolboxAction' )
         self.toolboxAction.setIcon(QIcon(':/processing/images/alg.png'))
         self.toolboxAction.setText(QCoreApplication.translate('Processing',
                                    'Toolbox'))
@@ -75,6 +77,7 @@ class ProcessingPlugin:
                                      QCoreApplication.translate('Processing',
                                      'Graphical modeler'),
                                      interface.iface.mainWindow())
+        self.modelerAction.setObjectName( 'modelerAction' )
         self.modelerAction.triggered.connect(self.openModeler)
         self.menu.addAction(self.modelerAction)
 
@@ -82,6 +85,7 @@ class ProcessingPlugin:
                                      QCoreApplication.translate('Processing',
                                      'History and log'),
                                      interface.iface.mainWindow())
+        self.historyAction.setObjectName( 'historyAction' )
         self.historyAction.triggered.connect(self.openHistory)
         self.menu.addAction(self.historyAction)
 
@@ -89,6 +93,7 @@ class ProcessingPlugin:
                                     QCoreApplication.translate('Processing',
                                     'Options and configuration'),
                                     interface.iface.mainWindow())
+        self.configAction.setObjectName( 'configAction' )
         self.configAction.triggered.connect(self.openConfig)
         self.menu.addAction(self.configAction)
 
@@ -96,6 +101,7 @@ class ProcessingPlugin:
                                      QCoreApplication.translate('Processing',
                                      '&Results viewer'),
                                      interface.iface.mainWindow())
+        self.resultsAction.setObjectName( 'resultsAction' )
         self.resultsAction.triggered.connect(self.openResults)
         self.menu.addAction(self.resultsAction)
 
@@ -107,6 +113,7 @@ class ProcessingPlugin:
                 QIcon(':/processing/images/commander.png'),
                 QCoreApplication.translate('Processing', '&Commander'),
                 interface.iface.mainWindow())
+        self.commanderAction.setObjectName( 'commanderAction' )
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
         interface.iface.registerMainWindowAction(self.commanderAction,
@@ -142,7 +149,8 @@ class ProcessingPlugin:
         dlg.show()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            Processing.updateAlgsList()
+            self.toolbox.updateProvider('model')
 
     def openResults(self):
         dlg = ResultsDialog()

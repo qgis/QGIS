@@ -9,7 +9,7 @@ class QgsOptionsDialogBase : QDialog
      * @param parent parent object (owner)
      * @param fl widget flags
      */
-    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.

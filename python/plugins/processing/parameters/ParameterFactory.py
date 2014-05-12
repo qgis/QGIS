@@ -9,7 +9,7 @@
                            (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
                            otb at c-s dot fr (CS SI)
-    Contributors         : Victor Olaya 
+    Contributors         : Victor Olaya
                            Alexia Mondot (CS SI) - managing the new parameter ParameterMultipleExternalInput
 ***************************************************************************
 *                                                                         *
@@ -43,8 +43,6 @@ from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterMultipleExternalInput import ParameterMultipleExternalInput
-
 
 class ParameterFactory:
 
@@ -68,8 +66,7 @@ class ParameterFactory:
             ParameterFixedTable,
             ParameterExtent,
             ParameterFile,
-            ParameterCrs,
-            ParameterMultipleExternalInput
+            ParameterCrs
             ]
         for clazz in classes:
             if s.startswith(clazz().parameterName()):

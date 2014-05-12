@@ -38,7 +38,7 @@
 #include <osg/DisplaySettings>
 
 //constructor
-QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WFlags fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mGlobe( globe )
 {
@@ -562,7 +562,7 @@ void QgsGlobePluginDialog::setStereoMode()
 
 void QgsGlobePluginDialog::loadVideoSettings()
 {
-  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() );
+  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", false ).toBool() );
   mAANumSamples->setValidator( new QIntValidator( mAANumSamples ) );
   mAANumSamples->setText( settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString() );
 }

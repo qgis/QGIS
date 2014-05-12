@@ -1198,7 +1198,9 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
         else if ( e1.hasAttribute( "crs" ) )
           bb.crs = e1.attribute( "crs" );
         else
+        {
           QgsDebugMsg( "crs of bounding box undefined" );
+        }
 
         if ( !bb.crs.isEmpty() )
         {
@@ -1399,7 +1401,9 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         else if ( bbox.hasAttribute( "crs" ) )
           bb.crs = bbox.attribute( "crs" );
         else
+        {
           QgsDebugMsg( "crs of bounding box undefined" );
+        }
 
         if ( !bb.crs.isEmpty() )
         {
@@ -1867,7 +1871,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
   QEventLoop loop;
-  connect( mCapabilitiesReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mError.isEmpty();
@@ -1936,5 +1940,6 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
   mCapabilitiesReply->deleteLater();
   mCapabilitiesReply = 0;
-}
 
+  emit downloadFinished();
+}

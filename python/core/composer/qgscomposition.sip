@@ -161,7 +161,7 @@ class QgsComposition : QGraphicsScene
      @return QgsComposerMap or 0 pointer if the composer map item does not exist*/
     const QgsComposerMap* getComposerMapById( int id ) const;
 
-    /*Returns the composer html with specified id (a string as named in the
+    /**Returns the composer html with specified id (a string as named in the
       composer user interface item properties).
       @note Added in QGIS 2.0
       @param id - A QString representing the id of the item.
@@ -395,6 +395,11 @@ class QgsComposition : QGraphicsScene
     /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
     bool setAtlasMode( QgsComposition::AtlasMode mode );
 
+    /** Return pages in the correct order
+     @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
+     @note added in version 2.4*/
+    QList< QgsPaperItem* > pages();
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -403,6 +408,17 @@ class QgsComposition : QGraphicsScene
     @note added in version 2.2*/
     void updateBounds();
 
+    /**Forces items in the composition to refresh. For instance, this causes maps to redraw
+     * and rebuild cached images, html items to reload their source url, and attribute tables
+     * to refresh their contents.
+    @note added in version 2.3*/
+    void refreshItems();
+    
+    /**Clears any selected items and sets an item as the current selection.
+     * @param item item to set as selected
+     * @note added in version 2.3*/
+    void setSelectedItem( QgsComposerItem* item );
+
   protected:
     void init();
 
@@ -410,6 +426,9 @@ class QgsComposition : QGraphicsScene
   signals:
     void paperSizeChanged();
     void nPagesChanged();
+
+    /**Is emitted when the compositions print resolution changes*/
+    void printResolutionChanged();
 
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
@@ -433,4 +452,7 @@ class QgsComposition : QGraphicsScene
     void composerTableAdded( QgsComposerAttributeTable* table );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
+    
+    /**Is emitted when item in the composition must be refreshed*/
+    void refreshItemsTriggered();    
 };

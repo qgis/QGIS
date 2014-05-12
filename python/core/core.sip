@@ -37,6 +37,7 @@
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgeometrysimplifier.sip
+%Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
 %Include qgshttptransaction.sip
@@ -48,8 +49,11 @@
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaprenderer.sip
+%Include qgsmaprenderercache.sip
+%Include qgsmaprendererjob.sip
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
+%Include qgsmapunitscale.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
@@ -215,3 +219,5 @@
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
 %Include dxf/qgsdxfexport.sip
+ 
+ 

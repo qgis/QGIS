@@ -36,4 +36,8 @@ class QgsPluginManagerInterface : QObject
 
     //! show the Plugin Manager window and optionally open tab tabIndex
     virtual void showPluginManager( int tabIndex = -1 ) = 0;
+
+    //! show the given message in the Plugin Manager internal message bar
+    virtual void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) = 0;
+
 };

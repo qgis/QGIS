@@ -37,7 +37,7 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WFlags fl ) : QWidget( parent, fl )
+eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags fl ) : QWidget( parent, fl )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton( );

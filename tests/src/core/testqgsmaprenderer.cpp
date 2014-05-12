@@ -66,7 +66,7 @@ class TestQgsMapRenderer: public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapRenderer * mpMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsMapLayer * mpPolysLayer;
     QString mReport;
 };
@@ -165,8 +165,7 @@ void TestQgsMapRenderer::initTestCase()
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mpMapRenderer = new QgsMapRenderer();
-  mpMapRenderer->setLayerSet( QStringList( mpPolysLayer->id() ) );
+  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
   mReport += "<h1>Map Render Tests</h1>\n";
 }
 
@@ -185,10 +184,11 @@ void TestQgsMapRenderer::cleanupTestCase()
 
 void TestQgsMapRenderer::performanceTest()
 {
-  mpMapRenderer->setExtent( mpPolysLayer->extent() );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_maprender" );
-  myChecker.setMapRenderer( mpMapRenderer );
+  mMapSettings.setFlag( QgsMapSettings::Antialiasing );
+  myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( "maprender" );
   mReport += myChecker.report();
   QVERIFY( myResultFlag );

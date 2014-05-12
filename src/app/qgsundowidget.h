@@ -15,15 +15,15 @@
 #ifndef QGSUNDOWIDGET_H
 #define QGSUNDOWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QDockWidget>
-#include <QtGui/QGridLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QWidget>
+#include <QVariant>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QDockWidget>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QWidget>
 #include <QUndoView>
 #include <QUndoStack>
 

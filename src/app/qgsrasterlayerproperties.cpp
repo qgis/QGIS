@@ -66,7 +66,7 @@
 #include <QMouseEvent>
 #include <QVector>
 
-QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
+QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )
     : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
@@ -737,6 +737,7 @@ void QgsRasterLayerProperties::sync()
       mRasterLayer->dataUrlFormat()
     )
   );
+
   //layer attribution and metadataUrl
   mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
@@ -752,6 +753,8 @@ void QgsRasterLayerProperties::sync()
     )
   );
 
+  mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
+  mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 } // QgsRasterLayerProperties::sync()
 
 /*
@@ -925,6 +928,8 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   mRasterLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   mRasterLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  mRasterLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );

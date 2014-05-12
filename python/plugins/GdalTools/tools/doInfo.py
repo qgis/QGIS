@@ -70,7 +70,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       output = ''
       items = self.rasterInfoList.selectedItems()
       for r in items:
-        output.append( r.text() + "\n" )
+        output += r.text() + "\n"
       if output:
         clipboard = QApplication.clipboard()
         clipboard.setText( output )
@@ -78,7 +78,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
   def doCopyAll( self ):
       output = ''
       for r in range( self.rasterInfoList.count() ):
-        output.append( self.rasterInfoList.item( r ).text() + "\n" )
+        output += self.rasterInfoList.item( r ).text() + "\n"
       if output:
         clipboard = QApplication.clipboard()
         clipboard.setText( output )

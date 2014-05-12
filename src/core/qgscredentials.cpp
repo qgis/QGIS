@@ -16,8 +16,7 @@
 #include "qgscredentials.h"
 #include "qgslogger.h"
 
-#include <QTextIStream>
-#include <QTextOStream>
+#include <QTextStream>
 
 QgsCredentials *QgsCredentials::smInstance = 0;
 

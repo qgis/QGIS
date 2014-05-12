@@ -401,6 +401,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
 {
+  Q_UNUSED( forceVectorOutput );
   if ( !entry )
   {
     return;
@@ -418,24 +419,12 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   {
     hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
   }
-  bool drawOnScreen = qgsDoubleNear( entry->rasterScaleFactor, 1.0, 0.1 );
-  if ( drawOnScreen && forceVectorOutput ) //forceVectorOutput always true in case of composer draw / composer preview
-  {
-    // fix to ensure rotated symbols scale with composer page (i.e. not map item) zoom
-    double wSize = entry->size;
-    double hSize = wSize * hwRatio;
-    QSizeF s( r.viewBoxF().size() );
-    s.scale( wSize, hSize, Qt::KeepAspectRatio );
-    rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
-  }
-  else
-  {
-    // output for print or image saving @ specific dpi
-    double scaledSize = entry->size / 25.4 / ( entry->rasterScaleFactor * entry->widthScaleFactor );
-    double wSize = scaledSize * picture->logicalDpiX();
-    double hSize = scaledSize * picture->logicalDpiY() * r.viewBoxF().height() / r.viewBoxF().width();
-    rect = QRectF( QPointF( -wSize / 2.0, -hSize / 2.0 ), QSizeF( wSize, hSize ) );
-  }
+
+  double wSize = entry->size;
+  double hSize = wSize * hwRatio;
+  QSizeF s( r.viewBoxF().size() );
+  s.scale( wSize, hSize, Qt::KeepAspectRatio );
+  rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
 
   QPainter p( picture );
   r.render( &p, rect );

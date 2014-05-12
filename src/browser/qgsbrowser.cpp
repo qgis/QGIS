@@ -41,7 +41,7 @@
 #define QGIS_ICON_SIZE 24
 #endif
 
-QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
+QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
     : QMainWindow( parent, flags )
     , mDirtyMetadata( true )
     , mDirtyPreview( true )

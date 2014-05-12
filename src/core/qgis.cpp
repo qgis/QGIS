@@ -20,6 +20,7 @@
 #include "qgsversion.h"
 #endif
 #include <QCoreApplication>
+#include <QColor>
 #include <QDate>
 #include <QTime>
 #include <QDateTime>
@@ -72,9 +73,16 @@ const CORE_EXPORT QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
 const CORE_EXPORT QString GEO_NONE = "NONE";
 
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
+const double QGis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
 //! Default threshold between map coordinates and device coordinates for map2pixel simplification
 const float QGis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
+
+const QColor QGis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
+
+double QGis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
+
+double QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
 // description strings for units
 // Order must match enum indices

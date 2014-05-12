@@ -335,7 +335,7 @@ void QgsSLRootItem::createDatabase()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsSpatiaLiteSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+QGISEXTERN QgsSpatiaLiteSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 {
   // TODO: this should be somewhere else
   return new QgsSpatiaLiteSourceSelect( parent, fl, false );

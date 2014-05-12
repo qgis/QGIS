@@ -39,7 +39,7 @@ static QIcon icon( QString icon )
   return QIcon( path );
 }
 
-QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WFlags fl )
+QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mButton( 0 )
     , mCount( 0 )
@@ -144,6 +144,7 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
     w->setGridStyle( Qt::DotLine );
     w->setEditTriggers( QAbstractItemView::NoEditTriggers );
     w->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+    w->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
     w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << tr( "Level" ) );
     tabWidget->addTab( w, tag );
 

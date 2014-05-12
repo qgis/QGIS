@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from processing.gui.ContextAction import ContextAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-from processing.r.RAlgorithm import RAlgorithm
+from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 
@@ -51,4 +51,8 @@ class EditScriptAction(ContextAction):
         dlg.show()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
+                self.toolbox.updateProvider('script')
+            elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
+                self.toolbox.updateProvider('r')
+

@@ -236,6 +236,31 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * @see setFrameEnabled
      */
     virtual void setFrameOutlineWidth( double outlineWidth );
+    
+    /** Returns the frame's outline width. Only used if hasFrame is true.
+     * @returns Frame outline width
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameOutlineWidth
+     */
+    double frameOutlineWidth() const;    
+
+    /** Returns the join style used for drawing the item's frame
+     * @returns Join style for outline frame
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameJoinStyle
+     */
+    Qt::PenJoinStyle frameJoinStyle() const;
+
+    /** Sets join style used when drawing the item's frame
+     * @param style Join style for outline frame
+     * @returns nothing
+     * @note introduced in 2.3
+     * @see setFrameEnabled
+     * @see frameJoinStyle
+     */
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
 
     /** Returns the estimated amount the item's frame bleeds outside the item's
      *  actual rectangle. For instance, if the item has a 2mm frame outline, then
@@ -366,7 +391,7 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * @deprecated Use itemRotation()
      *             instead
      */
-    double rotation() const;
+    double rotation() const /Deprecated/;
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem();
@@ -383,6 +408,19 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
+
+    /**Get the number of layers that this item requires for exporting as layers
+     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
+     * @note this method was added in version 2.4
+    */
+    int numberExportLayers() const;
+
+    /**Sets the current layer to draw for exporting
+     * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
+     * @note this method was added in version 2.4
+    */
+    void setCurrentExportLayer( int layerIdx = -1 );
 
   public slots:
     /**Sets the item rotation
@@ -441,11 +479,12 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
     bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
      * a specified amount
@@ -457,19 +496,21 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
+    
     /**Calculates corner point after rotation and scaling
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
+    
     void sizeChangedByRotation( double& width, double& height, double rotation );
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
 
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise

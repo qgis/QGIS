@@ -17,13 +17,10 @@ SET ( qgis_mapserv_SRCS
   qgis_map_serv.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgsconfigparser.cpp
-  qgsprojectparser.cpp
   qgshttprequesthandler.cpp 
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
-  qgssldparser.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
@@ -43,6 +40,13 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsmsutils.cpp
+  qgswcsprojectparser.cpp
+  qgswfsprojectparser.cpp
+  qgswmsconfigparser.cpp
+  qgswmsprojectparser.cpp
+  qgsserverprojectparser.cpp
+  qgssldconfigparser.cpp
+  qgsconfigparserutils.cpp
   )
 
 # SET (qgis_mapserv_UIS 

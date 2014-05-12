@@ -99,6 +99,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+  public slots:
+    void refreshExpressionContext();
+
+
   private slots:
     void loadingHtmlFinished( bool );
 

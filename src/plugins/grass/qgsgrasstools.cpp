@@ -45,7 +45,7 @@
 
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface,
-                              QWidget * parent, const char * name, Qt::WFlags f )
+                              QWidget * parent, const char * name, Qt::WindowFlags f )
     : QDialog( parent, f ), QgsGrassToolsBase()
     , mBrowser( 0 )
     , mModulesListModel( 0 ), mModelProxy( 0 ), mDirectModulesListModel( 0 ), mDirectModelProxy( 0 )

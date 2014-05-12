@@ -5,5 +5,5 @@ Hidden=false
 Comment=MapInfo file
 Comment[de]=MapInfo-Datei
 Patterns=*.mif;
-Icon=qgis-mime-icon
+Icon=qgis-mime
 X-KDE-PatternsAccuracy=60

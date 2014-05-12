@@ -31,14 +31,14 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QgsComposerManager( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
+  public slots:
+    /** Raise, unminimize and activate this window */
+    void activate();
 
   private:
     /**Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
-
-    /**Enters the composer instances and created the item-composer map*/
-    void initialize();
 
     /** Returns the default templates (key: template name, value: absolute path to template file)
      * @param fromUser whether to return user templates from ~/.qgis/composer_templates (added in 1.9)
@@ -52,6 +52,13 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
+
+#ifdef Q_WS_MAC
+    void showEvent( QShowEvent *event );
+    void changeEvent( QEvent * );
+
+    QAction* mWindowAction;
+#endif
 
   private slots:
     void on_mAddButton_clicked();
@@ -71,6 +78,9 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
      * @note added in QGIS 1.9
      */
     void on_mTemplatesUserDirBtn_pressed();
+
+    /** Refreshes the list of composers */
+    void refreshComposers();
 
     void remove_clicked();
     void show_clicked();

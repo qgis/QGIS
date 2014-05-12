@@ -141,18 +141,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="mDistanceUnitComboBox">
-          <item>
-           <property name="text">
-            <string>Millimeter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Map unit</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -256,18 +245,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -293,6 +271,12 @@
    <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorRampComboBox</class>
    <extends>QComboBox</extends>
    <header>qgscolorrampcombobox.h</header>
@@ -312,22 +296,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>284</x>
-     <y>163</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadioUseMaxDistance</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mDistanceUnitComboBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>115</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>400</x>
      <y>163</y>
     </hint>
    </hints>
@@ -382,3 +350,4 @@
   </connection>
  </connections>
 </ui>
+ 

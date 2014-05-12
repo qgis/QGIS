@@ -121,7 +121,6 @@ class CORE_EXPORT QgsRenderChecker
 
     QString mReport;
     unsigned int mMatchTarget;
-    QgsMapRenderer * mpMapRenderer;
     int mElapsedTime;
     QString mRenderedImageFile;
     QString mExpectedImageFile;

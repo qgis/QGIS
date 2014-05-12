@@ -22,6 +22,13 @@ class QgsComposerMultiFrame: QObject
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
 
+    /**Finds the optimal position to break a frame at.
+     * @param yPos maximum vertical position for break
+     * @returns the optimal breakable position which occurs in the multi frame close
+     * to and before the specified yPos
+     * @note added in version 2.3*/
+    virtual double findNearbyPageBreak( double yPos );
+    
     void removeFrame( int i );
 
     void update();
@@ -49,8 +56,27 @@ class QgsComposerMultiFrame: QObject
     int frameCount() const;
     QgsComposerFrame* frame( int i );
 
-  protected slots:
+    /**Creates a new frame and adds it to the multi frame and composition.
+     * @param currentFrame an existing QgsComposerFrame from which to copy the size
+     * and general frame properties (eg frame style, background, rendering settings).
+     * @param pos position of top-left corner of the new frame
+     * @param size size of the new frame
+     * @returns new QgsComposerFrame
+     * @note added in version 2.3
+     */
+    QgsComposerFrame* createNewFrame(QgsComposerFrame* currentFrame, QPointF pos, QSizeF size);
+
+  public slots:
+
+    /**Recalculates the portion of the multiframe item which is shown in each of it's
+     * component frames. If the resize mode is set to anything but UseExistingFrames then
+     * this may cause new frames to be added or frames to be removed, in order to fit
+     * the current size of the multiframe's content.
+     */  
     void recalculateFrameSizes();
+            
+  protected slots:
+
     /**Called before a frame is going to be removed (update frame list)*/
     void handleFrameRemoval( QgsComposerItem* item );
     /**Adapts to changed number of pages if resize type is RepeatOnEveryPage*/

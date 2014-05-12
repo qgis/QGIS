@@ -1,0 +1,12 @@
+r.stream.distance
+r.stream.distance - Calculate distance to and elevation above streams and outlets
+Raster (r.*)
+ParameterRaster|stream_rast|Input map: streams (outlets) mask|False
+ParameterRaster|direction|Input map: flow direction|False
+ParameterRaster|elevation|Input map: elevation map|True
+ParameterSelection|method|Calculation method|upstream,downstream|1
+ParameterBoolean|-o|Calculate parameters for outlets|False
+ParameterBoolean|-s|Calculate parameters for subbasins|False
+ParameterBoolean|-n|Calculate nearest local maximum|False
+OutputRaster|difference|Output elevation difference map
+OutputRaster|distance|Output distance map

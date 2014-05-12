@@ -283,12 +283,9 @@ void QgsAttributeDialog::init()
     }
 
     // Set focus to first widget in list, to help entering data without moving the mouse.
-    if ( mypInnerLayout->rowCount() > 0 )
-    {
-      QWidget* widget = mypInnerLayout->itemAtPosition( 0, 1 )->widget();
-      if ( widget )
-        widget->setFocus( Qt::OtherFocusReason );
-    }
+    QLayoutItem* item = mypInnerLayout->itemAtPosition( 0, 1 );
+    if ( item && item->widget() )
+      item->widget()->setFocus( Qt::OtherFocusReason );
 
     QSpacerItem *mypSpacer = new QSpacerItem( 0, 0, QSizePolicy::Fixed, QSizePolicy::MinimumExpanding );
     mypInnerLayout->addItem( mypSpacer, mypInnerLayout->rowCount() + 1, 0 );

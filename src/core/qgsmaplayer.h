@@ -30,6 +30,7 @@
 #include "qgserror.h"
 #include "qgsrectangle.h"
 #include "qgsmaprenderer.h"
+#include "qgsobjectcustomproperties.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -368,6 +369,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return pointer to layer's undo stack */
     QUndoStack *undoStack();
 
+    /* Layer legendUrl information */
+    void setLegendUrl( const QString& legendUrl ) { mLegendUrl = legendUrl; }
+    const QString& legendUrl() const { return mLegendUrl; }
+    void setLegendUrlFormat( const QString& legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
+    const QString& legendUrlFormat() const { return mLegendUrlFormat; }
+
     /** @deprecated since 2.4 - returns NULL */
     Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
     /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
@@ -507,6 +514,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mMetadataUrlType;
     QString mMetadataUrlFormat;
 
+    /**WMS legend*/
+    QString mLegendUrl;
+    QString mLegendUrlFormat;
+
     /** \brief Error */
     QgsError mError;
 
@@ -543,8 +554,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Collection of undoable operations for this layer. **/
     QUndoStack mUndoStack;
 
-    QMap<QString, QVariant> mCustomProperties;
-
+    //! Layer's persistent storage of additional properties (may be used by plugins)
+    QgsObjectCustomProperties mCustomProperties;
 };
 
 #endif

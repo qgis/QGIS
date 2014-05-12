@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QString>
 #include <QMap>
+#include "qgsmessagebar.h"
 
 class GUI_EXPORT QgsPluginManagerInterface : public QObject
 {
@@ -54,6 +55,8 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     //! show the Plugin Manager window and optionally open tab tabIndex
     virtual void showPluginManager( int tabIndex = -1 ) = 0;
 
+    //! show the given message in the Plugin Manager internal message bar
+    virtual void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) = 0;
 };
 
 #endif

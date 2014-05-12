@@ -23,7 +23,7 @@
 
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
-                                        QWidget* parent, Qt::WFlags fl )
+                                        QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mName( name )
 {
   setupUi( this );

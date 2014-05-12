@@ -167,7 +167,7 @@ class PointsInPolygonThread(QThread):
         index = polyProvider.fieldNameIndex(unicode(self.fieldName))
         if index == -1:
             index = polyProvider.fields().count()
-            fieldList.append( QgsField(unicode(self.fieldName), QVariant.Double, "real", 24, 15, self.tr("point count field")) )
+            fieldList.append( QgsField(unicode(self.fieldName), QVariant.Int, "int", 10, 0, self.tr("point count field")) )
 
         sRs = polyProvider.crs()
         if QFile(self.outPath).exists():

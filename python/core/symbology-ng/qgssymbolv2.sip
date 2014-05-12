@@ -93,6 +93,9 @@ class QgsSymbolV2
     OutputUnit outputUnit() const;
     void setOutputUnit( OutputUnit u );
 
+    QgsMapUnitScale mapUnitScale() const;
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
     //! Set alpha transparency 1 for opaque, 0 for invisible
@@ -128,7 +131,7 @@ class QgsSymbolV2RenderContext
 %End
 
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0 );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -136,6 +139,9 @@ class QgsSymbolV2RenderContext
 
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
+
+    QgsMapUnitScale mapUnitScale() const;
+    void setMapUnitScale( const QgsMapUnitScale& scale);
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;

@@ -303,7 +303,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   return new QgsWCSConnectionItem( parentItem, "WCS", thePath );
 }
 
-QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 {
   return new QgsWCSSourceSelect( parent, fl );
 }

@@ -29,9 +29,13 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     Q_OBJECT
   public:
     //! Constructor
-    QgsOracleNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsOracleNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOracleNewConnection();
+
+    QString originalConnName() const { return mOriginalConnName; }
+    QString connName() const { return txtName->text(); }
+
   public slots:
     void accept();
     void on_btnConnect_clicked();

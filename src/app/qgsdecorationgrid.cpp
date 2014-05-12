@@ -151,10 +151,10 @@ void QgsDecorationGrid::projectRead()
   }
   if ( ! mMarkerSymbol )
   {
-    // set default symbol : cross with width=20
+    // set default symbol : cross with width=3
     QgsSymbolLayerV2List symbolList;
     symbolList << new QgsSimpleMarkerSymbolLayerV2( "cross", DEFAULT_SIMPLEMARKER_COLOR,
-        DEFAULT_SIMPLEMARKER_BORDERCOLOR, 20, 0 );
+        DEFAULT_SIMPLEMARKER_BORDERCOLOR, 3, 0 );
     mMarkerSymbol = new QgsMarkerSymbolV2( symbolList );
     // mMarkerSymbol = new QgsMarkerSymbolV2();
   }
@@ -233,7 +233,7 @@ void QgsDecorationGrid::render( QPainter * p )
     if ( ! mLineSymbol )
       return;
 
-    QgsRenderContext context;
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
     mLineSymbol->startRender( context, 0 );
 
@@ -311,7 +311,7 @@ void QgsDecorationGrid::render( QPainter * p )
     if ( ! mMarkerSymbol )
       return;
 
-    QgsRenderContext context;
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
     mMarkerSymbol->startRender( context, 0 );
 
@@ -537,6 +537,11 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPai
   QPolygonF mapPolygon = canvasExtent();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
 
+  // draw nothing if the distance between grid lines would be less than 1px
+  // otherwise the grid lines would completely cover the whole map
+  if ( mapBoundingRect.width() / mGridIntervalX >= p->device()->width() )
+    return 1;
+
   //consider to round up to the next step in case the left boundary is > 0
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
@@ -605,6 +610,11 @@ int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines, QPai
   // QPolygonF mapPolygon = transformedMapPolygon();
   QPolygonF mapPolygon = canvasExtent();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
+
+  // draw nothing if the distance between grid lines would be less than 1px
+  // otherwise the grid lines would completely cover the whole map
+  if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
+    return 1;
 
   //consider to round up to the next step in case the left boundary is > 0
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;

@@ -34,7 +34,7 @@ class QgsOracleSelectGeoraster : public QDialog, private Ui::SelectGeoRasterBase
     Q_OBJECT
 
   public:
-    QgsOracleSelectGeoraster( QWidget* parent, QgisInterface* iface, Qt::WFlags fl = 0 );
+    QgsOracleSelectGeoraster( QWidget* parent, QgisInterface* iface, Qt::WindowFlags fl = 0 );
     ~QgsOracleSelectGeoraster();
 
   private:

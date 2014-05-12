@@ -18,14 +18,17 @@
 #ifndef QGSCONFIGCACHE_H
 #define QGSCONFIGCACHE_H
 
+#include <QCache>
 #include <QFileSystemWatcher>
-#include <QHash>
+#include <QMap>
 #include <QObject>
-#include <QString>
 
-class QgsConfigParser;
+class QgsWCSProjectParser;
+class QgsWFSProjectParser;
+class QgsWMSConfigParser;
 
-/**A cache for configuration XML (useful because of the mapfile parameter)*/
+class QDomDocument;
+
 class QgsConfigCache: public QObject
 {
     Q_OBJECT
@@ -33,23 +36,23 @@ class QgsConfigCache: public QObject
     static QgsConfigCache* instance();
     ~QgsConfigCache();
 
-    /**Returns configuration for given config file path. The calling function does _not_ take ownership*/
-    QgsConfigParser* searchConfiguration( const QString& filePath );
-
-  protected:
-    QgsConfigCache();
+    QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
+    QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
+    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() ) );
 
   private:
+    QgsConfigCache();
     static QgsConfigCache* mInstance;
 
-    /**Creates configuration parser depending on the file type and, if successfull, inserts it to the cached configuration map
-        @param filePath path of the configuration file
-        @return the inserted config parser or 0 in case of error*/
-    QgsConfigParser* insertConfiguration( const QString& filePath );
-    /**Cached XML configuration documents. Key: file path, value: config parser. Default configuration has key '$default$'*/
-    QHash<QString, QgsConfigParser*> mCachedConfigurations;
     /**Check for configuration file updates (remove entry from cache if file changes)*/
     QFileSystemWatcher mFileSystemWatcher;
+
+    /**Returns xml document for project file / sld or 0 in case of errors*/
+    QDomDocument* xmlDocument( const QString& filePath );
+
+    QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
+    QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
+    QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:
     /**Removes changed entry from this cache*/

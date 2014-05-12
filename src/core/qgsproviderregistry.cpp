@@ -47,8 +47,8 @@ typedef QString protocolDrivers_t();
 
 QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
 {
-  static QgsProviderRegistry mInstance( pluginPath );
-  return &mInstance;
+  static QgsProviderRegistry* sInstance( new QgsProviderRegistry( pluginPath ) );
+  return sInstance;
 } // QgsProviderRegistry::instance
 
 
@@ -372,10 +372,10 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
 } // QgsProviderRegistry::setDataProvider
 
 // This should be QWidget, not QDialog
-typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
+typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WindowFlags fl );
 
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
-    QWidget * parent, Qt::WFlags fl )
+    QWidget * parent, Qt::WindowFlags fl )
 {
   selectFactoryFunction_t * selectFactory =
     ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );

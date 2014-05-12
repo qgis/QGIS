@@ -391,7 +391,7 @@ string ASFormatter::nextLine()
 				isAppendPostBlockEmptyLineRequested = false;
 			isInLineComment = true;
 			// do not indent if in column 1 or 2
-			if (lineCommentNoIndent == false)
+			if (!lineCommentNoIndent)
 			{
 				if (charNum == 0)
 					lineCommentNoIndent = true;
@@ -399,7 +399,7 @@ string ASFormatter::nextLine()
 					lineCommentNoIndent = true;
 			}
 			// move comment if spaces were added or deleted
-			if (lineCommentNoIndent == false && spacePadNum != 0)
+			if (!lineCommentNoIndent && spacePadNum != 0)
 				adjustComments();
 			formattedLineCommentNum = formattedLine.length();
 			appendSequence(AS_OPEN_LINE_COMMENT);
@@ -2212,7 +2212,7 @@ void ASFormatter::formatBrackets(BracketType bracketType)
 		else
 		{
 			if (!isCharImmediatelyPostComment
-			        && !bracketFormatMode == NONE_MODE
+              && !(bracketFormatMode == NONE_MODE)
 			        && !isImmediatelyPostEmptyBlock)
 				isInLineBreak = false;
 

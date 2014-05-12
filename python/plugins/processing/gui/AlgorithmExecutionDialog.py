@@ -9,7 +9,7 @@
                            (C) 2013 by CS Systemes d'information (CS SI)
     Email                : volayaf at gmail dot com
                            otb at c-s dot fr (CS SI)
-    Contributors         : Victor Olaya 
+    Contributors         : Victor Olaya
                            Alexia Mondot (CS SI) - managing the new parameter ParameterMultipleExternalInput
 ***************************************************************************
 *                                                                         *
@@ -54,7 +54,6 @@ from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterMultipleExternalInput import ParameterMultipleExternalInput
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
@@ -106,20 +105,24 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                              'help.css'))
         self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
+        url = None
         try:
-            if self.alg.helpFile():
-                helpFile = self.alg.helpFile()
+            isText, help = self.alg.help()
+            if help is not None:
+                if isText:
+                    html = help;
+                else:
+                    url = QtCore.QUrl(help)
             else:
                 html = '<h2>Sorry, no help is available for this \
                         algorithm.</h2>'
         except WrongHelpFileException, e:
-            html = e.msg
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+            html = e.args[0]
         try:
             if html:
                 self.webView.setHtml(html)
-            else:
-                url = QtCore.QUrl(helpFile)
+            elif url:
+                print url
                 self.webView.load(url)
         except:
             self.webView.setHtml('<h2>Could not open help file :-( </h2>')
@@ -169,9 +172,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def setParamValue(self, param, widget):
         """
         set the .value of the parameter according to the given widget
-        the way to get the value is different for each value, 
+        the way to get the value is different for each value,
         so there is a code for each kind of parameter
-        
+
         param : -il <ParameterMultipleInput> or -method <ParameterSelection> ...
         """
         if isinstance(param, ParameterRaster):
@@ -190,19 +193,18 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         elif isinstance(param, ParameterRange):
             return param.setValue(widget.getValue())
         if isinstance(param, ParameterTableField):
+            if param.optional and widget.currentIndex() == 0:
+                return param.setValue(None)
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = dataobjects.getVectorLayers()
+            if param.datatype == ParameterMultipleInput.TYPE_FILE:
+                return param.setValue(widget.selectedoptions)
             else:
-                options = dataobjects.getRasterLayers()
-            value = []
-            for index in widget.selectedoptions:
-                value.append(options[index])
-            return param.setValue(value)
-        elif isinstance(param, ParameterMultipleExternalInput):
-            value = widget.selectedoptions
-            return param.setValue(value)
+                if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                    options = dataobjects.getVectorLayers()
+                else:
+                    options = dataobjects.getRasterLayers()
+                return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):
             return param.setValue(widget.getValue())
@@ -258,10 +260,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
-                    if not keepOpen:
-                        self.close()
-                    else:
-                        self.resetGUI()
+                    self.resetGUI()
             else:
                 command = self.alg.getAsCommand()
                 if command:
@@ -271,10 +270,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
-                    if not keepOpen:
-                        self.close()
-                    else:
-                        self.resetGUI()
+                    self.resetGUI()
         except AlgorithmExecutionDialog.InvalidParameterValue, ex:
             try:
                 self.buttonBox.accepted.connect(lambda :
@@ -307,15 +303,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
         self.setInfo(msg, True)
-        if not keepOpen:
-            QMessageBox.critical(self, 'Error', msg)
-            self.close()
-        else:
-            self.resetGUI()
-            self.tabWidget.setCurrentIndex(1)  # log tab
+        self.resetGUI()
+        self.tabWidget.setCurrentIndex(1)  # log tab
 
     def iterate(self, i):
         self.setInfo('<b>Algorithm %s iteration #%i completed</b>'

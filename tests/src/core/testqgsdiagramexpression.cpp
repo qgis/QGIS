@@ -42,6 +42,7 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 #include "qgspallabeling.h"
+#include "qgsproject.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
@@ -51,7 +52,7 @@ class TestQgsDiagramExpression: public QObject
     Q_OBJECT;
   private:
     bool mTestHasError;
-    QgsMapRenderer * mMapRenderer;
+    QgsMapSettings * mMapSettings;
     QgsVectorLayer * mPointsLayer;
     QgsComposition * mComposition;
     QString mTestDataDir;
@@ -94,10 +95,14 @@ class TestQgsDiagramExpression: public QObject
       mPieDiagram = new QgsPieDiagram();
 
       // Create map composition to draw on
-      mMapRenderer = new QgsMapRenderer();
-      mMapRenderer->setLayerSet( QStringList() << mPointsLayer->id() );
-      mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
-      mComposition = new QgsComposition( mMapRenderer );
+
+      mMapSettings = new QgsMapSettings();
+
+      mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
+      mMapSettings->setFlag( QgsMapSettings::DrawLabeling );
+      QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", true );
+
+      mComposition = new QgsComposition( *mMapSettings );
       mComposition->setPaperSize( 297, 210 ); // A4 landscape
       mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
       mComposerMap->setFrameEnabled( true );
@@ -120,12 +125,11 @@ class TestQgsDiagramExpression: public QObject
 
       delete mComposerMap;
       delete mComposition;
-      delete mMapRenderer;
-      delete mPointsLayer;
+      // delete mPointsLayer;
     }
 
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     // will be called after the last testfunction was executed.
     void testPieDiagramExpression()
@@ -147,7 +151,6 @@ class TestQgsDiagramExpression: public QObject
       ds.size = QSizeF( 15, 15 );
       ds.angleOffset = 0;
 
-
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
@@ -157,22 +160,18 @@ class TestQgsDiagramExpression: public QObject
       dr->setClassificationAttributeExpression( "ln(Staff + 1)" );
       dr->setDiagram( mPieDiagram );
       dr->setDiagramSettings( ds );
-      mPointsLayer->setDiagramRenderer( dr );
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
       dls.placement = QgsDiagramLayerSettings::OverPoint;
-      dls.renderer = dr;
+      // dls.setRenderer( dr );
 
-      dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() )->setShowingAllLabels( true );
-
+      mPointsLayer->setDiagramRenderer( dr );
       mPointsLayer->setDiagramLayerSettings( dls );
 
       mComposerMap->setNewExtent( QgsRectangle( -122, -79, -70, 47 ) );
       QgsCompositionChecker checker( "piediagram_expression", mComposition );
 
       QVERIFY( checker.testComposition( mReport ) );
-
-      mPointsLayer->setDiagramRenderer( 0 );
     }
 };
 

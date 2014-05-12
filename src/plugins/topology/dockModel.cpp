@@ -121,7 +121,8 @@ Qt::ItemFlags DockModel::flags( const QModelIndex &index ) const
 
 void DockModel::resetModel()
 {
-  reset();
+  beginResetModel();
+  endResetModel();
 }
 
 void DockModel::reload( const QModelIndex &index1, const QModelIndex &index2 )

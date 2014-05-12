@@ -690,6 +690,9 @@ class QgsWmsCapabilitiesDownload : public QObject
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
 
+    /** \brief emit a signal once the download is finished */
+    void downloadFinished();
+
   protected slots:
     void capabilitiesReplyFinished();
     void capabilitiesReplyProgress( qint64, qint64 );

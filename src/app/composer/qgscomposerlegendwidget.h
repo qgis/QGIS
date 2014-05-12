@@ -54,6 +54,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
 
     void on_mWrapCharLineEdit_textChanged( const QString& text );
     void on_mTitleLineEdit_textChanged( const QString& text );
+    void on_mTitleAlignCombo_currentIndexChanged( int index );
     void on_mColumnCountSpinBox_valueChanged( int c );
     void on_mSplitLayerCheckBox_toggled( bool checked );
     void on_mEqualColumnWidthCheckBox_toggled( bool checked );
@@ -106,3 +107,4 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
 };
 
 #endif
+

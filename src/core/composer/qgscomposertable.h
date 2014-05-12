@@ -28,6 +28,8 @@
 /**A class to display feature attributes in the print composer*/
 class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
     QgsComposerTable( QgsComposition* composition );
     virtual ~QgsComposerTable();
@@ -41,27 +43,60 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 
-    void setLineTextDistance( double d ) { mLineTextDistance = d; }
+    void setLineTextDistance( double d );
     double lineTextDistance() const { return mLineTextDistance; }
 
-    void setHeaderFont( const QFont& f ) { mHeaderFont = f;}
+    void setHeaderFont( const QFont& f );
     QFont headerFont() const { return mHeaderFont; }
 
-    void setContentFont( const QFont& f ) { mContentFont = f; }
+    void setContentFont( const QFont& f );
     QFont contentFont() const { return mContentFont; }
 
-    void setShowGrid( bool show ) { mShowGrid = show;}
+    void setShowGrid( bool show );
     bool showGrid() const { return mShowGrid; }
 
-    void setGridStrokeWidth( double w ) { mGridStrokeWidth = w; }
+    void setGridStrokeWidth( double w );
     double gridStrokeWidth() const { return mGridStrokeWidth; }
 
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
-    /**Adapts the size of the frame to match the content. This is normally done in the paint method, but sometimes
-    it needs to be done before the first render*/
-    void adjustFrameToSize();
+    /**Returns the text used in the column headers for the table.
+     * @returns QMap of int to QString, where the int is the column index (starting at 0),
+     * and the string is the text to use for the column's header
+     * @note added in 2.3
+     * @note not available in python bindings
+    */
+    virtual QMap<int, QString> headerLabels() const { return QMap<int, QString>(); } //= 0;
+
+    //TODO - make this more generic for next API break, eg rename as getRowValues, use QStringList rather than
+    //QgsAttributeMap
+
+    /**Fetches the text used for the rows of the table.
+     * @returns true if attribute text was successfully retrieved.
+     * @param attributeMaps QList of QgsAttributeMap to store retrieved row data in
+     * @note not available in python bindings
+    */
+    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
+
+  public slots:
+
+    /**Refreshes the attributes shown in the table by querying the vector layer for new data.
+     * This also causes the column widths and size of the table to change to accomodate the
+     * new data.
+     * @note added in 2.3
+     * @see adjustFrameToSize
+    */
+    virtual void refreshAttributes();
+
+    /**Adapts the size of the frame to match the content. First, the optimal width of the columns
+     * is recalculated by checking the maximum width of attributes shown in the table. Then, the
+     * table is resized to fit its contents. This slot utilises the table's attribute cache so
+     * that a re-query of the vector layer is not required.
+     * @note added in 2.3
+     * @see refreshAttributes
+    */
+    virtual void adjustFrameToSize();
 
   protected:
     /**Distance between table lines and text*/
@@ -74,10 +109,9 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     double mGridStrokeWidth;
     QColor mGridColor;
 
-    /**Retrieves feature attributes*/
-    //! @note not available in python bindings
-    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
-    virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
+    QList<QgsAttributeMap> mAttributeMaps;
+    QMap<int, double> mMaxColumnWidthMap;
+
     /**Calculate the maximum width values of the vector attributes*/
     virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const;
     /**Adapts the size of the item frame to match the content*/

@@ -181,6 +181,18 @@ void QgsComposition::updateBounds()
   setSceneRect( compositionBounds() );
 }
 
+void QgsComposition::refreshItems()
+{
+  emit refreshItemsTriggered();
+}
+
+void QgsComposition::setSelectedItem( QgsComposerItem *item )
+{
+  clearSelection();
+  item->setSelected( true );
+  emit selectedItemChanged( item );
+}
+
 QRectF QgsComposition::compositionBounds() const
 {
   //start with an empty rectangle
@@ -277,6 +289,7 @@ void QgsComposition::createDefaultPageStyleSymbol()
   properties.insert( "color", "white" );
   properties.insert( "style", "solid" );
   properties.insert( "style_border", "no" );
+  properties.insert( "joinstyle", "miter" );
   mPageStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 }
 
@@ -506,6 +519,11 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) 
   return 0;
 }
 
+void QgsComposition::setPrintResolution( int dpi )
+{
+  mPrintResolution = dpi;
+  emit printResolutionChanged();
+}
 
 void QgsComposition::setUseAdvancedEffects( bool effectsEnabled )
 {
@@ -867,6 +885,12 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
     QgsComposerMap* newMap = new QgsComposerMap( this );
+
+    if ( mapsToRestore )
+    {
+      newMap->setUpdatesEnabled( false );
+    }
+
     newMap->readXML( currentComposerMapElem, doc );
     newMap->assignFreeId();
 
@@ -874,6 +898,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       mapsToRestore->insert( newMap, ( int )( newMap->previewMode() ) );
       newMap->setPreviewMode( QgsComposerMap::Rectangle );
+      newMap->setUpdatesEnabled( true );
     }
     addComposerMap( newMap, false );
     newMap->setZValue( newMap->zValue() + zOrderOffset );
@@ -2578,3 +2603,4 @@ double QgsComposition::relativePosition( double position, double beforeMin, doub
   //return linearly scaled position
   return m * position + c;
 }
+

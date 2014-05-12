@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include <QFont>
 #include <QMap>
+#include <QSettings>
 #include <QString>
 #include <QDomElement>
 #include <QDomDocument>

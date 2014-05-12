@@ -31,3 +31,11 @@ class ContextAction:
     def setData(self, alg, toolbox):
         self.alg = alg
         self.toolbox = toolbox
+
+    def updateToolbox(self):
+        '''
+        Updates the list of algorithms and then the toolbox.
+        It only update the item corresponding to the provider of the algorithm.
+        To be called after the action is executed, if needed
+        '''
+        self.toolbox.updateProvider(self.alg.provider.getName())

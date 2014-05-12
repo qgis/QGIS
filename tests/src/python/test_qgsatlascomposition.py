@@ -63,6 +63,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # the atlas
         self.mAtlas = self.mComposition.atlasComposition()
         self.mAtlas.setCoverageLayer( mVectorLayer )
+        self.mAtlas.setEnabled( True )
         self.mComposition.setAtlasMode( QgsComposition.ExportAtlas )
 
         # an overview
@@ -82,6 +83,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mLabel1 = QgsComposerLabel( self.mComposition )
         self.mComposition.addComposerLabel( self.mLabel1 )
         self.mLabel1.setText( "[% \"NAME_1\" %] area" )
+        self.mLabel1.setFont( QgsFontUtils.getStandardTestFont() )
         self.mLabel1.adjustSizeToText()
         self.mLabel1.setSceneRect( QRectF( 150, 5, 60, 15 ) )
 
@@ -91,6 +93,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mLabel2 = QgsComposerLabel( self.mComposition )
         self.mComposition.addComposerLabel( self.mLabel2 )
         self.mLabel2.setText( "# [%$feature || ' / ' || $numfeatures%]" )
+        self.mLabel2.setFont( QgsFontUtils.getStandardTestFont() )
         self.mLabel2.adjustSizeToText()
         self.mLabel2.setSceneRect( QRectF( 150, 200, 60, 15 ) )
 
@@ -124,7 +127,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_autoscale%d' % (i + 1), self.mComposition)
-            myTestResult, myMessage = checker.testComposition(0, 10)
+            myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult == True
         self.mAtlas.endRender()
@@ -145,7 +148,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_autoscale_old_api%d' % (i + 1), self.mComposition)
-            myTestResult, myMessage = checker.testComposition()
+            myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult == True
         self.mAtlas.endRender()
@@ -166,7 +169,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_fixedscale%d' % (i + 1), self.mComposition)
-            myTestResult, myMessage = checker.testComposition()
+            myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult == True
         self.mAtlas.endRender()
@@ -183,7 +186,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_hiding%d' % (i + 1), self.mComposition)
-            myTestResult, myMessage = checker.testComposition()
+            myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult == True
         self.mAtlas.endRender()
@@ -204,7 +207,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_sorting%d' % (i + 1), self.mComposition)
-            myTestResult, myMessage = checker.testComposition()
+            myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult == True
         self.mAtlas.endRender()
@@ -226,7 +229,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_filtering%d' % (i + 1), self.mComposition)
-            myTestResult, myMessage = checker.testComposition()
+            myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult == True
         self.mAtlas.endRender()

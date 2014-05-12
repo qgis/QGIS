@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgsscalecombobox.h
-                              ------------------------
+         qgsscalecombobox.h
+         ------------------------
   begin                : January 7, 2012
   copyright            : (C) 2012 by Alexander Bruy
   email                : alexander dot bruy at gmail dot com
@@ -191,7 +191,11 @@ void QgsScaleComboBox::fixupScale()
 
 QString QgsScaleComboBox::toString( double scale )
 {
-  if ( scale > 1 )
+  if ( scale == 0 )
+  {
+    return "0";
+  }
+  else if ( scale > 1 )
   {
     return QString( "%1:1" ).arg( QLocale::system().toString( qRound( scale ) ) );
   }
@@ -237,3 +241,5 @@ double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
   }
   return scale;
 }
+
+

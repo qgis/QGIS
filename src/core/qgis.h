@@ -264,10 +264,29 @@ class CORE_EXPORT QGis
       ProviderCountCalcEvent
     };
 
+    /** Old search radius in % of canvas width
+     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
     static const double DEFAULT_IDENTIFY_RADIUS;
+
+    /** Identify search radius in mm
+     *  @note added in 2.3 */
+    static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
+
+    /** Default highlight color.  The transparency is expected to only be applied to polygon
+     *  fill. Lines and outlines are rendered opaque.
+     *  @note added in 2.3 */
+    static const QColor DEFAULT_HIGHLIGHT_COLOR;
+
+    /** Default highlight buffer in mm.
+     *  @note added in 2.3 */
+    static double DEFAULT_HIGHLIGHT_BUFFER_MM;
+
+    /** Default highlight line/outline minimum width in mm.
+     *  @note added in 2.3 */
+    static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
   private:
     // String representation of unit types (set in qgis.cpp)
@@ -406,16 +425,16 @@ typedef unsigned long long qgssize;
 
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 #define Q_NOWARN_DEPRECATED_PUSH \
-    _Pragma("GCC diagnostic push") \
-    _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+  _Pragma("GCC diagnostic push") \
+  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 #define Q_NOWARN_DEPRECATED_POP \
-    _Pragma("GCC diagnostic pop")
+  _Pragma("GCC diagnostic pop")
 #elif defined(_MSC_VER)
 #define Q_NOWARN_DEPRECATED_PUSH \
-    __pragma(warning(push)) \
-    __pragma(warning(disable:4996))
+  __pragma(warning(push)) \
+  __pragma(warning(disable:4996))
 #define Q_NOWARN_DEPRECATED_POP \
-    __pragma(warning(pop))
+  __pragma(warning(pop))
 #else
 #define Q_NOWARN_DEPRECATED_PUSH
 #define Q_NOWARN_DEPRECATED_POP

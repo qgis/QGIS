@@ -58,7 +58,7 @@ const char * QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOption
 
 //stdc++ includes
 
-QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
+QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WindowFlags fl )
     : QgsOptionsDialogBase( "ProjectProperties", parent, fl )
     , mMapCanvas( mapCanvas )
     , mEllipsoidList()
@@ -601,6 +601,12 @@ void QgsProjectProperties::apply()
       // projectproperties dialog box (set above)
       if ( srs.mapUnits() != QGis::UnknownUnit )
         mMapCanvas->setMapUnits( srs.mapUnits() );
+    }
+
+    if ( cbxProjectionEnabled->isChecked() )
+    {
+      // mark selected projection for push to front
+      projectionSelector->pushProjectionToFront();
     }
   }
 

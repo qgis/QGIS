@@ -5,6 +5,7 @@ desktop.ini
 *.*~
 *~
 *.diff
+*.orig
 *.log*
 *.prepare
 debian/*.debhelper

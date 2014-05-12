@@ -30,12 +30,12 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source,
   mQuery = NULL;
 
   mParser.IsGeography = mSource->mIsGeography;
-  
+
   BuildStatement( request );
 
   // connect to the database
-  mDatabase = GetDatabase(mSource->mDriver, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword);
-  
+  mDatabase = GetDatabase( mSource->mDriver, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+
   if ( !mDatabase.open() )
   {
     QgsDebugMsg( "Failed to open database" );
@@ -46,7 +46,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source,
 
   // create sql query
   mQuery = new QSqlQuery( mDatabase );
- 
+
   // start selection
   rewind();
 }
@@ -248,19 +248,19 @@ bool QgsMssqlFeatureIterator::close()
 
   if ( mQuery )
   {
-      if ( !mQuery->isActive() )
-      {
-        QgsDebugMsg( "QgsMssqlFeatureIterator::close on inactive query" );
-        return false;
-      }
+    if ( !mQuery->isActive() )
+    {
+      QgsDebugMsg( "QgsMssqlFeatureIterator::close on inactive query" );
+      return false;
+    }
 
-      mQuery->finish();
+    mQuery->finish();
   }
 
   if ( mQuery )
-      delete mQuery;
+    delete mQuery;
 
-  if (mDatabase.isOpen())
+  if ( mDatabase.isOpen() )
     mDatabase.close();
 
   iteratorClosed();
@@ -269,7 +269,7 @@ bool QgsMssqlFeatureIterator::close()
   return true;
 }
 
-QSqlDatabase QgsMssqlFeatureIterator::GetDatabase(QString driver, QString host, QString database, QString username, QString password)
+QSqlDatabase QgsMssqlFeatureIterator::GetDatabase( QString driver, QString host, QString database, QString username, QString password )
 {
   QSqlDatabase db;
   QString connectionName;
@@ -277,7 +277,7 @@ QSqlDatabase QgsMssqlFeatureIterator::GetDatabase(QString driver, QString host, 
   // create a separate database connection for each feature source
   QgsDebugMsg( "Creating a separate database connection" );
   QString id;
-  
+
   // QString::sprintf adds 0x prefix
   id.sprintf( "%p", this );
 
@@ -348,12 +348,12 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider* p )
     , mFidColName( p->mFidColName )
     , mGeometryColName( p->mGeometryColName )
     , mGeometryColType( p->mGeometryColType )
+    , mSchemaName( p->mSchemaName )
+    , mTableName( p->mTableName )
     , mUserName( p->mUserName )
     , mService( p->mService )
     , mDatabaseName( p->mDatabaseName )
     , mHost( p->mHost )
-    , mSchemaName( p->mSchemaName )
-    , mTableName( p->mTableName )
     , mSqlWhereClause( p->mSqlWhereClause )
 {
   mSRId = p->mSRId;

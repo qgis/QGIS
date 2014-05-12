@@ -303,6 +303,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! layer index
     int mLayerIndex;
 
+    //! was a sub layer requested?
+    bool mIsSubLayer;
+
     /** Optional geometry type for layers with multiple geometries,
      *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
      *  that 2D, 25D, single and multi types are mixed in one sublayer */

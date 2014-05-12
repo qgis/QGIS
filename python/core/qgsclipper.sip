@@ -1,3 +1,5 @@
+%Feature ARM
+
 class QgsClipper
 {
 %TypeHeaderCode
@@ -34,7 +36,7 @@ class QgsClipper
     // A handy way to refer to the four boundaries
     enum Boundary {XMax, XMin, YMax, YMin};
 
-%If (!ANDROID)
+%If (!ARM)
     // Trims the given feature to a rectangular box. Returns the trimmed
     // feature in x and y. The shapeOpen parameter determines whether
     // the function treats the points as a closed shape (polygon), or as

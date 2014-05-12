@@ -27,7 +27,7 @@
 
 //standard includes
 
-RgExportDlg::RgExportDlg( QWidget* parent, Qt::WFlags fl )
+RgExportDlg::RgExportDlg( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   // create base widgets;

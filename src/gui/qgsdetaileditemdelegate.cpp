@@ -49,10 +49,10 @@ void QgsDetailedItemDelegate::paint( QPainter * thepPainter,
 {
   // After painting we need to restore the painter to its original state
   thepPainter->save();
-  if ( qVariantCanConvert<QgsDetailedItemData>( theIndex.data( Qt::UserRole ) ) )
+  if ( theIndex.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
   {
     QgsDetailedItemData myData =
-      qVariantValue<QgsDetailedItemData>( theIndex.data( Qt::UserRole ) );
+      theIndex.data( Qt::UserRole ).value<QgsDetailedItemData>();
     if ( myData.isRenderedAsWidget() )
     {
       paintAsWidget( thepPainter, theOption, myData );
@@ -71,10 +71,10 @@ QSize QgsDetailedItemDelegate::sizeHint(
   const QStyleOptionViewItem & theOption,
   const QModelIndex & theIndex ) const
 {
-  if ( qVariantCanConvert<QgsDetailedItemData>( theIndex.data( Qt::UserRole ) ) )
+  if ( theIndex.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
   {
     QgsDetailedItemData myData =
-      qVariantValue<QgsDetailedItemData>( theIndex.data( Qt::UserRole ) );
+      theIndex.data( Qt::UserRole ).value<QgsDetailedItemData>();
     if ( myData.isRenderedAsWidget() )
     {
       return QSize( 378, mpWidget->height() );

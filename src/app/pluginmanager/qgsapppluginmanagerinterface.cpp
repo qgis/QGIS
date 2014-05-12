@@ -90,3 +90,10 @@ void QgsAppPluginManagerInterface::addToRepositoryList( QMap<QString, QString> r
 {
   mPluginManager->addToRepositoryList( repository );
 }
+
+
+//! show the given message in the Plugin Manager internal message bar
+void QgsAppPluginManagerInterface::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+{
+  mPluginManager->pushMessage( text, level, duration );
+}

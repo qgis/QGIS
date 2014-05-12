@@ -66,6 +66,9 @@ class CORE_EXPORT QgsMapToPixel
        given coordinates in place. Intended as a fast way to do the
        transform. */
     void transformInPlace( double& x, double& y ) const;
+#ifdef QT_ARCH_ARM
+    void transformInPlace( qreal& x, qreal& y ) const;
+#endif
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
