@@ -39,17 +39,17 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsscalerangewidgetplugin.h
 )
 
-SET(QGIS_CUSTOMWIDGETS_UI_HDRS
-  # ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsXXXwidget.h
-)
+# left commented as there is no UI file yet
+# SET(QGIS_CUSTOMWIDGETS_UI_HDRS
+#   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsXXXwidget.h
+# )
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  # ${CMAKE_CURRENT_BINARY_DIR}/../ui (no UI file yet)
 )
-
 
 #############################################################
 # qgis_customwidgets library
@@ -59,23 +59,19 @@ ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWI
 # TODO: apple
 INSTALL(FILES ${QGIS_CUSTOMWIDGETS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 
-
-#generate unversioned libs for android
-IF (NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgis_customwidgets PROPERTIES
-    VERSION ${COMPLETE_VERSION}
-    SOVERSION ${COMPLETE_VERSION}
-    )
-ENDIF (NOT ANDROID)
+SET_TARGET_PROPERTIES(qgis_customwidgets PROPERTIES
+  VERSION ${COMPLETE_VERSION}
+  SOVERSION ${COMPLETE_VERSION}
+  )
 
 # make sure that UI files will be processed first
-ADD_DEPENDENCIES(qgis_customwidgets ui)
+# left commented as there is no UI file yet
+# ADD_DEPENDENCIES(qgis_customwidgets ui)
 
 TARGET_LINK_LIBRARIES(qgis_customwidgets qgis_gui)
 
 # install
 INSTALL(TARGETS qgis_customwidgets
-  LIBRARY DESTINATION ${QGIS_CUSTOMWIDGETS_DIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+  LIBRARY DESTINATION ${QGIS_CUSTOMWIDGETS_DIR})
 
 
