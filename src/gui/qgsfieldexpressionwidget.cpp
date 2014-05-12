@@ -130,11 +130,8 @@ void QgsFieldExpressionWidget::setField( const QString fieldName )
     // new expression
     idx = mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
   }
-
   QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
-
   mCombo->setCurrentIndex( proxyIndex.row() );
-
   currentFieldChanged();
 }
 
@@ -169,7 +166,8 @@ void QgsFieldExpressionWidget::expressionEditingFinished()
 {
   const QString expression = mCombo->lineEdit()->text();
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->setExpression( expression );
-  mCombo->setCurrentIndex( idx.row() );
+  QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
+  mCombo->setCurrentIndex( proxyIndex.row() );
   currentFieldChanged();
 }
 
