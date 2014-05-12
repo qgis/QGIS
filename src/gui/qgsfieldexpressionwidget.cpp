@@ -84,19 +84,16 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isVal
   const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
   if ( !proxyIndex.isValid() )
     return "";
-  const QModelIndex index = mFieldProxyModel->mapToSource( proxyIndex );
-  if ( !index.isValid() )
-    return "";
 
   if ( isExpression )
   {
-    *isExpression = mFieldProxyModel->data( index, QgsFieldModel::IsExpressionRole ).toBool();
+    *isExpression = mFieldProxyModel->data( proxyIndex, QgsFieldModel::IsExpressionRole ).toBool();
   }
   if ( isValid )
   {
-    *isValid = mFieldProxyModel->data( index, QgsFieldModel::ExpressionValidityRole ).toBool();
+    *isValid = mFieldProxyModel->data( proxyIndex, QgsFieldModel::ExpressionValidityRole ).toBool();
   }
-  QString expression = mFieldProxyModel->data( index, QgsFieldModel::ExpressionRole ).toString();
+  QString expression = mFieldProxyModel->data( proxyIndex, QgsFieldModel::ExpressionRole ).toString();
   return expression;
 }
 
