@@ -2,6 +2,7 @@
 
 #include "qgslayertreemodel.h"
 #include "qgslayertreenode.h"
+#include "qgslayertreeviewdefaultactions.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
@@ -9,6 +10,7 @@
 QgsLayerTreeView::QgsLayerTreeView(QWidget *parent)
   : QTreeView(parent)
   , mCurrentLayer(0)
+  , mDefaultActions(0)
 {
   setHeaderHidden(true);
 
@@ -36,9 +38,16 @@ void QgsLayerTreeView::setModel(QAbstractItemModel* model)
   updateExpandedStateFromNode(layerTreeModel()->rootGroup());
 }
 
-QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel()
+QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel() const
 {
   return qobject_cast<QgsLayerTreeModel*>(model());
+}
+
+QgsLayerTreeViewDefaultActions* QgsLayerTreeView::defaultActions()
+{
+  if (!mDefaultActions)
+    mDefaultActions = new QgsLayerTreeViewDefaultActions(this);
+  return mDefaultActions;
 }
 
 QgsMapLayer* QgsLayerTreeView::currentLayer() const
@@ -63,7 +72,9 @@ void QgsLayerTreeView::contextMenuEvent(QContextMenuEvent *event)
   QModelIndex idx = indexAt(event->pos());
   if (!idx.isValid())
   {
-    menu.addAction(create_addGroup(&menu));
+    setCurrentIndex(QModelIndex());
+
+    menu.addAction( defaultActions()->actionAddGroup(&menu) );
   }
   else
   {
@@ -72,70 +83,20 @@ void QgsLayerTreeView::contextMenuEvent(QContextMenuEvent *event)
       return; // probably a symbology item
 
     if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
-      menu.addAction(create_addGroup(&menu, node));
+      menu.addAction( defaultActions()->actionAddGroup(&menu) );
     else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-      menu.addAction(create_showInOverview(&menu, node)); // TODO: should be custom action
+    {
+      // TODO menu.addAction( defaultActions()->actionZoomToLayer(canvas, &menu) );
+      menu.addAction( defaultActions()->actionShowInOverview(&menu) ); // TODO: should be custom action
+    }
 
-    menu.addAction(create_removeGroupOrLayer(&menu, node));
+    menu.addAction( defaultActions()->actionRemoveGroupOrLayer(&menu) );
+    menu.addAction( defaultActions()->actionRenameGroupOrLayer(&menu) );
   }
 
   menu.exec(mapToGlobal(event->pos()));
 }
 
-QAction *QgsLayerTreeView::create_addGroup(QObject* parent, QgsLayerTreeNode* parentNode)
-{
-  QAction* a = new QAction(tr("Add Group"), parent);
-  connect(a, SIGNAL(triggered()), this, SLOT(addGroup()));
-  a->setData(QVariant::fromValue((QObject*)parentNode));
-  return a;
-}
-
-QAction *QgsLayerTreeView::create_removeGroupOrLayer(QObject *parent, QgsLayerTreeNode *parentNode)
-{
-  QAction* a = new QAction(tr("Remove"), parent);
-  connect(a, SIGNAL(triggered()), this, SLOT(removeGroupOrLayer()));
-  a->setData(QVariant::fromValue((QObject*)parentNode));
-  return a;
-}
-
-QAction* QgsLayerTreeView::create_showInOverview(QObject* parent, QgsLayerTreeNode* parentNode)
-{
-  QAction* a = new QAction(tr("Show in overview"), parent);
-  connect(a, SIGNAL(triggered()), this, SLOT(showInOverview()));
-  a->setData(QVariant::fromValue((QObject*)parentNode));
-  a->setCheckable(true);
-  a->setChecked(parentNode->customProperty("overview", 0).toInt());
-  return a;
-}
-
-void QgsLayerTreeView::addGroup()
-{
-  QVariant v = qobject_cast<QAction*>(sender())->data();
-  QgsLayerTreeGroup* group = qobject_cast<QgsLayerTreeGroup*>(v.value<QObject*>());
-  if (!group)
-    group = layerTreeModel()->rootGroup();
-
-  group->addGroup("group");
-}
-
-void QgsLayerTreeView::removeGroupOrLayer()
-{
-  QList<QgsLayerTreeNode*> nodes = layerTreeModel()->indexes2nodes(selectionModel()->selectedIndexes(), true);
-  foreach (QgsLayerTreeNode* node, nodes)
-  {
-    // could be more efficient if working directly with ranges instead of individual nodes
-    qobject_cast<QgsLayerTreeGroup*>(node->parent())->removeChildNode(node);
-  }
-}
-
-void QgsLayerTreeView::showInOverview()
-{
-  QVariant v = qobject_cast<QAction*>(sender())->data();
-  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(v.value<QObject*>());
-  Q_ASSERT(node);
-
-  node->setCustomProperty("overview", node->customProperty("overview", 0).toInt() ? 0 : 1);
-}
 
 void QgsLayerTreeView::modelRowsInserted(QModelIndex index, int start, int end)
 {
@@ -181,4 +142,23 @@ void QgsLayerTreeView::updateExpandedStateFromNode(QgsLayerTreeNode* node)
 
   foreach (QgsLayerTreeNode* child, node->children())
     updateExpandedStateFromNode(child);
+}
+
+QgsLayerTreeNode* QgsLayerTreeView::currentNode() const
+{
+  return layerTreeModel()->index2node(selectionModel()->currentIndex());
+}
+
+QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
+{
+  // TODO: also handle if a layer / symbology is selected within a group?
+  QgsLayerTreeNode* node = currentNode();
+  if (node && node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    return static_cast<QgsLayerTreeGroup*>(node);
+  return 0;
+}
+
+QList<QgsLayerTreeNode*> QgsLayerTreeView::selectedNodes(bool skipInternal) const
+{
+  return layerTreeModel()->indexes2nodes(selectionModel()->selectedIndexes(), skipInternal);
 }

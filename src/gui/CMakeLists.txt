@@ -62,6 +62,7 @@ layertree/qgscustomlayerorderwidget.cpp
 layertree/qgslayertreemapcanvasbridge.cpp
 layertree/qgslayertreemodel.cpp
 layertree/qgslayertreeview.cpp
+layertree/qgslayertreeviewdefaultactions.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
@@ -223,6 +224,7 @@ layertree/qgscustomlayerorderwidget.h
 layertree/qgslayertreemapcanvasbridge.h
 layertree/qgslayertreemodel.h
 layertree/qgslayertreeview.h
+layertree/qgslayertreeviewdefaultactions.h
 
 qgisinterface.h
 qgsattributedialog.h

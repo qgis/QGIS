@@ -3,8 +3,10 @@
 
 #include <QTreeView>
 
+class QgsLayerTreeGroup;
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
+class QgsLayerTreeViewDefaultActions;
 class QgsMapLayer;
 
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
@@ -15,17 +17,20 @@ public:
 
   virtual void setModel(QAbstractItemModel* model);
 
-  QgsLayerTreeModel* layerTreeModel();
+  QgsLayerTreeModel* layerTreeModel() const;
+
+  QgsLayerTreeViewDefaultActions* defaultActions();
 
   QgsMapLayer* currentLayer() const;
   void setCurrentLayer(QgsMapLayer* layer);
 
+  QgsLayerTreeNode* currentNode() const;
+  QgsLayerTreeGroup* currentGroupNode() const;
+
+  QList<QgsLayerTreeNode*> selectedNodes(bool skipInternal = false) const;
+
 protected:
   void contextMenuEvent(QContextMenuEvent* event);
-
-  QAction* create_addGroup(QObject* parent, QgsLayerTreeNode* parentNode = 0);
-  QAction* create_removeGroupOrLayer(QObject* parent, QgsLayerTreeNode* parentNode);
-  QAction* create_showInOverview(QObject* parent, QgsLayerTreeNode* parentNode);
 
   void updateExpandedStateFromNode(QgsLayerTreeNode* node);
 
@@ -35,9 +40,6 @@ signals:
 public slots:
 
 protected slots:
-  void addGroup();
-  void removeGroupOrLayer();
-  void showInOverview();
 
   void modelRowsInserted(QModelIndex index, int start, int end);
 
@@ -47,6 +49,9 @@ protected slots:
 
 protected:
   QgsMapLayer* mCurrentLayer;
+
+  QgsLayerTreeViewDefaultActions* mDefaultActions;
 };
+
 
 #endif // QGSLAYERTREEVIEW_H
