@@ -32,6 +32,7 @@
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsserverlogger.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -47,7 +48,7 @@
 
 void dummyMessageHandler( QtMsgType type, const char *msg )
 {
-#ifdef QGSMSDEBUG
+#if 0 //def QGSMSDEBUG
   QString output;
 
   switch ( type )
@@ -79,53 +80,61 @@ void dummyMessageHandler( QtMsgType type, const char *msg )
 
 void printRequestInfos()
 {
-#ifdef QGSMSDEBUG
-  //print out some infos about the request
-  QgsDebugMsg( "************************new request**********************" );
-  QgsDebugMsg( QDateTime::currentDateTime().toString( "yyyy-MM-dd hh:mm:ss" ) );
-
+  QgsMessageLog::logMessage( "********************new request***************", "Server", QgsMessageLog::INFO );
   if ( getenv( "REMOTE_ADDR" ) != NULL )
   {
-    QgsDebugMsg( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ) );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_HOST" ) != NULL )
   {
-    QgsDebugMsg( "remote host: " + QString( getenv( "REMOTE_HOST" ) ) );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_USER" ) != NULL )
   {
-    QgsDebugMsg( "remote user: " + QString( getenv( "REMOTE_USER" ) ) );
+    QgsMessageLog::logMessage( "remote user: " + QString( getenv( "REMOTE_USER" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_IDENT" ) != NULL )
   {
-    QgsDebugMsg( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ) );
+    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "CONTENT_TYPE" ) != NULL )
   {
-    QgsDebugMsg( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ) );
+    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "AUTH_TYPE" ) != NULL )
   {
-    QgsDebugMsg( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ) );
+    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "HTTP_USER_AGENT" ) != NULL )
   {
-    QgsDebugMsg( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ) );
+    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "HTTP_PROXY" ) != NULL )
   {
-    QgsDebugMsg( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ) );
+    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "HTTPS_PROXY" ) != NULL )
   {
-    QgsDebugMsg( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ) );
+    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "NO_PROXY" ) != NULL )
   {
-    QgsDebugMsg( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ) );
+    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), "Server", QgsMessageLog::INFO );
+  }
+}
+
+void printRequestParameters( const QMap< QString, QString>& parameterMap, int logLevel )
+{
+  if ( logLevel > 0 )
+  {
+    return;
   }
 
-#endif //QGSMSDEBUG
+  QMap< QString, QString>::const_iterator pIt = parameterMap.constBegin();
+  for ( ; pIt != parameterMap.constEnd(); ++pIt )
+  {
+    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), "Server", QgsMessageLog::INFO );
+  }
 }
 
 QFileInfo defaultProjectFile()
@@ -287,20 +296,16 @@ int main( int argc, char * argv[] )
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
-  QString logFile = QgsLogger::logFile();
+  int logLevel = QgsServerLogger::instance()->logLevel();
+  QTime time; //used for measuring request time if loglevel < 1
 
   while ( fcgi_accept() >= 0 )
   {
-    if ( !logFile.isEmpty() )
+    if ( logLevel < 1 )
     {
-#ifdef Q_WS_WIN
-      putenv( QString( "QGIS_LOG_FILE=%1" ).arg( logFile ).toLocal8Bit().constData() );
-#else
-      setenv( "QGIS_LOG_FILE", logFile.toLocal8Bit().constData(), 1 );
-#endif
+      time.start();
+      printRequestInfos();
     }
-
-    printRequestInfos(); //print request infos if in debug mode
 
     //Request handler
     QgsRequestHandler* theRequestHandler = createRequestHandler();
@@ -311,11 +316,12 @@ int main( int argc, char * argv[] )
     }
     catch ( QgsMapServiceException& e )
     {
-      QgsDebugMsg( "An exception was thrown during input parsing" );
+      QgsMessageLog::logMessage( "Parse input exception: " + e.message(), "Server", QgsMessageLog::CRITICAL );
       theRequestHandler->sendServiceException( e );
       continue;
     }
 
+    printRequestParameters( parameterMap, logLevel );
     QMap<QString, QString>::const_iterator paramIt;
 
     //Config file path
@@ -326,6 +332,7 @@ int main( int argc, char * argv[] )
     paramIt = parameterMap.find( "SERVICE" );
     if ( paramIt == parameterMap.constEnd() )
     {
+      QgsMessageLog::logMessage( "Exception: SERVICE parameter is missing", "Server", QgsMessageLog::CRITICAL );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
@@ -340,7 +347,8 @@ int main( int argc, char * argv[] )
       QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
       if ( !p )
       {
-        //error handling
+        theRequestHandler->sendServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        continue;
       }
       QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler );
       wcsServer.executeRequest();
@@ -350,7 +358,8 @@ int main( int argc, char * argv[] )
       QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
       if ( !p )
       {
-        //error handling
+        theRequestHandler->sendServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        continue;
       }
       QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler );
       wfsServer.executeRequest();
@@ -360,11 +369,17 @@ int main( int argc, char * argv[] )
       QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
       if ( !p )
       {
-        //error handling
+        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading gthe project file or the SLD configuration" ) );
+        continue;
       }
       //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
       QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler, theMapRenderer, &capabilitiesCache );
       wmsServer.executeRequest();
+    }
+
+    if ( logLevel < 1 )
+    {
+      QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
     }
   }
 

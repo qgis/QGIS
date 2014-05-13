@@ -39,6 +39,7 @@ SET ( qgis_mapserv_SRCS
   qgshostedrdsbuilder.cpp
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
+  qgsserverlogger.cpp
   qgsmsutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
@@ -58,6 +59,7 @@ SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsmslayercache.h
+  qgsserverlogger.h
 )
 
 SET (qgis_mapserv_RCCS 
