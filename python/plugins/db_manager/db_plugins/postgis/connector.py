@@ -53,6 +53,7 @@ class PostGisDBConnector(DBConnector):
 
 		try:
 			self.connection = psycopg2.connect( self._connectionInfo().encode('utf-8') )
+			self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 		except self.connection_error_types(), e:
 			raise ConnectionError(e)
 
@@ -751,13 +752,9 @@ class PostGisDBConnector(DBConnector):
 
 	def runVacuumAnalyze(self, table):
 		""" run vacuum analyze on a table """
-		# vacuum analyze must be run outside transaction block - we have to change isolation level
-		self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 		sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
 		c = self._execute(None, sql)
 		self._commit()
-		self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED)
-
 
 	def addTableColumn(self, table, field_def):
 		""" add a column to table """
