@@ -21,6 +21,8 @@ public:
   QAction* actionRenameGroupOrLayer(QObject* parent = 0);
 
   QAction* actionZoomToLayer(QgsMapCanvas* canvas, QObject* parent = 0);
+  QAction* actionZoomToGroup(QgsMapCanvas* canvas, QObject* parent = 0);
+  // TODO: zoom to selected
 
 protected slots:
   void addGroup();
@@ -28,6 +30,7 @@ protected slots:
   void renameGroupOrLayer();
   void showInOverview();
   void zoomToLayer();
+  void zoomToGroup();
 
 protected:
   void zoomToLayers(QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers);

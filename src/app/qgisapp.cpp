@@ -2173,6 +2173,64 @@ QgsMessageBar* QgisApp::messageBar()
   return mInfoBar;
 }
 
+
+
+
+// ===========
+// TODO: move to a separate file
+#include "qgslayertreenode.h"
+#include "qgslayertreeviewdefaultactions.h"
+
+class QgsAppLayerTreeViewMenuProvider : public QgsLayerTreeViewMenuProvider
+{
+public:
+  QgsAppLayerTreeViewMenuProvider(QgsLayerTreeView* view, QgsMapCanvas* canvas) : mView(view), mCanvas(canvas) {}
+
+  QMenu* createContextMenu();
+
+protected:
+  QgsLayerTreeView* mView;
+  QgsMapCanvas* mCanvas;
+};
+
+QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
+{
+  QMenu* menu = new QMenu;
+
+  QgsLayerTreeViewDefaultActions* actions = mView->defaultActions();
+
+  QModelIndex idx = mView->currentIndex();
+  if (!idx.isValid())
+  {
+    // global menu
+    menu->addAction( actions->actionAddGroup(menu) );
+  }
+  else if (QgsLayerTreeNode* node = mView->layerTreeModel()->index2node(idx))
+  {
+    // layer or group selected
+    if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    {
+      menu->addAction( actions->actionZoomToGroup(mCanvas, menu) );
+      menu->addAction( actions->actionAddGroup(menu) );
+    }
+    else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    {
+      menu->addAction( actions->actionZoomToLayer(mCanvas, menu) );
+      menu->addAction( actions->actionShowInOverview(menu) );
+    }
+
+    menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
+    menu->addAction( actions->actionRenameGroupOrLayer(menu) );
+  }
+  else
+  {
+    // symbology item?
+  }
+
+  return menu;
+}
+
+
 void QgisApp::initLayerTreeView()
 {
   mLayerTreeDock = new QDockWidget( tr( "Layers NEW" ), this );
@@ -2184,10 +2242,12 @@ void QgisApp::initLayerTreeView()
 
   mLayerTreeView = new QgsLayerTreeView( this );
   mLayerTreeView->setModel( model );
+  mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider(mLayerTreeView, mMapCanvas) );
 
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 }
+
 
 void QgisApp::initLegend()
 {

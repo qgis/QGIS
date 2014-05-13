@@ -5,6 +5,7 @@
 #include "qgslayertreenode.h"
 #include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QAction>
@@ -24,7 +25,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionAddGroup(QObject* parent)
 
 QAction* QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer(QObject* parent)
 {
-  QAction* a = new QAction(tr("Remove"), parent);
+  QAction* a = new QAction(QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr("&Remove"), parent);
   connect(a, SIGNAL(triggered()), this, SLOT(removeGroupOrLayer()));
   return a;
 }
@@ -35,7 +36,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview(QObject* parent)
   if (!node)
     return 0;
 
-  QAction* a = new QAction(tr("Show in overview"), parent);
+  QAction* a = new QAction(tr("&Show in overview"), parent);
   connect(a, SIGNAL(triggered()), this, SLOT(showInOverview()));
   a->setCheckable(true);
   a->setChecked(node->customProperty("overview", 0).toInt());
@@ -52,9 +53,18 @@ QAction* QgsLayerTreeViewDefaultActions::actionRenameGroupOrLayer(QObject* paren
 QAction* QgsLayerTreeViewDefaultActions::actionZoomToLayer(QgsMapCanvas* canvas, QObject* parent)
 {
   QAction* a = new QAction(QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
-                           tr("&Zoom to Layer Extent"), parent);
+                           tr("&Zoom to Layer"), parent);
   a->setData(QVariant::fromValue(reinterpret_cast<void*>(canvas)));
   connect(a, SIGNAL(triggered()), this, SLOT(zoomToLayer()));
+  return a;
+}
+
+QAction* QgsLayerTreeViewDefaultActions::actionZoomToGroup(QgsMapCanvas* canvas, QObject* parent)
+{
+  QAction* a = new QAction(QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
+                           tr("&Zoom to Group"), parent);
+  a->setData(QVariant::fromValue(reinterpret_cast<void*>(canvas)));
+  connect(a, SIGNAL(triggered()), this, SLOT(zoomToGroup()));
   return a;
 }
 
@@ -82,10 +92,6 @@ void QgsLayerTreeViewDefaultActions::removeGroupOrLayer()
 
 void QgsLayerTreeViewDefaultActions::renameGroupOrLayer()
 {
-  /*QgsLayerTreeNode* node = mView->currentNode();
-  if (!node)
-    return;*/
-
   mView->edit(mView->currentIndex());
 }
 
@@ -109,6 +115,18 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
 
   QList<QgsMapLayer*> layers;
   layers << layer;
+  zoomToLayers(canvas, layers);
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToGroup()
+{
+  QAction* s = qobject_cast<QAction*>(sender());
+  QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>(s->data().value<void*>());
+
+  QList<QgsMapLayer*> layers;
+  foreach (QString layerId, mView->currentGroupNode()->childLayerIds())
+    layers << QgsMapLayerRegistry::instance()->mapLayer(layerId);
+
   zoomToLayers(canvas, layers);
 }
 
@@ -148,4 +166,5 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers(QgsMapCanvas* canvas, const QL
 
   //zoom to bounding box
   canvas->setExtent( extent );
+  canvas->refresh();
 }

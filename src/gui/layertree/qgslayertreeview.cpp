@@ -11,6 +11,7 @@ QgsLayerTreeView::QgsLayerTreeView(QWidget *parent)
   : QTreeView(parent)
   , mCurrentLayer(0)
   , mDefaultActions(0)
+  , mMenuProvider(0)
 {
   setHeaderHidden(true);
 
@@ -22,6 +23,11 @@ QgsLayerTreeView::QgsLayerTreeView(QWidget *parent)
 
   connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(updateExpandedStateToNode(QModelIndex)));
   connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(updateExpandedStateToNode(QModelIndex)));
+}
+
+QgsLayerTreeView::~QgsLayerTreeView()
+{
+  delete mMenuProvider;
 }
 
 void QgsLayerTreeView::setModel(QAbstractItemModel* model)
@@ -50,6 +56,12 @@ QgsLayerTreeViewDefaultActions* QgsLayerTreeView::defaultActions()
   return mDefaultActions;
 }
 
+void QgsLayerTreeView::setMenuProvider(QgsLayerTreeViewMenuProvider* menuProvider)
+{
+  delete mMenuProvider;
+  mMenuProvider = menuProvider;
+}
+
 QgsMapLayer* QgsLayerTreeView::currentLayer() const
 {
   return mCurrentLayer;
@@ -67,34 +79,17 @@ void QgsLayerTreeView::setCurrentLayer(QgsMapLayer* layer)
 
 void QgsLayerTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-  QMenu menu;
+  if (!mMenuProvider)
+    return;
 
   QModelIndex idx = indexAt(event->pos());
   if (!idx.isValid())
-  {
     setCurrentIndex(QModelIndex());
 
-    menu.addAction( defaultActions()->actionAddGroup(&menu) );
-  }
-  else
-  {
-    QgsLayerTreeNode* node = layerTreeModel()->index2node(idx);
-    if (!node)
-      return; // probably a symbology item
-
-    if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
-      menu.addAction( defaultActions()->actionAddGroup(&menu) );
-    else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-    {
-      // TODO menu.addAction( defaultActions()->actionZoomToLayer(canvas, &menu) );
-      menu.addAction( defaultActions()->actionShowInOverview(&menu) ); // TODO: should be custom action
-    }
-
-    menu.addAction( defaultActions()->actionRemoveGroupOrLayer(&menu) );
-    menu.addAction( defaultActions()->actionRenameGroupOrLayer(&menu) );
-  }
-
-  menu.exec(mapToGlobal(event->pos()));
+  QMenu* menu = mMenuProvider->createContextMenu();
+  if (menu)
+    menu->exec(mapToGlobal(event->pos()));
+  delete menu;
 }
 
 

@@ -7,6 +7,7 @@ class QgsLayerTreeGroup;
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
 class QgsLayerTreeViewDefaultActions;
+class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
 
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
@@ -14,12 +15,16 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
   Q_OBJECT
 public:
   explicit QgsLayerTreeView(QWidget *parent = 0);
+  ~QgsLayerTreeView();
 
   virtual void setModel(QAbstractItemModel* model);
 
   QgsLayerTreeModel* layerTreeModel() const;
 
   QgsLayerTreeViewDefaultActions* defaultActions();
+
+  void setMenuProvider(QgsLayerTreeViewMenuProvider* menuProvider); // takes ownership
+  QgsLayerTreeViewMenuProvider* menuProvider() const { return mMenuProvider; }
 
   QgsMapLayer* currentLayer() const;
   void setCurrentLayer(QgsMapLayer* layer);
@@ -51,6 +56,16 @@ protected:
   QgsMapLayer* mCurrentLayer;
 
   QgsLayerTreeViewDefaultActions* mDefaultActions;
+  QgsLayerTreeViewMenuProvider* mMenuProvider;
+};
+
+/** interface to allow custom menus */
+class GUI_EXPORT QgsLayerTreeViewMenuProvider
+{
+public:
+  virtual ~QgsLayerTreeViewMenuProvider() {}
+
+  virtual QMenu* createContextMenu() = 0;
 };
 
 
