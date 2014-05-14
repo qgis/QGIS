@@ -2952,36 +2952,38 @@ Would you like to add the new layer to the TOC?</source>
     <name>DlgExportVector</name>
     <message>
         <source>Choose where to save the file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Виберіть, куди зберігати файл</translation>
     </message>
     <message>
         <source>Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Шейп-файли</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished">Експортувати у файл</translation>
+        <translation>Експортувати в файл</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Потрібне ім&apos;я вихідної таблиці</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилковий початковий  srid: мусить бути цілочисельним</translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилкивий цільовий srid: мусить бути цілочисельним</translation>
     </message>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>%s</translatorcomment>
+        <translation>Помилка %d
+%s</translation>
     </message>
     <message>
         <source>Export finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт завершено.</translation>
     </message>
 </context>
 <context>
@@ -3000,15 +3002,15 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ім&apos;я поля не мусить бути пустим</translation>
     </message>
     <message>
         <source>field type must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>тип поля не мусить бути пустим</translation>
     </message>
 </context>
 <context>
@@ -3016,22 +3018,22 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="14"/>
         <source>Help editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактор довідки</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="31"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">про:пусте</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="47"/>
         <source>Select element to edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть елемент для редагування</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="82"/>
         <source>Element description</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис елемента</translation>
     </message>
 </context>
 <context>
@@ -3039,7 +3041,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation>Історія та журнал</translation>
     </message>
 </context>
 <context>
@@ -3066,36 +3068,37 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Choose the file to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файл для імпортування</translation>
     </message>
     <message>
         <source>Import to database</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпорт в базу даних</translation>
     </message>
     <message>
         <source>Input layer missing or not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я вхідного шару відсутнє або некоректне</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Потрібне ім&apos;я вихідної таблиці</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилковий початковий srid: мусить бути цілочисельним</translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилковий цільовий srid: мусить бути цілочисельним</translation>
     </message>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка %d
+%s</translation>
     </message>
     <message>
         <source>Import was successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортування пройшло вдало.</translation>
     </message>
 </context>
 <context>
@@ -3103,12 +3106,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор моделей аналізу</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="34"/>
         <source>Open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити модель</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="37"/>
@@ -3118,57 +3121,57 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="91"/>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="108"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="44"/>
         <source>Save</source>
-        <translation type="unfinished">Зберегти</translation>
+        <translation>Зберегти</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="54"/>
         <source>Save as...</source>
-        <translation type="unfinished">Зберегти як...</translation>
+        <translation>Зберегти як...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="71"/>
         <source>Export as image</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати як зображення</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="88"/>
         <source>Edit model help</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати довідку моделі</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="105"/>
         <source>Run model</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати модель</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="147"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідні дані</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="175"/>
         <source>Algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритми</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="187"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я алгортму для фільтрування переліку</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="217"/>
         <source>Enter model name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я моделі</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="224"/>
         <source>Enter group name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я групи</translation>
     </message>
 </context>
 <context>
@@ -3176,7 +3179,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgMultipleSelection.ui" line="14"/>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Багатооб&apos;єктна вибірка</translation>
     </message>
 </context>
 <context>
@@ -3184,17 +3187,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="14"/>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть число або вираз</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="26"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter expression in the text field. Double click on elements in the tree to add their values to the expression.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Введіть вираз в текстовому полі. Двічі клацніть по елементах дерева, щоб додати їх значення до виразу.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Warning&lt;/span&gt;: if expression result is float value, but integer required, result will be rounded to integer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font weight:600;&quot;&gt;Увага&lt;/span&gt;: якщо результатом виразу є десятковий дріб, але необхідне ціле число, результат буде округлений до цілого.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3202,17 +3205,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Діалог</translation>
+        <translation>Діалог</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="30"/>
         <source>Output</source>
-        <translation type="unfinished">Вивід</translation>
+        <translation type="unfinished">Результат</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="35"/>
         <source>Style</source>
-        <translation type="unfinished">Стиль</translation>
+        <translation>Стиль</translation>
     </message>
 </context>
 <context>
@@ -3220,12 +3223,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="14"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="53"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">про:пусто</translation>
     </message>
 </context>
 <context>
@@ -3233,12 +3236,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="14"/>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор скриптів</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="40"/>
         <source>Save</source>
-        <translation type="unfinished">Зберегти</translation>
+        <translation>Зберегти</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="43"/>
@@ -3251,47 +3254,47 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="141"/>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="151"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="50"/>
         <source>Save as...</source>
-        <translation type="unfinished">Зберегти як...</translation>
+        <translation>Зберегти як...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="67"/>
         <source>Edit script help</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати довідку скрипту</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="84"/>
         <source>Run algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати алгоритм</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="101"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирізати</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="111"/>
         <source>Copy</source>
-        <translation type="unfinished">Копіювати</translation>
+        <translation>Копіювати</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="121"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Внести</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="138"/>
         <source>Undo</source>
-        <translation type="unfinished">Відмінити</translation>
+        <translation>Відмінити</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="148"/>
         <source>Redo</source>
-        <translation type="unfinished">Повторити</translation>
+        <translation>Повторити</translation>
     </message>
 </context>
 <context>
@@ -3322,16 +3325,17 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>%d rows, %.1f seconds</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%d рядків, %.1f секунд</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Вам слід заповнити необхідні поля: 
+поле геометрії - поле з унікальними цілими значеннями</translation>
     </message>
 </context>
 <context>
@@ -3389,43 +3393,43 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">немає вибраних елементів</translation>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>дійсно видалити поле &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>really delete constraint &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>дійсно видалити обмеження &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>The selected table has no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрана таблиця не має геометрії</translation>
     </message>
     <message>
         <source>Create?</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити?</translation>
     </message>
     <message>
         <source>Create spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити просторовий індекс для поля %s?</translation>
     </message>
     <message>
         <source>Nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">немає вибраних елементів</translation>
     </message>
     <message>
         <source>really delete index &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>дійсно видалити індекс &apos;%s&apos;?</translation>
     </message>
 </context>
 <context>
@@ -3433,67 +3437,67 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="14"/>
         <source>Add versioning support to a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати підтримку версійності до таблиці</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="22"/>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Припускається, що таблиця буде пустою, з первинним ключем.</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="31"/>
         <source>Schema</source>
-        <translation type="unfinished">Схема</translation>
+        <translation>Схема</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="44"/>
         <source>Table</source>
-        <translation type="unfinished">Таблиця</translation>
+        <translation>Таблиця</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="75"/>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">створити нове представлення з поточним вмістом (&lt;TABLE&gt;_поточна)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="85"/>
         <source>New columns</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нові поля</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="91"/>
         <source>Prim. key</source>
-        <translation type="unfinished"></translation>
+        <translation>Первин. ключ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="101"/>
         <source>id_hist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">id_hist</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="108"/>
         <source>Start time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Початковий час</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="118"/>
         <source>time_start</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">time_start</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="125"/>
         <source>End time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Кінцевий час</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="135"/>
         <source>time_end</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">time_end</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="160"/>
         <source>SQL to be executed:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SQL для виконання:</translation>
     </message>
 </context>
 <context>
@@ -3501,22 +3505,22 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="14"/>
         <source>Field calculator</source>
-        <translation type="unfinished">Калькулятор полів</translation>
+        <translation>Калькулятор полів</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="26"/>
         <source>Create a new field</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити нове поле</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="59"/>
         <source>Output field name</source>
-        <translation type="unfinished">Ім&apos;я результуючого поля</translation>
+        <translation>Ім&apos;я результуючого поля</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="72"/>
         <source>Output field type</source>
-        <translation type="unfinished">Тип результуючого поля</translation>
+        <translation>Тип результуючого поля</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="85"/>
@@ -3526,66 +3530,66 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="95"/>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Загальна ширина. Наприклад, для 123,456 загальна ширина становить 6.</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="108"/>
         <source>Precision</source>
-        <translation type="unfinished">Точність</translation>
+        <translation>Точність</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="146"/>
         <source>Input layer</source>
-        <translation type="unfinished">Вхідний шар</translation>
+        <translation>Вхідний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="165"/>
         <source>Update existing field</source>
-        <translation type="unfinished">Оновити існуюче поле</translation>
+        <translation>Оновити існуюче поле</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="195"/>
         <source>Output file</source>
-        <translation type="unfinished">Вихідний файл</translation>
+        <translation>Вихідний файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="205"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Зберегти файл</translation>
+        <translation>Зберегти файл</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо виконати алгоритм</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірні або недостатні значення параметрів</translation>
     </message>
 </context>
 <context>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть каталог</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виіберіть файл</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Всі файли (*.*)</translation>
     </message>
 </context>
 <context>
@@ -3597,8 +3601,8 @@ geometry column - column with unique integer values</source>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation>Даній версії GdalTools необхідний QGIS версії 1.0.0 і вище.
-Розширення не включиться.</translation>
+        <translation>Дана версія GdalTools потребує QGIS версії 1.0.0 і вище.
+В протилежному випадку модуль не буде активовано.</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
@@ -3610,7 +3614,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation>Створити VRT з набору растрових файлів</translation>
+        <translation type="unfinished">Створює VRT з набору растрових файлів</translation>
     </message>
     <message>
         <source>Contour</source>
@@ -3626,7 +3630,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation>Перетворює векторну геометрію у растр</translation>
+        <translation>Перетворює векторну геометрію в растр</translation>
     </message>
     <message>
         <source>Polygonize</source>
@@ -3634,7 +3638,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation>Створити полігональний шар з растру</translation>
+        <translation>Створює шар полігональних об&apos;єктів з растру</translation>
     </message>
     <message>
         <source>Merge</source>
@@ -3650,7 +3654,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation>Відфільтровує малі растрові кластери</translation>
+        <translation>Усуває дрібні растрові кластери</translation>
     </message>
     <message>
         <source>Proximity</source>
@@ -3658,15 +3662,16 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation>Робить растрову карту близкості</translation>
+        <translation>Створює растрову карту близькості</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation>Скинути у чорний</translation>
+        <translatorcomment>Звести до чорного</translatorcomment>
+        <translation type="unfinished">Перевести в чорний</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation>Заміна близьких до білого/чорного границь на точне значення</translation>
+        <translation type="unfinished">Заміна пікселів, що знаходяться в близьких до білого/чорного діапазонах, точними значеннями</translation>
     </message>
     <message>
         <source>Warp</source>
@@ -3674,7 +3679,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation>Деформація зображення в нову систему координат</translation>
+        <translation>Переведення зображення в нову систему координат</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -3682,7 +3687,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation>Створює растр із розрізненихданих</translation>
+        <translation type="unfinished">Створити растр з дискретних даних</translation>
     </message>
     <message>
         <source>Translate</source>
@@ -3690,7 +3695,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation>Перетворення растрових даних між різними форматами</translation>
+        <translation type="unfinished">Переводить растрові дані у різні формати</translation>
     </message>
     <message>
         <source>Information</source>
@@ -3698,15 +3703,15 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation>Відображає різноманітні відомості про растр</translation>
+        <translation type="unfinished">Виводить інформацію про растровий набір даних</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation>Встановити проекцію</translation>
+        <translation>Призначити проекцію</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation>Додати інформацію про проекцію до растру</translation>
+        <translation>Додати до растру інформацію про проекцію</translation>
     </message>
     <message>
         <source>Build overviews</source>
@@ -3714,31 +3719,31 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation>Будує або оновлює піраміди зображення</translation>
+        <translation>Створює або оновлює піраміди зображення</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation>Обрізка</translation>
+        <translation>Відтинання</translation>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка модуля</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Виявлено QGIS версії: </translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"></translation>
+        <translation>Проекції</translation>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначити проекцію</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначити інформацію про проекцію з растра(ів)</translation>
     </message>
     <message>
         <source>Conversion</source>
@@ -3750,7 +3755,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation>Конвертувати 24-бітне RGB-зображення в індексоване 8-бітне</translation>
+        <translation>Перетворити 24-бітне RGB-зображення в 8-бітне індексоване</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
@@ -3762,31 +3767,31 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Виокремлення</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished">Аналіз</translation>
+        <translation>Аналіз</translation>
     </message>
     <message>
         <source>Fill nodata</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заповнити немає даних (nodata)</translation>
     </message>
     <message>
         <source>Fill raster regions by interpolation from edges</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заповнити пропуски растра інтерполяцією з країв</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Різне</translation>
     </message>
     <message>
         <source>Tile index</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Індекс мозаїки фрагментів</translation>
     </message>
     <message>
         <source>Build a shapefile as a raster tileindex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створити індексний шейп-файл мозаїки растрових фрагментів</translation>
     </message>
     <message>
         <source>About GdalTools</source>
@@ -3798,73 +3803,75 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation>Установки Gdal Tools</translation>
+        <translation type="unfinished">Налаштування Gdal Tools</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation>Формат цього файла не підтримується OGR</translation>
+        <translation type="unfinished">Вибраний файл не належить до форматів, що підтримуються OGR</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створити віртуальний растр (каталог)</translation>
     </message>
     <message>
         <source>Rasterize (Vector to raster)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Растеризувати (Вектор в растр)</translation>
     </message>
     <message>
         <source>Unable to load {0} plugin. 
 The required &quot;{1}&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо завантажити модуль {0}. 
+Не вистачає необхідного компонента &quot;{1}&quot;. 
+Проінсталюйте його та спробуйте знову.</translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
-        <translation type="unfinished"></translation>
+        <translation>Полігонізувати (Растр в ектор)</translation>
     </message>
     <message>
         <source>Proximity (Raster distance)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Близькість (Растр відстаней)</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Перевести в іншу систему координат</translation>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Растр (Інтерполювання)</translation>
     </message>
     <message>
         <source>Translate (Convert format)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Перетворити (В інший формат)</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Побудувати піраміди</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DEM (Моделі рельєфу місцевості)</translation>
     </message>
     <message>
         <source>Tool to analyze and visualize DEMs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Інструмент аналізу та візуалізації DEM</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation>Різноманітні установки Gdal Tools</translation>
+        <translation type="unfinished">Різні налаштування для Gdal Tools</translation>
     </message>
     <message>
         <source>&amp;Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вхідний каталог</translation>
     </message>
     <message>
         <source>&amp;Output directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вихідний каталог</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation>Не вдалося запустити процес. Можливо відсутня необхідна програма або у вас не достатньо прав для її запуска.</translation>
+        <translation>Не вдалося запустити процес. Можливо необхідна програма відсутня або у вас недостатньо прав для її запуску.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
@@ -3872,7 +3879,7 @@ Install it and try again.</source>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation>Виникла невідома помилка.</translation>
+        <translation>Відбулася невідома помилка.</translation>
     </message>
     <message>
         <source>&amp;Input directory:</source>
@@ -3972,7 +3979,7 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation>Закінчено</translation>
+        <translation>Завершено</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -3980,12 +3987,13 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     </message>
     <message>
         <source>No input files to process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний файл для обробки відсутній.</translation>
     </message>
     <message>
         <source>The following files were not created: 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Наступні файли не було створено:
+{0}</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -3995,7 +4003,7 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation>Операцію закінчено.</translation>
+        <translation>Операцію завершено.</translation>
     </message>
 </context>
 <context>
@@ -4027,7 +4035,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>%s not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>%s не створено.</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
@@ -4035,7 +4043,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Finished</source>
-        <translation>Закінчено</translation>
+        <translation>Завершено</translation>
     </message>
     <message>
         <source>Processing completed.</source>
