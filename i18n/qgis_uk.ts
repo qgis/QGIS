@@ -25,11 +25,11 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Пошук...</translation>
+        <translation>Пошук...</translation>
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished">Налаштування</translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
         <source>Value</source>
@@ -37,6 +37,7 @@
     </message>
     <message>
         <source>Providers</source>
+        <translatorcomment>Постачальники/ Провайдери</translatorcomment>
         <translation type="unfinished">Джерела</translation>
     </message>
     <message>
@@ -291,7 +292,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>View</source>
-        <translation>Вид</translation>
+        <translation>Представлення</translation>
     </message>
     <message>
         <source>Table</source>
@@ -315,7 +316,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Null</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Null</translation>
     </message>
     <message>
         <source>Default</source>
@@ -351,7 +352,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>View definition</source>
-        <translatorcomment>або Переглянути параметри</translatorcomment>
+        <translatorcomment>або Переглянути параметри, або Параметри представлення</translatorcomment>
         <translation type="unfinished">Переглянути визначення</translation>
     </message>
     <message>
@@ -666,7 +667,7 @@ Query:
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation type="unfinished">Неможливо завантажити шар %s</translation>
+        <translation>Неможливо завантажити шар %s</translation>
     </message>
 </context>
 <context>
@@ -681,7 +682,7 @@ Query:
     </message>
     <message>
         <source>Add to canvas</source>
-        <translation type="unfinished">Додати в проект</translation>
+        <translation type="unfinished">Додати до карти</translation>
     </message>
     <message>
         <source>Re-connect</source>
@@ -886,22 +887,22 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
         <source>Options</source>
-        <translation type="unfinished">Параметри</translation>
+        <translation>Параметри</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
         <source>Source SRID</source>
-        <translation type="unfinished">Початковий SRID</translation>
+        <translation>Початковий SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="144"/>
         <source>Target SRID</source>
-        <translation type="unfinished">Цільовий SRID</translation>
+        <translation>Цільовий SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="163"/>
         <source>Encoding</source>
-        <translation type="unfinished">Кодування</translation>
+        <translation>Кодування</translation>
     </message>
 </context>
 <context>
@@ -909,7 +910,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="14"/>
         <source>Field properties</source>
-        <translation type="unfinished">Властивості поля</translation>
+        <translation>Властивості поля</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="22"/>
@@ -924,13 +925,13 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="53"/>
         <source>Can be NULL</source>
-        <translation type="unfinished">Може бути NULL</translation>
+        <translation>Може бути NULL</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="70"/>
         <source>Default value</source>
         <translatorcomment>або Значення поза вибором</translatorcomment>
-        <translation type="unfinished">Значення за замовчанням</translation>
+        <translation>Значення за замовчанням</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="84"/>
@@ -1143,82 +1144,82 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="14"/>
         <source>Table properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості таблиці</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="24"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Поля</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="30"/>
         <source>Table columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поля таблиці:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="46"/>
         <source>Add column</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати поле</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="53"/>
         <source>Add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати поле геометрії</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="60"/>
         <source>Edit column</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати поле</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="80"/>
         <source>Delete column</source>
-        <translation type="unfinished">Видалити стовпець</translation>
+        <translation>Видалити поле</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="90"/>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Обмеження</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="96"/>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Первинні, зовнішні ключі, унікальні значення та перевірка обмежень:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="112"/>
         <source>Add primary key / unique</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Додати первинний ключ / унікальне</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="132"/>
         <source>Delete constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити обмеження</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="142"/>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Індекси</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="148"/>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Індекси визначені для цієї таблиці:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="164"/>
         <source>Add index</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати індекс</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="171"/>
         <source>Add spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати просторовий індекс</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="191"/>
         <source>Delete index</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити індекс</translation>
     </message>
 </context>
 <context>
@@ -1261,39 +1262,39 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="17"/>
         <source>Extract Nodes</source>
         <translatorcomment>Витягування вузлів</translatorcomment>
-        <translation>Витягування вузлів</translation>
+        <translation>Виокремлення вузлів</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="28"/>
         <source>Input line or polygon vector layer</source>
-        <translation>Вхідний лінійний чи полігональний векторний шар</translation>
+        <translation>Вхідний лінійний або полігональний векторний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="139"/>
         <source>Save to new shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти в новий шейп-файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="42"/>
         <source>Tolerance</source>
-        <translation>Толерантність</translation>
+        <translation>Допускова межа</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="98"/>
         <source>Calculate using</source>
-        <translation type="unfinished"></translation>
+        <translation>Розрахувати з використанням</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="117"/>
         <source>Calculate extent for each feature separately</source>
-        <translation type="unfinished"></translation>
+        <translation>Розрахувати охоплення для кожного елемента поокремо</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="87"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="56"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="44"/>
         <source>Unique ID field</source>
-        <translation>Поле унікального ідентифікатора</translation>
+        <translation>Поле унікального ID</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="146"/>
@@ -1326,7 +1327,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation>Обробка даних</translation>
+        <translation>Геообробка</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="74"/>
@@ -1359,12 +1360,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="162"/>
         <source>Dissolve field</source>
-        <translation>Поле розчинення</translation>
+        <translation>Поле об&apos;єднання</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="210"/>
         <source>Dissolve buffer results</source>
-        <translation>Результат об&apos;єднання за ознакою</translation>
+        <translation>Об&apos;єднати результати за ознакою</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="234"/>
@@ -1377,7 +1378,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="92"/>
         <source>Segments to approximate</source>
-        <translation>Сегменти для апроксимації</translation>
+        <translation>Апроксимувати сегменти</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
@@ -1391,7 +1392,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="17"/>
         <source>Locate Line Intersections</source>
-        <translation>Перетин ліній</translation>
+        <translation>Визначити перетини ліній</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="28"/>
@@ -1403,17 +1404,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="42"/>
         <source>Input unique ID field</source>
         <translatorcomment>ID</translatorcomment>
-        <translation>Вхідне поле унікального ідентифікатора</translation>
+        <translation>Вхідне поле унікального ID</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="56"/>
         <source>Intersect line layer</source>
-        <translation>Лінійний шар перетинів</translation>
+        <translation>Лінійний шар перетину</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="70"/>
         <source>Intersect unique ID field</source>
-        <translation>Поле ID перетину</translation>
+        <translation>Поле унікального ID перетину</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="97"/>
@@ -1446,7 +1447,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="42"/>
         <source>Join vector layer</source>
-        <translation>Об&apos;єднати с векторним шаром</translation>
+        <translation>Об&apos;єднати з векторним шаром</translation>
     </message>
     <message>
         <source>Join dbf table</source>
@@ -1468,12 +1469,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="194"/>
         <source>Only keep matching records</source>
-        <translation>Зберегти тільки співпадаючі записи</translation>
+        <translation>Зберегти лише записи, що співпадають</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="204"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation>Зберегти всі записи (включаючи неспівпадаючі)</translation>
+        <translation>Зберегти всі записи (включаючи цільові, що не співпадають)</translation>
     </message>
     <message>
         <source>Keep all records (includeing non-matching target records)</source>
@@ -1506,15 +1507,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation>Що перетинають об&apos;єкти в:</translation>
+        <translation>що перетинають об&apos;єкти в:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation>Змінити поточну вибірку:</translation>
+        <translation>Змінити поточну вибірку за:</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати тільки вибрані об&apos;єкти</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
@@ -1522,31 +1523,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input files</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідні файли</translation>
     </message>
     <message>
         <source>No output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний файл відсутній</translation>
     </message>
     <message>
         <source>Please specify output file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, вкажіть вихідний файл.</translation>
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Шейп-файли з геометрією даного типу відсутні. Будь ласка, оберіть доступний тип геометрії.</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо видалити об&apos;єкти</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо додати об&apos;єкти</translation>
     </message>
     <message>
         <source>Simplify results</source>
-        <translation type="unfinished"></translation>
+        <translation>Спростити результати</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
@@ -1558,19 +1559,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation>Будь ласка, вкажіть вхідний полігональний шар</translation>
+        <translation>Будь ласка, вкажіть вхідний полігональний векторний шар</translation>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation type="unfinished"></translation>
+        <translation>Вилучити</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Відсутня вибірка у вхідному шарі</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка при створенні вихідного файлу</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1580,7 +1581,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation>Будь ласка, вкажіть вхідний лінійний шар</translation>
+        <translation>Будь ласка, вкажіть вхідний векторний шар ліній</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
@@ -1601,7 +1602,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Defined Projection For:
 %s.shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Означена проекція для:
+%s.shp</translation>
     </message>
     <message>
         <source>Random Points</source>
@@ -1609,56 +1611,61 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Selected features: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть об&apos;єкти: %s</translation>
     </message>
     <message>
         <source>Commit error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Передати помилку на розгляд:
+%s</translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося замістити геометрію об&apos;єкта з id %s</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося вилучити об&apos;єкти з наступними id:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створений вихідний шейп-файл:
+%s</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Буль ласка, вкажіть вхідний шар</translation>
+        <translation>Буль ласка, вкажіть вхідний шар</translation>
     </message>
     <message>
         <source>There were %d vertices in original dataset which
 were reduced to %d vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">В початковому наборі даних було %d вузлів, кількість
+яких після спрощення зменшилась до %d вузлів</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Закінчено</translation>
+        <translation>Закінчено</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Обробку завершено.</translation>
+        <translation>Обробку завершено.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Створені вихдіні шейп-файли в папці:
+%s</translation>
     </message>
     <message>
         <source>unstratified</source>
-        <translation>Не стратифікований</translation>
+        <translation>нерозшарований</translation>
     </message>
     <message>
         <source>stratified</source>
-        <translation>стратифікований</translation>
+        <translation>розшарований</translation>
     </message>
     <message>
         <source>density</source>
@@ -1675,7 +1682,7 @@ were reduced to %d vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="42"/>
         <source>Weight field</source>
-        <translation>Поле ваги</translation>
+        <translation>Вагове поле</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="70"/>
@@ -1689,11 +1696,11 @@ were reduced to %d vertices after simplification</source>
     </message>
     <message>
         <source>Regular points</source>
-        <translation>Регулярні точки</translation>
+        <translation>Рівномірні точки</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
-        <translation>Будь ласка, вкажіть дійсні координати екстенту</translation>
+        <translation>Будь ласка, вкажіть координати охоплення належним чином</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="17"/>
@@ -1723,7 +1730,7 @@ were reduced to %d vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="88"/>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation>Лінійна матриця відстаней (N * k x 3)</translation>
+        <translation>Лінійна матриця відстаней (N*k x 3)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="98"/>
@@ -1733,12 +1740,12 @@ were reduced to %d vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="105"/>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation>Зведена матриця відстаней (середнє, стд. відх., мин., макс.)</translation>
+        <translation>Зведена матриця відстаней (середнє, станд. відх., мін, макс)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="112"/>
         <source>Use only the nearest (k) target points</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати тільки найближчі (k) цільові точки</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
@@ -1747,7 +1754,7 @@ were reduced to %d vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="150"/>
         <source>Output distance matrix</source>
-        <translation>Зберегти матрицю відстаней в файл</translation>
+        <translation>Вихідна матриця відстаней</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="14"/>
@@ -1768,7 +1775,7 @@ were reduced to %d vertices after simplification</source>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation>Буль ласка, вкажіть вхідний шар перетину</translation>
+        <translation>Буль ласка, вкажіть шар перетину ліній</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
@@ -1798,7 +1805,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation>Встановити поточну проекцію</translation>
+        <translation>Означитии поточну проекцію</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
@@ -1827,7 +1834,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation>Вибрана недійсна система координат</translation>
+        <translation>Вибрана недійсна CRS</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
@@ -1873,7 +1880,7 @@ Following field names are longer than 10 characters:
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation>В цьому каталозі немає шейп-файлів. Виберіть інший каталог.</translation>
+        <translation>В цьому каталозі немає шейп-файлів. Будь ласка, виберіть інший.</translation>
     </message>
     <message>
         <source>Delete error</source>
@@ -1893,7 +1900,7 @@ Following field names are longer than 10 characters:
     </message>
     <message>
         <source>Missing or invalid CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Відсутня або недійсна CRS</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
@@ -1947,11 +1954,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation>(Необов&apos;язково) Поле ваги</translation>
+        <translation>(Необов&apos;язково) Вагове поле</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation>(Необов&apos;язково) поле унікального ID</translation>
+        <translation>(Необов&apos;язково) Поле унікального ID</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
@@ -1959,11 +1966,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation>Не вказаний вхідний векторний шар</translation>
+        <translation>Вхідний векторний шар не вказаний</translation>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрабка наступних шарів/файлів завершилась помилкою:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -1975,23 +1982,24 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation>Попередження CRS!</translation>
+        <translation>Попередження щодо CRS!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation>Увага: вихідні шари в різних системах координат.
-Це може призвести до неочікуваного результату.</translation>
+        <translation>Увага: CRS вхідних шарів не співпадають.
+Це може призвести до небажаних результатів.</translation>
     </message>
     <message>
         <source>Summary field</source>
         <translatorcomment>Поле підсумку</translatorcomment>
-        <translation>Цільове поле</translation>
+        <translation>Підсумкове поле</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо видалити існуючий шейп-файл
+%s</translation>
     </message>
     <message>
         <source>Vector grid</source>
@@ -1999,11 +2007,11 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation>Будь ласка, вкажіть дійсні координати екстенту</translation>
+        <translation>Будь ласка, вкажіть дійсні координати охоплення</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation>Введено неправильні координати екстенту</translation>
+        <translation>Введено недійсні координати охоплення</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
@@ -2024,17 +2032,17 @@ This may cause unexpected results.</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="50"/>
         <source>Output count field name</source>
-        <translation>Ім&apos;я поля кількості об&apos;єктів</translation>
+        <translation>Ім&apos;я вихідного  поля кількості</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="57"/>
         <source>PNTCNT</source>
-        <translation></translation>
+        <translation>PNTCNT</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="17"/>
         <source>Generate Random Points</source>
-        <translation>Генерувати випадкові точки</translation>
+        <translation>Зґенерувати випадкові точки</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="32"/>
@@ -2066,31 +2074,31 @@ This may cause unexpected results.</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="96"/>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation>Стратифікована вибірка (Ідивідуальні полігони)</translation>
+        <translation>Розшарована вибірка (ідивідуальні полігони)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="129"/>
         <source>Use this density of points</source>
-        <translation>Використати цю щільність точок</translation>
+        <translation>Використати щільність точок</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="162"/>
         <source>Use value from input field</source>
-        <translation>Використати значення з вхідного поля</translation>
+        <translation>Використати значення вхідного поля</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation>Не вказаний вхідний шейп-файл</translation>
+        <translation>Вхідний шейп-файл не вказаний</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation>Визначення проекції для даних PostGIS зараз не підтримується!</translation>
+        <translation type="unfinished">Поки що неможливо визначити проекцію для даних PostGIS!</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation>Обрана ідентична цільова система координат.
+        <translation>Обрано ідентичну вихідну система координат.
 
 Ви впевнені, що хочете продовжити?</translation>
     </message>
@@ -2102,11 +2110,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation>Виберіть систему координат, що використовується для поточного шару.</translation>
+        <translation type="unfinished">Будь ласка, виберіть систему координат, що означена для поточного шару.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation>Система координат шару буде змінена на обрану.</translation>
+        <translation>Інформацію про систему координат  шару буде оновлно відповідно до обраної CRS.</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -2125,15 +2133,15 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="14"/>
         <source>Random Selection Tool</source>
-        <translation>Випадкова вибірка</translation>
+        <translation>Інструмент випадкової вибірки</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation>Кількість точок в полігонах</translation>
+        <translation>Вичислити кількість точок в полігонах</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation>Кількість точок в полігонах</translation>
+        <translation>Вичислити кількість точок в полігонах</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
@@ -2141,7 +2149,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation>Буль ласка, вкажіть поле кількості об&apos;єктів</translation>
+        <translation>Буль ласка, вкажіть вихідне поле кількості</translation>
     </message>
     <message>
         <source>point count field</source>
@@ -2149,33 +2157,35 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Please select a raster layer</source>
-        <translation type="unfinished">Виберіть растровий шар</translation>
+        <translation>Буд ласка, виберіть растровий шар</translation>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо розрахувати охоплення, що узгоджується з обраним растровим шаром</translation>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ущільнити геометрії</translation>
     </message>
     <message>
         <source>Vertices to add</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вузли для додавання</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">В даний час QGIS не підтримує багатопотоковий доступ 
+                                   до єдиного джерела даних. Впевніться в тому, що атрибутивні 
+                                  таблиці ваших шарів закриті. Продовжити?</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -2183,19 +2193,23 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Can&apos;t delete file %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо видалити файл %s</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка при завантаженні вихідного шейп-файлу:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Створений вихідний шейп-файл:
+%s
+
+Ви бажаєте додати новий шар до легенди?</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -2271,7 +2285,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="64"/>
         <source>Use predefined spatial reference system</source>
-        <translation>Використовувати визначену наперед систему координат</translation>
+        <translation>Використовувати попередньо визначену систему координат</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
@@ -2281,12 +2295,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="92"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation>Імпортувати систему координат з існуючого шару</translation>
+        <translation>Імпортувати систему координат з шару, що існує</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="109"/>
         <source>Import spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати систему координат</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
@@ -2295,7 +2309,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="17"/>
         <source>Generate Regular Points</source>
-        <translation>Генерувати регулярні точки</translation>
+        <translation>Зґенерувати регулярні точки</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="26"/>
@@ -2317,7 +2331,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="66"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="93"/>
         <source>Y Min</source>
-        <translation>Мін Y</translation>
+        <translation>Мін. Y</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="80"/>
@@ -2334,22 +2348,22 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="111"/>
         <source>Grid Spacing</source>
-        <translation>Крок сітки</translation>
+        <translation>Інтервал між точками</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
-        <translation>Вказати крок</translation>
+        <translation>Постійний  інтервал</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
-        <translation>Застосувати випадкове зміну кроку</translation>
+        <translation>Застосувати випадкове зміщення інтервалу між точками</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished">Зсув відносно нижнього лівого кута</translation>
+        <translation>Зміщення відносно нижнього лівого кута</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="17"/>
@@ -2359,17 +2373,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="54"/>
         <source>Attribute Summary</source>
-        <translation>Підсумок атрибутів</translation>
+        <translation>Зведення атрибутів</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="146"/>
         <source>Take attributes of first located feature</source>
-        <translation>Взяти атрибути першого виявленого об&apos;єкта</translation>
+        <translation>Брати атрибути першого виявленого об&apos;єкта</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="99"/>
         <source>Take summary of intersecting features</source>
-        <translation>Взяти атрибути перетинаючихся об&apos;єктів</translation>
+        <translation>Розраховувати для об&apos;єктів, що перетинаються</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="89"/>
@@ -2394,7 +2408,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="129"/>
         <source>Median</source>
-        <translation type="unfinished">Медіана</translation>
+        <translation>Медіана</translation>
     </message>
     <message>
         <source>Output Shapefile:</source>
@@ -2408,22 +2422,22 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="39"/>
         <source>Input subset field (unique ID field)</source>
-        <translation>Вхідне поле підмножини (поле унікального ID)</translation>
+        <translation>Поле вхідної підмножини (поле унікального ID)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="17"/>
         <source>Sum Line Length In Polygons</source>
-        <translation>Сума відстаней у полігонах</translation>
+        <translation>Сума довжин ліній в полігонах</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="56"/>
         <source>Output summed length field name</source>
-        <translation>Ім&apos;я поля сумарної відстані</translation>
+        <translation>Ім&apos;я вихідного поля сумарної довжини</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="63"/>
         <source>LENGTH</source>
-        <translation type="unfinished">ДОВЖИНА</translation>
+        <translation>ДОВЖИНА</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="42"/>
@@ -2433,22 +2447,22 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
         <source>Grid extent</source>
-        <translation>Межі сітки</translation>
+        <translation>Охоплення сітки</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
         <source>Update extents from layer</source>
-        <translation>Оновити екстентз шару</translation>
+        <translation>Оновити охоплення з шару</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation>Оновити екстентз карти</translation>
+        <translation>Оновити охоплення з карти</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Узгодити охоплення та роздільну здатність з вибраним растровим шаром</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="179"/>
@@ -2463,7 +2477,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="221"/>
         <source>Lock 1:1 ratio</source>
-        <translation>Співвідношення сторін 1:1</translation>
+        <translation>Зафіксувати співвідношення 1:1</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="260"/>
@@ -2473,17 +2487,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="286"/>
         <source>Output grid as polygons</source>
-        <translation>Створити сітку як полігони</translation>
+        <translation>Вихідна сітка як полігони</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="296"/>
         <source>Output grid as lines</source>
-        <translation>Створити сітку як лінії</translation>
+        <translation>Вихідна сітка як лінії</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="17"/>
         <source>Vector Split</source>
-        <translation>Розділення векторного шару</translation>
+        <translation>Розщеплення векторного шару</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="57"/>
@@ -2493,7 +2507,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="17"/>
         <source>List Unique Values</source>
-        <translation>Список унікальних значень</translation>
+        <translation>Вивести список унікальних значень</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="53"/>
@@ -2503,7 +2517,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="67"/>
         <source>Unique values list</source>
-        <translation>Унікальні значення</translation>
+        <translation>Список унікальних значень</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="115"/>
@@ -2513,12 +2527,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="145"/>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Виключити помилки місцеположення</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="131"/>
         <source>Press Ctrl+C to copy results to the clipboard</source>
-        <translation>Натисніть Ctrl+C для копіювання результатів в буфер обміну</translation>
+        <translation>Натисніть Ctrl+C для копіювання результатів до буфера обміну</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -2606,82 +2620,82 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Select by layers in the folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вибрати за шарами в каталозі</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="29"/>
         <source>Shapefile type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип шейп-файлу</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="37"/>
         <source>Polygon</source>
-        <translation type="unfinished">Полігон</translation>
+        <translation>Полігон</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="42"/>
         <source>Line</source>
-        <translation type="unfinished">Лінія</translation>
+        <translation>Лінія</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="47"/>
         <source>Point</source>
-        <translation type="unfinished">Точка</translation>
+        <translation>Точка</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="57"/>
         <source>Input directory</source>
-        <translation>Вхідний каталог:</translation>
+        <translation>Вхідний каталог</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="99"/>
         <source>Add result to map canvas</source>
-        <translation>Додати результат на карту</translation>
+        <translation>Додати результат до карти</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="14"/>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Спростити геометрію</translation>
+        <translation>Спростити геометрію</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="20"/>
         <source>Input line or polygon layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний лінійний або полігональний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="46"/>
         <source>Simplify tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Допускова межа спрощення</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вилучити скалкові полігони</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
         <source>area</source>
-        <translation type="unfinished">площа</translation>
+        <translation>площею</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрані об&apos;єкти:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>спільною границею</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднувати вибрані об&apos;єкти з сусіднім полігоном з найбільшою</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="73"/>
         <source>Save to new file</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти в новий файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="93"/>
@@ -2697,37 +2711,37 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="353"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="177"/>
         <source>Add result to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати результат до карти</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="14"/>
         <source>Build spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити просторовий індекс</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
         <source>Select files from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати файли з диска</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="29"/>
         <source>Select files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати файли...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="53"/>
         <source>Select all</source>
-        <translation type="unfinished">Вибрати все</translation>
+        <translation>Вибрати все</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="60"/>
         <source>Select none</source>
-        <translation type="unfinished"></translation>
+        <translation>Нічого не вибирати</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="67"/>
         <source>Clear list</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити список</translation>
     </message>
 </context>
 <context>
@@ -2757,11 +2771,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ім&apos;я поля не може бути пустим</translation>
     </message>
 </context>
 <context>
@@ -2769,32 +2783,32 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="14"/>
         <source>Autofill settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштовання автозаповнення</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="20"/>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим автозаповнення</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="28"/>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>Без автозаповнення</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="33"/>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Заповнювати числами</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="38"/>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Заповнювати значеннями параметра</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="49"/>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати параметр</translation>
     </message>
 </context>
 <context>
@@ -2802,12 +2816,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштовання обробки</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
         <source>Enter setting name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я налаштовання для фільтрування списку</translation>
     </message>
 </context>
 <context>
@@ -2845,11 +2859,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <source>Please enter some name for the index</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть довільне ім&apos;я для індексу</translation>
     </message>
 </context>
 <context>
@@ -2868,51 +2882,51 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Створити</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибачте</translation>
     </message>
     <message>
         <source>no field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>поле не вибране</translation>
     </message>
     <message>
         <source>field is at top already</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">поле вже згори</translation>
     </message>
     <message>
         <source>No field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле не вибране</translation>
     </message>
     <message>
         <source>field is at bottom already</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">поле вже знизу</translation>
     </message>
     <message>
         <source>select schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>виберіть схему!</translation>
     </message>
     <message>
         <source>enter table name!</source>
-        <translation type="unfinished"></translation>
+        <translation>введіть ім&apos;я таблиці!</translation>
     </message>
     <message>
         <source>add some fields!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">додати поля!</translation>
     </message>
     <message>
         <source>set geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation>встановити ім&apos;я поля геометрії</translation>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"></translation>
+        <translation>Добре</translation>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation type="unfinished"></translation>
+        <translation>все пройшло добре</translation>
     </message>
 </context>
 <context>
