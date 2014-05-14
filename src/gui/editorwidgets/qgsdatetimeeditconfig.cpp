@@ -31,6 +31,9 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
   connect( displayButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( updateDisplayFormatText() ) );
   connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDisplayFormatText() ) );
 
+  connect( mCustomFieldFormatRadio, SIGNAL( toggled( bool ) ), mFieldFormatEdit, SLOT( setEnabled( bool ) ) );
+  connect( mCustomDisplayFormatRadio, SIGNAL( toggled( bool ) ), mDisplayFormatEdit, SLOT( setEnabled( bool ) ) );
+
   updateFieldFormatText();
   updateDisplayFormatText();
 }

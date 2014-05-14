@@ -191,42 +191,9 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>mCustomDisplayFormatRadio</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mDisplayFormatEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>96</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>380</x>
-     <y>192</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mCustomFieldFormatRadio</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mFieldFormatEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>81</x>
-     <y>80</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>156</x>
-     <y>80</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <buttongroups>
-  <buttongroup name="fieldButtonGroup"/>
   <buttongroup name="displayButtonGroup"/>
+  <buttongroup name="fieldButtonGroup"/>
  </buttongroups>
 </ui>
