@@ -152,7 +152,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     //debug
     //painter->setPen( QColor( Qt::red ) );
     //painter->drawRect( painterRect );
-    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment );
+    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment, Qt::TextWordWrap );
   }
 
   painter->restore();

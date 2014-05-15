@@ -619,7 +619,7 @@ void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& 
   p->restore();
 }
 
-void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
+void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -630,7 +630,7 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignment | valignment | Qt::TextWordWrap, text );
+  p->drawText( scaledRect, halignment | valignment | flags, text );
   p->restore();
 }
 void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const
