@@ -40,15 +40,8 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
     static QString gradientSpreadHelpText();
     static QString boolHelpText();
 
-  private slots:
-    void expressionButtonClicked();
-
   private:
     const QgsVectorLayer* mVectorLayer;
-
-    /**Tries to fiend a combo box field for an expression string (considering whitespaces, brackets around attribute names)
-        @return index or -1 in case not found*/
-    int comboIndexForExpressionString( const QString& expr, const QComboBox* cb );
 };
 
 #endif // QGSDATADEFINEDSYMBOLLAYERDIALOG_H
