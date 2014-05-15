@@ -30,7 +30,12 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
   connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDisplayFormat( QString ) ) );
   connect( mDisplayFormatComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( displayFormatChanged( int ) ) );
 
+  connect( mFieldHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
+  connect( mDisplayHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
+
+  // initialize
   updateFieldFormat( mFieldFormatComboBox->currentIndex() );
+  displayFormatChanged( mDisplayFormatComboBox->currentIndex() );
 }
 
 
@@ -57,6 +62,11 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
   }
 
   mFieldFormatEdit->setVisible( idx == 3 );
+  mFieldHelpToolButton->setVisible( idx == 3 );
+  if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
+  {
+    mHelpScrollArea->setVisible( false );
+  }
 }
 
 
@@ -72,10 +82,22 @@ void QgsDateTimeEditConfig::updateDisplayFormat( QString fieldFormat )
 void QgsDateTimeEditConfig::displayFormatChanged( int idx )
 {
   mDisplayFormatEdit->setEnabled( idx == 1 );
+  mDisplayHelpToolButton->setVisible( idx == 1 );
+  if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
+  {
+    mHelpScrollArea->setVisible( false );
+  }
   if ( idx == 0 )
   {
     mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
   }
+}
+
+void QgsDateTimeEditConfig::showHelp( bool buttonChecked )
+{
+  mFieldHelpToolButton->setChecked( buttonChecked );
+  mDisplayHelpToolButton->setChecked( buttonChecked );
+  mHelpScrollArea->setVisible( buttonChecked );
 }
 
 

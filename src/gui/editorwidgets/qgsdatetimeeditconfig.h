@@ -30,6 +30,7 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
     void updateFieldFormat( int idx );
     void updateDisplayFormat( QString fieldFormat );
     void displayFormatChanged( int idx );
+    void showHelp( bool buttonChecked );
 
     // QgsEditorConfigWidget interface
   public:
