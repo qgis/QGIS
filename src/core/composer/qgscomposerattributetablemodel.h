@@ -43,6 +43,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModel: public QAbstractTableMod
 
     /**Constructor for QgsComposerAttributeTableColumnModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
+     * @param parent optional parent
      */
     QgsComposerAttributeTableColumnModel( QgsComposerAttributeTable *composerTable, QObject *parent = 0 );
     virtual ~QgsComposerAttributeTableColumnModel();
@@ -140,6 +141,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModel: public QSortFilterProxy
     /**Constructor for QgsComposerTableSortColumnsProxyModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
+     * @param parent optional parent
      */
     QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, ColumnFilterType filterType, QObject *parent = 0 );
 
@@ -173,7 +175,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModel: public QSortFilterProxy
     /**Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
      * @returns QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
-     * @param index a QModelIndex
+     * @param sourceIndex a QModelIndex
      * @note added in 2.3
      * @see columnFromRow
      * @see columnFromIndex

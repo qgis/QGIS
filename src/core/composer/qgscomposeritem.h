@@ -314,6 +314,12 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text
+     * @param p painter to use
+     * @param rect rectangle to draw into
+     * @param text text to draw
+     * @param font font to use
+     * @param halignment optional horizontal alignment
+     * @param valignment optional vertical alignment
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
     */
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;

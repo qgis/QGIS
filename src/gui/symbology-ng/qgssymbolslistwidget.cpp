@@ -208,6 +208,8 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 
 void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
 {
+  Q_UNUSED( name );
+  Q_UNUSED( symbol );
   populateSymbolView();
 }
 

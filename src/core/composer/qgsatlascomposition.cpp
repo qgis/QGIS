@@ -107,53 +107,6 @@ void QgsAtlasComposition::setComposerMap( QgsComposerMap* map )
   map->setAtlasDriven( true );
 }
 
-bool QgsAtlasComposition::fixedScale() const
-{
-  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return false;
-  }
-
-  return map->atlasFixedScale();
-}
-
-void QgsAtlasComposition::setFixedScale( bool fixed )
-{
-  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasFixedScale( fixed );
-}
-
-float QgsAtlasComposition::margin() const
-{
-  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return 0;
-  }
-
-  return map->atlasMargin();
-}
-
-void QgsAtlasComposition::setMargin( float margin )
-{
-  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasMargin(( double ) margin );
-}
 
 int QgsAtlasComposition::sortKeyAttributeIndex() const
 {
@@ -745,4 +698,52 @@ void QgsAtlasComposition::evalFeatureFilename()
   }
 }
 
+Q_NOWARN_DEPRECATED_PUSH
+bool QgsAtlasComposition::fixedScale() const
+{
+  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return false;
+  }
 
+  return map->atlasFixedScale();
+}
+
+void QgsAtlasComposition::setFixedScale( bool fixed )
+{
+  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return;
+  }
+
+  map->setAtlasFixedScale( fixed );
+}
+
+float QgsAtlasComposition::margin() const
+{
+  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return 0;
+  }
+
+  return map->atlasMargin();
+}
+
+void QgsAtlasComposition::setMargin( float margin )
+{
+  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return;
+  }
+
+  map->setAtlasMargin(( double ) margin );
+}
+Q_NOWARN_DEPRECATED_POP

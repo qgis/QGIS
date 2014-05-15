@@ -215,9 +215,11 @@ void TestQgsAtlasComposition::autoscale_render()
 
 void TestQgsAtlasComposition::autoscale_render_2_0_api()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   mAtlas->setComposerMap( mAtlasMap );
   mAtlas->setFixedScale( false );
   mAtlas->setMargin( 0.10f );
+  Q_NOWARN_DEPRECATED_POP
 
   mAtlas->beginRender();
 
@@ -230,9 +232,11 @@ void TestQgsAtlasComposition::autoscale_render_2_0_api()
     QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
+  Q_NOWARN_DEPRECATED_PUSH
   mAtlas->setComposerMap( 0 );
   mAtlas->setFixedScale( false );
   mAtlas->setMargin( 0 );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsAtlasComposition::fixedscale_render()
@@ -260,8 +264,10 @@ void TestQgsAtlasComposition::fixedscale_render()
 void TestQgsAtlasComposition::fixedscale_render_2_0_api()
 {
   mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  Q_NOWARN_DEPRECATED_PUSH
   mAtlas->setComposerMap( mAtlasMap );
   mAtlas->setFixedScale( true );
+  Q_NOWARN_DEPRECATED_POP
   mAtlas->beginRender();
 
   for ( int fit = 0; fit < 2; ++fit )
@@ -273,8 +279,10 @@ void TestQgsAtlasComposition::fixedscale_render_2_0_api()
     QVERIFY( checker.testComposition( mReport, 0, 200 ) );
   }
   mAtlas->endRender();
+  Q_NOWARN_DEPRECATED_PUSH
   mAtlas->setComposerMap( 0 );
   mAtlas->setFixedScale( false );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsAtlasComposition::two_map_autoscale_render()

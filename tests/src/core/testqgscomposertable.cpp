@@ -322,7 +322,9 @@ void TestQgsComposerTable::attributeTableSetAliasOnSubset()
   aliases.insert( 1, QString( "1Heading" ) );
   aliases.insert( 3, QString( "2Pilots" ) );
   aliases.insert( 4, QString( "3Cabin Crew" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setFieldAliasMap( aliases );
+  Q_NOWARN_DEPRECATED_POP
 
   //get header labels and compare
   QMap<int, QString> headerMap = mComposerAttributeTable->headerLabels();
@@ -338,7 +340,9 @@ void TestQgsComposerTable::attributeTableSetAliasOnSubset()
   attributes.clear();
   aliases.clear();
   mComposerAttributeTable->setDisplayAttributes( attributes );
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setFieldAliasMap( aliases );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsComposerTable::attributeTableGetAttributes()
@@ -348,7 +352,9 @@ void TestQgsComposerTable::attributeTableGetAttributes()
   attributes << 0 << 3 << 4;
   mComposerAttributeTable->setDisplayAttributes( attributes );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QSet<int> evaluated = mComposerAttributeTable->displayAttributes();
+  Q_NOWARN_DEPRECATED_POP
 
   QCOMPARE( evaluated, attributes );
 
@@ -363,7 +369,9 @@ void TestQgsComposerTable::attributeTableAlias()
 
   fieldAliasMap.insert( 0, QString( "alias 0" ) );
   fieldAliasMap.insert( 3, QString( "alias 3" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+  Q_NOWARN_DEPRECATED_POP
 
   QStringList expectedHeaders;
   expectedHeaders << "alias 0" << "Heading" << "Importance" << "alias 3" << "Cabin Crew" << "Staff";
@@ -381,7 +389,9 @@ void TestQgsComposerTable::attributeTableAlias()
   }
 
   fieldAliasMap.clear();
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsComposerTable::attributeTableGetAlias()
@@ -395,7 +405,9 @@ void TestQgsComposerTable::attributeTableGetAlias()
 
   fieldAliasMap.insert( 1, QString( "alias 1" ) );
   fieldAliasMap.insert( 2, QString( "alias 2" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+  Q_NOWARN_DEPRECATED_POP
 
   QMap<int, QString> expectedAliases;
   expectedAliases.insert( 1, QString( "alias 1" ) );
@@ -403,7 +415,9 @@ void TestQgsComposerTable::attributeTableGetAlias()
   expectedAliases.insert( 4, QString( "Cabin Crew" ) );
 
   //get header labels and compare
+  Q_NOWARN_DEPRECATED_PUSH
   QMap<int, QString> aliasMap = mComposerAttributeTable->fieldAliasMap();
+  Q_NOWARN_DEPRECATED_POP
   QMap<int, QString>::const_iterator aliasIt = aliasMap.constBegin();
   QString expected;
   QString evaluated;
@@ -415,7 +429,9 @@ void TestQgsComposerTable::attributeTableGetAlias()
   }
 
   fieldAliasMap.clear();
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+  Q_NOWARN_DEPRECATED_POP
   attributes.clear();
   mComposerAttributeTable->setDisplayAttributes( attributes );
 }
@@ -427,7 +443,9 @@ void TestQgsComposerTable::attributeTableSort()
   sort.append( qMakePair( 0, true ) );
   sort.append( qMakePair( 1, false ) );
   sort.append( qMakePair( 3, true ) );
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setSortAttributes( sort );
+  Q_NOWARN_DEPRECATED_POP
   mComposerAttributeTable->setMaximumNumberOfFeatures( 5 );
 
   QList<QStringList> expectedRows;
@@ -451,7 +469,9 @@ void TestQgsComposerTable::attributeTableSort()
   compareTable( expectedRows );
 
   sort.clear();
+  Q_NOWARN_DEPRECATED_PUSH
   mComposerAttributeTable->setSortAttributes( sort );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsComposerTable::attributeTableVisibleOnly()
