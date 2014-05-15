@@ -30,8 +30,16 @@ from processing.outputs.Output import Output
 
 class OutputFile(Output):
 
+    def __init__(self, name='', description='', ext = None):
+        self.name = name
+        self.description = description
+        self.ext = ext
+        
     def getFileFilter(self, alg):
-        return 'All files(*.*)'
+        if self.ext is None:
+            return 'All files(*.*)'
+        else:
+            return '%s files(*.%s)' % self.ext
 
     def getDefaultFileExtension(self, alg):
-        return 'file'
+        return self.ext or 'file'

@@ -53,4 +53,4 @@ class OutputFactory:
                 if len(tokens) == 2:
                     return clazz(tokens[0], tokens[1])
                 else:
-                    return clazz(tokens[0], tokens[1], tokens[2] == str(True))
+                    return clazz(tokens[0], tokens[1], tokens[2])
