@@ -1504,8 +1504,6 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
 
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->userNoDataValues( bandNo ).isEmpty() ) continue;
-
     QDomElement noDataRangeList = document.createElement( "noDataList" );
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
