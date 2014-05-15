@@ -23,19 +23,14 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
 
   mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
 
-  connect( displayButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( updateDemoWidget() ) );
   connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDemoWidget() ) );
   connect( mCalendarPopupCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( updateDemoWidget() ) );
 
-  connect( fieldButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( updateFieldFormatText() ) );
-  connect( displayButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( updateDisplayFormatText() ) );
-  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDisplayFormatText() ) );
+  connect( mFieldFormatComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateFieldFormat( int ) ) );
+  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDisplayFormat( QString ) ) );
+  connect( mDisplayFormatComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( displayFormatChanged( int ) ) );
 
-  connect( mCustomFieldFormatRadio, SIGNAL( toggled( bool ) ), mFieldFormatEdit, SLOT( setEnabled( bool ) ) );
-  connect( mCustomDisplayFormatRadio, SIGNAL( toggled( bool ) ), mDisplayFormatEdit, SLOT( setEnabled( bool ) ) );
-
-  updateFieldFormatText();
-  updateDisplayFormatText();
+  updateFieldFormat( mFieldFormatComboBox->currentIndex() );
 }
 
 
@@ -46,30 +41,38 @@ void QgsDateTimeEditConfig::updateDemoWidget()
 }
 
 
-void QgsDateTimeEditConfig::updateFieldFormatText()
+void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
-  // if auto => use the default field format
-  if ( !mCustomFieldFormatRadio->isChecked() )
+  if ( idx == 0 )
   {
-    if ( mDateTimeRadio->isChecked() )
-    {
-      mFieldFormatEdit->setText( QgsDateTimeEditFactory::DateTimeFormat );
-    }
-    else if ( mTimeRadio->isChecked() )
-    {
-      mFieldFormatEdit->setText( QgsDateTimeEditFactory::TimeFormat );
-    }
-    else if ( mDateRadio->isChecked() )
-    {
-      mFieldFormatEdit->setText( QgsDateTimeEditFactory::DateFormat );
-    }
+    mFieldFormatEdit->setText( QgsDateTimeEditFactory::DateFormat );
+  }
+  else if ( idx == 1 )
+  {
+    mFieldFormatEdit->setText( QgsDateTimeEditFactory::TimeFormat );
+  }
+  else if ( idx == 2 )
+  {
+    mFieldFormatEdit->setText( QgsDateTimeEditFactory::DateTimeFormat );
+  }
+
+  mFieldFormatEdit->setVisible( idx == 3 );
+}
+
+
+void QgsDateTimeEditConfig::updateDisplayFormat( QString fieldFormat )
+{
+  if ( mDisplayFormatComboBox->currentIndex() == 0 )
+  {
+    mDisplayFormatEdit->setText( fieldFormat );
   }
 }
 
 
-void QgsDateTimeEditConfig::updateDisplayFormatText()
+void QgsDateTimeEditConfig::displayFormatChanged( int idx )
 {
-  if ( !mCustomDisplayFormatRadio->isChecked() )
+  mDisplayFormatEdit->setEnabled( idx == 1 );
+  if ( idx == 0 )
   {
     mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
   }
@@ -96,21 +99,27 @@ void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
     mFieldFormatEdit->setText( fieldFormat );
 
     if ( fieldFormat == QgsDateTimeEditFactory::DateFormat )
-      mDateRadio->setChecked( true );
+      mFieldFormatComboBox->setCurrentIndex( 0 );
     else if ( fieldFormat == QgsDateTimeEditFactory::TimeFormat )
-      mTimeRadio->setChecked( true );
+      mFieldFormatComboBox->setCurrentIndex( 1 );
     else if ( fieldFormat == QgsDateTimeEditFactory::DateTimeFormat )
-      mDateTimeRadio->setChecked( true );
+      mFieldFormatComboBox->setCurrentIndex( 2 );
     else
-      mCustomFieldFormatRadio->setChecked( true );
+      mFieldFormatComboBox->setCurrentIndex( 3 );
   }
 
   if ( config.contains( "display_format" ) )
   {
     const QString displayFormat = config[ "display_format" ].toString();
     mDisplayFormatEdit->setText( displayFormat );
-    mAutoDisplayFormatRadio->setChecked( displayFormat == mFieldFormatEdit->text() );
-    mCustomDisplayFormatRadio->setChecked( displayFormat != mFieldFormatEdit->text() );
+    if ( displayFormat == mFieldFormatEdit->text() )
+    {
+      mDisplayFormatComboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+      mDisplayFormatComboBox->setCurrentIndex( 1 );
+    }
   }
 
   if ( config.contains( "calendar_popup" ) )

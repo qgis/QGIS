@@ -27,8 +27,9 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
 
   private slots:
     void updateDemoWidget();
-    void updateFieldFormatText();
-    void updateDisplayFormatText();
+    void updateFieldFormat( int idx );
+    void updateDisplayFormat( QString fieldFormat );
+    void displayFormatChanged( int idx );
 
     // QgsEditorConfigWidget interface
   public:
