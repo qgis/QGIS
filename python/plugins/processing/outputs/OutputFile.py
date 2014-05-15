@@ -34,7 +34,7 @@ class OutputFile(Output):
         self.name = name
         self.description = description
         self.ext = ext
-        
+
     def getFileFilter(self, alg):
         if self.ext is None:
             return 'All files(*.*)'

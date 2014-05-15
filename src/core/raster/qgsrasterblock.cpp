@@ -712,7 +712,7 @@ void QgsRasterBlock::applyScaleOffset( double scale, double offset )
   if ( !typeIsNumeric( mDataType ) ) return;
   if ( scale == 1.0 && offset == 0.0 ) return;
 
-  qgssize size = (qgssize) mWidth * mHeight;
+  qgssize size = ( qgssize ) mWidth * mHeight;
   for ( qgssize i = 0; i < size; ++i )
   {
     if ( !isNoData( i ) ) setValue( i, value( i ) * scale + offset );

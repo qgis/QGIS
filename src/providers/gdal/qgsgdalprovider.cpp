@@ -1379,7 +1379,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 
   // Min/max, if not specified, are set by histogramDefaults, it does not
   // set however min/max shifted to avoid rounding errors
-  
+
   double myMinVal = myHistogram.minimum;
   double myMaxVal = myHistogram.maximum;
 
@@ -1388,8 +1388,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   double myOffset = bandOffset( theBandNo );
   if ( myScale != 1.0 || myOffset != 0. )
   {
-    myMinVal = (myHistogram.minimum - myOffset) / myScale;
-    myMaxVal = (myHistogram.maximum - myOffset) / myScale;
+    myMinVal = ( myHistogram.minimum - myOffset ) / myScale;
+    myMaxVal = ( myHistogram.maximum - myOffset ) / myScale;
   }
 
   double dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * myHistogram.binCount );
@@ -2385,34 +2385,34 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max
                                       | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
                                       | QgsRasterBandStats::StdDev;
-    
+
     // define if the band has scale and offset to apply
     double myScale = bandScale( theBandNo );
     double myOffset = bandOffset( theBandNo );
     if ( myScale != 1.0 || myOffset != 0.0 )
     {
-        if ( myScale < 0.0 )
-        {
-            // update Min and Max value
-            myRasterBandStats.minimumValue = pdfMax * myScale + myOffset;
-            myRasterBandStats.maximumValue = pdfMin * myScale + myOffset;
-            // update the range
-            myRasterBandStats.range =  (pdfMin - pdfMax) * myScale;
-            // update standard deviation
-            myRasterBandStats.stdDev = -1.0 * pdfStdDev * myScale;
-        }
-        else
-        {
-            // update Min and Max value
-            myRasterBandStats.minimumValue = pdfMin * myScale + myOffset;
-            myRasterBandStats.maximumValue = pdfMax * myScale + myOffset;
-            // update the range
-            myRasterBandStats.range =  (pdfMax - pdfMin) * myScale;
-            // update standard deviation
-            myRasterBandStats.stdDev = pdfStdDev * myScale;
-        }
-        // update the mean
-        myRasterBandStats.mean = pdfMean * myScale + myOffset;
+      if ( myScale < 0.0 )
+      {
+        // update Min and Max value
+        myRasterBandStats.minimumValue = pdfMax * myScale + myOffset;
+        myRasterBandStats.maximumValue = pdfMin * myScale + myOffset;
+        // update the range
+        myRasterBandStats.range = ( pdfMin - pdfMax ) * myScale;
+        // update standard deviation
+        myRasterBandStats.stdDev = -1.0 * pdfStdDev * myScale;
+      }
+      else
+      {
+        // update Min and Max value
+        myRasterBandStats.minimumValue = pdfMin * myScale + myOffset;
+        myRasterBandStats.maximumValue = pdfMax * myScale + myOffset;
+        // update the range
+        myRasterBandStats.range = ( pdfMax - pdfMin ) * myScale;
+        // update standard deviation
+        myRasterBandStats.stdDev = pdfStdDev * myScale;
+      }
+      // update the mean
+      myRasterBandStats.mean = pdfMean * myScale + myOffset;
     }
 
 #ifdef QGISDEBUG

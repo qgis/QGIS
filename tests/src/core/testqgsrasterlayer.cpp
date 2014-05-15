@@ -356,17 +356,17 @@ void TestQgsRasterLayer::checkScaleOffset()
 {
   mReport += "<h2>Check Stats with scale/offset</h2>\n";
 
-  QFileInfo myRasterFileInfo(  mTestDataDir + "scaleoffset.tif" );
+  QFileInfo myRasterFileInfo( mTestDataDir + "scaleoffset.tif" );
   QgsRasterLayer * myRasterLayer;
   myRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
-  QVERIFY ( myRasterLayer );
+  QVERIFY( myRasterLayer );
   if ( ! myRasterLayer->isValid() )
   {
     qDebug() << QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
     mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
     delete myRasterLayer;
-    QVERIFY ( false );
+    QVERIFY( false );
   }
 
   QFile::remove( myRasterFileInfo.filePath() + ".aux.xml" ); // remove cached stats
@@ -393,10 +393,10 @@ void TestQgsRasterLayer::checkScaleOffset()
   QVERIFY( fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
 
   QgsRasterDataProvider* myProvider = myRasterLayer->dataProvider();
-  QgsPoint myPoint(1535030, 5083350);
-  QgsRectangle myRect(1535030-5, 5083350-5, 1535030+5, 5083350+5);
+  QgsPoint myPoint( 1535030, 5083350 );
+  QgsRectangle myRect( 1535030 - 5, 5083350 - 5, 1535030 + 5, 5083350 + 5 );
   QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, QgsRaster::IdentifyFormatValue, myRect, 1, 1 );
-  
+
   if ( identifyResult.isValid() )
   {
     QMap<int, QVariant> values = identifyResult.results();
@@ -408,7 +408,7 @@ void TestQgsRasterLayer::checkScaleOffset()
         valueString = tr( "no data" );
         mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ) ).arg( valueString );
         delete myRasterLayer;
-        QVERIFY ( false );
+        QVERIFY( false );
       }
       else
       {
@@ -424,7 +424,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   else
   {
     delete myRasterLayer;
-    QVERIFY ( false );
+    QVERIFY( false );
   }
 
   mReport += "<p>Passed</p>";

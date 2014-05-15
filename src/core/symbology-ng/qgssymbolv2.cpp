@@ -89,7 +89,7 @@ QgsMapUnitScale QgsSymbolV2::mapUnitScale() const
   }
 
   QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
-  if( it == mLayers.constEnd() )
+  if ( it == mLayers.constEnd() )
     return QgsMapUnitScale();
 
   QgsMapUnitScale scale = ( *it )->mapUnitScale();
