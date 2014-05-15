@@ -513,7 +513,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
 
   QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "name", tr( "Name" ), mLayer->dataDefinedPropertyString( "name" ),
-      "'square'|'rectangle'|'diamond'|'pentagon'\n|'triangle'|'equilateral_triangle'|'star'\n|'regular_star'|'arrow'|'filled_arrowhead'|'circle'\n|'cross'|'x'|'cross2'|'line'|'arrowhead'" );
+      "'square'|'rectangle'|'diamond'|'pentagon'|'triangle'|'equilateral_triangle'|'star'|'regular_star'|'arrow'|'filled_arrowhead'|'circle'|'cross'|'x'|'cross2'|'line'|'arrowhead'" );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Fill color" ), mLayer->dataDefinedPropertyString( "color" ),
       QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color_border", tr( "Border color" ), mLayer->dataDefinedPropertyString( "color_border" ),
