@@ -530,6 +530,11 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   if ( layerFontSizeIt != mParameterMap.constEnd() )
   {
     layerFont.setPixelSize( layerFontSizeIt.value().toDouble() * 0.3528 * mmToPixelFactor * fontOversamplingFactor );
+	// check if LAYERFONTSIZE is 0, to avoid printing the layer text in the symbol
+	drawLayer = true;
+	if (layerFontSizeIt.value().toDouble() == 0) {
+		drawLayer = false;
+	}
   }
   else
   {
@@ -544,7 +549,6 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   {
     layerFontColor = QColor( 0, 0, 0 );
   }
-
 
   itemFont = mConfigParser->legendItemFont();
   QMap<QString, QString>::const_iterator itemFontFamilyIt = mParameterMap.find( "ITEMFONTFAMILY" );
@@ -566,6 +570,11 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   if ( itemFontSizeIt != mParameterMap.constEnd() )
   {
     itemFont.setPixelSize( itemFontSizeIt.value().toDouble() * 0.3528 * mmToPixelFactor * fontOversamplingFactor );
+	// check if ITEMFONTSIZE is 0, to avoid printing the item text in the symbol
+	drawItem = true;
+	if (itemFontSizeIt.value().toDouble() == 0) {
+		drawItem = false;
+	}
   }
   else
   {
@@ -1727,28 +1736,36 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
   }
 
   QFontMetricsF layerFontMetrics( layerFont );
-  currentY += layerFontMetrics.ascent() / fontOversamplingFactor;
+  if (drawLayer == true) {
+    currentY += layerFontMetrics.ascent() / fontOversamplingFactor;
+  }
 
   //draw layer title first
   if ( p )
   {
-    p->save();
-    p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-    p->setPen( layerFontColor );
-    p->setFont( layerFont );
-    p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
-    p->restore();
+    if (drawLayer == true) {
+      p->save();
+      p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
+      p->setPen( layerFontColor );
+      p->setFont( layerFont );
+      p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
+      p->restore();
+    }
   }
   else
   {
     double layerItemWidth = layerFontMetrics.width( item->text() ) / fontOversamplingFactor + boxSpace;
     if ( layerItemWidth > maxTextWidth )
     {
-      maxTextWidth = layerItemWidth;
+	  if ( drawLayer == true) {
+        maxTextWidth = layerItemWidth;
+      }
     }
   }
 
-  currentY += layerTitleSpace;
+  if (drawLayer == true) {
+    currentY += layerTitleSpace;
+  }
 
   //then draw all the children
   QFontMetricsF itemFontMetrics( itemFont );
@@ -1795,25 +1812,33 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
         break;
     }
 
-    //finally draw text
-    currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
+	if ( drawItem == true ) {
+      //finally draw text
+      currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
+	} else {
+	  currentTextWidth = 0;
+	}
     double symbolItemHeight = qMax( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
 
     if ( p )
     {
-      p->save();
-      p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-      p->setPen( itemFontColor );
-      p->setFont( itemFont );
-      p->drawText( maxSymbolWidth * fontOversamplingFactor,
+      if ( drawItem == true ) {
+        p->save();
+        p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
+        p->setPen( itemFontColor );
+        p->setFont( itemFont );
+        p->drawText( maxSymbolWidth * fontOversamplingFactor,
                    ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
-      p->restore();
+        p->restore();
+      }
     }
     else
     {
       if ( currentTextWidth > maxTextWidth )
       {
-        maxTextWidth = currentTextWidth;
+	    if ( drawItem == true ) {
+          maxTextWidth = currentTextWidth;
+        }
       }
       double symbolWidth = boxSpace + currentSymbolWidth + iconLabelSpace;
       if ( symbolWidth > maxSymbolWidth )
