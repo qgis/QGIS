@@ -1,5 +1,5 @@
 /**A model for displaying columns shown in a QgsComposerAttributeTable*/
-class QgsComposerAttributeTableColumnModel: public QAbstractTableModel
+class QgsComposerAttributeTableColumnModel: QAbstractTableModel
 {
 %TypeHeaderCode
 #include <qgscomposerattributetablemodel.h>
@@ -91,7 +91,7 @@ class QgsComposerAttributeTableColumnModel: public QAbstractTableModel
 };
 
 /**Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
-class QgsComposerTableSortColumnsProxyModel : public QSortFilterProxyModel
+class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
 {
 %TypeHeaderCode
 #include <qgscomposerattributetablemodel.h>
