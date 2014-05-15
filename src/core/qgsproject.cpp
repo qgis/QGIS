@@ -1469,8 +1469,10 @@ QString QgsProject::writePath( QString src ) const
     return src;
   }
 
-  QString srcPath = src;
-  QString projPath = fileName();
+  QFileInfo srcFileInfo( src );//QString srcPath = src;
+  QFileInfo projFileInfo( fileName() );
+  QString srcPath = srcFileInfo.canonicalFilePath();
+  QString projPath = projFileInfo.canonicalFilePath();
 
   if ( projPath.isEmpty() )
   {
