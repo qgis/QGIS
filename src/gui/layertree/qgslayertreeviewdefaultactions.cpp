@@ -81,6 +81,13 @@ QAction* QgsLayerTreeViewDefaultActions::actionZoomToGroup(QgsMapCanvas* canvas,
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionMakeTopLevel(QObject* parent)
+{
+  QAction* a = new QAction(tr("&Move to Top-level"), parent);
+  connect(a, SIGNAL(triggered()), this, SLOT(makeTopLevel()));
+  return a;
+}
+
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();
@@ -192,4 +199,21 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers(QgsMapCanvas* canvas, const QL
   //zoom to bounding box
   canvas->setExtent( extent );
   canvas->refresh();
+}
+
+
+void QgsLayerTreeViewDefaultActions::makeTopLevel()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if (!node)
+    return;
+
+  QgsLayerTreeGroup* rootGroup = mView->layerTreeModel()->rootGroup();
+  QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>(node->parent());
+  if (!parentGroup || parentGroup == rootGroup)
+    return;
+
+  QgsLayerTreeNode* clonedNode = node->clone();
+  rootGroup->addChildNode(clonedNode);
+  parentGroup->removeChildNode(node);
 }

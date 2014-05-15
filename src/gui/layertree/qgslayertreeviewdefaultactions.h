@@ -25,6 +25,8 @@ public:
   QAction* actionZoomToGroup(QgsMapCanvas* canvas, QObject* parent = 0);
   // TODO: zoom to selected
 
+  QAction* actionMakeTopLevel(QObject* parent = 0);
+
 protected slots:
   void addGroup();
   void removeGroupOrLayer();
@@ -33,6 +35,7 @@ protected slots:
   void showFeatureCount();
   void zoomToLayer();
   void zoomToGroup();
+  void makeTopLevel();
 
 protected:
   void zoomToLayers(QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers);

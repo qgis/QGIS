@@ -2223,6 +2223,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionShowFeatureCount(menu) );
     }
 
+    if (node->parent() != mView->layerTreeModel()->rootGroup())
+    {
+      menu->addAction( actions->actionMakeTopLevel(menu) );
+    }
+
     menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
     menu->addAction( actions->actionRenameGroupOrLayer(menu) );
   }
