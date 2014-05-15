@@ -117,6 +117,22 @@ class QgsComposerPicture: QgsComposerItem
     */
     ResizeMode resizeMode() const;
     
+    /**Sets the picture's anchor point, which controls how it is placed
+     * within the picture item's frame.
+     * @param anchor anchor point for picture
+     * @note added in 2.3
+     * @see pictureAnchor
+     */
+    void setPictureAnchor( QgsComposerItem::ItemPositionMode anchor );
+
+    /**Returns the picture's current anchor, which controls how it is placed
+     * within the picture item's frame.
+     * @returns anchor point for picture
+     * @note added in 2.3
+     * @see setPictureAnchor
+     */
+    ItemPositionMode pictureAnchor() const;   
+    
     /**Returns whether the picture item is using an expression for the image source.
      * @returns true if the picture is using an expression for the source, false if
      * it is using a single static file path for the source.

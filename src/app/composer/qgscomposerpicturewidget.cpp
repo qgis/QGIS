@@ -245,6 +245,29 @@ void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int i
 
   //disable picture rotation for non-zoom modes
   mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
+
+  //disable anchor point control for certain zoom modes
+  if ( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
+       mPicture->resizeMode() == QgsComposerPicture::Clip )
+  {
+    mAnchorPointComboBox->setEnabled( true );
+  }
+  else
+  {
+    mAnchorPointComboBox->setEnabled( false );
+  }
+}
+
+void QgsComposerPictureWidget::on_mAnchorPointComboBox_currentIndexChanged( int index )
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture placement changed" ) );
+  mPicture->setPictureAnchor(( QgsComposerItem::ItemPositionMode )index );
+  mPicture->endCommand();
 }
 
 void QgsComposerPictureWidget::on_mRadioPath_clicked()
@@ -422,12 +445,12 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
     mResizeModeComboBox->blockSignals( true );
+    mAnchorPointComboBox->blockSignals( true );
     mRadioPath->blockSignals( true );
     mRadioExpression->blockSignals( true );
     mPictureExpressionLineEdit->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
-//    QRectF pictureRect = mPicture->rect();
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
     refreshMapComboBox();
@@ -455,6 +478,18 @@ void QgsComposerPictureWidget::setGuiElementValues()
     //disable picture rotation for non-zoom modes
     mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
 
+    mAnchorPointComboBox->setCurrentIndex(( int )mPicture->pictureAnchor() );
+    //disable anchor point control for certain zoom modes
+    if ( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
+         mPicture->resizeMode() == QgsComposerPicture::Clip )
+    {
+      mAnchorPointComboBox->setEnabled( true );
+    }
+    else
+    {
+      mAnchorPointComboBox->setEnabled( false );
+    }
+
     mRadioPath->setChecked( !( mPicture->usePictureExpression() ) );
     mRadioExpression->setChecked( mPicture->usePictureExpression() );
     mPictureLineEdit->setEnabled( !( mPicture->usePictureExpression() ) );
@@ -469,6 +504,7 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
     mResizeModeComboBox->blockSignals( false );
+    mAnchorPointComboBox->blockSignals( false );
     mRadioPath->blockSignals( false );
     mRadioExpression->blockSignals( false );
     mPictureExpressionLineEdit->blockSignals( false );

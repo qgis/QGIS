@@ -30,6 +30,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     Q_OBJECT
 
   public:
+
     QgsComposerPictureWidget( QgsComposerPicture* picture );
     ~QgsComposerPictureWidget();
 
@@ -47,6 +48,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
     void on_mComposerMapComboBox_activated( const QString & text );
     void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void on_mAnchorPointComboBox_currentIndexChanged( int index );
     void on_mRadioPath_clicked();
     void on_mRadioExpression_clicked();
     void setPictureExpression();
