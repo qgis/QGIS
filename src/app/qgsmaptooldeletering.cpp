@@ -82,14 +82,13 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
     mRubberBand = createRubberBand( vlayer->geometryType() );
 
     mRubberBand->setToGeometry( ringGeom, vlayer );
-    mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
-    mRubberBand->setWidth( 2 );
     mRubberBand->show();
   }
 }
 
 void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 
   delete mRubberBand;
   mRubberBand = 0;
@@ -97,25 +96,18 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
   if ( mPressedFid == -1 )
     return;
 
-  QgsPoint p = toLayerCoordinates( vlayer, e->pos() );
-
-  int fid, partNum, ringNum;
   QgsFeature f;
   QgsGeometry* g;
-  ringUnderPoint( p, fid, partNum, ringNum );
 
-  if ( fid == mPressedFid && partNum == mPressedPartNum && ringNum == mPressedRingNum )
+  vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
+
+  g = f.geometry();
+  if ( g->deleteRing( mPressedRingNum, mPressedPartNum ) )
   {
-    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
-
-    g = f.geometry();
-    if ( g->deleteRing( ringNum, partNum ) )
-    {
-      vlayer->beginEditCommand( tr( "Ring deleted" ) );
-      vlayer->changeGeometry( fid, g );
-      vlayer->endEditCommand();
-      mCanvas->refresh();
-    }
+    vlayer->beginEditCommand( tr( "Ring deleted" ) );
+    vlayer->changeGeometry( mPressedFid, g );
+    vlayer->endEditCommand();
+    mCanvas->refresh();
   }
 }
 
