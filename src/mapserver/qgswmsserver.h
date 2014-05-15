@@ -153,6 +153,10 @@ class QgsWMSServer
                                const QFont& layerFont, const QFont& itemFont, const QColor& layerFontColor, const QColor& itemFontColor,
                                double& maxTextWidth, double& maxSymbolWidth );
 
+    // speficy if layer or item text should be drawn in the legend (for GetLegendGraphics request)
+    bool drawLayer;
+    bool drawItem;
+
     //helper functions for GetLegendGraphics
     /**Draws layer item and subitems
        @param p painter if the item should be drawn, if 0 the size parameters are calculated only
