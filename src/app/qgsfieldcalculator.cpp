@@ -143,6 +143,7 @@ void QgsFieldCalculator::accept()
 
     if ( !mVectorLayer->addAttribute( newField ) )
     {
+      QApplication::restoreOverrideCursor();
       QMessageBox::critical( 0, tr( "Provider error" ), tr( "Could not add the new field to the provider." ) );
       mVectorLayer->destroyEditCommand();
       return;
@@ -162,6 +163,7 @@ void QgsFieldCalculator::accept()
 
     if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
     {
+      QApplication::restoreOverrideCursor();
       QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
       return;
     }
