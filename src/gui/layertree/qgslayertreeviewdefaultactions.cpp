@@ -88,16 +88,18 @@ QAction* QgsLayerTreeViewDefaultActions::actionMakeTopLevel(QObject* parent)
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionGroupSelected(QObject* parent)
+{
+  QAction* a = new QAction(tr("&Group Selected"), parent);
+  connect(a, SIGNAL(triggered()), this, SLOT(groupSelected()));
+  return a;
+}
+
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();
-  QString prefix = group == mView->layerTreeModel()->rootGroup() ? "group" : "sub-group";
 
-  QString newName = prefix + "1";
-  for ( int i = 2; group->findGroup(newName); ++i)
-    newName = prefix + QString::number(i);
-
-  QgsLayerTreeGroup* newGroup = group->addGroup(newName);
+  QgsLayerTreeGroup* newGroup = group->addGroup(uniqueGroupName(group));
   mView->edit( mView->layerTreeModel()->node2index(newGroup) );
 }
 
@@ -202,6 +204,16 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers(QgsMapCanvas* canvas, const QL
 }
 
 
+QString QgsLayerTreeViewDefaultActions::uniqueGroupName(QgsLayerTreeGroup* parentGroup)
+{
+  QString prefix = parentGroup == mView->layerTreeModel()->rootGroup() ? "group" : "sub-group";
+  QString newName = prefix + "1";
+  for ( int i = 2; parentGroup->findGroup(newName); ++i)
+    newName = prefix + QString::number(i);
+  return newName;
+}
+
+
 void QgsLayerTreeViewDefaultActions::makeTopLevel()
 {
   QgsLayerTreeNode* node = mView->currentNode();
@@ -216,4 +228,27 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
   QgsLayerTreeNode* clonedNode = node->clone();
   rootGroup->addChildNode(clonedNode);
   parentGroup->removeChildNode(node);
+}
+
+
+void QgsLayerTreeViewDefaultActions::groupSelected()
+{
+  QList<QgsLayerTreeNode*> nodes = mView->selectedNodes(true);
+  if (nodes.count() < 2)
+    return;
+
+  QgsLayerTreeGroup* parentGroup = mView->layerTreeModel()->rootGroup();
+
+  QgsLayerTreeGroup* newGroup = new QgsLayerTreeGroup(uniqueGroupName(parentGroup));
+  foreach (QgsLayerTreeNode* node, nodes)
+    newGroup->addChildNode(node->clone());
+
+  parentGroup->addChildNode(newGroup);
+
+  foreach (QgsLayerTreeNode* node, nodes)
+  {
+    QgsLayerTreeGroup* group = qobject_cast<QgsLayerTreeGroup*>(node->parent());
+    if (group)
+      group->removeChildNode(node);
+  }
 }

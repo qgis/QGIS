@@ -2228,6 +2228,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addAction( actions->actionMakeTopLevel(menu) );
     }
 
+    if (mView->selectedNodes(true).count() >= 2)
+    {
+      menu->addAction( actions->actionGroupSelected(menu) );
+    }
+
     menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
     menu->addAction( actions->actionRenameGroupOrLayer(menu) );
   }

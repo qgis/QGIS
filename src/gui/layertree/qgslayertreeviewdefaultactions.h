@@ -5,6 +5,7 @@
 
 class QAction;
 
+class QgsLayerTreeGroup;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -26,6 +27,7 @@ public:
   // TODO: zoom to selected
 
   QAction* actionMakeTopLevel(QObject* parent = 0);
+  QAction* actionGroupSelected(QObject* parent = 0);
 
 protected slots:
   void addGroup();
@@ -36,9 +38,12 @@ protected slots:
   void zoomToLayer();
   void zoomToGroup();
   void makeTopLevel();
+  void groupSelected();
 
 protected:
   void zoomToLayers(QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers);
+
+  QString uniqueGroupName(QgsLayerTreeGroup* parentGroup);
 
 protected:
   QgsLayerTreeView* mView;
