@@ -110,12 +110,6 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
     //check if file exists
     QFileInfo fileInfo( filePath );
 
-    if ( !fileInfo.exists() || !fileInfo.isReadable() )
-    {
-      QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
-      return;
-    }
-
     mPicture->beginCommand( tr( "Picture changed" ) );
     mPicture->setPictureFile( filePath );
     mPicture->update();

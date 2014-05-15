@@ -357,40 +357,43 @@ void QgsComposerPicture::refreshPicture()
 
 void QgsComposerPicture::loadPicture( const QFile& file )
 {
-  if ( !file.exists() )
+  if ( !file.exists()
+       || ( mUseSourceExpression && mPictureExpr->hasEvalError() ) )
   {
     mMode = Unknown;
   }
-
-  QFileInfo sourceFileInfo( file );
-  QString sourceFileSuffix = sourceFileInfo.suffix();
-  if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
-  {
-    //try to open svg
-    mSVG.load( file.fileName() );
-    if ( mSVG.isValid() )
-    {
-      mMode = SVG;
-      QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
-      mDefaultSvgSize.setWidth( viewBox.width() );
-      mDefaultSvgSize.setHeight( viewBox.height() );
-    }
-    else
-    {
-      mMode = Unknown;
-    }
-  }
   else
   {
-    //try to open raster with QImageReader
-    QImageReader imageReader( file.fileName() );
-    if ( imageReader.read( &mImage ) )
+    QFileInfo sourceFileInfo( file );
+    QString sourceFileSuffix = sourceFileInfo.suffix();
+    if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
     {
-      mMode = RASTER;
+      //try to open svg
+      mSVG.load( file.fileName() );
+      if ( mSVG.isValid() )
+      {
+        mMode = SVG;
+        QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+        mDefaultSvgSize.setWidth( viewBox.width() );
+        mDefaultSvgSize.setHeight( viewBox.height() );
+      }
+      else
+      {
+        mMode = Unknown;
+      }
     }
     else
     {
-      mMode = Unknown;
+      //try to open raster with QImageReader
+      QImageReader imageReader( file.fileName() );
+      if ( imageReader.read( &mImage ) )
+      {
+        mMode = RASTER;
+      }
+      else
+      {
+        mMode = Unknown;
+      }
     }
   }
 
@@ -398,6 +401,22 @@ void QgsComposerPicture::loadPicture( const QFile& file )
   {
     recalculateSize();
   }
+  else if ( !( file.fileName().isEmpty() ) || ( mUseSourceExpression && mPictureExpr->hasEvalError() ) )
+  {
+    //trying to load an invalid file or bad expression, show cross picture
+    mMode = SVG;
+    QString badFile = QString( ":/images/composer/missing_image.svg" );
+    mSVG.load( badFile );
+    if ( mSVG.isValid() )
+    {
+      mMode = SVG;
+      QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+      mDefaultSvgSize.setWidth( viewBox.width() );
+      mDefaultSvgSize.setHeight( viewBox.height() );
+      recalculateSize();
+    }
+  }
+
   emit itemChanged();
 }
 
