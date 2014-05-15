@@ -392,7 +392,7 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
   if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkb, wkbSize, wkb, targetWkbSize, envelope, tolerance ) )
   {
-    unsigned char* targetWkb = ( unsigned char* )malloc( targetWkbSize );
+    unsigned char* targetWkb = new unsigned char[targetWkbSize];
     memcpy( targetWkb, wkb, targetWkbSize );
     geometry->fromWkb( targetWkb, targetWkbSize );
     return true;
