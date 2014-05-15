@@ -163,7 +163,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
   // Write the main header of the geometry
   if ( writeHeader )
   {
-    memcpy( targetWkb, sourceWkb, 1 ); // byteOrder
+    targetWkb[0] = sourceWkb[0]; // byteOrder
     sourceWkb += 1;
     targetWkb += 1;
 
