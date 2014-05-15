@@ -21,6 +21,8 @@
 #include <QTextStream>
 #include <QTime>
 
+#include <cstdlib>
+
 QgsServerLogger* QgsServerLogger::mInstance = 0;
 
 QgsServerLogger* QgsServerLogger::instance()
