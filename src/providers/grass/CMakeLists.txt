@@ -561,12 +561,10 @@ TARGET_LINK_LIBRARIES(grassprovider qgisgrass)
 # grass raster provider
 #
 
-IF (GRASS_MAJOR_VERSION LESS 7 )
-  QT4_WRAP_CPP(GRASS_RASTERPROVIDER_MOC_SRCS qgsgrassrasterprovider.h)
-  ADD_LIBRARY(grassrasterprovider MODULE qgsgrassrasterprovider.cpp ${GRASS_RASTERPROVIDER_MOC_SRCS})
-  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
-  TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
-ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+QT4_WRAP_CPP(GRASS_RASTERPROVIDER_MOC_SRCS qgsgrassrasterprovider.h)
+ADD_LIBRARY(grassrasterprovider MODULE qgsgrassrasterprovider.cpp ${GRASS_RASTERPROVIDER_MOC_SRCS})
+SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
+TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
 
 # override default path where built files are put to allow running qgis without installing
 # the modules go under libexec subdir
