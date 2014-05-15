@@ -110,6 +110,7 @@
 %Include composer/qgsaddremovemultiframecommand.sip
 %Include composer/qgscomposerarrow.sip
 %Include composer/qgscomposerattributetable.sip
+%Include composer/qgscomposerattributetablemodel.sip
 %Include composer/qgscomposerframe.sip
 %Include composer/qgscomposerhtml.sip
 %Include composer/qgscomposeritem.sip
@@ -125,6 +126,7 @@
 %Include composer/qgscomposerscalebar.sip
 %Include composer/qgscomposershape.sip
 %Include composer/qgscomposertable.sip
+%Include composer/qgscomposertablecolumn.sip
 %Include composer/qgscomposition.sip
 %Include composer/qgsatlascomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip

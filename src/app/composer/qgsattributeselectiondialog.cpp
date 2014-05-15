@@ -16,7 +16,10 @@
  ***************************************************************************/
 
 #include "qgsattributeselectiondialog.h"
+#include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablemodel.h"
 #include "qgsvectorlayer.h"
+#include "qgsfieldexpressionwidget.h"
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -25,61 +28,242 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QSettings>
+#include <QSpinBox>
+#include <QSortFilterProxyModel>
 
-QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap,
-    const QList< QPair<int, bool> >& sortColumns, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vLayer )
+
+// QgsComposerColumnAlignmentDelegate
+
+QgsComposerColumnAlignmentDelegate::QgsComposerColumnAlignmentDelegate( QObject* parent ) : QItemDelegate( parent )
+{
+
+}
+
+QWidget* QgsComposerColumnAlignmentDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  Q_UNUSED( option );
+  Q_UNUSED( index );
+
+  //create a combo box showing alignment options
+  QComboBox *comboBox = new QComboBox( parent );
+  QStringList alignments;
+  alignments << tr( "Left" ) << tr( "Center" ) << tr( "Right" );
+  comboBox->addItems( alignments );
+  return comboBox;
+}
+
+void QgsComposerColumnAlignmentDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
+  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag )index.model()->data( index, Qt::EditRole ).toInt();
+
+  //set the value for the combobox
+  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  switch ( alignment )
+  {
+    case Qt::AlignHCenter:
+      comboBox->setCurrentIndex( 1 );
+      break;
+    case Qt::AlignRight:
+      comboBox->setCurrentIndex( 2 );
+      break;
+    case Qt::AlignLeft:
+    default:
+      comboBox->setCurrentIndex( 0 );
+      break;
+  }
+}
+
+void QgsComposerColumnAlignmentDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+{
+  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  int value = comboBox->currentIndex();
+  Qt::AlignmentFlag alignment;
+  switch ( value )
+  {
+    case 1:
+      alignment = Qt::AlignHCenter;
+      break;
+    case 2:
+      alignment = Qt::AlignRight;
+      break;
+    case 0:
+    default:
+      alignment = Qt::AlignLeft;
+      break;
+  }
+
+  model->setData( index, alignment, Qt::EditRole );
+}
+
+void QgsComposerColumnAlignmentDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
+}
+
+
+// QgsComposerColumnSourceDelegate
+
+QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject* parent ) : QItemDelegate( parent ),
+    mVectorLayer( vlayer )
+{
+
+}
+
+QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  Q_UNUSED( option );
+  Q_UNUSED( index );
+
+  QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget( parent );
+  fieldExpression->setLayer( mVectorLayer );
+
+  //listen out for field changes
+  connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( commitAndCloseEditor() ) );
+  return fieldExpression;
+}
+
+void QgsComposerColumnSourceDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
+  QString field = index.model()->data( index, Qt::EditRole ).toString();
+
+  //set the value for the field combobox
+  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget*>( editor );
+  fieldExpression->setField( field );
+}
+
+void QgsComposerColumnSourceDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+{
+  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget*>( editor );
+  QString field = fieldExpression->currentField();
+
+  model->setData( index, field, Qt::EditRole );
+}
+
+void QgsComposerColumnSourceDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
+}
+
+void QgsComposerColumnSourceDelegate::commitAndCloseEditor()
+{
+  QgsFieldExpressionWidget *fieldExpression = qobject_cast<QgsFieldExpressionWidget*>( sender() );
+  emit commitData( fieldExpression );
+}
+
+
+// QgsComposerColumnSortOrderDelegate
+
+QgsComposerColumnSortOrderDelegate::QgsComposerColumnSortOrderDelegate( QObject* parent ) : QItemDelegate( parent )
+{
+
+}
+
+QWidget* QgsComposerColumnSortOrderDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  Q_UNUSED( option );
+  Q_UNUSED( index );
+
+  QComboBox *comboBox = new QComboBox( parent );
+  QStringList sortOrders;
+  sortOrders << tr( "Ascending" ) << tr( "Descending" );
+  comboBox->addItems( sortOrders );
+  return comboBox;
+}
+
+void QgsComposerColumnSortOrderDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
+  Qt::SortOrder order = ( Qt::SortOrder )index.model()->data( index, Qt::EditRole ).toInt();
+
+  //set the value for the combobox
+  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  switch ( order )
+  {
+    case Qt::DescendingOrder:
+      comboBox->setCurrentIndex( 1 );
+      break;
+    case Qt::AscendingOrder:
+    default:
+      comboBox->setCurrentIndex( 0 );
+      break;
+  }
+}
+
+void QgsComposerColumnSortOrderDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+{
+  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  int value = comboBox->currentIndex();
+  Qt::SortOrder order;
+  switch ( value )
+  {
+    case 1:
+      order = Qt::DescendingOrder;
+      break;
+    case 0:
+    default:
+      order = Qt::AscendingOrder;
+      break;
+  }
+
+  model->setData( index, order, Qt::EditRole );
+}
+
+void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
+}
+
+
+
+// QgsAttributeSelectionDialog
+
+QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer,
+    QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ),
+    mComposerTable( table ),
+    mVectorLayer( vLayer ),
+    mColumnModel( 0 ),
+    mSortedProxyModel( 0 ),
+    mAvailableSortProxyModel( 0 ),
+    mColumnAlignmentDelegate( 0 ),
+    mColumnSortOrderDelegate( 0 )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/AttributeSelectionDialog/geometry" ).toByteArray() );
 
-  if ( vLayer )
+  if ( mComposerTable )
   {
-    const QgsFields& fieldMap = vLayer->pendingFields();
-    int layoutRowCounter = 1;
-    for ( int idx = 0; idx < fieldMap.count(); ++idx )
-    {
-      QString fieldName = fieldMap[idx].name();
-      //insert field into sorting combo first
-      mSortColumnComboBox->addItem( fieldName, QVariant( idx ) );
+    //set up models, views and delegates
+    mColumnModel = new QgsComposerAttributeTableColumnModel( mComposerTable , mColumnsTableView );
+    mColumnsTableView->setModel( mColumnModel );
+    mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
-      //and into enabled / alias list
-      QCheckBox* attributeCheckBox = new QCheckBox( fieldName, this );
-      if ( enabledAttributes.size() < 1 || enabledAttributes.contains( idx ) )
-      {
-        attributeCheckBox->setCheckState( Qt::Checked );
-      }
-      else
-      {
-        attributeCheckBox->setCheckState( Qt::Unchecked );
-      }
-      mAttributeGridLayout->addWidget(( QWidget* )attributeCheckBox, layoutRowCounter, 0, 1, 1 );
+    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView );
+    mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
+    mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
+    mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
 
-      QLineEdit* attributeLineEdit = new QLineEdit( this );
-      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( idx );
-      if ( aliasIt != aliasMap.constEnd() )
-      {
-        attributeLineEdit->setText( aliasIt.value() );
-      }
-      mAttributeGridLayout->addWidget(( QWidget* )attributeLineEdit, layoutRowCounter, 1, 1, 1 );
-      ++layoutRowCounter;
-    }
+    mAvailableSortProxyModel = new QgsComposerTableSortColumnsProxyModel( mComposerTable, QgsComposerTableSortColumnsProxyModel::ShowUnsortedColumns, mSortColumnComboBox );
+    mAvailableSortProxyModel->setSourceModel( mColumnModel );
+    mSortColumnComboBox->setModel( mAvailableSortProxyModel );
+    mSortColumnComboBox->setModelColumn( 0 );
 
-    //sort columns
-    QList< QPair<int, bool> >::const_iterator sortIt = sortColumns.constBegin();
-    for ( ; sortIt != sortColumns.constEnd(); ++sortIt )
-    {
-      QTreeWidgetItem* item = new QTreeWidgetItem();
-      item->setText( 0, fieldMap[sortIt->first].name() );
-      item->setData( 0, Qt::UserRole, sortIt->first );
-      item->setText( 1, sortIt->second ? tr( "Ascending" ) : tr( "Descending" ) );
-      mSortColumnTreeWidget->addTopLevelItem( item );
-    }
+    mColumnSortOrderDelegate = new QgsComposerColumnSortOrderDelegate( mSortColumnTableView );
+    mSortColumnTableView->setItemDelegateForColumn( 1, mColumnSortOrderDelegate );
+
+    mSortedProxyModel = new QgsComposerTableSortColumnsProxyModel( mComposerTable, QgsComposerTableSortColumnsProxyModel::ShowSortedColumns, mSortColumnTableView );
+    mSortedProxyModel->setSourceModel( mColumnModel );
+    mSortedProxyModel->sort( 0, Qt::AscendingOrder );
+    mSortColumnTableView->setSortingEnabled( false );
+    mSortColumnTableView->setModel( mSortedProxyModel );
+    mSortColumnTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
   }
 
   mOrderComboBox->insertItem( 0, tr( "Ascending" ) );
-  mOrderComboBox->insertItem( 0, tr( "Descending" ) );
+  mOrderComboBox->insertItem( 1, tr( "Descending" ) );
 }
 
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
@@ -88,153 +272,146 @@ QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
   settings.setValue( "/Windows/AttributeSelectionDialog/geometry", saveGeometry() );
 }
 
-QSet<int> QgsAttributeSelectionDialog::enabledAttributes() const
+void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()
 {
-  QSet<int> result;
-  if ( !mAttributeGridLayout || !mVectorLayer )
+  if ( !mComposerTable )
   {
-    return result;
+    return;
   }
 
-  for ( int i = 1; i < mAttributeGridLayout->rowCount(); ++i )
+  //remove selected row from model
+  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+  int selectedRow = viewSelection.indexes().at( 0 ).row();
+  mColumnModel->removeRow( selectedRow );
+}
+
+void QgsAttributeSelectionDialog::on_mAddColumnPushButton_clicked()
+{
+  if ( !mComposerTable )
   {
-    QLayoutItem *checkBoxItem = mAttributeGridLayout->itemAtPosition( i, 0 );
-    if ( checkBoxItem )
-    {
-      QCheckBox *checkBox = qobject_cast< QCheckBox * >( checkBoxItem->widget() );
-      if ( checkBox && checkBox->checkState() == Qt::Checked )
-      {
-        result.insert( mVectorLayer->fieldNameIndex( checkBox->text() ) );
-      }
-    }
+    return;
   }
 
-  return result;
+  //add a new row to the model
+  mColumnModel->insertRow( mColumnModel->rowCount() );
 }
 
-QMap<int, QString> QgsAttributeSelectionDialog::aliasMap() const
+void QgsAttributeSelectionDialog::on_mColumnUpPushButton_clicked()
 {
-  QMap<int, QString> result;
-  if ( !mAttributeGridLayout || !mVectorLayer )
+  if ( !mComposerTable )
   {
-    return result;
+    return;
   }
 
-  for ( int i = 1; i < mAttributeGridLayout->rowCount(); ++i )
-  {
-    QLayoutItem* lineEditItem = mAttributeGridLayout->itemAtPosition( i, 1 );
-    QLayoutItem* checkBoxItem = mAttributeGridLayout->itemAtPosition( i, 0 );
-    if ( lineEditItem && checkBoxItem )
-    {
-      QLineEdit *lineEdit = qobject_cast<QLineEdit*>( lineEditItem->widget() );
-      QCheckBox *checkBox = qobject_cast<QCheckBox*>( checkBoxItem->widget() );
-      if ( lineEdit )
-      {
-        QString aliasText = lineEdit->text();
-        if ( !aliasText.isEmpty() && checkBox )
-        {
-          //insert into map
-          int fieldIndex = mVectorLayer->fieldNameIndex( checkBox->text() );
-          result.insert( fieldIndex, aliasText );
-        }
-      }
-    }
-  }
-  return result;
+  //move selected row up
+  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+  int selectedRow = viewSelection.indexes().at( 0 ).row();
+  mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftUp );
 }
 
-QList< QPair<int, bool> > QgsAttributeSelectionDialog::attributeSorting() const
+void QgsAttributeSelectionDialog::on_mColumnDownPushButton_clicked()
 {
-  QList< QPair<int, bool> > sortingList;
-
-  for ( int i = 0; i < mSortColumnTreeWidget->topLevelItemCount(); ++i )
+  if ( !mComposerTable )
   {
-    QTreeWidgetItem* item = mSortColumnTreeWidget->topLevelItem( i );
-    if ( item )
-    {
-      sortingList.push_back( qMakePair( item->data( 0, Qt::UserRole ).toInt(), item->text( 1 ) == tr( "Ascending" ) ) );
-    }
+    return;
   }
 
-  return sortingList;
+  //move selected row down
+  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
+  int selectedRow = viewSelection.indexes().at( 0 ).row();
+  mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModel::ShiftDown );
 }
 
-void QgsAttributeSelectionDialog::on_mSelectAllButton_clicked()
+void QgsAttributeSelectionDialog::on_mResetColumnsPushButton_clicked()
 {
-  setAllEnabled( true );
-}
-
-void QgsAttributeSelectionDialog::on_mClearButton_clicked()
-{
-  setAllEnabled( false );
-}
-
-void QgsAttributeSelectionDialog::setAllEnabled( bool enabled )
-{
-  if ( mAttributeGridLayout )
+  if ( !mComposerTable )
   {
-    int nRows = mAttributeGridLayout->rowCount();
-    for ( int i = 0; i < nRows; ++i )
-    {
-      QLayoutItem* checkBoxItem = mAttributeGridLayout->itemAtPosition( i, 0 );
-      if ( checkBoxItem )
-      {
-        QWidget* checkBoxWidget = checkBoxItem->widget();
-        if ( checkBoxWidget )
-        {
-          QCheckBox* checkBox = dynamic_cast<QCheckBox*>( checkBoxWidget );
-          if ( checkBox )
-          {
-            checkBox->setCheckState( enabled ? Qt::Checked : Qt::Unchecked );
-          }
-        }
-      }
-    }
+    return;
   }
+
+  //reset columns to match vector layer's fields
+  mColumnModel->resetToLayer();
+
+  mSortColumnComboBox->setCurrentIndex( 0 );
 }
 
-void QgsAttributeSelectionDialog::on_mAddPushButton_clicked()
+void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
 {
-  QTreeWidgetItem* item = new QTreeWidgetItem();
-  item->setText( 0, mSortColumnComboBox->currentText() );
-  item->setData( 0, Qt::UserRole, mSortColumnComboBox->itemData( mSortColumnComboBox->currentIndex() ) );
-  item->setText( 1, mOrderComboBox->currentText() );
-  mSortColumnTreeWidget->addTopLevelItem( item );
-}
-
-void QgsAttributeSelectionDialog::on_mRemovePushButton_clicked()
-{
-  int currentIndex = mSortColumnTreeWidget->indexOfTopLevelItem( mSortColumnTreeWidget->currentItem() );
-  if ( currentIndex != -1 )
+  //add column to sort order widget
+  if ( !mComposerTable )
   {
-    delete( mSortColumnTreeWidget->takeTopLevelItem( currentIndex ) );
+    return;
   }
+
+  QgsComposerTableColumn* column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
+  if ( ! column )
+  {
+    return;
+  }
+
+  mColumnModel->setColumnAsSorted( column, mOrderComboBox->currentIndex() == 0 ? Qt::AscendingOrder : Qt::DescendingOrder );
 }
 
-void QgsAttributeSelectionDialog::on_mUpPushButton_clicked()
+void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
 {
-  int currentIndex = mSortColumnTreeWidget->indexOfTopLevelItem( mSortColumnTreeWidget->currentItem() );
-  if ( currentIndex != -1 )
+  //remove selected rows from sort order widget
+  if ( !mComposerTable )
   {
-    if ( currentIndex > 0 )
-    {
-      QTreeWidgetItem* item = mSortColumnTreeWidget->takeTopLevelItem( currentIndex );
-      mSortColumnTreeWidget->insertTopLevelItem( currentIndex - 1, item );
-      mSortColumnTreeWidget->setCurrentItem( item );
-    }
+    return;
   }
+
+  QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
+  QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
+  int rowToRemove = selectedIndex.row();
+
+  //find corresponding column
+  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+  if ( !column )
+  {
+    return;
+  }
+
+  //set column as unsorted
+  mColumnModel->setColumnAsUnsorted( column );
+
+  //set next row as selected
+  mSortColumnTableView->selectRow( rowToRemove );
 }
 
-void QgsAttributeSelectionDialog::on_mDownPushButton_clicked()
+void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
 {
-  int currentIndex = mSortColumnTreeWidget->indexOfTopLevelItem( mSortColumnTreeWidget->currentItem() );
-  if ( currentIndex != -1 )
+  if ( !mComposerTable )
   {
-    if ( currentIndex < ( mSortColumnTreeWidget->topLevelItemCount() - 1 ) )
-    {
-      QTreeWidgetItem* item = mSortColumnTreeWidget->takeTopLevelItem( currentIndex );
-      mSortColumnTreeWidget->insertTopLevelItem( currentIndex + 1, item );
-      mSortColumnTreeWidget->setCurrentItem( item );
-    }
+    return;
   }
+
+  //find selected row
+  QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
+  QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
+  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+
+  if ( !column )
+  {
+    return;
+  }
+  mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftUp );
+}
+
+void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  //find selected row
+  QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
+  QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
+  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+
+  if ( !column )
+  {
+    return;
+  }
+  mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModel::ShiftDown );
 }

@@ -6,6 +6,17 @@ class QgsComposerTable: QgsComposerItem
 %End
 
   public:
+  
+    /*! Controls how headers are horizontally aligned in a table
+     */
+    enum HeaderHAlignment
+    {
+      FollowColumn, /*!< header uses the same alignment as the column */
+      HeaderLeft, /*!< align headers left */
+      HeaderCenter, /*!< align headers to center */
+      HeaderRight /*!< align headers right */
+    };
+    
     QgsComposerTable( QgsComposition* composition /TransferThis/ );
     virtual ~QgsComposerTable();
 
@@ -18,23 +29,121 @@ class QgsComposerTable: QgsComposerItem
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 
+    /**Sets the margin distance between cell borders and their contents.
+     * @param d margin for cell contents
+     * @see lineTextDistance
+     */
     void setLineTextDistance( double d );
+    
+    /**Returns the margin distance between cell borders and their contents.
+     * @returns margin for cell contents
+     * @see setLineTextDistance
+     */
     double lineTextDistance() const;
 
+    /**Sets the font used to draw header text in the table.
+     * @param f font for header cells
+     * @see headerFont
+     * @see setContentFont
+     */
     void setHeaderFont( const QFont& f );
+    
+    /**Returns the font used to draw header text in the table.
+     * @returns font for header cells
+     * @see setHeaderFont
+     * @see contentFont
+     */
     QFont headerFont() const;
+    
+    /**Sets the horizontal alignment for table headers
+     * @param alignment Horizontal alignment for table header cells
+     * @note added in 2.3
+     * @see headerHAlignment
+     */
+    void setHeaderHAlignment( const HeaderHAlignment alignment );
 
+    /**Returns the horizontal alignment for table headers
+     * @returns Horizontal alignment for table header cells
+     * @note added in 2.3
+     * @see setHeaderHAlignment
+     */
+    HeaderHAlignment headerHAlignment() const;
+
+    /**Sets the font used to draw text in table body cells.
+     * @param f font for table cells
+     * @see contentFont
+     * @see setHeaderFont
+     */
     void setContentFont( const QFont& f );
+    
+    /**Returns the font used to draw text in table body cells.
+     * @returns font for table cells
+     * @see setContentFont
+     * @see headerFont
+     */
     QFont contentFont() const;
 
+    /**Sets whether grid lines should be drawn in the table
+     * @param show set to true to show grid lines
+     * @see showGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     */
     void setShowGrid( bool show );
+    
+    /**Returns whether grid lines are drawn in the table
+     * @returns true if grid lines are shown
+     * @see setShowGrid
+     * @see gridStrokeWidth
+     * @see gridColor
+     */
     bool showGrid() const;
 
+    /**Sets the width for grid lines in the table.
+     * @param w grid line width
+     * @see gridStrokeWidth
+     * @see setShowGrid
+     * @see setGridColor
+     */
     void setGridStrokeWidth( double w );
+    
+    /**Returns the width of grid lines in the table.
+     * @returns grid line width
+     * @see setGridStrokeWidth
+     * @see showGrid
+     * @see gridColor
+     */
     double gridStrokeWidth() const;
 
+    /**Sets color used for grid lines in the table.
+     * @param c grid line color
+     * @see gridColor
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     */
     void setGridColor( const QColor& c );
+    
+    /**Returns the color used for grid lines in the table.
+     * @returns grid line color
+     * @see setGridColor
+     * @see showGrid
+     * @see gridStrokeWidth
+     */
     QColor gridColor() const;
+    
+    /**Returns a pointer to the list of QgsComposerTableColumns shown in the table
+     * @returns pointer to list of columns in table
+     * @note added in 2.3
+     * @see setColumns
+     */
+    QList<QgsComposerTableColumn*>* columns();
+    
+    /**Replaces the columns in the table with a specified list of QgsComposerTableColumns.
+     * @param columns list of QgsComposerTableColumns to show in table
+     * @note added in 2.3
+     * @see columns
+     */
+    void setColumns( QList<QgsComposerTableColumn*> columns );
     
   public slots:
 
@@ -63,9 +172,29 @@ class QgsComposerTable: QgsComposerItem
     // virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList< QMap<int, QVariant> >& attributeMaps ) const;
     /**Adapts the size of the item frame to match the content*/
     // void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList< QMap<int, QVariant> >& attributeMaps );
+    
+    /**Draws the horizontal grid lines for the table.
+     * @param p destination painter for grid lines
+     * @param nAttributes number of attribute rows shown in table
+     * @see drawVerticalGridLines
+    */
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
+    
     // void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
 
+    /**Writes common table properties to xml for storage.
+     * @param itemElem an existing QDomElement in which to store the table's properties.
+     * @param doc QDomDocument for the destination xml.
+     * @see tableReadXML
+     * @see writeXML
+     */
     bool tableWriteXML( QDomElement& itemElem, QDomDocument& doc ) const;
+    
+    /**Reads the table's common properties from xml.
+     * @param itemElem a QDomElement holding the table's desired properties.
+     * @param doc QDomDocument for the source xml.
+     * @see tableWriteXML
+     * @see readXML
+     */
     bool tableReadXML( const QDomElement& itemElem, const QDomDocument& doc );
 };

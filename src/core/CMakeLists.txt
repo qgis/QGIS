@@ -155,7 +155,9 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposertable.cpp
+  composer/qgscomposertablecolumn.cpp  
   composer/qgscomposerattributetable.cpp
+  composer/qgscomposerattributetablemodel.cpp
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
@@ -352,7 +354,9 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposerattributetablemodel.h  
   composer/qgscomposertable.h  
+  composer/qgscomposertablecolumn.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
   composer/qgscomposereffect.h
@@ -502,6 +506,7 @@ SET(QGIS_CORE_HDRS
   composer/qgsaddremovemultiframecommand.h
   composer/qgsdoubleboxscalebarstyle.h
   composer/qgscomposertable.h
+  composer/qgscomposertablecolumn.h
   composer/qgspaperitem.h
   composer/qgsticksscalebarstyle.h
   composer/qgscomposerlegendstyle.h

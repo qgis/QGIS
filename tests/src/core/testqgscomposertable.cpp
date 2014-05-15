@@ -43,9 +43,12 @@ class TestQgsComposerTable: public QObject
     void attributeTableRows(); //test retrieving attribute table rows
     void attributeTableFilterFeatures(); //test filtering attribute table rows
     void attributeTableSetAttributes(); //test subset of attributes in table
+    void attributeTableSetAliasOnSubset(); //test setting alias for attribute table with subset of attributes
     void attributeTableAlias(); //test setting alias for attribute column
+    void attributeTableGetAlias(); //test getting alias map for attribute table
     void attributeTableVisibleOnly(); //test displaying only visible attributes
     void attributeTableSort(); //test sorting of attribute table
+    void attributeTableGetAttributes(); //test getting subset of attributes in table
 
   private:
     QgsComposition* mComposition;
@@ -104,6 +107,10 @@ void TestQgsComposerTable::textTableHeadings()
 {
   //test setting/retrieving text table headers
   QStringList headers;
+  headers << "1" << "2";
+  mComposerTextTable->setHeaderLabels( headers );
+  //call this twice, to test that headers are overwritten and not appended
+  headers.clear();
   headers << "a" << "b" << "c";
   mComposerTextTable->setHeaderLabels( headers );
 
@@ -268,6 +275,22 @@ void TestQgsComposerTable::attributeTableSetAttributes()
   mComposerAttributeTable->setDisplayAttributes( attributes );
   mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
 
+  //check headers
+  QStringList expectedHeaders;
+  expectedHeaders << "Class" << "Pilots" << "Cabin Crew";
+
+  //get header labels and compare
+  QMap<int, QString> headerMap = mComposerAttributeTable->headerLabels();
+  QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
+  QString expected;
+  QString evaluated;
+  for ( ; headerIt != headerMap.constEnd(); ++headerIt )
+  {
+    evaluated = headerIt.value();
+    expected = expectedHeaders.at( headerIt.key() );
+    QCOMPARE( evaluated, expected );
+  }
+
   QList<QStringList> expectedRows;
   QStringList row;
   row << "Jet" << "2" << "0";
@@ -281,6 +304,53 @@ void TestQgsComposerTable::attributeTableSetAttributes()
 
   //retrieve rows and check
   compareTable( expectedRows );
+
+  attributes.clear();
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+}
+
+void TestQgsComposerTable::attributeTableSetAliasOnSubset()
+{
+  //test setting alias for attribute table with subset of attributes
+  QStringList expectedHeaders;
+  expectedHeaders << "1Heading" << "2Pilots" << "3Cabin Crew";
+
+  QSet<int> attributes;
+  attributes << 1 << 3 << 4;
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+  QMap<int, QString> aliases;
+  aliases.insert( 1, QString( "1Heading" ) );
+  aliases.insert( 3, QString( "2Pilots" ) );
+  aliases.insert( 4, QString( "3Cabin Crew" ) );
+  mComposerAttributeTable->setFieldAliasMap( aliases );
+
+  //get header labels and compare
+  QMap<int, QString> headerMap = mComposerAttributeTable->headerLabels();
+  QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
+  QString expected;
+  QString evaluated;
+  for ( ; headerIt != headerMap.constEnd(); ++headerIt )
+  {
+    evaluated = headerIt.value();
+    expected = expectedHeaders.at( headerIt.key() );
+    QCOMPARE( evaluated, expected );
+  }
+  attributes.clear();
+  aliases.clear();
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+  mComposerAttributeTable->setFieldAliasMap( aliases );
+}
+
+void TestQgsComposerTable::attributeTableGetAttributes()
+{
+  //test getting subset of attributes in table
+  QSet<int> attributes;
+  attributes << 0 << 3 << 4;
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+
+  QSet<int> evaluated = mComposerAttributeTable->displayAttributes();
+
+  QCOMPARE( evaluated, attributes );
 
   attributes.clear();
   mComposerAttributeTable->setDisplayAttributes( attributes );
@@ -312,6 +382,42 @@ void TestQgsComposerTable::attributeTableAlias()
 
   fieldAliasMap.clear();
   mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+}
+
+void TestQgsComposerTable::attributeTableGetAlias()
+{
+  QSet<int> attributes;
+  attributes << 1 << 3 << 4;
+  mComposerAttributeTable->setDisplayAttributes( attributes );
+
+  //test getting alias map
+  QMap<int, QString> fieldAliasMap;
+
+  fieldAliasMap.insert( 1, QString( "alias 1" ) );
+  fieldAliasMap.insert( 2, QString( "alias 2" ) );
+  mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+
+  QMap<int, QString> expectedAliases;
+  expectedAliases.insert( 1, QString( "alias 1" ) );
+  expectedAliases.insert( 3, QString( "Pilots" ) );
+  expectedAliases.insert( 4, QString( "Cabin Crew" ) );
+
+  //get header labels and compare
+  QMap<int, QString> aliasMap = mComposerAttributeTable->fieldAliasMap();
+  QMap<int, QString>::const_iterator aliasIt = aliasMap.constBegin();
+  QString expected;
+  QString evaluated;
+  for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
+  {
+    evaluated = aliasIt.value();
+    expected = expectedAliases.value( aliasIt.key() );
+    QCOMPARE( evaluated, expected );
+  }
+
+  fieldAliasMap.clear();
+  mComposerAttributeTable->setFieldAliasMap( fieldAliasMap );
+  attributes.clear();
+  mComposerAttributeTable->setDisplayAttributes( attributes );
 }
 
 void TestQgsComposerTable::attributeTableSort()

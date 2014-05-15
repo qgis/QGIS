@@ -21,42 +21,103 @@
 #include <QDialog>
 #include <QMap>
 #include <QSet>
+#include <QItemDelegate>
 #include "ui_qgsattributeselectiondialogbase.h"
 
 class QGridLayout;
 class QgsVectorLayer;
 class QPushButton;
+class QgsComposerAttributeTable;
+class QgsComposerAttributeTableColumnModel;
+class QgsComposerTableSortColumnsProxyModel;
+class QgsComposerTableAvailableSortProxyModel;
 
-/**A dialog to select what attributes to display (in the table item) and with the possibility to set different aliases*/
+// QgsComposerColumnAlignmentDelegate
+
+/**A delegate for showing column alignment as a combo box*/
+class QgsComposerColumnAlignmentDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerColumnAlignmentDelegate( QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+};
+
+
+// QgsComposerColumnAlignmentDelegate
+
+/**A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
+class QgsComposerColumnSourceDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+  public slots:
+    void commitAndCloseEditor();
+  private:
+    QgsVectorLayer* mVectorLayer;
+};
+
+
+// QgsComposerColumnSortOrderDelegate
+
+/**A delegate for showing column sort order as a combo box*/
+class QgsComposerColumnSortOrderDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerColumnSortOrderDelegate( QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+};
+
+
+// QgsAttributeSelectionDialog
+
+/**A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order*/
 class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelectionDialogBase
 {
     Q_OBJECT
   public:
-    QgsAttributeSelectionDialog( const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap, const QList< QPair<int, bool> >& sortColumns, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsAttributeSelectionDialog();
 
-    /**Returns indices of selected attributes*/
-    QSet<int> enabledAttributes() const;
-    /**Returns alias map (alias might be different than for vector layer)*/
-    QMap<int, QString> aliasMap() const;
-    /**List of sorting attributes and ascending / descending (so sorting to multiple columns is possible)*/
-    QList< QPair<int, bool> > attributeSorting() const;
-
   private slots:
-    void on_mSelectAllButton_clicked();
-    void on_mClearButton_clicked();
-    void on_mAddPushButton_clicked();
-    void on_mRemovePushButton_clicked();
-    void on_mUpPushButton_clicked();
-    void on_mDownPushButton_clicked();
+    void on_mRemoveColumnPushButton_clicked();
+    void on_mAddColumnPushButton_clicked();
+    void on_mColumnUpPushButton_clicked();
+    void on_mColumnDownPushButton_clicked();
+    void on_mResetColumnsPushButton_clicked();
+    void on_mAddSortColumnPushButton_clicked();
+    void on_mRemoveSortColumnPushButton_clicked();
+    void on_mSortColumnUpPushButton_clicked();
+    void on_mSortColumnDownPushButton_clicked();
 
   private:
+    QgsComposerAttributeTable* mComposerTable;
     const QgsVectorLayer* mVectorLayer;
-    QPushButton* mSelectAllButton;
-    QPushButton* mClearButton;
 
-    /**Enables / disables all check boxes in one go*/
-    void setAllEnabled( bool enabled );
+    QgsComposerAttributeTableColumnModel* mColumnModel;
+    QgsComposerTableSortColumnsProxyModel* mSortedProxyModel;
+    QgsComposerTableSortColumnsProxyModel* mAvailableSortProxyModel;
+    QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate;
+    QgsComposerColumnSourceDelegate *mColumnSourceDelegate;
+    QgsComposerColumnSortOrderDelegate *mColumnSortOrderDelegate;
+
 };
 
 #endif // QGSATTRIBUTESELECTIONDIALOG_H
