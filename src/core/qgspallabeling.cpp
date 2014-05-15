@@ -1847,8 +1847,14 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     return;
   }
 
-  if ( ct ) // reproject the geometry if necessary
+  // reproject the geometry if necessary (but don't modify the features
+  // geometry so that geometry based expression keep working)
+  QScopedPointer<QgsGeometry> clonedGeometry;
+  if ( ct )
   {
+    geom = new QgsGeometry( *geom );
+    clonedGeometry.reset( geom );
+
     try
     {
       geom->transform( *ct );
