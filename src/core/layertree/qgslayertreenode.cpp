@@ -524,6 +524,7 @@ void QgsLayerTreeLayer::registryLayersAdded(QList<QgsMapLayer*> layers)
     {
       mLayer = l;
       disconnect(QgsMapLayerRegistry::instance(), SIGNAL(layersAdded(QList<QgsMapLayer*>)), this, SLOT(registryLayersAdded(QList<QgsMapLayer*>)));
+      emit layerLoaded();
       break;
     }
   }

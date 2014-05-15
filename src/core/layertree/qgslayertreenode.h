@@ -123,6 +123,10 @@ public:
 protected slots:
   void registryLayersAdded(QList<QgsMapLayer*> layers);
 
+signals:
+  //! emitted when a previously unavailable layer got loaded
+  void layerLoaded();
+
 protected:
   void attachToLayer();
 

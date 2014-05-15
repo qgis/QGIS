@@ -50,6 +50,19 @@ QAction* QgsLayerTreeViewDefaultActions::actionRenameGroupOrLayer(QObject* paren
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionShowFeatureCount(QObject* parent)
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if (!node)
+    return 0;
+
+  QAction* a = new QAction(tr("Show Feature Count"), parent);
+  connect(a, SIGNAL(triggered()), this, SLOT(showFeatureCount()));
+  a->setCheckable(true);
+  a->setChecked(node->customProperty("showFeatureCount", 0).toInt());
+  return a;
+}
+
 QAction* QgsLayerTreeViewDefaultActions::actionZoomToLayer(QgsMapCanvas* canvas, QObject* parent)
 {
   QAction* a = new QAction(QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
@@ -102,6 +115,18 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
     return;
 
   node->setCustomProperty("overview", node->customProperty("overview", 0).toInt() ? 0 : 1);
+}
+
+void QgsLayerTreeViewDefaultActions::showFeatureCount()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if (!node || node->nodeType() != QgsLayerTreeNode::NodeLayer)
+    return;
+
+
+  node->setCustomProperty("showFeatureCount", node->customProperty("showFeatureCount", 0).toInt() ? 0 : 1);
+
+  mView->layerTreeModel()->refreshLayerSymbology(static_cast<QgsLayerTreeLayer*>(node));
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToLayer()

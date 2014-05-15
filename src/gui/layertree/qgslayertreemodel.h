@@ -56,7 +56,6 @@ public:
     AllowTreeManagement,
     ShowSymbology,
     AllowVisibilityManagement,
-    ShowFeatureCounts, // TODO: this is per-layer
   };
   Q_DECLARE_FLAGS(Flags, Flag)
 
@@ -69,11 +68,13 @@ public:
 
   QgsLayerTreeNode* index2node(const QModelIndex& index) const;
   static QgsLayerTreeModelSymbologyNode* index2symnode(const QModelIndex& index);
-  QModelIndex node2index(QgsLayerTreeNode* node);
+  QModelIndex node2index(QgsLayerTreeNode* node) const;
 
   QList<QgsLayerTreeNode*> indexes2nodes(const QModelIndexList& list, bool skipInternal = false) const;
 
   QgsLayerTreeGroup* rootGroup() { return mRootNode; }
+
+  void refreshLayerSymbology(QgsLayerTreeLayer* nodeLayer);
 
 signals:
 
@@ -85,16 +86,23 @@ protected slots:
 
   void nodeVisibilityChanded();
 
+  void nodeLayerLoaded();
+  void layerRendererChanged();
+
 protected:
   void connectToNode(QgsLayerTreeNode* node);
   void removeSymbologyFromSubtree(QgsLayerTreeNode* node);
-  void addSymbologyToLayer(QgsLayerTreeLayer* nodeL) const;
+  void removeSymbologyFromLayer(QgsLayerTreeLayer* nodeLayer);
+  void addSymbologyToLayer(QgsLayerTreeLayer* nodeL);
+  void addSymbologyToVectorLayer(QgsLayerTreeLayer* nodeL);
+  void addSymbologyToRasterLayer(QgsLayerTreeLayer* nodeL);
+  void addSymbologyToPluginLayer(QgsLayerTreeLayer* nodeL);
 
 protected:
   QgsLayerTreeGroup* mRootNode; // not owned!
   Flags mFlags;
 
-  mutable QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
+  QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QgsLayerTreeModel::Flags)

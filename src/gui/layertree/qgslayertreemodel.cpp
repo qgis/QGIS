@@ -6,7 +6,10 @@
 #include <QTextStream>
 
 #include "qgsdataitem.h"
+#include "qgspluginlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
 
 
@@ -35,6 +38,11 @@ void QgsLayerTreeModel::connectToNode(QgsLayerTreeNode* node)
   connect(node, SIGNAL(willRemoveChildren(int,int)), this, SLOT(nodeWillRemoveChildren(int,int)));
   connect(node, SIGNAL(removedChildren(int,int)), this, SLOT(nodeRemovedChildren()));
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanded()));
+
+  if (node->nodeType() == QgsLayerTreeNode::NodeLayer && testFlag(ShowSymbology))
+  {
+    addSymbologyToLayer(static_cast<QgsLayerTreeLayer*>(node));
+  }
 
   foreach (QgsLayerTreeNode* child, node->children())
     connectToNode(child);
@@ -70,8 +78,6 @@ int QgsLayerTreeModel::rowCount(const QModelIndex &parent) const
   if (n->nodeType() == QgsLayerTreeNode::NodeLayer)
   {
     QgsLayerTreeLayer* nL = static_cast<QgsLayerTreeLayer*>(n);
-    if (testFlag(ShowSymbology) && !mSymbologyNodes.contains(nL))
-      addSymbologyToLayer(nL);
 
     return mSymbologyNodes[nL].count();
   }
@@ -160,7 +166,17 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
     if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
       return static_cast<QgsLayerTreeGroup*>(node)->name();
     else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-      return static_cast<QgsLayerTreeLayer*>(node)->layerName();
+    {
+      QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+      QString name = nodeLayer->layerName();
+      if (nodeLayer->customProperty("showFeatureCount", 0).toInt() && role == Qt::DisplayRole)
+      {
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>(nodeLayer->layer());
+        if (vlayer && vlayer->pendingFeatureCount() >= 0)
+          name += QString( " [%1]" ).arg( vlayer->pendingFeatureCount() );
+      }
+      return name;
+    }
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
@@ -275,7 +291,7 @@ bool QgsLayerTreeModel::setData(const QModelIndex& index, const QVariant& value,
   return QAbstractItemModel::setData(index, value, role);
 }
 
-QModelIndex QgsLayerTreeModel::node2index(QgsLayerTreeNode* node)
+QModelIndex QgsLayerTreeModel::node2index(QgsLayerTreeNode* node) const
 {
   if (!node->parent())
     return QModelIndex(); // this is the only root item -> invalid index
@@ -335,6 +351,20 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes(const QModelIndexList&
   return nodesFinal;
 }
 
+void QgsLayerTreeModel::refreshLayerSymbology(QgsLayerTreeLayer* nodeLayer)
+{
+  // update title
+  QModelIndex idx = node2index(nodeLayer);
+  emit dataChanged(idx, idx);
+
+  // update children
+  beginRemoveRows(idx, 0, rowCount(idx)-1);
+  removeSymbologyFromLayer(nodeLayer);
+  endRemoveRows();
+
+  addSymbologyToLayer(nodeLayer);
+}
+
 void QgsLayerTreeModel::nodeWillAddChildren(int indexFrom, int indexTo)
 {
   QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sender());
@@ -379,47 +409,168 @@ void QgsLayerTreeModel::nodeVisibilityChanded()
   emit dataChanged(index, index);
 }
 
+void QgsLayerTreeModel::nodeLayerLoaded()
+{
+  QgsLayerTreeLayer* nodeLayer = qobject_cast<QgsLayerTreeLayer*>(sender());
+  if (!nodeLayer)
+    return;
+
+  addSymbologyToLayer(nodeLayer);
+}
+
+void QgsLayerTreeModel::layerRendererChanged()
+{
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>(sender());
+  if (!layer)
+    return;
+
+  QgsLayerTreeLayer* nodeLayer = mRootNode->findLayer(layer->id());
+  if (!nodeLayer)
+    return;
+
+  refreshLayerSymbology(nodeLayer);
+}
+
 void QgsLayerTreeModel::removeSymbologyFromSubtree(QgsLayerTreeNode* node)
 {
   if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-  {
-    QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
-    if (mSymbologyNodes.contains(nodeLayer))
-    {
-      qDeleteAll(mSymbologyNodes[nodeLayer]);
-      mSymbologyNodes.remove(nodeLayer);
-    }
-  }
+    removeSymbologyFromLayer(static_cast<QgsLayerTreeLayer*>(node));
 
   foreach (QgsLayerTreeNode* child, node->children())
     removeSymbologyFromSubtree(child);
 }
 
 
-void QgsLayerTreeModel::addSymbologyToLayer(QgsLayerTreeLayer* nodeL) const
+void QgsLayerTreeModel::removeSymbologyFromLayer(QgsLayerTreeLayer* nodeLayer)
+{
+  if (mSymbologyNodes.contains(nodeLayer))
+  {
+    qDeleteAll(mSymbologyNodes[nodeLayer]);
+    mSymbologyNodes.remove(nodeLayer);
+
+    disconnect(nodeLayer->layer(), SIGNAL(rendererChanged()), this, SLOT(layerRendererChanged()));
+  }
+}
+
+
+void QgsLayerTreeModel::addSymbologyToLayer(QgsLayerTreeLayer* nodeL)
 {
   if (!nodeL->layer())
-    return; // skip creation of symbology if the layer is not (yet?) loaded
-
-  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
+  {
+    // skip creation of symbology if the layer is not (yet?) loaded
+    // but keep an eye on it: once loaded, we will add the symbology
+    connect(nodeL, SIGNAL(layerLoaded()), this, SLOT(nodeLayerLoaded()));
+    return;
+  }
 
   if (nodeL->layer()->type() == QgsMapLayer::VectorLayer)
   {
-    QgsFeatureRendererV2* r = static_cast<QgsVectorLayer*>(nodeL->layer())->rendererV2();
-    if (r)
+    addSymbologyToVectorLayer(nodeL);
+  }
+  else if (nodeL->layer()->type() == QgsMapLayer::RasterLayer)
+  {
+    addSymbologyToRasterLayer(nodeL);
+  }
+  else if (nodeL->layer()->type() == QgsMapLayer::PluginLayer)
+  {
+    addSymbologyToPluginLayer(nodeL);
+  }
+
+  // be ready for any subsequent changes of the renderer
+  connect(nodeL->layer(), SIGNAL(rendererChanged()), this, SLOT(layerRendererChanged()));
+}
+
+
+void QgsLayerTreeModel::addSymbologyToVectorLayer(QgsLayerTreeLayer* nodeL)
+{
+  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(nodeL->layer());
+  QgsFeatureRendererV2* r = vlayer->rendererV2();
+  if (!r)
+    return;
+
+  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
+
+  bool showFeatureCount = nodeL->customProperty("showFeatureCount", 0).toBool();
+  if (showFeatureCount)
+  {
+    vlayer->countSymbolFeatures();
+  }
+  QSize iconSize( 16, 16 );
+  QgsLegendSymbolList items = r->legendSymbolItems();
+
+  beginInsertRows(node2index(nodeL), 0, items.count()-1);
+
+  typedef QPair<QString, QgsSymbolV2*> XY;
+  foreach ( XY item, items )
+  {
+    QString label = item.first;
+    QPixmap pix(QgsSymbolLayerV2Utils::symbolPreviewPixmap(item.second, iconSize));
+    if (showFeatureCount)
+      label += QString(" [%1]").arg( vlayer->featureCount( item.second ) );
+    lst << new QgsLayerTreeModelSymbologyNode(nodeL, label, QIcon(pix));
+  }
+
+  endInsertRows();
+}
+
+
+void QgsLayerTreeModel::addSymbologyToRasterLayer(QgsLayerTreeLayer* nodeL)
+{
+  QgsRasterLayer* rlayer = static_cast<QgsRasterLayer*>(nodeL->layer());
+
+  QgsLegendColorList rasterItemList = rlayer->legendSymbologyItems();
+
+  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
+
+  // TODO: WMS
+
+  // Paletted raster may have many colors, for example UInt16 may have 65536 colors
+  // and it is very slow, so we limit max count
+  QSize iconSize(16, 16);
+  int count = 0;
+  int max_count = 1000;
+  int total_count = qMin(max_count+1, rasterItemList.count());
+
+  beginInsertRows(node2index(nodeL), 0, total_count-1);
+
+  for ( QgsLegendColorList::const_iterator itemIt = rasterItemList.constBegin();
+        itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
+  {
+    QPixmap pix( iconSize );
+    pix.fill( itemIt->second );
+    lst << new QgsLayerTreeModelSymbologyNode(nodeL, itemIt->first, QIcon(pix));
+
+    if ( count == max_count )
     {
-      // TODO: use legend symbol list
-      //QgsLegendSymbolList syms = r->legendSymbolItems( /* double scaleDenominator = -1, QString rule = "" */ );
-      QSize iconSize( 16, 16 );
-      typedef QPair<QString, QPixmap> XY;
-      foreach ( XY item, r->legendSymbologyItems( iconSize ))
-        lst << new QgsLayerTreeModelSymbologyNode(nodeL, item.first, QIcon(item.second));
+      pix.fill( Qt::transparent );
+      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
+      lst << new QgsLayerTreeModelSymbologyNode(nodeL, label, QIcon(pix));
+      break;
     }
   }
-  else
+
+  endInsertRows();
+}
+
+
+void QgsLayerTreeModel::addSymbologyToPluginLayer(QgsLayerTreeLayer* nodeL)
+{
+  QgsPluginLayer* player = static_cast<QgsPluginLayer*>(nodeL->layer());
+
+  QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
+
+  QSize iconSize(16,16);
+  QgsLegendSymbologyList symbologyList = player->legendSymbologyItems(iconSize);
+
+  beginInsertRows(node2index(nodeL), 0, symbologyList.count()-1);
+
+  typedef QPair<QString, QPixmap> XY;
+  foreach (XY item, symbologyList )
   {
-    // TODO: raster / plugin layer
+    lst << new QgsLayerTreeModelSymbologyNode(nodeL, item.first, QIcon(item.second));
   }
+
+  endInsertRows();
 }
 
 

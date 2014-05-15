@@ -2217,6 +2217,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     {
       menu->addAction( actions->actionZoomToLayer(mCanvas, menu) );
       menu->addAction( actions->actionShowInOverview(menu) );
+
+      QgsMapLayer* layer = static_cast<QgsLayerTreeLayer*>(node)->layer();
+      if (layer && layer->type() == QgsMapLayer::VectorLayer)
+        menu->addAction( actions->actionShowFeatureCount(menu) );
     }
 
     menu->addAction( actions->actionRemoveGroupOrLayer(menu) );

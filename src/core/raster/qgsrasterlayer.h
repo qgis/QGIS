@@ -53,6 +53,8 @@ class QLibrary;
 class QPixmap;
 class QSlider;
 
+typedef QList < QPair< QString, QColor > > QgsLegendColorList;
+
 /** \ingroup core
  *  This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas.
@@ -297,7 +299,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
-    QList< QPair< QString, QColor > > legendSymbologyItems() const;
+    QgsLegendColorList legendSymbologyItems() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
     QString metadata();

@@ -19,6 +19,7 @@ public:
   QAction* actionRemoveGroupOrLayer(QObject* parent = 0);
   QAction* actionShowInOverview(QObject* parent = 0);
   QAction* actionRenameGroupOrLayer(QObject* parent = 0);
+  QAction* actionShowFeatureCount(QObject* parent = 0);
 
   QAction* actionZoomToLayer(QgsMapCanvas* canvas, QObject* parent = 0);
   QAction* actionZoomToGroup(QgsMapCanvas* canvas, QObject* parent = 0);
@@ -29,6 +30,7 @@ protected slots:
   void removeGroupOrLayer();
   void renameGroupOrLayer();
   void showInOverview();
+  void showFeatureCount();
   void zoomToLayer();
   void zoomToGroup();
 
