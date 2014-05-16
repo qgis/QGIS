@@ -41,6 +41,8 @@ protected:
 
   void updateExpandedStateFromNode(QgsLayerTreeNode* node);
 
+  QgsMapLayer* layerForIndex(const QModelIndex& index) const;
+
 signals:
   void currentLayerChanged(QgsMapLayer* layer);
 
@@ -52,11 +54,9 @@ protected slots:
 
   void updateExpandedStateToNode(QModelIndex index);
 
-  void onCurrentChanged(QModelIndex current);
+  void onCurrentChanged(QModelIndex current, QModelIndex previous);
 
 protected:
-  QgsMapLayer* mCurrentLayer;
-
   QgsLayerTreeViewDefaultActions* mDefaultActions;
   QgsLayerTreeViewMenuProvider* mMenuProvider;
 };

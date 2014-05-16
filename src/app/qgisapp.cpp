@@ -375,6 +375,30 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
   emit customSrsValidation( srs );
 }
 
+void QgisApp::layerTreeViewDoubleClicked(const QModelIndex& index)
+{
+  Q_UNUSED( index );
+
+  QSettings settings;
+  switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
+  {
+    case 0:
+      QgisApp::instance()->layerProperties();
+      break;
+    case 1:
+      QgisApp::instance()->attributeTable();
+      break;
+    default:
+      break;
+  }
+}
+
+void QgisApp::activeLayerChanged(QgsMapLayer* layer)
+{
+  if ( mMapCanvas )
+    mMapCanvas->setCurrentLayer( layer );
+}
+
 /**
  * This function contains forced validation of CRS used in QGIS.
  * There are 3 options depending on the settings:
@@ -2358,6 +2382,9 @@ void QgisApp::initLayerTreeView()
   mLayerTreeView = new QgsLayerTreeView( this );
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider(mLayerTreeView, mMapCanvas) );
+
+  connect( mLayerTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(layerTreeViewDoubleClicked(QModelIndex)) );
+  connect( mLayerTreeView, SIGNAL(currentLayerChanged(QgsMapLayer*)), this, SLOT(activeLayerChanged(QgsMapLayer*)) );
 
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
@@ -7474,7 +7501,7 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer()
 {
-  return mMapLegend ? mMapLegend->currentLayer() : 0;
+  return mLayerTreeView ? mLayerTreeView->currentLayer() : 0;
 }
 
 /** set the current layer */
