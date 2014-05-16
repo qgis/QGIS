@@ -369,12 +369,12 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
                      tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
-    theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
+    theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
     QgsRasterLayer *rasterLayer =  qobject_cast<QgsRasterLayer *>( lyr );
     if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
     {
-      theMenu.addAction( tr( "&Stretch Using Current Extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
+      theMenu.addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
     }
   }
 

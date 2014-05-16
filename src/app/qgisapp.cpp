@@ -137,6 +137,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgslegend.h"
+#include "qgslegendgroup.h"
 #include "qgslayerorder.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
@@ -2181,7 +2182,7 @@ QgsMessageBar* QgisApp::messageBar()
 #include "qgslayertreenode.h"
 #include "qgslayertreeviewdefaultactions.h"
 
-class QgsAppLayerTreeViewMenuProvider : public QgsLayerTreeViewMenuProvider
+class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
 {
 public:
   QgsAppLayerTreeViewMenuProvider(QgsLayerTreeView* view, QgsMapCanvas* canvas) : mView(view), mCanvas(canvas) {}
@@ -2204,6 +2205,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   {
     // global menu
     menu->addAction( actions->actionAddGroup(menu) );
+
+    // TODO: expand all, collapse all
+    // TODO: update drawing order
   }
   else if (QgsLayerTreeNode* node = mView->layerTreeModel()->index2node(idx))
   {
@@ -2211,30 +2215,127 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
     {
       menu->addAction( actions->actionZoomToGroup(mCanvas, menu) );
+      menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
+
+      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
+                       tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCRS() ) );
+
+      menu->addAction( actions->actionRenameGroupOrLayer(menu) );
+
+      if (mView->selectedNodes(true).count() >= 2)
+        menu->addAction( actions->actionGroupSelected(menu) );
+
       menu->addAction( actions->actionAddGroup(menu) );
     }
     else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
     {
+      QgsMapLayer* layer = static_cast<QgsLayerTreeLayer*>(node)->layer();
+
       menu->addAction( actions->actionZoomToLayer(mCanvas, menu) );
       menu->addAction( actions->actionShowInOverview(menu) );
 
-      QgsMapLayer* layer = static_cast<QgsLayerTreeLayer*>(node)->layer();
-      if (layer && layer->type() == QgsMapLayer::VectorLayer)
+      if ( layer->type() == QgsMapLayer::RasterLayer )
+      {
+        menu->addAction( tr( "&Zoom to Best Scale (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
+
+        QgsRasterLayer* rasterLayer =  qobject_cast<QgsRasterLayer *>( layer );
+        if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+          menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
+      }
+
+      menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
+
+      // duplicate layer
+      QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+
+      // set layer crs
+      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+
+      // assign layer crs to project
+      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+
+      menu->addSeparator();
+
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
+
+        QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
+        QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
+        QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
+
+        // attribute table
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
+                         QgisApp::instance(), SLOT( attributeTable() ) );
+
+        // allow editing
+        int cap = vlayer->dataProvider()->capabilities();
+        if ( cap & QgsVectorDataProvider::EditingCapabilities )
+        {
+          if ( toggleEditingAction )
+          {
+            menu->addAction( toggleEditingAction );
+            toggleEditingAction->setChecked( vlayer->isEditable() );
+          }
+          if ( saveLayerEditsAction && vlayer->isModified() )
+          {
+            menu->addAction( saveLayerEditsAction );
+          }
+        }
+
+        if ( allEditsAction->isEnabled() )
+          menu->addAction( allEditsAction );
+
+        // disable duplication of memory layers
+        if ( vlayer->storageType() == "Memory storage" && mView->selectedLayerNodes().count() == 1 )
+          duplicateLayersAction->setEnabled( false );
+
+        // save as vector file
+        menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
+        menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+
+        if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
+          menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+
         menu->addAction( actions->actionShowFeatureCount(menu) );
+
+        menu->addSeparator();
+      }
+      else if ( layer->type() == QgsMapLayer::RasterLayer )
+      {
+        menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+        menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+      }
+      else if ( layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
+      {
+        // disable duplication of plugin layers
+        duplicateLayersAction->setEnabled( false );
+      }
+
+      // TODO: custom actions
+
+      if (layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+        menu->addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
+
+      if (node->parent() != mView->layerTreeModel()->rootGroup())
+        menu->addAction( actions->actionMakeTopLevel(menu) );
+
+      menu->addAction( actions->actionRenameGroupOrLayer(menu) );
+
+      if (mView->selectedNodes(true).count() >= 2)
+        menu->addAction( actions->actionGroupSelected(menu) );
+
+      if ( mView->selectedLayerNodes().count() == 1 )
+      {
+        QgisApp* app = QgisApp::instance();
+        menu->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+        {
+          menu->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+        }
+      }
     }
 
-    if (node->parent() != mView->layerTreeModel()->rootGroup())
-    {
-      menu->addAction( actions->actionMakeTopLevel(menu) );
-    }
-
-    if (mView->selectedNodes(true).count() >= 2)
-    {
-      menu->addAction( actions->actionGroupSelected(menu) );
-    }
-
-    menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
-    menu->addAction( actions->actionRenameGroupOrLayer(menu) );
   }
   else
   {
@@ -4275,7 +4376,7 @@ void QgisApp::zoomToNext()
 
 void QgisApp::zoomActualSize()
 {
-  mMapLegend->legendLayerZoomNative();
+  legendLayerZoomNative();
 }
 
 void QgisApp::identify()
@@ -6754,21 +6855,45 @@ void QgisApp::setLayerCRS()
     return;
   }
 
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setSelectedCrsId( mMapLegend->currentLayer()->crs().srsid() );
-  mySelector->setMessage();
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem crs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    mMapLegend->setCRSForSelectedLayers( crs );
-    mMapCanvas->refresh();
-  }
-  else
+  QgsGenericProjectionSelector mySelector( this );
+  mySelector.setSelectedCrsId( mMapLegend->currentLayer()->crs().srsid() );
+  mySelector.setMessage();
+  if ( !mySelector.exec() )
   {
     QApplication::restoreOverrideCursor();
+    return;
   }
 
-  delete mySelector;
+  QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+
+  // Turn off rendering to improve speed.
+  mMapCanvas->freeze();
+
+  foreach ( QTreeWidgetItem * item, mMapLegend->selectedItems() )
+  {
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
+    if ( lg )
+    {
+      foreach ( QgsLegendLayer *cl, lg->legendLayers() )
+      {
+        if ( cl )
+          cl->layer()->setCrs( crs );
+      }
+      continue;
+    }
+
+    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+    if ( ll && ll->layer() )
+    {
+      ll->layer()->setCrs( crs );
+      continue;
+    }
+  }
+
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->freeze( false );
+
+  mMapCanvas->refresh();
 }
 
 void QgisApp::setProjectCRSFromLayer()
@@ -6787,6 +6912,100 @@ void QgisApp::setProjectCRSFromLayer()
   }
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
+}
+
+
+void QgisApp::legendLayerZoomNative()
+{
+  if ( !mMapLegend )
+    return;
+
+  //find current Layer
+  QgsMapLayer* currentLayer = mMapLegend->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
+  if ( layer )
+  {
+    QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
+    QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
+
+    if ( mMapCanvas->hasCrsTransformEnabled() )
+    {
+      // get legth of central canvas pixel width in source raster crs
+      QgsRectangle e = mMapCanvas->extent();
+      QSize s = mMapCanvas->mapSettings().outputSize();
+      QgsPoint p1( e.center().x(), e.center().y() );
+      QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
+      QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
+      p1 = ct.transform( p1 );
+      p2 = ct.transform( p2 );
+      double width = sqrt( p1.sqrDist( p2 ) ); // width of reprojected pixel
+      // This is not perfect of course, we use the resolution in just one direction
+      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / width ) );
+    }
+    else
+    {
+      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / mMapCanvas->mapUnitsPerPixel() ) );
+    }
+    mMapCanvas->refresh();
+    QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
+  }
+}
+
+void QgisApp::legendLayerStretchUsingCurrentExtent()
+{
+  if ( !mMapLegend )
+    return;
+
+  //find current Layer
+  QgsMapLayer* currentLayer = mMapLegend->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
+  if ( layer )
+  {
+    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm = QgsContrastEnhancement::StretchToMinimumMaximum;
+
+    QgsRectangle myRectangle;
+    myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( layer, mMapCanvas->extent() );
+    layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
+
+    mMapLegend->refreshLayerSymbology( layer->id() );
+    mMapCanvas->refresh();
+  }
+}
+
+
+
+void QgisApp::legendGroupSetCRS()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setMessage();
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem crs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( mMapLegend->currentItem() );
+    foreach ( QgsLegendLayer *cl, lg->legendLayers() )
+    {
+      if ( cl )
+        cl->layer()->setCrs( crs );
+    }
+  }
+  else
+  {
+    QApplication::restoreOverrideCursor();
+  }
+
+  delete mySelector;
 }
 
 void QgisApp::zoomToLayerExtent()

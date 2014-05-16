@@ -711,6 +711,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
+
+    /**Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
+        Only works on raster layers*/
+    void legendLayerZoomNative();
+
+    /**Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
+        Only workds on raster layers*/
+    void legendLayerStretchUsingCurrentExtent();
+
+    /**Set the CRS of the current legend group*/
+    void legendGroupSetCRS();
+
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer

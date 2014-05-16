@@ -4,6 +4,7 @@
 #include <QTreeView>
 
 class QgsLayerTreeGroup;
+class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
 class QgsLayerTreeViewDefaultActions;
@@ -33,6 +34,7 @@ public:
   QgsLayerTreeGroup* currentGroupNode() const;
 
   QList<QgsLayerTreeNode*> selectedNodes(bool skipInternal = false) const;
+  QList<QgsLayerTreeLayer*> selectedLayerNodes() const;
 
 protected:
   void contextMenuEvent(QContextMenuEvent* event);

@@ -885,7 +885,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
       theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
-                         tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
+                         tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCRS() ) );
     }
 
     if (( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP ) && !groupEmbedded( li ) && !parentGroupEmbedded( li ) )
@@ -1621,29 +1621,6 @@ void QgsLegend::legendGroupRemove()
   mMapCanvas->freeze( false );
 }
 
-void QgsLegend::legendGroupSetCRS()
-{
-  if ( !mMapCanvas )
-  {
-    return;
-  }
-
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem crs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-
-    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
-    setGroupCRS( lg, crs );
-  }
-  else
-  {
-    QApplication::restoreOverrideCursor();
-  }
-
-  delete mySelector;
-}
 
 void QgsLegend::removeGroup( QgsLegendGroup *lg )
 {
@@ -1673,22 +1650,6 @@ void QgsLegend::removeGroup( QgsLegendGroup *lg )
   emit itemRemoved();
 
   adjustIconSize();
-}
-
-void QgsLegend::setGroupCRS( QgsLegendGroup *lg, const QgsCoordinateReferenceSystem &crs )
-{
-  if ( !mMapCanvas )
-  {
-    return;
-  }
-
-  foreach ( QgsLegendLayer *cl, lg->legendLayers() )
-  {
-    if ( cl )
-    {
-      cl->layer()->setCrs( crs );
-    }
-  }
 }
 
 void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
@@ -2834,62 +2795,6 @@ void QgsLegend::legendLayerZoom()
   mMapCanvas->refresh();
 }
 
-void QgsLegend::legendLayerZoomNative()
-{
-  //find current Layer
-  QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
-  if ( !currentLayer )
-    return;
-
-  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer->layer() );
-  if ( layer )
-  {
-    QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
-    QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
-
-    if ( mMapCanvas->hasCrsTransformEnabled() )
-    {
-      // get legth of central canvas pixel width in source raster crs
-      QgsRectangle e = mMapCanvas->extent();
-      QSize s = mMapCanvas->mapSettings().outputSize();
-      QgsPoint p1( e.center().x(), e.center().y() );
-      QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
-      QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
-      p1 = ct.transform( p1 );
-      p2 = ct.transform( p2 );
-      double width = sqrt( p1.sqrDist( p2 ) ); // width of reprojected pixel
-      // This is not perfect of course, we use the resolution in just one direction
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / width ) );
-    }
-    else
-    {
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / mMapCanvas->mapUnitsPerPixel() ) );
-    }
-    mMapCanvas->refresh();
-    QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
-  }
-}
-
-void QgsLegend::legendLayerStretchUsingCurrentExtent()
-{
-  //find current Layer
-  QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
-  if ( !currentLayer )
-    return;
-
-  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer->layer() );
-  if ( layer )
-  {
-    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm = QgsContrastEnhancement::StretchToMinimumMaximum;
-
-    QgsRectangle myRectangle;
-    myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( layer, mMapCanvas->extent() );
-    layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
-
-    refreshLayerSymbology( layer->id() );
-    mMapCanvas->refresh();
-  }
-}
 
 void QgsLegend::readProject( const QDomDocument & doc )
 {
@@ -3004,32 +2909,6 @@ void QgsLegend::removeSelectedLayers()
     {
       QgsMapLayerRegistry::instance()->removeMapLayers(
         QStringList() << ll->layer()->id() );
-      continue;
-    }
-  }
-
-  // Turn on rendering (if it was on previously)
-  mMapCanvas->freeze( false );
-}
-
-void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs )
-{
-  // Turn off rendering to improve speed.
-  mMapCanvas->freeze();
-
-  foreach ( QTreeWidgetItem * item, selectedItems() )
-  {
-    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
-    if ( lg )
-    {
-      setGroupCRS( lg, crs );
-      continue;
-    }
-
-    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
-    if ( ll && ll->layer() )
-    {
-      ll->layer()->setCrs( crs );
       continue;
     }
   }

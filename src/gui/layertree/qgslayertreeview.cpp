@@ -157,3 +157,14 @@ QList<QgsLayerTreeNode*> QgsLayerTreeView::selectedNodes(bool skipInternal) cons
 {
   return layerTreeModel()->indexes2nodes(selectionModel()->selectedIndexes(), skipInternal);
 }
+
+QList<QgsLayerTreeLayer*> QgsLayerTreeView::selectedLayerNodes() const
+{
+  QList<QgsLayerTreeLayer*> layerNodes;
+  foreach (QgsLayerTreeNode* node, selectedNodes())
+  {
+    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+      layerNodes << static_cast<QgsLayerTreeLayer*>(node);
+  }
+  return layerNodes;
+}

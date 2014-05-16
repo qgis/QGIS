@@ -339,22 +339,11 @@ class QgsLegend : public QTreeWidget
     legend layer files*/
     void legendLayerZoom();
 
-    /**Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
-        Only works on raster layers*/
-    void legendLayerZoomNative();
-
-    /**Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
-        Only workds on raster layers*/
-    void legendLayerStretchUsingCurrentExtent();
-
     /**Updates check states when the map canvas layer set is changed */
     void refreshCheckStates();
 
     /** Remove selected layers */
     void removeSelectedLayers();
-
-    /** Set CRS for selected layers */
-    void setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs );
 
     /** Update drawing order */
     bool updateDrawingOrder();
@@ -483,12 +472,8 @@ class QgsLegend : public QTreeWidget
     void handleRightClickEvent( QTreeWidgetItem* item, const QPoint& position );
     /**Removes the current legend group*/
     void legendGroupRemove();
-    /**Set the CRS of the current legend group*/
-    void legendGroupSetCRS();
     /**Removes a legend group and its layers*/
     void removeGroup( QgsLegendGroup * lg );
-    /**Removes a legend group and its layers*/
-    void setGroupCRS( QgsLegendGroup * lg, const QgsCoordinateReferenceSystem &crs );
     /**Sets all listview items to open*/
     void expandAll();
     /**Sets all listview items to closed*/
