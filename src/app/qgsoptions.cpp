@@ -828,11 +828,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mOffsetQuadSegSpinBox->setValue( settings.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( settings.value( "/qgis/digitizing/offset_miter_limit", 5.0 ).toDouble() );
 
-
-#ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
-  groupBox_5->setEnabled( false );
-#endif //Q_WS_MAC
-
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
