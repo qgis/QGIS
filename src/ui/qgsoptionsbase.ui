@@ -1645,14 +1645,14 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="chkMaxCores">
+                     <widget class="QCheckBox" name="chkMaxThreads">
                       <property name="text">
                        <string>Max cores to use:</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="spinMaxCores"/>
+                     <widget class="QSpinBox" name="spinMaxThreads"/>
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_41">
@@ -4633,9 +4633,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>chkMaxCores</sender>
+   <sender>chkMaxThreads</sender>
    <signal>toggled(bool)</signal>
-   <receiver>spinMaxCores</receiver>
+   <receiver>spinMaxThreads</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

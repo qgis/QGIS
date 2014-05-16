@@ -548,10 +548,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
   chkParallelRendering->setChecked( settings.value( "/qgis/parallel_rendering", false ).toBool() );
   spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
-  chkMaxCores->setChecked( settings.value( "/qgis/max_cores", 0 ).toInt() != 0 );
-  spinMaxCores->setEnabled( chkMaxCores->isChecked() );
-  spinMaxCores->setRange( 1, QThread::idealThreadCount() );
-  spinMaxCores->setValue( settings.value( "/qgis/max_cores", QThread::idealThreadCount() ).toInt() );
+  chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
+  spinMaxThreads->setEnabled( chkMaxThreads->isChecked() );
+  spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
+  spinMaxThreads->setValue( QgsApplication::maxThreads() );
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
@@ -1076,10 +1076,11 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/parallel_rendering", chkParallelRendering->isChecked() );
-  if ( chkMaxCores->isChecked() )
-    settings.setValue( "/qgis/max_cores", int( spinMaxCores->value() ) );
+  if ( chkMaxThreads->isChecked() )
+	QgsApplication::setMaxThreads( spinMaxThreads->value() );
   else
-    settings.remove( "/qgis/max_cores" );
+	QgsApplication::setMaxThreads( -1 );
+
   settings.setValue( "/qgis/map_update_interval", spinMapUpdateInterval->value() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
