@@ -81,6 +81,11 @@ QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
   return &pluginManagerIface;
 }
 
+QgsLayerTreeView*QgisAppInterface::layerTreeView()
+{
+  return qgis->layerTreeView();
+}
+
 void QgisAppInterface::zoomFull()
 {
   qgis->zoomFull();

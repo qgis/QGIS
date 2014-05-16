@@ -86,6 +86,7 @@ INCLUDE_DIRECTORIES(
   ../src/gui/attributetable
   ../src/gui/editorwidgets
   ../src/gui/editorwidgets/core
+  ../src/gui/layertree
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )

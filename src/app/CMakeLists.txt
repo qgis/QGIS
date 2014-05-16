@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
