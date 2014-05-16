@@ -147,6 +147,7 @@ QgsVectorDataProvider* QgsPostgresResult::memoryProvider()
     for ( int i = 0; i < nTuples; ++i )
     {
       QgsFeature fet;
+      fet.initAttributes( nFields );
       for ( int j = 0; j < nFields; ++j )
       {
         fet.setAttribute( j, PQgetvalue( j, i ) );
@@ -356,9 +357,9 @@ QgsVectorDataProvider* QgsPostgresConn::executeTransactionSql( const QString& id
 
   QgsPostgresConn* conn = it.value();
   QgsPostgresResult r = conn->PQexec( sql, true );
-  if ( r.PQresultStatus() == PGRES_COMMAND_OK )
+  if ( r.PQresultStatus() == PGRES_TUPLES_OK /*PGRES_COMMAND_OK*/ )
   {
-    return 0; //todo: convert QgsPostgresResult to memory provider
+    return r.memoryProvider();
   }
   else
   {
