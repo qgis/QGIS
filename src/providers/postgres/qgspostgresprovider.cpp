@@ -3349,7 +3349,7 @@ QGISEXTERN bool rollbackTransaction( const QString& id, QString& error )
   return false;
 }
 
-QGISEXTERN bool executeTransactionSql( const QString& id, const QString& sql, QString& error )
+QGISEXTERN QgsVectorDataProvider* executeTransactionSql( const QString& id, const QString& sql, QString& error )
 {
   return QgsPostgresConn::executeTransactionSql( id, sql, error );
 }

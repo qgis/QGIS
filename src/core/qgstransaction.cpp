@@ -25,7 +25,7 @@
 typedef bool beginTransaction_t( const QString& id, const QString& connString, QString& error );
 typedef bool commitTransaction_t( const QString& id, QString& error );
 typedef bool rollbackTransaction_t( const QString& id, QString& error );
-typedef bool executeTransactionSql_t( const QString& id, const QString& sql, QString& error );
+typedef QgsVectorDataProvider* executeTransactionSql_t( const QString& id, const QString& sql, QString& error );
 
 QgsTransaction::QgsTransaction( const QString& connString, const QString& providerKey ): mId( QUuid::createUuid() ), mConnString( connString ), mProviderKey( providerKey )
 {
@@ -124,12 +124,12 @@ bool QgsTransaction::rollback( QString& errorMsg )
   return true;
 }
 
-bool QgsTransaction::executeSql( const QString& sql, QString& errorMsg )
+QgsVectorDataProvider* QgsTransaction::executeSql( const QString& sql, QString& errorMsg )
 {
   QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( mProviderKey );
   if ( !lib )
   {
-    return false;
+    return 0;
   }
 
   executeTransactionSql_t* pExecuteTransactionSql = ( executeTransactionSql_t* ) cast_to_fptr( lib->resolve( "executeTransactionSql" ) );
@@ -137,14 +137,10 @@ bool QgsTransaction::executeSql( const QString& sql, QString& errorMsg )
 
   if ( !pExecuteTransactionSql )
   {
-    return false;
+    return 0;
   }
 
-  if ( !pExecuteTransactionSql( mId.toString(), sql, errorMsg ) )
-  {
-    return false;
-  }
-  return true;
+  return pExecuteTransactionSql( mId.toString(), sql, errorMsg );
 }
 
 void QgsTransaction::setLayerTransactionIds( const QString& id )
