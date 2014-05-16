@@ -486,6 +486,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     corePlugins << "GdalTools";
     corePlugins << "db_manager";
     corePlugins << "processing";
+    corePlugins << "MetaSearch";
 
     // make the required core plugins enabled by default:
     for ( int i = 0; i < corePlugins.size(); i++ )
