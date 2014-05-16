@@ -19994,7 +19994,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source>There was an error in svg ouput for svg layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Wystąpił błąd przy pliku wynikowym SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
@@ -21294,12 +21294,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="404"/>
         <source>Item blend mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono tryb</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="414"/>
         <source>Item transparency changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono przezroczystość</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="424"/>
@@ -21693,7 +21693,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="232"/>
         <source>Legend title alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono wyrównanie tytułu legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="243"/>
@@ -22433,7 +22433,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="782"/>
         <source>Overview frame style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono styl ramki podglądu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="816"/>
@@ -22443,7 +22443,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="908"/>
         <source>Grid line style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono styl siatki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="993"/>
@@ -23359,7 +23359,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="629"/>
         <source>Scalebar line join style</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono styl złączenia linii podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="642"/>
@@ -23643,7 +23643,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="119"/>
         <source>Shape style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono styl kształtu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="144"/>
@@ -23893,7 +23893,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="102"/>
         <source>Filter with</source>
-        <translation type="unfinished">filtruj</translation>
+        <translation>Filtruj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="114"/>
