@@ -37,18 +37,34 @@ QgsComposerAttributeTableColumnModel::~QgsComposerAttributeTableColumnModel()
 QModelIndex QgsComposerAttributeTableColumnModel::index( int row, int column, const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  if ( row < 0 || row >= mComposerTable->columns()->length() )
+  if ( row < 0 || row >= rowCount()
+       || column < 0 || column >= columnCount() )
   {
     //invalid row
     return QModelIndex();
   }
 
-  return createIndex( row, column, ( *mComposerTable->columns() )[row] );
+  if ( hasIndex( row, column, parent ) )
+  {
+    if (( *mComposerTable->columns() )[row] )
+    {
+      return createIndex( row, column, ( *mComposerTable->columns() )[row] );
+    }
+  }
+  return QModelIndex();
+}
+
+QModelIndex QgsComposerAttributeTableColumnModel::parent( const QModelIndex &child ) const
+{
+  Q_UNUSED( child );
+  return QModelIndex();
 }
 
 int QgsComposerAttributeTableColumnModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  if ( parent.isValid() )
+    return 0;
+
   return mComposerTable->columns()->length();
 }
 

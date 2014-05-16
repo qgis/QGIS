@@ -57,6 +57,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModel: public QAbstractTableMod
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
     QModelIndex index( int row, int column, const QModelIndex &parent ) const;
+    QModelIndex parent( const QModelIndex &child ) const;
 
     /**Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
