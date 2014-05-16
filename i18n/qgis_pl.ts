@@ -3828,7 +3828,7 @@ pole geometrii - kolumnę z unikatowymi wartościami</translation>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>[Save to temporary file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Zapisz w pliku tymczasowym]</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -6833,7 +6833,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="309"/>
         <source>Add generated file to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl po zakończeniu</translation>
     </message>
     <message>
         <source>Decay Ratio</source>
@@ -9010,7 +9010,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation> [Plik tymczasowy zaposany do {0}]</translation>
+        <translation> [Plik tymczasowy zapisany do {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
@@ -10447,12 +10447,12 @@ Nie zostanie włączona.</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="31"/>
         <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished">Nie można dokonać reprojekcji zakresu widoku: %1</translation>
+        <translation>Nie można dokonać reprojekcji zakresu widoku: %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayerrenderer.cpp" line="41"/>
         <source>Could not reproject layer extent: %1</source>
-        <translation type="unfinished">Nie można dokonać reprojekcji zakresu warstwy: %1</translation>
+        <translation>Nie można dokonać reprojekcji zakresu warstwy: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
@@ -11125,7 +11125,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="613"/>
         <source>Field separator character.</source>
-        <translation type="unfinished"></translation>
+        <translation>Separator kolumn.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
@@ -12544,7 +12544,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5283"/>
         <source>Operation aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Przerwano operację</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5388"/>
@@ -13064,7 +13064,7 @@ SQL: %1</translation>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="235"/>
         <source>Dom Exception</source>
-        <translation type="unfinished">Wyjątek DOM</translation>
+        <translation>Wyjątek DOM</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="213"/>
@@ -13095,12 +13095,12 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1467"/>
         <source>Generated default style</source>
-        <translation type="unfinished">Wygenerowano domyślny styl</translation>
+        <translation>Wygenerowano domyślny styl</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1468"/>
         <source>Style was missing in capabilities</source>
-        <translation type="unfinished">Brak stylu w Capabilities</translation>
+        <translation>Brak stylu w Capabilities</translation>
     </message>
 </context>
 <context>
@@ -15005,7 +15005,7 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1682"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation>Ta ikona wskazuje czy aktywna jest reprojekcja w locie układu współrzędnych. Kliknij ikonę aby wyświetlić okno dialogowe właściwości projektu.</translation>
+        <translation>Ta ikona wskazuje czy aktywna jest reprojekcja w locie układu współrzędnych. Kliknij ikonę aby wyświetlić właściwości projektu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1686"/>
@@ -15666,7 +15666,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4294"/>
         <source>Open labeling dialog</source>
-        <translation>Otwórz okno dialogowe etykietowania</translation>
+        <translation>Otwórz okno etykietowania</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="425"/>
@@ -19144,7 +19144,7 @@ Baza: %2</translation>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="255"/>
         <source>Case Sensitive</source>
-        <translation type="unfinished">Uwzględniaj wielkość liter</translation>
+        <translation>Uwzględniaj wielkość liter</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="262"/>
@@ -19989,7 +19989,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source>Svg error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
@@ -19999,7 +19999,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2074"/>
         <source> on page </source>
-        <translation type="unfinished"></translation>
+        <translation> on stronie </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2336"/>
@@ -21408,7 +21408,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="302"/>
         <source>Join style</source>
-        <translation type="unfinished">Styl połączenia</translation>
+        <translation>Styl połączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="315"/>
@@ -21837,22 +21837,22 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="139"/>
         <source>Title alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaniu tytułu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="147"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>do lewej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>do środka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="157"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>do prawej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="182"/>
@@ -23530,12 +23530,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="362"/>
         <source>Join style</source>
-        <translation type="unfinished">Styl połączenia</translation>
+        <translation>Styl połączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="372"/>
         <source>Cap style</source>
-        <translation type="unfinished">Styl zakończenia</translation>
+        <translation>Styl zakończenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="395"/>
@@ -23778,7 +23778,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="409"/>
         <source>Expression based filter</source>
-        <translation type="unfinished">Filtr z wyrażenia</translation>
+        <translation>Filtr z wyrażenia</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="437"/>
@@ -23898,7 +23898,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="114"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="127"/>
@@ -28991,22 +28991,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="82"/>
         <source>layer</source>
-        <translation type="unfinished">warstwa</translation>
+        <translation>warstwa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="85"/>
         <source>map view</source>
-        <translation type="unfinished">widok mapy</translation>
+        <translation>widok mapy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="88"/>
         <source>user defined</source>
-        <translation type="unfinished">użytkownika</translation>
+        <translation>użytkownika</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsextentgroupbox.cpp" line="93"/>
         <source>Extent (current: %1)</source>
-        <translation type="unfinished">Zasięg (aktualny: %1)</translation>
+        <translation>Zasięg (aktualny: %1)</translation>
     </message>
 </context>
 <context>
@@ -29577,7 +29577,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="446"/>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation>Zamknij formularz po stworzeniu obiektu</translation>
+        <translation>Nie pytaj o atrybuty po utworzeniu obiektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="466"/>
@@ -31038,7 +31038,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="941"/>
         <source>Band</source>
-        <translation type="unfinished">Kanał</translation>
+        <translation>Kanał</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="959"/>
@@ -36876,7 +36876,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1871"/>
         <source>Decimal places </source>
-        <translation>Cyfr dziesiętnych</translation>
+        <translation>Cyfr po przecinku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1901"/>
@@ -38646,12 +38646,12 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="605"/>
         <source>canvas</source>
-        <translation type="unfinished">obszar mapy</translation>
+        <translation>obszar mapy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="662"/>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="unfinished">Odświeżanie obszaru mapy: %1 ms</translation>
+        <translation>Odświeżanie obszaru mapy: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
@@ -43832,7 +43832,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2810"/>
         <source>Decimal places</source>
-        <translation>Cyfr dziesiętnych</translation>
+        <translation>Cyfr po przecinku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2820"/>
@@ -44866,7 +44866,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3323"/>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation>Zamknij formularz po stworzeniu obiektu</translation>
+        <translation>Nie pytaj o atrybuty po utworzeniu obiektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3572"/>
@@ -48095,7 +48095,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="376"/>
         <source>about:blank</source>
-        <translation type="unfinished">informacja:brak</translation>
+        <translation>informacja:brak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="536"/>
@@ -49829,7 +49829,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="628"/>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
-        <translation>Automatycznie ustala liczbę miejsc dziesiętnych do wyświetlania pozycji myszy</translation>
+        <translation>Automatycznie ustala liczbę cyfr po przecinku do wyświetlania pozycji myszy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="97"/>
@@ -49933,7 +49933,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="631"/>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
-        <translation>Liczba miejsc dziesiętnych do wyświetlania pozycji myszy jest ustalana automatycznie, aby móc wyświetlić zmianę pozycji o jeden piksel</translation>
+        <translation>Liczba cyfr po przecinku do wyświetlania pozycji myszy jest ustalana automatycznie, aby móc wyświetlić zmianę pozycji o jeden piksel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1412"/>
@@ -49954,18 +49954,18 @@ Kontynuować?</translation>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="615"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="618"/>
         <source>Sets the number of decimal places to use for the mouse position display</source>
-        <translation>Ustala liczbę miejsc dziesiętnych do wyświetlania pozycji myszy</translation>
+        <translation>Ustala liczbę cyfr po przecinku do wyświetlania pozycji myszy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="586"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="589"/>
         <source>The number of decimal places for the manual option</source>
-        <translation>Liczba miejsc dziesiętnych wyświetlanych dla opcji ręcznej</translation>
+        <translation>Liczba wyświetlanych cyfr po przecinku dla opcji ręcznej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="602"/>
         <source>decimal places</source>
-        <translation>miejsca dziesiętne</translation>
+        <translation>cyfr po przecinku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="565"/>
@@ -56864,7 +56864,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
-        <translation>[Dodaj ...] - otwiera okno dialogowe Plik w celu wyboru odpowiednich plików do importu</translation>
+        <translation>[Dodaj ...] - otwiera okno Plik w celu wyboru odpowiednich plików do importu</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="359"/>
@@ -63391,12 +63391,12 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1901"/>
         <source>Tile size [px]</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar kafla [px]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1902"/>
         <source>Tile size [mu]</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar kafla [mu]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
@@ -66240,12 +66240,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="29"/>
         <source>Two color</source>
-        <translation type="unfinished">Kolor</translation>
+        <translation>Kolory</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="85"/>
         <source>Color ramp</source>
-        <translation type="unfinished">Paleta kolorów</translation>
+        <translation>Paleta kolorów</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="98"/>
@@ -66287,12 +66287,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="208"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Przesunięcie X,Y</translation>
+        <translation>Przesunięcie X,Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui" line="283"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished">Właściwości oparte na danych...</translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
 </context>
 <context>
@@ -66328,7 +66328,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="128"/>
         <source>Join style</source>
-        <translation type="unfinished">Styl połączenia</translation>
+        <translation>Styl połączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="138"/>
@@ -67465,7 +67465,7 @@ Detailed description how to proceed with vector data is described in chapter 5 &
 </source>
         <translation>&lt;h3&gt;Dodaj warstwę wektorową&lt;/h3&gt;
 
-To okno dialogowe jest wykorzystywane do dodawania warstw wektorowych do projektu. Dane wektorowe definiują obiekty przestrzenne jako punkty, linie lub poligony (obszary domknięte).&lt;/p&gt;
+To okno jest wykorzystywane do dodawania warstw wektorowych do projektu. Dane wektorowe definiują obiekty przestrzenne jako punkty, linie lub poligony (obszary domknięte).&lt;/p&gt;
 QGIS obsługuje dane wektorowe w wielu formatach, m.in. poprzez bibliotekę OGR takie jak Shapefile (ESRI), MIF (format wymiany MapInfo) oraz TAB (format natywny MapInfo).&lt;/p&gt;
 QGIS obsługuje warstwy PostGIS (baza PostgreSQL), SpatiaLite (baza SQLite) oraz z plików tekstowych CSV. Pełna lista obsługiwanych formatów dostępna jest w Dodatku A.1 podręcznika użytkownika.&lt;/p&gt;
 Szczegółowy opis pracy z warstwami wektorowymi został opisany w rozdziale 5 &apos;Praca z danymi wektorowymi&apos;.
@@ -72271,7 +72271,7 @@ Ogranicza części dziesiętne do zadanej dokładności.
 &lt;h4&gt;Argumenty&lt;/h4&gt;
 &lt;code&gt;liczba&lt;/code&gt; - liczba do sformatowania
 &lt;br&gt;
-&lt;code&gt;miejsc_d&lt;/code&gt; - liczba całkowita. Liczba zwracanych miejsc dziesiętnych.
+&lt;code&gt;miejsc_d&lt;/code&gt; - liczba całkowita. Liczba cyfr po przecinku.
 
 &lt;h4&gt;Przykład&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -73330,7 +73330,7 @@ Funkcję można wywołać z jednym lub dwoma argumentami, w zależności od potr
 &lt;h4&gt;Argumenty&lt;/h4&gt;
 &lt;code&gt;liczba&lt;/code&gt; - wartość podlegająca zaokrągleniu.
 &lt;br&gt;
-&lt;code&gt;miejsc_dz&lt;/code&gt; - liczba całkowita odpowiadająca liczbie miejsc dziesiętnych (może być ujemna).
+&lt;code&gt;miejsc_dz&lt;/code&gt; - liczba całkowita odpowiadająca liczbie cyfr po przecinku (może być ujemna).
 
 &lt;h4&gt;Przykład&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
