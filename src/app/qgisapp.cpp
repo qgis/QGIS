@@ -135,6 +135,7 @@
 #include "qgsguivectorlayertools.h"
 #include "qgslabelinggui.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslegend.h"
 #include "qgslegendgroup.h"
@@ -1950,9 +1951,9 @@ void QgisApp::setupConnections()
            this, SLOT( destinationCrsChanged() ) );
 
   // connect legend signals
-  connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
-  connect( mMapLegend, SIGNAL( itemSelectionChanged() ),
+  connect( mLayerTreeView->selectionModel(), SIGNAL( selectionChanged(QItemSelection,QItemSelection) ),
            this, SLOT( legendLayerSelectionChanged() ) );
   connect( mMapLegend, SIGNAL( zOrderChanged() ),
            this, SLOT( markDirty() ) );
@@ -4207,13 +4208,13 @@ void QgisApp::saveMapAsImage( QString theImageFileNameQString, QPixmap * theQPix
   }
 } // saveMapAsImage
 
-
 //reimplements method from base (gui) class
 void QgisApp::addAllToOverview()
 {
-  if ( mMapLegend )
+  if ( mLayerTreeView )
   {
-    mMapLegend->enableOverviewModeAllLayers( true );
+    foreach ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+      nodeL->setCustomProperty("overview", 1);
   }
 
   markDirty();
@@ -4222,9 +4223,10 @@ void QgisApp::addAllToOverview()
 //reimplements method from base (gui) class
 void QgisApp::removeAllFromOverview()
 {
-  if ( mMapLegend )
+  if ( mLayerTreeView )
   {
-    mMapLegend->enableOverviewModeAllLayers( false );
+    foreach ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+      nodeL->setCustomProperty("overview", 0);
   }
 
   markDirty();
@@ -4845,9 +4847,6 @@ void QgisApp::saveAsLayerDefinition()
 
 void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOption )
 {
-  if ( !mMapLegend )
-    return;
-
   if ( !vlayer )
   {
     vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() ); // FIXME: output of multiple layers at once?
@@ -5005,7 +5004,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
 {
   if ( !layer )
   {
-    layer = mMapLegend->currentLayer();
+    layer = mLayerTreeView->currentLayer();
   }
 
   if ( !parent )
@@ -6403,7 +6402,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
 
 void QgisApp::saveEdits()
 {
-  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     saveEdits( layer, true, false );
   }
@@ -6429,7 +6428,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
 
 void QgisApp::rollbackEdits()
 {
-  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     cancelEdits( layer, true, false );
   }
@@ -6455,7 +6454,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
 
 void QgisApp::cancelEdits()
 {
-  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     cancelEdits( layer, false, false );
   }
@@ -6514,9 +6513,11 @@ void QgisApp::updateLayerModifiedActions()
   }
   mActionSaveLayerEdits->setEnabled( enableSaveLayerEdits );
 
-  mActionSaveEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
-  mActionRollbackEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
-  mActionCancelEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable() );
+  QList<QgsLayerTreeLayer*> selectedLayerNodes = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer*>();
+
+  mActionSaveEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayerNodes ) );
+  mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayerNodes ) );
+  mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayerNodes ) );
 
   bool hasEditLayers = ( editableLayers().count() > 0 );
   mActionAllEdits->setEnabled( hasEditLayers );
@@ -6531,24 +6532,17 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
 {
   QList<QgsMapLayer*> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
-  QList<QgsMapLayer*> layers = mMapLegend->layers();
-  if ( layers.count() > 0 )
+  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
   {
-    foreach ( QgsMapLayer* layer, layers )
-    {
-      // get layer's editable/modified state from registry since we may be
-      // responding to same signal that legend is also responding to
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>(
-                             QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) );
-      if ( !vl )
-      {
-        continue;
-      }
-      if ( vl->isEditable() && ( !modified || ( modified && vl->isModified() ) ) )
-      {
-        editLayers << vl;
-      }
-    }
+    if ( !nodeLayer->layer() )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
+    if ( !vl )
+      continue;
+
+    if ( vl->isEditable() && ( !modified || ( modified && vl->isModified() ) ) )
+      editLayers << vl;
   }
   return editLayers;
 }
@@ -6681,7 +6675,7 @@ void QgisApp::userCenter()
 // toggle overview status
 void QgisApp::isInOverview()
 {
-  mMapLegend->legendLayerShowInOverview();
+  mLayerTreeView->defaultActions()->showInOverview();
 }
 
 void QgisApp::removingLayers( QStringList theLayers )
@@ -6704,21 +6698,22 @@ void QgisApp::removeAllLayers()
 
 void QgisApp::removeLayer()
 {
-  if ( !mMapLegend )
+  if ( !mLayerTreeView )
   {
     return;
   }
 
-  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
       return;
   }
 
+  QList<QgsLayerTreeNode*> selectedNodes = mLayerTreeView->selectedNodes(true);
+
   //validate selection
-  int numberOfRemovedItems = mMapLegend->selectedItems().size();
-  if ( numberOfRemovedItems == 0 )
+  if ( selectedNodes.isEmpty() )
   {
     messageBar()->pushMessage( tr( "No legend entries selected" ),
                                tr( "Select the layers and groups you want to remove in the legend." ),
@@ -6728,26 +6723,31 @@ void QgisApp::removeLayer()
 
   bool promptConfirmation = QSettings().value( "qgis/askToDeleteLayers", true ).toBool();
   //display a warning
-  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", numberOfRemovedItems ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
 
-  mMapLegend->removeSelectedLayers();
+  foreach (QgsLayerTreeNode* node, selectedNodes)
+  {
+    QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>(node->parent());
+    if (parentGroup)
+      parentGroup->removeChildNode(node);
+  }
 
-  showStatusMessage( tr( "%n legend entries removed.", "number of removed legend entries", numberOfRemovedItems ) );
+  showStatusMessage( tr( "%n legend entries removed.", "number of removed legend entries", selectedNodes.count() ) );
 
   mMapCanvas->refresh();
 }
 
 void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 {
-  if ( !mMapLegend )
+  if ( !mLayerTreeView )
   {
     return;
   }
 
-  const QList<QgsMapLayer *> selectedLyrs = lyrList.empty() ? mMapLegend->selectedLayers() : lyrList;
+  const QList<QgsMapLayer *> selectedLyrs = lyrList.empty() ? mLayerTreeView->selectedLayers() : lyrList;
   if ( selectedLyrs.empty() )
   {
     return;
@@ -6877,13 +6877,13 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 
 void QgisApp::setLayerCRS()
 {
-  if ( !( mMapLegend && mMapLegend->currentLayer() ) )
+  if ( !( mLayerTreeView && mLayerTreeView->currentLayer() ) )
   {
     return;
   }
 
   QgsGenericProjectionSelector mySelector( this );
-  mySelector.setSelectedCrsId( mMapLegend->currentLayer()->crs().srsid() );
+  mySelector.setSelectedCrsId( mLayerTreeView->currentLayer()->crs().srsid() );
   mySelector.setMessage();
   if ( !mySelector.exec() )
   {
@@ -6896,24 +6896,21 @@ void QgisApp::setLayerCRS()
   // Turn off rendering to improve speed.
   mMapCanvas->freeze();
 
-  foreach ( QTreeWidgetItem * item, mMapLegend->selectedItems() )
+  foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
-    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
-    if ( lg )
+    if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
-      foreach ( QgsLegendLayer *cl, lg->legendLayers() )
+      foreach ( QgsLayerTreeLayer* child, static_cast<QgsLayerTreeGroup*>( node )->findLayers() )
       {
-        if ( cl )
-          cl->layer()->setCrs( crs );
+        if ( child->layer() )
+          child->layer()->setCrs( crs );
       }
-      continue;
     }
-
-    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
-    if ( ll && ll->layer() )
+    else if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
     {
-      ll->layer()->setCrs( crs );
-      continue;
+      QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>( node );
+      if (nodeLayer->layer())
+        nodeLayer->layer()->setCrs( crs );
     }
   }
 
@@ -6925,12 +6922,12 @@ void QgisApp::setLayerCRS()
 
 void QgisApp::setProjectCRSFromLayer()
 {
-  if ( !( mMapLegend && mMapLegend->currentLayer() ) )
+  if ( !( mLayerTreeView && mLayerTreeView->currentLayer() ) )
   {
     return;
   }
 
-  QgsCoordinateReferenceSystem crs = mMapLegend->currentLayer()->crs();
+  QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
   mMapCanvas->freeze();
   mMapCanvas->setDestinationCrs( crs );
   if ( crs.mapUnits() != QGis::UnknownUnit )
@@ -6944,11 +6941,11 @@ void QgisApp::setProjectCRSFromLayer()
 
 void QgisApp::legendLayerZoomNative()
 {
-  if ( !mMapLegend )
+  if ( !mLayerTreeView )
     return;
 
   //find current Layer
-  QgsMapLayer* currentLayer = mMapLegend->currentLayer();
+  QgsMapLayer* currentLayer = mLayerTreeView->currentLayer();
   if ( !currentLayer )
     return;
 
@@ -6983,11 +6980,11 @@ void QgisApp::legendLayerZoomNative()
 
 void QgisApp::legendLayerStretchUsingCurrentExtent()
 {
-  if ( !mMapLegend )
+  if ( !mLayerTreeView )
     return;
 
   //find current Layer
-  QgsMapLayer* currentLayer = mMapLegend->currentLayer();
+  QgsMapLayer* currentLayer = mLayerTreeView->currentLayer();
   if ( !currentLayer )
     return;
 
@@ -7014,30 +7011,29 @@ void QgisApp::legendGroupSetCRS()
     return;
   }
 
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem crs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsLayerTreeGroup* currentGroup = mLayerTreeView->currentGroupNode();
+  if ( !currentGroup )
+    return;
 
-    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( mMapLegend->currentItem() );
-    foreach ( QgsLegendLayer *cl, lg->legendLayers() )
-    {
-      if ( cl )
-        cl->layer()->setCrs( crs );
-    }
-  }
-  else
+  QgsGenericProjectionSelector mySelector( this );
+  mySelector.setMessage();
+  if ( !mySelector.exec() )
   {
     QApplication::restoreOverrideCursor();
+    return;
   }
 
-  delete mySelector;
+  QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+  foreach ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
+  {
+    if ( nodeLayer->layer() )
+      nodeLayer->layer()->setCrs( crs );
+  }
 }
 
 void QgisApp::zoomToLayerExtent()
 {
-  mMapLegend->legendLayerZoom();
+  mLayerTreeView->defaultActions()->zoomToLayer();
 }
 
 void QgisApp::showPluginManager()
@@ -7333,7 +7329,7 @@ void QgisApp::localCumulativeCutStretch()
 
 void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhancementLimits theLimits )
 {
-  QgsMapLayer * myLayer = mMapLegend->currentLayer();
+  QgsMapLayer * myLayer = mLayerTreeView->currentLayer();
 
   if ( !myLayer )
   {
@@ -7403,7 +7399,7 @@ void QgisApp::decreaseContrast()
 
 void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 {
-  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     if ( !layer )
     {
@@ -7510,7 +7506,11 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   if ( !layer )
     return false;
 
-  return mMapLegend->setCurrentLayer( layer );
+  if ( !mLayerTreeView->layerTreeModel()->rootGroup()->findLayer(layer->id()) )
+    return false;
+
+  mLayerTreeView->setCurrentLayer( layer );
+  return true;
 }
 
 /** Add a vector layer directly without prompting user for location
@@ -8654,14 +8654,16 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 
 void QgisApp::legendLayerSelectionChanged( void )
 {
-  mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
-  mActionDuplicateLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
-  mActionSetLayerCRS->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
-  mActionSetProjectCRSFromLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() == 1 );
+  QList<QgsLayerTreeLayer*> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer*>();
 
-  mActionSaveEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
-  mActionRollbackEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
-  mActionCancelEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable() );
+  mActionRemoveLayer->setEnabled( selectedLayers.count() > 0 );
+  mActionDuplicateLayer->setEnabled( selectedLayers.count() > 0 );
+  mActionSetLayerCRS->setEnabled( selectedLayers.count() > 0 );
+  mActionSetProjectCRSFromLayer->setEnabled( selectedLayers.count() == 1 );
+
+  mActionSaveEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayers ) );
+  mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayers ) );
+  mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayers ) );
 }
 
 void QgisApp::layerEditStateChanged()

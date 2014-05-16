@@ -163,6 +163,7 @@ public:
   void removeAllChildren();
 
   QgsLayerTreeLayer* findLayer(const QString& layerId);
+  QList<QgsLayerTreeLayer*> findLayers() const;
   QgsLayerTreeGroup* findGroup(const QString& name);
 
   static QgsLayerTreeGroup* readXML(QDomElement& element);

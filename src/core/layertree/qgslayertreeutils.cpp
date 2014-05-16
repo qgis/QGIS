@@ -2,6 +2,8 @@
 
 #include "qgslayertreenode.h"
 
+#include "qgsvectorlayer.h"
+
 #include <QDomElement>
 
 bool QgsLayerTreeUtils::readOldLegend(QgsLayerTreeGroup* root, const QDomElement& legendElem)
@@ -91,4 +93,34 @@ void QgsLayerTreeUtils::addLegendLayerToTreeWidget( const QDomElement& layerElem
   // TODO: is in overview, drawing order, show feature count
 
   parent->addChildNode(layerNode);
+}
+
+
+
+bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes )
+{
+  foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
+    if ( !vl )
+      continue;
+
+    if ( vl->isEditable() )
+      return true;
+  }
+  return false;
+}
+
+bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer*>& layerNodes )
+{
+  foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
+    if ( !vl )
+      continue;
+
+    if ( vl->isEditable() && vl->isModified() )
+      return true;
+  }
+  return false;
 }

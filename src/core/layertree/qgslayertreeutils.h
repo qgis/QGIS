@@ -2,10 +2,12 @@
 #define QGSLAYERTREEUTILS_H
 
 #include <qnamespace.h>
+#include <QList>
 
 class QDomElement;
 
 class QgsLayerTreeGroup;
+class QgsLayerTreeLayer;
 
 class CORE_EXPORT QgsLayerTreeUtils
 {
@@ -17,6 +19,8 @@ public:
   static QString checkStateToXml(Qt::CheckState state);
   static Qt::CheckState checkStateFromXml(QString txt);
 
+  static bool layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes );
+  static bool layersModified( const QList<QgsLayerTreeLayer*>& layerNodes );
 
 
 protected:

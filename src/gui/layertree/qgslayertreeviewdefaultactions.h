@@ -29,7 +29,7 @@ public:
   QAction* actionMakeTopLevel(QObject* parent = 0);
   QAction* actionGroupSelected(QObject* parent = 0);
 
-protected slots:
+public slots:
   void addGroup();
   void removeGroupOrLayer();
   void renameGroupOrLayer();

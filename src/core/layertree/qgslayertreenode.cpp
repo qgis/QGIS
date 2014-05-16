@@ -242,6 +242,19 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer(const QString& layerId)
   return 0;
 }
 
+QList<QgsLayerTreeLayer*> QgsLayerTreeGroup::findLayers() const
+{
+  QList<QgsLayerTreeLayer*> list;
+  foreach (QgsLayerTreeNode* child, mChildren)
+  {
+    if (child->nodeType() == QgsLayerTreeNode::NodeLayer)
+      list << static_cast<QgsLayerTreeLayer*>(child);
+    else if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
+      list << static_cast<QgsLayerTreeGroup*>(child)->findLayers();
+  }
+  return list;
+}
+
 QgsLayerTreeGroup* QgsLayerTreeGroup::findGroup(const QString& name)
 {
   foreach (QgsLayerTreeNode* child, mChildren)

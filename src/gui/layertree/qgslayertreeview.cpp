@@ -186,3 +186,14 @@ QList<QgsLayerTreeLayer*> QgsLayerTreeView::selectedLayerNodes() const
   }
   return layerNodes;
 }
+
+QList<QgsMapLayer*> QgsLayerTreeView::selectedLayers() const
+{
+  QList<QgsMapLayer*> list;
+  foreach (QgsLayerTreeLayer* node, selectedLayerNodes())
+  {
+    if (node->layer())
+      list << node->layer();
+  }
+  return list;
+}

@@ -36,6 +36,8 @@ public:
   QList<QgsLayerTreeNode*> selectedNodes(bool skipInternal = false) const;
   QList<QgsLayerTreeLayer*> selectedLayerNodes() const;
 
+  QList<QgsMapLayer*> selectedLayers() const;
+
 protected:
   void contextMenuEvent(QContextMenuEvent* event);
 
