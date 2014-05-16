@@ -401,7 +401,7 @@ void QgsComposerPicture::loadPicture( const QFile& file )
   {
     recalculateSize();
   }
-  else if ( !( file.fileName().isEmpty() ) || ( mUseSourceExpression && mPictureExpr->hasEvalError() ) )
+  else if ( !( file.fileName().isEmpty() ) || ( mUseSourceExpression && mPictureExpr && mPictureExpr->hasEvalError() ) )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = SVG;
