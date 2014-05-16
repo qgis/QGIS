@@ -34,6 +34,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgslayertreeview.h"
 #include "qgslegend.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
@@ -50,7 +51,7 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
-  connect( qgis->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
   connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
            this, SIGNAL( currentThemeChanged( QString ) ) );

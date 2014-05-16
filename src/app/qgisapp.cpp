@@ -550,6 +550,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
+  mLayerTreeView = new QgsLayerTreeView( this );
+
   // "theMapLegend" used to find this canonical instance later
   mMapLegend = new QgsLegend( mMapCanvas, this, "theMapLegend" );
 
@@ -2181,6 +2183,12 @@ QgsLegend *QgisApp::legend()
   return mMapLegend;
 }
 
+QgsLayerTreeView* QgisApp::layerTreeView()
+{
+  Q_ASSERT( mLayerTreeView );
+  return mLayerTreeView;
+}
+
 QgsPluginManager *QgisApp::pluginManager()
 {
   Q_ASSERT( mPluginManager );
@@ -2380,7 +2388,6 @@ void QgisApp::initLayerTreeView()
   QgsLayerTreeModel* model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
   model->setFlag(QgsLayerTreeModel::AllowVisibilityManagement);
 
-  mLayerTreeView = new QgsLayerTreeView( this );
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider(mLayerTreeView, mMapCanvas) );
 
@@ -4340,7 +4347,8 @@ void QgisApp::hideAllLayers()
 {
   QgsDebugMsg( "hiding all layers!" );
 
-  legend()->setLayersVisible( false );
+  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+    nodeLayer->setVisible( false );
 }
 
 
@@ -4349,7 +4357,8 @@ void QgisApp::showAllLayers()
 {
   QgsDebugMsg( "Showing all layers!" );
 
-  legend()->setLayersVisible( true );
+  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+    nodeLayer->setVisible( true );
 }
 
 

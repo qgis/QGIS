@@ -96,7 +96,6 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QList<QgsPoint> mCaptureList;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QgsLegend * mpLegend;
     QgsVectorLayer * mpLastLayer;
     QFile * mLogFile;
     QTextStream mLogFileTextStream;

@@ -15,25 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgpsinformationwidget.h"
-#include "qgsnmeaconnection.h"
-#include "qgsgpsconnectionregistry.h"
-#include "qgsgpsdetector.h"
+
 #include "info.h"
-#include "qgscoordinatetransform.h"
-#include "qgspoint.h"
-#include "qgsrubberband.h"
-#include "qgsmaprenderer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
+
+#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureaction.h"
 #include "qgsgeometry.h"
-#include "qgisapp.h"
-
-//for avoid intersections static method
+#include "qgsgpsconnectionregistry.h"
+#include "qgsgpsdetector.h"
+#include "qgslayertreeview.h"
+#include "qgslogger.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptooladdfeature.h"
+#include "qgsnmeaconnection.h"
+#include "qgspoint.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -66,8 +68,6 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
 {
   setupUi( this );
 
-  // to connect signals that layers have changed (which layer, edit state)
-  mpLegend = QgisApp::instance()->legend();
   mpLastLayer = 0;
 
   mLastGpsPosition = QgsPoint( 0.0, 0.0 );
@@ -232,7 +232,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   //SLM - added functionality
   mLogFile = 0;
 
-  connect( mpLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( updateCloseFeatureButton( QgsMapLayer* ) ) );
 
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
