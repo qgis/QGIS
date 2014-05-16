@@ -22,6 +22,8 @@
 #include <QSet>
 #include <QString>
 
+class QgsVectorDataProvider;
+
 class CORE_EXPORT QgsTransaction
 {
   public:
@@ -33,7 +35,8 @@ class CORE_EXPORT QgsTransaction
     bool begin( QString& errorMsg );
     bool commit( QString& errorMsg );
     bool rollback( QString& errorMsg );
-    bool executeSql( const QString& sql, QString& errorMsg );
+    /**Executes sql and returns a memory provider with the results. The caller takes ownership of the provider object*/
+    QgsVectorDataProvider* executeSql( const QString& sql, QString& errorMsg );
 
     //readXML
     //writeXML

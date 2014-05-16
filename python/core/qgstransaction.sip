@@ -12,5 +12,5 @@ class QgsTransaction
         bool begin( QString& errorMsg );
         bool commit( QString& errorMsg );
         bool rollback( QString& errorMsg );
-        bool executeSql( const QString& sql, QString& errorMsg );
+        QgsVectorDataProvider* executeSql( const QString& sql, QString& errorMsg ) /Factory/;
 };

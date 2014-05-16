@@ -22,6 +22,8 @@
 #include "qgscredentials.h"
 #include "qgsfield.h"
 #include "qgspgtablemodel.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
 #include <QApplication>
 #include <QSettings>
@@ -124,6 +126,40 @@ Oid QgsPostgresResult::PQoidValue()
 {
   Q_ASSERT( mRes );
   return ::PQoidValue( mRes );
+}
+
+QgsVectorDataProvider* QgsPostgresResult::memoryProvider()
+{
+  QgsVectorDataProvider* provider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( "memory", "NoGeometry" ) );
+  if ( provider )
+  {
+    QList<QgsField> attributes;
+
+    int nFields = PQnfields();
+    for ( int i = 0; i < nFields; ++i )
+    {
+      attributes.push_back( QgsField( PQfname( i ), QVariant::String ) ); //todo: other datatypes?
+    }
+    provider->addAttributes( attributes );
+
+    QgsFeatureList features;
+    int nTuples = PQntuples();
+    for ( int i = 0; i < nTuples; ++i )
+    {
+      QgsFeature fet;
+      for ( int j = 0; j < nFields; ++j )
+      {
+        fet.setAttribute( j, PQgetvalue( j, i ) );
+      }
+      features << fet;
+    }
+
+    if ( features.size() > 0 )
+    {
+      provider->addFeatures( features );
+    }
+  }
+  return provider;
 }
 
 
@@ -310,24 +346,24 @@ bool QgsPostgresConn::beginTransaction( const QString& id, const QString& connSt
   }
 }
 
-bool QgsPostgresConn::executeTransactionSql( const QString& id, const QString& sql, QString& error )
+QgsVectorDataProvider* QgsPostgresConn::executeTransactionSql( const QString& id, const QString& sql, QString& error )
 {
   QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( id );
   if ( it == sTransactionConnections.end() )
   {
-    return false;
+    return 0;
   }
 
   QgsPostgresConn* conn = it.value();
   QgsPostgresResult r = conn->PQexec( sql, true );
   if ( r.PQresultStatus() == PGRES_COMMAND_OK )
   {
-    return true;
+    return 0; //todo: convert QgsPostgresResult to memory provider
   }
   else
   {
     error = r.PQresultErrorMessage();
-    return false;
+    return 0;
   }
 }
 

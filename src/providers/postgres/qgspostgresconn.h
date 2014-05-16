@@ -26,6 +26,8 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 
+class QgsVectorDataProvider;
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -150,6 +152,7 @@ class QgsPostgresResult
     Oid PQoidValue();
 
     PGresult *result() const { return mRes; }
+    QgsVectorDataProvider* memoryProvider();
 
   private:
     PGresult *mRes;
@@ -165,7 +168,7 @@ class QgsPostgresConn : public QObject
 
     //transaction handling
     static bool beginTransaction( const QString& id, const QString& connString, QString& error );
-    static bool executeTransactionSql( const QString& id, const QString& sql, QString& error );
+    static QgsVectorDataProvider* executeTransactionSql( const QString& id, const QString& sql, QString& error );
     static bool removeTransaction( const QString& id );
 
     //! get postgis version string

@@ -551,8 +551,8 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
     , mPrimaryKeyType( p->mPrimaryKeyType )
     , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
     , mQuery( p->mQuery )
-    , mShared( p->mShared )
     , mTransactionId( p->transactionId() )
+    , mShared( p->mShared )
 {
 }
 
