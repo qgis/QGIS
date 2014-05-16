@@ -277,11 +277,23 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     // Returns provider key
     QString providerKey() { return mProviderKey; }
 
+    /** Returns the supported CRS
+     *  @note Added in 2.8
+     */
+    QStringList supportedCRS() { return mSupportedCRS; }
+
+    /** Returns the supported formats
+     *  @note Added in 2.8
+     */
+    QStringList supportedFormats() { return mSupportFormats; }
+
   protected:
 
     QString mProviderKey;
     QString mUri;
     LayerType mLayerType;
+    QStringList mSupportedCRS;
+    QStringList mSupportFormats;
 
   public:
     static const QIcon &iconPoint();
@@ -441,4 +453,5 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 };
 
 #endif // QGSDATAITEM_H
+
 

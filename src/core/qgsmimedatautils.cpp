@@ -22,7 +22,11 @@
 static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
 QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
-    : providerKey( layerItem->providerKey() ), name( layerItem->layerName() ), uri( layerItem->uri() )
+    : providerKey( layerItem->providerKey() )
+    , name( layerItem->layerName() )
+    , uri( layerItem->uri() )
+    , supportedCrs( layerItem->supportedCRS() )
+    , supportedFormats( layerItem->supportedFormats() )
 {
   switch ( layerItem->mapLayerType() )
   {
@@ -36,66 +40,26 @@ QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
       layerType = "plugin";
       break;
   }
-
 }
 
 QgsMimeDataUtils::Uri::Uri( QString& encData )
 {
-  QStringList parts;
-  QChar split = ':';
-  QChar escape = '\\';
-  QString part;
-  bool inEscape = false;
-  if ( encData.isEmpty() )
-    return;
-  for ( int i = 0; i < encData.length(); ++i )
+  QStringList decoded = decode( encData );
+  if ( decoded.size() == 6 )
   {
-    if ( encData.at( i ) == escape && !inEscape )
-    {
-      inEscape = true;
-    }
-    else if ( encData.at( i ) == split && !inEscape )
-    {
-      parts << part;
-      part = "";
-    }
-    else
-    {
-      part += encData.at( i );
-      inEscape = false;
-    }
-  }
-  if ( !part.isEmpty() )
-  {
-    parts << part;
-  }
-
-  if ( parts.size() <= 5 ) // PostGISTRaster layers yields five parts
-  {
-    layerType = parts.value( 0 );
-    providerKey = parts.value( 1 );
-    name = parts.value( 2 );
-    // fetchs PostGISRaster layers
-    if ( parts.value( 3 ) == "PG" )
-    {
-      uri = parts.value( 3 ) + ":" + parts.value( 4 );
-    }
-    else
-    {
-      uri = parts.value( 3 );
-    }
-    QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
+    layerType = decoded[0];
+    providerKey = decoded[1];
+    name = decoded[2];
+    uri = decoded[3];
+    supportedCrs = decode( decoded[4] );
+    supportedFormats = decode( decoded[5] );
+    QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri + " supportedCRS: " + decoded[4] + " supportedFormats: " + decoded[5] );
   }
 }
 
 QString QgsMimeDataUtils::Uri::data() const
 {
-  QString escapedName = name;
-  QString escapeUri = uri;
-  escapedName.replace( ":", "\\:" );
-  escapeUri.replace( "\\", "\\\\" );
-  escapeUri.replace( ":", "\\:" );
-  return layerType + ":" + providerKey + ":" + escapedName + ":" + escapeUri;
+  return encode( QStringList() << layerType << providerKey << name << uri << encode( supportedCrs ) << encode( supportedFormats ) );
 }
 
 // -----
@@ -135,3 +99,46 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data
   }
   return list;
 }
+
+QString QgsMimeDataUtils::encode( const QStringList& items )
+{
+  QString encoded;
+  foreach ( const QString& item, items )
+  {
+    QString str = item;
+    str.replace( ":", "\\:" );
+    encoded += str + ":";
+  }
+  return encoded.left( encoded.length() - 1 );
+}
+
+QStringList QgsMimeDataUtils::decode( const QString& encoded )
+{
+  QStringList items;
+  QString item;
+  bool inEscape = false;
+  foreach ( const QChar& c, encoded )
+  {
+    if ( c == '\\' && inEscape )
+    {
+      item += c;
+    }
+    else if ( c == '\\' )
+    {
+      inEscape = true;
+    }
+    else if ( c == ':' && !inEscape )
+    {
+      items.append( item );
+      item = "";
+    }
+    else
+    {
+      item += c;
+      inEscape = false;
+    }
+  }
+  items.append( item );
+  return items;
+}
+

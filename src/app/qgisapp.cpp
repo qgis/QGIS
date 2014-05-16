@@ -151,6 +151,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
@@ -955,13 +956,15 @@ void QgisApp::dropEvent( QDropEvent *event )
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
     foreach ( const QgsMimeDataUtils::Uri& u, lst )
     {
+      QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
+
       if ( u.layerType == "vector" )
       {
-        addVectorLayer( u.uri, u.name, u.providerKey );
+        addVectorLayer( uri, u.name, u.providerKey );
       }
       else if ( u.layerType == "raster" )
       {
-        addRasterLayer( u.uri, u.name, u.providerKey );
+        addRasterLayer( uri, u.name, u.providerKey );
       }
     }
   }
@@ -2731,6 +2734,36 @@ void QgisApp::addLayerDefinition()
   openLayerDefinition( path );
 }
 
+QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri , const QStringList &supportedCrs, const QStringList &supportedFormats ) const
+{
+  QString newuri = uri;
+
+  // Adjust layer CRS to project CRS
+  QgsCoordinateReferenceSystem testCrs;
+  foreach ( QString c, supportedCrs )
+  {
+    testCrs.createFromOgcWmsCrs( c );
+    if ( testCrs == mMapCanvas->mapRenderer()->destinationCrs() )
+    {
+      newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
+      QgsDebugMsg( QString( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ) );
+      break;
+    }
+  }
+
+  // Use the last used image format
+  QString lastImageEncoding = QSettings().value( "/qgis/lastWmsImageEncoding", "image/png" ).toString();
+  foreach ( QString fmt, supportedFormats )
+  {
+    if ( fmt == lastImageEncoding )
+    {
+      newuri.replace( QRegExp( "format=[^&]+" ), "format=" + fmt );
+      QgsDebugMsg( QString( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ) );
+      break;
+    }
+  }
+  return newuri;
+}
 
 /**
   This method prompts the user for a list of vector file names  with a dialog.
