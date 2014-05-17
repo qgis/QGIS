@@ -229,6 +229,26 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       return true;
     }
 
+    bool lessThan( const QModelIndex &left,
+                   const QModelIndex &right ) const
+    {
+      // sort file items by name (a file item is not a directory and its parent is a directory)
+      // this is necessary because more several providers can add items to a directory and
+      // alphabetical sorting is not preserved
+      QgsDataItem* leftItem = mModel->dataItem( left );
+      QgsDataItem* rightItem = mModel->dataItem( right );
+      if ( leftItem && leftItem->type() != QgsDataItem::Directory &&
+           leftItem->parent() && leftItem->parent()->type() == QgsDataItem::Directory &&
+           rightItem && rightItem->type() != QgsDataItem::Directory &&
+           rightItem->parent() && rightItem->parent()->type() == QgsDataItem::Directory )
+      {
+        return QString::localeAwareCompare( leftItem->name(), rightItem->name() ) < 0;
+      }
+
+      // default is to keep original order
+      return left.row() < right.row();
+    }
+
 };
 QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
@@ -308,7 +328,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
-    // find root favourites item
+    // expand root favourites item
     for ( int i = 0; i < mModel->rowCount(); i++ )
     {
       QModelIndex index = mModel->index( i, 0 );
