@@ -22,7 +22,7 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsexception.h"
-#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
@@ -1768,7 +1768,7 @@ bool QgsProject::createEmbeddedGroup( const QString& groupName, const QString& p
   }
 
   // clone the group sub-tree (it is used already in a tree, we cannot just tear it off)
-  QgsLayerTreeGroup* newGroup = static_cast<QgsLayerTreeGroup*>( group->clone() );
+  QgsLayerTreeGroup* newGroup = QgsLayerTree::toGroup( group->clone() );
   delete root;
   root = 0;
 
@@ -1804,16 +1804,16 @@ void QgsProject::initializeEmbeddedSubtree( const QString& projectFilePath, QgsL
     // all nodes in the subtree will have "embedded" custom property set
     child->setCustomProperty( "embedded", true );
 
-    if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
+    if ( QgsLayerTree::isGroup( child ) )
     {
-      initializeEmbeddedSubtree( projectFilePath, static_cast<QgsLayerTreeGroup*>( child ) );
+      initializeEmbeddedSubtree( projectFilePath, QgsLayerTree::toGroup( child ) );
     }
-    else if ( child->nodeType() == QgsLayerTreeNode::NodeLayer )
+    else if ( QgsLayerTree::isLayer( child ) )
     {
       // load the layer into our project
       QList<QDomNode> brokenNodes;
       QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-      createEmbeddedLayer( static_cast<QgsLayerTreeLayer*>( child )->layerId(), projectFilePath, brokenNodes, vectorLayerList, false );
+      createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), projectFilePath, brokenNodes, vectorLayerList, false );
     }
   }
 }

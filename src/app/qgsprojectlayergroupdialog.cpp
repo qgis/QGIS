@@ -17,8 +17,8 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 
+#include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreenode.h"
 #include "qgslayertreeutils.h"
 
 #include <QDomDocument>
@@ -64,8 +64,8 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
   foreach( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
-    if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
-      groups << static_cast<QgsLayerTreeGroup*>( node )->name();
+    if ( QgsLayerTree::isGroup(node) )
+      groups << QgsLayerTree::toGroup( node )->name();
   }
   return groups;
 }
@@ -77,8 +77,8 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
   foreach( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
-    if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
-      layerIds << static_cast<QgsLayerTreeLayer*>( node )->layerId();
+    if ( QgsLayerTree::isLayer(node) )
+      layerIds << QgsLayerTree::toLayer( node )->layerId();
   }
   return layerIds;
 }
@@ -90,8 +90,8 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
   foreach( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
-    if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
-      layerNames << static_cast<QgsLayerTreeLayer*>( node )->layerName();
+    if ( QgsLayerTree::isLayer(node) )
+      layerNames << QgsLayerTree::toLayer( node )->layerName();
   }
   return layerNames;
 }
@@ -188,8 +188,8 @@ void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
   {
     if ( child->customProperty("embedded").toBool() )
       childrenToRemove << child;
-    else if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
-      removeEmbeddedNodes( static_cast<QgsLayerTreeGroup*>( child ) );
+    else if ( QgsLayerTree::isGroup(child) )
+      removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
   }
   foreach ( QgsLayerTreeNode* childToRemove, childrenToRemove )
     node->removeChildNode( childToRemove );

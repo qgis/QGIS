@@ -2,7 +2,7 @@
 
 #include "qgsmaplayerregistry.h"
 
-#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 
 #include "qgsproject.h"
 
@@ -67,8 +67,8 @@ void QgsLayerTreeRegistryBridge::groupAddedChildren(int indexFrom, int indexTo)
   for (int i = indexFrom; i <= indexTo; ++i)
   {
     QgsLayerTreeNode* child = group->children()[i];
-    if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
-      connectToGroup(static_cast<QgsLayerTreeGroup*>(child));
+    if (QgsLayerTree::isGroup(child))
+      connectToGroup(QgsLayerTree::toGroup(child));
   }
 }
 
@@ -77,13 +77,13 @@ static void _collectLayerIdsInGroup(QgsLayerTreeGroup* group, int indexFrom, int
   for (int i = indexFrom; i <= indexTo; ++i)
   {
     QgsLayerTreeNode* child = group->children()[i];
-    if (child->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(child))
     {
-      lst << static_cast<QgsLayerTreeLayer*>(child)->layerId();
+      lst << QgsLayerTree::toLayer(child)->layerId();
     }
-    else if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
+    else if (QgsLayerTree::isGroup(child))
     {
-      _collectLayerIdsInGroup(static_cast<QgsLayerTreeGroup*>(child), 0, child->children().count()-1, lst);
+      _collectLayerIdsInGroup(QgsLayerTree::toGroup(child), 0, child->children().count()-1, lst);
     }
   }
 }
@@ -119,8 +119,8 @@ void QgsLayerTreeRegistryBridge::connectToGroup(QgsLayerTreeGroup* group)
 
   foreach (QgsLayerTreeNode* child, group->children())
   {
-    if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
-      connectToGroup(static_cast<QgsLayerTreeGroup*>(child));
+    if (QgsLayerTree::isGroup(child))
+      connectToGroup(QgsLayerTree::toGroup(child));
   }
 }
 

@@ -4,8 +4,8 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
+#include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreenode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -38,7 +38,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   else if (QgsLayerTreeNode* node = mView->layerTreeModel()->index2node(idx))
   {
     // layer or group selected
-    if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    if (QgsLayerTree::isGroup(node))
     {
       menu->addAction( actions->actionZoomToGroup(mCanvas, menu) );
       menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
@@ -53,9 +53,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionAddGroup(menu) );
     }
-    else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    else if (QgsLayerTree::isLayer(node))
     {
-      QgsMapLayer* layer = static_cast<QgsLayerTreeLayer*>(node)->layer();
+      QgsMapLayer* layer = QgsLayerTree::toLayer(node)->layer();
 
       menu->addAction( actions->actionZoomToLayer(mCanvas, menu) );
       menu->addAction( actions->actionShowInOverview(menu) );

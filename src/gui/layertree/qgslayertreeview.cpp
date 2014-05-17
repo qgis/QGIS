@@ -1,7 +1,7 @@
 #include "qgslayertreeview.h"
 
+#include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreenode.h"
 #include "qgslayertreeviewdefaultactions.h"
 
 #include <QMenu>
@@ -99,7 +99,7 @@ void QgsLayerTreeView::modelRowsInserted(QModelIndex index, int start, int end)
   if (!parentNode)
     return;
 
-  if (parentNode->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isLayer(parentNode))
     return; // layers have only symbology nodes (no expanded/collapsed handling)
 
   for (int i = start; i <= end; ++i)
@@ -143,8 +143,8 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex(const QModelIndex& index) const
   QgsLayerTreeNode* node = layerTreeModel()->index2node(index);
   if (node)
   {
-    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-      return static_cast<QgsLayerTreeLayer*>(node)->layer();
+    if (QgsLayerTree::isLayer(node))
+      return QgsLayerTree::toLayer(node)->layer();
   }
   else
   {
@@ -165,13 +165,13 @@ QgsLayerTreeNode* QgsLayerTreeView::currentNode() const
 QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
 {
   QgsLayerTreeNode* node = currentNode();
-  if (node && node->nodeType() == QgsLayerTreeNode::NodeGroup)
-    return static_cast<QgsLayerTreeGroup*>(node);
-  else if (node && node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isGroup(node))
+    return QgsLayerTree::toGroup(node);
+  else if (QgsLayerTree::isLayer(node))
   {
     QgsLayerTreeNode* parent = node->parent();
-    if (parent && parent->nodeType() == QgsLayerTreeNode::NodeGroup)
-      return static_cast<QgsLayerTreeGroup*>(node);
+    if (QgsLayerTree::isGroup(parent))
+      return QgsLayerTree::toGroup(node);
   }
   // TODO: also handle if symbology is selected?
 
@@ -188,8 +188,8 @@ QList<QgsLayerTreeLayer*> QgsLayerTreeView::selectedLayerNodes() const
   QList<QgsLayerTreeLayer*> layerNodes;
   foreach (QgsLayerTreeNode* node, selectedNodes())
   {
-    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-      layerNodes << static_cast<QgsLayerTreeLayer*>(node);
+    if (QgsLayerTree::isLayer(node))
+      layerNodes << QgsLayerTree::toLayer(node);
   }
   return layerNodes;
 }

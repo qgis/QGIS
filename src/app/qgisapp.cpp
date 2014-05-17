@@ -135,9 +135,9 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
 #include "qgslabelinggui.h"
+#include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreenode.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
@@ -2251,8 +2251,8 @@ void QgisApp::layerTreeViewCurrentChanged(const QModelIndex& current, const QMod
     if (QgsLayerTreeNode* currentNode = mLayerTreeView->currentNode())
     {
       QgsLayerTreeNode* parentNode = currentNode->parent();
-      if (parentNode && parentNode->nodeType() == QgsLayerTreeNode::NodeGroup)
-        parentGroup = static_cast<QgsLayerTreeGroup*>(parentNode);
+      if (QgsLayerTree::isGroup(parentNode))
+        parentGroup = QgsLayerTree::toGroup(parentNode);
     }
 
     index = current.row();
@@ -6770,17 +6770,17 @@ void QgisApp::setLayerCRS()
 
   foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
-    if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
+    if ( QgsLayerTree::isGroup( node ) )
     {
-      foreach ( QgsLayerTreeLayer* child, static_cast<QgsLayerTreeGroup*>( node )->findLayers() )
+      foreach ( QgsLayerTreeLayer* child, QgsLayerTree::toGroup( node )->findLayers() )
       {
         if ( child->layer() )
           child->layer()->setCrs( crs );
       }
     }
-    else if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
+    else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>( node );
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       if (nodeLayer->layer())
         nodeLayer->layer()->setCrs( crs );
     }

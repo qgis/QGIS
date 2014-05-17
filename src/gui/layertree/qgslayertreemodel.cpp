@@ -1,6 +1,6 @@
 #include "qgslayertreemodel.h"
 
-#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 
 #include <QMimeData>
 #include <QTextStream>
@@ -39,9 +39,9 @@ void QgsLayerTreeModel::connectToNode(QgsLayerTreeNode* node)
   connect(node, SIGNAL(removedChildren(int,int)), this, SLOT(nodeRemovedChildren()));
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanded()));
 
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer && testFlag(ShowSymbology))
+  if (QgsLayerTree::isLayer(node) && testFlag(ShowSymbology))
   {
-    addSymbologyToLayer(static_cast<QgsLayerTreeLayer*>(node));
+    addSymbologyToLayer(QgsLayerTree::toLayer(node));
   }
 
   foreach (QgsLayerTreeNode* child, node->children())
@@ -75,9 +75,9 @@ int QgsLayerTreeModel::rowCount(const QModelIndex &parent) const
   if (parent.isValid() && parent.column() != 0)
     return 0;
 
-  if (n->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isLayer(n))
   {
-    QgsLayerTreeLayer* nL = static_cast<QgsLayerTreeLayer*>(n);
+    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer(n);
 
     return mSymbologyNodes[nL].count();
   }
@@ -108,9 +108,9 @@ QModelIndex QgsLayerTreeModel::index(int row, int column, const QModelIndex &par
   if (!n || column != 0 || row >= rowCount(parent))
     return QModelIndex();
 
-  if (testFlag(ShowSymbology) && n->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (testFlag(ShowSymbology) && QgsLayerTree::isLayer(n))
   {
-    QgsLayerTreeLayer* nL = static_cast<QgsLayerTreeLayer*>(n);
+    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer(n);
     Q_ASSERT(mSymbologyNodes.contains(nL));
     return createIndex(row, column, static_cast<QObject*>(mSymbologyNodes[nL].at(row)));
   }
@@ -163,11 +163,11 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
   QgsLayerTreeNode* node = index2node(index);
   if (role == Qt::DisplayRole || role == Qt::EditRole)
   {
-    if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
-      return static_cast<QgsLayerTreeGroup*>(node)->name();
-    else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isGroup(node))
+      return QgsLayerTree::toGroup(node)->name();
+    else if (QgsLayerTree::isLayer(node))
     {
-      QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
       QString name = nodeLayer->layerName();
       if (nodeLayer->customProperty("showFeatureCount", 0).toInt() && role == Qt::DisplayRole)
       {
@@ -180,11 +180,11 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
-    if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    if (QgsLayerTree::isGroup(node))
       return QgsDataCollectionItem::iconDir();
-    else if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    else if (QgsLayerTree::isLayer(node))
     {
-      QgsMapLayer* layer = static_cast<QgsLayerTreeLayer*>(node)->layer();
+      QgsMapLayer* layer = QgsLayerTree::toLayer(node)->layer();
       if (!layer)
         return QVariant();
       if (layer->type() == QgsMapLayer::RasterLayer)
@@ -209,14 +209,14 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
     if (!testFlag(AllowVisibilityManagement))
       return QVariant();
 
-    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(node))
     {
-      QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
       return nodeLayer->isVisible() ? Qt::Checked : Qt::Unchecked;
     }
-    else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    else if (QgsLayerTree::isGroup(node))
     {
-      QgsLayerTreeGroup* nodeGroup = static_cast<QgsLayerTreeGroup*>(node);
+      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup(node);
       return nodeGroup->isVisible();
     }
   }
@@ -225,7 +225,7 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
     QFont f;
     if (node->customProperty("embedded", false).toBool())
       f.setItalic(true);
-    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(node))
       f.setBold(true);
     return f;
   }
@@ -243,9 +243,9 @@ Qt::ItemFlags QgsLayerTreeModel::flags(const QModelIndex& index) const
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
   QgsLayerTreeNode* node = index2node(index);
-  if (testFlag(AllowVisibilityManagement) && node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (testFlag(AllowVisibilityManagement) && QgsLayerTree::isLayer(node))
     f |= Qt::ItemIsUserCheckable;
-  else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+  else if (QgsLayerTree::isGroup(node))
     f |= Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
   return f;
 }
@@ -261,29 +261,29 @@ bool QgsLayerTreeModel::setData(const QModelIndex& index, const QVariant& value,
     if (!testFlag(AllowVisibilityManagement))
       return false;
 
-    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(node))
     {
-      QgsLayerTreeLayer* layer = static_cast<QgsLayerTreeLayer*>(node);
+      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer(node);
       layer->setVisible(value.toInt() == Qt::Checked);
     }
-    else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    else if (QgsLayerTree::isGroup(node))
     {
-      QgsLayerTreeGroup* group = static_cast<QgsLayerTreeGroup*>(node);
+      QgsLayerTreeGroup* group = QgsLayerTree::toGroup(node);
       group->setVisible((Qt::CheckState)value.toInt());
     }
     return true;
   }
   else if (role == Qt::EditRole)
   {
-    if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(node))
     {
-      QgsLayerTreeLayer* layer = static_cast<QgsLayerTreeLayer*>(node);
+      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer(node);
       layer->setLayerName(value.toString());
       emit dataChanged(index, index);
     }
-    else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+    else if (QgsLayerTree::isGroup(node))
     {
-      static_cast<QgsLayerTreeGroup*>(node)->setName(value.toString());
+      QgsLayerTree::toGroup(node)->setName(value.toString());
       emit dataChanged(index, index);
     }
   }
@@ -433,8 +433,8 @@ void QgsLayerTreeModel::layerRendererChanged()
 
 void QgsLayerTreeModel::removeSymbologyFromSubtree(QgsLayerTreeNode* node)
 {
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
-    removeSymbologyFromLayer(static_cast<QgsLayerTreeLayer*>(node));
+  if (QgsLayerTree::isLayer(node))
+    removeSymbologyFromLayer(QgsLayerTree::toLayer(node));
 
   foreach (QgsLayerTreeNode* child, node->children())
     removeSymbologyFromSubtree(child);
@@ -620,7 +620,7 @@ bool QgsLayerTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction actio
     return false;
 
   QgsLayerTreeNode* nodeParent = index2node(parent);
-  if (!nodeParent || nodeParent->nodeType() != QgsLayerTreeNode::NodeGroup)
+  if (!QgsLayerTree::isGroup(nodeParent))
     return false;
 
   QByteArray encodedData = data->data("application/qgis.layertreemodeldata");
@@ -648,7 +648,7 @@ bool QgsLayerTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction actio
   if (nodes.count() == 0)
     return false;
 
-  static_cast<QgsLayerTreeGroup*>(nodeParent)->insertChildNodes(row, nodes);
+  QgsLayerTree::toGroup(nodeParent)->insertChildNodes(row, nodes);
 
   return true;
 }
@@ -656,9 +656,9 @@ bool QgsLayerTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction actio
 bool QgsLayerTreeModel::removeRows(int row, int count, const QModelIndex& parent)
 {
   QgsLayerTreeNode* parentNode = index2node(parent);
-  if (parentNode && parentNode->nodeType() == QgsLayerTreeNode::NodeGroup)
+  if (QgsLayerTree::isGroup(parentNode))
   {
-    static_cast<QgsLayerTreeGroup*>(parentNode)->removeChildren(row, count);
+    QgsLayerTree::toGroup(parentNode)->removeChildren(row, count);
     return true;
   }
   return false;

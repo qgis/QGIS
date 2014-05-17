@@ -2,6 +2,7 @@
 
 #include "qgsmaplayerregistry.h"
 
+#include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 
 
@@ -163,10 +164,10 @@ QgsLayerTreeLayer* QgsLayerTreeGroup::addLayer(QgsMapLayer* layer)
 
 void QgsLayerTreeGroup::connectToChildNode(QgsLayerTreeNode* node)
 {
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isLayer(node))
   {
     // TODO: this could be handled directly by LayerTreeLayer by listening to QgsMapLayerRegistry...
-    //QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+    //QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
     //connect(nodeLayer->layer(), SIGNAL(destroyed()), this, SLOT(layerDestroyed()));
   }
 
@@ -209,9 +210,9 @@ void QgsLayerTreeGroup::removeLayer(QgsMapLayer* layer)
 {
   foreach (QgsLayerTreeNode* child, mChildren)
   {
-    if (child->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(child))
     {
-      QgsLayerTreeLayer* childLayer = static_cast<QgsLayerTreeLayer*>(child);
+      QgsLayerTreeLayer* childLayer = QgsLayerTree::toLayer(child);
       if (childLayer->layer() == layer)
       {
         removeChildAt(mChildren.indexOf(child));
@@ -237,15 +238,15 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer(const QString& layerId)
 {
   foreach (QgsLayerTreeNode* child, mChildren)
   {
-    if (child->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(child))
     {
-      QgsLayerTreeLayer* childLayer = static_cast<QgsLayerTreeLayer*>(child);
+      QgsLayerTreeLayer* childLayer = QgsLayerTree::toLayer(child);
       if (childLayer->layerId() == layerId)
         return childLayer;
     }
-    else if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
+    else if (QgsLayerTree::isGroup(child))
     {
-      QgsLayerTreeLayer* res = static_cast<QgsLayerTreeGroup*>(child)->findLayer(layerId);
+      QgsLayerTreeLayer* res = QgsLayerTree::toGroup(child)->findLayer(layerId);
       if (res)
         return res;
     }
@@ -258,10 +259,10 @@ QList<QgsLayerTreeLayer*> QgsLayerTreeGroup::findLayers() const
   QList<QgsLayerTreeLayer*> list;
   foreach (QgsLayerTreeNode* child, mChildren)
   {
-    if (child->nodeType() == QgsLayerTreeNode::NodeLayer)
-      list << static_cast<QgsLayerTreeLayer*>(child);
-    else if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
-      list << static_cast<QgsLayerTreeGroup*>(child)->findLayers();
+    if (QgsLayerTree::isLayer(child))
+      list << QgsLayerTree::toLayer(child);
+    else if (QgsLayerTree::isGroup(child))
+      list << QgsLayerTree::toGroup(child)->findLayers();
   }
   return list;
 }
@@ -270,9 +271,9 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::findGroup(const QString& name)
 {
   foreach (QgsLayerTreeNode* child, mChildren)
   {
-    if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
+    if (QgsLayerTree::isGroup(child))
     {
-      QgsLayerTreeGroup* childGroup = static_cast<QgsLayerTreeGroup*>(child);
+      QgsLayerTreeGroup* childGroup = QgsLayerTree::toGroup(child);
       if (childGroup->name() == name)
         return childGroup;
       else
@@ -365,10 +366,10 @@ void QgsLayerTreeGroup::setVisible(Qt::CheckState state)
     // update children to have the correct visibility
     foreach (QgsLayerTreeNode* child, mChildren)
     {
-      if (child->nodeType() == NodeGroup)
-        static_cast<QgsLayerTreeGroup*>(child)->setVisible(mChecked);
-      else if (child->nodeType() == NodeLayer)
-        static_cast<QgsLayerTreeLayer*>(child)->setVisible(mChecked == Qt::Checked);
+      if (QgsLayerTree::isGroup(child))
+        QgsLayerTree::toGroup(child)->setVisible(mChecked);
+      else if (QgsLayerTree::isLayer(child))
+        QgsLayerTree::toLayer(child)->setVisible(mChecked == Qt::Checked);
     }
 
     mChangingChildVisibility = false;
@@ -380,10 +381,10 @@ QStringList QgsLayerTreeGroup::childLayerIds() const
   QStringList lst;
   foreach (QgsLayerTreeNode* child, mChildren)
   {
-    if (child->nodeType() == NodeGroup)
-      lst << static_cast<QgsLayerTreeGroup*>(child)->childLayerIds();
-    else if (child->nodeType() == NodeLayer)
-      lst << static_cast<QgsLayerTreeLayer*>(child)->layerId();
+    if (QgsLayerTree::isGroup(child))
+      lst << QgsLayerTree::toGroup(child)->childLayerIds();
+    else if (QgsLayerTree::isLayer(child))
+      lst << QgsLayerTree::toLayer(child)->layerId();
   }
   return lst;
 }
@@ -407,15 +408,15 @@ void QgsLayerTreeGroup::updateVisibilityFromChildren()
 
   foreach (QgsLayerTreeNode* child, mChildren)
   {
-    if (child->nodeType() == QgsLayerTreeNode::NodeLayer)
+    if (QgsLayerTree::isLayer(child))
     {
-      bool layerVisible = static_cast<QgsLayerTreeLayer*>(child)->isVisible();
+      bool layerVisible = QgsLayerTree::toLayer(child)->isVisible();
       if (layerVisible) hasVisible = true;
       if (!layerVisible) hasHidden = true;
     }
-    else if (child->nodeType() == QgsLayerTreeNode::NodeGroup)
+    else if (QgsLayerTree::isGroup(child))
     {
-      Qt::CheckState state = static_cast<QgsLayerTreeGroup*>(child)->isVisible();
+      Qt::CheckState state = QgsLayerTree::toGroup(child)->isVisible();
       if (state == Qt::Checked || state == Qt::PartiallyChecked) hasVisible = true;
       if (state == Qt::Unchecked || state == Qt::PartiallyChecked) hasHidden = true;
     }

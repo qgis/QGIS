@@ -1,8 +1,8 @@
 #include "qgslayertreeviewdefaultactions.h"
 
 #include "qgsapplication.h"
+#include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreenode.h"
 #include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -129,13 +129,13 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
 void QgsLayerTreeViewDefaultActions::showFeatureCount()
 {
   QgsLayerTreeNode* node = mView->currentNode();
-  if (!node || node->nodeType() != QgsLayerTreeNode::NodeLayer)
+  if (!QgsLayerTree::isLayer(node))
     return;
 
 
   node->setCustomProperty("showFeatureCount", node->customProperty("showFeatureCount", 0).toInt() ? 0 : 1);
 
-  mView->layerTreeModel()->refreshLayerSymbology(static_cast<QgsLayerTreeLayer*>(node));
+  mView->layerTreeModel()->refreshLayerSymbology(QgsLayerTree::toLayer(node));
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToLayer()

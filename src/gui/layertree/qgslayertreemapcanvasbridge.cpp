@@ -1,6 +1,6 @@
 #include "qgslayertreemapcanvasbridge.h"
 
-#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 
 #include "qgsmapcanvas.h"
 
@@ -25,9 +25,9 @@ QStringList QgsLayerTreeMapCanvasBridge::defaultLayerOrder() const
 
 void QgsLayerTreeMapCanvasBridge::defaultLayerOrder(QgsLayerTreeNode* node, QStringList& order) const
 {
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isLayer(node))
   {
-    QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+    QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
     order << nodeLayer->layerId();
   }
 
@@ -73,9 +73,9 @@ void QgsLayerTreeMapCanvasBridge::connectToNode(QgsLayerTreeNode *node)
   connect(node, SIGNAL(removedChildren(int,int)), this, SLOT(nodeRemovedChildren()));
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanged()));
 
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isLayer(node))
   {
-    QString layerId = static_cast<QgsLayerTreeLayer*>(node)->layerId();
+    QString layerId = QgsLayerTree::toLayer(node)->layerId();
     if (!mCustomLayerOrder.contains(layerId))
       mCustomLayerOrder.append(layerId);
   }
@@ -107,9 +107,9 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
 void QgsLayerTreeMapCanvasBridge::setCanvasLayers(QgsLayerTreeNode *node, QList<QgsMapCanvasLayer> &layers)
 {
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if (QgsLayerTree::isLayer(node))
   {
-    QgsLayerTreeLayer* nodeLayer = static_cast<QgsLayerTreeLayer*>(node);
+    QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
     layers << QgsMapCanvasLayer(nodeLayer->layer(), nodeLayer->isVisible(), nodeLayer->customProperty("overview", 0).toInt());
   }
 
