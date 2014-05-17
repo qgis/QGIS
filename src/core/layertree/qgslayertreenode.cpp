@@ -103,6 +103,7 @@ void QgsLayerTreeNode::insertChildren(int index, QList<QgsLayerTreeNode*> nodes)
     connect(nodes[i], SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)), this, SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)));
     connect(nodes[i], SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)));
     connect(nodes[i], SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)));
+    connect(nodes[i], SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)));
   }
   emit addedChildren(this, index, indexTo);
 }

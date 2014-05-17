@@ -55,7 +55,7 @@ signals:
   void willRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
   void removedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
 
-  void visibilityChanged(Qt::CheckState state);
+  void visibilityChanged(QgsLayerTreeNode* node, Qt::CheckState state);
 
   void customPropertyChanged(QgsLayerTreeNode* node, QString key);
 

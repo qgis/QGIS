@@ -10,10 +10,10 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root
   , mPendingCanvasUpdate(false)
   , mHasCustomLayerOrder(false)
 {
-  connectToNode(root);
   connect(root, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeAddedChildren(QgsLayerTreeNode*,int,int)));
   connect(root, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SLOT(nodeCustomPropertyChanged(QgsLayerTreeNode*,QString)));
   connect(root, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeRemovedChildren()));
+  connect(root, SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SLOT(nodeVisibilityChanged()));
 
   setCanvasLayers();
 }
@@ -69,21 +69,6 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder(const QStringList& order)
     deferredSetCanvasLayers();
 }
 
-void QgsLayerTreeMapCanvasBridge::connectToNode(QgsLayerTreeNode *node)
-{
-  connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanged()));
-
-  if (QgsLayerTree::isLayer(node))
-  {
-    QString layerId = QgsLayerTree::toLayer(node)->layerId();
-    if (!mCustomLayerOrder.contains(layerId))
-      mCustomLayerOrder.append(layerId);
-  }
-
-  foreach (QgsLayerTreeNode* child, node->children())
-    connectToNode(child);
-}
-
 void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 {
   QList<QgsMapCanvasLayer> layers;
@@ -128,10 +113,30 @@ void QgsLayerTreeMapCanvasBridge::deferredSetCanvasLayers()
 
 void QgsLayerTreeMapCanvasBridge::nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
 {
-  // connect to new children
   Q_ASSERT(node);
+
+  // collect layer IDs that have been added in order to put them into custom layer order
+  QStringList layerIds;
+  QList<QgsLayerTreeNode*> children = node->children();
   for (int i = indexFrom; i <= indexTo; ++i)
-    connectToNode(node->children()[i]);
+  {
+    QgsLayerTreeNode* child = children.at(i);
+    if (QgsLayerTree::isLayer(child))
+    {
+      layerIds << QgsLayerTree::toLayer(child)->layerId();
+    }
+    else if (QgsLayerTree::isGroup(child))
+    {
+      foreach (QgsLayerTreeLayer* nodeL, QgsLayerTree::toGroup(child)->findLayers())
+        layerIds << nodeL->layerId();
+    }
+  }
+
+  foreach (QString layerId, layerIds)
+  {
+    if (!mCustomLayerOrder.contains(layerId))
+      mCustomLayerOrder.append(layerId);
+  }
 
   emit customLayerOrderChanged(mCustomLayerOrder);
 

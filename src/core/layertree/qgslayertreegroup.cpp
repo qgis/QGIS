@@ -9,6 +9,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup(const QString& name, Qt::CheckState checked
   , mChecked(checked)
   , mChangingChildVisibility(false)
 {
+  connect(this, SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SLOT(nodeVisibilityChanged(QgsLayerTreeNode*)));
 }
 
 QgsLayerTreeGroup::QgsLayerTreeGroup(const QgsLayerTreeGroup& other)
@@ -17,6 +18,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup(const QgsLayerTreeGroup& other)
   , mChecked(other.mChecked)
   , mChangingChildVisibility(false)
 {
+  connect(this, SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SLOT(nodeVisibilityChanged(QgsLayerTreeNode*)));
 }
 
 
@@ -41,18 +43,6 @@ QgsLayerTreeLayer* QgsLayerTreeGroup::addLayer(QgsMapLayer* layer)
   return ll;
 }
 
-void QgsLayerTreeGroup::connectToChildNode(QgsLayerTreeNode* node)
-{
-  if (QgsLayerTree::isLayer(node))
-  {
-    // TODO: this could be handled directly by LayerTreeLayer by listening to QgsMapLayerRegistry...
-    //QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
-    //connect(nodeLayer->layer(), SIGNAL(destroyed()), this, SLOT(layerDestroyed()));
-  }
-
-  connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(updateVisibilityFromChildren()));
-}
-
 void QgsLayerTreeGroup::insertChildNode(int index, QgsLayerTreeNode* node)
 {
   QList<QgsLayerTreeNode*> nodes;
@@ -64,9 +54,6 @@ void QgsLayerTreeGroup::insertChildNodes(int index, QList<QgsLayerTreeNode*> nod
 {
   // low-level insert
   insertChildren(index, nodes);
-
-  foreach (QgsLayerTreeNode* node, nodes)
-    connectToChildNode(node);
 
   updateVisibilityFromChildren();
 }
@@ -234,7 +221,7 @@ void QgsLayerTreeGroup::setVisible(Qt::CheckState state)
     return;
 
   mChecked = state;
-  emit visibilityChanged(state);
+  emit visibilityChanged(this, state);
 
   if (mChecked == Qt::Unchecked || mChecked == Qt::Checked)
   {
@@ -271,6 +258,12 @@ void QgsLayerTreeGroup::layerDestroyed()
 {
   QgsMapLayer* layer = static_cast<QgsMapLayer*>(sender());
   removeLayer(layer);
+}
+
+void QgsLayerTreeGroup::nodeVisibilityChanged(QgsLayerTreeNode* node)
+{
+  if (mChildren.indexOf(node) != -1)
+    updateVisibilityFromChildren();
 }
 
 void QgsLayerTreeGroup::updateVisibilityFromChildren()

@@ -51,10 +51,10 @@ public:
 
 protected slots:
   void layerDestroyed();
-  void updateVisibilityFromChildren();
+  void nodeVisibilityChanged(QgsLayerTreeNode* node);
 
 protected:
-  void connectToChildNode(QgsLayerTreeNode* node);
+  void updateVisibilityFromChildren();
 
 protected:
   QString mName;

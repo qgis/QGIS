@@ -84,13 +84,12 @@ protected slots:
   void nodeWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
   void nodeRemovedChildren();
 
-  void nodeVisibilityChanded();
+  void nodeVisibilityChanged(QgsLayerTreeNode* node);
 
   void nodeLayerLoaded();
   void layerRendererChanged();
 
 protected:
-  void connectToNode(QgsLayerTreeNode* node);
   void removeSymbologyFromSubtree(QgsLayerTreeNode* node);
   void removeSymbologyFromLayer(QgsLayerTreeLayer* nodeLayer);
   void addSymbologyToLayer(QgsLayerTreeLayer* nodeL);

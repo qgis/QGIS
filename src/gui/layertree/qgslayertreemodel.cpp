@@ -20,13 +20,11 @@ QgsLayerTreeModel::QgsLayerTreeModel(QgsLayerTreeGroup* rootNode, QObject *paren
 {
   Q_ASSERT(mRootNode);
 
-  // connect to all existing nodes
-  connectToNode(mRootNode);
-
   connect(mRootNode, SIGNAL(willAddChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeWillAddChildren(QgsLayerTreeNode*,int,int)));
   connect(mRootNode, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeAddedChildren(QgsLayerTreeNode*,int,int)));
   connect(mRootNode, SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeWillRemoveChildren(QgsLayerTreeNode*,int,int)));
   connect(mRootNode, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeRemovedChildren()));
+  connect(mRootNode, SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SLOT(nodeVisibilityChanged(QgsLayerTreeNode*)));
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -34,19 +32,6 @@ QgsLayerTreeModel::~QgsLayerTreeModel()
   foreach (QList<QgsLayerTreeModelSymbologyNode*> nodeL, mSymbologyNodes)
     qDeleteAll(nodeL);
   mSymbologyNodes.clear();
-}
-
-void QgsLayerTreeModel::connectToNode(QgsLayerTreeNode* node)
-{
-  connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanded()));
-
-  if (QgsLayerTree::isLayer(node) && testFlag(ShowSymbology))
-  {
-    addSymbologyToLayer(QgsLayerTree::toLayer(node));
-  }
-
-  foreach (QgsLayerTreeNode* child, node->children())
-    connectToNode(child);
 }
 
 QgsLayerTreeNode* QgsLayerTreeModel::index2node(const QModelIndex& index) const
@@ -378,8 +363,23 @@ void QgsLayerTreeModel::nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom,
 
   endInsertRows();
 
-  for (int i = indexFrom; i <= indexTo; ++i)
-    connectToNode( node->children()[i] );
+  if (testFlag(ShowSymbology))
+  {
+    // collect layers for which we need to add symbology
+    QList<QgsLayerTreeLayer*> newLayerNodes;
+    QList<QgsLayerTreeNode*> children = node->children();
+    for (int i = indexFrom; i <= indexTo; ++i)
+    {
+      QgsLayerTreeNode* child = children.at(i);
+      if (QgsLayerTree::isLayer(child))
+        newLayerNodes << QgsLayerTree::toLayer(child);
+      else if (QgsLayerTree::isGroup(child))
+        newLayerNodes << QgsLayerTree::toGroup(child)->findLayers();
+    }
+
+    foreach (QgsLayerTreeLayer* newLayerNode, newLayerNodes)
+      addSymbologyToLayer(newLayerNode);
+  }
 }
 
 void QgsLayerTreeModel::nodeWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
@@ -398,9 +398,8 @@ void QgsLayerTreeModel::nodeRemovedChildren()
   endRemoveRows();
 }
 
-void QgsLayerTreeModel::nodeVisibilityChanded()
+void QgsLayerTreeModel::nodeVisibilityChanged(QgsLayerTreeNode* node)
 {
-  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sender());
   Q_ASSERT(node);
 
   QModelIndex index = node2index(node);

@@ -29,9 +29,6 @@ signals:
   void customLayerOrderChanged(const QStringList& order);
 
 protected:
-  void connectToNode(QgsLayerTreeNode* node);
-
-  // TODO: disconnectFromNode
 
   void defaultLayerOrder(QgsLayerTreeNode* node, QStringList& order) const;
 

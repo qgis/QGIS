@@ -54,7 +54,7 @@ void QgsLayerTreeLayer::setVisible(Qt::CheckState state)
     return;
 
   mVisible = state;
-  emit visibilityChanged(state);
+  emit visibilityChanged(this, state);
 }
 
 QgsLayerTreeLayer* QgsLayerTreeLayer::readXML(QDomElement& element)
