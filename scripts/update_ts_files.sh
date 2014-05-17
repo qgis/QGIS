@@ -98,10 +98,8 @@ done
 
 trap cleanup EXIT
 
-if [ -n "$exclude" -o -n "$add" ]; then
-  echo Saving excluded translations
-  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
-fi
+echo Saving excluded translations
+tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude $(find python -name '*.ts')
 
 echo Updating python translations
 cd python
