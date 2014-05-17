@@ -1,10 +1,11 @@
 #include "qgslayertreelayer.h"
 
+#include "qgslayertreeutils.h"
 #include "qgsmaplayerregistry.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer(QgsMapLayer *layer)
-  : QgsLayerTreeNode(NodeLayer), mLayerId(layer->id()), mLayer(layer), mVisible(true)
+  : QgsLayerTreeNode(NodeLayer), mLayerId(layer->id()), mLayer(layer), mVisible(Qt::Checked)
 {
   Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer(mLayerId) == layer );
 }
@@ -14,7 +15,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer(QString layerId, QString name)
   , mLayerId(layerId)
   , mLayerName(name)
   , mLayer(0)
-  , mVisible(true)
+  , mVisible(Qt::Checked)
 {
   attachToLayer();
 }
@@ -47,13 +48,13 @@ void QgsLayerTreeLayer::attachToLayer()
   }
 }
 
-void QgsLayerTreeLayer::setVisible(bool state)
+void QgsLayerTreeLayer::setVisible(Qt::CheckState state)
 {
   if (mVisible == state)
     return;
 
   mVisible = state;
-  emit visibilityChanged(state ? Qt::Checked : Qt::Unchecked);
+  emit visibilityChanged(state);
 }
 
 QgsLayerTreeLayer* QgsLayerTreeLayer::readXML(QDomElement& element)
@@ -63,7 +64,7 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML(QDomElement& element)
 
   QString layerID = element.attribute("id");
   QString layerName = element.attribute("name");
-  bool visible = element.attribute("visible").toInt();
+  Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml(element.attribute("checked"));
   bool isExpanded = (element.attribute("expanded", "1") == "1");
 
   QgsLayerTreeLayer* nodeLayer = 0;
@@ -78,7 +79,7 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML(QDomElement& element)
 
   nodeLayer->readCommonXML(element);
 
-  nodeLayer->setVisible(visible);
+  nodeLayer->setVisible(checked);
   nodeLayer->setExpanded(isExpanded);
   return nodeLayer;
 }
@@ -89,7 +90,7 @@ void QgsLayerTreeLayer::writeXML(QDomElement& parentElement)
   QDomElement elem = doc.createElement("layer-tree-layer");
   elem.setAttribute("id", mLayerId);
   elem.setAttribute("name", layerName());
-  elem.setAttribute("visible", mVisible ? "1" : "0");
+  elem.setAttribute("checked", QgsLayerTreeUtils::checkStateToXml(mVisible));
   elem.setAttribute("expanded", mExpanded ? "1" : "0");
 
   writeCommonXML(elem);

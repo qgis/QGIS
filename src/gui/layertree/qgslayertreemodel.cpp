@@ -212,7 +212,7 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
     if (QgsLayerTree::isLayer(node))
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
-      return nodeLayer->isVisible() ? Qt::Checked : Qt::Unchecked;
+      return nodeLayer->isVisible();
     }
     else if (QgsLayerTree::isGroup(node))
     {
@@ -264,7 +264,7 @@ bool QgsLayerTreeModel::setData(const QModelIndex& index, const QVariant& value,
     if (QgsLayerTree::isLayer(node))
     {
       QgsLayerTreeLayer* layer = QgsLayerTree::toLayer(node);
-      layer->setVisible(value.toInt() == Qt::Checked);
+      layer->setVisible((Qt::CheckState)value.toInt());
     }
     else if (QgsLayerTree::isGroup(node))
     {

@@ -4211,7 +4211,7 @@ void QgisApp::hideAllLayers()
   QgsDebugMsg( "hiding all layers!" );
 
   foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( false );
+    nodeLayer->setVisible( Qt::Unchecked );
 }
 
 
@@ -4221,7 +4221,7 @@ void QgisApp::showAllLayers()
   QgsDebugMsg( "Showing all layers!" );
 
   foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( true );
+    nodeLayer->setVisible( Qt::Checked );
 }
 
 

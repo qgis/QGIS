@@ -94,7 +94,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     {
       QgsLayerTreeLayer* nodeLayer = mRoot->findLayer(layerId);
       if (nodeLayer)
-        layers << QgsMapCanvasLayer(nodeLayer->layer(), nodeLayer->isVisible(), nodeLayer->customProperty("overview", 0).toInt());
+        layers << QgsMapCanvasLayer(nodeLayer->layer(), nodeLayer->isVisible() == Qt::Checked, nodeLayer->customProperty("overview", 0).toInt());
     }
   }
   else
@@ -110,7 +110,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers(QgsLayerTreeNode *node, QList<
   if (QgsLayerTree::isLayer(node))
   {
     QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
-    layers << QgsMapCanvasLayer(nodeLayer->layer(), nodeLayer->isVisible(), nodeLayer->customProperty("overview", 0).toInt());
+    layers << QgsMapCanvasLayer(nodeLayer->layer(), nodeLayer->isVisible() == Qt::Checked, nodeLayer->customProperty("overview", 0).toInt());
   }
 
   foreach (QgsLayerTreeNode* child, node->children())

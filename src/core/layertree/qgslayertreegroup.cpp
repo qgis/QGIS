@@ -248,7 +248,7 @@ void QgsLayerTreeGroup::setVisible(Qt::CheckState state)
       if (QgsLayerTree::isGroup(child))
         QgsLayerTree::toGroup(child)->setVisible(mChecked);
       else if (QgsLayerTree::isLayer(child))
-        QgsLayerTree::toLayer(child)->setVisible(mChecked == Qt::Checked);
+        QgsLayerTree::toLayer(child)->setVisible(mChecked);
     }
 
     mChangingChildVisibility = false;
@@ -289,7 +289,7 @@ void QgsLayerTreeGroup::updateVisibilityFromChildren()
   {
     if (QgsLayerTree::isLayer(child))
     {
-      bool layerVisible = QgsLayerTree::toLayer(child)->isVisible();
+      bool layerVisible = QgsLayerTree::toLayer(child)->isVisible() == Qt::Checked;
       if (layerVisible) hasVisible = true;
       if (!layerVisible) hasHidden = true;
     }

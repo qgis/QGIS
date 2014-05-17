@@ -30,8 +30,8 @@ public:
   QString layerName() const { return mLayer ? mLayer->name() : mLayerName; }
   void setLayerName(const QString& n) { if (mLayer) mLayer->setLayerName(n); else mLayerName = n; }
 
-  bool isVisible() const { return mVisible; }
-  void setVisible(bool state);
+  Qt::CheckState isVisible() const { return mVisible; }
+  void setVisible(Qt::CheckState visible);
 
   static QgsLayerTreeLayer* readXML(QDomElement& element);
   virtual void writeXML(QDomElement& parentElement);
@@ -53,7 +53,7 @@ protected:
   QString mLayerId;
   QString mLayerName; // only used if layer does not exist
   QgsMapLayer* mLayer; // not owned! may be null
-  bool mVisible;
+  Qt::CheckState mVisible;
 };
 
 
