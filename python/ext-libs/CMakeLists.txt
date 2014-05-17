@@ -1,0 +1,42 @@
+SET (QGIS_PYTHON_DIR ${QGIS_DATA_DIR}/python)
+SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+
+SET (WITH_PYSPATIALITE FALSE CACHE BOOL "Determines whether PYSPATIALITE should be built")
+IF (WITH_PYSPATIALITE)
+  ADD_SUBDIRECTORY(pyspatialite)
+ENDIF (WITH_PYSPATIALITE)
+
+MACRO(EXT_PYLIB lib)
+  STRING(TOUPPER ${lib} ulib)
+  SET (WITH_INTERNAL_${ulib} TRUE CACHE BOOL "Determines whether ${ulib} should be included")
+  IF(WITH_INTERNAL_${ulib})
+    INSTALL(DIRECTORY ${lib} DESTINATION "${QGIS_PYTHON_DIR}")
+
+    ADD_CUSTOM_TARGET(py${lib} ALL)
+    FILE(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${lib}/*)
+    FOREACH(file ${files})
+      ADD_CUSTOM_COMMAND(TARGET py${lib}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${file} "${PYTHON_OUTPUT_DIRECTORY}/${file}"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Copy ${file} => ${PYTHON_OUTPUT_DIRECTORY}/${file}"
+        DEPENDS ${file}
+      )
+    ENDFOREACH(file)
+  ENDIF(WITH_INTERNAL_${ulib})
+ENDMACRO(EXT_PYLIB lib)
+
+FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz)
+  EXT_PYLIB(${pkg})
+ENDFOREACH(pkg)
+
+IF(WITH_INTERNAL_SIX)
+  INSTALL(FILES six.py DESTINATION "${QGIS_PYTHON_DIR}")
+
+  ADD_CUSTOM_COMMAND(TARGET pyutils
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy six.py "${PYTHON_OUTPUT_DIRECTORY}"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS six.py
+  )
+ENDIF(WITH_INTERNAL_SIX)
