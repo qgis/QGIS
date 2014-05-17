@@ -1023,25 +1023,24 @@ bool QgsApplication::createDB( QString *errorMessage )
   return true;
 }
 
-void QgsApplication::setMaxThreads( int maxThreads ) 
-{ 
-  qDebug("max threads: %d",maxThreads);
+void QgsApplication::setMaxThreads( int maxThreads )
+{
+  QgsDebugMsg( QString( "maxThreads: %1" ).arg( maxThreads ) );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   // 0 could be used to disable any parallel processing
   if ( maxThreads < 1 || maxThreads > QThread::idealThreadCount() )
-	maxThreads = -1;
+    maxThreads = -1;
 
   // save value
   ABISYM( mMaxThreads ) = maxThreads;
-  QSettings().setValue( "/qgis/max_threads", maxThreads );
 
   // if -1 use #cores
   if ( maxThreads == -1 )
-	maxThreads = QThread::idealThreadCount();
+    maxThreads = QThread::idealThreadCount();
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  qDebug( "set QThreadPool max thread count to %d", QThreadPool::globalInstance()->maxThreadCount() );
+  QgsDebugMsg( QString( "set QThreadPool max thread count to %d" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 }
 

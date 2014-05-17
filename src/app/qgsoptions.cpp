@@ -1076,10 +1076,9 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/parallel_rendering", chkParallelRendering->isChecked() );
-  if ( chkMaxThreads->isChecked() )
-	QgsApplication::setMaxThreads( spinMaxThreads->value() );
-  else
-	QgsApplication::setMaxThreads( -1 );
+  int maxThreads = chkMaxThreads->isChecked() ? spinMaxThreads->value() : -1;
+  QgsApplication::setMaxThreads( maxThreads );
+  settings.setValue( "/qgis/max_threads", maxThreads );
 
   settings.setValue( "/qgis/map_update_interval", spinMapUpdateInterval->value() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
