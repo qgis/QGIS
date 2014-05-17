@@ -645,6 +645,9 @@ bool QgsLayerTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction actio
   if (nodes.count() == 0)
     return false;
 
+  if (parent.isValid() && row == -1)
+    row = 0; // if dropped directly onto group item, insert at first position
+
   QgsLayerTree::toGroup(nodeParent)->insertChildNodes(row, nodes);
 
   return true;
