@@ -1,6 +1,6 @@
 #include "qgslayertreeutils.h"
 
-#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 
 #include "qgsvectorlayer.h"
 

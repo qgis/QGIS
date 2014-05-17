@@ -2,6 +2,8 @@
 #define QGSLAYERTREE_H
 
 #include "qgslayertreenode.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
 
 namespace QgsLayerTree
 {

@@ -51,6 +51,8 @@ SET(QGIS_CORE_SRCS
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
 
+  layertree/qgslayertreegroup.cpp
+  layertree/qgslayertreelayer.cpp
   layertree/qgslayertreenode.cpp
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
@@ -380,6 +382,8 @@ SET(QGIS_CORE_MOC_HDRS
   symbology-ng/qgssvgcache.h
   symbology-ng/qgsstylev2.h
 
+  layertree/qgslayertreegroup.h
+  layertree/qgslayertreelayer.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
 )
@@ -590,6 +594,9 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgsvectorfieldsymbollayer.h
 
+  layertree/qgslayertree.h
+  layertree/qgslayertreegroup.h
+  layertree/qgslayertreelayer.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
   layertree/qgslayertreeutils.h
