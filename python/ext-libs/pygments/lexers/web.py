@@ -1397,7 +1397,7 @@ class HamlLexer(ExtendedRegexLexer):
     flags = re.IGNORECASE
     # Haml can include " |\n" anywhere,
     # which is ignored and used to wrap long lines.
-    # To accomodate this, use this custom faux dot instead.
+    # To accommodate this, use this custom faux dot instead.
     _dot = r'(?: \|\n(?=.* \|)|.)'
 
     # In certain places, a comma at the end of the line

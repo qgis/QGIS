@@ -31,14 +31,14 @@ class WebFeatureService_:
 
         @param bbox: (minx,miny,maxx,maxy[,srs])
         @type bbox: List
-        @param typename:  feature name 
+        @param typename:  feature name
         @type typename: String
         @returns: String properly formated according to version and
             coordinate reference system
         """
         srs = None
 
-        # srs of the bbox is specified in the bbox as fifth paramter
+        # srs of the bbox is specified in the bbox as fifth parameter
         if len(bbox) == 5:
             srs = self.getSRS(bbox[4],typename[0])
         # take default srs
@@ -67,7 +67,7 @@ class WebFeatureService_:
     def getSRS(self,srsname,typename):
         """Returns None or Crs object for given name
 
-        @param typename:  feature name 
+        @param typename:  feature name
         @type typename: String
         """
         if type(srsname) == type(""):
@@ -98,7 +98,7 @@ class WebFeatureService_:
         ----------
         typename : list
             List of typenames (string)
-        filter : string 
+        filter : string
             XML-encoded OGC filter expression.
         bbox : tuple
             (left, bottom, right, top) in the feature type's coordinates == (minx, miny, maxx, maxy)
@@ -122,9 +122,9 @@ class WebFeatureService_:
 
         base_url = self.getOperationByName('GetFeature').methods[method]['url']
         base_url = base_url if base_url.endswith("?") else base_url+"?"
-            
+
         request = {'service': 'WFS', 'version': self.version, 'request': 'GetFeature'}
-        
+
         # check featureid
         if featureid:
             request['featureid'] = ','.join(featureid)
@@ -135,17 +135,17 @@ class WebFeatureService_:
         if typename:
             typename = [typename] if type(typename) == type("") else typename
             request['typename'] = ','.join(typename)
-        if propertyname: 
+        if propertyname:
             request['propertyname'] = ','.join(propertyname)
-        if featureversion: 
+        if featureversion:
             request['featureversion'] = str(featureversion)
-        if maxfeatures: 
+        if maxfeatures:
             request['maxfeatures'] = str(maxfeatures)
-        if storedQueryID: 
+        if storedQueryID:
             request['storedQuery_id']=str(storedQueryID)
             for param in storedQueryParams:
                 request[param]=storedQueryParams[param]
-                
+
         data = urlencode(request)
 
         return base_url+data

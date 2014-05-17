@@ -506,7 +506,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QComboBox *formatCombo = new QComboBox();
 
     // Add all supported formats, best first. HTML is considered the best because
-    // it usually holds most informations.
+    // it usually holds most information.
     int capabilities = layer->dataProvider()->capabilities();
     QList<QgsRaster::IdentifyFormat> formats;
     formats << QgsRaster::IdentifyFormatHtml
@@ -802,7 +802,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 
     if ( registeredActions.size() > 0 )
     {
-      //add a seperator between user defined and standard actions
+      //add a separator between user defined and standard actions
       mActionPopup->addSeparator();
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();

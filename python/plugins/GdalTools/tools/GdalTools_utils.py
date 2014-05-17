@@ -758,7 +758,7 @@ class GdalConfig:
 
       return shortName
 
-# class which allows to create version objects and compare them
+# class which allows creating version objects and compare them
 class Version:
   def __init__(self, ver):
       self.vers = ('0', '0', '0')

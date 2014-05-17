@@ -241,7 +241,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   {
     if (( *it ).second != minCandidateChanges || ( *it ).first != minCandidateRow - 1 )
     {
-      //no longer in a consecutive block of rows of minimum pixel colour changes
+      //no longer in a consecutive block of rows of minimum pixel color changes
       //so return the row mid-way through the block
       //first converting back to mm
       return ( minCandidateRow + ( maxCandidateRow - minCandidateRow ) / 2 ) / htmlUnitsToMM();

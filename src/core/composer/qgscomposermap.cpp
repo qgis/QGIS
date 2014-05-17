@@ -185,7 +185,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   QStringList theLayerSet = layersToRender();
   if ( -1 != mCurrentExportLayer )
   {
-    //exporting with seperate layers (eg, to svg layers), so we only want to render a single map layer
+    //exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
     theLayerSet =
       ( layerIdx >= 0 && layerIdx < theLayerSet.length() )

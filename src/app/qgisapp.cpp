@@ -4244,7 +4244,7 @@ void QgisApp::refreshFeatureActions()
   QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
   if ( actions->size() > 0 && registeredActions.size() > 0 )
   {
-    //add a seperator between user defined and standard actions
+    //add a separator between user defined and standard actions
     mFeatureActionMenu->addSeparator();
   }
 

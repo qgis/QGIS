@@ -701,7 +701,7 @@ class parser(object):
                         res.year, res.month, res.day = ymd
                     else:
                         # 01-Jan-01
-                        # Give precendence to day-first, since
+                        # Give precedence to day-first, since
                         # two-digit years is usually hand-written.
                         res.day, res.month, res.year = ymd
                 elif mstridx == 2:

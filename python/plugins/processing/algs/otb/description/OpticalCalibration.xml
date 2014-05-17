@@ -44,7 +44,7 @@
     <key>milli</key>
     <name>Convert to milli reflectance</name>
     <description>Flag to use milli-reflectance instead of reflectance.
-This allows to save the image with integer pixel type (in the range [0, 1000]  instead of floating point in the range [0, 1]. In order to do that, use this option and set the output pixel type (-out filename uint16 for example)</description>
+This allows saving the image with integer pixel type (in the range [0, 1000]  instead of floating point in the range [0, 1]. In order to do that, use this option and set the output pixel type (-out filename uint16 for example)</description>
     <default>True</default>
   </parameter>
   <parameter>
@@ -59,7 +59,7 @@ This allows to save the image with integer pixel type (in the range [0, 1000]  i
     <key>rsr</key>
     <name>Relative Spectral Response File</name>
     <description>Sensor relative spectral response file
-By default the application gets these informations in the metadata</description>
+By default the application gets these information in the metadata</description>
     <isFolder />
     <optional>True</optional>
   </parameter>

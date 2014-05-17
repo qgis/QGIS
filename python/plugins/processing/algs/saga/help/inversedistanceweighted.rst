@@ -27,7 +27,7 @@ Parameters
 	  When the box is un-checked, the coordinate values entered for the ‘X-Extent’ and ‘Y-Extent’ parameters 
 	  will be used to define the boundaries for the generated grid data layer.
 	- “grid project”:allows the user to choose an existing grid system. 
-	- “grid”: it allows to choose a specific grid data layer to provide the target dimensions for the output 
+	- “grid”: it allows choosing a specific grid data layer to provide the target dimensions for the output 
 	  grid data layer. The numeric data type used in the chosen grid data layer will be the same type used 
 	  in the output grid data layer.
 	

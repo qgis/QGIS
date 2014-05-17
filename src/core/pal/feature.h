@@ -267,7 +267,7 @@ namespace pal
 
 
       /**
-       * \brief Print feature informations
+       * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen
        */
       void print();

@@ -76,7 +76,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     /**Sets the composer map to use to limit the extent of features shown in the
      * attribute table. This setting only has an effect if setDisplayOnlyVisibleFeatures is
      * set to true. Changing the composer map forces the table to refetch features from its
-     * vector layer, and may result in the table changing size to accomodate the new displayed
+     * vector layer, and may result in the table changing size to accommodate the new displayed
      * feature attributes.
      * @param map QgsComposerMap which drives the extents of the table's features
      * @see composerMap
@@ -93,7 +93,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     const QgsComposerMap* composerMap() const;
 
     /**Sets the maximum number of features shown by the table. Changing this setting may result
-     * in the attribute table changing its size to accomodate the new number of rows, and requires
+     * in the attribute table changing its size to accommodate the new number of rows, and requires
      * the table to refetch features from its vector layer.
      * @param features maximum number of features to show in the table
      * @see maximumNumberOfFeatures
@@ -108,7 +108,7 @@ class QgsComposerAttributeTable : QgsComposerTable
 
     /**Sets attribute table to only show features which are visible in a composer map item. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
-     * the table changing size to accomodate the new displayed feature attributes.
+     * the table changing size to accommodate the new displayed feature attributes.
      * @param visibleOnly set to true to show only visible features
      * @see displayOnlyVisibleFeatures
      * @see setComposerMap
@@ -133,7 +133,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     
     /**Sets whether the feature filter is active for the attribute table. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
-     * the table changing size to accomodate the new displayed feature attributes.
+     * the table changing size to accommodate the new displayed feature attributes.
      * @param filter Set to true to enable the feature filter
      * @note added in 2.3
      * @see filterFeatures
@@ -153,7 +153,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     /**Sets the expression used for filtering features in the table. The filter is only
      * active if filterFeatures() is set to true. Changing this setting forces the table
      * to refetch features from its vector layer, and may result in
-     * the table changing size to accomodate the new displayed feature attributes.
+     * the table changing size to accommodate the new displayed feature attributes.
      * @param expression filter to use for selecting which features to display in the table
      * @note added in 2.3
      * @see featureFilter
@@ -174,7 +174,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * Set to an empty QSet to show all feature attributes.
      * @param refresh set to true to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
-     * to accomodate the new displayed feature attributes.
+     * to accommodate the new displayed feature attributes.
      * @see displayAttributes
      */    
     void setDisplayAttributes( const QSet<int>& attr );

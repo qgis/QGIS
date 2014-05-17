@@ -363,7 +363,7 @@ class SmalltalkLexer(RegexLexer):
             include('literals'),
         ],
         'afterobject' : [
-            (r'! !$', Keyword , '#pop'), # squeak chunk delimeter
+            (r'! !$', Keyword , '#pop'), # squeak chunk delimiter
             include('whitespaces'),
             (r'\b(ifTrue:|ifFalse:|whileTrue:|whileFalse:|timesRepeat:)',
              Name.Builtin, '#pop'),

@@ -148,7 +148,7 @@ class QgsComposerTable: QgsComposerItem
   public slots:
 
     /**Refreshes the attributes shown in the table by querying the vector layer for new data.
-     * This also causes the column widths and size of the table to change to accomodate the
+     * This also causes the column widths and size of the table to change to accommodate the
      * new data.
      * @note added in 2.3
      * @see adjustFrameToSize

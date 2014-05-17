@@ -567,7 +567,7 @@ Description: pytz - World Timezone Definitions for Python
         
         
 Keywords: timezone,tzinfo,datetime,olson,time
-Platform: Independant
+Platform: Independent
 Classifier: Development Status :: 6 - Mature
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License

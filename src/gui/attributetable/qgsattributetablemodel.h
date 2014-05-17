@@ -279,7 +279,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /** The currently cached column */
     int mCachedField;
-    /** Allows to cache one specific column (used for sorting) */
+    /** Allows caching of one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
 
     /**

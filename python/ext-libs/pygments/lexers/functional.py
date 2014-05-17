@@ -1847,7 +1847,7 @@ class OpaLexer(RegexLexer):
         ],
         'type-arrow': [
             include('comments-and-spaces'),
-            # the look ahead here allows to parse f(x : int, y : float -> truc)
+            # the look ahead here allows parsing f(x : int, y : float -> truc)
             # correctly
             (r',(?=[^:]*?->)', Keyword.Type, 'type-with-slash'),
             (r'->', Keyword.Type, ('#pop', 'type')),

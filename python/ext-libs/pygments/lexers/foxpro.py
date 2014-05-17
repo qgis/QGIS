@@ -21,7 +21,7 @@ __all__ = ['FoxProLexer']
 class FoxProLexer(RegexLexer):
     """Lexer for Microsoft Visual FoxPro language.
 
-    FoxPro syntax allows to shorten all keywords and function names
+    FoxPro syntax allows shortening all keywords and function names
     to 4 characters.  Shortened forms are not recognized by this lexer.
 
     *New in Pygments 1.6.*

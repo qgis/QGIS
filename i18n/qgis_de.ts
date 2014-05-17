@@ -14597,7 +14597,7 @@ Fehler war:%2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="195"/>
-        <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
+        <source>Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
         <translation>Erlaubt die Eingabe von Werten eines gegebenen Bereichs.  Dieses Bearbeitungselement kann entweder ein Schieber oder ein Drehfeld sein.</translation>
     </message>
     <message>
@@ -48927,7 +48927,7 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="94"/>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows to move the map content within a map frame.</source>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows moving the map content within a map frame.</source>
         <translation>In der Druckzusammenstellungswerkzeugleiste sind zwei Knöpfe zum Verschieben von Elementen zu finden.  Der linke (Pfeil nach rechts) wählt und verschiebt ein Element im Layout. Nach der Elementauswahl mit diesem Werkzeug können sie es auch mit den Pfeiltasten verschieben. Für genaue Positionierung steht der Dialog &lt;strong&gt;Position and Größe&lt;/strong&gt; bereit, den Sie im Reiter &lt;strong&gt;Elementeigentschalften / Position und Größe&lt;/strong&gt; finden können. Das andere Werkzeug (Kartensymbol mit Pfeil nach rechts) erlaubt es den Karteninhalt im Ausschnitt zu verschieben.</translation>
     </message>
     <message>
@@ -50469,7 +50469,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="141"/>
-        <source>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
+        <source>This allows surpressing attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
         <translation>Hiermit kann die Attributerzeugung unterdrückt werden, da einige OGR-Treiber (z.B. DGN, DXF) sie nicht unterstützen.</translation>
     </message>
     <message>
@@ -55621,7 +55621,7 @@ To edit values, you first have to switch the layer to editing mode. To switch to
 &lt;a name=&quot;FieldCalc&quot;&gt;
 &lt;h4&gt;Field Calculator&lt;/h4&gt;
 &lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows to perform calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
+The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
@@ -55863,7 +55863,7 @@ und in der Liste zur Auswahl angeboten.
 				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
 				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
 				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
 				for managing your code (comment and 
 				uncomment code, check syntax, share the code via codepad.org and much more).
 			&lt;/p&gt;
@@ -56873,7 +56873,7 @@ Hinweis: Experimentelle Erweiterungen sind grundsätzliche für den Produktivein
     No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
     python shell for input commands.&lt;br&gt;To access to the python file editor use the 
     &lt;label&gt;Show editor&lt;/label&gt; button 
-    from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+    from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
     for managing your code (comment and 
     uncomment code, check syntax, share the code via codepad.org and much more).
    &lt;/p&gt;
@@ -57203,7 +57203,7 @@ QGIS supports a number of symbology renderers to control how vector features are
 Click &lt;label&gt;New symbology&lt;/label&gt; button to use new symbology implementation for the layer.
 
 &lt;h5&gt;Vector transparency&lt;/h5&gt;
-QGIS allows to set a transparency for every vector layer. This can be done with the slider &lt;label&gt;Transparency&lt;/label&gt;. This is very useful for overlaying several vector layers.
+QGIS allows setting a transparency for every vector layer. This can be done with the slider &lt;label&gt;Transparency&lt;/label&gt;. This is very useful for overlaying several vector layers.
 
 &lt;h5&gt;Saving styles&lt;/h5&gt;
 Once you have styled your layer you also could save your layer-style to a separate file (with *.qml ending). To do this, use the button &lt;label&gt;Save Style...&lt;/label&gt;. No need to say that &lt;label&gt;Load Style...&lt;/label&gt; loads your saved layer-style-file.&lt;br/&gt;
@@ -57248,9 +57248,9 @@ Within the &lt;label&gt;Attributes&lt;/label&gt; tab the attributes of the selec
 The &lt;label&gt;Toggle editing mode&lt;/label&gt; button toggles this mode.&lt;p&gt;
 Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the &lt;label&gt;edit widget&lt;/label&gt; button, a dialog opens, where you can define different widgets. These widgets are:&lt;br/&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
+&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows entering simple text (or restrict to numbers for numeric attributes).
 &lt;li&gt;&lt;label&gt;Classification&lt;/label&gt; Displays a combo box with the values used for classification, if you have chosen &lt;label&gt;unique value&lt;/label&gt; as legend type in the symbology tab of the properties dialog.
-&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
+&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows setting of numeric values from a specific range. The edit widget can be either a slider or a spin box.
 &lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; The user can select one of the values already used in the attribute table. If &lt;label&gt;editable&lt;/label&gt; is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
 &lt;li&gt;&lt;label&gt;File name&lt;/label&gt; Simplifies the selection by adding a file chooser dialog.
 &lt;li&gt;&lt;label&gt;Value map&lt;/label&gt; a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
@@ -57283,7 +57283,7 @@ Actions are useful when you frequently want to run an external application or vi
 
 The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.&lt;p&gt;
 An expression must be enclosed between &lt;code&gt;[%&lt;/code&gt; and &lt;code&gt;%]&lt;/code&gt; - the GUI has some buttons which do that for you automatically. 
-The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows to write an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
+The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows writing an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
 
 See the User Guide for further information.
 
@@ -58157,7 +58157,7 @@ The &lt;label&gt;Mode&lt;/label&gt; setting determines which layers will be show
 &lt;h5&gt;Measure tool&lt;/h5&gt;
 Here you can set an ellipsoid for distance calculations, measurement units and preferred color of rubber band.
 &lt;h5&gt;Panning and zooming&lt;/h5&gt;
-Allows to define mouse wheel action and zoom factor.
+Allows defining mouse wheel action and zoom factor.
 &lt;a name=&quot;over&quot;&gt;
 &lt;h4&gt;Overlay&lt;/h4&gt;
 &lt;/a&gt;

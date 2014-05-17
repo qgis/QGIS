@@ -1341,7 +1341,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   if ( mProviderKey == "wms" )
   {
     // >>> BACKWARD COMPATIBILITY < 1.9
-    // The old WMS URI format does not contain all the informations, we add them here.
+    // The old WMS URI format does not contain all the information, we add them here.
     if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
     {
       QgsDebugMsg( "Old WMS URI format detected -> adding params" );

@@ -35,7 +35,7 @@ Description:
         Application logic is for the controller but don't try to make the life
         for the template designer too hard by giving him too few functionality.
         
-        For more informations visit the new `Jinja2 webpage`_ and `documentation`_.
+        For more information visit the new `Jinja2 webpage`_ and `documentation`_.
         
         .. _sandboxed: http://en.wikipedia.org/wiki/Sandbox_(computer_security)
         .. _Django: http://www.djangoproject.com/

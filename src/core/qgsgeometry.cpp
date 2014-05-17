@@ -1442,9 +1442,9 @@ bool QgsGeometry::deleteVertex( int atVertex )
   }
 
   QgsConstWkbPtr srcPtr( mGeometry );
-  char endianess;
+  char endianness;
   QGis::WkbType wkbType;
-  srcPtr >> endianess >> wkbType;
+  srcPtr >> endianness >> wkbType;
 
   bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
 
@@ -1454,7 +1454,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
   unsigned char *dstBuffer = new unsigned char[mGeometrySize - ps];
   QgsWkbPtr dstPtr( dstBuffer );
-  dstPtr << endianess << wkbType;
+  dstPtr << endianness << wkbType;
 
   bool deleted = false;
   switch ( wkbType )
@@ -1527,8 +1527,8 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
-        srcPtr >> endianess >> wkbType;
-        dstPtr << endianess << wkbType;
+        srcPtr >> endianness >> wkbType;
+        dstPtr << endianness << wkbType;
         deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, false, linenr == nLines - 1 );
       }
 
@@ -1545,8 +1545,8 @@ bool QgsGeometry::deleteVertex( int atVertex )
       for ( int polynr = 0, pointIndex = 0; polynr < nPolys; ++polynr )
       {
         int nRings;
-        srcPtr >> endianess >> wkbType >> nRings;
-        dstPtr << endianess << wkbType << nRings;
+        srcPtr >> endianness >> wkbType >> nRings;
+        dstPtr << endianness << wkbType << nRings;
 
         for ( int ringnr = 0; ringnr < nRings; ++ringnr )
           deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, polynr == nPolys - 1 && ringnr == nRings - 1 );
@@ -1638,9 +1638,9 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
 
   QgsConstWkbPtr srcPtr( mGeometry );
-  char endianess;
+  char endianness;
   QGis::WkbType wkbType;
-  srcPtr >> endianess >> wkbType;
+  srcPtr >> endianness >> wkbType;
 
   bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
 
@@ -1650,7 +1650,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 
   unsigned char *dstBuffer = new unsigned char[mGeometrySize + ps];
   QgsWkbPtr dstPtr( dstBuffer );
-  dstPtr << endianess << wkbType;
+  dstPtr << endianness << wkbType;
 
   bool inserted = false;
   switch ( wkbType )
@@ -1698,7 +1698,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
           dstPtr += len;
         }
 
-        dstPtr << endianess << ( hasZValue ? QGis::WKBPoint25D : QGis::WKBPoint ) << x << y;
+        dstPtr << endianness << ( hasZValue ? QGis::WKBPoint25D : QGis::WKBPoint ) << x << y;
         if ( hasZValue )
           dstPtr << 0.0;
 
@@ -1721,8 +1721,8 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
-        srcPtr >> endianess >> wkbType;
-        dstPtr << endianess << wkbType;
+        srcPtr >> endianness >> wkbType;
+        dstPtr << endianness << wkbType;
         inserted |= insertVertex( srcPtr, dstPtr, beforeVertex, x, y, hasZValue, pointIndex, false );
       }
       break;
@@ -1738,8 +1738,8 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
       for ( int polynr = 0, pointIndex = 0; polynr < nPolys; ++polynr )
       {
         int nRings;
-        srcPtr >> endianess >> wkbType >> nRings;
-        dstPtr << endianess << wkbType << nRings;
+        srcPtr >> endianness >> wkbType >> nRings;
+        dstPtr << endianness << wkbType << nRings;
 
         for ( int ringnr = 0; ringnr < nRings; ++ringnr )
           inserted |= insertVertex( srcPtr, dstPtr, beforeVertex, x, y, hasZValue, pointIndex, true );

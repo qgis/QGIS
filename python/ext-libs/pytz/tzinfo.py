@@ -142,7 +142,7 @@ class StaticTzInfo(BaseTzInfo):
 
     def __reduce__(self):
         # Special pickle to zone remains a singleton and to cope with
-        # database changes. 
+        # database changes.
         return pytz._p, (self.zone,)
 
 
@@ -362,7 +362,7 @@ class DstTzInfo(BaseTzInfo):
         if len(filtered_possible_loc_dt) == 0:
             filtered_possible_loc_dt = list(possible_loc_dt)
 
-        # If we get this far, we have in a wierd timezone transition
+        # If we get this far, we have in a weird timezone transition
         # where the clocks have been wound back but is_dst is the same
         # in both (eg. Europe/Warsaw 1915 when they switched to CET).
         # At this point, we just have to guess unless we allow more

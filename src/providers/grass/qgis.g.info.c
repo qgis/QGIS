@@ -17,7 +17,7 @@
  * MODULE:       qgis.g.info
  * AUTHOR(S):    Radim Blazek <radim.blazek gmail.com>
  *               using various GRASS modules
- * PURPOSE:      get informations about locations,mapsets,maps
+ * PURPOSE:      get information about locations, mapsets, maps
  * COPYRIGHT:    (C) 2010 by Radim Blazek
  *
  *               This program is free software under the GNU General Public
@@ -131,7 +131,7 @@ int main( int argc, char **argv )
       G_fatal_error( "Not yet supported" );
     }
   }
-  // raster informations
+  // raster information
   else if ( strcmp( "info", info_opt->answer ) == 0 )
   {
     struct FPRange range;

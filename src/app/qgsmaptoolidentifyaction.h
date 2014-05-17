@@ -38,7 +38,7 @@ class QgsVectorLayer;
   after selecting a point shows dialog with identification results
   - for raster layers shows value of underlying pixel
   - for vector layers shows feature attributes within search radius
-    (allows to edit values when vector layer is in editing mode)
+    (allows editing values when vector layer is in editing mode)
 */
 class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 {

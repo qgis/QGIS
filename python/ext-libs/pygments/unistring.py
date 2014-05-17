@@ -111,7 +111,7 @@ if __name__ == '__main__':
         c = unichr(code)
         cat = unicodedata.category(c)
         if ord(c) == 0xdc00:
-            # Hack to avoid combining this combining with the preceeding high
+            # Hack to avoid combining this combining with the preceding high
             # surrogate, 0xdbff, when doing a repr.
             c = u'\\' + c
         elif ord(c) in (0x2d, 0x5b, 0x5c, 0x5d):

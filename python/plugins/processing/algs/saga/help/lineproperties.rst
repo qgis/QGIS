@@ -12,7 +12,7 @@ Parameters
 - ``Lines[Vector]``: input lines layer
 - ``Number of Parts[Boolean]``: number of parts of each line
 - ``Number of Vertices[Boolean]``: number of vertices of each line
-- ``Length[Boolean]``: lenght of each line (in meters)
+- ``Length[Boolean]``: length of each line (in meters)
 
 Outputs
 -------

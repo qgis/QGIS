@@ -450,7 +450,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
   QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayerCache->layer() );
   if ( registeredActions.size() > 0 )
   {
-    //add a seperator between user defined and standard actions
+    //add a separator between user defined and standard actions
     menu->addSeparator();
 
     QList<QgsMapLayerAction*>::iterator actionIt;
