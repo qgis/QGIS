@@ -164,10 +164,17 @@ QgsLayerTreeNode* QgsLayerTreeView::currentNode() const
 
 QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
 {
-  // TODO: also handle if a layer / symbology is selected within a group?
   QgsLayerTreeNode* node = currentNode();
   if (node && node->nodeType() == QgsLayerTreeNode::NodeGroup)
     return static_cast<QgsLayerTreeGroup*>(node);
+  else if (node && node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  {
+    QgsLayerTreeNode* parent = node->parent();
+    if (parent && parent->nodeType() == QgsLayerTreeNode::NodeGroup)
+      return static_cast<QgsLayerTreeGroup*>(node);
+  }
+  // TODO: also handle if symbology is selected?
+
   return 0;
 }
 

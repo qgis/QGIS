@@ -469,6 +469,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   public slots:
     void layerTreeViewDoubleClicked(const QModelIndex& index);
+    void layerTreeViewCurrentChanged(const QModelIndex& current, const QModelIndex& previous);
     void activeLayerChanged(QgsMapLayer* layer);
     //! Zoom to full extent
     void zoomFull();

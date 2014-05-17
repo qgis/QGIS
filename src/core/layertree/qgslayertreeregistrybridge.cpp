@@ -10,11 +10,19 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge(QgsLayerTreeGroup *root, 
   : QObject(parent)
   , mRoot(root)
   , mEnabled(true)
+  , mInsertionPointGroup(root)
+  , mInsertionPointIndex(0)
 {
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layersAdded(QList<QgsMapLayer*>)), this, SLOT(layersAdded(QList<QgsMapLayer*>)));
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layersWillBeRemoved(QStringList)), this, SLOT(layersWillBeRemoved(QStringList)));
 
   connectToGroup(mRoot);
+}
+
+void QgsLayerTreeRegistryBridge::setLayerInsertionPoint(QgsLayerTreeGroup* parentGroup, int index)
+{
+  mInsertionPointGroup = parentGroup;
+  mInsertionPointIndex = index;
 }
 
 void QgsLayerTreeRegistryBridge::layersAdded(QList<QgsMapLayer*> layers)
@@ -24,7 +32,8 @@ void QgsLayerTreeRegistryBridge::layersAdded(QList<QgsMapLayer*> layers)
 
   foreach (QgsMapLayer* layer, layers)
   {
-    QgsLayerTreeLayer* nodeLayer = mRoot->addLayer(layer);
+    // add new layer to the top
+    QgsLayerTreeLayer* nodeLayer = mInsertionPointGroup->insertLayer(mInsertionPointIndex, layer);
 
     // check whether the layer is marked as embedded
     QString projectFile = QgsProject::instance()->layerIsEmbedded(nodeLayer->layerId());

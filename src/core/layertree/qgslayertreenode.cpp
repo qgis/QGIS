@@ -145,6 +145,13 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup(const QString &name)
   return grp;
 }
 
+QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer(int index, QgsMapLayer* layer)
+{
+  QgsLayerTreeLayer* ll = new QgsLayerTreeLayer(layer);
+  insertChildNode( index, ll );
+  return ll;
+}
+
 QgsLayerTreeLayer* QgsLayerTreeGroup::addLayer(QgsMapLayer* layer)
 {
   QgsLayerTreeLayer* ll = new QgsLayerTreeLayer(layer);

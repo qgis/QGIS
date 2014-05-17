@@ -336,6 +336,9 @@ class CORE_EXPORT QgsProject : public QObject
      * @node added in 2.4 */
     QgsLayerTreeGroup* layerTreeRoot() const;
 
+    /** Return pointer to the helper class that synchronizes map layer registry with layer tree */
+    QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
+
   protected:
 
     /** Set error message from read/write operation

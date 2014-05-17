@@ -88,6 +88,7 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
 {
   setObjectName( name );
 
+#if 0
   connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
            this, SLOT( handleItemChange( QTreeWidgetItem*, int ) ) );
 
@@ -117,6 +118,8 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
 
   connect( mMapCanvas, SIGNAL( layersChanged() ),
            this, SLOT( refreshCheckStates() ) );
+#endif
+
 #if 0
   // too much
   connect( mMapCanvas, SIGNAL( extentsChanged() ),

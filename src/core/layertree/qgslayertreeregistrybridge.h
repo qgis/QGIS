@@ -20,6 +20,10 @@ public:
   void setEnabled(bool enabled) { mEnabled = enabled; }
   bool isEnabled() const { return mEnabled; }
 
+  //! Set where the new layers should be inserted - can be used to follow current selection.
+  //! By default it is root group with zero index.
+  void setLayerInsertionPoint(QgsLayerTreeGroup* parentGroup, int index);
+
 signals:
 
 protected slots:
@@ -37,6 +41,9 @@ protected:
   QgsLayerTreeGroup* mRoot;
   QStringList mLayerIdsForRemoval;
   bool mEnabled;
+
+  QgsLayerTreeGroup* mInsertionPointGroup;
+  int mInsertionPointIndex;
 };
 
 #endif // QGSLAYERTREEREGISTRYBRIDGE_H

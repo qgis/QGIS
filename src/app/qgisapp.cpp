@@ -135,8 +135,10 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
 #include "qgslabelinggui.h"
+#include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreenode.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
@@ -2226,9 +2228,37 @@ void QgisApp::initLayerTreeView()
 
   connect( mLayerTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(layerTreeViewDoubleClicked(QModelIndex)) );
   connect( mLayerTreeView, SIGNAL(currentLayerChanged(QgsMapLayer*)), this, SLOT(activeLayerChanged(QgsMapLayer*)) );
+  connect( mLayerTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(layerTreeViewCurrentChanged(QModelIndex,QModelIndex)));
 
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
+
+  QgsLayerTreeMapCanvasBridge* bridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas );
+  bridge->setParent(this);
+}
+
+
+void QgisApp::layerTreeViewCurrentChanged(const QModelIndex& current, const QModelIndex& previous)
+{
+  Q_UNUSED(previous);
+
+  // defaults
+  QgsLayerTreeGroup* parentGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+  int index = 0;
+
+  if (current.isValid())
+  {
+    if (QgsLayerTreeNode* currentNode = mLayerTreeView->currentNode())
+    {
+      QgsLayerTreeNode* parentNode = currentNode->parent();
+      if (parentNode && parentNode->nodeType() == QgsLayerTreeNode::NodeGroup)
+        parentGroup = static_cast<QgsLayerTreeGroup*>(parentNode);
+    }
+
+    index = current.row();
+  }
+
+  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint(parentGroup, index);
 }
 
 

@@ -148,6 +148,7 @@ public:
   void setName(const QString& n) { mName = n; }
 
   QgsLayerTreeGroup* addGroup(const QString& name);
+  QgsLayerTreeLayer* insertLayer(int index, QgsMapLayer* layer);
   QgsLayerTreeLayer* addLayer(QgsMapLayer* layer);
 
   void insertChildNodes(int index, QList<QgsLayerTreeNode*> nodes);
