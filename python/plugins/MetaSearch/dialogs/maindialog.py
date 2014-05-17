@@ -865,6 +865,8 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
         if self.settings.value('/proxy/proxyEnabled') == 'true':
             if self.settings.value('/proxy/proxyType') == 'HttpProxy':
                 ptype = 'http'
+            else:
+                return
 
             user = self.settings.value('/proxy/proxyUser')
             password = self.settings.value('/proxy/proxyPassword')
