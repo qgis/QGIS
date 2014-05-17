@@ -51,8 +51,6 @@ void QgsLayerTreeGroup::connectToChildNode(QgsLayerTreeNode* node)
   }
 
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(updateVisibilityFromChildren()));
-  // forward the signal towards the root
-  connect(node, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)));
 }
 
 void QgsLayerTreeGroup::insertChildNode(int index, QgsLayerTreeNode* node)

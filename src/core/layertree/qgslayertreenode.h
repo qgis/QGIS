@@ -49,11 +49,11 @@ signals:
 
   // low-level signals (mainly for the model)
 
-  void willAddChildren(int indexFrom, int indexTo);
-  void addedChildren(int indexFrom, int indexTo);
+  void willAddChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
+  void addedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
 
-  void willRemoveChildren(int indexFrom, int indexTo);
-  void removedChildren(int indexFrom, int indexTo);
+  void willRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
+  void removedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
 
   void visibilityChanged(Qt::CheckState state);
 

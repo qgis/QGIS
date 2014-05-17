@@ -5,6 +5,7 @@
 #include <QStringList>
 
 class QgsLayerTreeGroup;
+class QgsLayerTreeNode;
 
 class QgsMapLayer;
 
@@ -30,12 +31,10 @@ protected slots:
   void layersAdded(QList<QgsMapLayer*> layers);
   void layersWillBeRemoved(QStringList layerIds);
 
-  void groupAddedChildren(int indexFrom, int indexTo);
-  void groupWillRemoveChildren(int indexFrom, int indexTo);
+  void groupWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
   void groupRemovedChildren();
 
 protected:
-  void connectToGroup(QgsLayerTreeGroup* group);
 
 protected:
   QgsLayerTreeGroup* mRoot;

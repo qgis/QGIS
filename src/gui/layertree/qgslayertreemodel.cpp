@@ -22,6 +22,11 @@ QgsLayerTreeModel::QgsLayerTreeModel(QgsLayerTreeGroup* rootNode, QObject *paren
 
   // connect to all existing nodes
   connectToNode(mRootNode);
+
+  connect(mRootNode, SIGNAL(willAddChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeWillAddChildren(QgsLayerTreeNode*,int,int)));
+  connect(mRootNode, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeAddedChildren(QgsLayerTreeNode*,int,int)));
+  connect(mRootNode, SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeWillRemoveChildren(QgsLayerTreeNode*,int,int)));
+  connect(mRootNode, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeRemovedChildren()));
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -33,10 +38,6 @@ QgsLayerTreeModel::~QgsLayerTreeModel()
 
 void QgsLayerTreeModel::connectToNode(QgsLayerTreeNode* node)
 {
-  connect(node, SIGNAL(willAddChildren(int,int)), this, SLOT(nodeWillAddChildren(int,int)));
-  connect(node, SIGNAL(addedChildren(int,int)), this, SLOT(nodeAddedChildren(int,int)));
-  connect(node, SIGNAL(willRemoveChildren(int,int)), this, SLOT(nodeWillRemoveChildren(int,int)));
-  connect(node, SIGNAL(removedChildren(int,int)), this, SLOT(nodeRemovedChildren()));
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanded()));
 
   if (QgsLayerTree::isLayer(node) && testFlag(ShowSymbology))
@@ -365,16 +366,14 @@ void QgsLayerTreeModel::refreshLayerSymbology(QgsLayerTreeLayer* nodeLayer)
   addSymbologyToLayer(nodeLayer);
 }
 
-void QgsLayerTreeModel::nodeWillAddChildren(int indexFrom, int indexTo)
+void QgsLayerTreeModel::nodeWillAddChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
 {
-  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sender());
   Q_ASSERT(node);
   beginInsertRows(node2index(node), indexFrom, indexTo);
 }
 
-void QgsLayerTreeModel::nodeAddedChildren(int indexFrom, int indexTo)
+void QgsLayerTreeModel::nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
 {
-  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sender());
   Q_ASSERT(node);
 
   endInsertRows();
@@ -383,9 +382,8 @@ void QgsLayerTreeModel::nodeAddedChildren(int indexFrom, int indexTo)
     connectToNode( node->children()[i] );
 }
 
-void QgsLayerTreeModel::nodeWillRemoveChildren(int indexFrom, int indexTo)
+void QgsLayerTreeModel::nodeWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
 {
-  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sender());
   Q_ASSERT(node);
 
   beginRemoveRows(node2index(node), indexFrom, indexTo);

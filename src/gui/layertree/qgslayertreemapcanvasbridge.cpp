@@ -11,7 +11,9 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root
   , mHasCustomLayerOrder(false)
 {
   connectToNode(root);
+  connect(root, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeAddedChildren(QgsLayerTreeNode*,int,int)));
   connect(root, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SLOT(nodeCustomPropertyChanged(QgsLayerTreeNode*,QString)));
+  connect(root, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeRemovedChildren()));
 
   setCanvasLayers();
 }
@@ -69,8 +71,6 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder(const QStringList& order)
 
 void QgsLayerTreeMapCanvasBridge::connectToNode(QgsLayerTreeNode *node)
 {
-  connect(node, SIGNAL(addedChildren(int,int)), this, SLOT(nodeAddedChildren(int,int)));
-  connect(node, SIGNAL(removedChildren(int,int)), this, SLOT(nodeRemovedChildren()));
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(nodeVisibilityChanged()));
 
   if (QgsLayerTree::isLayer(node))
@@ -126,11 +126,10 @@ void QgsLayerTreeMapCanvasBridge::deferredSetCanvasLayers()
   QMetaObject::invokeMethod(this, "setCanvasLayers", Qt::QueuedConnection);
 }
 
-void QgsLayerTreeMapCanvasBridge::nodeAddedChildren(int indexFrom, int indexTo)
+void QgsLayerTreeMapCanvasBridge::nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
 {
   // connect to new children
-  Q_ASSERT(sender() && qobject_cast<QgsLayerTreeNode*>(sender()));
-  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sender());
+  Q_ASSERT(node);
   for (int i = indexFrom; i <= indexTo; ++i)
     connectToNode(node->children()[i]);
 

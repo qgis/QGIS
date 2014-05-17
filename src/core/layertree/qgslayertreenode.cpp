@@ -92,10 +92,19 @@ void QgsLayerTreeNode::insertChildren(int index, QList<QgsLayerTreeNode*> nodes)
     index = mChildren.count();
 
   int indexTo = index+nodes.count()-1;
-  emit willAddChildren(index, indexTo);
+  emit willAddChildren(this, index, indexTo);
   for (int i = 0; i < nodes.count(); ++i)
+  {
     mChildren.insert(index+i, nodes[i]);
-  emit addedChildren(index, indexTo);
+
+    // forward the signal towards the root
+    connect(nodes[i], SIGNAL(willAddChildren(QgsLayerTreeNode*,int,int)), this, SIGNAL(willAddChildren(QgsLayerTreeNode*,int,int)));
+    connect(nodes[i], SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)));
+    connect(nodes[i], SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)), this, SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)));
+    connect(nodes[i], SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)));
+    connect(nodes[i], SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)));
+  }
+  emit addedChildren(this, index, indexTo);
 }
 
 void QgsLayerTreeNode::removeChildAt(int i)
@@ -109,12 +118,12 @@ void QgsLayerTreeNode::removeChildrenRange(int from, int count)
     return;
 
   int to = from+count-1;
-  emit willRemoveChildren(from, to);
+  emit willRemoveChildren(this, from, to);
   while (--count >= 0)
   {
     QgsLayerTreeNode* node = mChildren.takeAt(from);
     node->mParent = 0;
     delete node;
   }
-  emit removedChildren(from, to);
+  emit removedChildren(this, from, to);
 }

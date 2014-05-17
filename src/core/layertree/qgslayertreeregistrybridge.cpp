@@ -16,7 +16,8 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge(QgsLayerTreeGroup *root, 
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layersAdded(QList<QgsMapLayer*>)), this, SLOT(layersAdded(QList<QgsMapLayer*>)));
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layersWillBeRemoved(QStringList)), this, SLOT(layersWillBeRemoved(QStringList)));
 
-  connectToGroup(mRoot);
+  connect(mRoot, SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)), this, SLOT(groupWillRemoveChildren(QgsLayerTreeNode*,int,int)));
+  connect(mRoot, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(groupRemovedChildren()));
 }
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint(QgsLayerTreeGroup* parentGroup, int index)
@@ -59,19 +60,6 @@ void QgsLayerTreeRegistryBridge::layersWillBeRemoved(QStringList layerIds)
 }
 
 
-void QgsLayerTreeRegistryBridge::groupAddedChildren(int indexFrom, int indexTo)
-{
-  QgsLayerTreeGroup* group = qobject_cast<QgsLayerTreeGroup*>(sender());
-  Q_ASSERT(group);
-
-  for (int i = indexFrom; i <= indexTo; ++i)
-  {
-    QgsLayerTreeNode* child = group->children()[i];
-    if (QgsLayerTree::isGroup(child))
-      connectToGroup(QgsLayerTree::toGroup(child));
-  }
-}
-
 static void _collectLayerIdsInGroup(QgsLayerTreeGroup* group, int indexFrom, int indexTo, QStringList& lst)
 {
   for (int i = indexFrom; i <= indexTo; ++i)
@@ -88,12 +76,12 @@ static void _collectLayerIdsInGroup(QgsLayerTreeGroup* group, int indexFrom, int
   }
 }
 
-void QgsLayerTreeRegistryBridge::groupWillRemoveChildren(int indexFrom, int indexTo)
+void QgsLayerTreeRegistryBridge::groupWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
 {
   Q_ASSERT(mLayerIdsForRemoval.isEmpty());
 
-  QgsLayerTreeGroup* group = qobject_cast<QgsLayerTreeGroup*>(sender());
-  Q_ASSERT(group);
+  Q_ASSERT(QgsLayerTree::isGroup(node));
+  QgsLayerTreeGroup* group = QgsLayerTree::toGroup(node);
 
   _collectLayerIdsInGroup(group, indexFrom, indexTo, mLayerIdsForRemoval);
 }
@@ -110,17 +98,3 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
 
   QgsMapLayerRegistry::instance()->removeMapLayers(toRemove);
 }
-
-void QgsLayerTreeRegistryBridge::connectToGroup(QgsLayerTreeGroup* group)
-{
-  connect(group, SIGNAL(addedChildren(int,int)), this, SLOT(groupAddedChildren(int,int)));
-  connect(group, SIGNAL(willRemoveChildren(int,int)), this, SLOT(groupWillRemoveChildren(int,int)));
-  connect(group, SIGNAL(removedChildren(int,int)), this, SLOT(groupRemovedChildren()));
-
-  foreach (QgsLayerTreeNode* child, group->children())
-  {
-    if (QgsLayerTree::isGroup(child))
-      connectToGroup(QgsLayerTree::toGroup(child));
-  }
-}
-

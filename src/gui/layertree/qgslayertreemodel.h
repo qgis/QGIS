@@ -79,9 +79,9 @@ public:
 signals:
 
 protected slots:
-  void nodeWillAddChildren(int indexFrom, int indexTo);
-  void nodeAddedChildren(int indexFrom, int indexTo);
-  void nodeWillRemoveChildren(int indexFrom, int indexTo);
+  void nodeWillAddChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
+  void nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
+  void nodeWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
   void nodeRemovedChildren();
 
   void nodeVisibilityChanded();

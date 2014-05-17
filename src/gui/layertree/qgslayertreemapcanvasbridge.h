@@ -40,7 +40,7 @@ protected:
   void deferredSetCanvasLayers();
 
 protected slots:
-  void nodeAddedChildren(int indexFrom, int indexTo);
+  void nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
   void nodeRemovedChildren();
   void nodeVisibilityChanged();
   void nodeCustomPropertyChanged(QgsLayerTreeNode* node, QString key);
