@@ -4596,67 +4596,15 @@ GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
     line = multiLine[i];
     //For each segment
     newline = QgsPolyline();
-    for ( int j = 1; j < line.size() ; ++j )
+    newline.append(line[0]);
+    for ( int j = 1; j < line.size()-1 ; ++j )
     {
-      p1 = line[j-1];
-      p2 = line[j];
-      g = QgsGeometry::fromPolyline( QgsPolyline() << p1 << p2 );
-      QgsDebugMsg( g->exportToWkt() );
-      QgsDebugMsg( splitPoint.toString() );
-
-      newline.append( p1 );
-
-      double x1 = p1.x();
-      double y1 = p1.y();
-      double x2 = p2.x();
-      double y2 = p2.y();
-      double xt = splitPoint.x();
-      double yt = splitPoint.y();
-      double k;
-      double diff;
-      if ( x2 == x1 )
+      newline.append( line[j] );
+      if ( line[j] == splitPoint )
       {
-        if ( y2 == y1 )
-        {
-          k = -1;
-          diff = 1e50;
-        }
-        else
-        {
-          k = ( yt - y1 ) / ( y2 - y1 );
-          diff = k * ( x2 - x1 ) - ( xt - x1 );
-        }
-      }
-      else
-      {
-        k = ( xt - x1 ) / ( x2 - x1 );
-        diff = k * ( y2 - y1 ) - ( yt - y1 );
-      }
-      if ( abs( diff ) < 1e-7 )
-      {
-        if ( k == 0 )
-        {
-          lines.append( newline );
-          newline = QgsPolyline();
-          newline.append( p1 );
-        }
-        if ( k == 1 )
-        {
-          newline.append( p2 );
-          lines.append( newline );
-          newline = QgsPolyline();
-        }
-        if ( k > 0 && k < 1 )
-        {
-          newline.append( splitPoint );
-          lines.append( newline );
-          newline = QgsPolyline();
-          newline.append( splitPoint );
-        }
-        if ( k < 0 || k > 1 )
-        {
-          //Nothing happens, we are on the line but not the segment
-        }
+        lines.append( newline );
+        newline = QgsPolyline();
+        newline.append( line[j] );
       }
     }
     newline.append( line.last() );
