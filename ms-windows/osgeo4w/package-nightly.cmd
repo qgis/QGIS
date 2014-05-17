@@ -162,6 +162,11 @@ cmake %CMAKE_OPT% ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
+        -D WITH_INTERNAL_JINJA2=FALSE \
+        -D WITH_INTERNAL_MARKUPSAFE=FALSE \
+        -D WITH_INTERNAL_PYGMENTS=FALSE \
+        -D WITH_INTERNAL_DATEUTIL=FALSE \
+        -D WITH_INTERNAL_PYTZ=FALSE \
 	%SRCDIR%
 if errorlevel 1 (echo cmake failed & goto error)
 
