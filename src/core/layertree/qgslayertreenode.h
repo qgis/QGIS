@@ -57,6 +57,8 @@ signals:
 
   void visibilityChanged(Qt::CheckState state);
 
+  void customPropertyChanged(QgsLayerTreeNode* node, QString key);
+
 protected:
 
   QgsLayerTreeNode(NodeType t);

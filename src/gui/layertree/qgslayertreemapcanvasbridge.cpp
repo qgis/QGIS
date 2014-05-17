@@ -11,6 +11,7 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root
   , mHasCustomLayerOrder(false)
 {
   connectToNode(root);
+  connect(root, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SLOT(nodeCustomPropertyChanged(QgsLayerTreeNode*,QString)));
 
   setCanvasLayers();
 }
@@ -160,5 +161,12 @@ void QgsLayerTreeMapCanvasBridge::nodeRemovedChildren()
 void QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged()
 {
   deferredSetCanvasLayers();
+}
+
+void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged(QgsLayerTreeNode* node, QString key)
+{
+  Q_UNUSED(node);
+  if (key == "overview")
+    deferredSetCanvasLayers();
 }
 

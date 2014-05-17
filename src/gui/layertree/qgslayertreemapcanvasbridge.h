@@ -43,6 +43,7 @@ protected slots:
   void nodeAddedChildren(int indexFrom, int indexTo);
   void nodeRemovedChildren();
   void nodeVisibilityChanged();
+  void nodeCustomPropertyChanged(QgsLayerTreeNode* node, QString key);
 
   void setCanvasLayers();
 

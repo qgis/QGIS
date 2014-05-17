@@ -39,6 +39,7 @@ QgsLayerTreeNode* QgsLayerTreeNode::readXML(QDomElement& element)
 void QgsLayerTreeNode::setCustomProperty(const QString &key, const QVariant &value)
 {
   mProperties.setValue(key, value);
+  emit customPropertyChanged(this, key);
 }
 
 QVariant QgsLayerTreeNode::customProperty(const QString &key, const QVariant &defaultValue) const
@@ -49,6 +50,7 @@ QVariant QgsLayerTreeNode::customProperty(const QString &key, const QVariant &de
 void QgsLayerTreeNode::removeCustomProperty(const QString &key)
 {
   mProperties.remove(key);
+  emit customPropertyChanged(this, key);
 }
 
 QStringList QgsLayerTreeNode::customProperties() const
@@ -169,6 +171,8 @@ void QgsLayerTreeGroup::connectToChildNode(QgsLayerTreeNode* node)
   }
 
   connect(node, SIGNAL(visibilityChanged(Qt::CheckState)), this, SLOT(updateVisibilityFromChildren()));
+  // forward the signal towards the root
+  connect(node, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)));
 }
 
 void QgsLayerTreeGroup::insertChildNode(int index, QgsLayerTreeNode* node)
