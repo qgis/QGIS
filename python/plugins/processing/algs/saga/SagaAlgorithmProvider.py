@@ -51,48 +51,23 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     SagaUtils.sagaPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     SagaUtils.SAGA_208,
-                                    'Enable SAGA 2.0.8 compatibility', True))
+                                    'Use SAGA 2.0.8 syntax', True))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
                                     'Enable SAGA Import/Export optimizations',
                                     False))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                SagaUtils.SAGA_AUTO_RESAMPLING,
-                'Use min covering grid system for resampling', True))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     SagaUtils.SAGA_LOG_COMMANDS,
                                     'Log execution commands', True))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                     SagaUtils.SAGA_LOG_CONSOLE,
                                     'Log console output', True))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    SagaUtils.SAGA_RESAMPLING_REGION_XMIN,
-                                    'Resampling region min x', 0))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    SagaUtils.SAGA_RESAMPLING_REGION_YMIN,
-                                    'Resampling region min y', 0))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    SagaUtils.SAGA_RESAMPLING_REGION_XMAX,
-                                    'Resampling region max x', 1000))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    SagaUtils.SAGA_RESAMPLING_REGION_YMAX,
-                                    'Resampling region max y', 1000))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE,
-                                    'Resampling region cellsize', 1))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         if isWindows():
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
-
-        ProcessingConfig.removeSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
-        ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
-        ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
-        ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
-        ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
-        ProcessingConfig.removeSetting(
-                SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
+        
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
