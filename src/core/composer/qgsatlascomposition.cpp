@@ -24,9 +24,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposershape.h"
-#include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 
@@ -268,13 +265,7 @@ void QgsAtlasComposition::endRender()
     return;
   }
 
-  // reset label expression contexts
-  QList<QgsComposerLabel*> labels;
-  mComposition->composerItems( labels );
-  for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
-  {
-    ( *lit )->setExpressionContext( 0, 0 );
-  }
+  emit featureChanged( 0 );
 
   updateAtlasMaps();
 
@@ -367,25 +358,6 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   evalFeatureFilename();
 
   emit featureChanged( &mCurrentFeature );
-
-  // TODO - move these updates to shape/page item
-
-  // update shapes (in case they use data defined symbology with atlas properties)
-  QList<QgsComposerShape*> shapes;
-  mComposition->composerItems( shapes );
-  for ( QList<QgsComposerShape*>::iterator lit = shapes.begin(); lit != shapes.end(); ++lit )
-  {
-    ( *lit )->update();
-  }
-
-  // update page background (in case it uses data defined symbology with atlas properties)
-  QList<QgsPaperItem*> pages;
-  mComposition->composerItems( pages );
-  for ( QList<QgsPaperItem*>::iterator pageIt = pages.begin(); pageIt != pages.end(); ++pageIt )
-  {
-    ( *pageIt )->update();
-  }
-
   emit statusMsgChanged( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
   //update composer maps

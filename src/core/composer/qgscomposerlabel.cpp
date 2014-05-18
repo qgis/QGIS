@@ -205,6 +205,9 @@ void QgsComposerLabel::refreshExpressionContext()
   if ( mComposition->atlasComposition().enabled() )
   {
     vl = mComposition->atlasComposition().coverageLayer();
+  }
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
     feature = mComposition->atlasComposition().currentFeature();
   }
 
