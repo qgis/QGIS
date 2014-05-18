@@ -436,7 +436,22 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   QgsRectangle new_extent = mTransformedFeatureBounds;
   QgsRectangle mOrigExtent = map->extent();
 
-  if ( map->atlasScalingMode() == QgsComposerMap::Fixed )
+  //sanity check - only allow fixed scale mode for point layers
+  bool isPointLayer = false;
+  switch ( mCoverageLayer->wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      isPointLayer = true;
+      break;
+    default:
+      isPointLayer = false;
+      break;
+  }
+
+  if ( map->atlasScalingMode() == QgsComposerMap::Fixed  || isPointLayer  )
   {
     // only translate, keep the original scale (i.e. width x height)
 
