@@ -1,0 +1,12 @@
+<h3>ymin function</h3>
+Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+<h4>Syntax</h4>
+<pre>ymin(geom)</pre>
+
+<h4>Arguments</h4>
+geom &rarr; a geometry
+
+<h4>Example</h4>
+<pre> ymin($geometry) &rarr; returns minimum y coordinate of $geometry</pre>
+
