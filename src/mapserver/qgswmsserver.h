@@ -250,6 +250,7 @@ class QgsWMSServer: public QgsOWSServer
 
     /**Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );
+    static QString relationValue( const QString& attributeVal, QgsVectorLayer* layer, const QString& key, const QString& value );
 };
 
 #endif

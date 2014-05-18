@@ -2882,6 +2882,30 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
       return attributeVal;
     }
 
+    QString outputString;
+    if ( vrdata.mAllowMulti )
+    {
+      QString valueString = attributeVal;
+      QStringList valueList = valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+      outputString += "{";
+      for ( int i = 0; i < valueList.size(); ++i )
+      {
+        if ( i > 0 )
+        {
+          outputString += ",";
+        }
+        outputString += relationValue( valueList.at( i ), layer, vrdata.mKey, vrdata.mValue );
+      }
+      outputString += "}";
+    }
+    else
+    {
+      outputString = relationValue( attributeVal, layer, vrdata.mKey, vrdata.mValue );
+    }
+
+    return outputString;
+
+    /*
     int keyId = layer->fieldNameIndex( vrdata.mKey );
     int valueId = layer->fieldNameIndex( vrdata.mValue );
     if ( keyId == -1 || valueId == -1 )
@@ -2897,6 +2921,33 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
       {
         return f.attribute( vrdata.mValue ).toString();
       }
+    }*/
+
+  }
+  return attributeVal;
+}
+
+QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer* layer, const QString& key, const QString& value )
+{
+  if ( !layer )
+  {
+    return attributeVal;
+  }
+
+  int keyId = layer->fieldNameIndex( key );
+  int valueId = layer->fieldNameIndex( value );
+  if ( keyId == -1 || valueId == -1 )
+  {
+    return attributeVal;
+  }
+
+  QgsFeatureIterator fIt = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << keyId << valueId ) );
+  QgsFeature f;
+  while ( fIt.nextFeature( f ) )
+  {
+    if ( f.attribute( key ).toString() == attributeVal )
+    {
+      return f.attribute( value ).toString();
     }
   }
   return attributeVal;
