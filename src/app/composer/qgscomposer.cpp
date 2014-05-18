@@ -57,6 +57,7 @@
 #include "qgsgeometry.h"
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsprevieweffect.h"
 #include "ui_qgssvgexportoptions.h"
 
 #include <QCloseEvent>
@@ -260,10 +261,49 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionSelectNextBelow );
   editMenu->addAction( mActionSelectNextAbove );
 
+  mActionPreviewModeOff = new QAction( tr( "Normal" ), this );
+  mActionPreviewModeOff->setStatusTip( tr( "Normal" ) );
+  mActionPreviewModeOff->setCheckable( true );
+  mActionPreviewModeOff->setChecked( true );
+  connect( mActionPreviewModeOff, SIGNAL( triggered() ), this, SLOT( disablePreviewMode() ) );
+  mActionPreviewModeGrayscale = new QAction( tr( "Simulate photocopy (grayscale)" ), this );
+  mActionPreviewModeGrayscale->setStatusTip( tr( "Simulate photocopy (grayscale)" ) );
+  mActionPreviewModeGrayscale->setCheckable( true );
+  connect( mActionPreviewModeGrayscale, SIGNAL( triggered() ), this, SLOT( activateGrayscalePreview() ) );
+  mActionPreviewModeMono = new QAction( tr( "Simulate fax (mono)" ), this );
+  mActionPreviewModeMono->setStatusTip( tr( "Simulate fax (mono)" ) );
+  mActionPreviewModeMono->setCheckable( true );
+  connect( mActionPreviewModeMono, SIGNAL( triggered() ), this, SLOT( activateMonoPreview() ) );
+  mActionPreviewProtanope = new QAction( tr( "Simulate color blindness (Protanope)" ), this );
+  mActionPreviewProtanope->setStatusTip( tr( "Simulate color blindness (Protanope)" ) );
+  mActionPreviewProtanope->setCheckable( true );
+  connect( mActionPreviewProtanope, SIGNAL( triggered() ), this, SLOT( activateProtanopePreview() ) );
+  mActionPreviewDeuteranope = new QAction( tr( "Simulate color blindness (Deuteranope)" ), this );
+  mActionPreviewDeuteranope->setStatusTip( tr( "Simulate color blindness (Deuteranope)" ) );
+  mActionPreviewDeuteranope->setCheckable( true );
+  connect( mActionPreviewDeuteranope, SIGNAL( triggered() ), this, SLOT( activateDeuteranopePreview() ) );
+
+  QActionGroup* mPreviewGroup = new QActionGroup( this );
+  mPreviewGroup->setExclusive( true );
+  mActionPreviewModeOff->setActionGroup( mPreviewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
+  mActionPreviewModeMono->setActionGroup( mPreviewGroup );
+  mActionPreviewProtanope->setActionGroup( mPreviewGroup );
+  mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
+
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   //Ctrl+= should also trigger zoom in
   QShortcut* ctrlEquals = new QShortcut( QKeySequence( "Ctrl+=" ), this );
   connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
+
+  QMenu *previewMenu = viewMenu->addMenu( "Preview" );
+  previewMenu->addAction( mActionPreviewModeOff );
+  previewMenu->addAction( mActionPreviewModeGrayscale );
+  previewMenu->addAction( mActionPreviewModeMono );
+  previewMenu->addAction( mActionPreviewProtanope );
+  previewMenu->addAction( mActionPreviewDeuteranope );
+
+  viewMenu->addSeparator();
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
   viewMenu->addAction( mActionZoomAll );
@@ -1099,6 +1139,60 @@ void QgsComposer::on_mActionAtlasSettings_triggered()
   }
 
   mAtlasDock->raise();
+}
+
+void QgsComposer::disablePreviewMode()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewModeEnabled( false );
+}
+
+void QgsComposer::activateGrayscalePreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
+  mView->setPreviewModeEnabled( true );
+}
+
+void QgsComposer::activateMonoPreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
+  mView->setPreviewModeEnabled( true );
+}
+
+void QgsComposer::activateProtanopePreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+  mView->setPreviewModeEnabled( true );
+}
+
+void QgsComposer::activateDeuteranopePreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+  mView->setPreviewModeEnabled( true );
 }
 
 void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
