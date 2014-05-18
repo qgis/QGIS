@@ -240,7 +240,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QString metadata() = 0;
 
     /** \brief Identify raster value(s) found on the point position. The context
-     *         parameters theExtent, theWidth and theHeigh are important to identify
+     *         parameters theExtent, theWidth and theHeight are important to identify
      *         on the same zoom level as a displayed map and to do effective
      *         caching (WCS). If context params are not specified the highest
      *         resolution is used. capabilities() may be used to test if format
@@ -295,11 +295,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**Returns the dpi of the output device.
       @note: this method was added in version 1.2*/
-    int dpi() const {return mDpi;}
+    int dpi() const { return mDpi; }
 
     /**Sets the output device resolution.
       @note: this method was added in version 1.2*/
-    void setDpi( int dpi ) {mDpi = dpi;}
+    void setDpi( int dpi ) { mDpi = dpi; }
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const { return mTimestamp; }
@@ -334,10 +334,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  @param noDataValue no data value
      */
     virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ); Q_UNUSED( noDataValue ); return false; }
-
-    /** Returns the formats supported by create() */
-    // TODO: this should be static and call C functions in provider library
-    //static QStringList createFormats();
 
     /** Remove dataset*/
     virtual bool remove() { return false; }

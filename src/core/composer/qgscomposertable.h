@@ -162,7 +162,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * and the string is the text to use for the column's header
      * @note added in 2.3
      * @note not available in python bindings
-    */
+     */
     virtual QMap<int, QString> headerLabels() const;
 
     //TODO - make this more generic for next API break, eg rename as getRowValues, use QStringList rather than
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * @returns true if attribute text was successfully retrieved.
      * @param attributeMaps QList of QgsAttributeMap to store retrieved row data in
      * @note not available in python bindings
-    */
+     */
     virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
 
     /**Returns a pointer to the list of QgsComposerTableColumns shown in the table
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * @param attributeMaps list of attribute values for each row shown in the table
      * @note not available in python bindings
      * @see adaptItemFrame
-    */
+     */
     virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const;
 
     /**Adapts the size of the item frame to match the table's content.
@@ -241,14 +241,14 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * @param attributeMaps list of attribute values for each row shown in the table
      * @note not available in python bindings
      * @see calculateMaxColumnWidths
-    */
+     */
     void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps );
 
     /**Draws the horizontal grid lines for the table.
      * @param p destination painter for grid lines
      * @param nAttributes number of attribute rows shown in table
      * @see drawVerticalGridLines
-    */
+     */
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
 
     /**Draws the vertical grid lines for the table.
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * @note not available in python bindings
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
-    */
+     */
     void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
 
     /**Writes common table properties to xml for storage.

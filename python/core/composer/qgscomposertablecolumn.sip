@@ -7,7 +7,7 @@ class QgsComposerTableColumn: QObject
 #include <qgscomposertablecolumn.h>
 %End
   public:
-  
+
     QgsComposerTableColumn();
     virtual ~QgsComposerTableColumn();
 

@@ -5,7 +5,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
 #include <qgscomposerattributetablemodel.h>
 %End
 
-   public:
+  public:
 
     /*! Controls whether a row/column is shifted up or down
      */
@@ -17,6 +17,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
 
     /**Constructor for QgsComposerAttributeTableColumnModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
+     * @param parent optional parent
      */
     QgsComposerAttributeTableColumnModel( QgsComposerAttributeTable *composerTable, QObject *parent = 0 );
     virtual ~QgsComposerAttributeTableColumnModel();
@@ -30,6 +31,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
     QModelIndex index( int row, int column, const QModelIndex &parent ) const;
+    QModelIndex parent( const QModelIndex &child ) const;
 
     /**Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
@@ -87,7 +89,7 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
      * @see setColumnAsSorted
      */
     bool moveColumnInSortRank( QgsComposerTableColumn * column, ShiftDirection direction );
-    
+
 };
 
 /**Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
@@ -98,7 +100,8 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
 %End
 
   public:
-   /*! Controls whether the proxy model shows sorted or unsorted columns
+
+    /*! Controls whether the proxy model shows sorted or unsorted columns
      */
     enum ColumnFilterType
     {
@@ -109,6 +112,7 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
     /**Constructor for QgsComposerTableSortColumnsProxyModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
+     * @param parent optional parent
      */
     QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, ColumnFilterType filterType, QObject *parent = 0 );
 
@@ -142,7 +146,7 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
     /**Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
      * @returns QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
-     * @param index a QModelIndex
+     * @param sourceIndex a QModelIndex
      * @note added in 2.3
      * @see columnFromRow
      * @see columnFromIndex
@@ -150,7 +154,6 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
     QgsComposerTableColumn* columnFromSourceIndex( const QModelIndex& sourceIndex ) const;
 
   protected:
-  
     bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
 
 };

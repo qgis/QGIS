@@ -90,6 +90,7 @@
 %Include qgsoptionsdialogbase.sip
 %Include qgssvgannotationitem.sip
 %Include qgsextentgroupbox.sip
+%Include qgsprevieweffect.sip
 
 %Include attributetable/qgsattributetabledelegate.sip
 %Include attributetable/qgsattributetablefiltermodel.sip

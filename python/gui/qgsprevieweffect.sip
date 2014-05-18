@@ -2,10 +2,11 @@
  * A graphics effect which can be applied to a widget to simulate various printing and
  * color blindness modes.
  */
+
 class QgsPreviewEffect : QGraphicsEffect
 {
 %TypeHeaderCode
-#include "qgsgraphicseffect.h"
+#include "qgsprevieweffect.h"
 %End
 
   public:
@@ -26,7 +27,6 @@ class QgsPreviewEffect : QGraphicsEffect
      * @see mode
     */
     void setMode( PreviewMode mode );
-
     /**Returns the mode used for the preview effect.
      * @returns PreviewMode currently used by the effect
      * @note added in 2.3
