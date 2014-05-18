@@ -89,6 +89,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   mOnlyUpdateSelectedCheckBox->setChecked( hasselection );
   mOnlyUpdateSelectedCheckBox->setEnabled( hasselection );
   mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeaturesIds().size() ) );
+
+  builder->loadRecent( "fieldcalc" );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
@@ -97,6 +99,7 @@ QgsFieldCalculator::~QgsFieldCalculator()
 
 void QgsFieldCalculator::accept()
 {
+  builder->saveToRecent( "fieldcalc" );
 
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
