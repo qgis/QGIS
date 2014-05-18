@@ -2462,9 +2462,9 @@ void QgisApp::addLayerDefinition()
   if ( path.isEmpty() )
     return;
 
-  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinitionFile( path );
-  QgsMapLayerRegistry::instance()->addMapLayers( layers );
+  openLayerDefinition( path );
 }
+
 
 /**
   This method prompts the user for a list of vector file names  with a dialog.
@@ -3806,6 +3806,12 @@ void QgisApp::dxfExport()
   }
 }
 
+void QgisApp::openLayerDefinition( const QString & path )
+{
+  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinitionFile( path );
+  QgsMapLayerRegistry::instance()->addMapLayers( layers );
+}
+
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
 void QgisApp::openProject( QAction *action )
@@ -3913,6 +3919,10 @@ void QgisApp::openFile( const QString & fileName )
   {
     QgsDebugMsg( "Opening project " + fileName );
     openProject( fileName );
+  }
+  else if ( fi.completeSuffix() == "qlr" )
+  {
+    openLayerDefinition( fileName );
   }
   else
   {

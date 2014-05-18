@@ -164,6 +164,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       Used to process a commandline argument, FileOpen or Drop event.
       */
     void openProject( const QString & fileName );
+
+    void openLayerDefinition( const QString & filename );
     /** opens a qgis project file
       @returns false if unable to open the project
       */
