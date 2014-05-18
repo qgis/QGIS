@@ -13,4 +13,4 @@ Returns a string representation of a color based on its red, green, and blue com
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     color_rgb(255,127,0) &rarr; '#ff7f00'</p>
+     color_rgb(255,127,0) &rarr; '255,127,0'</p>

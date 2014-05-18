@@ -12,4 +12,4 @@ Returns a string representation of a color based on its hue, saturation, and val
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     color_hsv(40,100,100) &rarr; '#ffaa00'</p>
+     color_hsv(40,100,100) &rarr; '255,170,0'</p>
