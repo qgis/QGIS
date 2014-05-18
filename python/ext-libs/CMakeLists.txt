@@ -8,21 +8,30 @@ ENDIF (WITH_PYSPATIALITE)
 
 MACRO(EXT_PYLIB lib)
   STRING(TOUPPER ${lib} ulib)
-  SET (WITH_INTERNAL_${ulib} TRUE CACHE BOOL "Determines whether ${ulib} should be included")
+  SET (WITH_INTERNAL_${ulib} TRUE CACHE BOOL "Determines whether python ${lib} should be included")
   IF(WITH_INTERNAL_${ulib})
     INSTALL(DIRECTORY ${lib} DESTINATION "${QGIS_PYTHON_DIR}")
 
-    ADD_CUSTOM_TARGET(py${lib} ALL)
-    FILE(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${lib}/*)
-    FOREACH(file ${files})
+    IF(WITH_STAGED_PLUGINS)
+      ADD_CUSTOM_TARGET(py${lib} ALL)
+
+      FILE(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${lib}/*)
       ADD_CUSTOM_COMMAND(TARGET py${lib}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${file} "${PYTHON_OUTPUT_DIRECTORY}/${file}"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${lib} "${PYTHON_OUTPUT_DIRECTORY}/${lib}"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Copy ${file} => ${PYTHON_OUTPUT_DIRECTORY}/${file}"
-        DEPENDS ${file}
+        DEPENDS ${files}
       )
-    ENDFOREACH(file)
+
+      IF(WITH_PY_COMPILE)
+        ADD_CUSTOM_TARGET(pycompile-py${lib} ALL
+          COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/${lib}"
+          WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+          COMMENT "Byte-compiling staged extension ${lib}..."
+          DEPENDS py${lib}
+        )
+      ENDIF(WITH_PY_COMPILE)
+    ENDIF(WITH_STAGED_PLUGINS)
   ENDIF(WITH_INTERNAL_${ulib})
 ENDMACRO(EXT_PYLIB lib)
 
@@ -30,13 +39,28 @@ FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz)
   EXT_PYLIB(${pkg})
 ENDFOREACH(pkg)
 
+SET (WITH_INTERNAL_SIX TRUE CACHE BOOL "Determines whether python six should be included")
 IF(WITH_INTERNAL_SIX)
   INSTALL(FILES six.py DESTINATION "${QGIS_PYTHON_DIR}")
 
-  ADD_CUSTOM_COMMAND(TARGET pyutils
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy six.py "${PYTHON_OUTPUT_DIRECTORY}"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS six.py
-  )
+  IF(WITH_STAGED_PLUGINS)
+    ADD_CUSTOM_TARGET(pysix ALL)
+
+    ADD_CUSTOM_COMMAND(TARGET pysix
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy six.py "${PYTHON_OUTPUT_DIRECTORY}"
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      DEPENDS six.py
+    )
+
+    IF(WITH_PY_COMPILE)
+      ADD_CUSTOM_TARGET(pycompile-pysix ALL
+        COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/${lib}"
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+        COMMENT "Byte-compiling staged extension ${lib}..."
+        DEPENDS pysix
+      )
+    ENDIF(WITH_PY_COMPILE)
+  ENDIF(WITH_STAGED_PLUGINS)
 ENDIF(WITH_INTERNAL_SIX)
+
