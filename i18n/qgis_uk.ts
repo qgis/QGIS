@@ -4070,17 +4070,17 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="66"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="69"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="82"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="85"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Перезапустити</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation>Встановити  проекцію</translation>
+        <translation>Призначити проекцію</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
@@ -4088,31 +4088,31 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation>Виберіть куди зберігати VRT</translation>
+        <translation>Виберіть куди зберегти VRT</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation>Вкажіть вхідний файл для створення ізоліній</translation>
+        <translation>Виберіть вхідний файл для створення ізоліній</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation>Виберіть файл для створення регулярної сітки</translation>
+        <translation type="unfinished">Виберіть вхідний файл для створення регулярної сітки</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation>Вкажіть файл для збереження результатів</translation>
+        <translation>Виберіть растровий файл для збереження результатів</translation>
     </message>
     <message>
         <source>Select the mask file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файл маски</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Закінчено</translation>
+        <translation>Закінчено</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Обробку завершено.</translation>
+        <translation>Обробку завершено.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
@@ -4120,53 +4120,56 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation>Виберіть місце збереження вихідних ізоліній</translation>
+        <translation>Виберіть куди зберегти вихідні Ізолінії</translation>
     </message>
     <message>
         <source>Error retrieving the extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Помилка отримння охоплення</translation>
     </message>
     <message>
         <source>GDAL was unable to retrieve the extent from any file. 
 The &quot;Use intersected extent&quot; option will be unchecked.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GDAL не вдалося отримати охоплення з жодного файлу.
+Варіант &quot;Використовувати охоплення перетину&quot; буде вимкнено.</translation>
     </message>
     <message>
         <source>Empty extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Порожнє охоплення</translation>
     </message>
     <message>
         <source>The computed extent is empty. 
 Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Розраховане охоплення порожнє.
+Вимкніть &quot;Використовувати охоплення перетину&quot; для отримання змістовного результату.
+</translation>
     </message>
     <message>
         <source>{0} not created.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">{0} не створений.</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation>Виберіть вхідний каталог з файлами для конвертації</translation>
+        <translation>Виберіть вхідний каталог з файлами для Перетворення</translation>
     </message>
     <message>
         <source>Output size or resolution required</source>
-        <translation type="unfinished"></translation>
+        <translation>Потрібний вихідний розмір або роздільна здатність</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний файл не існує. Щоб його створити, ви повинні визначити вихідний файл або роздільну здатність.</translation>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation>Конвертувати - srcwin</translation>
+        <translation>Перетворити - srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation>Координати зображення (пікселів) повинні бути цілими числами.</translation>
+        <translation>Координати зображення (пікселі) повинні бути цілими числами.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
-        <translation>Конвертувати - prjwin</translation>
+        <translation>Перетворити - prjwin</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
@@ -4174,19 +4177,19 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Select the files to analyse</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть фали для аналізу</translation>
     </message>
     <message>
         <source>[select levels]</source>
-        <translation type="unfinished"></translation>
+        <translation>[виберіть рівні]</translation>
     </message>
     <message>
         <source>Select the input directory with files to Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть вхідний каталог з файлами для Об&apos;єднання</translation>
     </message>
     <message>
         <source>Select the input directory with files for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть вхідний каталог з файлами для перетворення</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -4198,63 +4201,64 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Select the input directory with files for VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть вхідний каталог з файлами для VRT</translation>
     </message>
     <message>
         <source>Select the input directory with raster files</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть вхідний каталог з растровими файлами</translation>
     </message>
     <message>
         <source>Select where to save the TileIndex output</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Виберіть куди зберегти вихідний TileIndex</translatorcomment>
+        <translation>Виберіть куди зберегти вихідний Індекс мозаїки</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
-        <translation>Вкажіть вхідний каталог з файлами</translation>
+        <translation>Виберіть вхідний каталог з файлами</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation>Виберіть файл для аналіза</translation>
+        <translation>Виберіть файл для аналізу</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation>Вкажіть вхідний файл для Аналіза близькості</translation>
+        <translation>Вкажіть вхідний файл для Аналізу близькості</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation>Виберіть файли для об&apos;єднання</translation>
+        <translation>Виберіть файли для Об&apos;єднання</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation>Виберіть куди зберегти результат об&apos;єднання</translation>
+        <translation>Виберіть куди зберегти результат Об&apos;єднання</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation>Виберіть вхідний файл для скидання в чорне</translation>
+        <translation type="unfinished">Виберіть вхідний файл для Наближення до чорного</translation>
     </message>
     <message>
         <source>Select the file for DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть фал для DEM</translation>
     </message>
     <message>
         <source>Select the color configuration file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файл налаштування кольору</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation>Виберіть файл для полігонізації</translation>
+        <translation type="unfinished">Виберіть вхідний файл для Перетворення в полігони</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation>Вкажіть каталог для результатів полігонізації</translation>
+        <translation type="unfinished">Виберіть куди зберігати результат Перетворення в полігони</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation>Цей растр вже завантажено у робочу область</translation>
+        <translation>Цей растр вже наявний в області карти</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation>Виберіть файл для растеризації</translation>
+        <translation>Виберіть файл для Растеризації</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
