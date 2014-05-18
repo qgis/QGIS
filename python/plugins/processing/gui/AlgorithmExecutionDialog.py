@@ -219,8 +219,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def accept(self):
         checkCRS = ProcessingConfig.getSetting(
                 ProcessingConfig.WARN_UNMATCHING_CRS)
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
@@ -234,7 +232,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     return
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.critical(self, 'Unable to execute algorithm', msg)
+                QMessageBox.warning(self, 'Unable to execute algorithm', msg)
                 return
             self.runButton.setEnabled(False)
             self.buttonBox.button(
