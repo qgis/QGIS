@@ -209,12 +209,12 @@ class QgsMapLayer : QObject
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    QDomDocument asLayerDefinition( );
+    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers );
 
     /** Creates a new layer from a layer defininition document
     */
-    static QgsMapLayer* fromLayerDefinition( QDomDocument& document );
-    static QgsMapLayer* fromLayerDefinitionFile( const QString qlrfile );
+    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
+    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */

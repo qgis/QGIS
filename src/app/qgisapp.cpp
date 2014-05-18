@@ -2462,9 +2462,8 @@ void QgisApp::addLayerDefinition()
   if ( path.isEmpty() )
     return;
 
-  QgsMapLayer* layer = QgsMapLayer::fromLayerDefinitionFile( path );
-  if ( layer && layer->isValid() )
-    QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinitionFile( path );
+  QgsMapLayerRegistry::instance()->addMapLayers( layers );
 }
 
 /**
@@ -4596,8 +4595,9 @@ void QgisApp::saveAsFile()
 
 void QgisApp::saveAsLayerDefinition()
 {
-  QgsMapLayer* layer = activeLayer();
-  if ( !layer )
+  QList<QgsMapLayer*> layers = mMapLegend->selectedLayers();
+
+  if ( layers.isEmpty() )
     return;
 
   QString path = QFileDialog::getSaveFileName( this, "Save as Layer Definition File", QDir::home().path(), "*.qlr" );
@@ -4605,7 +4605,7 @@ void QgisApp::saveAsLayerDefinition()
   if ( path.isEmpty() )
     return;
 
-  QDomDocument doc = layer->asLayerDefinition();
+  QDomDocument doc = QgsMapLayer::asLayerDefinition( layers );
   QFile file( path );
   if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
   {
