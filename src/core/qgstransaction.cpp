@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgstransaction.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgis.h"
 #include <QLibrary>
@@ -38,7 +40,20 @@ QgsTransaction::~QgsTransaction()
 
 bool QgsTransaction::addLayer( const QString& layerId )
 {
-  if ( !QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  if ( !layer )
+  {
+    return false;
+  }
+
+  //test if provider supports transactions
+  if ( !layer->dataProvider() || !layer->dataProvider()->capabilities() & QgsVectorDataProvider::TransactionSupport )
+  {
+    return false;
+  }
+
+  //connection string not compatible
+  if ( QgsDataSourceURI( layer->source() ).connectionInfo() != mConnString )
   {
     return false;
   }

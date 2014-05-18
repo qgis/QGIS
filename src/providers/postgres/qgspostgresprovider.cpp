@@ -1003,6 +1003,8 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
   // supports geometry simplification on provider side
   mEnabledCapabilities |= ( QgsVectorDataProvider::SimplifyGeometries | QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
 
+  //supports transactions
+  mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
   return true;
 }
 
