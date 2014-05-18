@@ -87,7 +87,6 @@ EXTS = [
     '.dgn',
     '.csv',
     '.bna',
-    '.gpx',
     '.000',
     '.kml',
     '.gpx',
