@@ -1581,7 +1581,7 @@ pola</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS nie umożliwia jeszcze równoczesnego (wielowątkowego) dostępu do danych. Upewnij się, że nie jest otwarta tabel atrybutów. Kontynuować?</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -7404,12 +7404,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2163"/>
         <source>Add from Layer Definition File...</source>
-        <translation type="unfinished">Wczytaj definicję warstwy ...</translation>
+        <translation>Wczytaj definicję warstwy ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2168"/>
         <source>Save As Layer Definition File...</source>
-        <translation type="unfinished">Zapisz definicję warstwy ...</translation>
+        <translation>Zapisz definicję warstwy ...</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -12534,12 +12534,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5330"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5434"/>
         <source>Error looking for style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono stylu. Zapisano w logu</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5221"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się zapisanie stylu warstwy. Nie można utworzyć tabeli w bazie danych.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5283"/>
@@ -12549,18 +12549,18 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5388"/>
         <source>Error executing loading style. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Błąd zastosowania wczytanego stylu. Zapisano w logu</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5448"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5449"/>
         <source>No styles available on DB</source>
-        <translation type="unfinished"></translation>
+        <translation>Braki stylów w bazie</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5470"/>
         <source>Error loading styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wczytywania stylu. Zapisano w logu</translation>
     </message>
     <message>
         <source>Unable to activate FOREIGN_KEY constraints</source>
@@ -13053,12 +13053,12 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="164"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished">Błąd upraszczania: %1</translation>
+        <translation>Błąd upraszczania: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="121"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished">pusty dokument &quot;capabilities&quot;</translation>
+        <translation type="unfinished">pusty dokument Capabilities</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
@@ -13074,7 +13074,7 @@ Response was:
 
 %4</source>
         <translation type="unfinished">Nie można otrzymać WMS capabilities: %1 w linii %2 kolumnie %3
-Może to być spowodowane niepoprawnym adresem URL Serwera WMS.
+Może to być spowodowane niepoprawnym adresem URL serwera WMS.
 Odpowiedź:
 
 %4</translation>
@@ -13087,7 +13087,7 @@ Tag:%3
 Response was:
 %4</source>
         <translation type="unfinished">Nie można otrzymać WMS capabilities w oczekiwanym formacie (DTD): nie znaleziono %1 lub %2.
-Może to być spowodowane niepoprawnym adresem URL Serwera WMS.
+Może to być spowodowane niepoprawnym adresem URL serwera WMS.
 Znacznik:%3
 Odpowiedź:
 %4</translation>
@@ -15097,7 +15097,7 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9121"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ten projekt został zapisany przez starszą wersję QGIS. Przy zapisie, QGIS zaktualizuje format do wersji najnowszej, co może uniemożliwić odczyt przez wcześniejsze wersje.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9376"/>
@@ -15677,12 +15677,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="425"/>
         <source>defaulting to project CRS %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>domyślnie do układu współrzędnych projektu %1 - %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="432"/>
         <source>defaulting to CRS %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>domyślnie do układu współrzędnych %1 - %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="598"/>
@@ -15702,12 +15702,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3686"/>
         <source>Insufficient permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak uprawnień</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3687"/>
         <source>The project file is not writable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Niemożliwy zapis do pliku projektu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3790"/>
@@ -16057,17 +16057,17 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9395"/>
         <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekroczono czas dla zapytania &apos;%1&apos;. Pobrane dane są prawdopodobnie niekompletne.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9396"/>
         <source>Network request timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekroczono czas zapytania</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9396"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekroczono czas dla zapytania sieciowego. Pobrane dane są prawdopodobnie niekompletne.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="572"/>
