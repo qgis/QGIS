@@ -946,7 +946,12 @@ QDomElement QgsServerProjectParser::firstComposerLegendElement() const
   {
     return QDomElement();
   }
-  return composerElem.firstChildElement( "ComposerLegend" );
+  QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    return QDomElement();
+  }
+  return compositionElem.firstChildElement( "ComposerLegend" );
 }
 
 QList<QDomElement> QgsServerProjectParser::publishedComposerElements() const

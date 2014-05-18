@@ -257,37 +257,44 @@ QStringList QgsWMSProjectParser::wfsLayerNames() const
 
 double QgsWMSProjectParser::legendBoxSpace() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "boxSpace" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 2.0 : legendElem.attribute( "boxSpace" ).toDouble();
 }
 
 double QgsWMSProjectParser::legendLayerSpace() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "layerSpace" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 3.0 : legendElem.attribute( "layerSpace" ).toDouble();
 }
 
 double QgsWMSProjectParser::legendLayerTitleSpace() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "layerTitleSpace" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 3.0 : legendElem.attribute( "layerTitleSpace" ).toDouble();
 }
 
 double QgsWMSProjectParser::legendSymbolSpace() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "symbolSpace" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 2.0 : legendElem.attribute( "symbolSpace" ).toDouble();
 }
 
 double QgsWMSProjectParser::legendIconLabelSpace() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "iconLabelSpace" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 2.0 : legendElem.attribute( "iconLabelSpace" ).toDouble();
 }
 
 double QgsWMSProjectParser::legendSymbolWidth() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "symbolWidth" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 7.0 : legendElem.attribute( "symbolWidth" ).toDouble();
 }
 
 double QgsWMSProjectParser::legendSymbolHeight() const
 {
-  return mProjectParser.firstComposerLegendElement().attribute( "symbolHeight" ).toDouble();
+  QDomElement legendElem = mProjectParser.firstComposerLegendElement();
+  return legendElem.isNull() ? 4.0 : legendElem.attribute( "symbolHeight" ).toDouble();
 }
 
 const QFont& QgsWMSProjectParser::legendLayerFont() const
