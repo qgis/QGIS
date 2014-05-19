@@ -353,7 +353,7 @@ void QgsMssqlProvider::loadFields()
   // get field spec
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
-  if ( !query.exec( QString( "exec sp_columns N'%1', NULL, NULL, NULL, NULL" ).arg( mTableName ) ) )
+  if ( !query.exec( QString( "exec sp_columns @table_name = N'%1', @table_owner = '%2'" ).arg( mTableName, mSchemaName ) ) )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
