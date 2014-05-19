@@ -176,6 +176,10 @@ ENDIF(WITH_QSCIAPI)
 SET(PY_FILES
   __init__.py
   utils.py
+  core.py
+  gui.py
+  analysis.py
+  networkanalysis.py
 )
 IF(WITH_CUSTOM_WIDGETS)
 	INSTALL(FILES custom_widgets/qgis_customwidgets.py DESTINATION "${PYUIC_WIDGET_PLUGIN_DIRECTORY}")
