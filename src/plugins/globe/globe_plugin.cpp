@@ -128,6 +128,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mTileSource( 0 )
     , mElevationManager( 0 )
     , mObjectPlacer( 0 )
+    , mGlobeInterface( this )
 {
   mIsGlobeRunning = false;
   //needed to be "seen" by other plugins by doing
@@ -161,6 +162,11 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
 //destructor
 GlobePlugin::~GlobePlugin()
 {
+}
+
+QgsPluginInterface* GlobePlugin::pluginInterface()
+{
+  return &mGlobeInterface;
 }
 
 struct PanControlHandler : public NavigationControlHandler

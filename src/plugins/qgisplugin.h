@@ -38,6 +38,7 @@
 #include <QString>
 
 class QgisInterface;
+class QgsPluginInterface;
 
 //#include "qgisplugingui.h"
 
@@ -149,6 +150,16 @@ class QgisPlugin
 
     //! Unload the plugin and cleanup the GUI
     virtual void unload() = 0;
+
+    /**
+     * This method should return a pointer to a valid QgsPluginInterface
+     * if this plugin offers python bindings.
+     * Defaults to return NULL
+     *
+     * @return pointer to an object containing python bindings
+     */
+
+    virtual QgsPluginInterface* pluginInterface() { return NULL; }
 
   private:
 

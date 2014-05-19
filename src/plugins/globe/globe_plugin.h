@@ -19,11 +19,14 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include "qgsconfig.h"
-#include "qgisplugin.h"
-#include "qgsosgearthtilesource.h"
 #include "globe_plugin_dialog.h"
+#include "qgisplugin.h"
+#include "qgsconfig.h"
+#include "qgsglobeinterface.h"
+#include "qgsosgearthtilesource.h"
+
 #include <QObject>
+
 #include <osgViewer/Viewer>
 #include <osgEarth/MapNode>
 #include <osgEarth/ImageLayer>
@@ -65,6 +68,10 @@ class GlobePlugin : public QObject, public QgisPlugin
   public:
     GlobePlugin( QgisInterface* theQgisInterface );
     virtual ~GlobePlugin();
+
+    public:
+    //! offer an interface for python plugins
+    virtual QgsPluginInterface* pluginInterface();
 
   public slots:
     //! init the gui
@@ -171,6 +178,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarth::ElevationQuery* mElevationManager;
     //! Object placer
     osgEarth::Util::ObjectLocator* mObjectPlacer;
+    //! The public interface for this plugin
+    QgsGlobeInterface mGlobeInterface;
 #else
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
