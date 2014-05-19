@@ -27,12 +27,12 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  QLabel* minLbl = new QLabel( tr( "Minimimum\n(exclusive)" ), this );
+  QLabel* minLbl = new QLabel( tr( "Minimum\n(exclusive)" ), this );
   minLbl->setWordWrap( true );
   minLbl->setAlignment( Qt::AlignTop );
   minLbl->setToolTip( tr( "Minimum scale, i.e. maximum scale denominator. "
                           "This limit is exclusive, that means the layer will not be displayed on this scale." ) );
-  QLabel* maxLbl = new QLabel( tr( "Maximimum\n(inclusive)" ), this );
+  QLabel* maxLbl = new QLabel( tr( "Maximum\n(inclusive)" ), this );
   maxLbl->setWordWrap( true );
   maxLbl->setAlignment( Qt::AlignTop );
   maxLbl->setToolTip( tr( "Maximum scale, i.e. minimum scale denominator. "
