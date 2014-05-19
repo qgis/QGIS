@@ -41,6 +41,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
+    Q_FLAGS( QgsFieldProxyModel::Filters )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:

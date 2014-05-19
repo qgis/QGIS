@@ -30,6 +30,11 @@
 class GUI_EXPORT QgsColorButton: public QPushButton
 {
     Q_OBJECT
+    Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
+    Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
+    Q_PROPERTY( QColor color READ color WRITE setColor )
+    Q_FLAGS( QColorDialog::ColorDialogOptions )
+    Q_PROPERTY( QColorDialog::ColorDialogOptions colorDialogOptions READ colorDialogOptions WRITE setColorDialogOptions )
 
   public:
     /**

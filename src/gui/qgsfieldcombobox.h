@@ -33,6 +33,7 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
 {
     Q_OBJECT
+    Q_FLAGS( QgsFieldProxyModel::Filters )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:

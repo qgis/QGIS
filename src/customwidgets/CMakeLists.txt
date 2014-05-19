@@ -9,6 +9,8 @@ ADD_DEFINITIONS(-DQT_SHARED)
 SET (QGIS_CUSTOMWIDGETS_SRCS
    qgiscustomwidgets.cpp
    qgscollapsiblegroupboxplugin.cpp
+   qgscolorbuttonplugin.cpp
+   qgsdatadefinedbuttonplugin.cpp
    qgsfieldcomboboxplugin.cpp
    qgsfieldexpressionwidgetplugin.cpp
    qgsmaplayercomboboxplugin.cpp
@@ -18,6 +20,8 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
    qgiscustomwidgets.h
    qgscollapsiblegroupboxplugin.h
+   qgscolorbuttonplugin.h
+   qgsdatadefinedbuttonplugin.h
    qgsfieldcomboboxplugin.h
    qgsfieldexpressionwidgetplugin.h
    qgsmaplayercomboboxplugin.h
@@ -33,6 +37,8 @@ ENDIF(UNIX)
 SET(QGIS_CUSTOMWIDGETS_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
+  qgscolorbuttonplugin.h
+  qgsdatadefinedbuttonplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsmaplayercomboboxplugin.h
