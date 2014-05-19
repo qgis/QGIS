@@ -102,12 +102,14 @@ QString QgsDataDefinedSymbolDialog::fileNameHelpText()
 
 QString QgsDataDefinedSymbolDialog::horizontalAnchorHelpText()
 {
-  return tr( "'left'|'center'|'right'" );
+  // Don't translate, localized keywords are not supported.
+  return "'left'|'center'|'right'";
 }
 
 QString QgsDataDefinedSymbolDialog::verticalAnchorHelpText()
 {
-  return tr( "'top'|'center'|'bottom'" );
+  // Don't translate, localized keywords are not supported.
+  return "'top'|'center'|'bottom'";
 }
 
 QString QgsDataDefinedSymbolDialog::gradientTypeHelpText()

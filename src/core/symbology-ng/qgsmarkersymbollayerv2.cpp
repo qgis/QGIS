@@ -1124,6 +1124,7 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
 
 void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  QgsMarkerSymbolLayerV2::startRender( context ); // get anchor point expressions
   mOrigSize = mSize; // save in case the size would be data defined
   Q_UNUSED( context );
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );

@@ -292,6 +292,7 @@ QString QgsEllipseSymbolLayerV2::layerType() const
 
 void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  QgsMarkerSymbolLayerV2::startRender( context ); // get anchor point expressions
   if ( !context.feature() || !hasDataDefinedProperty() )
   {
     preparePath( mSymbolName, context );
