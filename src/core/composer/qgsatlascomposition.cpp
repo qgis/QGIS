@@ -479,7 +479,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   }
   else if ( map->atlasScalingMode() == QgsComposerMap::Predefined )
   {
-    // choose one of the predefined scales from the project's properties
+    // choose one of the predefined scales
     QgsScaleCalculator calc;
     calc.setMapUnits( composition()->mapSettings().mapUnits() );
     calc.setDpi( 25.4 );
@@ -730,6 +730,13 @@ void QgsAtlasComposition::evalFeatureFilename()
 
     mCurrentFilename = filenameRes.toString();
   }
+}
+
+void QgsAtlasComposition::setPredefinedScales( const QVector<double>& scales )
+{
+  mPredefinedScales = scales;
+  // make sure the list is sorted
+  qSort( mPredefinedScales.begin(), mPredefinedScales.end() );
 }
 
 Q_NOWARN_DEPRECATED_PUSH

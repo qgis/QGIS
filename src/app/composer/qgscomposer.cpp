@@ -3483,7 +3483,6 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
   {
     pScales.push_back( scaleIt->split(':')[1].toDouble() );
   }
-  qSort( pScales.begin(), pScales.end() );
   atlasMap.setPredefinedScales( pScales );
 }
 

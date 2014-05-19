@@ -104,11 +104,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Top
     };
 
+    /** Scaling modes used for the serial rendering (atlas)
+     */
     enum AtlasScalingMode
     {
-      Fixed,
-      Predefined,
-      Auto
+      Fixed,      /*< The current scale of the map is used for each feature of the atlas */
+      Predefined, /*< A scale is chosen from the predefined scales
+                    @see QgsAtlasComposition::setPredefinedScales.
+                    The smallest scale from the list of scales where the atlas feature
+                    is fully visible is chosen.
+                  */
+      Auto        /*< The extent is adjusted so that each feature is fully visible.
+                    A margin is applied around the center @see setAtlasMargin */
     };
 
     /** \brief Draw to paint device
@@ -438,15 +445,21 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
 
     /** Returns true if the map uses a fixed scale when in atlas mode
-     @deprecated since 2.4 Use atlasScalingMode() instead */
+        @deprecated since 2.4 Use atlasScalingMode() instead
+    */
     Q_DECL_DEPRECATED bool atlasFixedScale() const;
     /** Set to true if the map should use a fixed scale when in atlas mode
-     @deprecated since 2.4 Use setAtlasScalingMode() instead */
+        @deprecated since 2.4 Use setAtlasScalingMode() instead
+    */
     Q_DECL_DEPRECATED void setAtlasFixedScale( bool fixed );
 
-    /** Returns the current atlas scaling mode */
+    /** Returns the current atlas scaling mode
+        @returns the current scaling mode
+    */
     AtlasScalingMode atlasScalingMode() const { return mAtlasScalingMode; }
-    /** Sets the current atlas scaling mode */
+    /** Sets the current atlas scaling mode
+        @param mode atlas scaling mode to set
+    */
     void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
 
     /** Returns the margin size (percentage) used when the map is in atlas mode */

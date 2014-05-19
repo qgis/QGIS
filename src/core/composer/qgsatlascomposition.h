@@ -160,10 +160,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
     Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
-    /** Returns the current list of predefined scales */
+    /** Returns the current list of predefined scales
+        @returns a vector of doubles representing predefined scales
+    */
     const QVector<double>& predefinedScales() const { return mPredefinedScales; }
-    /** Sets the list of predefined scales (the list must be sorted) */
-    void setPredefinedScales( const QVector<double>& scales ) { mPredefinedScales = scales; }
+    /** Sets the predefined scales
+        @param scales a vector of doubles representing predefined scales
+     */
+    void setPredefinedScales( const QVector<double>& scales );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
