@@ -90,7 +90,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         if dlg.selectedoptions is not None:
             selected = dlg.selectedoptions
             if len(selected) == 1:
-                self.text.setText(layers[selected[0]])
+                self.text.setText(layers[selected[0]].name())
             else:
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(layers[idx].name() for idx in selected))
