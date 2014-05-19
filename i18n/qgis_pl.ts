@@ -23364,7 +23364,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="642"/>
         <source>Scalebar line cap style</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono styl zakończenia linii podziałki</translation>
     </message>
     <message>
         <source>Scalebar n segments</source>
@@ -23767,13 +23767,13 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="382"/>
         <source>Table feature filter toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>przełączono filtr tabeli</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="395"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="416"/>
         <source>Table feature filter modified</source>
-        <translation type="unfinished"></translation>
+        <translation>zmodyfikowano filtr tabeli</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="409"/>
@@ -43406,7 +43406,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="108"/>
         <source>Identify highlight color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kolor wskazywanych obiektów</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="189"/>
@@ -43569,12 +43569,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1554"/>
         <source>Restore UI defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywróć domyślny wygląd interfejsu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1554"/>
         <source>Are you sure to reset the UI to default (needs restart)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno przywrócić domyślny wygląd interfejsu (wymaga restartu)?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1638"/>
@@ -47729,7 +47729,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="765"/>
         <source>%1 rating vote(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 głosów</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="773"/>
@@ -47839,12 +47839,12 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1167"/>
         <source>Vote sent successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomyślnie oddano głos</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1171"/>
         <source>Sending vote to the plugin repository failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się przesłanie głosu.</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -53068,12 +53068,12 @@ warstw o maksymalnej szerokości i wysokości określonej poniżej.</translation
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>No option selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wybrano opcji</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>Please select an option to load min/max values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz opcję, aby wczytać wartości min/max.</translation>
     </message>
 </context>
 <context>
@@ -55061,37 +55061,37 @@ Komunikat błędu:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1270"/>
         <source>Color (start)</source>
-        <translation type="unfinished">Kolor (początkowy)</translation>
+        <translation>Kolor (początkowy)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1271"/>
         <source>Color (end)</source>
-        <translation type="unfinished">Kolor (końcowy)</translation>
+        <translation>Kolor (końcowy)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1272"/>
         <source>Blur radius</source>
-        <translation type="unfinished">Promień rozmycia</translation>
+        <translation>Promień rozmycia</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1273"/>
         <source>Integer between 0 and 18</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba całkowita z zakresu 0-18</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1274"/>
         <source>Use whole shape</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wykorzystaj cały kształt</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1275"/>
         <source>Maximum distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Maksymalna odległość</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1276"/>
         <source>Ignore rings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoruj pierścienie</translation>
     </message>
 </context>
 <context>
@@ -58305,17 +58305,17 @@ Pojawił się problem z bazą danych symboli.</translation>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="14"/>
         <source>SVG export options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje eksportu SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="22"/>
         <source>Export map layers as svg groups (may affect label placement)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj warstwy jako grupy SVG (może wpływać na lokalizację etykiet)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="35"/>
         <source>Render text as outline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst jako krzywe</translation>
     </message>
 </context>
 <context>
