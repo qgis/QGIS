@@ -131,6 +131,15 @@ public:
     int sortKeyAttributeIndex() const /Deprecated/;
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
 
+    /** Returns the current list of predefined scales
+        @returns a vector of doubles representing predefined scales
+    */
+    const QVector<double>& predefinedScales() const;
+    /** Sets the predefined scales
+        @param scales a vector of doubles representing predefined scales
+     */
+    void setPredefinedScales( const QVector<double>& scales );
+
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
     bool beginRender();

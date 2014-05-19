@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <stdexcept>
+#include <QtAlgorithms>
 
 #include "qgsatlascomposition.h"
 #include "qgsvectorlayer.h"
@@ -27,6 +28,7 @@
 #include "qgscomposershape.h"
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mComposition( composition ),
@@ -462,7 +464,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   QgsRectangle new_extent = mTransformedFeatureBounds;
   QgsRectangle mOrigExtent = map->extent();
 
-  if ( map->atlasFixedScale() )
+  if ( map->atlasScalingMode() == QgsComposerMap::Fixed )
   {
     // only translate, keep the original scale (i.e. width x height)
 
@@ -475,7 +477,39 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
                                xx + mOrigExtent.width(),
                                yy + mOrigExtent.height() );
   }
-  else
+  else if ( map->atlasScalingMode() == QgsComposerMap::Predefined )
+  {
+    // choose one of the predefined scales
+    QgsScaleCalculator calc;
+    calc.setMapUnits( composition()->mapSettings().mapUnits() );
+    calc.setDpi( 25.4 );
+    double scale = calc.calculate( map->extent(), map->rect().width() );
+    QgsRectangle extent = map->extent();
+
+    double n_width = extent.width(), n_height = extent.height();
+    const QVector<double>& scales = mPredefinedScales;
+    for ( int i = 0; i < scales.size(); i++ )
+    {
+      double ratio = scales[i] / scale;
+      n_width = extent.width() * ratio;
+      n_height = extent.height() * ratio;
+      if ( (n_width >= new_extent.width()) && (n_height >= new_extent.height()) ) {
+        // this is the smallest extent that embeds the feature, stop here
+        break;
+      }
+    }
+
+    // compute new extent, centered on feature
+    double geom_center_x = ( xa1 + xa2 ) / 2.0;
+    double geom_center_y = ( ya1 + ya2 ) / 2.0;
+    double xx = geom_center_x - n_width / 2.0;
+    double yy = geom_center_y - n_height / 2.0;
+    new_extent = QgsRectangle( xx,
+                               yy,
+                               xx + n_width,
+                               yy + n_height );
+  }
+  else if ( map->atlasScalingMode() == QgsComposerMap::Auto )
   {
     // auto scale
 
@@ -601,7 +635,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   bool fixedScale = atlasElem.attribute( "fixedScale", "false" ) == "true" ? true : false;
   if ( composerMap && fixedScale )
   {
-    composerMap->setAtlasFixedScale( true );
+    composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
   }
 
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
@@ -698,6 +732,13 @@ void QgsAtlasComposition::evalFeatureFilename()
   }
 }
 
+void QgsAtlasComposition::setPredefinedScales( const QVector<double>& scales )
+{
+  mPredefinedScales = scales;
+  // make sure the list is sorted
+  qSort( mPredefinedScales.begin(), mPredefinedScales.end() );
+}
+
 Q_NOWARN_DEPRECATED_PUSH
 bool QgsAtlasComposition::fixedScale() const
 {
@@ -720,7 +761,7 @@ void QgsAtlasComposition::setFixedScale( bool fixed )
     return;
   }
 
-  map->setAtlasFixedScale( fixed );
+  map->setAtlasScalingMode( fixed ? QgsComposerMap::Fixed : QgsComposerMap::Auto );
 }
 
 float QgsAtlasComposition::margin() const
