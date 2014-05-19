@@ -70,6 +70,13 @@ class QgsComposerMap : QgsComposerItem
       Top
     };
 
+    enum AtlasScalingMode
+    {
+      Fixed,
+      Predefined,
+      Auto
+    };
+
     /** \brief Draw to paint device
         @param painter painter
         @param extent map extent
@@ -394,10 +401,17 @@ class QgsComposerMap : QgsComposerItem
     /** Set to true if the map extents should be set by the current atlas feature */
     void setAtlasDriven( bool enabled );
 
-    /** Returns true if the map uses a fixed scale when in atlas mode */
-    bool atlasFixedScale() const;
-    /** Set to true if the map should use a fixed scale when in atlas mode */
-    void setAtlasFixedScale( bool fixed );
+    /** Returns true if the map uses a fixed scale when in atlas mode
+     @deprecated since 2.4 Use atlasScalingMode() instead*/
+    bool atlasFixedScale() const /Deprecated/;
+    /** Set to true if the map should use a fixed scale when in atlas mode
+     @deprecated since 2.4 Use setAtlasScalingMode() instead*/
+    void setAtlasFixedScale( bool fixed ) /Deprecated/;
+
+    /** Returns the current atlas scaling mode */
+    AtlasScalingMode atlasScalingMode() const;
+    /** Sets the current atlas scaling mode */
+    void setAtlasScalingMode( AtlasScalingMode mode );
 
     /** Returns the margin size (percentage) used when the map is in atlas mode */
     double atlasMargin() const;
