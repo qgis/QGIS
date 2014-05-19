@@ -684,7 +684,7 @@ void QgsMapToolIdentify::handleMenuHover()
           hl->setColor( QColor( 255, 0, 0 ) );
           hl->setWidth( 2 );
           mRubberBands.append( hl );
-          connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+          connect( lIt.key(), SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
         }
       }
     }
