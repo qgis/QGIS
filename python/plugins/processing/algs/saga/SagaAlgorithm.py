@@ -62,11 +62,10 @@ class SagaAlgorithm(GeoAlgorithm):
 
     OUTPUT_EXTENT = 'OUTPUT_EXTENT'
 
-    def __init__(self, descriptionfile):
-        self.allowUnmatchingGridExtents = False
-
-        # In case several non-matching raster layers are used as input
+    def __init__(self, descriptionfile):        
         GeoAlgorithm.__init__(self)
+        self.hardcodedStrings = []
+        self.allowUnmatchingGridExtents = False
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
 
@@ -78,8 +77,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
 
-    def defineCharacteristicsFromFile(self):
-        self.hardcodedStrings = []
+    def defineCharacteristicsFromFile(self):        
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
         self.name = line
@@ -336,6 +334,7 @@ class SagaAlgorithm(GeoAlgorithm):
     
 
     def exportRasterLayer(self, source):
+        global sessionExportedLayers
         if source in sessionExportedLayers:
             self.exportedLayers[source] = sessionExportedLayers[source]
             return None

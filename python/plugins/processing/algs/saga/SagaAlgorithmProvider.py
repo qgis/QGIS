@@ -33,6 +33,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from SagaAlgorithm import SagaAlgorithm
 from SplitRGBBands import SplitRGBBands
+from RasterCalculator import RasterCalculator
 from SagaUtils import SagaUtils
 from processing.tools.system import *
 
@@ -96,6 +97,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                             'Could not open SAGA algorithm: '
                             + descriptionFile + '\n' + str(e))
         self.algs.append(SplitRGBBands())
+        self.algs.append(RasterCalculator())
 
     def getDescription(self):
         return 'SAGA'

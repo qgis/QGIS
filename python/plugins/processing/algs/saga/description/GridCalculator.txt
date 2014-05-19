@@ -1,6 +1,0 @@
-Raster calculator|Grid Calculator
-grid_calculus
-AllowUnmatching
-ParameterMultipleInput|GRIDS|Raster layers|3|False
-ParameterString|FORMULA|Formula|
-OutputRaster|RESULT|Result
