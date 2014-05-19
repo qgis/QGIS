@@ -282,3 +282,14 @@ Description: QGIS mapserver
  .
  This package contains the QGIS mapserver.
 
+Package: libqgis-customwidgets
+Architecture: any
+Depends:
+ qt4-designer,
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS custom widgets for Qt Designer
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains a library to use specific QGIS widgets in Qt Designer.
