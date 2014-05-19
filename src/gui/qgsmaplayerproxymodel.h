@@ -27,6 +27,7 @@ class QgsMapLayerModel;
 class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_FLAGS( Filters )
   public:
     enum Filter
     {

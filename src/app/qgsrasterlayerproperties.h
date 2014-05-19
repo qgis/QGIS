@@ -98,8 +98,6 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_mMinimumScaleSetCurrentPushButton_clicked();
-    void on_mMaximumScaleSetCurrentPushButton_clicked();
 
     /** Slot to reset all color rendering options to default
      * @note added in 1.9

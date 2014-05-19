@@ -20,6 +20,7 @@
 #define QGSVECTORLAYERPROPERTIES
 
 #include "qgsoptionsdialogbase.h"
+#include "qgsscalerangewidget.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgsaddattrdialog.h"
@@ -115,9 +116,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
-
-    void on_mMinimumScaleSetCurrentPushButton_clicked();
-    void on_mMaximumScaleSetCurrentPushButton_clicked();
 
     void on_mSimplifyDrawingGroupBox_toggled( bool checked );
 
