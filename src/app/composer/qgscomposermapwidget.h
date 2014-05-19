@@ -91,12 +91,12 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor );
     void on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor );
 
-    void atlasToggled( bool checked );
     void on_mAtlasMarginRadio_toggled( bool checked );
 
     void on_mAtlasCheckBox_toggled( bool checked );
     void on_mAtlasMarginSpinBox_valueChanged( int value );
     void on_mAtlasFixedScaleRadio_toggled( bool checked );
+    void on_mAtlasPredefinedScaleRadio_toggled( bool checked );
 
   protected:
     void showEvent( QShowEvent * event );

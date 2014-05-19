@@ -484,6 +484,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Set default settings for printer page settings based on composition paper size
     void setPrinterPageDefaults();
 
+    //! Load predefined scales from the project's properties
+    void loadAtlasPredefinedScalesFromProject();
+
     /**Composer title*/
     QString mTitle;
 
