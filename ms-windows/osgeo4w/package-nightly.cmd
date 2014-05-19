@@ -230,6 +230,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
 	apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
 	apps/qt4/plugins/sqldrivers/qsqlspatialite.dll ^
+	apps/qt4/plugins/designer/qgis_customwidgets.dll ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat
 if errorlevel 1 (echo tar failed & goto error)

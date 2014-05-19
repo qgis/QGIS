@@ -20,7 +20,7 @@
 #include <QDesignerCustomWidgetInterface>
 
 
-class QDESIGNER_WIDGET_EXPORT QgsColorButtonPlugin : public QObject, public QDesignerCustomWidgetInterface
+class CUSTOMWIDGETS_EXPORT QgsColorButtonPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES( QDesignerCustomWidgetInterface )

@@ -210,7 +210,7 @@ bool QgsComposerAttributeTableColumnModel::setData( const QModelIndex& index, co
       emit dataChanged( index, index );
       return true;
     default:
-      return false;
+      break;
   }
 
   return false;
@@ -584,14 +584,11 @@ bool QgsComposerTableSortColumnsProxyModel::setData( const QModelIndex& index, c
     return false;
   }
 
-  switch ( index.column() )
+  if ( index.column() == 1 )
   {
-    case 1:
       column->setSortOrder(( Qt::SortOrder )value.toInt() );
       emit dataChanged( index, index );
       return true;
-    default:
-      return false;
   }
 
   return false;

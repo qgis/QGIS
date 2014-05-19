@@ -99,7 +99,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellHeaderHeight );
 
     //calculate alignment of header
-    Qt::AlignmentFlag headerAlign;
+    Qt::AlignmentFlag headerAlign = Qt::AlignLeft;
     switch ( mHeaderHAlignment )
     {
       case FollowColumn:
