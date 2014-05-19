@@ -1,4 +1,4 @@
-%Module(name=qgis.analysis,
+%Module(name=qgis._analysis,
         version=0,
         keyword_arguments="Optional")
 
