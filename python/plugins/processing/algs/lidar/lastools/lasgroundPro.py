@@ -2,14 +2,14 @@
 
 """
 ***************************************************************************
-    lasground.py
+    lasgroundPro.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : April 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -34,7 +34,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 
-class lasground(LAStoolsAlgorithm):
+class lasgroundPro(LAStoolsAlgorithm):
 
     AIRBORNE = "AIRBORNE"
     TERRAIN = "TERRAIN"
@@ -43,27 +43,39 @@ class lasground(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "lasground"
-        self.group = "LAStools"
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
+        self.name = "lasgroundPro"
+        self.group = "LAStools Production"
+        self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasground.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(ParameterSelection(lasground.TERRAIN, "terrain type", lasground.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasground.GRANULARITY, "preprocessing", lasground.GRANULARITIES, 1))
-        self.addParametersPointOutputGUI()
+        self.addParameter(ParameterBoolean(lasgroundPro.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(ParameterSelection(lasgroundPro.TERRAIN, "terrain type", lasgroundPro.TERRAINS, 1))
+        self.addParameter(ParameterSelection(lasgroundPro.GRANULARITY, "preprocessing", lasgroundPro.GRANULARITIES, 1))
+        self.addParametersOutputDirectoryGUI()
+        self.addParametersOutputAppendixGUI()
+        self.addParametersPointOutputFormatGUI()
+        self.addParametersAdditionalGUI()
+        self.addParametersCoresGUI()
+        self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(commands)        
-        method = self.getParameterValue(lasground.TERRAIN)
+        self.addParametersPointInputFolderCommands(commands)
+        self.addParametersHorizontalAndVerticalFeetCommands(commands)
+        airborne = self.getParameterValue(lasgroundPro.AIRBORNE)
+        if airborne != True:
+            commands.append("-not_airborne")
+        method = self.getParameterValue(lasgroundPro.TERRAIN)
         if method != 1:
-            commands.append("-" + lasground.TERRAINS[method])
-        granularity = self.getParameterValue(lasground.GRANULARITY)
+            commands.append("-" + lasgroundPro.TERRAINS[method])
+        granularity = self.getParameterValue(lasgroundPro.GRANULARITY)
         if granularity != 1:
-            commands.append("-" + lasground.GRANULARITIES[granularity])
-        self.addParametersPointOutputCommands(commands)
+            commands.append("-" + lasgroundPro.GRANULARITIES[granularity])
+        self.addParametersCoresCommands(commands)
+        self.addParametersOutputDirectoryCommands(commands)
+        self.addParametersOutputAppendixCommands(commands)
+        self.addParametersPointOutputFormatCommands(commands)
+        self.addParametersAdditionalCommands(commands)
+        self.addParametersCoresCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    lasgrid.py
+    las2demPro.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -28,41 +28,51 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.parameters.ParameterSelection import ParameterSelection
 
-class lasgrid(LAStoolsAlgorithm):
+class las2demPro(LAStoolsAlgorithm):
 
     ATTRIBUTE = "ATTRIBUTE"
-    METHOD = "METHOD"
-    ATTRIBUTES = ["elevation", "intensity", "rgb", "classification"]
-    METHODS = ["lowest", "highest", "average", "stddev"]
+    PRODUCT = "PRODUCT"
+    ATTRIBUTES = ["elevation", "slope", "intensity", "rgb", "edge_longest", "edge_shortest"]
+    PRODUCTS = ["actual values", "hillshade", "gray", "false"]
+
 
     def defineCharacteristics(self):
-        self.name = "lasgrid"
+        self.name = "las2demPro"
         self.group = "LAStools"
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
+        self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(lasgrid.ATTRIBUTE, "Attribute", lasgrid.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(lasgrid.METHOD, "Method", lasgrid.METHODS, 0))
-        self.addParametersRasterOutputGUI()
+        self.addParameter(ParameterSelection(las2demPro.ATTRIBUTE, "attribute (what to interpolate)", las2demPro.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(las2demPro.PRODUCT, "product (how to output per pixel)", las2demPro.PRODUCTS, 0))
+        self.addParametersOutputDirectoryGUI()
+        self.addParametersOutputAppendixGUI()
+        self.addParametersRasterOutputFormatGUI()
+        self.addParametersAdditionalGUI()
+        self.addParametersCoresGUI()
+        self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)
+        self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
         self.addParametersStepCommands(commands)
-        attribute = self.getParameterValue(lasgrid.ATTRIBUTE)
+        attribute = self.getParameterValue(las2demPro.ATTRIBUTE)
         if attribute != 0:
-            commands.append("-" + lasgrid.ATTRIBUTES[attribute])
-        method = self.getParameterValue(lasgrid.METHOD)
-        if method != 0:
-            commands.append("-" + lasgrid.METHODS[method])
-        self.addParametersRasterOutputCommands(commands)
+            commands.append("-" + las2demPro.ATTRIBUTES[attribute])
+        product = self.getParameterValue(las2demPro.PRODUCT)
+        if product != 0:
+            commands.append("-" + las2demPro.PRODUCTS[product])
+        self.addParametersOutputDirectoryCommands(commands)
+        self.addParametersOutputAppendixCommands(commands)
+        self.addParametersPointOutputFormatCommands(commands)
+        self.addParametersAdditionalCommands(commands)
+        self.addParametersCoresCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

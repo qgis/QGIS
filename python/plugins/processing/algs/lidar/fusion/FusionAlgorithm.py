@@ -37,7 +37,7 @@ class FusionAlgorithm(GeoAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/../../images/tool.png'
+        filepath = os.path.dirname(__file__) + '/../../../images/tool.png'
         return QtGui.QIcon(filepath)
 
     def checkBeforeOpeningParametersDialog(self):

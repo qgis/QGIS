@@ -4,12 +4,8 @@
 ***************************************************************************
     lassplit.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
-    ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : March 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -21,12 +17,10 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
-
+__author__ = 'Martin Isenburg'
+__date__ = 'March 2014'
+__copyright__ = '(C) 2014, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
-
 __revision__ = '$Format:%H$'
 
 import os
@@ -34,29 +28,42 @@ from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.parameters.ParameterNumber import ParameterNumber
-
+from processing.parameters.ParameterSelection import ParameterSelection
 
 class lassplit(LAStoolsAlgorithm):
 
-    NUM_POINTS = 'NUM_POINTS'
+    DIGITS = "DIGITS"
+    OPERATION = "OPERATION"
+    OPERATIONS = ["by_flightline", "by_classification", "by_gps_time_interval", "by_intensity_interval", "by_x_interval", "by_y_interval", "by_z_interval", "by_scan_angle_interval", "by_user_data_interval", "every_x_points", "recover_flightlines"]
+    INTERVAL = "INTERVAL"
 
     def defineCharacteristics(self):
-        self.name = 'lassplit'
-        self.group = 'LAStools'
+        self.name = "lassplit"
+        self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(lassplit.NUM_POINTS,
-                          'number of points in output files', 1, None,
-                          1000000))
+        self.addParameter(ParameterNumber(lassplit.DIGITS, "number of digits for file names", 0, None, 5))
+        self.addParameter(ParameterSelection(lassplit.OPERATION, "how to split", lassplit.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lassplit.INTERVAL, "interval or number", 0, None, 5))
         self.addParametersPointOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), 'bin',
-                    'lassplit.exe')]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassplit.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        commands.append('-split')
-        commands.append(self.getParameterValue(lassplit.NUM_POINTS))
+        digits = self.getParameterValue(lassplit.DIGITS)
+        if digits != 5:
+            commands.append("-digits")
+            commands.append(str(digits))
+        operation = self.getParameterValue(lassplit.OPERATION)
+        if operation != 0:
+            if operation == 9:
+                commands.append("-split")
+            else:
+                commands.append("-" + lassplit.OPERATIONS[operation])
+        if operation > 1 and operation < 10:
+            interval = self.getParameterValue(lassplit.INTERVAL)
+            commands.append(str(interval))
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

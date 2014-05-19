@@ -2,10 +2,14 @@
 
 """
 ***************************************************************************
-    las2shp.py
+    las2tin.py
     ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : March 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -17,9 +21,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Martin Isenburg'
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -27,36 +31,23 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputFile import OutputFile
 
-class las2shp(LAStoolsAlgorithm):
-
-    POINT_Z = "POINT_Z"
-    RECORD_SIZE = "RECORD_SIZE"
-    OUTPUT = "OUTPUT"
+class las2tin(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "las2shp"
+        self.name = "las2tin"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(las2shp.POINT_Z, "use PointZ instead of MultiPointZ", False))
-        self.addParameter(ParameterNumber(las2shp.RECORD_SIZE, "number of points per record", 0, None, 1024))
-        self.addOutput(OutputFile(las2shp.OUTPUT, "Output SHP file"))
+        self.addParametersFilter1ReturnClassFlagsGUI()
+        self.addParametersVectorOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2shp.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2tin.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)
-        if self.getParameterValue(las2shp.POINT_Z):
-            commands.append("-single_points")
-        record_size = self.getParameterValue(las2shp.RECORD_SIZE)
-        if record_size != 1024:
-            commands.append("-record_size")
-            commands.append(str(record_size))
-        commands.append("-o")
-        commands.append(self.getOutputValue(las2shp.OUTPUT))
+        self.addParametersPointInputCommands(commands)        
+        self.addParametersFilter1ReturnClassFlagsCommands(commands)
+        self.addParametersVectorOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

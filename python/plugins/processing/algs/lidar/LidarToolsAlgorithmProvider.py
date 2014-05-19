@@ -8,8 +8,8 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : April 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -43,6 +43,8 @@ from lastools.lasclassify import lasclassify
 from lastools.laszip import laszip
 from lastools.lasindex import lasindex
 from lastools.lasclip import lasclip
+from lastools.lasquery import lasquery
+from lastools.lascolor import lascolor
 from lastools.lasthin import lasthin
 from lastools.lasnoise import lasnoise
 from lastools.lassort import lassort
@@ -54,7 +56,9 @@ from lastools.lasinfo import lasinfo
 from lastools.las2dem import las2dem
 from lastools.blast2dem import blast2dem
 from lastools.las2iso import las2iso
+from lastools.las2tin import las2tin
 from lastools.las2las_filter import las2las_filter
+from lastools.las2las_project import las2las_project
 from lastools.las2las_transform import las2las_transform
 from lastools.blast2iso import blast2iso
 from lastools.lasprecision import lasprecision
@@ -69,6 +73,18 @@ from lastools.lassplit import lassplit
 from lastools.lascanopy import lascanopy
 from lastools.lasoverage import lasoverage
 from lastools.lasoverlap import lasoverlap
+
+from lastools.lastilePro import lastilePro
+from lastools.lasgroundPro import lasgroundPro
+from lastools.las2demPro import las2demPro
+
+from lastools.flightlinesToDTMandDSM import flightlinesToDTMandDSM
+from lastools.flightlinesToCHM import flightlinesToCHM
+from lastools.flightlinesToSingleCHMpitFree import flightlinesToSingleCHMpitFree
+from lastools.hugeFileClassify import hugeFileClassify
+from lastools.hugeFileGroundClassify import hugeFileGroundClassify
+from lastools.hugeFileNormalize import hugeFileNormalize
+
 from fusion.OpenViewerAction import OpenViewerAction
 from fusion.CanopyMaxima import CanopyMaxima
 from fusion.CanopyModel import CanopyModel
@@ -89,25 +105,57 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.activate = False
         self.algsList = []
+
+        # LAStools for processing single files
+
         if isWindows():
             lastools = [
                 lasground(), lasheight(), lasclassify(), lasclip(), lastile(),
-                lasgrid(), las2dem(), blast2dem(), las2iso(), blast2iso(),
-                lasview(), lasboundary(), lasinfo(), lasprecision(),
+                lascolor(), lasgrid(), las2dem(), blast2dem(), las2iso(), blast2iso(),
+                lasview(), lasboundary(), lasinfo(), lasprecision(), las2tin(),
                 lasvalidate(), lasduplicate(), las2txt(), txt2las(), laszip(),
                 lasindex(), lasthin(), lassort(), lascanopy(), lasmerge(),
                 las2shp(), shp2las(), lasnoise(), lassplit(), las2las_filter(),
-                las2las_transform(), lasoverage(), lasoverlap()
+                las2las_project(), las2las_transform(), lasoverage(), lasoverlap(),
+                lasquery()
                 ]
         else:
             lastools = [
                 lasinfo(), lasprecision(), lasvalidate(), las2txt(), txt2las(),
-                laszip(), lasindex(), lasmerge(), las2las_filter(),
-                las2las_transform()
+                laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_project(),
+                las2las_transform(), lasquery()
                 ]
         for alg in lastools:
             alg.group = 'LAStools'
         self.algsList.extend(lastools)
+
+        # LAStools Production for processing folders of files
+
+        if isWindows():
+            lastoolsPro = [
+                lastilePro(), lasgroundPro(), las2demPro()
+                ]
+        else:
+            lastoolsPro = [
+                ]
+        for alg in lastoolsPro:
+            alg.group = 'LAStools Production'
+        self.algsList.extend(lastoolsPro)
+
+        # some examples for LAStools Pipelines
+
+        if isWindows():
+            lastoolsPipe = [
+                flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(), hugeFileGroundClassify(), hugeFileNormalize()
+                ]
+        else:
+            lastoolsPipe = [
+                ]
+        for alg in lastoolsPipe:
+            alg.group = 'LAStools Pipelines'
+        self.algsList.extend(lastoolsPipe)
+
+        # FUSION
 
         if isWindows():
             self.actions.append(OpenViewerAction())
@@ -128,6 +176,9 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                 FusionUtils.FUSION_FOLDER,
                 'Fusion folder', FusionUtils.FusionPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                LAStoolsUtils.WINE_FOLDER,
+                'Wine folder', ''))
 
     def getName(self):
         return 'lidartools'

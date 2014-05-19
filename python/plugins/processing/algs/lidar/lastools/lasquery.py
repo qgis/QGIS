@@ -8,8 +8,8 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : March 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -22,29 +22,53 @@
 """
 
 __author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Martin Isenburg'
+__date__ = 'March 2014'
+__copyright__ = '(C) 2014, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
 from LAStoolsUtils import LAStoolsUtils
+from processing.parameters.ParameterExtent import ParameterExtent
 from LAStoolsAlgorithm import LAStoolsAlgorithm
+from qgis.core import QgsMapLayer, QgsMapLayerRegistry, QgsVectorLayer
 
-class lasview(LAStoolsAlgorithm):
+class lasquery(LAStoolsAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    AOI = "AOI"
 
     def defineCharacteristics(self):
-        self.name = "lasview"
+        self.name = "lasquery"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
+        self.addParameter(ParameterExtent(self.AOI, 'area of interest'))
 
     def processAlgorithm(self, progress):
+        
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)
+
+	# get area-of-interest
+        aoi = str(self.getParameterValue(self.AOI))
+        aoiCoords = aoi.split(',')
+ 
+        # get layers
+        layers = QgsMapLayerRegistry.instance().mapLayers()
+
+        # loop over layers
+        for name,layer in layers.iteritems():
+            layerType = layer.type()            
+            if layerType == QgsMapLayer.VectorLayer:                        
+                shp_file_name = layer.source()
+                file_name = shp_file_name[:-4] + ".laz"                
+                commands.append('-i')
+                commands.append(file_name)
+
+        commands.append("-files_are_flightlines")
+        commands.append('-inside')
+        commands.append(aoiCoords[0])
+        commands.append(aoiCoords[2])
+        commands.append(aoiCoords[1])
+        commands.append(aoiCoords[3])
 
         LAStoolsUtils.runLAStools(commands, progress)

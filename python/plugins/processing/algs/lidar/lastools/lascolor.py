@@ -2,10 +2,14 @@
 
 """
 ***************************************************************************
-    las2las_filter.py
+    lasclip.py
     ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : March 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -17,9 +21,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Martin Isenburg'
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -27,30 +31,28 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
+from processing.parameters.ParameterRaster import ParameterRaster
 
-class las2las_filter(LAStoolsAlgorithm):
+class lascolor(LAStoolsAlgorithm):
+
+    ORTHO = "ORTHO"
 
     def defineCharacteristics(self):
-        self.name = "las2las_filter"
+        self.name = "lascolor"
         self.group = "LAStools"
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI();
         self.addParametersPointInputGUI()
-        self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParametersFilter2ReturnClassFlagsGUI()
-        self.addParametersFilter1CoordsIntensityGUI()
-        self.addParametersFilter2CoordsIntensityGUI()
+        self.addParameter(ParameterRaster(lascolor.ORTHO, "Input ortho"))
         self.addParametersPointOutputGUI()
 
-
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascolor.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersFilter1ReturnClassFlagsCommands(commands)
-        self.addParametersFilter2ReturnClassFlagsCommands(commands)
-        self.addParametersFilter1CoordsIntensityCommands(commands)
-        self.addParametersFilter2CoordsIntensityCommands(commands)
-                
+        ortho = self.getParameterValue(lascolor.ORTHO)
+        if ortho != None:
+            commands.append("-image")
+            commands.append(ortho)
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)
