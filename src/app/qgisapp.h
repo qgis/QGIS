@@ -56,6 +56,7 @@ class QgsMapTool;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
+class QgsPluginInterface;
 class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
@@ -435,6 +436,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! returns pointer to plugin manager
     QgsPluginManager *pluginManager();
+
+    QgsPluginInterface* pluginInterface( const QString& pluginName );
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
