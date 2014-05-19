@@ -210,6 +210,7 @@ Depends:
  python-qt4-dev (>=4.1.0),
  qt4-designer,
  ${misc:Depends}
+Recommends: libqgis-customwidgets{QGIS_ABI}
 Provides: qgis-dev
 Replaces:
  libqgis1-dev
@@ -337,8 +338,8 @@ Description: QGIS mapserver
  display databases of geographic information.
  .
  This package contains the QGIS mapserver.
- 
-Package: libqgis-customwidgets
+
+Package: libqgis-customwidgets{QGIS_ABI}
 Architecture: any
 Depends:
  qt4-designer,

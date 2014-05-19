@@ -282,7 +282,7 @@ Description: QGIS mapserver
  .
  This package contains the QGIS mapserver.
 
-Package: libqgis-customwidgets
+Package: libqgis-customwidgets{QGIS_ABI}
 Architecture: any
 Depends:
  qt4-designer,
