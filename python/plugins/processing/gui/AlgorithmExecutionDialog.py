@@ -122,7 +122,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             if html:
                 self.webView.setHtml(html)
             elif url:
-                print url
                 self.webView.load(url)
         except:
             self.webView.setHtml('<h2>Could not open help file :-( </h2>')
