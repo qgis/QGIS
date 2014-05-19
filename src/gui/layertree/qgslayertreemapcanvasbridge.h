@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QStringList>
 
+#include "qgscoordinatereferencesystem.h"
+
 class QgsMapCanvas;
 class QgsMapCanvasLayer;
 class QgsLayerTreeGroup;
@@ -20,9 +22,22 @@ public:
 
   QStringList defaultLayerOrder() const;
 
+  //! if enabled, will automatically set full canvas extent and destination CRS + map units
+  //! when first layer(s) are added
+  void setAutoSetupOnFirstLayer(bool enabled) { mAutoSetupOnFirstLayer = enabled; }
+  bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
+
+  //! if enabled, will automatically turn on on-the-fly reprojection of layers if a layer
+  //! with different source CRS is added
+  void setAutoEnableCrsTransform(bool enabled) { mAutoEnableCrsTransform = enabled; }
+  bool autoEnableCrsTransform() const { return mAutoEnableCrsTransform; }
+
 public slots:
   void setHasCustomLayerOrder(bool override);
   void setCustomLayerOrder(const QStringList& order);
+
+  //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.
+  void setCanvasLayers();
 
 signals:
   void hasCustomLayerOrderChanged(bool);
@@ -42,8 +57,6 @@ protected slots:
   void nodeVisibilityChanged();
   void nodeCustomPropertyChanged(QgsLayerTreeNode* node, QString key);
 
-  void setCanvasLayers();
-
 protected:
   QgsLayerTreeGroup* mRoot;
   QgsMapCanvas* mCanvas;
@@ -52,6 +65,13 @@ protected:
 
   bool mHasCustomLayerOrder;
   QStringList mCustomLayerOrder;
+
+  bool mAutoSetupOnFirstLayer;
+  bool mAutoEnableCrsTransform;
+
+  bool mHasFirstLayer;
+  bool mLastLayerCount;
+  QgsCoordinateReferenceSystem mFirstCRS;
 };
 
 #endif // QGSLAYERTREEMAPCANVASBRIDGE_H

@@ -46,6 +46,7 @@ class QgsComposerManager;
 class QgsContrastEnhancement;
 class QgsGeometry;
 class QgsFeature;
+class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLegend;
 class QgsLayerOrder;
@@ -1472,6 +1473,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *mMapCanvas;
     //! Table of contents (legend) for the map
     QgsLayerTreeView* mLayerTreeView;
+    //! Helper class that connects layer tree with map canvas
+    QgsLayerTreeMapCanvasBridge* mLayerTreeCanvasBridge;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
     //! Table of contents (legend) to order layers of the map

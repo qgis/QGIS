@@ -2233,8 +2233,8 @@ void QgisApp::initLayerTreeView()
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 
-  QgsLayerTreeMapCanvasBridge* bridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas );
-  bridge->setParent(this);
+  mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas );
+  mLayerTreeCanvasBridge->setParent(this);
 }
 
 
@@ -9458,6 +9458,13 @@ void QgisApp::writeProject( QDomDocument &doc )
 void QgisApp::readProject( const QDomDocument &doc )
 {
   projectChanged( doc );
+
+  // force update of canvas, without automatic changes to extent and OTF projections
+  mLayerTreeCanvasBridge->setAutoEnableCrsTransform( false );
+  mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
+  mLayerTreeCanvasBridge->setCanvasLayers();
+  mLayerTreeCanvasBridge->setAutoEnableCrsTransform( true );
+  mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
 }
 
 void QgisApp::showLayerProperties( QgsMapLayer *ml )

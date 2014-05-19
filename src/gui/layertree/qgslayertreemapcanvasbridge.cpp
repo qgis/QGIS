@@ -9,6 +9,9 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root
   , mCanvas(canvas)
   , mPendingCanvasUpdate(false)
   , mHasCustomLayerOrder(false)
+  , mAutoSetupOnFirstLayer(true)
+  , mAutoEnableCrsTransform(true)
+  , mLastLayerCount(root->findLayers().count())
 {
   connect(root, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeAddedChildren(QgsLayerTreeNode*,int,int)));
   connect(root, SIGNAL(customPropertyChanged(QgsLayerTreeNode*,QString)), this, SLOT(nodeCustomPropertyChanged(QgsLayerTreeNode*,QString)));
@@ -86,6 +89,59 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     setCanvasLayers(mRoot, layers);
 
   mCanvas->setLayerSet(layers);
+
+  QList<QgsLayerTreeLayer*> layerNodes = mRoot->findLayers();
+
+  int currentLayerCount = layerNodes.count();
+  if (mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0)
+  {
+    // if we are moving from zero to non-zero layers, let's zoom to those data
+    mCanvas->zoomToFullExtent();
+
+    // also setup destination CRS and map units if the OTF projections are not yet enabled
+    if (!mCanvas->mapSettings().hasCrsTransformEnabled())
+    {
+      foreach (QgsLayerTreeLayer* layerNode, layerNodes)
+      {
+        if (layerNode->layer())
+        {
+          mCanvas->setDestinationCrs( layerNode->layer()->crs() );
+          mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
+        }
+      }
+    }
+  }
+
+  if (!mFirstCRS.isValid())
+  {
+    // find out what is the first used CRS in case we may need to turn on OTF projections later
+    foreach (QgsLayerTreeLayer* layerNode, layerNodes)
+    {
+      if (layerNode->layer() && layerNode->layer()->crs().isValid())
+      {
+        mFirstCRS = layerNode->layer()->crs();
+        break;
+      }
+    }
+  }
+
+  if (mAutoEnableCrsTransform && mFirstCRS.isValid() && !mCanvas->mapSettings().hasCrsTransformEnabled())
+  {
+    // check whether all layers still have the same CRS
+    foreach (QgsLayerTreeLayer* layerNode, layerNodes)
+    {
+      if (layerNode->layer() && layerNode->layer()->crs().isValid() && layerNode->layer()->crs() != mFirstCRS)
+      {
+        mCanvas->setDestinationCrs( mFirstCRS );
+        mCanvas->setCrsTransformEnabled( true );
+        break;
+      }
+    }
+  }
+
+  mLastLayerCount = currentLayerCount;
+  if (currentLayerCount == 0)
+    mFirstCRS = QgsCoordinateReferenceSystem();
 
   mPendingCanvasUpdate = false;
 }
