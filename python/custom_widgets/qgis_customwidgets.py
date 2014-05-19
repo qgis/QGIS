@@ -23,27 +23,32 @@ in custom widgets to the correct QGIS python packages.
 It is copied on installation in /pythonX/dist-packages/PyQt4/uic/widget-plugins/
 """
 
-#pluginType = CW_FILTER
-#def getFilter():
-#	import qgis.gui
-#
-#	QGIS_widgets = {}
-#	for pyClass in dir(qgis.gui):
-#		QGIS_widgets[pyClass] = 'qgis.gui'
-#
-#	def _QGISfilter(widgetname, baseclassname, module):
-#		print widgetname, baseclassname, module
-#		if widgetname in QGIS_widgets:
-#			return (MATCH, (widgetname, baseclassname, QGIS_widgets[widgetname]))
-#		else:
-#			return (NO_MATCH, None)
-#			
-#	return _QGISfilter
+# solution with CW_FILTER not fully working due to include of other files
+# (e.g. for flags defined in other source files)
 
+# pluginType = CW_FILTER
+# def getFilter():
+# 	import qgis.gui
+# 
+# 	QGIS_widgets = {}
+# 	for pyClass in dir(qgis.gui):
+# 		QGIS_widgets[pyClass] = 'qgis.gui'
+# 
+# 	def _QGISfilter(widgetname, baseclassname, module):
+# 		print widgetname, baseclassname, module
+# 		if widgetname in QGIS_widgets:
+# 			return (MATCH, (widgetname, baseclassname, QGIS_widgets[widgetname]))
+# 		else:
+# 			return (NO_MATCH, None)
+# 			
+# 	return _QGISfilter
 
 
 pluginType = MODULE
 def moduleInformation():
-	import qgis.gui
-	return "qgis.gui", dir(qgis.gui)
+	try:
+		import qgis.gui
+		return "qgis.gui", dir(qgis.gui)
+	except ImportError:
+		return "", []
 
