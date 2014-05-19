@@ -60,7 +60,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addAction( actions->actionZoomToLayer(mCanvas, menu) );
       menu->addAction( actions->actionShowInOverview(menu) );
 
-      if ( layer->type() == QgsMapLayer::RasterLayer )
+      if ( layer && layer->type() == QgsMapLayer::RasterLayer )
       {
         menu->addAction( tr( "&Zoom to Best Scale (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
@@ -82,7 +82,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( layer && layer->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
@@ -127,12 +127,12 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         menu->addSeparator();
       }
-      else if ( layer->type() == QgsMapLayer::RasterLayer )
+      else if ( layer && layer->type() == QgsMapLayer::RasterLayer )
       {
         menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
         menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
       }
-      else if ( layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
+      else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
       {
         // disable duplication of plugin layers
         duplicateLayersAction->setEnabled( false );

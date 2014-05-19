@@ -305,7 +305,7 @@ class CORE_EXPORT QgsProject : public QObject
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    bool createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
 
     /** Convenience function to set snap settings per layer
       @note added in version 1.9*/
@@ -354,6 +354,10 @@ class CORE_EXPORT QgsProject : public QObject
     bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
     void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
+
+    void loadEmbeddedNodes(QgsLayerTreeGroup* group);
+
+    void removeChildrenOfEmbeddedGroups(QgsLayerTreeGroup* group);
 
   signals:
     //! emitted when project is being read

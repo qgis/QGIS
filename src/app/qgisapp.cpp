@@ -7512,7 +7512,10 @@ void QgisApp::embedLayers()
     QStringList::const_iterator groupIt = groups.constBegin();
     for ( ; groupIt != groups.constEnd(); ++groupIt )
     {
-      QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile );
+      QgsLayerTreeGroup* newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile );
+
+      if ( newGroup )
+        QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup );
     }
 
     //layer ids

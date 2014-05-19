@@ -209,7 +209,7 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
   else if ( role == Qt::FontRole )
   {
     QFont f;
-    if (node->customProperty("embedded", false).toBool())
+    if (node->customProperty("embedded").toInt())
       f.setItalic(true);
     if (QgsLayerTree::isLayer(node))
       f.setBold(true);

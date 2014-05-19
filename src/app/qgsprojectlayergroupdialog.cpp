@@ -186,7 +186,7 @@ void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
   QList<QgsLayerTreeNode*> childrenToRemove;
   foreach ( QgsLayerTreeNode* child, node->children() )
   {
-    if ( child->customProperty("embedded").toBool() )
+    if ( child->customProperty("embedded").toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup(child) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );

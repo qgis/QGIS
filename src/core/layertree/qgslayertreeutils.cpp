@@ -62,7 +62,7 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
 
   if (groupElem.attribute("embedded") == "1")
   {
-    groupNode->setCustomProperty("embedded", true);
+    groupNode->setCustomProperty("embedded", 1);
     groupNode->setCustomProperty("embedded_project", groupElem.attribute("project"));
   }
 
@@ -88,7 +88,7 @@ void QgsLayerTreeUtils::addLegendLayerToTreeWidget( const QDomElement& layerElem
   layerNode->setVisible(checkStateFromXml(layerElem.attribute("checked")));
 
   if (layerElem.attribute("embedded") == "1")
-    layerNode->setCustomProperty("embedded", true);
+    layerNode->setCustomProperty("embedded", 1);
 
   // TODO: is in overview, drawing order, show feature count
 
