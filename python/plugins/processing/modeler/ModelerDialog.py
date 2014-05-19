@@ -77,7 +77,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         def _dropEvent(event):
             if event.mimeData().hasText():
                 text = event.mimeData().text()
-                print text
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text)
                 else:
