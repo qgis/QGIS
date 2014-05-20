@@ -50,6 +50,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
     CREATEINDEX = 'CREATEINDEX'
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
+    DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/postgis.png')
@@ -60,6 +61,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
+        dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
@@ -96,6 +98,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
             options['overwrite'] = True
         if convertLowerCase:
             options['lowercaseFieldNames'] = True
+        if dropStringLength:
+            options['dropStringConstraints'] = True
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
         (ret, errMsg) = QgsVectorLayerImport.importLayer(
@@ -140,3 +144,5 @@ class ImportIntoPostGIS(GeoAlgorithm):
                           'Create spatial index', True))
         self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
                           'Convert field names to lowercase', False))
+        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
+                          'Drop length constraints on character fields', False))
