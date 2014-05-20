@@ -944,6 +944,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     {
       mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
       mActionPopup->addAction( tr( "Copy feature" ), this, SLOT( copyFeature() ) );
+      mActionPopup->addAction( tr( "Toggle feature selection" ), this, SLOT( toggleFeatureSelection() ) );
     }
 
     mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
@@ -1784,6 +1785,28 @@ void QgsIdentifyResultsDialog::copyFeature()
   QgsFeatureStore featureStore( item->fields(), item->crs() );
   featureStore.features().append( item->feature() );
   emit copyToClipboard( featureStore );
+}
+
+void QgsIdentifyResultsDialog::toggleFeatureSelection()
+{
+  QgsDebugMsg( "Entered" );
+
+  QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
+
+  if ( !item ) // should not happen
+  {
+    QgsDebugMsg( "Selected item is not feature" );
+    return;
+  }
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layer( item ) );
+  if ( !vl )
+    return;
+
+  if ( vl->selectedFeaturesIds().contains( item->feature().id() ) )
+    vl->deselect( item->feature().id() );
+  else
+    vl->select( item->feature().id() );
 }
 
 void QgsIdentifyResultsDialog::formatChanged( int index )

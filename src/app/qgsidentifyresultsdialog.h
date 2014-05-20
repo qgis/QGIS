@@ -66,9 +66,9 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
 {
   public:
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
-    QgsFields fields() const { return mFields; }
-    QgsFeature feature() const { return mFeature; }
-    QgsCoordinateReferenceSystem crs() { return mCrs; }
+    const QgsFields &fields() const { return mFields; }
+    const QgsFeature &feature() const { return mFeature; }
+    const QgsCoordinateReferenceSystem &crs() { return mCrs; }
 
   private:
     QgsFields mFields;
@@ -169,6 +169,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void zoomToFeature();
     void copyAttributeValue();
     void copyFeature();
+    void toggleFeatureSelection();
     void copyFeatureAttributes();
     void copyGetFeatureInfoUrl();
     void highlightAll();
