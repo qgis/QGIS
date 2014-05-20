@@ -3476,12 +3476,19 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
     return;
   }
   QgsAtlasComposition& atlasMap = mComposition->atlasComposition();
-  // parse and sort project's scales for the 'predefined scales' mode
-  QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
   QVector<double> pScales;
-  for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+  if ( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) )
   {
-    pScales.push_back( scaleIt->split(':')[1].toDouble() );
+    // parse and sort project's scales for the 'predefined scales' mode
+    QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+    for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+    {
+      QStringList parts(scaleIt->split(':'));
+      if (parts.size() == 2)
+      {
+        pScales.push_back( parts[1].toDouble() );
+      }
+    }
   }
   atlasMap.setPredefinedScales( pScales );
 }

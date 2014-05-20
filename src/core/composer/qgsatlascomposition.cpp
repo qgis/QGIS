@@ -486,7 +486,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
     double scale = calc.calculate( map->extent(), map->rect().width() );
     QgsRectangle extent = map->extent();
 
-    double n_width, n_height;
+    double n_width = extent.width(), n_height = extent.height();
     const QVector<double>& scales = mPredefinedScales;
     for ( int i = 0; i < scales.size(); i++ )
     {
