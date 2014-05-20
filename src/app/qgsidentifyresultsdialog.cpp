@@ -589,7 +589,6 @@ void QgsIdentifyResultsDialog::mapLayerActionDestroyed()
   }
 }
 
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
 QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
     QwtPlot* plot, const QString &title, QColor color )
 {
@@ -651,7 +650,6 @@ QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
     delete mPlotCurve;
   }
 }
-#endif
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QString label,
