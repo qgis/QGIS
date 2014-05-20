@@ -5,6 +5,7 @@
 
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;
+class QgsLayerTreeNode;
 
 class QCheckBox;
 class QListView;
@@ -20,6 +21,7 @@ signals:
 protected slots:
   void bridgeHasCustomLayerOrderChanged(bool override);
   void bridgeCustomLayerOrderChanged(const QStringList& order);
+  void nodeVisibilityChanged(QgsLayerTreeNode* node, Qt::CheckState state);
 
   void modelUpdated();
 

@@ -5,6 +5,7 @@
 #include <QMimeData>
 #include <QVBoxLayout>
 
+#include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 
 #include "qgsmaplayer.h"
@@ -26,9 +27,10 @@ public:
 
   QVariant data(const QModelIndex &index, int role) const
   {
+    QString id = mOrder.at(index.row());
+
     if (role == Qt::DisplayRole)
     {
-      QString id = mOrder.at(index.row());
       QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer(id);
       if (layer)
         return layer->name();
@@ -36,7 +38,6 @@ public:
 
     if (role == Qt::UserRole+1)
     {
-      QString id = mOrder.at(index.row());
       QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer(id);
       if (layer)
         return layer->id();
@@ -44,18 +45,34 @@ public:
 
     if (role == Qt::CheckStateRole)
     {
-      // TODO: layer visibility
-      return Qt::Checked;
+      QgsLayerTreeLayer* nodeLayer = mBridge->rootGroup()->findLayer(id);
+      if (nodeLayer)
+        return nodeLayer->isVisible();
     }
 
     return QVariant();
+  }
+
+  bool setData(const QModelIndex &index, const QVariant &value, int role)
+  {
+    if (role == Qt::CheckStateRole)
+    {
+      QString id = mOrder.at(index.row());
+      QgsLayerTreeLayer* nodeLayer = mBridge->rootGroup()->findLayer(id);
+      if (nodeLayer)
+      {
+        nodeLayer->setVisible((Qt::CheckState)value.toInt());
+        return true;
+      }
+    }
+    return false;
   }
 
   Qt::ItemFlags flags(const QModelIndex &index) const
   {
     if (!index.isValid())
       return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled; // | Qt::ItemIsUserCheckable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
   }
 
   Qt::DropActions supportedDropActions() const
@@ -128,6 +145,13 @@ public:
 
   QStringList order() const { return mOrder; }
 
+  void updateLayerVisibility(const QString& layerId)
+  {
+    int row = mOrder.indexOf(layerId);
+    if (row != -1)
+      emit dataChanged(index(row),index(row));
+  }
+
 protected:
   QgsLayerTreeMapCanvasBridge* mBridge;
   QStringList mOrder;
@@ -159,6 +183,8 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget(QgsLayerTreeMapCanvasBridge
   connect(mModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(modelUpdated()));
   connect(mModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(modelUpdated()));
 
+  connect(bridge->rootGroup(), SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SLOT(nodeVisibilityChanged(QgsLayerTreeNode*,Qt::CheckState)));
+
   QVBoxLayout* l = new QVBoxLayout;
   l->setMargin( 0 );
   l->addWidget( mView );
@@ -177,6 +203,14 @@ void QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged(const QStringList&
 {
   Q_UNUSED(order);
   mModel->refreshModel(mBridge->hasCustomLayerOrder() ? mBridge->customLayerOrder() : mBridge->defaultLayerOrder());
+}
+
+void QgsCustomLayerOrderWidget::nodeVisibilityChanged(QgsLayerTreeNode* node, Qt::CheckState state)
+{
+  if (QgsLayerTree::isLayer(node))
+  {
+    mModel->updateLayerVisibility(QgsLayerTree::toLayer(node)->layerId());
+  }
 }
 
 void QgsCustomLayerOrderWidget::modelUpdated()

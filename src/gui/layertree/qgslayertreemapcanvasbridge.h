@@ -19,6 +19,9 @@ public:
 
   void clear();
 
+  QgsLayerTreeGroup* rootGroup() const { return mRoot; }
+  QgsMapCanvas* mapCanvas() const { return mCanvas; }
+
   bool hasCustomLayerOrder() const { return mHasCustomLayerOrder; }
   QStringList customLayerOrder() const { return mCustomLayerOrder; }
 
