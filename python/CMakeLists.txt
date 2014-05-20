@@ -198,14 +198,15 @@ FOREACH(module core gui analysis networkanalysis)
   ADD_CUSTOM_TARGET(py${module} ALL)
   FILE(GLOB_RECURSE PY_FILES "${module}/*.py")
   INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
-
-  ADD_CUSTOM_COMMAND(TARGET py${module}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
-    COMMAND ${CMAKE_COMMAND} -E copy ${PY_FILES} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS ${pyfile}
-  )
+  FOREACH(pyfile ${PY_FILES})
+    ADD_CUSTOM_COMMAND(TARGET py${module}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
+      COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      DEPENDS ${PY_FILES}
+    )
+  ENDFOREACH(pyfile)
 ENDFOREACH(module)
 
 
