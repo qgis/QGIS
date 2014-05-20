@@ -9449,7 +9449,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     else
     {
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
-      connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
+      // handled by rendererChanged() connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 
     rlp->exec();
@@ -9467,7 +9467,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     else
     {
       vlp = new QgsVectorLayerProperties( vlayer, this );
-      connect( vlp, SIGNAL( refreshLegend( QString ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
+      // handled by rendererChanged() connect( vlp, SIGNAL( refreshLegend( QString ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 
     if ( vlp->exec() )

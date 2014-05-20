@@ -18,6 +18,7 @@ QgsLayerTreeView::QgsLayerTreeView(QWidget *parent)
   setAcceptDrops(true);
   setDropIndicatorShown(true);
   setEditTriggers(EditKeyPressed | SelectedClicked);
+  setExpandsOnDoubleClick(false); // normally used for other actions
 
   setSelectionMode(ExtendedSelection);
 
