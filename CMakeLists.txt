@@ -47,7 +47,7 @@ IF(WITH_MAPSERVER)
 ENDIF(WITH_MAPSERVER)
 
 # Custom widgets
-SET (WITH_CUSTOM_WIDGETS TRUE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
+SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
 
 # build our version of astyle
 SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
