@@ -2227,25 +2227,18 @@ void QgisApp::initLayerTreeView()
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 
   mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
+  connect( QgsProject::instance(), SIGNAL(writeProject(QDomDocument&)), mLayerTreeCanvasBridge, SLOT(writeProject(QDomDocument&)));
+  connect( QgsProject::instance(), SIGNAL(readProject(QDomDocument)), mLayerTreeCanvasBridge, SLOT(readProject(QDomDocument)));
 
   mMapLayerOrder = new QgsCustomLayerOrderWidget(mLayerTreeCanvasBridge, this);
   mMapLayerOrder->setObjectName("theMapLayerOrder");
-
-  QCheckBox *orderCb = new QCheckBox( tr( "Control rendering order" ) );
-  orderCb->setChecked( false );
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
   mLayerOrderDock->setObjectName( "LayerOrder" );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
-  QWidget* w = new QWidget( this );
-  QVBoxLayout* l = new QVBoxLayout;
-  l->setMargin( 0 );
-  l->addWidget( mMapLayerOrder );
-  l->addWidget( orderCb );
-  w->setLayout( l );
-  mLayerOrderDock->setWidget( w );
+  mLayerOrderDock->setWidget( mMapLayerOrder );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
   mLayerOrderDock->hide();
 }
@@ -3262,6 +3255,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   QgsProject* prj = QgsProject::instance();
   prj->clear();
+
+  mLayerTreeCanvasBridge->clear();
 
   //set the color for selections
   //the default can be set in qgisoptions

@@ -22,6 +22,12 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root
   setCanvasLayers();
 }
 
+void QgsLayerTreeMapCanvasBridge::clear()
+{
+  setHasCustomLayerOrder(false);
+  setCustomLayerOrder(defaultLayerOrder());
+}
+
 QStringList QgsLayerTreeMapCanvasBridge::defaultLayerOrder() const
 {
   QStringList order;
@@ -145,6 +151,45 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     mFirstCRS = QgsCoordinateReferenceSystem();
 
   mPendingCanvasUpdate = false;
+}
+
+void QgsLayerTreeMapCanvasBridge::readProject(const QDomDocument& doc)
+{
+  QDomElement elem = doc.documentElement().firstChildElement("layer-tree-canvas");
+  if (elem.isNull())
+    return;
+
+  QDomElement customOrderElem = elem.firstChildElement("custom-order");
+  if (!customOrderElem.isNull())
+  {
+    QStringList order;
+    QDomElement itemElem = customOrderElem.firstChildElement("item");
+    while (!itemElem.isNull())
+    {
+      order.append(itemElem.text());
+      itemElem = itemElem.nextSiblingElement("item");
+    }
+
+    setHasCustomLayerOrder( customOrderElem.attribute("enabled", 0).toInt() );
+    setCustomLayerOrder(order);
+  }
+}
+
+void QgsLayerTreeMapCanvasBridge::writeProject(QDomDocument& doc)
+{
+  QDomElement elem = doc.createElement("layer-tree-canvas");
+  QDomElement customOrderElem = doc.createElement("custom-order");
+  customOrderElem.setAttribute("enabled", mHasCustomLayerOrder ? 1 : 0);
+
+  foreach (QString layerId, mCustomLayerOrder)
+  {
+    QDomElement itemElem = doc.createElement("item");
+    itemElem.appendChild(doc.createTextNode(layerId));
+    customOrderElem.appendChild(itemElem);
+  }
+  elem.appendChild(customOrderElem);
+
+  doc.documentElement().appendChild(elem);
 }
 
 void QgsLayerTreeMapCanvasBridge::setCanvasLayers(QgsLayerTreeNode *node, QList<QgsMapCanvasLayer> &layers)

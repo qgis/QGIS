@@ -17,6 +17,8 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 public:
   QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent = 0);
 
+  void clear();
+
   bool hasCustomLayerOrder() const { return mHasCustomLayerOrder; }
   QStringList customLayerOrder() const { return mCustomLayerOrder; }
 
@@ -38,6 +40,9 @@ public slots:
 
   //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.
   void setCanvasLayers();
+
+  void readProject( const QDomDocument& doc );
+  void writeProject( QDomDocument& doc );
 
 signals:
   void hasCustomLayerOrderChanged(bool);
