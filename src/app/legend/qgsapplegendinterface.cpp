@@ -284,8 +284,8 @@ void QgsAppLegendInterface::onAddedChildren(QgsLayerTreeNode* node, int indexFro
     emit itemAdded( mLayerTreeView->layerTreeModel()->node2index(child) );
 
     // also notify about all children
-    if (QgsLayerTree::isGroup(child))
-      onAddedChildren(child, 0, child->children().count());
+    if (QgsLayerTree::isGroup(child) && child->children().count())
+      onAddedChildren(child, 0, child->children().count()-1);
   }
 }
 

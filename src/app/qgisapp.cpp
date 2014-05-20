@@ -113,6 +113,7 @@
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
 #include "qgscustomization.h"
+#include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
@@ -142,10 +143,6 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
-#include "qgslegend.h"
-#include "qgslegendgroup.h"
-#include "qgslayerorder.h"
-#include "qgslegendlayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -556,11 +553,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->setFocus();
 
   mLayerTreeView = new QgsLayerTreeView( this );
-
-  // "theMapLegend" used to find this canonical instance later
-  mMapLegend = new QgsLegend( mMapCanvas, this, "theMapLegend" );
-
-  mMapLayerOrder = new QgsLayerOrder( mMapLegend, this, "theMapLayerOrder" );
+  mLayerTreeView->setObjectName("theLayerTreeView"); // "theLayerTreeView" used to find this canonical instance later
 
   // create undo widget
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
@@ -574,7 +567,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   createCanvasTools();
   mMapCanvas->freeze();
   initLayerTreeView();
-  initLegend();
   createOverview();
   createMapTips();
   createDecorations();
@@ -822,7 +814,6 @@ QgisApp::QgisApp( )
   mMapCanvas = new QgsMapCanvas();
   mMapCanvas->freeze();
   mLayerTreeView = new QgsLayerTreeView( this );
-  mMapLegend = new QgsLegend( mMapCanvas );
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   mInfoBar = new QgsMessageBar( centralWidget() );
   // More tests may need more members to be initialized
@@ -2216,8 +2207,10 @@ QgsMessageBar* QgisApp::messageBar()
 
 void QgisApp::initLayerTreeView()
 {
-  mLayerTreeDock = new QDockWidget( tr( "Layers NEW" ), this );
-  mLayerTreeDock->setObjectName( "LayersNEW" );
+  mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
+
+  mLayerTreeDock = new QDockWidget( tr( "Layers" ), this );
+  mLayerTreeDock->setObjectName( "Layers" );
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   QgsLayerTreeModel* model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
@@ -2233,8 +2226,28 @@ void QgisApp::initLayerTreeView()
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 
-  mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas );
-  mLayerTreeCanvasBridge->setParent(this);
+  mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
+
+  mMapLayerOrder = new QgsCustomLayerOrderWidget(mLayerTreeCanvasBridge, this);
+  mMapLayerOrder->setObjectName("theMapLayerOrder");
+
+  QCheckBox *orderCb = new QCheckBox( tr( "Control rendering order" ) );
+  orderCb->setChecked( false );
+
+  mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
+  mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
+  mLayerOrderDock->setObjectName( "LayerOrder" );
+  mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  QWidget* w = new QWidget( this );
+  QVBoxLayout* l = new QVBoxLayout;
+  l->setMargin( 0 );
+  l->addWidget( mMapLayerOrder );
+  l->addWidget( orderCb );
+  w->setLayout( l );
+  mLayerOrderDock->setWidget( w );
+  addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
+  mLayerOrderDock->hide();
 }
 
 
@@ -2261,51 +2274,6 @@ void QgisApp::layerTreeViewCurrentChanged(const QModelIndex& current, const QMod
   QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint(parentGroup, index);
 }
 
-
-void QgisApp::initLegend()
-{
-  mMapLegend->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
-  mLegendDock = new QDockWidget( tr( "Layers" ), this );
-  mLegendDock->setObjectName( "Legend" );
-  mLegendDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-
-  QCheckBox *orderCb = new QCheckBox( tr( "Control rendering order" ) );
-  orderCb->setChecked( false );
-
-  connect( orderCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( unsetUpdateDrawingOrder( bool ) ) );
-  connect( mMapLegend, SIGNAL( updateDrawingOrderUnchecked( bool ) ), orderCb, SLOT( setChecked( bool ) ) );
-
-  QWidget *w = new QWidget( this );
-  QLayout *l = new QVBoxLayout;
-  l->setMargin( 0 );
-  l->addWidget( mMapLegend );
-  w->setLayout( l );
-  mLegendDock->setWidget( w );
-  addDockWidget( Qt::LeftDockWidgetArea, mLegendDock );
-
-  // add to the Panel submenu
-  mPanelMenu->addAction( mLegendDock->toggleViewAction() );
-
-  mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
-  mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
-  mLayerOrderDock->setObjectName( "LayerOrder" );
-  mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-
-  w = new QWidget( this );
-  l = new QVBoxLayout;
-  l->setMargin( 0 );
-  l->addWidget( mMapLayerOrder );
-  l->addWidget( orderCb );
-  w->setLayout( l );
-  mLayerOrderDock->setWidget( w );
-  addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
-  mLayerOrderDock->hide();
-
-  // add to the Panel submenu
-  mPanelMenu->addAction( mLayerOrderDock->toggleViewAction() );
-
-  return;
-}
 
 void QgisApp::createMapTips()
 {
@@ -9504,7 +9472,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     else
     {
       vlp = new QgsVectorLayerProperties( vlayer, this );
-      connect( vlp, SIGNAL( refreshLegend( QString, QgsLegendItem::Expansion ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
+      connect( vlp, SIGNAL( refreshLegend( QString ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 
     if ( vlp->exec() )

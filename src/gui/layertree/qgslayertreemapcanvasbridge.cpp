@@ -4,8 +4,9 @@
 
 #include "qgsmapcanvas.h"
 
-QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root, QgsMapCanvas *canvas)
-  : mRoot(root)
+QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject* parent)
+  : QObject(parent)
+  , mRoot(root)
   , mCanvas(canvas)
   , mPendingCanvasUpdate(false)
   , mHasCustomLayerOrder(false)

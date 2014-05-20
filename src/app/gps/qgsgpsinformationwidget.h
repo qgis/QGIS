@@ -31,7 +31,6 @@ class QgsGPSConnection;
 class QgsGPSTrackerThread;
 struct QgsGPSInformation;
 
-class QgsLegend;
 class QFile;
 class QColor;
 

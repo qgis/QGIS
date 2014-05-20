@@ -15,7 +15,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 {
   Q_OBJECT
 public:
-  QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup* root, QgsMapCanvas* canvas);
+  QgsLayerTreeMapCanvasBridge(QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent = 0);
 
   bool hasCustomLayerOrder() const { return mHasCustomLayerOrder; }
   QStringList customLayerOrder() const { return mCustomLayerOrder; }

@@ -35,7 +35,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayertreeview.h"
-#include "qgslegend.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
 #include "qgsfield.h"

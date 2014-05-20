@@ -44,12 +44,11 @@ class QgsComposer;
 class QgsComposerView;
 class QgsComposerManager;
 class QgsContrastEnhancement;
+class QgsCustomLayerOrderWidget;
 class QgsGeometry;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
-class QgsLegend;
-class QgsLayerOrder;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
@@ -1327,7 +1326,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createStatusBar();
     void setupConnections();
     void initLayerTreeView();
-    void initLegend();
     void createOverview();
     void createCanvasTools();
     void createMapTips();
@@ -1371,7 +1369,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // docks ------------------------------------------
     QDockWidget *mLayerTreeDock;
-    QDockWidget *mLegendDock;
     QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
     QDockWidget *mpGpsDock;
@@ -1473,10 +1470,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerTreeView* mLayerTreeView;
     //! Helper class that connects layer tree with map canvas
     QgsLayerTreeMapCanvasBridge* mLayerTreeCanvasBridge;
-    //! Table of contents (legend) for the map
-    QgsLegend *mMapLegend;
     //! Table of contents (legend) to order layers of the map
-    QgsLayerOrder *mMapLayerOrder;
+    QgsCustomLayerOrderWidget* mMapLayerOrder;
     //! Cursor for the overview map
     QCursor *mOverviewMapCursor;
     //! scale factor

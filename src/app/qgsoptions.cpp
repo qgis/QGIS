@@ -22,7 +22,6 @@
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgshighlight.h"
-#include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
