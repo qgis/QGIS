@@ -171,6 +171,11 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     return;
   }
+  if ( size.width() == 0 || size.height() == 0 )
+  {
+    //don't attempt to draw if size is invalid
+    return;
+  }
 
   const QgsMapSettings& ms = mComposition->mapSettings();
 
