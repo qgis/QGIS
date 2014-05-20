@@ -2310,7 +2310,12 @@ void QgsComposer::on_mActionSaveProject_triggered()
 
 void QgsComposer::on_mActionNewComposer_triggered()
 {
-  mQgis->actionNewPrintComposer()->trigger();
+  QString title = mQgis->uniqueComposerTitle( this, true );
+  if ( title.isNull() )
+  {
+    return;
+  }
+  mQgis->createNewComposer( title );
 }
 
 void QgsComposer::on_mActionDuplicateComposer_triggered()

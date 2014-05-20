@@ -3946,7 +3946,7 @@ void QgisApp::showComposerManager()
 {
   if ( !mComposerManager )
   {
-    mComposerManager = new QgsComposerManager( this, Qt::Window );
+    mComposerManager = new QgsComposerManager( 0, Qt::Window );
     connect( mComposerManager, SIGNAL( finished( int ) ), this, SLOT( deleteComposerManager() ) );
   }
   mComposerManager->show();
