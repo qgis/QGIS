@@ -3477,17 +3477,23 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
   }
   QgsAtlasComposition& atlasMap = mComposition->atlasComposition();
   QVector<double> pScales;
-  if ( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) )
+  // first look at project's scales
+  QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+  bool hasProjectScales( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
+  if ( !hasProjectScales || scales.isEmpty() )
   {
-    // parse and sort project's scales for the 'predefined scales' mode
-    QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
-    for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+    // default to global map tool scales
+    QSettings settings;
+    QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
+    scales = scalesStr.split( "," );
+  }
+
+  for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+  {
+    QStringList parts(scaleIt->split(':'));
+    if (parts.size() == 2)
     {
-      QStringList parts(scaleIt->split(':'));
-      if (parts.size() == 2)
-      {
-        pScales.push_back( parts[1].toDouble() );
-      }
+      pScales.push_back( parts[1].toDouble() );
     }
   }
   atlasMap.setPredefinedScales( pScales );

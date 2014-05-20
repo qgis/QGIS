@@ -32,6 +32,7 @@
 #include "qgscomposershape.h"
 #include "qgspaperitem.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsproject.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QMessageBox>
@@ -166,7 +167,7 @@ void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
     mAtlasMarginSpinBox->setEnabled( false );
   }
 
-  mAtlasPredefinedScaleRadio->setEnabled( checked );
+  mAtlasPredefinedScaleRadio->setEnabled( checked && hasPredefinedScales() );
 
   mComposerMap->setAtlasDriven( checked );
   updateMapForAtlas();
@@ -237,10 +238,21 @@ void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
     return;
   }
 
-  if ( checked )
+  if ( hasPredefinedScales() )
   {
-    mComposerMap->setAtlasScalingMode( QgsComposerMap::Predefined );
-    updateMapForAtlas();
+    if ( checked )
+    {
+      mComposerMap->setAtlasScalingMode( QgsComposerMap::Predefined );
+      updateMapForAtlas();
+    }
+  }
+  else
+  {
+    // restore to fixed scale if no predefined scales exist
+    mAtlasFixedScaleRadio->blockSignals( true );
+    mAtlasFixedScaleRadio->setChecked( Qt::Checked );
+    mAtlasFixedScaleRadio->blockSignals( false );
+    mComposerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
   }
 }
 
@@ -561,7 +573,7 @@ void QgsComposerMapWidget::updateGuiElements()
     mAtlasMarginSpinBox->setEnabled( mComposerMap->atlasScalingMode() == QgsComposerMap::Auto );
     mAtlasMarginRadio->setEnabled( mComposerMap->atlasDriven() );
     mAtlasMarginRadio->setChecked( mComposerMap->atlasScalingMode() == QgsComposerMap::Auto );
-    mAtlasPredefinedScaleRadio->setEnabled( mComposerMap->atlasDriven() );
+    mAtlasPredefinedScaleRadio->setEnabled( mComposerMap->atlasDriven() && hasPredefinedScales() );
     mAtlasPredefinedScaleRadio->setChecked( mComposerMap->atlasScalingMode() == QgsComposerMap::Predefined );
 
     if ( mComposerMap->atlasDriven() )
@@ -1408,4 +1420,20 @@ void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
   }
 
   toggleAtlasMarginByLayerType();
+}
+
+bool QgsComposerMapWidget::hasPredefinedScales() const
+{
+  // first look at project's scales
+  QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+  bool hasProjectScales( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
+  if ( !hasProjectScales || scales.isEmpty() )
+  {
+    // default to global map tool scales
+    QSettings settings;
+    QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
+    QStringList myScalesList = scalesStr.split( "," );
+    return myScalesList.size() > 0 && myScalesList[0] != "";
+  }
+  return true;
 }

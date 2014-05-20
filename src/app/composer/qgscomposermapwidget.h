@@ -150,6 +150,9 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     /**Recalculates the bounds for an atlas map when atlas properties change*/
     void updateMapForAtlas();
 
+    /**Is there some predefined scales, globally or as project's options ?*/
+    bool hasPredefinedScales() const;
+
 };
 
 #endif
