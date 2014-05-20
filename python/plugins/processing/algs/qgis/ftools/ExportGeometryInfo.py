@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing import interface
+from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterSelection import ParameterSelection
@@ -103,7 +103,7 @@ class ExportGeometryInfo(GeoAlgorithm):
                     'NONE')[0]
             crs = layer.crs().srsid()
         elif method == 1:
-            mapCRS = interface.iface.mapCanvas().mapRenderer().destinationCrs()
+            mapCRS = iface.mapCanvas().mapRenderer().destinationCrs()
             layCRS = layer.crs()
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
 

@@ -34,8 +34,8 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import *
 
 from qgis.core import *
+from qgis.utils import iface
 
-from processing import interface
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.modeler.Providers import Providers
@@ -190,7 +190,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         if not dlg:
             dlg = ParametersDialog(alg)
 
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
 
         dlg.show()

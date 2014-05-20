@@ -29,13 +29,12 @@ from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from processing import interface
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.tools import dataobjects
-
+from qgis.utils import iface
 
 class ExtentSelectionPanel(QtGui.QWidget):
 
@@ -59,7 +58,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
         self.pushButton.clicked.connect(self.buttonPushed)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         self.prevMapTool = canvas.mapTool()
         self.tool = RectangleMapTool(canvas)
         self.connect(self.tool, SIGNAL('rectangleCreated()'), self.fillCoords)
@@ -143,7 +142,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = interface.iface.mapCanvas().extent()
+        extentsDict[CANVAS_KEY] = iface.mapCanvas().extent()
         extents = [CANVAS_KEY]
         layers = dataobjects.getAllLayers()
         for layer in layers:
@@ -155,7 +154,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
             self.setValueFromRect(extentsDict[item])
 
     def selectOnCanvas(self):
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         canvas.setMapTool(self.tool)
         self.dialog.showMinimized()
 
@@ -168,7 +167,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
             + str(r.yMinimum()) + ',' + str(r.yMaximum())
         self.text.setText(s)
         self.tool.reset()
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
         self.dialog.showNormal()
         self.dialog.raise_()

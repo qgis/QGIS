@@ -58,7 +58,7 @@ from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
 from processing.tools import dataobjects
-
+from qgis.utils import iface
 
 class AlgorithmExecutionDialog(QtGui.QDialog):
 
@@ -68,7 +68,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             (self.parameter, self.widget) = (param, widget)
 
     def __init__(self, alg, mainWidget):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint
+        QtGui.QDialog.__init__(self, iface.mainWindow(), QtCore.Qt.WindowSystemMenuHint
                                | QtCore.Qt.WindowTitleHint)
         self.executed = False
         self.mainWidget = mainWidget
