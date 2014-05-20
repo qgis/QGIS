@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'python/plugins/processing/ui/DlgMultipleSelection.ui'
+# Form implementation generated from reading ui file 'DlgMultipleSelection.ui'
 #
-# Created: Thu Oct  3 20:32:49 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Tue May 20 13:40:43 2014
+#      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,20 +12,29 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgMultipleSelection(object):
     def setupUi(self, DlgMultipleSelection):
         DlgMultipleSelection.setObjectName(_fromUtf8("DlgMultipleSelection"))
         DlgMultipleSelection.resize(380, 320)
         self.horizontalLayout = QtGui.QHBoxLayout(DlgMultipleSelection)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setContentsMargins(0, 5, 0, 0)
+        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setMargin(9)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.lstLayers = QtGui.QListWidget(DlgMultipleSelection)
+        self.lstLayers = QtGui.QListView(DlgMultipleSelection)
         self.lstLayers.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.lstLayers.setAlternatingRowColors(True)
-        self.lstLayers.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.lstLayers.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.lstLayers.setObjectName(_fromUtf8("lstLayers"))
         self.horizontalLayout.addWidget(self.lstLayers)
         self.buttonBox = QtGui.QDialogButtonBox(DlgMultipleSelection)
@@ -40,5 +49,5 @@ class Ui_DlgMultipleSelection(object):
         QtCore.QMetaObject.connectSlotsByName(DlgMultipleSelection)
 
     def retranslateUi(self, DlgMultipleSelection):
-        DlgMultipleSelection.setWindowTitle(QtGui.QApplication.translate("DlgMultipleSelection", "Multiple selection", None, QtGui.QApplication.UnicodeUTF8))
+        DlgMultipleSelection.setWindowTitle(_translate("DlgMultipleSelection", "Multiple selection", None))
 
