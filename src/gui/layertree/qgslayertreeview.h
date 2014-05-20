@@ -38,6 +38,9 @@ public:
 
   QList<QgsMapLayer*> selectedLayers() const;
 
+public slots:
+  void refreshLayerSymbology( const QString& layerId );
+
 protected:
   void contextMenuEvent(QContextMenuEvent* event);
 
@@ -48,7 +51,6 @@ protected:
 signals:
   void currentLayerChanged(QgsMapLayer* layer);
 
-public slots:
 
 protected slots:
 

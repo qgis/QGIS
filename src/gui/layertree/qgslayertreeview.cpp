@@ -204,3 +204,11 @@ QList<QgsMapLayer*> QgsLayerTreeView::selectedLayers() const
   }
   return list;
 }
+
+
+void QgsLayerTreeView::refreshLayerSymbology( const QString& layerId )
+{
+  QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer(layerId);
+  if (nodeLayer)
+    layerTreeModel()->refreshLayerSymbology( nodeLayer );
+}

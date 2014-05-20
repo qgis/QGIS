@@ -1963,7 +1963,13 @@ void QgisApp::setupConnections()
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
   connect( mLayerTreeView->selectionModel(), SIGNAL( selectionChanged(QItemSelection,QItemSelection) ),
            this, SLOT( legendLayerSelectionChanged() ) );
-  connect( mMapLegend, SIGNAL( zOrderChanged() ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren(QgsLayerTreeNode*,int,int) ),
+           this, SLOT( markDirty() ) );
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren(QgsLayerTreeNode*,int,int) ),
+           this, SLOT( markDirty() ) );
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged(QgsLayerTreeNode*,Qt::CheckState) ),
+           this, SLOT( markDirty() ) );
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( customPropertyChanged(QgsLayerTreeNode*,QString) ),
            this, SLOT( markDirty() ) );
 
   // connect map layer registry
@@ -4698,7 +4704,7 @@ void QgisApp::saveAsFile()
 
 void QgisApp::saveAsLayerDefinition()
 {
-  QList<QgsMapLayer*> layers = mMapLegend->selectedLayers();
+  QList<QgsMapLayer*> layers = mLayerTreeView->selectedLayers();
 
   if ( layers.isEmpty() )
     return;
@@ -6044,7 +6050,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
         return;
       }
 
-      mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );
+      mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       mMapCanvas->clearCache();
       mMapCanvas->refresh();
     }
@@ -6438,9 +6444,9 @@ void QgisApp::layerSubsetString()
     if ( subsetBefore != qb->sql() )
     {
       mMapCanvas->refresh();
-      if ( mMapLegend )
+      if ( mLayerTreeView )
       {
-        mMapLegend->refreshLayerSymbology( vlayer->id(), false );
+        mLayerTreeView->refreshLayerSymbology( vlayer->id() );
       }
     }
   }
@@ -6694,45 +6700,32 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     // add layer to layer registry and legend
     QList<QgsMapLayer *> myList;
     myList << dupLayer;
+    QgsProject::instance()->layerTreeRegistryBridge()->setEnabled(false);
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
+    QgsProject::instance()->layerTreeRegistryBridge()->setEnabled(true);
 
-    // verify layer has been added to legend
-    QgsLegendLayer *duplLayer = 0;
-    duplLayer = mMapLegend->findLegendLayer( dupLayer );
-    if ( !duplLayer )
+    QgsLayerTreeLayer* nodeSelectedLyr = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer(selectedLyr->id());
+    Q_ASSERT(nodeSelectedLyr);
+    Q_ASSERT(QgsLayerTree::isGroup(nodeSelectedLyr->parent()));
+    QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup(nodeSelectedLyr->parent());
+
+    QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer(parentGroup->children().indexOf(nodeSelectedLyr)+1, dupLayer);
+
+    // always set duplicated layers to not visible so layer can be configured before being turned on
+    nodeDupLayer->setVisible(Qt::Unchecked);
+
+    // duplicate the layer style
+    copyStyle( selectedLyr );
+    pasteStyle( dupLayer );
+
+    QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
+    QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
+    if ( vLayer && vDupLayer )
     {
-      // some source layers, like items > 4th in a container, have their layer
-      // registered but do not show up in the legend, so manually add them
-      QgsLegendLayer* llayer = new QgsLegendLayer( dupLayer );
-      mMapLegend->insertTopLevelItem( 0, llayer );
-      // double-check, or move of non-existent legend layer will segfault
-      duplLayer = mMapLegend->findLegendLayer( dupLayer );
-    }
-
-    QgsLegendLayer *srclLayer = mMapLegend->findLegendLayer( selectedLyr );
-    if ( duplLayer && srclLayer )
-    {
-      // move layer to just below source layer
-      mMapLegend->moveItem( duplLayer, srclLayer );
-
-      // duplicate the layer style
-      copyStyle( selectedLyr );
-      pasteStyle( dupLayer );
-
-      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
-      QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
-      if ( vLayer && vDupLayer )
+      foreach ( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
       {
-        foreach ( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
-        {
-          vDupLayer->addJoin( join );
-        }
+        vDupLayer->addJoin( join );
       }
-
-      // always set duplicated layers to not visible
-      // so layer can be configured before being turned on,
-      // and no map canvas refresh needed when doing multiple duplications
-      mMapLegend->setLayerVisible( dupLayer, false );
     }
   }
 
@@ -6869,7 +6862,7 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
     myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( layer, mMapCanvas->extent() );
     layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
 
-    mMapLegend->refreshLayerSymbology( layer->id() );
+    mLayerTreeView->refreshLayerSymbology( layer->id() );
     mMapCanvas->refresh();
   }
 }
@@ -9499,7 +9492,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     else
     {
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
-      connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
+      connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 
     rlp->exec();
@@ -9517,7 +9510,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     else
     {
       vlp = new QgsVectorLayerProperties( vlayer, this );
-      connect( vlp, SIGNAL( refreshLegend( QString, QgsLegendItem::Expansion ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, QgsLegendItem::Expansion ) ) );
+      connect( vlp, SIGNAL( refreshLegend( QString, QgsLegendItem::Expansion ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 
     if ( vlp->exec() )
