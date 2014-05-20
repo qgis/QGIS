@@ -20,6 +20,7 @@ SET (globe_plugin_SRCS
      globe_plugin.cpp
      qgsosgearthtilesource.cpp
      globe_plugin_dialog.cpp
+     qgsglobeinterface.cpp
 )
 IF (NOT HAVE_OSGEARTHQT)
     SET(globe_plugin_SRCS
@@ -36,12 +37,36 @@ SET (globe_plugin_UIS
 SET (globe_plugin_MOC_HDRS
      globe_plugin.h
      globe_plugin_dialog.h
+     qgsglobeinterface.h
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)
 
+SET (GLOBE_PLUGIN_HDRS
+     qgsosgearthtilesource.h
+     qgsosgearthfeaturesource.h
+     qgsosgearthfeatureoptions.h
+
+     qgsglobefeatureutils.h
+     qgsglobeinterface.h
+     qgsglobestyleutils.h
+     qgsglobelayerpropertiesfactory.h
+     qgsglobevectorlayerpropertiespage.h
+     qgsglobevectorlayerconfig.h
+)
+
+SET (GLOBE_PLUGIN_RCCS  globe_plugin.qrc)
+
 ########################################################
 # Build
+
+ADD_DEFINITIONS("-DGLOBE_EXPORT=")
+
+IF(WIN32)
+  IF(MSVC)
+    ADD_DEFINITIONS("-DGLOBE_EXPORT=${DLLEXPORT}")
+  ENDIF(MSVC)
+ENDIF(WIN32)
 
 QT4_WRAP_UI (globe_plugin_UIS_H  ${globe_plugin_UIS})
 
@@ -49,13 +74,14 @@ QT4_WRAP_CPP (globe_plugin_MOC_SRCS  ${globe_plugin_MOC_HDRS})
 
 QT4_ADD_RESOURCES(globe_plugin_RCC_SRCS ${globe_plugin_RCCS})
 
-ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${globe_plugin_RCC_SRCS} ${globe_plugin_UIS_H})
+ADD_LIBRARY (globeplugin SHARED ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${globe_plugin_RCC_SRCS} ${globe_plugin_UIS_H})
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${OSGEARTH_INCLUDE_DIR}
      ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
+     ${SIP_INCLUDE_DIR}
      ../../core ../../core/raster
      ../../gui
      ..
@@ -86,6 +112,7 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${OPENTHREADS_LIBRARY}
 )
 
+ADD_SUBDIRECTORY(python)
 
 ########################################################
 # Install

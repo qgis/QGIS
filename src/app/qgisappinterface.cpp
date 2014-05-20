@@ -640,3 +640,9 @@ int QgisAppInterface::messageTimeout()
 {
   return qgis->messageTimeout();
 }
+
+QgsPluginInterface* QgisAppInterface::pluginInterface( const QString& pluginName )
+{
+  return qgis->pluginInterface( pluginName );
+}
+

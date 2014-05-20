@@ -32,9 +32,7 @@ class QgisInterface : QObject
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
-  public slots: // TODO: do these functions really need to be slots?
-
-    /* Exposed functions */
+    virtual QgsPluginInterface* pluginInterface( const QString& pluginName ) = 0;
 
     //! Zoom to full extent of map layers
     virtual void zoomFull() = 0;
