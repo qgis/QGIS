@@ -28,6 +28,8 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 
     //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll );
+    
+    bool scrollOnExpand();
 
   signals:
     /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
