@@ -391,6 +391,9 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   // duplicate layer
   QAction* duplicateLayersAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
+  // set layer scale visibility
+  theMenu.addAction( tr( "&Set Layer Scale Visbility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
+
   // set layer crs
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 

@@ -353,6 +353,9 @@ class QgsLegend : public QTreeWidget
     /** Remove selected layers */
     void removeSelectedLayers();
 
+    /** Set scale visiblity for selected layers */
+    void setScaleVisibilityForSelectedLayers( bool hasScaleVisibility, double minScale, double maxScale );
+
     /** Set CRS for selected layers */
     void setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs );
 

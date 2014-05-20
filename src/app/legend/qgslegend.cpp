@@ -3012,6 +3012,42 @@ void QgsLegend::removeSelectedLayers()
   mMapCanvas->freeze( false );
 }
 
+void QgsLegend::setScaleVisibilityForSelectedLayers( bool hasScaleVisibility, double minScale, double maxScale )
+{
+  // Turn off rendering to improve speed.
+  mMapCanvas->freeze();
+
+  foreach ( QTreeWidgetItem * item, selectedItems() )
+  {
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item );
+    if ( lg )
+    {
+      foreach ( QgsLegendLayer *ll, lg->legendLayers() )
+      {
+        if ( ll && ll->layer() )
+        {
+          ll->layer()->toggleScaleBasedVisibility( hasScaleVisibility );
+          ll->layer()->setMinimumScale( 1.0 / maxScale );
+          ll->layer()->setMaximumScale( 1.0 / minScale );
+        }
+      }
+      continue;
+    }
+
+    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+    if ( ll && ll->layer() )
+    {
+      ll->layer()->toggleScaleBasedVisibility( hasScaleVisibility );
+      ll->layer()->setMinimumScale( 1.0 / maxScale );
+      ll->layer()->setMaximumScale( 1.0 / minScale );
+      continue;
+    }
+  }
+
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->freeze( false );
+}
+
 void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs )
 {
   // Turn off rendering to improve speed.
