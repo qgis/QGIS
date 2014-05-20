@@ -305,13 +305,13 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
   }
   else if ( sqlTypeName.startsWith( "date", Qt::CaseInsensitive ) )
   {
-    type = QVariant::String;
+    type = QVariant::Date;
   }
   else if ( sqlTypeName.startsWith( "datetime", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "smalldatetime", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "datetime2", Qt::CaseInsensitive ) )
   {
-    type = QVariant::String;
+    type = QVariant::DateTime;
   }
   else if ( sqlTypeName.startsWith( "time", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "timestamp", Qt::CaseInsensitive ) )
