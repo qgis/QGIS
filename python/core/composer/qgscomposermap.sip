@@ -70,6 +70,20 @@ class QgsComposerMap : QgsComposerItem
       Top
     };
 
+    /** Scaling modes used for the serial rendering (atlas)
+     */
+    enum AtlasScalingMode
+    {
+      Fixed,      /*< The current scale of the map is used for each feature of the atlas */
+      Predefined, /*< A scale is chosen from the predefined scales
+                    @see QgsAtlasComposition::setPredefinedScales.
+                    The smallest scale from the list of scales where the atlas feature
+                    is fully visible is chosen.
+                  */
+      Auto        /*< The extent is adjusted so that each feature is fully visible.
+                    A margin is applied around the center @see setAtlasMargin */
+    };
+
     /** \brief Draw to paint device
         @param painter painter
         @param extent map extent
@@ -394,10 +408,23 @@ class QgsComposerMap : QgsComposerItem
     /** Set to true if the map extents should be set by the current atlas feature */
     void setAtlasDriven( bool enabled );
 
-    /** Returns true if the map uses a fixed scale when in atlas mode */
-    bool atlasFixedScale() const;
-    /** Set to true if the map should use a fixed scale when in atlas mode */
-    void setAtlasFixedScale( bool fixed );
+    /** Returns true if the map uses a fixed scale when in atlas mode
+        @deprecated since 2.4 Use atlasScalingMode() instead
+    */
+    bool atlasFixedScale() const /Deprecated/;
+    /** Set to true if the map should use a fixed scale when in atlas mode
+        @deprecated since 2.4 Use setAtlasScalingMode() instead
+    */
+    void setAtlasFixedScale( bool fixed ) /Deprecated/;
+
+    /** Returns the current atlas scaling mode
+        @returns the current scaling mode
+    */
+    AtlasScalingMode atlasScalingMode();
+    /** Sets the current atlas scaling mode
+        @param mode atlas scaling mode to set
+    */
+    void setAtlasScalingMode( AtlasScalingMode mode );
 
     /** Returns the margin size (percentage) used when the map is in atlas mode */
     double atlasMargin() const;

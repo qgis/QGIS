@@ -52,7 +52,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal )
     , mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 )
     , mGridFramePenThickness( 0.5 ), mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black )
-    , mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
+    , mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasScalingMode( Auto ), mAtlasMargin( 0.10 )
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
@@ -110,7 +110,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal )
     , mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mGridFramePenThickness( 0.5 )
     , mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black )
-    , mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
+    , mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasScalingMode( Auto ), mAtlasMargin( 0.10 )
 {
   mOverviewFrameMapSymbol = 0;
   mGridLineSymbol = 0;
@@ -1072,7 +1072,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   //atlas
   QDomElement atlasElem = doc.createElement( "AtlasMap" );
   atlasElem.setAttribute( "atlasDriven", mAtlasDriven );
-  atlasElem.setAttribute( "fixedScale", mAtlasFixedScale );
+  atlasElem.setAttribute( "scalingMode", mAtlasScalingMode );
   atlasElem.setAttribute( "margin", qgsDoubleToString( mAtlasMargin ) );
   composerMapElem.appendChild( atlasElem );
 
@@ -1323,7 +1323,12 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
     mAtlasDriven = ( atlasElem.attribute( "atlasDriven", "0" ) != "0" );
-    mAtlasFixedScale = ( atlasElem.attribute( "fixedScale", "0" ) != "0" );
+    if ( atlasElem.hasAttribute("fixedScale") ) { // deprecated XML
+      mAtlasScalingMode = (atlasElem.attribute( "fixedScale", "0" ) != "0") ? Fixed : Auto;
+    }
+    else if ( atlasElem.hasAttribute("scalingMode") ) {
+      mAtlasScalingMode = static_cast<AtlasScalingMode>(atlasElem.attribute("scalingMode").toInt());
+    }
     mAtlasMargin = atlasElem.attribute( "margin", "0.1" ).toDouble();
   }
 
@@ -2638,5 +2643,16 @@ void QgsComposerMap::sizeChangedByRotation( double& width, double& height )
 {
   //kept for api compatibility with QGIS 2.0 - use mMapRotation
   return QgsComposerItem::sizeChangedByRotation( width, height, mMapRotation );
+}
+
+bool QgsComposerMap::atlasFixedScale() const
+{
+  return mAtlasScalingMode == Fixed;
+}
+
+void QgsComposerMap::setAtlasFixedScale( bool fixed )
+{
+  // implicit : if set to false => auto scaling
+  mAtlasScalingMode = fixed ? Fixed : Auto;
 }
 

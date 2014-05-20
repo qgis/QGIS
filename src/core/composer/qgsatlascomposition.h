@@ -160,6 +160,15 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
     Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
+    /** Returns the current list of predefined scales
+        @returns a vector of doubles representing predefined scales
+    */
+    const QVector<double>& predefinedScales() const { return mPredefinedScales; }
+    /** Sets the predefined scales
+        @param scales a vector of doubles representing predefined scales
+     */
+    void setPredefinedScales( const QVector<double>& scales );
+
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
     bool beginRender();
@@ -274,6 +283,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //computes the extent of the current feature, in the crs of the specified map
     void computeExtent( QgsComposerMap *map );
+
+    //list of predefined scales
+    QVector<double> mPredefinedScales;
 };
 
 #endif

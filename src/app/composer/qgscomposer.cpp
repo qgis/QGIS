@@ -929,6 +929,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
 
   if ( checked )
   {
+    loadAtlasPredefinedScalesFromProject();
     atlasMap->firstFeature();
     emit( atlasPreviewFeatureChanged() );
   }
@@ -1333,6 +1334,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
 
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -1487,6 +1489,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     QPainter painter( &mPrinter );
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -1748,6 +1751,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -2015,6 +2019,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   {
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -3463,5 +3468,28 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
   }
+}
+
+void QgsComposer::loadAtlasPredefinedScalesFromProject()
+{
+  if ( !mComposition ) {
+    return;
+  }
+  QgsAtlasComposition& atlasMap = mComposition->atlasComposition();
+  QVector<double> pScales;
+  if ( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) )
+  {
+    // parse and sort project's scales for the 'predefined scales' mode
+    QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+    for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+    {
+      QStringList parts(scaleIt->split(':'));
+      if (parts.size() == 2)
+      {
+        pScales.push_back( parts[1].toDouble() );
+      }
+    }
+  }
+  atlasMap.setPredefinedScales( pScales );
 }
 
