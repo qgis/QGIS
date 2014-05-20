@@ -36,6 +36,7 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
+from processing.parameters.ParameterTableField import ParameterTableField
 from processing.tools import dataobjects
 import postgis_utils
 
@@ -51,6 +52,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
     DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
+    PRIMARY_KEY = 'PRIMARY_KEY'
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/postgis.png')
@@ -62,6 +64,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
+        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
@@ -91,7 +94,10 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
-        uri.setDataSource(schema, table, geomColumn, '')
+        if primaryKeyField:
+            uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
+        else:
+            uri.setDataSource(schema, table, geomColumn, '')
 
         options = {}
         if overwrite:
@@ -137,6 +143,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)'))
         self.addParameter(ParameterString(self.TABLENAME, 'Table to import to'
                           ))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY, 'Primary key field',
+                          self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN, 'Geometry column', 'the_geom'
                           ))
         self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite', True))
