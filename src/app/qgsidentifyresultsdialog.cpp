@@ -905,6 +905,11 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 {
   QgsDebugMsg( "Entered" );
+
+  // only handle context menu event if showing tree widget
+  if ( tabWidget->currentIndex() != 0 )
+    return;
+
   QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
   // if the user clicked below the end of the attribute list, just return
   if ( !item )
