@@ -707,7 +707,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Duplicate map layer(s) in legend
      * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
-    //! Set CRS of a layer
+    //! Set scale visibility of layer(s)
+    void setLayerScaleVisibility();
+    //! Set CRS of layer(s)
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();

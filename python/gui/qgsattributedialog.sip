@@ -1,65 +1,30 @@
-class QgsAttributeDialog : QObject
+class QgsScaleVisibilityDialog : QObject
 {
 %TypeHeaderCode
-#include <qgsattributedialog.h>
+#include <qgsscalevisibilitydialog.h>
 %End
 
   public:
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param myDa              A QgsDistanceArea which will be used for expressions
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     *
-     * @deprecated
-     */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true ) /Deprecated/;
+    explicit QgsScaleVisibilityDialog( QWidget *parent = 0, QString title = QString(), QgsMapCanvas* mapCanvas = 0 );
 
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     * @param context           The context in which this dialog is created
-     *
-     */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true, QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    //! return if scale visibilty is enabled
+    bool hasScaleVisibility();
 
-    /** Saves the size and position for the next time
-     *  this dialog box will be used.
-     */
-    void saveGeometry();
+    //! return minimum scale (true scale, not scale denominator)
+    double minimumScale();
 
-    /** Restores the size and position from the last time
-     *  this dialog box was used.
-     */
-    void restoreGeometry();
+    //! return maximum scale (true scale, not scale denominator)
+    double maximumScale();
 
-    void setHighlight( QgsHighlight *h );
-
-    QDialog *dialog();
-
-    const QgsFeature* feature();
-
-    /**
-     * Is this dialog editable?
-     *
-     * @return returns true, if this dialog was created in an editable manner.
-     */
-    bool editable();
 
   public slots:
-    void accept();
+    //! set if scale visibility is enabled
+    void setScaleVisiblity( bool hasScaleVisibility );
 
-    int exec();
-    void show();
+    //! set minimum scale (true scale, not scale denominator)
+    void setMinimumScale( double minScale );
 
-    void dialogDestroyed();
+    //! set maximum scale (true scale, not scale denominator)
+    void setMaximumScale( double maxScale );
+
 };
