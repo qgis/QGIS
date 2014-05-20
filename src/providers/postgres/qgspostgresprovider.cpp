@@ -2961,6 +2961,13 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         throw PGException( result );
     }
 
+    if ( options->contains( "lowercaseFieldNames" ) && options->value( "lowercaseFieldNames" ).toBool() )
+    {
+      //convert primary key name to lowercase
+      //this must happen after determining the field type of the primary key
+      primaryKey = primaryKey.toLower();
+    }
+
     sql = QString( "CREATE TABLE %1(%2 %3 PRIMARY KEY)" )
           .arg( schemaTableName )
           .arg( quotedIdentifier( primaryKey ) )
@@ -3040,14 +3047,11 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
       QgsField fld = fields[fldIdx];
-      if ( fld.name() == primaryKey )
-      {
-        oldToNewAttrIdxMap->insert( fldIdx, 0 );
-        continue;
-      }
 
       if ( fld.name() == geometryColumn )
       {
+        //the "lowercaseFieldNames" option does not affect the name of the geometry column, so we perform
+        //this test before converting the field name to lowercase
         QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
         continue;
       }
@@ -3056,6 +3060,12 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       {
         //convert field name to lowercase
         fld.setName( fld.name().toLower() );
+      }
+
+      if ( fld.name() == primaryKey )
+      {
+        oldToNewAttrIdxMap->insert( fldIdx, 0 );
+        continue;
       }
 
       if ( !convertField( fld, options ) )
