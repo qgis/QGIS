@@ -1616,9 +1616,9 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     QgsMapSettings tmpSettings;
     tmpSettings.readXML( node );
     setMapUnits( tmpSettings.mapUnits() );
-    setExtent( tmpSettings.extent() );
     setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
+    setExtent( tmpSettings.extent() );
     // TODO: read only units, extent, projections, dest CRS
 
     clearExtentHistory(); // clear the extent history on project load
