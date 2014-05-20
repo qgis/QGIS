@@ -432,8 +432,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showLayerProperties( QgsMapLayer *ml );
 
     //! returns pointer to map legend
-    QgsLegend *legend();
-
     QgsLayerTreeView* layerTreeView();
 
     //! returns pointer to plugin manager

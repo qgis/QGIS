@@ -2189,12 +2189,6 @@ void QgisApp::addToolBar( QToolBar* toolBar , Qt::ToolBarArea area )
   mToolbarMenu->addAction( toolBar->toggleViewAction() );
 }
 
-QgsLegend *QgisApp::legend()
-{
-  Q_ASSERT( mMapLegend );
-  return mMapLegend;
-}
-
 QgsLayerTreeView* QgisApp::layerTreeView()
 {
   Q_ASSERT( mLayerTreeView );

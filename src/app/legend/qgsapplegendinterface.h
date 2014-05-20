@@ -21,7 +21,9 @@
 
 #include <QModelIndex>
 
-class QgsLegend;
+class QgsLayerTreeGroup;
+class QgsLayerTreeNode;
+class QgsLayerTreeView;
 class QgsMapLayer;
 
 /** \ingroup gui
@@ -35,7 +37,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
   public:
 
     /** Constructor */
-    explicit QgsAppLegendInterface( QgsLegend * legend );
+    explicit QgsAppLegendInterface( QgsLayerTreeView * layerTreeView );
 
     /** Destructor */
     ~QgsAppLegendInterface();
@@ -89,9 +91,6 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Move a layer to a group
     void moveLayer( QgsMapLayer *ml, int groupIndex );
 
-    //! Update an index
-    void updateIndex( QModelIndex oldIndex, QModelIndex newIndex );
-
     //! Collapse or expand a group
     virtual void setGroupExpanded( int groupIndex, bool expand );
 
@@ -107,11 +106,16 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! refresh layer symbology
     void refreshLayerSymbology( QgsMapLayer *ml );
 
+  protected slots:
+    void onAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
+    void onRemovedChildren();
+
   private:
 
     //! Pointer to QgsLegend object
-    QgsLegend *mLegend;
-    QTreeWidgetItem *getItem( int itemIndex );
+    QgsLayerTreeView* mLayerTreeView;
+    QgsLayerTreeGroup* groupIndexToNode( int itemIndex );
+    int groupNodeToIndex( QgsLayerTreeGroup* group );
 };
 
 #endif //QGSLEGENDAPPIFACE_H

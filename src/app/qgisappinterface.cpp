@@ -47,7 +47,7 @@
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis ),
-    legendIface( _qgis->legend() ),
+    legendIface( _qgis->layerTreeView() ),
     pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
