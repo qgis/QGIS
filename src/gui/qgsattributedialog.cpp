@@ -444,7 +444,7 @@ void QgsAttributeDialog::init()
         buttonBox->setStandardButtons( QDialogButtonBox::Cancel );
       }
 
-      connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
+      connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
     }
   }
   else
@@ -555,6 +555,16 @@ QgsAttributeDialog::~QgsAttributeDialog()
   {
     delete mDialog;
   }
+}
+
+void QgsAttributeDialog::reject()
+{
+  // Only save the geometry of the dialog if it's not a custom one.
+  if ( mLayer->editorLayout() != QgsVectorLayer::UiFileLayout )
+  {
+    saveGeometry();
+  }
+  mDialog->reject();
 }
 
 void QgsAttributeDialog::accept()

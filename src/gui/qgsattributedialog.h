@@ -88,6 +88,7 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
     bool editable() { return mEditable; }
 
   public slots:
+    void reject();
     void accept();
 
     int exec();
