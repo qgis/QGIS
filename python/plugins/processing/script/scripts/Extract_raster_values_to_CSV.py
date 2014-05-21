@@ -86,7 +86,7 @@ for i in xrange(bandCount):
             x = pnt[0]
             y = pnt[1]
         (rX, rY) = raster.mapToPixel(x, y, geoTransform)
-        if rX > rasterXSize or rY > rasterYSize:
+        if rX >= rasterXSize or rY >= rasterYSize:
             feature = layer.GetNextFeature()
             continue
         value = data[rY, rX]
