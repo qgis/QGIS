@@ -20,6 +20,8 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgslayertreeregistrybridge.h"
 
 
 QgsAppLegendInterface::QgsAppLegendInterface( QgsLayerTreeView * layerTreeView )
@@ -299,18 +301,17 @@ void QgsAppLegendInterface::onRemovedChildren()
 void QgsAppLegendInterface::addLegendLayerAction( QAction* action,
     QString menu, QString id, QgsMapLayer::LayerType type, bool allLayers )
 {
-  // TODO[MD] mLegend->addLegendLayerAction( action, menu, id, type, allLayers );
+  QgsProject::instance()->layerTreeRegistryBridge()->addLegendLayerAction( action, menu, id, type, allLayers );
 }
 
 void QgsAppLegendInterface::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
 {
-  // TODO[MD] mLegend->addLegendLayerActionForLayer( action, layer );
+  QgsProject::instance()->layerTreeRegistryBridge()->addLegendLayerActionForLayer( action, layer );
 }
 
 bool QgsAppLegendInterface::removeLegendLayerAction( QAction* action )
 {
-  // TODO[MD] return mLegend->removeLegendLayerAction( action );
-  return false;
+  return QgsProject::instance()->layerTreeRegistryBridge()->removeLegendLayerAction( action );
 }
 
 QgsMapLayer* QgsAppLegendInterface::currentLayer()

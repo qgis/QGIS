@@ -19,10 +19,23 @@
 #include <QObject>
 #include <QStringList>
 
+class QAction;
+
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
-class QgsMapLayer;
+#include "qgsmaplayer.h"
+
+struct LegendLayerAction
+{
+  LegendLayerAction( QAction* a, QString m, QString i, bool all )
+      : action( a ), menu( m ), id( i ), allLayers( all ) {}
+  QAction* action;
+  QString menu;
+  QString id;
+  bool allLayers;
+  QList<QgsMapLayer*> layers;
+};
 
 /**
  * Listens to the updates in map layer registry and does changes in layer tree.
@@ -49,6 +62,14 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     //! By default it is root group with zero index.
     void setLayerInsertionPoint( QgsLayerTreeGroup* parentGroup, int index );
 
+	void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type, bool allLayers );
+    bool removeLegendLayerAction( QAction* action );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
+    QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
+
+
   signals:
 
   protected slots:
@@ -59,14 +80,14 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void groupRemovedChildren();
 
   protected:
-
-  protected:
     QgsLayerTreeGroup* mRoot;
     QStringList mLayerIdsForRemoval;
     bool mEnabled;
 
     QgsLayerTreeGroup* mInsertionPointGroup;
-    int mInsertionPointIndex;
+    int mInsertionPointIndex;    
+
+    QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 };
 
 #endif // QGSLAYERTREEREGISTRYBRIDGE_H
