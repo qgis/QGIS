@@ -56,10 +56,10 @@ void QgsMapToolSplitParts::canvasReleaseEvent( QMouseEvent * e )
   {
     QList<QgsSnappingResult> snapResults;
 
-    //If we snap the first point on a line layer, we directly split the feature at this point
+    //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
     if ( vlayer->geometryType() == QGis::Line && points().isEmpty() )
     {
-      if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
+      if ( mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex ) == 0 )
       {
         if ( snapResults.size() > 0 )
         {
