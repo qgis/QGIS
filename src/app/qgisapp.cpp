@@ -1287,6 +1287,16 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMoveLabel );
   mMapToolGroup->addAction( mActionRotateLabel );
   mMapToolGroup->addAction( mActionChangeLabelProperties );
+
+  //
+  // Preview Modes Group
+  QActionGroup* mPreviewGroup = new QActionGroup( this );
+  mPreviewGroup->setExclusive( true );
+  mActionPreviewModeOff->setActionGroup( mPreviewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
+  mActionPreviewModeMono->setActionGroup( mPreviewGroup );
+  mActionPreviewProtanope->setActionGroup( mPreviewGroup );
+  mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
 }
 
 void QgisApp::setAppStyleSheet( const QString& stylesheet )
@@ -1959,6 +1969,13 @@ void QgisApp::setupConnections()
 
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( fileOpenedOKAfterLaunch() ) );
+
+  // connect preview modes actions
+  connect( mActionPreviewModeOff, SIGNAL( triggered() ), this, SLOT( disablePreviewMode() ) );
+  connect( mActionPreviewModeGrayscale, SIGNAL( triggered() ), this, SLOT( activateGrayscalePreview() ) );
+  connect( mActionPreviewModeMono, SIGNAL( triggered() ), this, SLOT( activateMonoPreview() ) );
+  connect( mActionPreviewProtanope, SIGNAL( triggered() ), this, SLOT( activateProtanopePreview() ) );
+  connect( mActionPreviewDeuteranope, SIGNAL( triggered() ), this, SLOT( activateDeuteranopePreview() ) );
 
   // handle deprecated labels in project for QGIS 2.0
   connect( this, SIGNAL( newProject() ),
@@ -3957,6 +3974,35 @@ void QgisApp::deleteComposerManager()
 {
   mComposerManager->deleteLater();
   mComposerManager = 0;
+}
+
+void QgisApp::disablePreviewMode()
+{
+  mMapCanvas->setPreviewModeEnabled( false );
+}
+
+void QgisApp::activateGrayscalePreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
+}
+
+void QgisApp::activateMonoPreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewMono );
+}
+
+void QgisApp::activateProtanopePreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+}
+
+void QgisApp::activateDeuteranopePreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
 }
 
 void QgisApp::saveMapAsImage()

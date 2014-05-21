@@ -163,6 +163,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mUseParallelRendering( false )
     , mDrawRenderingStats( false )
     , mCache( 0 )
+    , mPreviewEffect( 0 )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -226,6 +227,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   grabGesture( Qt::PinchGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
+
+  mPreviewEffect = new QgsPreviewEffect( this );
+  viewport()->setGraphicsEffect( mPreviewEffect );
 
   refresh();
 
@@ -1604,6 +1608,46 @@ void QgsMapCanvas::showError( QgsMapLayer * mapLayer )
 QPoint QgsMapCanvas::mouseLastXY()
 {
   return mCanvasProperties->mouseLastXY;
+}
+
+void QgsMapCanvas::setPreviewModeEnabled( bool previewEnabled )
+{
+  if ( !mPreviewEffect )
+  {
+    return;
+  }
+
+  mPreviewEffect->setEnabled( previewEnabled );
+}
+
+bool QgsMapCanvas::previewModeEnabled() const
+{
+  if ( !mPreviewEffect )
+  {
+    return false;
+  }
+
+  return mPreviewEffect->isEnabled();
+}
+
+void QgsMapCanvas::setPreviewMode( QgsPreviewEffect::PreviewMode mode )
+{
+  if ( !mPreviewEffect )
+  {
+    return;
+  }
+
+  mPreviewEffect->setMode( mode );
+}
+
+QgsPreviewEffect::PreviewMode QgsMapCanvas::previewMode() const
+{
+  if ( !mPreviewEffect )
+  {
+    return QgsPreviewEffect::PreviewGrayscale;
+  }
+
+  return mPreviewEffect->mode();
 }
 
 void QgsMapCanvas::readProject( const QDomDocument & doc )

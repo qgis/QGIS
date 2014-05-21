@@ -88,6 +88,16 @@
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationCopyright"/>
     </widget>
+    <widget class="QMenu" name="menuPreview_Mode">
+     <property name="title">
+      <string>Preview Mode</string>
+     </property>
+     <addaction name="mActionPreviewModeOff"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
+     <addaction name="mActionPreviewModeMono"/>
+     <addaction name="mActionPreviewProtanope"/>
+     <addaction name="mActionPreviewDeuteranope"/>
+    </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
     <addaction name="mActionZoomIn"/>
@@ -105,10 +115,12 @@
     <addaction name="mActionZoomActualSize"/>
     <addaction name="separator"/>
     <addaction name="menuDecorations"/>
+    <addaction name="menuPreview_Mode"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -2166,6 +2178,64 @@ Acts on currently active editable layer</string>
   <action name="mActionSaveLayerDefinition">
    <property name="text">
     <string>Save As Layer Definition File...</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeOff">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Normal</string>
+   </property>
+   <property name="toolTip">
+    <string>Normal preview mode</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeGrayscale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate photocopy (grayscale)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Photocopy (Grayscale)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeMono">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate fax (mono)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Fax (Mono)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewProtanope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate color blindness (Protanope)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Color Blindness (Protanope)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewDeuteranope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate color blindness (Deuteranope)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Color Blindness (Deuteranope)</string>
    </property>
   </action>
  </widget>

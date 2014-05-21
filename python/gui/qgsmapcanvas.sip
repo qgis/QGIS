@@ -263,6 +263,36 @@ class QgsMapCanvas : QGraphicsView
 
     //! returns last position of mouse cursor
     QPoint mouseLastXY();
+	
+    /** Enables a preview mode for the map canvas
+     * @param previewEnabled set to true to enable a preview mode
+     * @see setPreviewMode
+     * @note added in 2.3 */
+    void setPreviewModeEnabled( bool previewEnabled );
+
+    /** Returns whether a preview mode is enabled for the map canvas
+     * @returns true if a preview mode is currently enabled
+     * @see setPreviewModeEnabled
+     * @see previewMode
+     * @note added in 2.3 */
+    bool previewModeEnabled() const;
+
+    /** Sets a preview mode for the map canvas. This setting only has an effect if
+     * previewModeEnabled is true.
+     * @param mode preview mode for the canvas
+     * @see previewMode
+     * @see setPreviewModeEnabled
+     * @see previewModeEnabled
+     * @note added in 2.3 */
+    void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
+
+    /** Returns the current preview mode for the map canvas. This setting only has an effect if
+     * previewModeEnabled is true.
+     * @returns preview mode for map canvas
+     * @see setPreviewMode
+     * @see previewModeEnabled
+     * @note added in 2.3 */
+    QgsPreviewEffect::PreviewMode previewMode() const;	
 
   public slots:
 

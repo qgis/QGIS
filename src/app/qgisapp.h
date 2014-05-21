@@ -1189,6 +1189,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Deletes the active QgsComposerManager instance
     void deleteComposerManager();
 
+    /** Disable any preview modes shown on the map canvas
+     * @note added in 2.3 */
+    void disablePreviewMode();
+    /** Enable a grayscale preview mode on the map canvas
+     * @note added in 2.3 */
+    void activateGrayscalePreview();
+    /** Enable a monochrome preview mode on the map canvas
+     * @note added in 2.3 */
+    void activateMonoPreview();
+    /** Enable a color blindness (protanope) preview mode on the map canvas
+     * @note added in 2.3 */
+    void activateProtanopePreview();
+    /** Enable a color blindness (deuteranope) preview mode on the map canvas
+     * @note added in 2.3 */
+    void activateDeuteranopePreview();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1343,6 +1359,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup;
+    QActionGroup *mPreviewGroup;
 
     // menus ------------------------------------------
 
