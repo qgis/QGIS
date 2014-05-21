@@ -25,7 +25,16 @@ class QgsLayerTreeNode;
 class QgsMapLayer;
 
 /**
- * Listens to the updates in map layer registry and does changes in layer tree
+ * Listens to the updates in map layer registry and does changes in layer tree.
+ *
+ * When connected to a layer tree, any layers added to the map layer registry
+ * will be also added to the layer tree. Similarly, map layers that are removed
+ * from registry will be removed from the layer tree.
+ *
+ * If a layer is completely removed from the layer tree, it will be also removed
+ * from the map layer registry.
+ *
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {

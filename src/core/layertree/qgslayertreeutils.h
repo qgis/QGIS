@@ -25,13 +25,18 @@ class QStringList;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 
+/**
+ * Assorted functions for dealing with layer trees.
+ *
+ * @note added in 2.4
+ */
 class CORE_EXPORT QgsLayerTreeUtils
 {
   public:
 
-    // return a new instance - or null on error
+    //! Try to load layer tree from <legend> tag from project files from QGIS 2.2 and below
     static bool readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem );
-
+    //! Try to load custom layer order from <legend> tag from project files from QGIS 2.2 and below
     static bool readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order );
 
     static QString checkStateToXml( Qt::CheckState state );

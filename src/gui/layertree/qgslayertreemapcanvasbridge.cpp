@@ -17,6 +17,7 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
+#include "qgsmaplayer.h"
 
 #include "qgsmapcanvas.h"
 

@@ -20,21 +20,35 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 
+/**
+ * Namespace with helper functions for layer tree operations.
+ *
+ * Only generally useful routines should be here. Miscellaneous utility functions for work
+ * with the layer tree are in QgsLayerTreeUtils class.
+ *
+ * @note added in 2.4
+ */
 namespace QgsLayerTree
 {
+  //! Check whether the node is a valid group node
   inline bool isGroup( QgsLayerTreeNode* node )
   {
     return node && node->nodeType() == QgsLayerTreeNode::NodeGroup;
   }
+
+  //! Check whether the node is a valid layer node
   inline bool isLayer( QgsLayerTreeNode* node )
   {
     return node && node->nodeType() == QgsLayerTreeNode::NodeLayer;
   }
 
+  //! Cast node to a group. No type checking is done - use isGroup() to find out whether this operation is legal.
   inline QgsLayerTreeGroup* toGroup( QgsLayerTreeNode* node )
   {
     return static_cast<QgsLayerTreeGroup*>( node );
   }
+
+  //! Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
   inline QgsLayerTreeLayer* toLayer( QgsLayerTreeNode* node )
   {
     return static_cast<QgsLayerTreeLayer*>( node );

@@ -16,11 +16,15 @@
 #include "qgslayertreelayer.h"
 
 #include "qgslayertreeutils.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
-    : QgsLayerTreeNode( NodeLayer ), mLayerId( layer->id() ), mLayer( layer ), mVisible( Qt::Checked )
+    : QgsLayerTreeNode( NodeLayer )
+    , mLayerId( layer->id() )
+    , mLayer( layer )
+    , mVisible( Qt::Checked )
 {
   Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
 }
@@ -61,6 +65,20 @@ void QgsLayerTreeLayer::attachToLayer()
     // wait for the layer to be eventually loaded
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
   }
+}
+
+
+QString QgsLayerTreeLayer::layerName() const
+{
+  return mLayer ? mLayer->name() : mLayerName;
+}
+
+void QgsLayerTreeLayer::setLayerName( const QString& n )
+{
+  if ( mLayer )
+    mLayer->setLayerName( n );
+  else
+    mLayerName = n;
 }
 
 void QgsLayerTreeLayer::setVisible( Qt::CheckState state )

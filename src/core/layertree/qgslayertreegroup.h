@@ -18,8 +18,14 @@
 
 #include "qgslayertreenode.h"
 
+class QgsMapLayer;
 class QgsLayerTreeLayer;
 
+/**
+ * Layer tree group node serves as a container for layers and further groups.
+ *
+ * @note added in 2.4
+ */
 class QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT

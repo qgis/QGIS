@@ -18,6 +18,10 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 
+#include <QDomElement>
+#include <QStringList>
+
+
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString& name, Qt::CheckState checked )
     : QgsLayerTreeNode( NodeGroup )
     , mName( name )
@@ -271,8 +275,8 @@ QStringList QgsLayerTreeGroup::childLayerIds() const
 
 void QgsLayerTreeGroup::layerDestroyed()
 {
-  QgsMapLayer* layer = static_cast<QgsMapLayer*>( sender() );
-  removeLayer( layer );
+  //QgsMapLayer* layer = static_cast<QgsMapLayer*>( sender() );
+  //removeLayer( layer );
 }
 
 void QgsLayerTreeGroup::nodeVisibilityChanged( QgsLayerTreeNode* node )

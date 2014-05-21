@@ -18,6 +18,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgsmaplayer.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
@@ -141,7 +142,6 @@ void QgsLayerTreeView::onCurrentChanged( QModelIndex current, QModelIndex previo
   if ( layerPrevious == layerCurrent )
     return;
 
-  qDebug( "current layer changed!" );
   emit currentLayerChanged( layerCurrent );
 }
 

@@ -622,7 +622,6 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
   QString txt = doc.toString();
 
   mimeData->setData( "application/qgis.layertreemodeldata", txt.toUtf8() );
-  qDebug( "%s", txt.toUtf8().data() );
   return mimeData;
 }
 

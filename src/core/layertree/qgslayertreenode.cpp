@@ -18,6 +18,9 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 
+#include <QDomElement>
+#include <QStringList>
+
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
     : mNodeType( t )
@@ -37,6 +40,11 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
   foreach ( QgsLayerTreeNode* child, other.mChildren )
     clonedChildren << child->clone();
   insertChildren( -1, clonedChildren );
+}
+
+QgsLayerTreeNode::~QgsLayerTreeNode()
+{
+  qDeleteAll( mChildren );
 }
 
 QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
@@ -81,11 +89,6 @@ void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
 {
   QDomDocument doc( element.ownerDocument() );
   mProperties.writeXml( element, doc );
-}
-
-void QgsLayerTreeNode::addChild( QgsLayerTreeNode *node )
-{
-  insertChild( -1, node );
 }
 
 void QgsLayerTreeNode::insertChild( int index, QgsLayerTreeNode *node )
