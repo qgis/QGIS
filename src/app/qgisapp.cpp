@@ -378,7 +378,7 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
   emit customSrsValidation( srs );
 }
 
-void QgisApp::layerTreeViewDoubleClicked(const QModelIndex& index)
+void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 {
   Q_UNUSED( index );
 
@@ -396,7 +396,7 @@ void QgisApp::layerTreeViewDoubleClicked(const QModelIndex& index)
   }
 }
 
-void QgisApp::activeLayerChanged(QgsMapLayer* layer)
+void QgisApp::activeLayerChanged( QgsMapLayer* layer )
 {
   if ( mMapCanvas )
     mMapCanvas->setCurrentLayer( layer );
@@ -553,7 +553,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->setFocus();
 
   mLayerTreeView = new QgsLayerTreeView( this );
-  mLayerTreeView->setObjectName("theLayerTreeView"); // "theLayerTreeView" used to find this canonical instance later
+  mLayerTreeView->setObjectName( "theLayerTreeView" ); // "theLayerTreeView" used to find this canonical instance later
 
   // create undo widget
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
@@ -1952,15 +1952,15 @@ void QgisApp::setupConnections()
   // connect legend signals
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
-  connect( mLayerTreeView->selectionModel(), SIGNAL( selectionChanged(QItemSelection,QItemSelection) ),
+  connect( mLayerTreeView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ),
            this, SLOT( legendLayerSelectionChanged() ) );
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren(QgsLayerTreeNode*,int,int) ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( markDirty() ) );
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren(QgsLayerTreeNode*,int,int) ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( markDirty() ) );
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged(QgsLayerTreeNode*,Qt::CheckState) ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ),
            this, SLOT( markDirty() ) );
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( customPropertyChanged(QgsLayerTreeNode*,QString) ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ),
            this, SLOT( markDirty() ) );
 
   // connect map layer registry
@@ -2214,24 +2214,24 @@ void QgisApp::initLayerTreeView()
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   QgsLayerTreeModel* model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
-  model->setFlag(QgsLayerTreeModel::AllowVisibilityManagement);
+  model->setFlag( QgsLayerTreeModel::AllowVisibilityManagement );
 
   mLayerTreeView->setModel( model );
-  mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider(mLayerTreeView, mMapCanvas) );
+  mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
 
-  connect( mLayerTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(layerTreeViewDoubleClicked(QModelIndex)) );
-  connect( mLayerTreeView, SIGNAL(currentLayerChanged(QgsMapLayer*)), this, SLOT(activeLayerChanged(QgsMapLayer*)) );
-  connect( mLayerTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(layerTreeViewCurrentChanged(QModelIndex,QModelIndex)));
+  connect( mLayerTreeView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( layerTreeViewDoubleClicked( QModelIndex ) ) );
+  connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( activeLayerChanged( QgsMapLayer* ) ) );
+  connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( layerTreeViewCurrentChanged( QModelIndex, QModelIndex ) ) );
 
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 
   mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
-  connect( QgsProject::instance(), SIGNAL(writeProject(QDomDocument&)), mLayerTreeCanvasBridge, SLOT(writeProject(QDomDocument&)));
-  connect( QgsProject::instance(), SIGNAL(readProject(QDomDocument)), mLayerTreeCanvasBridge, SLOT(readProject(QDomDocument)));
+  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), mLayerTreeCanvasBridge, SLOT( writeProject( QDomDocument& ) ) );
+  connect( QgsProject::instance(), SIGNAL( readProject( QDomDocument ) ), mLayerTreeCanvasBridge, SLOT( readProject( QDomDocument ) ) );
 
-  mMapLayerOrder = new QgsCustomLayerOrderWidget(mLayerTreeCanvasBridge, this);
-  mMapLayerOrder->setObjectName("theMapLayerOrder");
+  mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
+  mMapLayerOrder->setObjectName( "theMapLayerOrder" );
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
@@ -2244,27 +2244,27 @@ void QgisApp::initLayerTreeView()
 }
 
 
-void QgisApp::layerTreeViewCurrentChanged(const QModelIndex& current, const QModelIndex& previous)
+void QgisApp::layerTreeViewCurrentChanged( const QModelIndex& current, const QModelIndex& previous )
 {
-  Q_UNUSED(previous);
+  Q_UNUSED( previous );
 
   // defaults
   QgsLayerTreeGroup* parentGroup = mLayerTreeView->layerTreeModel()->rootGroup();
   int index = 0;
 
-  if (current.isValid())
+  if ( current.isValid() )
   {
-    if (QgsLayerTreeNode* currentNode = mLayerTreeView->currentNode())
+    if ( QgsLayerTreeNode* currentNode = mLayerTreeView->currentNode() )
     {
       QgsLayerTreeNode* parentNode = currentNode->parent();
-      if (QgsLayerTree::isGroup(parentNode))
-        parentGroup = QgsLayerTree::toGroup(parentNode);
+      if ( QgsLayerTree::isGroup( parentNode ) )
+        parentGroup = QgsLayerTree::toGroup( parentNode );
     }
 
     index = current.row();
   }
 
-  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint(parentGroup, index);
+  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( parentGroup, index );
 }
 
 
@@ -4047,7 +4047,7 @@ void QgisApp::addAllToOverview()
   if ( mLayerTreeView )
   {
     foreach ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-      nodeL->setCustomProperty("overview", 1);
+      nodeL->setCustomProperty( "overview", 1 );
   }
 
   markDirty();
@@ -4059,7 +4059,7 @@ void QgisApp::removeAllFromOverview()
   if ( mLayerTreeView )
   {
     foreach ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-      nodeL->setCustomProperty("overview", 0);
+      nodeL->setCustomProperty( "overview", 0 );
   }
 
   markDirty();
@@ -6545,7 +6545,7 @@ void QgisApp::removeLayer()
       return;
   }
 
-  QList<QgsLayerTreeNode*> selectedNodes = mLayerTreeView->selectedNodes(true);
+  QList<QgsLayerTreeNode*> selectedNodes = mLayerTreeView->selectedNodes( true );
 
   //validate selection
   if ( selectedNodes.isEmpty() )
@@ -6563,11 +6563,11 @@ void QgisApp::removeLayer()
     return;
   }
 
-  foreach (QgsLayerTreeNode* node, selectedNodes)
+  foreach ( QgsLayerTreeNode* node, selectedNodes )
   {
-    QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>(node->parent());
-    if (parentGroup)
-      parentGroup->removeChildNode(node);
+    QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
+    if ( parentGroup )
+      parentGroup->removeChildNode( node );
   }
 
   showStatusMessage( tr( "%n legend entries removed.", "number of removed legend entries", selectedNodes.count() ) );
@@ -6657,19 +6657,19 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     // add layer to layer registry and legend
     QList<QgsMapLayer *> myList;
     myList << dupLayer;
-    QgsProject::instance()->layerTreeRegistryBridge()->setEnabled(false);
+    QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
-    QgsProject::instance()->layerTreeRegistryBridge()->setEnabled(true);
+    QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
 
-    QgsLayerTreeLayer* nodeSelectedLyr = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer(selectedLyr->id());
-    Q_ASSERT(nodeSelectedLyr);
-    Q_ASSERT(QgsLayerTree::isGroup(nodeSelectedLyr->parent()));
-    QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup(nodeSelectedLyr->parent());
+    QgsLayerTreeLayer* nodeSelectedLyr = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( selectedLyr->id() );
+    Q_ASSERT( nodeSelectedLyr );
+    Q_ASSERT( QgsLayerTree::isGroup( nodeSelectedLyr->parent() ) );
+    QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( nodeSelectedLyr->parent() );
 
-    QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer(parentGroup->children().indexOf(nodeSelectedLyr)+1, dupLayer);
+    QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer( parentGroup->children().indexOf( nodeSelectedLyr ) + 1, dupLayer );
 
     // always set duplicated layers to not visible so layer can be configured before being turned on
-    nodeDupLayer->setVisible(Qt::Unchecked);
+    nodeDupLayer->setVisible( Qt::Unchecked );
 
     // duplicate the layer style
     copyStyle( selectedLyr );
@@ -6731,7 +6731,7 @@ void QgisApp::setLayerCRS()
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
-      if (nodeLayer->layer())
+      if ( nodeLayer->layer() )
         nodeLayer->layer()->setCrs( crs );
     }
   }
@@ -7328,7 +7328,7 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   if ( !layer )
     return false;
 
-  if ( !mLayerTreeView->layerTreeModel()->rootGroup()->findLayer(layer->id()) )
+  if ( !mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( layer->id() ) )
     return false;
 
   mLayerTreeView->setCurrentLayer( layer );

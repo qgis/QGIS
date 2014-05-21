@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgslayertreeutils.cpp
+  --------------------------------------
+  Date                 : May 2014
+  Copyright            : (C) 2014 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgslayertreeutils.h"
 
 #include "qgslayertree.h"
@@ -6,9 +21,9 @@
 
 #include <QDomElement>
 
-bool QgsLayerTreeUtils::readOldLegend(QgsLayerTreeGroup* root, const QDomElement& legendElem)
+bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem )
 {
-  if (legendElem.isNull())
+  if ( legendElem.isNull() )
     return false;
 
   QDomNodeList legendChildren = legendElem.childNodes();
@@ -29,21 +44,21 @@ bool QgsLayerTreeUtils::readOldLegend(QgsLayerTreeGroup* root, const QDomElement
   return true;
 }
 
-QString QgsLayerTreeUtils::checkStateToXml(Qt::CheckState state)
+QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
 {
-  switch (state)
+  switch ( state )
   {
-  case Qt::Unchecked:        return "Qt::Unchecked";
-  case Qt::PartiallyChecked: return "Qt::PartiallyChecked";
+    case Qt::Unchecked:        return "Qt::Unchecked";
+    case Qt::PartiallyChecked: return "Qt::PartiallyChecked";
   case Qt::Checked: default: return "Qt::Checked";
   }
 }
 
-Qt::CheckState QgsLayerTreeUtils::checkStateFromXml(QString txt)
+Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( QString txt )
 {
-  if (txt == "Qt::Unchecked")
+  if ( txt == "Qt::Unchecked" )
     return Qt::Unchecked;
-  else if (txt == "Qt::PartiallyChecked")
+  else if ( txt == "Qt::PartiallyChecked" )
     return Qt::PartiallyChecked;
   else // "Qt::Checked"
     return Qt::Checked;
@@ -55,15 +70,15 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
 {
   QDomNodeList groupChildren = groupElem.childNodes();
 
-  QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup(groupElem.attribute( "name" ));
-  parent->addChildNode(groupNode);
+  QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( groupElem.attribute( "name" ) );
+  parent->addChildNode( groupNode );
 
-  groupNode->setVisible(checkStateFromXml(groupElem.attribute("checked")));
+  groupNode->setVisible( checkStateFromXml( groupElem.attribute( "checked" ) ) );
 
-  if (groupElem.attribute("embedded") == "1")
+  if ( groupElem.attribute( "embedded" ) == "1" )
   {
-    groupNode->setCustomProperty("embedded", 1);
-    groupNode->setCustomProperty("embedded_project", groupElem.attribute("project"));
+    groupNode->setCustomProperty( "embedded", 1 );
+    groupNode->setCustomProperty( "embedded_project", groupElem.attribute( "project" ) );
   }
 
   for ( int i = 0; i < groupChildren.size(); ++i )
@@ -83,16 +98,16 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
 void QgsLayerTreeUtils::addLegendLayerToTreeWidget( const QDomElement& layerElem, QgsLayerTreeGroup* parent )
 {
   QString layerId = layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" );
-  QgsLayerTreeLayer* layerNode = new QgsLayerTreeLayer(layerId, layerElem.attribute( "name" ) );
+  QgsLayerTreeLayer* layerNode = new QgsLayerTreeLayer( layerId, layerElem.attribute( "name" ) );
 
-  layerNode->setVisible(checkStateFromXml(layerElem.attribute("checked")));
+  layerNode->setVisible( checkStateFromXml( layerElem.attribute( "checked" ) ) );
 
-  if (layerElem.attribute("embedded") == "1")
-    layerNode->setCustomProperty("embedded", 1);
+  if ( layerElem.attribute( "embedded" ) == "1" )
+    layerNode->setCustomProperty( "embedded", 1 );
 
   // TODO: is in overview, drawing order, show feature count
 
-  parent->addChildNode(layerNode);
+  parent->addChildNode( layerNode );
 }
 
 

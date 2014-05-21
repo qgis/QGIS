@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgslayertreemodel.cpp
+  --------------------------------------
+  Date                 : May 2014
+  Copyright            : (C) 2014 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgslayertreemodel.h"
 
 #include "qgslayertree.h"
@@ -13,57 +28,57 @@
 #include "qgsvectorlayer.h"
 
 
-QgsLayerTreeModel::QgsLayerTreeModel(QgsLayerTreeGroup* rootNode, QObject *parent)
-  : QAbstractItemModel(parent)
-  , mRootNode(rootNode)
-  , mFlags(ShowSymbology)
+QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
+    : QAbstractItemModel( parent )
+    , mRootNode( rootNode )
+    , mFlags( ShowSymbology )
 {
-  Q_ASSERT(mRootNode);
+  Q_ASSERT( mRootNode );
 
-  connect(mRootNode, SIGNAL(willAddChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeWillAddChildren(QgsLayerTreeNode*,int,int)));
-  connect(mRootNode, SIGNAL(addedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeAddedChildren(QgsLayerTreeNode*,int,int)));
-  connect(mRootNode, SIGNAL(willRemoveChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeWillRemoveChildren(QgsLayerTreeNode*,int,int)));
-  connect(mRootNode, SIGNAL(removedChildren(QgsLayerTreeNode*,int,int)), this, SLOT(nodeRemovedChildren()));
-  connect(mRootNode, SIGNAL(visibilityChanged(QgsLayerTreeNode*,Qt::CheckState)), this, SLOT(nodeVisibilityChanged(QgsLayerTreeNode*)));
+  connect( mRootNode, SIGNAL( willAddChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillAddChildren( QgsLayerTreeNode*, int, int ) ) );
+  connect( mRootNode, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
+  connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
+  connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
+  connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
 {
-  foreach (QList<QgsLayerTreeModelSymbologyNode*> nodeL, mSymbologyNodes)
-    qDeleteAll(nodeL);
+  foreach ( QList<QgsLayerTreeModelSymbologyNode*> nodeL, mSymbologyNodes )
+    qDeleteAll( nodeL );
   mSymbologyNodes.clear();
 }
 
-QgsLayerTreeNode* QgsLayerTreeModel::index2node(const QModelIndex& index) const
+QgsLayerTreeNode* QgsLayerTreeModel::index2node( const QModelIndex& index ) const
 {
-  if (!index.isValid())
+  if ( !index.isValid() )
     return mRootNode;
 
-  QObject* obj = reinterpret_cast<QObject*>(index.internalPointer());
-  return qobject_cast<QgsLayerTreeNode*>(obj);
+  QObject* obj = reinterpret_cast<QObject*>( index.internalPointer() );
+  return qobject_cast<QgsLayerTreeNode*>( obj );
 }
 
-QgsLayerTreeModelSymbologyNode* QgsLayerTreeModel::index2symnode(const QModelIndex& index)
+QgsLayerTreeModelSymbologyNode* QgsLayerTreeModel::index2symnode( const QModelIndex& index )
 {
-  return qobject_cast<QgsLayerTreeModelSymbologyNode*>(reinterpret_cast<QObject*>(index.internalPointer()));
+  return qobject_cast<QgsLayerTreeModelSymbologyNode*>( reinterpret_cast<QObject*>( index.internalPointer() ) );
 }
 
 
-int QgsLayerTreeModel::rowCount(const QModelIndex &parent) const
+int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 {
-  if (index2symnode(parent))
+  if ( index2symnode( parent ) )
   {
     return 0; // they are leaves
   }
 
-  QgsLayerTreeNode* n = index2node(parent);
+  QgsLayerTreeNode* n = index2node( parent );
 
-  if (parent.isValid() && parent.column() != 0)
+  if ( parent.isValid() && parent.column() != 0 )
     return 0;
 
-  if (QgsLayerTree::isLayer(n))
+  if ( QgsLayerTree::isLayer( n ) )
   {
-    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer(n);
+    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
 
     return mSymbologyNodes[nL].count();
   }
@@ -71,94 +86,94 @@ int QgsLayerTreeModel::rowCount(const QModelIndex &parent) const
   return n->children().count();
 }
 
-int QgsLayerTreeModel::columnCount(const QModelIndex &parent) const
+int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED(parent);
+  Q_UNUSED( parent );
   return 1;
 }
 
-QModelIndex QgsLayerTreeModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if (column != 0 || row < 0 || row >= rowCount(parent))
+  if ( column != 0 || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsLayerTreeNode* n = index2node(parent);
+  QgsLayerTreeNode* n = index2node( parent );
 
-  if (!n)
+  if ( !n )
   {
-    QgsLayerTreeModelSymbologyNode* sym = index2symnode(parent);
-    Q_ASSERT(sym);
+    QgsLayerTreeModelSymbologyNode* sym = index2symnode( parent );
+    Q_ASSERT( sym );
     return QModelIndex(); // have no children
   }
 
-  if (!n || column != 0 || row >= rowCount(parent))
+  if ( !n || column != 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  if (testFlag(ShowSymbology) && QgsLayerTree::isLayer(n))
+  if ( testFlag( ShowSymbology ) && QgsLayerTree::isLayer( n ) )
   {
-    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer(n);
-    Q_ASSERT(mSymbologyNodes.contains(nL));
-    return createIndex(row, column, static_cast<QObject*>(mSymbologyNodes[nL].at(row)));
+    QgsLayerTreeLayer* nL = QgsLayerTree::toLayer( n );
+    Q_ASSERT( mSymbologyNodes.contains( nL ) );
+    return createIndex( row, column, static_cast<QObject*>( mSymbologyNodes[nL].at( row ) ) );
   }
 
-  return createIndex(row, column, static_cast<QObject*>(n->children().at(row)));
+  return createIndex( row, column, static_cast<QObject*>( n->children().at( row ) ) );
 }
 
-QModelIndex QgsLayerTreeModel::parent(const QModelIndex &child) const
+QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
 {
-  if (!child.isValid())
+  if ( !child.isValid() )
     return QModelIndex();
 
-  QgsLayerTreeNode* n = index2node(child);
+  QgsLayerTreeNode* n = index2node( child );
 
   QgsLayerTreeNode* parentNode = 0;
 
-  if (!n)
+  if ( !n )
   {
-    QgsLayerTreeModelSymbologyNode* sym = index2symnode(child);
-    Q_ASSERT(sym);
+    QgsLayerTreeModelSymbologyNode* sym = index2symnode( child );
+    Q_ASSERT( sym );
     parentNode = sym->parent();
   }
   else
     parentNode = n->parent(); // must not be null
-  Q_ASSERT(parentNode);
+  Q_ASSERT( parentNode );
 
   QgsLayerTreeNode* grandParentNode = parentNode->parent();
-  if (!grandParentNode)
+  if ( !grandParentNode )
     return QModelIndex();  // root node -> invalid index
 
-  int row = grandParentNode->children().indexOf(parentNode);
-  Q_ASSERT(row >= 0);
-  return createIndex(row, 0, static_cast<QObject*>(parentNode));
+  int row = grandParentNode->children().indexOf( parentNode );
+  Q_ASSERT( row >= 0 );
+  return createIndex( row, 0, static_cast<QObject*>( parentNode ) );
 }
 
-QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
+QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
-  if (!index.isValid())
+  if ( !index.isValid() )
     return QVariant();
 
-  if (QgsLayerTreeModelSymbologyNode* sym = index2symnode(index))
+  if ( QgsLayerTreeModelSymbologyNode* sym = index2symnode( index ) )
   {
-    if (role == Qt::DisplayRole)
+    if ( role == Qt::DisplayRole )
       return sym->name();
-    else if (role == Qt::DecorationRole)
+    else if ( role == Qt::DecorationRole )
       return sym->icon();
     return QVariant();
   }
 
-  QgsLayerTreeNode* node = index2node(index);
-  if (role == Qt::DisplayRole || role == Qt::EditRole)
+  QgsLayerTreeNode* node = index2node( index );
+  if ( role == Qt::DisplayRole || role == Qt::EditRole )
   {
-    if (QgsLayerTree::isGroup(node))
-      return QgsLayerTree::toGroup(node)->name();
-    else if (QgsLayerTree::isLayer(node))
+    if ( QgsLayerTree::isGroup( node ) )
+      return QgsLayerTree::toGroup( node )->name();
+    else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->layerName();
-      if (nodeLayer->customProperty("showFeatureCount", 0).toInt() && role == Qt::DisplayRole)
+      if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toInt() && role == Qt::DisplayRole )
       {
-        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>(nodeLayer->layer());
-        if (vlayer && vlayer->pendingFeatureCount() >= 0)
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
+        if ( vlayer && vlayer->pendingFeatureCount() >= 0 )
           name += QString( " [%1]" ).arg( vlayer->pendingFeatureCount() );
       }
       return name;
@@ -166,25 +181,25 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
-    if (QgsLayerTree::isGroup(node))
+    if ( QgsLayerTree::isGroup( node ) )
       return QgsDataCollectionItem::iconDir();
-    else if (QgsLayerTree::isLayer(node))
+    else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer* layer = QgsLayerTree::toLayer(node)->layer();
-      if (!layer)
+      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+      if ( !layer )
         return QVariant();
-      if (layer->type() == QgsMapLayer::RasterLayer)
+      if ( layer->type() == QgsMapLayer::RasterLayer )
         return QgsLayerItem::iconRaster();
-      else if (layer->type() == QgsMapLayer::VectorLayer)
+      else if ( layer->type() == QgsMapLayer::VectorLayer )
       {
-        QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(layer);
-        if (vlayer->geometryType() == QGis::Point)
+        QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
+        if ( vlayer->geometryType() == QGis::Point )
           return QgsLayerItem::iconPoint();
-        else if (vlayer->geometryType() == QGis::Line)
+        else if ( vlayer->geometryType() == QGis::Line )
           return QgsLayerItem::iconLine();
-        else if (vlayer->geometryType() == QGis::Polygon)
+        else if ( vlayer->geometryType() == QGis::Polygon )
           return QgsLayerItem::iconPolygon();
-        else if (vlayer->geometryType() == QGis::NoGeometry)
+        else if ( vlayer->geometryType() == QGis::NoGeometry )
           return QgsLayerItem::iconTable();
       }
       return QgsLayerItem::iconDefault();
@@ -192,205 +207,205 @@ QVariant QgsLayerTreeModel::data(const QModelIndex &index, int role) const
   }
   else if ( role == Qt::CheckStateRole )
   {
-    if (!testFlag(AllowVisibilityManagement))
+    if ( !testFlag( AllowVisibilityManagement ) )
       return QVariant();
 
-    if (QgsLayerTree::isLayer(node))
+    if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer(node);
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       return nodeLayer->isVisible();
     }
-    else if (QgsLayerTree::isGroup(node))
+    else if ( QgsLayerTree::isGroup( node ) )
     {
-      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup(node);
+      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
       return nodeGroup->isVisible();
     }
   }
   else if ( role == Qt::FontRole )
   {
     QFont f;
-    if (node->customProperty("embedded").toInt())
-      f.setItalic(true);
-    if (QgsLayerTree::isLayer(node))
-      f.setBold(true);
+    if ( node->customProperty( "embedded" ).toInt() )
+      f.setItalic( true );
+    if ( QgsLayerTree::isLayer( node ) )
+      f.setBold( true );
     return f;
   }
 
   return QVariant();
 }
 
-Qt::ItemFlags QgsLayerTreeModel::flags(const QModelIndex& index) const
+Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 {
-  if (!index.isValid())
+  if ( !index.isValid() )
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 
-  if (index2symnode(index))
+  if ( index2symnode( index ) )
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
-  QgsLayerTreeNode* node = index2node(index);
-  if (testFlag(AllowVisibilityManagement) && QgsLayerTree::isLayer(node))
+  QgsLayerTreeNode* node = index2node( index );
+  if ( testFlag( AllowVisibilityManagement ) && QgsLayerTree::isLayer( node ) )
     f |= Qt::ItemIsUserCheckable;
-  else if (QgsLayerTree::isGroup(node))
+  else if ( QgsLayerTree::isGroup( node ) )
     f |= Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
   return f;
 }
 
-bool QgsLayerTreeModel::setData(const QModelIndex& index, const QVariant& value, int role)
+bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-  QgsLayerTreeNode* node = index2node(index);
-  if (!node)
-    return QgsLayerTreeModel::setData(index, value, role);
+  QgsLayerTreeNode* node = index2node( index );
+  if ( !node )
+    return QgsLayerTreeModel::setData( index, value, role );
 
-  if (role == Qt::CheckStateRole)
+  if ( role == Qt::CheckStateRole )
   {
-    if (!testFlag(AllowVisibilityManagement))
+    if ( !testFlag( AllowVisibilityManagement ) )
       return false;
 
-    if (QgsLayerTree::isLayer(node))
+    if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer(node);
-      layer->setVisible((Qt::CheckState)value.toInt());
+      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
+      layer->setVisible(( Qt::CheckState )value.toInt() );
     }
-    else if (QgsLayerTree::isGroup(node))
+    else if ( QgsLayerTree::isGroup( node ) )
     {
-      QgsLayerTreeGroup* group = QgsLayerTree::toGroup(node);
-      group->setVisible((Qt::CheckState)value.toInt());
+      QgsLayerTreeGroup* group = QgsLayerTree::toGroup( node );
+      group->setVisible(( Qt::CheckState )value.toInt() );
     }
     return true;
   }
-  else if (role == Qt::EditRole)
+  else if ( role == Qt::EditRole )
   {
-    if (QgsLayerTree::isLayer(node))
+    if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer(node);
-      layer->setLayerName(value.toString());
-      emit dataChanged(index, index);
+      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
+      layer->setLayerName( value.toString() );
+      emit dataChanged( index, index );
     }
-    else if (QgsLayerTree::isGroup(node))
+    else if ( QgsLayerTree::isGroup( node ) )
     {
-      QgsLayerTree::toGroup(node)->setName(value.toString());
-      emit dataChanged(index, index);
+      QgsLayerTree::toGroup( node )->setName( value.toString() );
+      emit dataChanged( index, index );
     }
   }
 
-  return QAbstractItemModel::setData(index, value, role);
+  return QAbstractItemModel::setData( index, value, role );
 }
 
-QModelIndex QgsLayerTreeModel::node2index(QgsLayerTreeNode* node) const
+QModelIndex QgsLayerTreeModel::node2index( QgsLayerTreeNode* node ) const
 {
-  if (!node->parent())
+  if ( !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
-  QModelIndex parentIndex = node2index(node->parent());
+  QModelIndex parentIndex = node2index( node->parent() );
 
-  int row = node->parent()->children().indexOf(node);
-  Q_ASSERT(row >= 0);
-  return index(row, 0, parentIndex);
+  int row = node->parent()->children().indexOf( node );
+  Q_ASSERT( row >= 0 );
+  return index( row, 0, parentIndex );
 }
 
 
-static bool _isChildOfNode(QgsLayerTreeNode* child, QgsLayerTreeNode* node)
+static bool _isChildOfNode( QgsLayerTreeNode* child, QgsLayerTreeNode* node )
 {
-  if (!child->parent())
+  if ( !child->parent() )
     return false;
 
-  if (child->parent() == node)
+  if ( child->parent() == node )
     return true;
 
-  return _isChildOfNode(child->parent(), node);
+  return _isChildOfNode( child->parent(), node );
 }
 
-static bool _isChildOfNodes(QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> nodes)
+static bool _isChildOfNodes( QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> nodes )
 {
-  foreach (QgsLayerTreeNode* n, nodes)
+  foreach ( QgsLayerTreeNode* n, nodes )
   {
-    if (_isChildOfNode(child, n))
+    if ( _isChildOfNode( child, n ) )
       return true;
   }
   return false;
 }
 
 
-QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes(const QModelIndexList& list, bool skipInternal) const
+QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList& list, bool skipInternal ) const
 {
   QList<QgsLayerTreeNode*> nodes;
-  foreach (QModelIndex index, list)
+  foreach ( QModelIndex index, list )
   {
-    QgsLayerTreeNode* node = index2node(index);
-    if (!node)
+    QgsLayerTreeNode* node = index2node( index );
+    if ( !node )
       continue;
 
     nodes << node;
   }
 
-  if (!skipInternal)
+  if ( !skipInternal )
     return nodes;
 
   // remove any children of nodes if both parent node and children are selected
   QList<QgsLayerTreeNode*> nodesFinal;
-  foreach (QgsLayerTreeNode* node, nodes)
+  foreach ( QgsLayerTreeNode* node, nodes )
   {
-    if (!_isChildOfNodes(node, nodes))
+    if ( !_isChildOfNodes( node, nodes ) )
       nodesFinal << node;
   }
 
   return nodesFinal;
 }
 
-void QgsLayerTreeModel::refreshLayerSymbology(QgsLayerTreeLayer* nodeLayer)
+void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
 {
   // update title
-  QModelIndex idx = node2index(nodeLayer);
-  emit dataChanged(idx, idx);
+  QModelIndex idx = node2index( nodeLayer );
+  emit dataChanged( idx, idx );
 
   // update children
-  beginRemoveRows(idx, 0, rowCount(idx)-1);
-  removeSymbologyFromLayer(nodeLayer);
+  beginRemoveRows( idx, 0, rowCount( idx ) - 1 );
+  removeSymbologyFromLayer( nodeLayer );
   endRemoveRows();
 
-  addSymbologyToLayer(nodeLayer);
+  addSymbologyToLayer( nodeLayer );
 }
 
-void QgsLayerTreeModel::nodeWillAddChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
+void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
 {
-  Q_ASSERT(node);
-  beginInsertRows(node2index(node), indexFrom, indexTo);
+  Q_ASSERT( node );
+  beginInsertRows( node2index( node ), indexFrom, indexTo );
 }
 
-void QgsLayerTreeModel::nodeAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
+void QgsLayerTreeModel::nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
 {
-  Q_ASSERT(node);
+  Q_ASSERT( node );
 
   endInsertRows();
 
-  if (testFlag(ShowSymbology))
+  if ( testFlag( ShowSymbology ) )
   {
     // collect layers for which we need to add symbology
     QList<QgsLayerTreeLayer*> newLayerNodes;
     QList<QgsLayerTreeNode*> children = node->children();
-    for (int i = indexFrom; i <= indexTo; ++i)
+    for ( int i = indexFrom; i <= indexTo; ++i )
     {
-      QgsLayerTreeNode* child = children.at(i);
-      if (QgsLayerTree::isLayer(child))
-        newLayerNodes << QgsLayerTree::toLayer(child);
-      else if (QgsLayerTree::isGroup(child))
-        newLayerNodes << QgsLayerTree::toGroup(child)->findLayers();
+      QgsLayerTreeNode* child = children.at( i );
+      if ( QgsLayerTree::isLayer( child ) )
+        newLayerNodes << QgsLayerTree::toLayer( child );
+      else if ( QgsLayerTree::isGroup( child ) )
+        newLayerNodes << QgsLayerTree::toGroup( child )->findLayers();
     }
 
-    foreach (QgsLayerTreeLayer* newLayerNode, newLayerNodes)
-      addSymbologyToLayer(newLayerNode);
+    foreach ( QgsLayerTreeLayer* newLayerNode, newLayerNodes )
+      addSymbologyToLayer( newLayerNode );
   }
 }
 
-void QgsLayerTreeModel::nodeWillRemoveChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo)
+void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
 {
-  Q_ASSERT(node);
+  Q_ASSERT( node );
 
-  beginRemoveRows(node2index(node), indexFrom, indexTo);
+  beginRemoveRows( node2index( node ), indexFrom, indexTo );
 
   // cleanup - e.g. symbology
-  for (int i = indexFrom; i <= indexTo; ++i)
-    removeSymbologyFromSubtree(node->children()[i]);
+  for ( int i = indexFrom; i <= indexTo; ++i )
+    removeSymbologyFromSubtree( node->children()[i] );
 }
 
 void QgsLayerTreeModel::nodeRemovedChildren()
@@ -398,122 +413,122 @@ void QgsLayerTreeModel::nodeRemovedChildren()
   endRemoveRows();
 }
 
-void QgsLayerTreeModel::nodeVisibilityChanged(QgsLayerTreeNode* node)
+void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode* node )
 {
-  Q_ASSERT(node);
+  Q_ASSERT( node );
 
-  QModelIndex index = node2index(node);
-  emit dataChanged(index, index);
+  QModelIndex index = node2index( node );
+  emit dataChanged( index, index );
 }
 
 void QgsLayerTreeModel::nodeLayerLoaded()
 {
-  QgsLayerTreeLayer* nodeLayer = qobject_cast<QgsLayerTreeLayer*>(sender());
-  if (!nodeLayer)
+  QgsLayerTreeLayer* nodeLayer = qobject_cast<QgsLayerTreeLayer*>( sender() );
+  if ( !nodeLayer )
     return;
 
-  addSymbologyToLayer(nodeLayer);
+  addSymbologyToLayer( nodeLayer );
 }
 
 void QgsLayerTreeModel::layerRendererChanged()
 {
-  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>(sender());
-  if (!layer)
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
+  if ( !layer )
     return;
 
-  QgsLayerTreeLayer* nodeLayer = mRootNode->findLayer(layer->id());
-  if (!nodeLayer)
+  QgsLayerTreeLayer* nodeLayer = mRootNode->findLayer( layer->id() );
+  if ( !nodeLayer )
     return;
 
-  refreshLayerSymbology(nodeLayer);
+  refreshLayerSymbology( nodeLayer );
 }
 
-void QgsLayerTreeModel::removeSymbologyFromSubtree(QgsLayerTreeNode* node)
+void QgsLayerTreeModel::removeSymbologyFromSubtree( QgsLayerTreeNode* node )
 {
-  if (QgsLayerTree::isLayer(node))
-    removeSymbologyFromLayer(QgsLayerTree::toLayer(node));
+  if ( QgsLayerTree::isLayer( node ) )
+    removeSymbologyFromLayer( QgsLayerTree::toLayer( node ) );
 
-  foreach (QgsLayerTreeNode* child, node->children())
-    removeSymbologyFromSubtree(child);
+  foreach ( QgsLayerTreeNode* child, node->children() )
+    removeSymbologyFromSubtree( child );
 }
 
 
-void QgsLayerTreeModel::removeSymbologyFromLayer(QgsLayerTreeLayer* nodeLayer)
+void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
 {
-  if (mSymbologyNodes.contains(nodeLayer))
+  if ( mSymbologyNodes.contains( nodeLayer ) )
   {
-    qDeleteAll(mSymbologyNodes[nodeLayer]);
-    mSymbologyNodes.remove(nodeLayer);
+    qDeleteAll( mSymbologyNodes[nodeLayer] );
+    mSymbologyNodes.remove( nodeLayer );
 
-    disconnect(nodeLayer->layer(), SIGNAL(rendererChanged()), this, SLOT(layerRendererChanged()));
+    disconnect( nodeLayer->layer(), SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ) );
   }
 }
 
 
-void QgsLayerTreeModel::addSymbologyToLayer(QgsLayerTreeLayer* nodeL)
+void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
 {
-  if (!nodeL->layer())
+  if ( !nodeL->layer() )
   {
     // skip creation of symbology if the layer is not (yet?) loaded
     // but keep an eye on it: once loaded, we will add the symbology
-    connect(nodeL, SIGNAL(layerLoaded()), this, SLOT(nodeLayerLoaded()));
+    connect( nodeL, SIGNAL( layerLoaded() ), this, SLOT( nodeLayerLoaded() ) );
     return;
   }
 
-  if (nodeL->layer()->type() == QgsMapLayer::VectorLayer)
+  if ( nodeL->layer()->type() == QgsMapLayer::VectorLayer )
   {
-    addSymbologyToVectorLayer(nodeL);
+    addSymbologyToVectorLayer( nodeL );
   }
-  else if (nodeL->layer()->type() == QgsMapLayer::RasterLayer)
+  else if ( nodeL->layer()->type() == QgsMapLayer::RasterLayer )
   {
-    addSymbologyToRasterLayer(nodeL);
+    addSymbologyToRasterLayer( nodeL );
   }
-  else if (nodeL->layer()->type() == QgsMapLayer::PluginLayer)
+  else if ( nodeL->layer()->type() == QgsMapLayer::PluginLayer )
   {
-    addSymbologyToPluginLayer(nodeL);
+    addSymbologyToPluginLayer( nodeL );
   }
 
   // be ready for any subsequent changes of the renderer
-  connect(nodeL->layer(), SIGNAL(rendererChanged()), this, SLOT(layerRendererChanged()));
+  connect( nodeL->layer(), SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ) );
 }
 
 
-void QgsLayerTreeModel::addSymbologyToVectorLayer(QgsLayerTreeLayer* nodeL)
+void QgsLayerTreeModel::addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL )
 {
-  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(nodeL->layer());
+  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );
   QgsFeatureRendererV2* r = vlayer->rendererV2();
-  if (!r)
+  if ( !r )
     return;
 
   QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
 
-  bool showFeatureCount = nodeL->customProperty("showFeatureCount", 0).toBool();
-  if (showFeatureCount)
+  bool showFeatureCount = nodeL->customProperty( "showFeatureCount", 0 ).toBool();
+  if ( showFeatureCount )
   {
     vlayer->countSymbolFeatures();
   }
   QSize iconSize( 16, 16 );
   QgsLegendSymbolList items = r->legendSymbolItems();
 
-  beginInsertRows(node2index(nodeL), 0, items.count()-1);
+  beginInsertRows( node2index( nodeL ), 0, items.count() - 1 );
 
   typedef QPair<QString, QgsSymbolV2*> XY;
   foreach ( XY item, items )
   {
     QString label = item.first;
-    QPixmap pix(QgsSymbolLayerV2Utils::symbolPreviewPixmap(item.second, iconSize));
-    if (showFeatureCount)
-      label += QString(" [%1]").arg( vlayer->featureCount( item.second ) );
-    lst << new QgsLayerTreeModelSymbologyNode(nodeL, label, QIcon(pix));
+    QPixmap pix( QgsSymbolLayerV2Utils::symbolPreviewPixmap( item.second, iconSize ) );
+    if ( showFeatureCount )
+      label += QString( " [%1]" ).arg( vlayer->featureCount( item.second ) );
+    lst << new QgsLayerTreeModelSymbologyNode( nodeL, label, QIcon( pix ) );
   }
 
   endInsertRows();
 }
 
 
-void QgsLayerTreeModel::addSymbologyToRasterLayer(QgsLayerTreeLayer* nodeL)
+void QgsLayerTreeModel::addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL )
 {
-  QgsRasterLayer* rlayer = static_cast<QgsRasterLayer*>(nodeL->layer());
+  QgsRasterLayer* rlayer = static_cast<QgsRasterLayer*>( nodeL->layer() );
 
   QgsLegendColorList rasterItemList = rlayer->legendSymbologyItems();
 
@@ -523,25 +538,25 @@ void QgsLayerTreeModel::addSymbologyToRasterLayer(QgsLayerTreeLayer* nodeL)
 
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
   // and it is very slow, so we limit max count
-  QSize iconSize(16, 16);
+  QSize iconSize( 16, 16 );
   int count = 0;
   int max_count = 1000;
-  int total_count = qMin(max_count+1, rasterItemList.count());
+  int total_count = qMin( max_count + 1, rasterItemList.count() );
 
-  beginInsertRows(node2index(nodeL), 0, total_count-1);
+  beginInsertRows( node2index( nodeL ), 0, total_count - 1 );
 
   for ( QgsLegendColorList::const_iterator itemIt = rasterItemList.constBegin();
         itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
   {
     QPixmap pix( iconSize );
     pix.fill( itemIt->second );
-    lst << new QgsLayerTreeModelSymbologyNode(nodeL, itemIt->first, QIcon(pix));
+    lst << new QgsLayerTreeModelSymbologyNode( nodeL, itemIt->first, QIcon( pix ) );
 
     if ( count == max_count )
     {
       pix.fill( Qt::transparent );
       QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
-      lst << new QgsLayerTreeModelSymbologyNode(nodeL, label, QIcon(pix));
+      lst << new QgsLayerTreeModelSymbologyNode( nodeL, label, QIcon( pix ) );
       break;
     }
   }
@@ -550,21 +565,21 @@ void QgsLayerTreeModel::addSymbologyToRasterLayer(QgsLayerTreeLayer* nodeL)
 }
 
 
-void QgsLayerTreeModel::addSymbologyToPluginLayer(QgsLayerTreeLayer* nodeL)
+void QgsLayerTreeModel::addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL )
 {
-  QgsPluginLayer* player = static_cast<QgsPluginLayer*>(nodeL->layer());
+  QgsPluginLayer* player = static_cast<QgsPluginLayer*>( nodeL->layer() );
 
   QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
 
-  QSize iconSize(16,16);
-  QgsLegendSymbologyList symbologyList = player->legendSymbologyItems(iconSize);
+  QSize iconSize( 16, 16 );
+  QgsLegendSymbologyList symbologyList = player->legendSymbologyItems( iconSize );
 
-  beginInsertRows(node2index(nodeL), 0, symbologyList.count()-1);
+  beginInsertRows( node2index( nodeL ), 0, symbologyList.count() - 1 );
 
   typedef QPair<QString, QPixmap> XY;
-  foreach (XY item, symbologyList )
+  foreach ( XY item, symbologyList )
   {
-    lst << new QgsLayerTreeModelSymbologyNode(nodeL, item.first, QIcon(item.second));
+    lst << new QgsLayerTreeModelSymbologyNode( nodeL, item.first, QIcon( item.second ) );
   }
 
   endInsertRows();
@@ -584,81 +599,81 @@ QStringList QgsLayerTreeModel::mimeTypes() const
 }
 
 
-QMimeData* QgsLayerTreeModel::mimeData(const QModelIndexList& indexes) const
+QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
 {
-  QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes(indexes, true);
+  QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( indexes, true );
 
-  if (nodesFinal.count() == 0)
+  if ( nodesFinal.count() == 0 )
     return 0;
 
   QMimeData *mimeData = new QMimeData();
 
   QDomDocument doc;
-  QDomElement rootElem = doc.createElement("layer_tree_model_data");
-  foreach (QgsLayerTreeNode* node, nodesFinal)
-    node->writeXML(rootElem);
-  doc.appendChild(rootElem);
+  QDomElement rootElem = doc.createElement( "layer_tree_model_data" );
+  foreach ( QgsLayerTreeNode* node, nodesFinal )
+    node->writeXML( rootElem );
+  doc.appendChild( rootElem );
   QString txt = doc.toString();
 
-  mimeData->setData("application/qgis.layertreemodeldata", txt.toUtf8());
-  qDebug("%s", txt.toUtf8().data());
+  mimeData->setData( "application/qgis.layertreemodeldata", txt.toUtf8() );
+  qDebug( "%s", txt.toUtf8().data() );
   return mimeData;
 }
 
-bool QgsLayerTreeModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
-  if (action == Qt::IgnoreAction)
+  if ( action == Qt::IgnoreAction )
     return true;
 
-  if (!data->hasFormat("application/qgis.layertreemodeldata"))
+  if ( !data->hasFormat( "application/qgis.layertreemodeldata" ) )
     return false;
 
-  if (column > 0)
+  if ( column > 0 )
     return false;
 
-  QgsLayerTreeNode* nodeParent = index2node(parent);
-  if (!QgsLayerTree::isGroup(nodeParent))
+  QgsLayerTreeNode* nodeParent = index2node( parent );
+  if ( !QgsLayerTree::isGroup( nodeParent ) )
     return false;
 
-  QByteArray encodedData = data->data("application/qgis.layertreemodeldata");
+  QByteArray encodedData = data->data( "application/qgis.layertreemodeldata" );
 
   QDomDocument doc;
-  if (!doc.setContent(QString::fromUtf8(encodedData)))
+  if ( !doc.setContent( QString::fromUtf8( encodedData ) ) )
     return false;
 
   QDomElement rootElem = doc.documentElement();
-  if (rootElem.tagName() != "layer_tree_model_data")
+  if ( rootElem.tagName() != "layer_tree_model_data" )
     return false;
 
   QList<QgsLayerTreeNode*> nodes;
 
   QDomElement elem = rootElem.firstChildElement();
-  while (!elem.isNull())
+  while ( !elem.isNull() )
   {
-    QgsLayerTreeNode* node = QgsLayerTreeNode::readXML(elem);
-    if (node)
+    QgsLayerTreeNode* node = QgsLayerTreeNode::readXML( elem );
+    if ( node )
       nodes << node;
 
     elem = elem.nextSiblingElement();
   }
 
-  if (nodes.count() == 0)
+  if ( nodes.count() == 0 )
     return false;
 
-  if (parent.isValid() && row == -1)
+  if ( parent.isValid() && row == -1 )
     row = 0; // if dropped directly onto group item, insert at first position
 
-  QgsLayerTree::toGroup(nodeParent)->insertChildNodes(row, nodes);
+  QgsLayerTree::toGroup( nodeParent )->insertChildNodes( row, nodes );
 
   return true;
 }
 
-bool QgsLayerTreeModel::removeRows(int row, int count, const QModelIndex& parent)
+bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex& parent )
 {
-  QgsLayerTreeNode* parentNode = index2node(parent);
-  if (QgsLayerTree::isGroup(parentNode))
+  QgsLayerTreeNode* parentNode = index2node( parent );
+  if ( QgsLayerTree::isGroup( parentNode ) )
   {
-    QgsLayerTree::toGroup(parentNode)->removeChildren(row, count);
+    QgsLayerTree::toGroup( parentNode )->removeChildren( row, count );
     return true;
   }
   return false;
