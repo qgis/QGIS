@@ -20,6 +20,7 @@
 #include <QList>
 
 class QDomElement;
+class QStringList;
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -30,6 +31,8 @@ class CORE_EXPORT QgsLayerTreeUtils
 
     // return a new instance - or null on error
     static bool readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem );
+
+    static bool readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order );
 
     static QString checkStateToXml( Qt::CheckState state );
     static Qt::CheckState checkStateFromXml( QString txt );

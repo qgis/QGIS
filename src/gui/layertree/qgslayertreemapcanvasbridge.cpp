@@ -16,6 +16,7 @@
 #include "qgslayertreemapcanvasbridge.h"
 
 #include "qgslayertree.h"
+#include "qgslayertreeutils.h"
 
 #include "qgsmapcanvas.h"
 
@@ -172,7 +173,16 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
 {
   QDomElement elem = doc.documentElement().firstChildElement( "layer-tree-canvas" );
   if ( elem.isNull() )
+  {
+    bool oldEnabled;
+    QStringList oldOrder;
+    if ( QgsLayerTreeUtils::readOldLegendLayerOrder( doc.documentElement().firstChildElement( "legend" ), oldEnabled, oldOrder ) )
+    {
+      setHasCustomLayerOrder( oldEnabled );
+      setCustomLayerOrder( oldOrder );
+    }
     return;
+  }
 
   QDomElement customOrderElem = elem.firstChildElement( "custom-order" );
   if ( !customOrderElem.isNull() )

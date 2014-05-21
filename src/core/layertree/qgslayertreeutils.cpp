@@ -44,6 +44,63 @@ bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup* root, const QDomElemen
   return true;
 }
 
+
+
+static bool _readOldLegendLayerOrderGroup( const QDomElement& groupElem, QMap<int, QString>& layerIndexes )
+{
+  QDomNodeList legendChildren = groupElem.childNodes();
+
+  for ( int i = 0; i < legendChildren.size(); ++i )
+  {
+    QDomElement currentChildElem = legendChildren.at( i ).toElement();
+    if ( currentChildElem.tagName() == "legendlayer" )
+    {
+      QDomElement layerFileElem = currentChildElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" );
+
+      int layerIndex = currentChildElem.attribute( "drawingOrder" ).toInt();
+      if ( layerIndex == -1 )
+        return false; // order undefined
+      layerIndexes.insert( layerIndex, layerFileElem.attribute( "layerid" ) );
+    }
+    else if ( currentChildElem.tagName() == "legendgroup" )
+    {
+      if ( !_readOldLegendLayerOrderGroup( currentChildElem, layerIndexes ) )
+        return false;
+    }
+  }
+
+  return true;
+}
+
+
+bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order )
+{
+  if ( legendElem.isNull() )
+    return false;
+
+  hasCustomOrder = legendElem.attribute( "updateDrawingOrder" ) == "false";
+  order.clear();
+
+  QMap<int, QString> layerIndexes;
+
+  // try to read the order. may be undefined (order = -1) for some or all items
+  bool res = _readOldLegendLayerOrderGroup( legendElem, layerIndexes );
+
+  if ( !res && hasCustomOrder )
+    return false; // invalid state
+
+  foreach ( QString layerId, layerIndexes )
+  {
+    QgsDebugMsg( layerId );
+    order.append( layerId );
+  }
+
+  return true;
+}
+
+
+
+
 QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
 {
   switch ( state )
@@ -74,6 +131,7 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
   parent->addChildNode( groupNode );
 
   groupNode->setVisible( checkStateFromXml( groupElem.attribute( "checked" ) ) );
+  groupNode->setExpanded( groupElem.attribute( "open" ) == "true" );
 
   if ( groupElem.attribute( "embedded" ) == "1" )
   {
@@ -97,15 +155,23 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
 
 void QgsLayerTreeUtils::addLegendLayerToTreeWidget( const QDomElement& layerElem, QgsLayerTreeGroup* parent )
 {
-  QString layerId = layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" );
+  QDomElement layerFileElem = layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" );
+  QString layerId = layerFileElem.attribute( "layerid" );
   QgsLayerTreeLayer* layerNode = new QgsLayerTreeLayer( layerId, layerElem.attribute( "name" ) );
 
   layerNode->setVisible( checkStateFromXml( layerElem.attribute( "checked" ) ) );
+  layerNode->setExpanded( layerElem.attribute( "open" ) == "true" );
+
+  if ( layerFileElem.attribute( "isInOverview" ) == "1" )
+    layerNode->setCustomProperty( "overview", 1 );
 
   if ( layerElem.attribute( "embedded" ) == "1" )
     layerNode->setCustomProperty( "embedded", 1 );
 
-  // TODO: is in overview, drawing order, show feature count
+  if ( layerElem.attribute( "showFeatureCount" ) == "1" )
+    layerNode->setCustomProperty( "showFeatureCount", 1 );
+
+  // drawing order is handled by readOldLegendLayerOrder()
 
   parent->addChildNode( layerNode );
 }
