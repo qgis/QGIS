@@ -239,6 +239,10 @@ class QgsWMSServer: public QgsOWSServer
 
     bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
 
+    // speficy if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
+    bool mDrawLegendLayerLabel;
+    bool mDrawLegendItemLabel;
+
     QDomElement createFeatureGML(
       QgsFeature* feat,
       QgsVectorLayer* layer,
