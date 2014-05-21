@@ -47,7 +47,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
   public:
 
-    /** Import a vector layer into the database */
+    /** Import a vector layer into the database
+     * @param options options for provider, specified via a map of option name
+     * to value. Valid options are lowercaseFieldNames (set to true to convert
+     * field names to lowercase), dropStringConstraints (set to true to remove
+     * length constraints on character fields).
+    */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -324,7 +329,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool loadFields();
 
     /** convert a QgsField to work with PG */
-    static bool convertField( QgsField &field );
+    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = 0 );
 
     /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
