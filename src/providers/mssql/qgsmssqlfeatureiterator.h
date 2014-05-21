@@ -62,6 +62,9 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    // Return True if this feature source has spatial attributes.
+    bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
+
     friend class QgsMssqlFeatureIterator;
 };
 
@@ -111,6 +114,9 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
+
+    // Return True of the geometry column was found when parsing the columns.
+    bool isSpatial() { return mGeometryCol > -1; }
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H
