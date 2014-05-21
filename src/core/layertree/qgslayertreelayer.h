@@ -38,7 +38,7 @@ class QgsMapLayer;
  *
  * @note added in 2.4
  */
-class QgsLayerTreeLayer : public QgsLayerTreeNode
+class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:

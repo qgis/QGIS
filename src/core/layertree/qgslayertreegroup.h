@@ -26,7 +26,7 @@ class QgsLayerTreeLayer;
  *
  * @note added in 2.4
  */
-class QgsLayerTreeGroup : public QgsLayerTreeNode
+class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
