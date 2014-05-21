@@ -78,8 +78,6 @@ void QgsServerProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layer
   QList<QDomElement>::const_iterator layerElemIt = mProjectLayerElements.constBegin();
   for ( ; layerElemIt != mProjectLayerElements.constEnd(); ++layerElemIt )
   {
-    addJoinLayersForElement( *layerElemIt );
-    addValueRelationLayersForElement( *layerElemIt );
     QgsMapLayer *layer = createLayerFromElement( *layerElemIt );
     if ( layer )
     {
@@ -146,6 +144,9 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   {
     return 0;
   }
+
+  addJoinLayersForElement( elem, useCache );
+  addValueRelationLayersForElement( elem, useCache );
 
   QDomElement dataSourceElem = elem.firstChildElement( "datasource" );
   QString uri = dataSourceElem.text();
@@ -844,9 +845,6 @@ void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLaye
   QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( id );
   if ( layerIt != mProjectLayerElementsById.constEnd() )
   {
-
-    addJoinLayersForElement( layerIt.value(), useCache );
-    addValueRelationLayersForElement( layerIt.value(), useCache );
     QgsMapLayer* layer = createLayerFromElement( layerIt.value(), useCache );
     if ( layer )
     {

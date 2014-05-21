@@ -849,7 +849,6 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
           const QList<QDomElement>& embeddedProjectLayerElements = pp.projectLayerElements();
           foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
-            pp.addJoinLayersForElement( elem );
             pLayerMap.insert( pp.layerId( elem ), pp.createLayerFromElement( elem ) );
           }
 
@@ -1222,7 +1221,6 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
           const QList<QDomElement>& embeddedProjectLayerElements = pp.projectLayerElements();
           foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
-            pp.addJoinLayersForElement( elem );
             pLayerMap.insert( pp.layerId( elem ), pp.createLayerFromElement( elem ) );
           }
 
