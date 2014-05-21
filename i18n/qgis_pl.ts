@@ -61698,17 +61698,17 @@ w pamięci</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="67"/>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się parsowanie WMS URI</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="97"/>
         <source>Failed to download capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się pobranie Capabilities</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="104"/>
         <source>Failed to parse capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się parsowanie Capabilities</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="210"/>
@@ -61863,19 +61863,19 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="446"/>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się parsowanie WMS URI</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="463"/>
         <source>Failed to download capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się pobranie Capabilities:</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
         <source>Failed to parse capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się parsowanie Capabilities:</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
@@ -62763,17 +62763,17 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1884"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation type="unfinished">Pobrano %1 z %2 bajtów Capabilities.</translation>
+        <translation>Pobrano %1 z %2 bajtów Capabilities.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1898"/>
         <source>Capabilities request redirected.</source>
-        <translation type="unfinished">Zapytanie Capabilities przekierowano.</translation>
+        <translation>Przekierowano zapytanie Capabilities.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1904"/>
         <source>Redirect loop detected: %1</source>
-        <translation type="unfinished">Wykryto pętlę przekierowania: %1</translation>
+        <translation>Wykryto pętlę przekierowania: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1905"/>
@@ -62784,12 +62784,13 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1930"/>
         <source>empty of capabilities: %1</source>
-        <translation type="unfinished">Brak &quot;capabilities&quot;: %1</translation>
+        <translatorcomment>puste?</translatorcomment>
+        <translation type="unfinished">brak Capabilities: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1936"/>
         <source>Download of capabilities failed: %1</source>
-        <translation type="unfinished">Pobieranie &quot;capabilities&quot; nie powiodło się: %1</translation>
+        <translation>Pobieranie Capabilities nie powiodło się: %1</translation>
     </message>
 </context>
 <context>
@@ -62797,7 +62798,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3190"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Status: %1; Przyczyna: %2; URL:%3)</translation>
+        <translation>Błąd pobierania mapy (status: %1; przyczyna: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3193"/>
@@ -62812,32 +62813,32 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3214"/>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation type="unfinished">Obraz jest uszkodzony [Content-Type:%1; URL: %2]</translation>
+        <translation>Obraz jest uszkodzony [Content-Type:%1; URL: %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3222"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Tytuł: %1; Błąd: %2; URL:%3)</translation>
+        <translation>Błąd pobierania mapy (tytuł: %1; błąd: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3228"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Status: %1; Odpowiedź: %2; Typ zawartości: %3; URL:%4)</translation>
+        <translation>Błąd pobierania mapy (status: %1; odpowiedź: %2; typ zawartości: %3; URL:%4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3254"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished">Błąd pobierania mapy [błąd: %1; URL:%2]</translation>
+        <translation>Błąd pobierania mapy [błąd: %1; URL:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3258"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">W logach zapisywane jest do 100 błędów zapytań.</translation>
+        <translation>W logach zapisywane jest do 100 błędów zapytań.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3270"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 z %2 bajtów mapy pobrano.</translation>
     </message>
 </context>
 <context>
@@ -63346,12 +63347,12 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1787"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Identyfikator</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1789"/>
         <source>Tile mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tryb kafli</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1798"/>
@@ -63366,7 +63367,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1806"/>
         <source>Invalid tile mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nieprawidłowy tryb kafli</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1829"/>
@@ -63401,12 +63402,12 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
         <source>Matrix size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rozmiar macierzy</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1904"/>
         <source>Matrix extent [mu]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zasięg macierzy [mu]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1905"/>
@@ -63799,19 +63800,19 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3412"/>
         <source>Tile request error</source>
-        <translation type="unfinished">Błąd żądania kafla</translation>
+        <translation>Błąd żądania kafla</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3412"/>
         <source>Status: %1
 Reason phrase: %2</source>
-        <translation type="unfinished">Status: %1
+        <translation>Status: %1
 Przyczyna: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3432"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Błąd pobierania kafla (Kafel:%1; Błąd:%2; URL: %3)</translation>
+        <translation>Błąd pobierania kafla (kafel:%1; błąd:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3434"/>
@@ -63826,28 +63827,28 @@ Przyczyna: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3438"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation type="unfinished">Błąd pobierania kafla (Status:%1; Content-Type:%2; Długość:%3; URL: %4)</translation>
+        <translation>Błąd pobierania kafla (status:%1; typ zawartości:%2; długość:%3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3494"/>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished">Obraz jest uszkodzony [Content-Type:%1; URL: %2 </translation>
+        <translation>Obraz jest uszkodzony [typ zawartości:%1; URL: %2 </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3528"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
-            <numerusform>%n zapytanie o kafel w tle</numerusform>
-            <numerusform>%n zapytania o kafle w tle</numerusform>
-            <numerusform>%n zapytań o kafle w tle</numerusform>
+        <translation>
+            <numerusform>%n zapytanie w tle o kafel</numerusform>
+            <numerusform>%n zapytania w tle o kafle</numerusform>
+            <numerusform>%n zapytań w tle o kafle</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3529"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n kafel znaleziono</numerusform>
             <numerusform>, %n kafle znaleziono</numerusform>
             <numerusform>, %n kafli znaleziono</numerusform>
@@ -63857,7 +63858,7 @@ Przyczyna: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3530"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n kafla brakuje.</numerusform>
             <numerusform>, %n kafli brakuje.</numerusform>
             <numerusform>, %n kafli brakuje.</numerusform>
@@ -63867,7 +63868,7 @@ Przyczyna: %2</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3531"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, %n błąd.</numerusform>
             <numerusform>, %n błędy.</numerusform>
             <numerusform>, %n błędów.</numerusform>
@@ -63876,17 +63877,17 @@ Przyczyna: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3543"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">W logach zapisywane jest do 100 błędów zapytań.</translation>
+        <translation>W logach zapisywane jest do 100 błędów zapytań.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3560"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished">Przekroczono max. liczbę prób pobrania kafla. Nieudane zapytanie %1 dla kafla %2 z tileRequest %3 (URL: %4)</translation>
+        <translation>Przekroczono max. liczbę prób pobrania kafla. Nieudane zapytanie %1 dla kafla %2 z tileRequest %3 (URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3569"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished">Powtórz tileRequest %1 dla kafla %2 (prób %3)</translation>
+        <translation>Powtórz tileRequest %1 dla kafla %2 (prób %3)</translation>
     </message>
 </context>
 <context>
