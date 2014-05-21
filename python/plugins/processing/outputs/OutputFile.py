@@ -31,8 +31,7 @@ from processing.outputs.Output import Output
 class OutputFile(Output):
 
     def __init__(self, name='', description='', ext = None):
-        self.name = name
-        self.description = description
+        Output.__init__(self, name, description)
         self.ext = ext
 
     def getFileFilter(self, alg):
