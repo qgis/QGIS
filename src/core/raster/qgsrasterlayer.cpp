@@ -304,7 +304,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
 } //end of draw method
 
-QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
+QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
   QgsRasterRenderer *renderer = mPipe.renderer();

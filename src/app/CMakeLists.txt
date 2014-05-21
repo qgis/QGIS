@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -129,13 +130,7 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
-  legend/qgslegendgroup.cpp
-  legend/qgslegend.cpp
   legend/qgsapplegendinterface.cpp
-  legend/qgslegenditem.cpp
-  legend/qgslegendlayer.cpp
-  legend/qgslegendsymbologyitem.cpp
-  legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -272,10 +267,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  legend/qgslegend.h
   legend/qgsapplegendinterface.h
-  legend/qgslegendlayer.h
-  legend/qgslayerorder.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -428,11 +420,22 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ../analysis/raster ../analysis/openstreetmap
+  ../analysis/raster
+  ../analysis/openstreetmap
   ../core
   ../core/gps
-  ../core/composer ../core/dxf ../core/raster ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster ../gui/editorwidgets ../gui/editorwidgets/core
+  ../core/composer
+  ../core/dxf
+  ../core/layertree
+  ../core/raster
+  ../core/symbology-ng
+  ../gui
+  ../gui/symbology-ng
+  ../gui/attributetable
+  ../gui/raster
+  ../gui/editorwidgets
+  ../gui/editorwidgets/core
+  ../gui/layertree
   ../plugins
   ../python
   gps

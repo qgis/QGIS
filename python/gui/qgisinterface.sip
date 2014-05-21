@@ -32,6 +32,8 @@ class QgisInterface : QObject
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
+    virtual QgsLayerTreeView* layerTreeView() = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */

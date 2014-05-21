@@ -58,6 +58,12 @@ editorwidgets/qgsrelationreferencewidget.cpp
 editorwidgets/qgsrelationreferencefactory.cpp
 editorwidgets/qgsrelreferenceconfigdlg.cpp
 
+layertree/qgscustomlayerorderwidget.cpp
+layertree/qgslayertreemapcanvasbridge.cpp
+layertree/qgslayertreemodel.cpp
+layertree/qgslayertreeview.cpp
+layertree/qgslayertreeviewdefaultactions.cpp
+
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
@@ -140,6 +146,7 @@ qgsrelationmanagerdialog.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
 qgsscalerangewidget.cpp
+qgsscalevisibilitydialog.cpp
 qgssearchquerybuilder.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
@@ -214,6 +221,12 @@ editorwidgets/core/qgseditorwidgetwrapper.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelreferenceconfigdlg.h
 
+layertree/qgscustomlayerorderwidget.h
+layertree/qgslayertreemapcanvasbridge.h
+layertree/qgslayertreemodel.h
+layertree/qgslayertreeview.h
+layertree/qgslayertreeviewdefaultactions.h
+
 qgisinterface.h
 qgsattributedialog.h
 qgsattributeeditor.h
@@ -280,6 +293,7 @@ qgsrelationeditor.h
 qgsrelationmanagerdialog.h
 qgsscalecombobox.h
 qgsscalerangewidget.h
+qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgssublayersdialog.h
 qgsunitselectionwidget.h
@@ -347,6 +361,7 @@ qgsrelationeditor.h
 qgsrubberband.h
 qgsscalecombobox.h
 qgsscalerangewidget.h
+qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgssublayersdialog.h
 qgsvectorlayertools.h
@@ -380,6 +395,11 @@ editorwidgets/core/qgseditorwidgetwrapper.h
 editorwidgets/qgsrelationreferencefactory.h
 editorwidgets/qgsrelationreferencewidget.h
 editorwidgets/qgsrelreferenceconfigdlg.h
+
+layertree/qgscustomlayerorderwidget.h
+layertree/qgslayertreemapcanvasbridge.h
+layertree/qgslayertreemodel.h
+layertree/qgslayertreeview.h
 
 raster/qgsrasterrendererwidget.h
 )
@@ -426,8 +446,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ../core
   ../core/composer
+  ../core/layertree
   ../core/raster
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}

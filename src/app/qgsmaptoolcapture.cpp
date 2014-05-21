@@ -16,14 +16,15 @@
 #include "qgsmaptoolcapture.h"
 
 #include "qgisapp.h"
-#include "qgsvertexmarker.h"
 #include "qgscursors.h"
-#include "qgsrubberband.h"
+#include "qgsgeometryvalidator.h"
+#include "qgslayertreeview.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsgeometryvalidator.h"
+#include "qgsvertexmarker.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -46,7 +47,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
   mCursor = QCursor( mySelectQPixmap, 8, 8 );
 
-  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 }
 

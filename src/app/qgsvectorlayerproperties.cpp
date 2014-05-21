@@ -33,7 +33,6 @@
 #include "qgslabeldialog.h"
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
-#include "qgslegenditem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -573,7 +572,7 @@ void QgsVectorLayerProperties::apply()
   layer->setSimplifyMethod( simplifyMethod );
 
   // update symbology
-  emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
+  emit refreshLegend( layer->id() );
 
   layer->triggerRepaint();
   // notify the project we've made a change

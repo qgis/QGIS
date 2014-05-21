@@ -22,7 +22,6 @@
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgshighlight.h"
-#include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
@@ -1330,14 +1329,14 @@ void QgsOptions::saveOptions()
        || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
        || legendLayersCapitalise != capitaliseCheckBox->isChecked() )
   {
-    QgisApp::instance()->legend()->updateLegendItemStyles();
+    // TODO[MD] QgisApp::instance()->legend()->updateLegendItemStyles();
   }
 
   // refresh symbology for any legend items, only if needed
   if ( showLegendClassifiers != cbxLegendClassifiers->isChecked()
        || createRasterLegendIcons != cbxCreateRasterLegendIcons->isChecked() )
   {
-    QgisApp::instance()->legend()->updateLegendItemSymbologies();
+    // TODO[MD] QgisApp::instance()->legend()->updateLegendItemSymbologies();
   }
 
   // save app stylesheet last (in case reset becomes necessary)

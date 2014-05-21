@@ -35,21 +35,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QTreeWidget" name="mTreeWidget">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <attribute name="headerVisible">
-      <bool>false</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
@@ -60,8 +45,25 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QgsLayerTreeView" name="mTreeView">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>0</number>
+     </attribute>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

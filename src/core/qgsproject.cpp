@@ -22,6 +22,9 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsexception.h"
+#include "qgslayertree.h"
+#include "qgslayertreeutils.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgspluginlayer.h"
@@ -304,7 +307,7 @@ struct QgsProject::Imp
   bool dirty;
 
   Imp()
-      : title( "" )
+      : title( )
       , dirty( false )
   {                             // top property node is the root
     // "properties" that contains all plug-in
@@ -318,14 +321,10 @@ struct QgsProject::Imp
   {
     //QgsDebugMsg( "Clearing project properties Impl->clear();" );
 
+    file.setFileName( QString() );
     properties_.clearKeys();
-    title = "";
-
-    // reset some default project properties
-    // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", true );
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
-    QgsProject::instance()->writeEntry( "Paths", "/Absolute", false );
+    title.clear();
+    dirty = false;
   }
 
 };  // struct QgsProject::Imp
@@ -336,15 +335,15 @@ QgsProject::QgsProject()
     : imp_( new QgsProject::Imp )
     , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
     , mRelationManager( new QgsRelationManager( this ) )
+    , mRootGroup( new QgsLayerTreeGroup )
 {
-  // Set some default project properties
-  // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
-  writeEntry( "PositionPrecision", "/Automatic", true );
-  writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
-  writeEntry( "Paths", "/Absolute", false );
-  // XXX writeEntry() makes the project dirty, but it doesn't make sense
-  // for a new project to be dirty, so let's clean it up
-  dirty( false );
+  clear();
+
+  // bind the layer tree to the map layer registry.
+  // whenever layers are added to or removed from the registry,
+  // layer tree will be updated
+  mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge(mRootGroup, this);
+
 } // QgsProject ctor
 
 
@@ -353,6 +352,7 @@ QgsProject::~QgsProject()
 {
   delete mBadLayerHandler;
   delete mRelationManager;
+  delete mRootGroup;
 
   // note that std::auto_ptr automatically deletes imp_ when it's destroyed
 } // QgsProject dtor
@@ -375,6 +375,11 @@ void QgsProject::title( QString const &title )
   dirty( true );
 } // void QgsProject::title
 
+void QgsProject::setTitle( const QString& t )
+{
+  title( t );
+}
+
 
 QString const & QgsProject::title() const
 {
@@ -393,6 +398,11 @@ void QgsProject::dirty( bool b )
   imp_->dirty = b;
 } // bool QgsProject::isDirty()
 
+void QgsProject::setDirty(bool b)
+{
+  dirty( b );
+}
+
 
 
 void QgsProject::setFileName( QString const &name )
@@ -408,6 +418,23 @@ QString QgsProject::fileName() const
 {
   return imp_->file.fileName();
 } // QString QgsProject::fileName() const
+
+void QgsProject::clear()
+{
+  imp_->clear();
+  mEmbeddedLayers.clear();
+  mRelationManager->clear();
+
+  mRootGroup->removeAllChildren();
+
+  // reset some default project properties
+  // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
+  writeEntry( "PositionPrecision", "/Automatic", true );
+  writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
+  writeEntry( "Paths", "/Absolute", false );
+
+  setDirty( false );
+}
 
 
 
@@ -858,13 +885,11 @@ bool QgsProject::read()
 
   }
 
-  // before we start loading everything, let's clear out the current set of
-  // properties first so that we don't have the properties from the previous
-  // project still hanging around
+  // start new project, just keep the file name
 
-  imp_->clear();
-  mEmbeddedLayers.clear();
-  mRelationManager->clear();
+  QString fileName = imp_->file.fileName();
+  clear();
+  imp_->file.setFileName(fileName);
 
   // now get any properties
   _getProperties( *doc, imp_->properties_ );
@@ -873,12 +898,24 @@ bool QgsProject::read()
 
   dump_( imp_->properties_ );
 
-
-  // restore the canvas' area of interest
-
   // now get project title
   _getTitle( *doc, imp_->title );
 
+  // read the layer tree from project file
+
+  QDomElement layerTreeElem = doc->documentElement().firstChildElement( "layer-tree-group" );
+  if ( !layerTreeElem.isNull() )
+  {
+    mRootGroup->readChildrenFromXML( layerTreeElem );
+  }
+  else
+  {
+    QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( "legend" ) );
+  }
+
+  QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
+
+  mLayerTreeRegistryBridge->setEnabled( false );
 
   // get the map layers
   QPair< bool, QList<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );
@@ -900,6 +937,11 @@ bool QgsProject::read()
     mBadLayerHandler->handleBadLayers( getMapLayersResults.second, *doc );
   }
 
+  mLayerTreeRegistryBridge->setEnabled( true );
+
+  // load embedded groups and layers
+  loadEmbeddedNodes(mRootGroup);
+
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 
@@ -912,6 +954,57 @@ bool QgsProject::read()
 } // QgsProject::read
 
 
+void QgsProject::loadEmbeddedNodes(QgsLayerTreeGroup* group)
+{
+  foreach (QgsLayerTreeNode* child, group->children())
+  {
+    if (QgsLayerTree::isGroup(child))
+    {
+      QgsLayerTreeGroup* childGroup = QgsLayerTree::toGroup(child);
+      if (childGroup->customProperty("embedded").toInt())
+      {
+        QgsLayerTreeGroup* newGroup = createEmbeddedGroup(childGroup->name(), childGroup->customProperty("embedded_project").toString());
+        if (newGroup)
+        {
+          QList<QgsLayerTreeNode*> clonedChildren;
+          foreach (QgsLayerTreeNode* newGroupChild, newGroup->children())
+            clonedChildren << newGroupChild->clone();
+          delete newGroup;
+
+          childGroup->insertChildNodes(0, clonedChildren);
+        }
+      }
+      else
+      {
+        loadEmbeddedNodes(childGroup);
+      }
+    }
+    else if (QgsLayerTree::isLayer(child))
+    {
+      if (child->customProperty("embedded").toInt())
+      {
+        QList<QDomNode> brokenNodes;
+        QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+        createEmbeddedLayer(QgsLayerTree::toLayer(child)->layerId(), child->customProperty("embedded_project").toString(), brokenNodes, vectorLayerList);
+      }
+    }
+
+  }
+}
+
+void QgsProject::removeChildrenOfEmbeddedGroups(QgsLayerTreeGroup* group)
+{
+  foreach (QgsLayerTreeNode* child, group->children())
+  {
+    if (QgsLayerTree::isGroup(child))
+    {
+      if (child->customProperty("embedded").toInt())
+        QgsLayerTree::toGroup(child)->removeAllChildren();
+      else
+        removeChildrenOfEmbeddedGroups(QgsLayerTree::toGroup(child));
+    }
+  }
+}
 
 
 
@@ -991,6 +1084,12 @@ bool QgsProject::write()
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
+
+  // write layer tree - make sure it is without embedded subgroups
+  QgsLayerTreeNode* clonedRoot = mRootGroup->clone();
+  removeChildrenOfEmbeddedGroups(QgsLayerTree::toGroup(clonedRoot));
+  clonedRoot->writeXML( qgisNode );
+  delete clonedRoot;
 
   // let map canvas and legend write their information
   emit writeProject( *doc );
@@ -1093,9 +1192,7 @@ bool QgsProject::write()
 
 void QgsProject::clearProperties()
 {
-  //QgsDebugMsg("entered.");
-
-  imp_->clear();
+  clear();
 
   dirty( true );
 } // QgsProject::clearProperties()
@@ -1677,6 +1774,102 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   return false;
 }
 
+
+QgsLayerTreeGroup* QgsProject::createEmbeddedGroup( const QString& groupName, const QString& projectFilePath )
+{
+  //open project file, get layer ids in group, add the layers
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return 0;
+  }
+
+  QDomDocument projectDocument;
+  if ( !projectDocument.setContent( &projectFile ) )
+  {
+    return 0;
+  }
+
+  //store identify disabled layers of the embedded project
+  QSet<QString> embeddedIdentifyDisabledLayers;
+  QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( "properties" ).firstChildElement( "Identify" ).firstChildElement( "disabledLayers" );
+  if ( !disabledLayersElem.isNull() )
+  {
+    QDomNodeList valueList = disabledLayersElem.elementsByTagName( "value" );
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      embeddedIdentifyDisabledLayers.insert( valueList.at( i ).toElement().text() );
+    }
+  }
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
+
+  QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( "layer-tree-group" );
+  if ( !layerTreeElem.isNull() )
+  {
+    root->readChildrenFromXML( layerTreeElem );
+  }
+  else
+  {
+    QgsLayerTreeUtils::readOldLegend( root, projectDocument.documentElement().firstChildElement( "legend" ) );
+  }
+
+  QgsLayerTreeGroup* group = root->findGroup( groupName );
+  if ( !group || group->customProperty( "embedded" ).toBool() )
+  {
+    // embedded groups cannot be embedded again
+    delete root;
+    return 0;
+  }
+
+  // clone the group sub-tree (it is used already in a tree, we cannot just tear it off)
+  QgsLayerTreeGroup* newGroup = QgsLayerTree::toGroup( group->clone() );
+  delete root;
+  root = 0;
+
+  newGroup->setCustomProperty( "embedded", 1 );
+  newGroup->setCustomProperty( "embedded_project", projectFilePath );
+
+  // set "embedded" to all children + load embedded layers
+  mLayerTreeRegistryBridge->setEnabled( false );
+  initializeEmbeddedSubtree( projectFilePath, newGroup );
+  mLayerTreeRegistryBridge->setEnabled( true );
+
+  // consider the layers might be identify disabled in its project
+  foreach ( QString layerId, newGroup->childLayerIds() )
+  {
+    if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
+    {
+      QStringList thisProjectIdentifyDisabledLayers = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+      thisProjectIdentifyDisabledLayers.append( layerId );
+      QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", thisProjectIdentifyDisabledLayers );
+    }
+  }
+
+  return newGroup;
+}
+
+void QgsProject::initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group )
+{
+  foreach ( QgsLayerTreeNode* child, group->children() )
+  {
+    // all nodes in the subtree will have "embedded" custom property set
+    child->setCustomProperty( "embedded", 1 );
+
+    if ( QgsLayerTree::isGroup( child ) )
+    {
+      initializeEmbeddedSubtree( projectFilePath, QgsLayerTree::toGroup( child ) );
+    }
+    else if ( QgsLayerTree::isLayer( child ) )
+    {
+      // load the layer into our project
+      QList<QDomNode> brokenNodes;
+      QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+      createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), projectFilePath, brokenNodes, vectorLayerList, false );
+    }
+  }
+}
+
 void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection )
 {
   QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
@@ -1829,4 +2022,9 @@ QString QgsProject::homePath() const
 QgsRelationManager* QgsProject::relationManager() const
 {
   return mRelationManager;
+}
+
+QgsLayerTreeGroup* QgsProject::layerTreeRoot() const
+{
+  return mRootGroup;
 }

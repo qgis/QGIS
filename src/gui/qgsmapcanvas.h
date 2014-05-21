@@ -54,8 +54,6 @@ class QGraphicsScene;
 
 class QgsMapToPixel;
 class QgsMapLayer;
-class QgsLegend;
-class QgsLegendView;
 class QgsHighlight;
 class QgsVectorLayer;
 

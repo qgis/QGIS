@@ -48,6 +48,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsPluginManagerInterface* pluginManagerInterface();
 
+    QgsLayerTreeView* layerTreeView();
+
     /* Exposed functions */
 
     //! Zoom map to full extent
