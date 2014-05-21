@@ -12,6 +12,48 @@ FILE (MAKE_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 
+# Python plugins and support packages can be staged to PYTHON_OUTPUT_DIRECTORY
+# so plugins will function when app is run from build directory
+
+# When staging all plugins, use the following make targets:
+#   staged-plugins - stage plugins (usually after repo pull/build and project make)
+#   staged-plugins-pyc - stage and byte-compile all
+#   clean-staged-plugins - removes the staged plugins' directories
+#
+# NOTE: regular project 'make install' is unaffected
+
+# Other target dependenciess will be added, per staged resource
+ADD_CUSTOM_TARGET(staged-plugins)
+
+# Plugins can also be staged with CMake option at build time
+IF(WITH_STAGED_PLUGINS)
+  ADD_CUSTOM_TARGET(staged-plugins-on-build ALL DEPENDS staged-plugins)
+ENDIF(WITH_STAGED_PLUGINS)
+
+# Non-default/non-option-controlled target to stage and compile plugins and extras
+ADD_CUSTOM_TARGET(staged-plugins-pyc DEPENDS staged-plugins
+  COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}"
+  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+  COMMENT "Byte-compiling build output/python directory..."
+)
+
+# Other custom commands will be added, per staged resource
+ADD_CUSTOM_TARGET(clean-staged-plugins
+  COMMAND ${CMAKE_COMMAND} -E remove_directory "${PYTHON_OUTPUT_DIRECTORY}/plugins"
+)
+
+# Macro to byte-compile a target's staged Python resource(s)
+MACRO(PY_COMPILE TARGET_NAME RESOURCE_PATHS)
+  IF(WITH_PY_COMPILE)
+    ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME}
+      POST_BUILD
+      COMMAND ${PYTHON_EXECUTABLE} -m compileall -q ${RESOURCE_PATHS}
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+      COMMENT "Byte-compiling staged resource..."
+    )
+  ENDIF(WITH_PY_COMPILE)
+ENDMACRO(PY_COMPILE)
+
 ADD_SUBDIRECTORY(plugins)
 ADD_SUBDIRECTORY(qsci_apis)
 ADD_SUBDIRECTORY(console)
@@ -172,14 +214,15 @@ IF(WITH_QSCIAPI)
     COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 ENDIF(WITH_QSCIAPI)
 
+IF(WITH_CUSTOM_WIDGETS)
+  INSTALL(FILES custom_widgets/qgis_customwidgets.py DESTINATION "${PYUIC_WIDGET_PLUGIN_DIRECTORY}")
+ENDIF(WITH_CUSTOM_WIDGETS)
+
 # Plugin utilities files to copy to staging or install
 SET(PY_FILES
   __init__.py
   utils.py
 )
-IF(WITH_CUSTOM_WIDGETS)
-	INSTALL(FILES custom_widgets/qgis_customwidgets.py DESTINATION "${PYUIC_WIDGET_PLUGIN_DIRECTORY}")
-ENDIF(WITH_CUSTOM_WIDGETS)
 
 ADD_CUSTOM_TARGET(pyutils ALL)
 INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}")
@@ -192,6 +235,7 @@ FOREACH(pyfile ${PY_FILES})
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${pyfile}
   )
+  PY_COMPILE(pyutils "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${pyfile}")
 ENDFOREACH(pyfile)
 
 FOREACH(module core gui analysis networkanalysis)
@@ -207,18 +251,5 @@ FOREACH(module core gui analysis networkanalysis)
       DEPENDS ${PY_FILES}
     )
   ENDFOREACH(pyfile)
+  PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
 ENDFOREACH(module)
-
-
-# Byte-compile staged PyQGIS utilities
-IF(WITH_PY_COMPILE)
-  ADD_CUSTOM_TARGET(pycompile-pyutils ALL
-    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/qgis"
-    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/console"
-    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/pyplugin_installer"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    COMMENT "Byte-compiling staged PyQGIS utility modules..."
-    DEPENDS pyutils
-  )
-ENDIF(WITH_PY_COMPILE)
-
