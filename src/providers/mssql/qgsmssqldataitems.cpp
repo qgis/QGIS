@@ -37,6 +37,14 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
     : QgsDataCollectionItem( parent, name, path )
 {
   mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
+}
+
+QgsMssqlConnectionItem::~QgsMssqlConnectionItem()
+{
+}
+
+void QgsMssqlConnectionItem::readConnectionSettings()
+{
   QSettings settings;
   QString key = "/MSSQL/connections/" + mName;
   mService = settings.value( key + "/service" ).toString();
@@ -61,10 +69,6 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
     mConnInfo += " service='" + mService + "'";
   if ( mUseEstimatedMetadata )
     mConnInfo += " estimatedmetadata=true";
-}
-
-QgsMssqlConnectionItem::~QgsMssqlConnectionItem()
-{
 }
 
 void QgsMssqlConnectionItem::refresh()
@@ -95,6 +99,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 
   QVector<QgsDataItem*> children;
 
+  readConnectionSettings();
   QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService,
                     mHost, mDatabase, mUsername, mPassword );
 

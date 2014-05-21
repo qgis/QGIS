@@ -83,6 +83,8 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     bool mUseGeometryColumns;
     bool mUseEstimatedMetadata;
     bool mAllowGeometrylessTables;
+
+    void readConnectionSettings();
 };
 
 class QgsMssqlSchemaItem : public QgsDataCollectionItem
