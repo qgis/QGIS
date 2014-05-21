@@ -349,6 +349,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     /** @note added in 1.9 */
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
+    /** @note added in 2.4 */
+    QAction *actionSetLayerScaleVisibility() { return mActionSetLayerScaleVisibility; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
@@ -466,9 +468,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
   public slots:
-    void layerTreeViewDoubleClicked(const QModelIndex& index);
-    void layerTreeViewCurrentChanged(const QModelIndex& current, const QModelIndex& previous);
-    void activeLayerChanged(QgsMapLayer* layer);
+    void layerTreeViewDoubleClicked( const QModelIndex& index );
+    void layerTreeViewCurrentChanged( const QModelIndex& current, const QModelIndex& previous );
+    void activeLayerChanged( QgsMapLayer* layer );
     //! Zoom to full extent
     void zoomFull();
     //! Zoom to the previous extent
@@ -710,6 +712,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Duplicate map layer(s) in legend
      * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
+    //! Set Scale visibility of selected layers
+    void setLayerScaleVisibility();
     //! Set CRS of a layer
     void setLayerCRS();
     //! Assign layer CRS to project
