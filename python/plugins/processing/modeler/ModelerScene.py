@@ -138,17 +138,15 @@ class ModelerScene(QtGui.QGraphicsScene):
             params = model.algParameters[iAlg]
             idx = 0
             for parameter in alg.parameters:
-                param = params[parameter.name]
-                if param:
-                    sourceItems = self.getItemsFromAAP(param,
-                            isinstance(
-                                    alg.getParameterFromName(parameter.name),
-                                    ParameterMultipleInput))
-                    for sourceItem in sourceItems:
-                        arrow = ModelerArrowItem(sourceItem[0], sourceItem[1],
-                                self.algItems[iAlg], idx)
-                        self.addItem(arrow)
-                idx += 1
+                if not parameter.hidden:
+                    param = params[parameter.name]
+                    if param:
+                        sourceItems = self.getItemsFromAAP(param,
+                                isinstance(alg.getParameterFromName(parameter.name), ParameterMultipleInput))
+                        for sourceItem in sourceItems:
+                            arrow = ModelerArrowItem(sourceItem[0], sourceItem[1], self.algItems[iAlg], idx)
+                            self.addItem(arrow)
+                    idx += 1
             for depend in model.dependencies[iAlg]:
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
                         self.algItems[iAlg], -1)

@@ -29,13 +29,13 @@ import codecs
 import pickle
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-from processing.modeler.ModelerParameterDefinitionDialog import \
-        ModelerParameterDefinitionDialog
+from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -54,7 +54,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def __init__(self, alg=None):
         QDialog.__init__(self)
 
-        self.hasChanged = False
         self.setupUi(self)
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
@@ -162,8 +161,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             self.textGroup.setText(alg.group)
             self.textName.setText(alg.name)
             self.repaintModel()
+            
         else:
-            self.alg = ModelerAlgorithm()
+            self.alg = ModelerAlgorithm()            
 
         self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
@@ -171,6 +171,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         # Indicates whether to update or not the toolbox after
         # closing this dialog
         self.update = False
+        
+        self.hasChanged = False   
 
     def changeModel(self):
         self.hasChanged = True
