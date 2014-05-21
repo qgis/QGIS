@@ -116,4 +116,19 @@ class QgsColorButton: QPushButton
      * Reimplemented to detect right mouse button clicks on the color button.
      */
     void mousePressEvent( QMouseEvent* e );
+    
+    /**
+     * Reimplemented to allow dragging colors from button
+     */
+    void mouseMoveEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to accept dragged colors
+     */
+    void dragEnterEvent( QDragEnterEvent * e ) ;
+
+    /**
+     * Reimplemented to accept dropped colors
+     */
+    void dropEvent( QDropEvent *e );
 };

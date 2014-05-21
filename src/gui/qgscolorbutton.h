@@ -19,6 +19,7 @@
 #include <QPushButton>
 #include <QTemporaryFile>
 
+class QMimeData;
 
 /** \ingroup gui
  * \class QgsColorButton
@@ -110,6 +111,7 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      */
     void setAcceptLiveUpdates( bool accept ) { mAcceptLiveUpdates = accept; }
 
+
   public slots:
     /**
      * Sets the background pixmap for the button based upon set color and transparency.
@@ -140,9 +142,24 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     static const QPixmap& transpBkgrd();
 
     /**
-     * Reimplemented to detect right mouse button clicks on the color button.
+     * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
      */
     void mousePressEvent( QMouseEvent* e );
+
+    /**
+     * Reimplemented to allow dragging colors from button
+     */
+    void mouseMoveEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to accept dragged colors
+     */
+    void dragEnterEvent( QDragEnterEvent * e ) ;
+
+    /**
+     * Reimplemented to accept dropped colors
+     */
+    void dropEvent( QDropEvent *e );
 
   private:
     QString mColorDialogTitle;
@@ -152,10 +169,31 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     QTemporaryFile mTempPNG;
     bool mColorSet; // added in QGIS 2.1
 
+    QPoint mDragStartPosition;
+
     /**
      * Shows the color button context menu and handles copying and pasting color values.
      */
     void showContextMenu( QMouseEvent* event );
+
+    /**
+     * Creates mime data from the current color. Sets both the mime data's color data, and the
+     * mime data's text with the color's hex code.
+     * @note added in 2.3
+     * @see colorFromMimeData
+     */
+    QMimeData* createColorMimeData() const;
+
+    /**
+     * Attempts to parse mimeData as a color, either via the mime data's color data or by
+     * parsing a textual representation of a color.
+     * @returns true if mime data could be intrepreted as a color
+     * @param mimeData mime data
+     * @param resultColor QColor to store evaluated color
+     * @note added in 2.3
+     * @see createColorMimeData
+     */
+    bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
 
   private slots:
     void onButtonClicked();
