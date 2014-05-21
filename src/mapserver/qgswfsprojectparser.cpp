@@ -551,6 +551,8 @@ QStringList QgsWFSProjectParser::wfsLayers() const
 
 QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aTypeName, bool useCache ) const
 {
+  Q_UNUSED( useCache );
+
   QList<QgsMapLayer*> layerList;
   const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
 

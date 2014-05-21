@@ -185,7 +185,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
   //set as drag pixmap
   drag->setPixmap( QPixmap::fromImage( colorImage ) );
 
-  Qt::DropAction dropAction = drag->exec( Qt::CopyAction | Qt::MoveAction );
+  drag->exec( Qt::CopyAction | Qt::MoveAction );
   setDown( false );
 }
 

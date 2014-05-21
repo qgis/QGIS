@@ -333,7 +333,7 @@ class CORE_EXPORT QgsProject : public QObject
     QgsRelationManager* relationManager() const;
 
     /** Return pointer to the root (invisible) node of the project's layer tree
-     * @node added in 2.4 */
+     * @note added in 2.4 */
     QgsLayerTreeGroup* layerTreeRoot() const;
 
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree */
