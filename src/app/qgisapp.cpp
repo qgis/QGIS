@@ -183,6 +183,7 @@
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
 #include "qgsscalecombobox.h"
+#include "qgsscalevisibilitydialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
@@ -1109,6 +1110,7 @@ void QgisApp::createActions()
   connect( mActionSaveLayerDefinition, SIGNAL( triggered() ), this, SLOT( saveAsLayerDefinition() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionDuplicateLayer, SIGNAL( triggered() ), this, SLOT( duplicateLayers() ) );
+  connect( mActionSetLayerScaleVisibility, SIGNAL( triggered() ), this, SLOT( setLayerScaleVisibility() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
   connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
@@ -6697,6 +6699,39 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   }
 }
 
+void QgisApp::setLayerScaleVisibility()
+{
+  if ( !mLayerTreeView )
+    return;
+
+  QList<QgsMapLayer*> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.length() < 1 )
+    return;
+
+  QgsScaleVisibilityDialog* dlg = new QgsScaleVisibilityDialog( this, tr( "Set scale visibility for selected layers" ), mMapCanvas );
+  QgsMapLayer* layer = mLayerTreeView->currentLayer();
+  if ( layer )
+  {
+    dlg->setScaleVisiblity( layer->hasScaleBasedVisibility() );
+    dlg->setMinimumScale( 1.0 / layer->maximumScale() );
+    dlg->setMaximumScale( 1.0 / layer->minimumScale() );
+  }
+  if ( dlg->exec() )
+  {
+    mMapCanvas->freeze();
+    foreach ( QgsMapLayer* layer, layers )
+    {
+      layer->toggleScaleBasedVisibility( dlg->hasScaleVisibility() );
+      layer->setMinimumScale( 1.0 / dlg->maximumScale() );
+      layer->setMaximumScale( 1.0 / dlg->minimumScale() );
+    }
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
+  }
+  delete dlg;
+}
+
 void QgisApp::setLayerCRS()
 {
   if ( !( mLayerTreeView && mLayerTreeView->currentLayer() ) )
@@ -8483,6 +8518,7 @@ void QgisApp::legendLayerSelectionChanged( void )
 
   mActionRemoveLayer->setEnabled( selectedLayers.count() > 0 );
   mActionDuplicateLayer->setEnabled( selectedLayers.count() > 0 );
+  mActionSetLayerScaleVisibility->setEnabled( selectedLayers.count() > 0 );
   mActionSetLayerCRS->setEnabled( selectedLayers.count() > 0 );
   mActionSetProjectCRSFromLayer->setEnabled( selectedLayers.count() == 1 );
 

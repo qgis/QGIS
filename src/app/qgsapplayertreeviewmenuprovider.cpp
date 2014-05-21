@@ -13,9 +13,9 @@
 #include "qgsvectorlayer.h"
 
 
-QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider(QgsLayerTreeView* view, QgsMapCanvas* canvas)
-  : mView(view)
-  , mCanvas(canvas)
+QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
+    : mView( view )
+    , mCanvas( canvas )
 {
 }
 
@@ -27,38 +27,38 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   QgsLayerTreeViewDefaultActions* actions = mView->defaultActions();
 
   QModelIndex idx = mView->currentIndex();
-  if (!idx.isValid())
+  if ( !idx.isValid() )
   {
     // global menu
-    menu->addAction( actions->actionAddGroup(menu) );
+    menu->addAction( actions->actionAddGroup( menu ) );
 
     // TODO: expand all, collapse all
     // TODO: update drawing order
   }
-  else if (QgsLayerTreeNode* node = mView->layerTreeModel()->index2node(idx))
+  else if ( QgsLayerTreeNode* node = mView->layerTreeModel()->index2node( idx ) )
   {
     // layer or group selected
-    if (QgsLayerTree::isGroup(node))
+    if ( QgsLayerTree::isGroup( node ) )
     {
-      menu->addAction( actions->actionZoomToGroup(mCanvas, menu) );
-      menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
+      menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
+      menu->addAction( actions->actionRemoveGroupOrLayer( menu ) );
 
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
                        tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCRS() ) );
 
-      menu->addAction( actions->actionRenameGroupOrLayer(menu) );
+      menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
-      if (mView->selectedNodes(true).count() >= 2)
-        menu->addAction( actions->actionGroupSelected(menu) );
+      if ( mView->selectedNodes( true ).count() >= 2 )
+        menu->addAction( actions->actionGroupSelected( menu ) );
 
-      menu->addAction( actions->actionAddGroup(menu) );
+      menu->addAction( actions->actionAddGroup( menu ) );
     }
-    else if (QgsLayerTree::isLayer(node))
+    else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer* layer = QgsLayerTree::toLayer(node)->layer();
+      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
 
-      menu->addAction( actions->actionZoomToLayer(mCanvas, menu) );
-      menu->addAction( actions->actionShowInOverview(menu) );
+      menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+      menu->addAction( actions->actionShowInOverview( menu ) );
 
       if ( layer && layer->type() == QgsMapLayer::RasterLayer )
       {
@@ -69,10 +69,13 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
       }
 
-      menu->addAction( actions->actionRemoveGroupOrLayer(menu) );
+      menu->addAction( actions->actionRemoveGroupOrLayer( menu ) );
 
       // duplicate layer
       QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+
+      // set layer scale visibility
+      menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
       // set layer crs
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
@@ -123,7 +126,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
           menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
-        menu->addAction( actions->actionShowFeatureCount(menu) );
+        menu->addAction( actions->actionShowFeatureCount( menu ) );
 
         menu->addSeparator();
       }
@@ -140,16 +143,16 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // TODO: custom actions
 
-      if (layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+      if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
         menu->addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
-      if (node->parent() != mView->layerTreeModel()->rootGroup())
-        menu->addAction( actions->actionMakeTopLevel(menu) );
+      if ( node->parent() != mView->layerTreeModel()->rootGroup() )
+        menu->addAction( actions->actionMakeTopLevel( menu ) );
 
-      menu->addAction( actions->actionRenameGroupOrLayer(menu) );
+      menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
-      if (mView->selectedNodes(true).count() >= 2)
-        menu->addAction( actions->actionGroupSelected(menu) );
+      if ( mView->selectedNodes( true ).count() >= 2 )
+        menu->addAction( actions->actionGroupSelected( menu ) );
 
       if ( mView->selectedLayerNodes().count() == 1 )
       {

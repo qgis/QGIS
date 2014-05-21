@@ -146,6 +146,7 @@ qgsrelationmanagerdialog.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
 qgsscalerangewidget.cpp
+qgsscalevisibilitydialog.cpp
 qgssearchquerybuilder.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
@@ -292,6 +293,7 @@ qgsrelationeditor.h
 qgsrelationmanagerdialog.h
 qgsscalecombobox.h
 qgsscalerangewidget.h
+qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgssublayersdialog.h
 qgsunitselectionwidget.h
@@ -359,6 +361,7 @@ qgsrelationeditor.h
 qgsrubberband.h
 qgsscalecombobox.h
 qgsscalerangewidget.h
+qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
 qgssublayersdialog.h
 qgsvectorlayertools.h
