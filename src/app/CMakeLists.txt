@@ -130,13 +130,7 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
-  legend/qgslegendgroup.cpp
-  legend/qgslegend.cpp
   legend/qgsapplegendinterface.cpp
-  legend/qgslegenditem.cpp
-  legend/qgslegendlayer.cpp
-  legend/qgslegendsymbologyitem.cpp
-  legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -273,10 +267,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  legend/qgslegend.h
   legend/qgsapplegendinterface.h
-  legend/qgslegendlayer.h
-  legend/qgslayerorder.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
