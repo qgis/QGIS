@@ -70,6 +70,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+    void setAllowGeometrylessTables( bool allow );
 
     void setLayerType( QgsMssqlLayerProperty layerProperty );
 
