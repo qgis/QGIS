@@ -534,7 +534,13 @@ void QgsLayerTreeModel::addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL )
 
   QList<QgsLayerTreeModelSymbologyNode*>& lst = mSymbologyNodes[nodeL];
 
-  // TODO: WMS
+  // temporary solution for WMS. Ideally should be done with a delegate.
+  if ( rlayer->providerType() == "wms" )
+  {
+    QImage img = rlayer->dataProvider()->getLegendGraphic( 1000 ); // dummy scale - should not be required!
+    if ( !img.isNull() )
+      lst << new QgsLayerTreeModelSymbologyNode( nodeL, tr( "Double-click to view legend" ) );
+  }
 
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
   // and it is very slow, so we limit max count

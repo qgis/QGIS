@@ -84,7 +84,6 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element )
 
   QgsLayerTreeLayer* nodeLayer = 0;
 
-  // TODO: maybe allow other sources of layers than just registry singleton?
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
 
   if ( layer )
