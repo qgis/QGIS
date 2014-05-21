@@ -121,6 +121,9 @@ class CORE_EXPORT QgsGml : public QObject
       static_cast<QgsGml*>( data )->characters( chars, len );
     }
 
+    // Set current feature attribute
+    void setAttribute( const QString& name, const QString& value );
+
     //helper routines
 
     /**Reads attribute srsName="EpsgCrsId:..."
