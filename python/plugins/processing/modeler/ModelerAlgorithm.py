@@ -464,8 +464,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             pt = self.algPos[i]
             s += str(pt.x()) + ',' + str(pt.y()) + '\n'
             if len(self.dependencies[i]) != 0:
-                s += ','.join([str(index) for index in self.dependencies[i]]) \
-                    + '\n'
+                s += ','.join([str(index) for index in self.dependencies[i]]) + '\n'
             else:
                 s += str(None) + '\n'
             for param in alg.parameters:
@@ -517,12 +516,12 @@ class ModelerAlgorithm(GeoAlgorithm):
                 else:
                     value = self.getValueFromAlgorithmAndParameter(aap)
     
-                    # We allow unexistent filepaths, since that allows
-                    # algorithms to skip some conversion routines
-                    if not param.setValue(value) and not isinstance(param,
-                            ParameterDataObject):
-                        raise GeoAlgorithmExecutionException('Wrong value: '
-                                + str(value))
+                # We allow unexistent filepaths, since that allows
+                # algorithms to skip some conversion routines
+                if not param.setValue(value) and not isinstance(param,
+                        ParameterDataObject):
+                    raise GeoAlgorithmExecutionException('Wrong value: '
+                            + str(value))
         for out in alg.outputs:
             if not out.hidden:
                 val = self.algOutputs[iAlg][out.name]
@@ -579,9 +578,8 @@ class ModelerAlgorithm(GeoAlgorithm):
             return None
         if float(aap.alg) \
                 == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
-            for key in self.paramValues.keys():
-                if aap.param == key:
-                    return self.paramValues[key]
+            if aap.param in self.paramValues.keys():                
+                return self.paramValues[aap.param]
             for param in self.parameters:
                 if aap.param == param.name:
                     return param.value
