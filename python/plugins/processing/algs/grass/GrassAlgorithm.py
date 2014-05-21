@@ -34,7 +34,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
 
-from processing import interface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog

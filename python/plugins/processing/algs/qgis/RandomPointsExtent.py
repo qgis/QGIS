@@ -31,8 +31,8 @@ import random
 from PyQt4.QtCore import *
 
 from qgis.core import *
+from qgis.utils import iface
 
-from processing import interface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterExtent import ParameterExtent
@@ -71,7 +71,7 @@ class RandomPointsExtent(GeoAlgorithm):
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        mapCRS = interface.iface.mapCanvas().mapSettings().destinationCrs()
+        mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPoint, mapCRS)
 

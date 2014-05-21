@@ -32,7 +32,6 @@ from PyQt4.QtCore import *
 
 from qgis.core import *
 
-from processing import interface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterVector import ParameterVector
