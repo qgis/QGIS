@@ -1973,20 +1973,22 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
   }
 
   QFontMetricsF layerFontMetrics( layerFont );
-  if (mDrawLegendLayerLabel == true) {
+  if ( mDrawLegendLayerLabel )
+  {
     currentY += layerFontMetrics.ascent() / fontOversamplingFactor;
   }
 
   //draw layer title first
   if ( p )
   {
-    if (mDrawLegendLayerLabel == true) {
-        p->save();
-        p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-        p->setPen( layerFontColor );
-        p->setFont( layerFont );
-        p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
-        p->restore();
+    if ( mDrawLegendLayerLabel )
+    {
+      p->save();
+      p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
+      p->setPen( layerFontColor );
+      p->setFont( layerFont );
+      p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
+      p->restore();
     }
   }
   else
@@ -1994,13 +1996,15 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     double layerItemWidth = layerFontMetrics.width( item->text() ) / fontOversamplingFactor + boxSpace;
     if ( layerItemWidth > maxTextWidth )
     {
-      if ( mDrawLegendLayerLabel == true) {
+      if ( mDrawLegendLayerLabel )
+      {
         maxTextWidth = layerItemWidth;
       }
     }
   }
 
-  if (mDrawLegendLayerLabel == true) {
+  if ( mDrawLegendLayerLabel )
+  {
     currentY += layerTitleSpace;
   }
 
@@ -2049,23 +2053,27 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
         break;
     }
 
-    if ( mDrawLegendItemLabel == true ) {
-        //finally draw text
-        currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
-    } else {
+    if ( mDrawLegendItemLabel )
+    {
+      //finally draw text
+      currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
+    }
+    else
+    {
       currentTextWidth = 0;
     }
     double symbolItemHeight = qMax( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
 
     if ( p )
     {
-      if ( mDrawLegendItemLabel == true ) {
+      if ( mDrawLegendItemLabel )
+      {
         p->save();
         p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
         p->setPen( itemFontColor );
         p->setFont( itemFont );
         p->drawText( maxSymbolWidth * fontOversamplingFactor,
-                    ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
+                     ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
         p->restore();
       }
     }
@@ -2073,7 +2081,8 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     {
       if ( currentTextWidth > maxTextWidth )
       {
-        if ( mDrawLegendItemLabel == true ) {
+        if ( mDrawLegendItemLabel )
+        {
           maxTextWidth = currentTextWidth;
         }
       }

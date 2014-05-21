@@ -6,11 +6,11 @@ from qgis.core import QgsApplication
 @contextmanager
 def qgisapp(args=None, guienabled=True, configpath=None, sysexit=True):
     """
-    Create a new QGIS Qt application.  
-    
+    Create a new QGIS Qt application.
+
     You should use this before creating any Qt widgets or QGIS objects for
     your custom QGIS based application.
-       
+
     usage:
         from qgis.core.contextmanagers import qgisapp
 

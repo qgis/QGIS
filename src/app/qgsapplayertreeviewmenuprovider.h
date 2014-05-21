@@ -10,14 +10,14 @@ class QgsMapCanvas;
 
 class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
 {
-public:
-  QgsAppLayerTreeViewMenuProvider(QgsLayerTreeView* view, QgsMapCanvas* canvas);
+  public:
+    QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas );
 
-  QMenu* createContextMenu();
+    QMenu* createContextMenu();
 
-protected:
-  QgsLayerTreeView* mView;
-  QgsMapCanvas* mCanvas;
+  protected:
+    QgsLayerTreeView* mView;
+    QgsMapCanvas* mCanvas;
 };
 
 

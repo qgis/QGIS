@@ -57,7 +57,7 @@ class lasground(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(commands)        
+        self.addParametersHorizontalAndVerticalFeetCommands(commands)
         method = self.getParameterValue(lasground.TERRAIN)
         if method != 1:
             commands.append("-" + lasground.TERRAINS[method])

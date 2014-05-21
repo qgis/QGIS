@@ -309,7 +309,7 @@ QList<QAction*> QgsMssqlConnectionItem::actions()
   QAction* actionShowNoGeom = new QAction( tr( "Show non-spatial tables" ), this );
   actionShowNoGeom->setCheckable( true );
   actionShowNoGeom->setChecked( mAllowGeometrylessTables );
-  connect( actionShowNoGeom, SIGNAL( toggled(bool) ), this, SLOT( setAllowGeometrylessTables(bool) ) );
+  connect( actionShowNoGeom, SIGNAL( toggled( bool ) ), this, SLOT( setAllowGeometrylessTables( bool ) ) );
   lst.append( actionShowNoGeom );
 
   QAction* actionEdit = new QAction( tr( "Edit..." ), this );
@@ -328,7 +328,7 @@ void QgsMssqlConnectionItem::setAllowGeometrylessTables( bool allow )
   mAllowGeometrylessTables = allow;
   QString key = "/MSSQL/connections/" + mName;
   QSettings settings;
-  settings.setValue(key + "/allowGeometrylessTables", allow );
+  settings.setValue( key + "/allowGeometrylessTables", allow );
   refresh();
 }
 

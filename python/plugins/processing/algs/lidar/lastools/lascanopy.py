@@ -45,7 +45,7 @@ class lascanopy(LAStoolsAlgorithm):
     PRODUCT7 = "PRODUCT7"
     PRODUCT8 = "PRODUCT8"
     PRODUCT9 = "PRODUCT9"
-    PRODUCTS = ["---", "min", "max", "avg", "std", "ske", "kur", "cov", "dns", 
+    PRODUCTS = ["---", "min", "max", "avg", "std", "ske", "kur", "cov", "dns",
                 "p01", "p05", "p10", "p25", "p50", "p75", "p90", "p99"]
     COUNTS = "COUNTS"
     DENSITIES = "DENSITIES"

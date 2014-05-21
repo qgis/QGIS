@@ -586,9 +586,9 @@ bool QgsComposerTableSortColumnsProxyModel::setData( const QModelIndex& index, c
 
   if ( index.column() == 1 )
   {
-      column->setSortOrder(( Qt::SortOrder )value.toInt() );
-      emit dataChanged( index, index );
-      return true;
+    column->setSortOrder(( Qt::SortOrder )value.toInt() );
+    emit dataChanged( index, index );
+    return true;
   }
 
   return false;

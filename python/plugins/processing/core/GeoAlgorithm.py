@@ -363,7 +363,7 @@ class GeoAlgorithm:
             self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
         except:
             pass
-            
+
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

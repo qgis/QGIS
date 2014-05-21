@@ -68,7 +68,7 @@ FORMATS = [
     'GPX',
     'PGDump',
     'GPSTrackMaker',
-    'ODS',  
+    'ODS',
     'XLSX',
     'PDF',
     ]

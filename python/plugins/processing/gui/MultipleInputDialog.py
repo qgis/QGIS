@@ -58,9 +58,9 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         self.populateList()
 
     def populateList(self):
-        model = QStandardItemModel()                        
+        model = QStandardItemModel()
         for i, option in enumerate(self.options):
-            item = QStandardItem(option)            
+            item = QStandardItem(option)
             item.setCheckState(Qt.Checked if i in self.selectedoptions else Qt.Unchecked)
             item.setCheckable(True)
             model.appendRow(item)
@@ -80,13 +80,13 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         self.selectedoptions = None
         QDialog.reject(self)
 
-    def selectAll(self, value):        
+    def selectAll(self, value):
         model = self.lstLayers.model()
         for i in xrange(model.rowCount()):
             item = model.item(i)
             item.setCheckState(Qt.Checked if value else Qt.Unchecked)
-            
-    def toggleSelection(self):        
+
+    def toggleSelection(self):
         model = self.lstLayers.model()
         for i in xrange(model.rowCount()):
             item = model.item(i)

@@ -69,8 +69,8 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     FILTER_RETURN_CLASS_FLAGS1 = "FILTER_RETURN_CLASS_FLAGS1"
     FILTER_RETURN_CLASS_FLAGS2 = "FILTER_RETURN_CLASS_FLAGS2"
     FILTER_RETURN_CLASS_FLAGS3 = "FILTER_RETURN_CLASS_FLAGS3"
-    FILTERS_RETURN_CLASS_FLAGS = ["---", "keep_last", "keep_first", "keep_middle", "keep_single", "drop_single", 
-                                  "keep_double", "keep_class 2", "keep_class 2 8", "keep_class 8", "keep_class 6", 
+    FILTERS_RETURN_CLASS_FLAGS = ["---", "keep_last", "keep_first", "keep_middle", "keep_single", "drop_single",
+                                  "keep_double", "keep_class 2", "keep_class 2 8", "keep_class 8", "keep_class 6",
                                   "keep_class 9", "keep_class 3 4 5", "keep_class 2 6", "drop_class 7", "drop_withheld"]
     FILTER_COORDS_INTENSITY1 = "FILTER_COORDS_INTENSITY1"
     FILTER_COORDS_INTENSITY2 = "FILTER_COORDS_INTENSITY2"
@@ -78,11 +78,11 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     FILTER_COORDS_INTENSITY1_ARG = "FILTER_COORDS_INTENSITY1_ARG"
     FILTER_COORDS_INTENSITY2_ARG = "FILTER_COORDS_INTENSITY2_ARG"
     FILTER_COORDS_INTENSITY3_ARG = "FILTER_COORDS_INTENSITY3_ARG"
-    FILTERS_COORDS_INTENSITY = ["---", "clip_x_above", "clip_x_below", "clip_y_above", "clip_y_below", "clip_z_above", 
-                                "clip_z_below", "drop_intensity_above", "drop_intensity_below", "drop_gps_time_above", 
-                                "drop_gps_time_below", "drop_scan_angle_above", "drop_scan_angle_below", "keep_point_source", 
-                                "drop_point_source", "drop_point_source_above", "drop_point_source_below", "keep_user_data", 
-                                "drop_user_data", "drop_user_data_above", "drop_user_data_below", "keep_every_nth", 
+    FILTERS_COORDS_INTENSITY = ["---", "clip_x_above", "clip_x_below", "clip_y_above", "clip_y_below", "clip_z_above",
+                                "clip_z_below", "drop_intensity_above", "drop_intensity_below", "drop_gps_time_above",
+                                "drop_gps_time_below", "drop_scan_angle_above", "drop_scan_angle_below", "keep_point_source",
+                                "drop_point_source", "drop_point_source_above", "drop_point_source_below", "keep_user_data",
+                                "drop_user_data", "drop_user_data_above", "drop_user_data_below", "keep_every_nth",
                                 "keep_random_fraction", "thin_with_grid" ]
 
     TRANSFORM_COORDINATE1 = "TRANSFORM_COORDINATE1"
@@ -95,8 +95,8 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     TRANSFORM_OTHER2 = "TRANSFORM_OTHER2"
     TRANSFORM_OTHER1_ARG = "TRANSFORM_OTHER1_ARG"
     TRANSFORM_OTHER2_ARG = "TRANSFORM_OTHER2_ARG"
-    TRANSFORM_OTHERS = ["---", "scale_intensity", "translate_intensity",  "clamp_intensity_above", "clamp_intensity_below", 
-                        "scale_scan_angle", "translate_scan_angle", "translate_gps_time", "set_classification", "set_user_data", 
+    TRANSFORM_OTHERS = ["---", "scale_intensity", "translate_intensity",  "clamp_intensity_above", "clamp_intensity_below",
+                        "scale_scan_angle", "translate_scan_angle", "translate_gps_time", "set_classification", "set_user_data",
                         "set_point_source", "scale_rgb_up", "scale_rgb_down", "repair_zero_returns" ]
 
     def getIcon(self):
@@ -122,7 +122,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         cores = self.getParameterValue(LAStoolsAlgorithm.CORES)
         if cores != 1:
             commands.append("-cores")
-            commands.append(str(cores))       
+            commands.append(str(cores))
 
     def addParametersPointInputGUI(self):
         self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file"))
@@ -132,7 +132,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         if input != None:
             commands.append("-i")
             commands.append(input)
-                            
+
     def addParametersPointInputFolderGUI(self):
         self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", True))
         self.addParameter(ParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", "*.laz"))
@@ -168,7 +168,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     def addParametersHorizontalAndVerticalFeetCommands(self, commands):
         self.addParametersHorizontalFeetCommands(commands)
         self.addParametersVerticalFeetCommands(commands)
-        
+
     def addParametersFilesAreFlightlinesGUI(self):
         self.addParameter(ParameterBoolean(LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES, "files are flightlines", True))
 
@@ -183,11 +183,11 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         step = self.getParameterValue(LAStoolsAlgorithm.STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(str(step))       
+            commands.append(str(step))
 
     def getParametersStepValue(self):
         step = self.getParameterValue(LAStoolsAlgorithm.STEP)
-        return step      
+        return step
 
     def addParametersPointOutputGUI(self):
         self.addOutput(OutputFile(LAStoolsAlgorithm.OUTPUT_LASLAZ, "output LAS/LAZ file", "laz"))
@@ -275,7 +275,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(option)
 
     def addParametersFilter1ReturnClassFlagsGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS1, "filter (by return, classification, flags)", 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS1, "filter (by return, classification, flags)",
                                              LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, 0))
 
     def addParametersFilter1ReturnClassFlagsCommands(self, commands):
@@ -284,7 +284,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS[filter1])
 
     def addParametersFilter2ReturnClassFlagsGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS2, "second filter (by return, classification, flags)", 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS2, "second filter (by return, classification, flags)",
                                              LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, 0))
 
     def addParametersFilter2ReturnClassFlagsCommands(self, commands):
@@ -293,7 +293,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS[filter2])
 
     def addParametersFilter3ReturnClassFlagsGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS3, "third filter (by return, classification, flags)", 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS3, "third filter (by return, classification, flags)",
                                              LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, 0))
 
     def addParametersFilter3ReturnClassFlagsCommands(self, commands):
@@ -302,9 +302,9 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS[filter3])
 
     def addParametersFilter1CoordsIntensityGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, "filter (by coordinate, intensity, GPS time, ...)", 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, "filter (by coordinate, intensity, GPS time, ...)",
                                              LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, 0))
-        self.addParameter(ParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, "value for filter (by coordinate, intensity, GPS time, ...)"))        
+        self.addParameter(ParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, "value for filter (by coordinate, intensity, GPS time, ...)"))
 
     def addParametersFilter1CoordsIntensityCommands(self, commands):
         filter1 = self.getParameterValue(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1)
@@ -315,7 +315,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersFilter2CoordsIntensityGUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2, "second filter (by coordinate, intensity, GPS time, ...)", LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, 0))
-        self.addParameter(ParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, "value for second filter (by coordinate, intensity, GPS time, ...)"))        
+        self.addParameter(ParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, "value for second filter (by coordinate, intensity, GPS time, ...)"))
 
     def addParametersFilter2CoordsIntensityCommands(self, commands):
         filter2 = self.getParameterValue(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2)
@@ -325,10 +325,10 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(filter2_arg)
 
     def addParametersTransform1CoordinateGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_COORDINATE1, 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_COORDINATE1,
                                              "transform (coordinates)", LAStoolsAlgorithm.TRANSFORM_COORDINATES, 0))
-        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG, 
-                                          "value for transform (coordinates)"))        
+        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG,
+                                          "value for transform (coordinates)"))
 
     def addParametersTransform1CoordinateCommands(self, commands):
         transform1 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE1)
@@ -338,10 +338,10 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(transform1_arg)
 
     def addParametersTransform2CoordinateGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_COORDINATE2, 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_COORDINATE2,
                                              "second transform (coordinates)", LAStoolsAlgorithm.TRANSFORM_COORDINATES, 0))
-        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG, 
-                                          "value for second transform (coordinates)"))        
+        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG,
+                                          "value for second transform (coordinates)"))
 
     def addParametersTransform2CoordinateCommands(self, commands):
         transform2 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE2)
@@ -351,10 +351,10 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(transform2_arg)
 
     def addParametersTransform1OtherGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_OTHER1, 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_OTHER1,
                                              "transform (intensities, scan angles, GPS times, ...)", LAStoolsAlgorithm.TRANSFORM_OTHERS, 0))
-        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG, 
-                                          "value for transform (intensities, scan angles, GPS times, ...)"))        
+        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG,
+                                          "value for transform (intensities, scan angles, GPS times, ...)"))
 
     def addParametersTransform1OtherCommands(self, commands):
         transform1 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_OTHER1)
@@ -365,10 +365,10 @@ class LAStoolsAlgorithm(GeoAlgorithm):
                 commands.append(transform1_arg)
 
     def addParametersTransform2OtherGUI(self):
-        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_OTHER2, 
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_OTHER2,
                                              "second transform (intensities, scan angles, GPS times, ...)", LAStoolsAlgorithm.TRANSFORM_OTHERS, 0))
-        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG, 
-                                          "value for second transform (intensities, scan angles, GPS times, ...)"))        
+        self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG,
+                                          "value for second transform (intensities, scan angles, GPS times, ...)"))
 
     def addParametersTransform2OtherCommands(self, commands):
         transform2 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_OTHER2)

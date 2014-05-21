@@ -43,12 +43,12 @@ class RasterCalculator(SagaAlgorithm):
     GRIDS = 'GRIDS'
     XGRIDS = 'XGRIDS'
     RESULT = "RESULT"
-    
+
     def __init__(self):
         self.allowUnmatchingGridExtents = True
         self.hardcodedStrings = []
-        GeoAlgorithm.__init__(self)    
-        
+        GeoAlgorithm.__init__(self)
+
     def getCopy(self):
         newone = RasterCalculator()
         newone.provider = self.provider
@@ -64,16 +64,16 @@ class RasterCalculator(SagaAlgorithm):
         self.addParameter(grids)
         self.addParameter(ParameterMultipleInput(self.XGRIDS, 'Input layers',
                           ParameterMultipleInput.TYPE_RASTER, False))
-        self.addParameter(ParameterString(self.FORMULA, "Formula"))        
+        self.addParameter(ParameterString(self.FORMULA, "Formula"))
         self.addOutput(OutputRaster(self.RESULT, "Result"))
-        
 
-    def processAlgorithm(self, progress):                      
-        xgrids = self.getParameterValue(self.XGRIDS)        
+
+    def processAlgorithm(self, progress):
+        xgrids = self.getParameterValue(self.XGRIDS)
         layers = xgrids.split(';')
-        grid = layers[0] 
-        self.setParameterValue(self.GRIDS, grid)       
-        xgrids = ";".join(layers[1:]) 
+        grid = layers[0]
+        self.setParameterValue(self.GRIDS, grid)
+        xgrids = ";".join(layers[1:])
         if xgrids == "": xgrids = None
         self.setParameterValue(self.XGRIDS, xgrids)
         SagaAlgorithm.processAlgorithm(self, progress)

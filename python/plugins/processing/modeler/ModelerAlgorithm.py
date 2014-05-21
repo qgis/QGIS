@@ -200,7 +200,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                         name = line
                                         outputPos[out.name] = None
                                     algOutputs[out.name] = name
-    
+
                                     # We add the output to the algorithm,
                                     # with a name indicating where it comes
                                     # from that guarantees that the name is
@@ -515,7 +515,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = ';'.join(layerslist)
                 else:
                     value = self.getValueFromAlgorithmAndParameter(aap)
-    
+
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
                 if not param.setValue(value) and not isinstance(param,
@@ -578,7 +578,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             return None
         if float(aap.alg) \
                 == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
-            if aap.param in self.paramValues.keys():                
+            if aap.param in self.paramValues.keys():
                 return self.paramValues[aap.param]
             for param in self.parameters:
                 if aap.param == param.name:

@@ -68,7 +68,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         if isWindows():
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
-        
+
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 

@@ -62,7 +62,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
     OUTPUT_EXTENT = 'OUTPUT_EXTENT'
 
-    def __init__(self, descriptionfile):        
+    def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
         self.hardcodedStrings = []
         self.allowUnmatchingGridExtents = False
@@ -77,7 +77,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
 
-    def defineCharacteristicsFromFile(self):        
+    def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
         self.name = line
@@ -331,7 +331,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 cellsize = float(param.value)
                 break
         return cellsize
-    
+
 
     def exportRasterLayer(self, source):
         global sessionExportedLayers
@@ -377,10 +377,10 @@ class SagaAlgorithm(GeoAlgorithm):
         """
         We check that there are no multiband layers, which are not
         supported by SAGA, and that raster layers have the same grid extent
-        """        
+        """
         extent = None
         for param in self.parameters:
-            if isinstance(param, ParameterRaster):                                
+            if isinstance(param, ParameterRaster):
                 layer = dataobjects.getObjectFromUri(param.value)
                 if layer is None:
                     continue
@@ -394,8 +394,8 @@ class SagaAlgorithm(GeoAlgorithm):
                     extent2 = (layer.extent(), layer.height(), layer.width())
                     if extent != extent2:
                         return "Input layers do not have the same grid extent."
-                        
-        
+
+
 
     def help(self):
         name = self.cmdname.lower()

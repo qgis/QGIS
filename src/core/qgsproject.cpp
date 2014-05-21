@@ -342,7 +342,7 @@ QgsProject::QgsProject()
   // bind the layer tree to the map layer registry.
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
-  mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge(mRootGroup, this);
+  mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this );
 
 } // QgsProject ctor
 
@@ -398,7 +398,7 @@ void QgsProject::dirty( bool b )
   imp_->dirty = b;
 } // bool QgsProject::isDirty()
 
-void QgsProject::setDirty(bool b)
+void QgsProject::setDirty( bool b )
 {
   dirty( b );
 }
@@ -889,7 +889,7 @@ bool QgsProject::read()
 
   QString fileName = imp_->file.fileName();
   clear();
-  imp_->file.setFileName(fileName);
+  imp_->file.setFileName( fileName );
 
   // now get any properties
   _getProperties( *doc, imp_->properties_ );
@@ -940,7 +940,7 @@ bool QgsProject::read()
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // load embedded groups and layers
-  loadEmbeddedNodes(mRootGroup);
+  loadEmbeddedNodes( mRootGroup );
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -954,54 +954,54 @@ bool QgsProject::read()
 } // QgsProject::read
 
 
-void QgsProject::loadEmbeddedNodes(QgsLayerTreeGroup* group)
+void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup* group )
 {
-  foreach (QgsLayerTreeNode* child, group->children())
+  foreach ( QgsLayerTreeNode* child, group->children() )
   {
-    if (QgsLayerTree::isGroup(child))
+    if ( QgsLayerTree::isGroup( child ) )
     {
-      QgsLayerTreeGroup* childGroup = QgsLayerTree::toGroup(child);
-      if (childGroup->customProperty("embedded").toInt())
+      QgsLayerTreeGroup* childGroup = QgsLayerTree::toGroup( child );
+      if ( childGroup->customProperty( "embedded" ).toInt() )
       {
-        QgsLayerTreeGroup* newGroup = createEmbeddedGroup(childGroup->name(), childGroup->customProperty("embedded_project").toString());
-        if (newGroup)
+        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), childGroup->customProperty( "embedded_project" ).toString() );
+        if ( newGroup )
         {
           QList<QgsLayerTreeNode*> clonedChildren;
-          foreach (QgsLayerTreeNode* newGroupChild, newGroup->children())
+          foreach ( QgsLayerTreeNode* newGroupChild, newGroup->children() )
             clonedChildren << newGroupChild->clone();
           delete newGroup;
 
-          childGroup->insertChildNodes(0, clonedChildren);
+          childGroup->insertChildNodes( 0, clonedChildren );
         }
       }
       else
       {
-        loadEmbeddedNodes(childGroup);
+        loadEmbeddedNodes( childGroup );
       }
     }
-    else if (QgsLayerTree::isLayer(child))
+    else if ( QgsLayerTree::isLayer( child ) )
     {
-      if (child->customProperty("embedded").toInt())
+      if ( child->customProperty( "embedded" ).toInt() )
       {
         QList<QDomNode> brokenNodes;
         QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-        createEmbeddedLayer(QgsLayerTree::toLayer(child)->layerId(), child->customProperty("embedded_project").toString(), brokenNodes, vectorLayerList);
+        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), child->customProperty( "embedded_project" ).toString(), brokenNodes, vectorLayerList );
       }
     }
 
   }
 }
 
-void QgsProject::removeChildrenOfEmbeddedGroups(QgsLayerTreeGroup* group)
+void QgsProject::removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group )
 {
-  foreach (QgsLayerTreeNode* child, group->children())
+  foreach ( QgsLayerTreeNode* child, group->children() )
   {
-    if (QgsLayerTree::isGroup(child))
+    if ( QgsLayerTree::isGroup( child ) )
     {
-      if (child->customProperty("embedded").toInt())
-        QgsLayerTree::toGroup(child)->removeAllChildren();
+      if ( child->customProperty( "embedded" ).toInt() )
+        QgsLayerTree::toGroup( child )->removeAllChildren();
       else
-        removeChildrenOfEmbeddedGroups(QgsLayerTree::toGroup(child));
+        removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( child ) );
     }
   }
 }
@@ -1087,7 +1087,7 @@ bool QgsProject::write()
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode* clonedRoot = mRootGroup->clone();
-  removeChildrenOfEmbeddedGroups(QgsLayerTree::toGroup(clonedRoot));
+  removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   clonedRoot->writeXML( qgisNode );
   delete clonedRoot;
 

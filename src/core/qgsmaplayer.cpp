@@ -600,7 +600,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers )
 {
   QDomDocument doc( "qgis-layer-definition" );
   QDomElement layerselm = doc.createElement( "maplayers" );
-  foreach( QgsMapLayer* layer, layers)
+  foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
     layer->writeLayerXML( layerelm, doc );
@@ -617,7 +617,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
   QDomNodeList layernodes = document.elementsByTagName( "maplayer" );
   for ( int i = 0; i < layernodes.size(); ++i )
   {
-    QDomNode layernode = layernodes.at(i);
+    QDomNode layernode = layernodes.at( i );
     QDomElement layerElem = layernode.toElement();
 
     QString type = layerElem.attribute( "type" );

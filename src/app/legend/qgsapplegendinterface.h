@@ -107,7 +107,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
     void refreshLayerSymbology( QgsMapLayer *ml );
 
   protected slots:
-    void onAddedChildren(QgsLayerTreeNode* node, int indexFrom, int indexTo);
+    void onAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
     void onRemovedChildren();
 
   private:

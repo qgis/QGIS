@@ -44,23 +44,23 @@ class lasquery(LAStoolsAlgorithm):
         self.addParameter(ParameterExtent(self.AOI, 'area of interest'))
 
     def processAlgorithm(self, progress):
-        
+
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview.exe")]
         self.addParametersVerboseCommands(commands)
 
 	# get area-of-interest
         aoi = str(self.getParameterValue(self.AOI))
         aoiCoords = aoi.split(',')
- 
+
         # get layers
         layers = QgsMapLayerRegistry.instance().mapLayers()
 
         # loop over layers
         for name,layer in layers.iteritems():
-            layerType = layer.type()            
-            if layerType == QgsMapLayer.VectorLayer:                        
+            layerType = layer.type()
+            if layerType == QgsMapLayer.VectorLayer:
                 shp_file_name = layer.source()
-                file_name = shp_file_name[:-4] + ".laz"                
+                file_name = shp_file_name[:-4] + ".laz"
                 commands.append('-i')
                 commands.append(file_name)
 

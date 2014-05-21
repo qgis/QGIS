@@ -96,7 +96,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("_g")
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
-	
+
         LAStoolsUtils.runLAStools(commands, progress)
 
 #   then we height-normalize the tiles
@@ -110,7 +110,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("h")
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
-	
+
         LAStoolsUtils.runLAStools(commands, progress)
 
 #   then we thin and splat the tiles

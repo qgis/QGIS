@@ -114,7 +114,7 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         commands.append("h")
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
-        
+
         LAStoolsUtils.runLAStools(commands, progress)
 
 #   then we thin and splat the tiles

@@ -45,7 +45,7 @@ class lasclassify(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(commands)        
+        self.addParametersHorizontalAndVerticalFeetCommands(commands)
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

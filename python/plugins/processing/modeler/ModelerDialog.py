@@ -161,9 +161,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             self.textGroup.setText(alg.group)
             self.textName.setText(alg.name)
             self.repaintModel()
-            
+
         else:
-            self.alg = ModelerAlgorithm()            
+            self.alg = ModelerAlgorithm()
 
         self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
@@ -171,8 +171,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         # Indicates whether to update or not the toolbox after
         # closing this dialog
         self.update = False
-        
-        self.hasChanged = False   
+
+        self.hasChanged = False
 
     def changeModel(self):
         self.hasChanged = True

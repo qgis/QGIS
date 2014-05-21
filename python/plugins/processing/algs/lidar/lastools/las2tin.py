@@ -46,7 +46,7 @@ class las2tin(LAStoolsAlgorithm):
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2tin.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)        
+        self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
         self.addParametersVectorOutputCommands(commands)
 

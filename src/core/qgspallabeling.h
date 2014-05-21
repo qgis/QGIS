@@ -737,9 +737,9 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-Q_NOWARN_DEPRECATED_PUSH
+    Q_NOWARN_DEPRECATED_PUSH
     Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr );
-Q_NOWARN_DEPRECATED_POP
+    Q_NOWARN_DEPRECATED_POP
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
@@ -768,14 +768,14 @@ Q_NOWARN_DEPRECATED_POP
     //! called when we're done with rendering
     virtual void exit();
 
-Q_NOWARN_DEPRECATED_PUSH
+    Q_NOWARN_DEPRECATED_PUSH
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
     //! return infos about labels within a given (map) rectangle
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
-Q_NOWARN_DEPRECATED_POP
+    Q_NOWARN_DEPRECATED_POP
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
     //! @note added in 2.4

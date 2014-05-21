@@ -50,7 +50,7 @@ class las2las_filter(LAStoolsAlgorithm):
         self.addParametersFilter2ReturnClassFlagsCommands(commands)
         self.addParametersFilter1CoordsIntensityCommands(commands)
         self.addParametersFilter2CoordsIntensityCommands(commands)
-                
+
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

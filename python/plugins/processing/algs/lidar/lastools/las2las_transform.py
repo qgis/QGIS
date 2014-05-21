@@ -63,7 +63,7 @@ class las2las_transform(LAStoolsAlgorithm):
             commands.append("-" + las2las_transform.OPERATIONS[operation])
             if operation > 7:
                 commands.append(self.getParameterValue(las2las_transform.OPERATIONARG))
-                
+
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -35,8 +35,8 @@ class las2las(LAStoolsAlgorithm):
     STEP = "STEP"
     OPERATION = "OPERATION"
     OPERATIONS = ["---", "set_point_type", "set_point_size", "set_version_minor", "set_version_major",
-                   "start_at_point", "stop_at_point", "remove_vlr", "auto_reoffset", "week_to_adjusted", 
-                   "adjusted_to_week", "scale_rgb_up", "scale_rgb_down", "remove_all_vlrs", "remove_extra", 
+                   "start_at_point", "stop_at_point", "remove_vlr", "auto_reoffset", "week_to_adjusted",
+                   "adjusted_to_week", "scale_rgb_up", "scale_rgb_down", "remove_all_vlrs", "remove_extra",
                    "clip_to_bounding_box"]
     OPERATIONARG = "OPERATIONARG"
 
@@ -63,7 +63,7 @@ class las2las(LAStoolsAlgorithm):
             commands.append("-" + OPERATIONS[operation])
             if operation > 7:
                 commands.append(self.getParameterValue(las2las.OPERATIONARG))
-                
+
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

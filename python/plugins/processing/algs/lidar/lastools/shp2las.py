@@ -54,7 +54,7 @@ class shp2las(LAStoolsAlgorithm):
         scale_factor_z = self.getParameterValue(shp2las.SCALE_FACTOR_Z)
         if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
             commands.append("-set_scale_factor")
-            commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))        
+            commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

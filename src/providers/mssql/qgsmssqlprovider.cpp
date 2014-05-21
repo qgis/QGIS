@@ -471,7 +471,7 @@ QVariant QgsMssqlProvider::minimumValue( int index )
   QString sql = QString( "select min([%1]) from " )
                 .arg( fld.name() );
 
-  sql += QString("[%1].[%2]").arg( mSchemaName, mTableName );
+  sql += QString( "[%1].[%2]" ).arg( mSchemaName, mTableName );
 
   if ( !mSqlWhereClause.isEmpty() )
   {
@@ -503,7 +503,7 @@ QVariant QgsMssqlProvider::maximumValue( int index )
   QString sql = QString( "select max([%1]) from " )
                 .arg( fld.name() );
 
-  sql += QString("[%1].[%2]").arg( mSchemaName, mTableName );
+  sql += QString( "[%1].[%2]" ).arg( mSchemaName, mTableName );
 
   if ( !mSqlWhereClause.isEmpty() )
   {
@@ -544,7 +544,7 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
   sql += QString( "[%1] from " )
          .arg( fld.name() );
 
-  sql += QString("[%1].[%2]").arg( mSchemaName, mTableName );
+  sql += QString( "[%1].[%2]" ).arg( mSchemaName, mTableName );
 
   if ( !mSqlWhereClause.isEmpty() )
   {
@@ -1303,7 +1303,7 @@ bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
 
   QString sql = QString( "select count(*) from " );
 
-  sql += QString("[%1].[%2]").arg( mSchemaName, mTableName );
+  sql += QString( "[%1].[%2]" ).arg( mSchemaName, mTableName );
 
   if ( !mSqlWhereClause.isEmpty() )
   {

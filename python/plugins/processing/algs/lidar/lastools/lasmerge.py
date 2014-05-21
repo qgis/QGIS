@@ -83,5 +83,5 @@ class lasmerge(LAStoolsAlgorithm):
             commands.append("-i")
             commands.append(file7)
         self.addParametersPointOutputCommands(commands)
- 
+
         LAStoolsUtils.runLAStools(commands, progress)

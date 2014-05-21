@@ -355,9 +355,9 @@ class CORE_EXPORT QgsProject : public QObject
 
     void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
 
-    void loadEmbeddedNodes(QgsLayerTreeGroup* group);
+    void loadEmbeddedNodes( QgsLayerTreeGroup* group );
 
-    void removeChildrenOfEmbeddedGroups(QgsLayerTreeGroup* group);
+    void removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read

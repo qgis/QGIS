@@ -100,14 +100,14 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = geomColumn.lower()
         if dropStringLength:
             options['dropStringConstraints'] = True
-            
+
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
         if primaryKeyField:
             uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
         else:
             uri.setDataSource(schema, table, geomColumn, '')
-            
+
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
         (ret, errMsg) = QgsVectorLayerImport.importLayer(

@@ -56,7 +56,7 @@ class las2iso(LAStoolsAlgorithm):
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2iso.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)        
+        self.addParametersPointInputCommands(commands)
         smooth = self.getParameterValue(las2iso.SMOOTH)
         if smooth != 0:
             commands.append("-smooth")
