@@ -46,11 +46,15 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefined
 
   for ( int c = 0; c != mTreeWidget->columnCount() - 1; c++ )
     mTreeWidget->resizeColumnToContents( c );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsDataDefinedSymbolDialog/geometry" ).toByteArray() );
 }
 
 QgsDataDefinedSymbolDialog::~QgsDataDefinedSymbolDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "/Windows/QgsDataDefinedSymbolDialog/geometry", saveGeometry() );
 }
 
 QMap< QString, QString > QgsDataDefinedSymbolDialog::dataDefinedProperties() const
