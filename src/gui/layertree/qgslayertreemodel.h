@@ -22,6 +22,7 @@
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
+class QgsMapLayer;
 
 /** internal class, not in public API */
 class QgsLayerTreeModelSymbologyNode : public QObject
@@ -104,13 +105,17 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void nodeLayerLoaded();
     void layerRendererChanged();
 
+    void layerNeedsUpdate();
+
   protected:
-    void removeSymbologyFromSubtree( QgsLayerTreeNode* node );
     void removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer );
     void addSymbologyToLayer( QgsLayerTreeLayer* nodeL );
     void addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL );
     void addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL );
     void addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL );
+
+    void connectToLayer( QgsLayerTreeLayer* nodeLayer );
+    void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
 
   protected:
     QgsLayerTreeGroup* mRootNode; // not owned!

@@ -193,6 +193,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       else if ( layer->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
+        if ( vlayer->isEditable() )
+        {
+          if ( vlayer->isModified() )
+            return QIcon( QgsApplication::getThemePixmap( "/mIconEditableEdits.png" ) );
+          else
+            return QIcon( QgsApplication::getThemePixmap( "/mIconEditable.png" ) );
+        }
+
         if ( vlayer->geometryType() == QGis::Point )
           return QgsLayerItem::iconPoint();
         else if ( vlayer->geometryType() == QGis::Line )
@@ -372,29 +380,29 @@ void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFr
   beginInsertRows( node2index( node ), indexFrom, indexTo );
 }
 
+static QList<QgsLayerTreeLayer*> _layerNodesInSubtree( QgsLayerTreeNode* node, int indexFrom, int indexTo )
+{
+  QList<QgsLayerTreeNode*> children = node->children();
+  QList<QgsLayerTreeLayer*> newLayerNodes;
+  for ( int i = indexFrom; i <= indexTo; ++i )
+  {
+    QgsLayerTreeNode* child = children.at( i );
+    if ( QgsLayerTree::isLayer( child ) )
+      newLayerNodes << QgsLayerTree::toLayer( child );
+    else if ( QgsLayerTree::isGroup( child ) )
+      newLayerNodes << QgsLayerTree::toGroup( child )->findLayers();
+  }
+  return newLayerNodes;
+}
+
 void QgsLayerTreeModel::nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
 {
   Q_ASSERT( node );
 
   endInsertRows();
 
-  if ( testFlag( ShowSymbology ) )
-  {
-    // collect layers for which we need to add symbology
-    QList<QgsLayerTreeLayer*> newLayerNodes;
-    QList<QgsLayerTreeNode*> children = node->children();
-    for ( int i = indexFrom; i <= indexTo; ++i )
-    {
-      QgsLayerTreeNode* child = children.at( i );
-      if ( QgsLayerTree::isLayer( child ) )
-        newLayerNodes << QgsLayerTree::toLayer( child );
-      else if ( QgsLayerTree::isGroup( child ) )
-        newLayerNodes << QgsLayerTree::toGroup( child )->findLayers();
-    }
-
-    foreach ( QgsLayerTreeLayer* newLayerNode, newLayerNodes )
-      addSymbologyToLayer( newLayerNode );
-  }
+  foreach ( QgsLayerTreeLayer* newLayerNode, _layerNodesInSubtree( node, indexFrom, indexTo ) )
+    connectToLayer( newLayerNode );
 }
 
 void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
@@ -403,9 +411,9 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode* node, int inde
 
   beginRemoveRows( node2index( node ), indexFrom, indexTo );
 
-  // cleanup - e.g. symbology
-  for ( int i = indexFrom; i <= indexTo; ++i )
-    removeSymbologyFromSubtree( node->children()[i] );
+  // disconnect from layers and remove their symbology
+  foreach ( QgsLayerTreeLayer* nodeLayer, _layerNodesInSubtree( node, indexFrom, indexTo ) )
+    disconnectFromLayer( nodeLayer );
 }
 
 void QgsLayerTreeModel::nodeRemovedChildren()
@@ -427,7 +435,8 @@ void QgsLayerTreeModel::nodeLayerLoaded()
   if ( !nodeLayer )
     return;
 
-  addSymbologyToLayer( nodeLayer );
+  // deffered connection to the layer
+  connectToLayer( nodeLayer );
 }
 
 void QgsLayerTreeModel::layerRendererChanged()
@@ -443,13 +452,18 @@ void QgsLayerTreeModel::layerRendererChanged()
   refreshLayerSymbology( nodeLayer );
 }
 
-void QgsLayerTreeModel::removeSymbologyFromSubtree( QgsLayerTreeNode* node )
+void QgsLayerTreeModel::layerNeedsUpdate()
 {
-  if ( QgsLayerTree::isLayer( node ) )
-    removeSymbologyFromLayer( QgsLayerTree::toLayer( node ) );
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
+  if ( !layer )
+    return;
 
-  foreach ( QgsLayerTreeNode* child, node->children() )
-    removeSymbologyFromSubtree( child );
+  QgsLayerTreeLayer* nodeLayer = mRootNode->findLayer( layer->id() );
+  if ( !nodeLayer )
+    return;
+
+  QModelIndex index = node2index( nodeLayer );
+  emit dataChanged( index, index );
 }
 
 
@@ -468,12 +482,7 @@ void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
 void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
 {
   if ( !nodeL->layer() )
-  {
-    // skip creation of symbology if the layer is not (yet?) loaded
-    // but keep an eye on it: once loaded, we will add the symbology
-    connect( nodeL, SIGNAL( layerLoaded() ), this, SLOT( nodeLayerLoaded() ) );
     return;
-  }
 
   if ( nodeL->layer()->type() == QgsMapLayer::VectorLayer )
   {
@@ -589,6 +598,70 @@ void QgsLayerTreeModel::addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL )
   }
 
   endInsertRows();
+}
+
+
+void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
+{
+  if ( !nodeLayer->layer() )
+  {
+    // in order to connect to layer, we need to have it loaded.
+    // keep an eye on the layer ID: once loaded, we will use it
+    connect( nodeLayer, SIGNAL( layerLoaded() ), this, SLOT( nodeLayerLoaded() ) );
+    return;
+  }
+
+  if ( testFlag( ShowSymbology ) )
+  {
+    addSymbologyToLayer( nodeLayer );
+  }
+
+  QgsMapLayer* layer = nodeLayer->layer();
+  if ( layer->type() == QgsMapLayer::VectorLayer )
+  {
+    // using unique connection because there may be temporarily more nodes for a layer than just one
+    // which would create multiple connections, however disconnect() would disconnect all multiple connections
+    // even if we wanted to disconnect just one connection in each call.
+    connect( layer, SIGNAL( editingStarted() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
+    connect( layer, SIGNAL( editingStopped() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
+    connect( layer, SIGNAL( layerModified() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
+  }
+}
+
+// try to find out if the layer ID is present in the tree multiple times
+static int _numLayerCount( QgsLayerTreeGroup* group, const QString& layerId )
+{
+  int count = 0;
+  foreach ( QgsLayerTreeNode* child, group->children() )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      if ( QgsLayerTree::toLayer( child )->layerId() == layerId )
+        count++;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      count += _numLayerCount( QgsLayerTree::toGroup( child ), layerId );
+    }
+  }
+  return count;
+}
+
+void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
+{
+  if ( !nodeLayer->layer() )
+    return; // we were never connected
+
+  if ( testFlag( ShowSymbology ) )
+  {
+    removeSymbologyFromLayer( nodeLayer );
+  }
+
+  if ( _numLayerCount( mRootNode, nodeLayer->layerId() ) == 1 )
+  {
+    // last instance of the layer in the tree: disconnect from all signals from layer!
+    disconnect( nodeLayer->layer(), 0, this, 0 );
+  }
 }
 
 
