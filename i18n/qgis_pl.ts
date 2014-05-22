@@ -62310,7 +62310,7 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1715"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Status: %1; Przyczyna: %2; URL:%3)</translation>
+        <translation>Błąd pobierania mapy (status: %1; przyczyna: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1718"/>
@@ -62329,57 +62329,57 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1747"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation type="unfinished">Błąd pobierania mapy:&lt;br&gt;Tytuł: %1&lt;br&gt;Błąd: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
+        <translation>Błąd pobierania mapy:&lt;br&gt;Tytuł: %1&lt;br&gt;Błąd: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1753"/>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Status: %1; Odpowiedź: %2; URL:%3)</translation>
+        <translation>Błąd pobierania mapy (status: %1; odpowiedź: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1774"/>
         <source>Cannot parse multipart response: %1</source>
-        <translation type="unfinished">Nie można przetworzyć wieloczęściowego wyniku: %1</translation>
+        <translation>Nie można przetworzyć wyniku wieloczęściowego: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1784"/>
         <source>Expected 2 parts, %1 received</source>
-        <translation type="unfinished">Oczekiwano 2 części, %1 otrzymano</translation>
+        <translation>Oczekiwano 2 części, otrzymano %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1794"/>
         <source>More than 2 parts (%1) received</source>
-        <translation type="unfinished">Dostarczono ponad części (%1)</translation>
+        <translation>Dostarczono więcej niż 2 części (%1)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1809"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Tytuł: %1; Błąd: %2; URL:%3)</translation>
+        <translation>Błąd pobierania mapy (Tytuł: %1; Błąd: %2; URL:%3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1815"/>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation type="unfinished">Błąd pobierania mapy (Odpowiedź: %1; URL:%2)</translation>
+        <translation>Błąd pobierania mapy (odpowiedź: %1; URL:%2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
         <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation type="unfinished">Content-Transfer-Encoding %1 nie jest obsługiwane</translation>
+        <translation>Content-Transfer-Encoding %1 nie jest obsługiwane</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1876"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished">Błąd pobierania mapy [błąd: %1; URL:%2]</translation>
+        <translation>Błąd pobierania mapy [błąd: %1; URL:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1880"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">W logach zapisywane jest do 100 błędów zapytań.</translation>
+        <translation>W logach zapisywane jest do 100 błędów zapytań.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1892"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>pobrano %1 z %2 bajtów mapy.</translation>
     </message>
 </context>
 <context>
@@ -62522,7 +62522,11 @@ Odpowiedź:
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można pobrać WCS Service Exception w %1: wiersz %2, kolumna %3
+
+Odpowiedź:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="973"/>
