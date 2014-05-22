@@ -28,7 +28,7 @@ class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-class QgsRelationEditorWidget : public QgsCollapsibleGroupBox, private Ui::QgsRelationEditorWidgetBase
+class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox, private Ui::QgsRelationEditorWidgetBase
 {
     Q_OBJECT
 

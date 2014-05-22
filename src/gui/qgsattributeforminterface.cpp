@@ -25,6 +25,7 @@ QgsAttributeFormInterface::QgsAttributeFormInterface(QgsAttributeForm* form )
 
 bool QgsAttributeFormInterface::acceptChanges( const QgsFeature& feature )
 {
+  Q_UNUSED( feature )
   return true;
 }
 

@@ -3,7 +3,7 @@
 #include <QSize>
 #include <QSlider>
 
-class QgsSlider : public QSlider
+class GUI_EXPORT QgsSlider : public QSlider
 {
   Q_OBJECT
 public:

@@ -3,7 +3,7 @@
 #include <QPaintEvent>
 #include <QSize>
 
-class QgsDial : public QDial
+class GUI_EXPORT QgsDial : public QDial
 {
   Q_OBJECT
 public:
