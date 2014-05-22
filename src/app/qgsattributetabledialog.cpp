@@ -41,6 +41,7 @@
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
+#include "qgsexpressionbuilderdialog.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -199,6 +200,13 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
       filterShowAll();
       break;
   }
+
+  mFieldModel = new QgsFieldModel();
+  mFieldModel->setLayer( mLayer );
+  mFieldComboButton->setModel( mFieldModel );
+  connect( mOpenExpressionWidget, SIGNAL( clicked() ), this, SLOT( openExpressionBuilder() ) );
+  connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
+  editingToggled();
 }
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
@@ -214,6 +222,11 @@ void QgsAttributeTableDialog::updateTitle()
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
                    );
+
+  if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
+    mRunFieldCalc->setText( tr( "Update All") );
+  else
+    mRunFieldCalc->setText( tr( "Update Filtered") );
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
@@ -272,6 +285,88 @@ void QgsAttributeTableDialog::columnBoxInit()
       connect( filterAction, SIGNAL( triggered() ), mFilterActionMapper, SLOT( map() ) );
       mFilterColumnsMenu->addAction( filterAction );
     }
+  }
+}
+
+void QgsAttributeTableDialog::updateFieldFromExpression()
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  mLayer->beginEditCommand( "Field calculator" );
+
+  QModelIndex modelindex = mFieldModel->indexFromName( mFieldComboButton->currentText() );
+  int fieldindex = modelindex.data( QgsFieldModel::FieldIndexRole ).toInt();
+
+  bool calculationSuccess = true;
+  QString error;
+
+  QgsExpression exp( mUpdateExpressionText->text() );
+  bool useGeometry = exp.needsGeometry();
+
+  QgsFeatureRequest request;
+  request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+  QgsFeatureIds filteredIds = mMainView->filteredFeatures();
+  QgsDebugMsg( QString( filteredIds.size() ) );
+
+  // This would be nice but doesn't work on all providers
+//  if ( mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll )
+//  {
+//    QgsDebugMsg( " Updating only selected features " );
+//    request.setFilterFids( mMainView->filteredFeatures() );
+//  }
+
+  bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
+  int rownum = 1;
+
+  //go through all the features and change the new attributes
+  QgsFeatureIterator fit = mLayer->getFeatures( request );
+  QgsFeature feature;
+  while ( fit.nextFeature( feature ) )
+  {
+    if ( filtered )
+    {
+      if ( !filteredIds.contains( feature.id() ) )
+      {
+        continue;
+      }
+    }
+
+    exp.setCurrentRowNumber( rownum );
+    QVariant value = exp.evaluate( &feature );
+    // Bail if we have a update error
+    if ( exp.hasEvalError() )
+    {
+      calculationSuccess = false;
+      error = exp.evalErrorString();
+      break;
+    }
+    else
+    {
+      QVariant oldvalue = feature.attributes().value( fieldindex );
+      mLayer->changeAttributeValue( feature.id(), fieldindex, value, oldvalue );
+    }
+
+    rownum++;
+  }
+
+  QApplication::restoreOverrideCursor();
+
+  if ( !calculationSuccess )
+  {
+    QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string:\n%1" ).arg( error ) );
+    mLayer->destroyEditCommand();
+    return;
+  }
+
+  mLayer->endEditCommand();
+}
+
+void QgsAttributeTableDialog::openExpressionBuilder()
+{
+  QgsExpressionBuilderDialog dlg( mLayer, mUpdateExpressionText->text(), this );
+  if ( dlg.exec() )
+  {
+    mUpdateExpressionText->setText( dlg.expressionText() );
   }
 }
 
@@ -475,6 +570,7 @@ void QgsAttributeTableDialog::editingToggled()
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
 
+  mUpdateExpressionBox->setVisible( mLayer->isEditable() );
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
 }

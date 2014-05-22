@@ -95,6 +95,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
+    QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
+
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
      *
@@ -125,6 +127,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      */
     void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+
+    QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
     /**
      * Returns the model which has the information about all features (not only filtered)

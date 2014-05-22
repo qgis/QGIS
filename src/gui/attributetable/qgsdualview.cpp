@@ -196,6 +196,7 @@ void QgsDualView::setView( QgsDualView::ViewMode view )
 void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode )
 {
   mFilterModel->setFilterMode( filterMode );
+  emit filterChanged();
 }
 
 void QgsDualView::setSelectedOnTop( bool selectedOnTop )
