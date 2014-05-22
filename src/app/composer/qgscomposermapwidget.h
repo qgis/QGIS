@@ -144,8 +144,8 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     /**Enables/disables grid frame related controls*/
     void toggleFrameControls( bool frameEnabled );
 
-    /**Enables or disables the atlas margin radio depending on the atlas coverage layer type*/
-    void toggleAtlasMarginByLayerType();
+    /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
+    void toggleAtlasScalingOptionsByLayerType();
 
     /**Recalculates the bounds for an atlas map when atlas properties change*/
     void updateMapForAtlas();

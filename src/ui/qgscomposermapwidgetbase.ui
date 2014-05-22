@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-299</y>
         <width>439</width>
         <height>1699</height>
        </rect>
@@ -305,7 +305,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QRadioButton" name="mAtlasFixedScaleRadio">
             <property name="enabled">
              <bool>false</bool>
@@ -315,7 +315,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QRadioButton" name="mAtlasPredefinedScaleRadio">
             <property name="toolTip">
              <string>Use one of the predefined scales of the project where the atlas feature best fits.</string>

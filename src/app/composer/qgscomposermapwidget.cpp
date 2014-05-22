@@ -139,25 +139,9 @@ void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
     return;
   }
 
-  if ( checked )
-  {
-    //check atlas coverage layer type
-    QgsComposition* composition = mComposerMap->composition();
-    if ( composition )
-    {
-      toggleAtlasMarginByLayerType();
-    }
-    else
-    {
-      mAtlasMarginRadio->setEnabled( false );
-    }
-  }
-  else
-  {
-    mAtlasMarginRadio->setEnabled( false );
-  }
-
   mAtlasFixedScaleRadio->setEnabled( checked );
+  mAtlasMarginRadio->setEnabled( checked );
+
   if ( mAtlasMarginRadio->isEnabled() && mAtlasMarginRadio->isChecked() )
   {
     mAtlasMarginSpinBox->setEnabled( true );
@@ -167,7 +151,23 @@ void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
     mAtlasMarginSpinBox->setEnabled( false );
   }
 
-  mAtlasPredefinedScaleRadio->setEnabled( checked && hasPredefinedScales() );
+  mAtlasPredefinedScaleRadio->setEnabled( checked );
+
+  if ( checked )
+  {
+    //check atlas coverage layer type
+    QgsComposition* composition = mComposerMap->composition();
+    if ( composition )
+    {
+      toggleAtlasScalingOptionsByLayerType();
+    }
+  }
+
+  // disable predefined scales if none are defined
+  if ( !hasPredefinedScales() )
+  {
+    mAtlasPredefinedScaleRadio->setEnabled( false );
+  }
 
   mComposerMap->setAtlasDriven( checked );
   updateMapForAtlas();
@@ -573,19 +573,24 @@ void QgsComposerMapWidget::updateGuiElements()
     mAtlasMarginSpinBox->setEnabled( mComposerMap->atlasScalingMode() == QgsComposerMap::Auto );
     mAtlasMarginRadio->setEnabled( mComposerMap->atlasDriven() );
     mAtlasMarginRadio->setChecked( mComposerMap->atlasScalingMode() == QgsComposerMap::Auto );
-    mAtlasPredefinedScaleRadio->setEnabled( mComposerMap->atlasDriven() && hasPredefinedScales() );
+    mAtlasPredefinedScaleRadio->setEnabled( mComposerMap->atlasDriven() );
     mAtlasPredefinedScaleRadio->setChecked( mComposerMap->atlasScalingMode() == QgsComposerMap::Predefined );
 
     if ( mComposerMap->atlasDriven() )
     {
-      toggleAtlasMarginByLayerType();
+      toggleAtlasScalingOptionsByLayerType();
+    }
+    // disable predefined scales if none are defined
+    if ( !hasPredefinedScales() )
+    {
+      mAtlasPredefinedScaleRadio->setEnabled( false );
     }
 
     blockAllSignals( false );
   }
 }
 
-void QgsComposerMapWidget::toggleAtlasMarginByLayerType()
+void QgsComposerMapWidget::toggleAtlasScalingOptionsByLayerType()
 {
   if ( !mComposerMap )
   {
@@ -616,10 +621,12 @@ void QgsComposerMapWidget::toggleAtlasMarginByLayerType()
       //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
       mAtlasFixedScaleRadio->setChecked( true );
       mAtlasMarginRadio->setEnabled( false );
+      mAtlasPredefinedScaleRadio->setEnabled( false );
       break;
     default:
       //Not a point layer, so enable changes to fixed scale control
       mAtlasMarginRadio->setEnabled( true );
+      mAtlasPredefinedScaleRadio->setEnabled( true );
   }
 }
 
@@ -1419,7 +1426,7 @@ void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
     return;
   }
 
-  toggleAtlasMarginByLayerType();
+  toggleAtlasScalingOptionsByLayerType();
 }
 
 bool QgsComposerMapWidget::hasPredefinedScales() const
