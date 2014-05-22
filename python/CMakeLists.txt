@@ -241,6 +241,7 @@ ENDFOREACH(pyfile)
 
 FOREACH(module core gui analysis networkanalysis)
   ADD_CUSTOM_TARGET(py${module} ALL)
+  ADD_DEPENDENCIES(py${module} python_module_qgis__${module})
   FILE(GLOB_RECURSE PY_FILES "${module}/*.py")
   INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
   FOREACH(pyfile ${PY_FILES})
