@@ -222,6 +222,11 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
+      {
+        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == QGis::NoGeometry )
+          return QVariant(); // do not show checkbox for non-spatial tables
+      }
       return nodeLayer->isVisible();
     }
     else if ( QgsLayerTree::isGroup( node ) )
