@@ -142,6 +142,11 @@ void QgsLayerTreeView::onCurrentChanged( QModelIndex current, QModelIndex previo
   if ( layerPrevious == layerCurrent )
     return;
 
+  if ( layerCurrent )
+    layerTreeModel()->setCurrentNode( layerTreeModel()->rootGroup()->findLayer( layerCurrent->id() ) );
+  else
+    layerTreeModel()->setCurrentNode( 0 );
+
   emit currentLayerChanged( layerCurrent );
 }
 

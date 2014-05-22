@@ -32,6 +32,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
     , mFlags( ShowSymbology )
+    , mCurrentNode( 0 )
 {
   Q_ASSERT( mRootNode );
 
@@ -236,6 +237,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       f.setItalic( true );
     if ( QgsLayerTree::isLayer( node ) )
       f.setBold( true );
+    if ( node == mCurrentNode )
+      f.setUnderline( true );
     return f;
   }
   else if ( role == Qt::ToolTipRole )
@@ -380,6 +383,23 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   endRemoveRows();
 
   addSymbologyToLayer( nodeLayer );
+}
+
+void QgsLayerTreeModel::setCurrentNode( QgsLayerTreeNode* currentNode )
+{
+  if ( mCurrentNode )
+  {
+    QModelIndex idx = node2index( mCurrentNode );
+    emit dataChanged( idx, idx );
+  }
+
+  mCurrentNode = currentNode;
+
+  if ( mCurrentNode )
+  {
+    QModelIndex idx = node2index( mCurrentNode );
+    emit dataChanged( idx, idx );
+  }
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )

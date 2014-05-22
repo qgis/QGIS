@@ -92,6 +92,9 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     void refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer );
 
+    QgsLayerTreeNode* currentNode() const { return mCurrentNode; }
+    void setCurrentNode( QgsLayerTreeNode* currentNode );
+
   signals:
 
   protected slots:
@@ -122,6 +125,8 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     Flags mFlags;
 
     QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
+
+    QgsLayerTreeNode* mCurrentNode;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )
