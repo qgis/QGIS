@@ -6964,7 +6964,7 @@ void QgisApp::legendGroupSetCRS()
 
 void QgisApp::zoomToLayerExtent()
 {
-  mLayerTreeView->defaultActions()->zoomToLayer();
+  mLayerTreeView->defaultActions()->zoomToLayer( mMapCanvas );
 }
 
 void QgisApp::showPluginManager()

@@ -153,11 +153,9 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
   mView->layerTreeModel()->refreshLayerSymbology( QgsLayerTree::toLayer( node ) );
 }
 
-void QgsLayerTreeViewDefaultActions::zoomToLayer()
-{
-  QAction* s = qobject_cast<QAction*>( sender() );
-  QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
 
+void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas* canvas )
+{
   QgsMapLayer* layer = mView->currentLayer();
   if ( !layer )
     return;
@@ -167,16 +165,27 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
   zoomToLayers( canvas, layers );
 }
 
-void QgsLayerTreeViewDefaultActions::zoomToGroup()
+void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
 {
-  QAction* s = qobject_cast<QAction*>( sender() );
-  QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
-
   QList<QgsMapLayer*> layers;
   foreach ( QString layerId, mView->currentGroupNode()->childLayerIds() )
     layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToLayer()
+{
+  QAction* s = qobject_cast<QAction*>( sender() );
+  QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
+  zoomToLayer( canvas );
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToGroup()
+{
+  QAction* s = qobject_cast<QAction*>( sender() );
+  QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
+  zoomToGroup( canvas );
 }
 
 

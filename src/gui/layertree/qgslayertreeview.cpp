@@ -104,7 +104,7 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
     setCurrentIndex( QModelIndex() );
 
   QMenu* menu = mMenuProvider->createContextMenu();
-  if ( menu )
+  if ( menu && menu->actions().count() != 0 )
     menu->exec( mapToGlobal( event->pos() ) );
   delete menu;
 }

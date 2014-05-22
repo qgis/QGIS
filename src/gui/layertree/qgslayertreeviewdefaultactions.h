@@ -44,11 +44,16 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction* actionMakeTopLevel( QObject* parent = 0 );
     QAction* actionGroupSelected( QObject* parent = 0 );
 
+    void zoomToLayer( QgsMapCanvas* canvas );
+    void zoomToGroup( QgsMapCanvas* canvas );
+
   public slots:
+    void showInOverview();
+
+  protected slots:
     void addGroup();
     void removeGroupOrLayer();
     void renameGroupOrLayer();
-    void showInOverview();
     void showFeatureCount();
     void zoomToLayer();
     void zoomToGroup();
