@@ -20,7 +20,7 @@
 
 #include "qgsvectorlayer.h"
 
-class QgsLegacyHelpers
+class CORE_EXPORT QgsLegacyHelpers
 {
   public:
     Q_DECL_DEPRECATED static const QString convertEditType( QgsVectorLayer::EditType editType, QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name, const QDomElement editTypeElement = QDomElement() );
