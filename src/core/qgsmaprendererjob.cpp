@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QtConcurrentMap>
+#include <QSettings>
 
 #include "qgscrscache.h"
 #include "qgslogger.h"
@@ -730,6 +731,8 @@ void QgsMapRendererParallelJob::start()
 
 
   mLayerJobs = prepareJobs( 0, mLabelingEngine );
+
+  qDebug( "QThreadPool max thread count is %d", QThreadPool::globalInstance()->maxThreadCount() );
 
   // start async job
 

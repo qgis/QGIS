@@ -279,6 +279,14 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
 
+	/** Get maximum concurrent thread count 
+	 * @note added in 2.4 */
+	static int maxThreads() { return ABISYM( mMaxThreads ); }
+	/** Set maximum concurrent thread count
+	 * @note must be between 1 and #cores, -1 means use all available cores
+	 * @note added in 2.4 */
+	static void setMaxThreads( int maxThreads );
+
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
@@ -320,6 +328,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @see skipGdalDriver, restoreGdalDriver
      * @note added in 2.0 */
     static QStringList ABISYM( mGdalSkipList );
+	/** 
+	 * @note added in 2.4 */
+	static int ABISYM( mMaxThreads );
 };
 
 #endif

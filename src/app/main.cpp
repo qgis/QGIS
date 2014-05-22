@@ -873,6 +873,10 @@ int main( int argc, char *argv[] )
     mySettings.remove( "/qgis/restoreDefaultWindowState" );
   }
 
+  // set max. thread count
+  // this should be done in QgsApplication::init() but it doesn't know the settings dir.
+  QgsApplication::setMaxThreads( QSettings().value( "/qgis/max_threads", -1 ).toInt() );
+
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
 

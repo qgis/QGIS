@@ -547,6 +547,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
   chkParallelRendering->setChecked( settings.value( "/qgis/parallel_rendering", false ).toBool() );
   spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
+  chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
+  spinMaxThreads->setEnabled( chkMaxThreads->isChecked() );
+  spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
+  spinMaxThreads->setValue( QgsApplication::maxThreads() );
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
@@ -1071,6 +1075,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/parallel_rendering", chkParallelRendering->isChecked() );
+  int maxThreads = chkMaxThreads->isChecked() ? spinMaxThreads->value() : -1;
+  QgsApplication::setMaxThreads( maxThreads );
+  settings.setValue( "/qgis/max_threads", maxThreads );
+
   settings.setValue( "/qgis/map_update_interval", spinMapUpdateInterval->value() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
