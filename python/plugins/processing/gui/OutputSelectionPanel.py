@@ -31,6 +31,8 @@ import re
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from qgis.gui import *
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputDirectory import OutputDirectory
