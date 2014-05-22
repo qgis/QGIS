@@ -238,6 +238,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       f.setBold( true );
     return f;
   }
+  else if ( role == Qt::ToolTipRole )
+  {
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      if ( QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer() )
+        return layer->publicSource();
+    }
+  }
 
   return QVariant();
 }
