@@ -15,7 +15,7 @@
 
 #include "qgsrelationreferencefactory.h"
 
-#include "qgsrelationreferencewidget.h"
+#include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelreferenceconfigdlg.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( QgsAttributeEditorContext context, QString name )
@@ -26,7 +26,7 @@ QgsRelationReferenceFactory::QgsRelationReferenceFactory( QgsAttributeEditorCont
 
 QgsEditorWidgetWrapper* QgsRelationReferenceFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
-  return new QgsRelationReferenceWidget( vl, fieldIdx, editor, mEditorContext, parent );
+  return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mEditorContext, parent );
 }
 
 QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

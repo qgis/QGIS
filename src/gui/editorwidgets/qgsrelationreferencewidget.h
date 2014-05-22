@@ -17,47 +17,55 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgscollapsiblegroupbox.h"
 #include "qgsfeature.h"
 
 #include <QComboBox>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 class QgsAttributeDialog;
 class QgsVectorLayerTools;
 
-class GUI_EXPORT QgsRelationReferenceWidget : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsRelationReferenceWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QWidget* parent = 0 );
-    virtual QWidget* createWidget( QWidget* parent );
-    virtual void initWidget( QWidget* editor );
-    virtual QVariant value();
+    explicit QgsRelationReferenceWidget( QWidget* parent );
+
+    void displayEmbedForm( bool display );
+
+    void setRelation( QgsRelation relation , bool allowNullValue );
+
+    void setRelationEditable( bool editable );
+
+    void setRelatedFeature( const QVariant &value );
+
+    QVariant relatedFeature();
+
+    void setEditorContext( QgsAttributeEditorContext context );
 
   signals:
-    void valueChanged( const QVariant& value );
-
-  public slots:
-    virtual void setValue( const QVariant& value );
-    virtual void setEnabled( bool enabled );
+    void relatedFeatureChanged( QVariant );
 
   private slots:
+    void buttonTriggered( QAction* action );
     void referenceChanged( int index );
     void openForm();
 
   private:
-    bool mInitialValueAssigned;
-    QComboBox* mComboBox;
-    QWidget* mAttributeEditorFrame;
-    QVBoxLayout* mAttributeEditorLayout;
-    QPushButton* mAttributeEditorButton;
     QgsVectorLayer* mReferencedLayer;
-    QVariant mCurrentValue;
+    bool mInitialValueAssigned;
     QgsAttributeDialog* mAttributeDialog;
+    QGridLayout* mLayout;
     QHash<QgsFeatureId, QVariant> mFidFkMap; // Mapping from feature id => foreign key
+    QAction* mShowFormAction;
+    QComboBox* mComboBox;
+    QgsCollapsibleGroupBox* mAttributeEditorFrame;
+    QVBoxLayout* mAttributeEditorLayout;
     QgsAttributeEditorContext mEditorContext;
 };
+
+
+
 
 #endif // QGSRELATIONREFERENCEWIDGET_H

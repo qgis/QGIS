@@ -17,67 +17,58 @@
 
 #include <QPushButton>
 #include <QDialog>
+#include <QToolButton>
 
 #include "qgsattributedialog.h"
+#include "qgsapplication.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
 #include "qgsfield.h"
-#include "qgsproject.h"
 #include "qgsrelreferenceconfigdlg.h"
-#include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationReferenceWidget::QgsRelationReferenceWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsAttributeEditorContext context, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mInitialValueAssigned( false )
-    , mComboBox( NULL )
-    , mAttributeEditorFrame( NULL )
-    , mAttributeEditorLayout( NULL )
-    , mAttributeEditorButton( NULL )
+
+QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
+    : QWidget( parent )
     , mReferencedLayer( NULL )
+    , mInitialValueAssigned( false )
     , mAttributeDialog( NULL )
-    , mEditorContext( context )
+    , mEditorContext( QgsAttributeEditorContext() )
 {
+  mLayout = new QGridLayout( this );
+  setLayout( mLayout );
+  mComboBox = new QComboBox( this );
+  mLayout->addWidget( mComboBox, 0, 0, 1, 1 );
+
+  // action button
+  QToolButton* attributeEditorButton = new QToolButton( this );
+  mShowFormAction = new QAction( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ), tr( "Open Form" ), this );
+  attributeEditorButton->addAction( mShowFormAction );
+  attributeEditorButton->setDefaultAction( mShowFormAction );
+  connect( attributeEditorButton, SIGNAL( triggered( QAction* ) ), this, SLOT( buttonTriggered( QAction* ) ) );
+  mLayout->addWidget( attributeEditorButton, 0, 1, 1, 1 );
+
+  // embed form
+  mAttributeEditorFrame = new QgsCollapsibleGroupBox( this );
+  mAttributeEditorFrame->setCollapsed( true );
+  mAttributeEditorLayout = new QVBoxLayout( mAttributeEditorFrame );
+  mAttributeEditorFrame->setLayout( mAttributeEditorLayout );
+  mLayout->addWidget( mAttributeEditorFrame, 1, 0, 1, 3 );
+
+  mLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ), 0, 2, 1, 1 );
 }
 
-QWidget* QgsRelationReferenceWidget::createWidget( QWidget* parent )
+void QgsRelationReferenceWidget::displayEmbedForm( bool display )
 {
-  return new QWidget( parent );
+  mAttributeEditorFrame->setVisible( display );
 }
 
-void QgsRelationReferenceWidget::initWidget( QWidget* editor )
+void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
 {
-  QGridLayout* layout = new QGridLayout( editor );
-  editor->setLayout( layout );
-
-  mComboBox = new QComboBox( editor );
-  layout->addWidget( mComboBox, 0, 0, 1, 1 );
-
-  if ( config( "ShowForm", true ).toBool() )
-  {
-    mAttributeEditorFrame = new QgsCollapsibleGroupBox( editor );
-    mAttributeEditorLayout = new QVBoxLayout( mAttributeEditorFrame );
-    mAttributeEditorFrame->setLayout( mAttributeEditorLayout );
-
-    layout->addWidget( mAttributeEditorFrame, 1, 0, 1, 3 );
-  }
-  else
-  {
-    mAttributeEditorButton = new QPushButton( tr( "Open Form" ) );
-
-    layout->addWidget( mAttributeEditorButton, 0, 1, 1, 1 );
-
-    connect( mAttributeEditorButton, SIGNAL( clicked() ), this, SLOT( openForm() ) );
-  }
-
-  layout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ), 0, 2, 1, 1 );
-
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
-
   if ( relation.isValid() )
   {
-    if ( config( "AllowNULL" ).toBool() )
+    if ( allowNullValue )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
     }
@@ -110,43 +101,20 @@ void QgsRelationReferenceWidget::initWidget( QWidget* editor )
     font.setItalic( true );
     lbl->setStyleSheet( "QLabel { color: red; } " );
     lbl->setFont( font );
-    layout->addWidget( lbl, 1, 0, 1, 3 );
+    mLayout->addWidget( lbl, 1, 0, 1, 3 );
   }
 }
 
-QVariant QgsRelationReferenceWidget::value()
+void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 {
-  QVariant varFid = mComboBox->itemData( mComboBox->currentIndex() );
-  if ( varFid.isNull() )
-  {
-    return QVariant( field().type() );
-  }
-  else
-  {
-    return mFidFkMap.value( varFid.value<QgsFeatureId>() );
-  }
+  mComboBox->setEnabled( editable );
 }
 
-void QgsRelationReferenceWidget::setValue( const QVariant& value )
+void QgsRelationReferenceWidget::setRelatedFeature( const QVariant& value )
 {
+  QgsFeatureId fid = mFidFkMap.key( value );
   int oldIdx = mComboBox->currentIndex();
-
-  if ( value.isNull() )
-  {
-    if ( config( "AllowNULL" ).toBool() )
-    {
-      mComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mComboBox->setCurrentIndex( -1 );
-    }
-  }
-  else
-  {
-    QgsFeatureId fid = mFidFkMap.key( value );
-    mComboBox->setCurrentIndex( mComboBox->findData( fid ) );
-  }
+  mComboBox->setCurrentIndex( mComboBox->findData( fid ) );
 
   if ( !mInitialValueAssigned )
   {
@@ -159,16 +127,57 @@ void QgsRelationReferenceWidget::setValue( const QVariant& value )
   }
 }
 
-void QgsRelationReferenceWidget::setEnabled( bool enabled )
+QVariant QgsRelationReferenceWidget::relatedFeature()
 {
-  mComboBox->setEnabled( enabled );
+  QVariant varFid = mComboBox->itemData( mComboBox->currentIndex() );
+  if ( varFid.isNull() )
+  {
+    return QVariant( field.type() );
+  }
+  else
+  {
+    return mFidFkMap.value( varFid.value<QgsFeatureId>() );
+  }
+}
+
+void QgsRelationReferenceWidget::setEditorContext( QgsAttributeEditorContext context )
+{
+  mEditorContext = context;
+}
+
+void QgsRelationReferenceWidget::buttonTriggered( QAction* action )
+{
+  if ( action == mShowFormAction )
+  {
+    openForm();
+  }
+}
+
+void QgsRelationReferenceWidget::openForm()
+{
+  QgsFeatureId fid = mComboBox->itemData( mComboBox->currentIndex() ).value<QgsFeatureId>();
+
+  QgsFeature feat;
+
+  if ( !mReferencedLayer )
+    return;
+
+  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
+
+  if ( !feat.isValid() )
+    return;
+
+  // TODO: Get a proper QgsDistanceArea thingie
+  mAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, mEditorContext );
+  mAttributeDialog->exec();
+  delete mAttributeDialog;
 }
 
 void QgsRelationReferenceWidget::referenceChanged( int index )
 {
   QgsFeatureId fid = mComboBox->itemData( index ).value<QgsFeatureId>();
 
-  emit valueChanged( mFidFkMap.value( fid ) );
+  emit relatedFeatureChanged( mFidFkMap.value( fid ) );
 
   // Check if we're running with an embedded frame we need to update
   if ( mAttributeEditorFrame )
@@ -197,21 +206,4 @@ void QgsRelationReferenceWidget::referenceChanged( int index )
       delete oldDialog;
     }
   }
-}
-
-void QgsRelationReferenceWidget::openForm()
-{
-  QgsFeatureId fid = mComboBox->itemData( mComboBox->currentIndex() ).value<QgsFeatureId>();
-
-  QgsFeature feat;
-
-  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
-
-  if ( !feat.isValid() )
-    return;
-
-  // TODO: Get a proper QgsDistanceArea thingie
-  mAttributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, widget(), true, mEditorContext );
-  mAttributeDialog->exec();
-  delete mAttributeDialog;
 }
