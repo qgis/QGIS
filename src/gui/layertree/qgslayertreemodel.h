@@ -69,9 +69,13 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     enum Flag
     {
-      AllowTreeManagement,
-      ShowSymbology,
-      AllowVisibilityManagement,
+      // display flags
+      ShowSymbology             = 0x0001,  //!< Add symbology items for layer nodes
+
+      // behavioral flags
+      AllowNodeReorder          = 0x1000,  //!< Allow reordering with drag'n'drop
+      AllowNodeRename           = 0x2000,  //!< Allow renaming of groups and layers
+      AllowNodeChangeVisibility = 0x4000,  //!< Allow user to set node visibility with a check box
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

@@ -216,7 +216,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::CheckStateRole )
   {
-    if ( !testFlag( AllowVisibilityManagement ) )
+    if ( !testFlag( AllowNodeChangeVisibility ) )
       return QVariant();
 
     if ( QgsLayerTree::isLayer( node ) )
@@ -256,17 +256,26 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
+  {
+    Qt::ItemFlags rootFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if ( testFlag( AllowNodeReorder ) )
+      rootFlags |= Qt::ItemIsDropEnabled;
+    return rootFlags;
+  }
 
   if ( index2symnode( index ) )
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled; // | Qt::ItemIsSelectable;
 
-  Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+  Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  if ( testFlag( AllowNodeRename ) )
+    f |= Qt::ItemIsEditable;
+  if ( testFlag( AllowNodeReorder ) )
+    f |= Qt::ItemIsDragEnabled;
   QgsLayerTreeNode* node = index2node( index );
-  if ( testFlag( AllowVisibilityManagement ) && QgsLayerTree::isLayer( node ) )
+  if ( testFlag( AllowNodeChangeVisibility ) && ( QgsLayerTree::isLayer( node ) || QgsLayerTree::isGroup( node ) ) )
     f |= Qt::ItemIsUserCheckable;
-  else if ( QgsLayerTree::isGroup( node ) )
-    f |= Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
+  if ( testFlag( AllowNodeReorder ) && QgsLayerTree::isGroup( node ) )
+    f |= Qt::ItemIsDropEnabled;
   return f;
 }
 
@@ -278,7 +287,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
 
   if ( role == Qt::CheckStateRole )
   {
-    if ( !testFlag( AllowVisibilityManagement ) )
+    if ( !testFlag( AllowNodeChangeVisibility ) )
       return false;
 
     if ( QgsLayerTree::isLayer( node ) )
@@ -295,6 +304,9 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
   }
   else if ( role == Qt::EditRole )
   {
+    if ( !testFlag( AllowNodeRename ) )
+      return false;
+
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
@@ -697,7 +709,7 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
 
 Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
 {
-  return /*Qt::CopyAction |*/ Qt::MoveAction;
+  return Qt::MoveAction;
 }
 
 QStringList QgsLayerTreeModel::mimeTypes() const
