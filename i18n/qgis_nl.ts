@@ -16255,10 +16255,6 @@ Foutmelding: %2</translation>
         <translation>Toont een selectielijst met attribuutwaarden gebruikt voor classificatie.</translation>
     </message>
     <message>
-        <source>Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="obsolete">Toestaan dat een numerieke waarde uit een &apos;range&apos; wordt gekozen. De aanpas-&apos;widget&apos; can een schuiver of een spinbox zijn.</translation>
-    </message>
-    <message>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>

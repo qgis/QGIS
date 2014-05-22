@@ -20001,11 +20001,6 @@ Greška je:%2</translation>
         <translation>Lokalni minimum/maksimum = 0/0</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributetypeedit.ui" line="195"/>
-        <source>Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="333"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
         <translation>Korisink može izabrati jednu od vrednosti već korišćenih kao atribut. Ako se može editovati pojavljuje se red sa podrškom za auto-kompletiranje, inače se koristi &quot;combo box&quot;.</translation>
