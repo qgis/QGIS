@@ -553,10 +553,12 @@ void QgsLayerTreeModel::addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL )
   foreach ( XY item, items )
   {
     QString label = item.first;
-    QPixmap pix( QgsSymbolLayerV2Utils::symbolPreviewPixmap( item.second, iconSize ) );
-    if ( showFeatureCount )
+    QIcon icon;
+    if ( item.second )
+      icon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( item.second, iconSize );
+    if ( showFeatureCount && item.second )
       label += QString( " [%1]" ).arg( vlayer->featureCount( item.second ) );
-    lst << new QgsLayerTreeModelSymbologyNode( nodeL, label, QIcon( pix ) );
+    lst << new QgsLayerTreeModelSymbologyNode( nodeL, label, icon );
   }
 
   endInsertRows();
