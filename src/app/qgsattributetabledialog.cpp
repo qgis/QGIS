@@ -157,6 +157,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
   mExpressionSelectButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
+  mOpenExpressionWidget->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -203,7 +204,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   mFieldModel = new QgsFieldModel();
   mFieldModel->setLayer( mLayer );
-  mFieldComboButton->setModel( mFieldModel );
+  mFieldCombo->setModel( mFieldModel );
   connect( mOpenExpressionWidget, SIGNAL( clicked() ), this, SLOT( openExpressionBuilder() ) );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
   editingToggled();
@@ -294,7 +295,7 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
 
   mLayer->beginEditCommand( "Field calculator" );
 
-  QModelIndex modelindex = mFieldModel->indexFromName( mFieldComboButton->currentText() );
+  QModelIndex modelindex = mFieldModel->indexFromName( mFieldCombo->currentText() );
   int fieldindex = modelindex.data( QgsFieldModel::FieldIndexRole ).toInt();
 
   bool calculationSuccess = true;
