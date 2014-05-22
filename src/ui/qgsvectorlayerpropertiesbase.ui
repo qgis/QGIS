@@ -528,7 +528,6 @@
                  </layout>
                  <zorder>txtSubsetSQL</zorder>
                  <zorder>pbnQueryBuilder</zorder>
-                 <zorder>collapseButton</zorder>
                 </widget>
                </item>
                <item>
