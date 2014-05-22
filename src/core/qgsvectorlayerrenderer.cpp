@@ -120,9 +120,7 @@ bool QgsVectorLayerRenderer::render()
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
   if ( mSimplifyGeometry )
   {
-    QPainter* p = mContext.painter();
-    double dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
-    double map2pixelTol = mSimplifyMethod.threshold() * 96.0f / dpi;
+    double map2pixelTol = mSimplifyMethod.threshold();
 
     const QgsMapToPixel& mtp = mContext.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
