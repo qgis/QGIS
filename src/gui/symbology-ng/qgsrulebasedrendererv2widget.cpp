@@ -599,11 +599,16 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
 
   connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsRendererRulePropsDialog/geometry" ).toByteArray() );
 }
 
 QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 {
   delete mSymbol;
+  QSettings settings;
+  settings.setValue( "/Windows/QgsRendererRulePropsDialog/geometry", saveGeometry() );
 }
 
 void QgsRendererRulePropsDialog::buildExpression()

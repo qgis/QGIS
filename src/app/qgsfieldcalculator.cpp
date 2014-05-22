@@ -91,10 +91,15 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeaturesIds().size() ) );
 
   builder->loadRecent( "fieldcalc" );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsFieldCalculator/geometry" ).toByteArray() );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/QgsFieldCalculator/geometry", saveGeometry() );
 }
 
 void QgsFieldCalculator::accept()
