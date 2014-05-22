@@ -570,36 +570,49 @@ TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
 # the modules go under libexec subdir
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/modules)
 
-# TODO: upgrade to GRASS 7
+#
+# grass raster display module
+#
+ADD_EXECUTABLE(qgis.d.rast qgis.d.rast.c)
 IF (GRASS_MAJOR_VERSION LESS 7 )
-
-  #
-  # grass raster display module
-  #
-
-  ADD_EXECUTABLE(qgis.d.rast qgis.d.rast.c)
   TARGET_LINK_LIBRARIES(qgis.d.rast
     ${GRASS_LIBRARY_gis}
     ${GRASS_LIBRARY_datetime}
     ${GDAL_LIBRARY}
   )
+ELSE (GRASS_MAJOR_VERSION LESS 7 )
+  TARGET_LINK_LIBRARIES(qgis.d.rast
+    ${GRASS_LIBRARY_gis}
+    ${GRASS_LIBRARY_datetime}
+    ${GRASS_LIBRARY_raster}
+    ${GDAL_LIBRARY}
+  )
+ENDIF (GRASS_MAJOR_VERSION LESS 7 )
 
-  #
-  # grass info module
-  #
+#
+# grass info module
+#
 
-  ADD_EXECUTABLE(qgis.g.info qgis.g.info.c)
+ADD_EXECUTABLE(qgis.g.info qgis.g.info.c)
+IF (GRASS_MAJOR_VERSION LESS 7 )
   TARGET_LINK_LIBRARIES(qgis.g.info
     ${GRASS_LIBRARY_gis}
     ${GRASS_LIBRARY_datetime}
     ${GRASS_LIBRARY_gproj}
     ${GDAL_LIBRARY}
   )
-  IF (UNIX)
-    TARGET_LINK_LIBRARIES(qgis.g.info m)
-  ENDIF (UNIX)
-
+ELSE (GRASS_MAJOR_VERSION LESS 7 )
+  TARGET_LINK_LIBRARIES(qgis.g.info
+    ${GRASS_LIBRARY_gis}
+    ${GRASS_LIBRARY_datetime}
+    ${GRASS_LIBRARY_gproj}
+    ${GRASS_LIBRARY_raster}
+    ${GDAL_LIBRARY}
+  )
 ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+IF (UNIX)
+  TARGET_LINK_LIBRARIES(qgis.g.info m)
+ENDIF (UNIX)
 
 ########################################################
 # Install
@@ -617,14 +630,11 @@ INSTALL(TARGETS grassprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-# TODO: upgrade to GRASS 7
-IF (GRASS_MAJOR_VERSION LESS 7 )
-  INSTALL(TARGETS grassrasterprovider
-    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+INSTALL(TARGETS grassrasterprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-  INSTALL(TARGETS qgis.d.rast qgis.g.info
-    RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+INSTALL(TARGETS qgis.d.rast qgis.g.info
+  RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
-ENDIF (GRASS_MAJOR_VERSION LESS 7 )

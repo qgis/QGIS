@@ -33,6 +33,7 @@
 #include <fcntl.h>
 #include <io.h>
 #endif
+#include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
@@ -41,6 +42,23 @@
 #include <float.h>
 #define INFINITY (DBL_MAX+DBL_MAX)
 #define NAN (INFINITY-INFINITY)
+#endif
+
+#if GRASS_VERSION_MAJOR >= 7
+#define G_allocate_raster_buf Rast_allocate_buf
+#define G_close_cell Rast_close
+#define G_free_colors Rast_free_colors
+#define G_get_cellhd Rast_get_cellhd
+#define G_get_raster_map_type Rast_get_map_type
+#define G_get_raster_row Rast_get_row
+#define G_is_null_value Rast_is_null_value
+#define G_lookup_raster_colors Rast_lookup_colors
+#define G_open_cell_old Rast_open_old
+#define G_raster_map_type Rast_map_type
+#define G_raster_size Rast_cell_size
+#define G_read_colors Rast_read_colors
+#define G_window_cols Rast_window_cols
+#define G_window_rows Rast_window_rows
 #endif
 
 int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
@@ -84,9 +102,13 @@ int main( int argc, char **argv )
   name = map->answer;
 
   /* Make sure map is available */
+#if GRASS_VERSION_MAJOR < 7
   mapset = G_find_cell2( name, "" );
   if ( mapset == NULL )
     G_fatal_error(( "Raster map <%s> not found" ), name );
+#else
+  mapset = "";
+#endif
 
   /* It can happen that GRASS data set is 'corrupted' and zone differs in WIND and
    * cellhd, and G_open_cell_old fails, so it is better to read window from map */
