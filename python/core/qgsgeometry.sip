@@ -323,7 +323,7 @@ class QgsGeometry
     QgsGeometry* centroid() /Factory/;
 
     /** Returns a point within a geometry */
-    QgsGeometry* pointOnSurface();
+    QgsGeometry* pointOnSurface() /Factory/;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull() /Factory/;
