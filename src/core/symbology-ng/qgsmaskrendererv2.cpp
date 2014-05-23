@@ -67,6 +67,37 @@ void QgsMaskRendererV2::startRender( QgsRenderContext& context, const QgsFields&
   mFeaturesCategoryMap.clear();
   mFeatureDecorations.clear();
   mFields = fields;
+
+  // We compute coordinates of the extent which will serve as exterior ring
+  // for the final polygon
+  // It must be computed in the destination CRS if reprojection is enabled.
+  const QgsMapToPixel& mtp( context.mapToPixel() );
+
+  // convert viewport to dest CRS
+  QRect e( context.painter()->viewport() );
+  // add some space to hide borders and tend to infinity
+  e.adjust( -e.width()*10, -e.height()*10, e.width()*10, e.height()*10 );
+  QgsPolyline exteriorRing;
+  exteriorRing << mtp.toMapCoordinates( e.topLeft() );
+  exteriorRing << mtp.toMapCoordinates( e.topRight() );
+  exteriorRing << mtp.toMapCoordinates( e.bottomRight() );
+  exteriorRing << mtp.toMapCoordinates( e.bottomLeft() );
+  exteriorRing << mtp.toMapCoordinates( e.topLeft() );
+
+  mTransform = context.coordinateTransform();
+  // If reprojection is enabled, we must reproject during renderFeature
+  // and act as if there is no reprojection
+  // If we don't do that, there is no need to have a simple rectangular extent
+  // that covers the whole screen
+  // (a rectangle in the destCRS cannot be expressed as valid coordinates in the sourceCRS in general)
+  if (mTransform)
+  {
+    // disable projection
+    context.setCoordinateTransform(0);
+  }
+
+  mExtentPolygon.clear();
+  mExtentPolygon.append(exteriorRing);
 }
 
 bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
@@ -126,20 +157,9 @@ bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& co
   // operations do not need geometries to be valid
   if ( ! mFeaturesCategoryMap.contains(catId) )
   {
-    // add the exterior ring
-    QgsRectangle e = context.extent();
-    // add some space to hide borders
-    e.scale(2.0);
-    QgsPolyline extent_ring;
-    extent_ring.push_back( QgsPoint(e.xMinimum(), e.yMinimum()) );
-    extent_ring.push_back( QgsPoint(e.xMaximum(), e.yMinimum()) );
-    extent_ring.push_back( QgsPoint(e.xMaximum(), e.yMaximum()) );
-    extent_ring.push_back( QgsPoint(e.xMinimum(), e.yMaximum()) );
-    extent_ring.push_back( QgsPoint(e.xMinimum(), e.yMinimum()) );
+    // the exterior ring must be a square in the destination CRS
     CombinedFeature cFeat;
-    QgsPolygon exterior_ring_poly;
-    exterior_ring_poly.append(extent_ring);
-    cFeat.multiPolygon.append(exterior_ring_poly);
+    cFeat.multiPolygon.append( mExtentPolygon );
     // store the first feature
     cFeat.feature = feature;
     mFeaturesCategoryMap.insert( catId, cFeat );
@@ -161,13 +181,37 @@ bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& co
             (geom->wkbType() == QGis::WKBMultiPolygon25D) ) {
     multi = geom->asMultiPolygon();
   }
+
   for ( int i = 0; i < multi.size(); i++ ) {
     // add the exterior ring as interior ring to the first polygon
-    cFeat.multiPolygon[0].append( multi[i][0] );
+    if ( mTransform ) {
+      QgsPolyline new_ls;
+      QgsPolyline& old_ls = multi[i][0];
+      for ( int k = 0; k < old_ls.size(); k++ ) {
+        new_ls.append( mTransform->transform( old_ls[k] ) );
+      }
+      cFeat.multiPolygon[0].append( new_ls );
+    }
+    else
+    {
+      cFeat.multiPolygon[0].append( multi[i][0] );
+    }
     // add interior rings as new polygons
     for ( int j = 1; j < multi[i].size(); j++ ) {
       QgsPolygon new_poly;
-      new_poly.append( multi[i][j] );
+      if ( mTransform ) {
+        QgsPolyline new_ls;
+        QgsPolyline& old_ls = multi[i][j];
+        for ( int k = 0; k < old_ls.size(); k++ ) {
+          new_ls.append( mTransform->transform( old_ls[k] ) );
+        }
+        new_poly.append( new_ls );
+      }
+      else
+      {
+        new_poly.append( multi[i][j] );
+      }
+
       cFeat.multiPolygon.append( new_poly );
     }
   }
@@ -188,14 +232,14 @@ void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
   }
 
   // when no features are visible, we still have to draw the exterior rectangle
+  // warning: when sub renderers have more than one possible symbols,
+  // there is no way to choose a correct one, because there is no attribute here
+  // in that case, nothing will be rendered
   if ( mFeaturesCategoryMap.isEmpty() )
   {
-    QgsRectangle e = context.extent();
-    // add some space to hide borders
-    e.scale(2.0);
     // empty feature with default attributes
     QgsFeature feat( mFields );
-    feat.setGeometry( QgsGeometry::fromRect(e) );
+    feat.setGeometry( QgsGeometry::fromPolygon( mExtentPolygon ) );
     mSubRenderer->renderFeature( feat, context );
   }
 
@@ -206,6 +250,12 @@ void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
   }
 
   mSubRenderer->stopRender( context );
+
+  if ( mTransform )
+  {
+    // restore the coordinate transform if needed
+    context.setCoordinateTransform( mTransform );
+  }
 }
 
 QString QgsMaskRendererV2::dump() const

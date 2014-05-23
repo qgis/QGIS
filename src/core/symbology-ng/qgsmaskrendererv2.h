@@ -123,6 +123,12 @@ class CORE_EXPORT QgsMaskRendererV2 : public QgsFeatureRendererV2
   /** where features are stored, based on their symbol category */
   FeatureCategoryMap mFeaturesCategoryMap;
 
+  /** the polygon used as exterior ring that covers the current extent */
+  QgsPolygon mExtentPolygon;
+
+  /** the current coordinate transform (or null) */
+  const QgsCoordinateTransform* mTransform;
+
   /** fields of each feature*/
   QgsFields mFields;
 
