@@ -39,6 +39,7 @@
 #include <iostream>
 #include <cstring>
 #include <cmath>
+#include <vector>
 
 
 #include <pal/pal.h>
@@ -228,7 +229,7 @@ namespace pal
 
   bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText,
                                double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
-                               int xQuadOffset, int yQuadOffset, double xOffset, double yOffset, bool alwaysShow )
+                               int xQuadOffset, int yQuadOffset, double xOffset, double yOffset, bool alwaysShow, double repeatDistance )
   {
     if ( !geom_id || label_x < 0 || label_y < 0 )
       return false;
@@ -284,6 +285,74 @@ namespace pal
       throw InternalException::UnknownGeometry();
     }
 
+    // if multiple labels are requested for lines, split the line in pieces of desired distance
+    if(repeatDistance > 0) {
+      int nSimpleGeometries = simpleGeometries->size();
+      for(int i = 0; i < nSimpleGeometries; ++i) {
+        const GEOSGeometry* geom = simpleGeometries->pop_front();
+        if(GEOSGeomTypeId(geom) == GEOS_LINESTRING) {
+
+          // get number of points
+          int n = GEOSGeomGetNumPoints(geom);
+
+          // Read points
+          std::vector<Point> points(n);
+          for(int i = 0; i < n; ++i) {
+            GEOSGeometry* p = GEOSGeomGetPointN(geom, i);
+            GEOSGeomGetX(p, &points[i].x);
+            GEOSGeomGetY(p, &points[i].y);
+            GEOSGeom_destroy(p);
+          }
+
+          // Cumulative length vector
+          std::vector<double> len(n, 0);
+          for(int i = 1; i < n; ++i) {
+            double dx = points[i].x - points[i - 1].x;
+            double dy = points[i].y - points[i - 1].y;
+            len[i] = len[i - 1] + std::sqrt(dx * dx + dy * dy);
+          }
+
+          // Walk along line
+          int cur = 0;
+          double lambda = 0;
+          std::vector<Point> part;
+          while(true) {
+            lambda += repeatDistance;
+            for(; cur < n && lambda > len[cur]; ++cur) {
+              part.push_back(points[cur]);
+            }
+            if(cur >= n) {
+              break;
+            }
+            double c = (lambda - len[cur - 1]) / (len[cur] - len[cur - 1]);
+            Point p;
+            p.x = points[cur - 1].x + c * (points[cur].x - points[cur - 1].x);
+            p.y = points[cur - 1].y + c * (points[cur].y - points[cur - 1].y);
+            part.push_back(p);
+            GEOSCoordSequence* cooSeq = GEOSCoordSeq_create(part.size(), 2);
+            for(std::size_t i = 0; i < part.size(); ++i) {
+              GEOSCoordSeq_setX(cooSeq, i, part[i].x);
+              GEOSCoordSeq_setY(cooSeq, i, part[i].y);
+            }
+
+            simpleGeometries->push_back(GEOSGeom_createLineString(cooSeq));
+            part.clear();
+            part.push_back(p);
+          }
+          // Create final part
+          part.push_back(points[n - 1]);
+          GEOSCoordSequence* cooSeq = GEOSCoordSeq_create(part.size(), 2);
+          for(std::size_t i = 0; i < part.size(); ++i) {
+            GEOSCoordSeq_setX(cooSeq, i, part[i].x);
+            GEOSCoordSeq_setY(cooSeq, i, part[i].y);
+          }
+          simpleGeometries->push_back(GEOSGeom_createLineString(cooSeq));
+        }else{
+          simpleGeometries->push_back( geom );
+        }
+      }
+    }
+
     while ( simpleGeometries->size() > 0 )
     {
       const GEOSGeometry* geom = simpleGeometries->pop_front();
@@ -320,7 +389,7 @@ namespace pal
         continue;
       }
 
-      if ( mode == LabelPerFeature && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
+      if ( mode == LabelPerFeature && repeatDistance == 0.0 && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
       {
         if ( type == GEOS_LINESTRING )
           GEOSLength( geom, &geom_size );
@@ -349,7 +418,7 @@ namespace pal
     modMutex->unlock();
 
     // if using only biggest parts...
-    if (( mode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )
+    if (( (mode == LabelPerFeature && repeatDistance == 0.0) || f->fixedPosition() ) && biggest_part != NULL )
     {
       addFeaturePart( biggest_part, labelText );
       first_feat = false;
