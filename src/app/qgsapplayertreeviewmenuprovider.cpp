@@ -238,7 +238,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
 
 void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, QString menu, QString id,
-                                      QgsMapLayer::LayerType type, bool allLayers )
+    QgsMapLayer::LayerType type, bool allLayers )
 {
   mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
 }
@@ -271,11 +271,11 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* act
   = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
-  if ( ( *it )[i].action == action )
-  {
-    ( *it )[i].layers.append( layer );
-    return;
-  }
+    if (( *it )[i].action == action )
+    {
+      ( *it )[i].layers.append( layer );
+      return;
+    }
   }
 }
 
@@ -288,7 +288,7 @@ void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLa
   = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
-  ( *it )[i].layers.removeAll( layer );
+    ( *it )[i].layers.removeAll( layer );
   }
 }
 
@@ -297,12 +297,12 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
 #ifdef QGISDEBUG
   if ( mLegendLayerActionMap.contains( type ) )
   {
-  QgsDebugMsg( QString("legendLayerActions for layers of type %1:").arg( type ) );
+    QgsDebugMsg( QString( "legendLayerActions for layers of type %1:" ).arg( type ) );
 
-  foreach ( LegendLayerAction lyrAction, mLegendLayerActionMap[ type ] )
-  {
-    QgsDebugMsg( QString("%1/%2 - %3 layers").arg( lyrAction.menu ).arg( lyrAction.action->text() ).arg( lyrAction.layers.count()) );
-  }
+    foreach ( LegendLayerAction lyrAction, mLegendLayerActionMap[ type ] )
+    {
+      QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu ).arg( lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
+    }
   }
 #endif
 
