@@ -1581,7 +1581,7 @@ pola</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
-        <translation type="unfinished">QGIS nie umożliwia jeszcze równoczesnego (wielowątkowego) dostępu do danych. Upewnij się, że nie jest otwarta tabel atrybutów. Kontynuować?</translation>
+        <translation>QGIS nie umożliwia jeszcze równoczesnego (wielowątkowego) dostępu do danych. Upewnij się, że nie jest otwarta tabel atrybutów. Kontynuować?</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -7414,41 +7414,41 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2192"/>
         <source>Normal</source>
-        <translation type="unfinished">zwykły</translation>
+        <translation type="unfinished">Zwykły</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2195"/>
         <source>Normal preview mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Standardowy podgląd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2203"/>
         <location filename="../src/ui/qgisapp.ui" line="2206"/>
         <source>Simulate photocopy (grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Odcienie szarości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2214"/>
         <location filename="../src/ui/qgisapp.ui" line="2217"/>
         <source>Simulate fax (mono)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Czarno-biały</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2225"/>
         <location filename="../src/ui/qgisapp.ui" line="2228"/>
         <source>Simulate color blindness (protanope)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ślepota barw (protanopia)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2236"/>
         <location filename="../src/ui/qgisapp.ui" line="2239"/>
         <source>Simulate color blindness (deuteranope)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ślepota barw (daltonizm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2244"/>
         <source>Set Scale Visibility of Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zakresy skalowe widoczności warstwy</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -8307,7 +8307,7 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="93"/>
         <source>Preview Mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tryb podglądu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1435"/>
@@ -8429,57 +8429,57 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/manageconnectionsdialog.ui" line="14"/>
         <source>Manage connections</source>
-        <translation type="unfinished">Zarządzaj połączeniami</translation>
+        <translation>Zarządzaj połączeniami</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/manageconnectionsdialog.ui" line="22"/>
         <source>Save to file</source>
-        <translation type="unfinished">Zapisz do pliku</translation>
+        <translation>Zapisz do pliku</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/manageconnectionsdialog.ui" line="32"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeglądaj</translation>
     </message>
     <message>
         <source>Load from file</source>
-        <translation type="unfinished">Wczytaj z pliku</translation>
+        <translation>Wczytaj z pliku</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished">Wczytaj</translation>
+        <translation>Wczytaj</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Zapisz</translation>
+        <translation>Zapisz</translation>
     </message>
     <message>
         <source>eXtensible Markup Language (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>eXtensible Markup Language (*.xml *.XML)</translation>
     </message>
     <message>
         <source>Save connections</source>
-        <translation type="unfinished">Zapisz połączenia</translation>
+        <translation>Zapisz połączenia</translation>
     </message>
     <message>
         <source>Load connections</source>
-        <translation type="unfinished">Wczytaj połączenia</translation>
+        <translation>Wczytaj połączenia</translation>
     </message>
     <message>
         <source>Save Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz połączenia</translation>
     </message>
     <message>
         <source>Saved to %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisano jako %s</translation>
     </message>
     <message>
         <source>File %s exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik %s istnieje! Nadpisać?</translation>
     </message>
     <message>
         <source>Loading Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Ładowanie połączeń</translation>
     </message>
 </context>
 <context>
@@ -8994,29 +8994,29 @@ Linia z błędem: %1</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="14"/>
         <source>Create a new Catalogue connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Utwórz nowe połączenie z katalogiem</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="30"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz połączenie</translation>
     </message>
     <message>
         <source>Both Name and URL must be provided</source>
-        <translation type="unfinished"></translation>
+        <translation>Należy podać Nazwę i URL</translation>
     </message>
     <message>
         <source>Overwrite %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadpisać %s?</translation>
     </message>
 </context>
 <context>
@@ -65340,8 +65340,6 @@ Response was:
         <source>%n missing row(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -65354,8 +65352,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1984"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
