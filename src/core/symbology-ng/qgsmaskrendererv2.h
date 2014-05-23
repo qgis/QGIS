@@ -20,6 +20,7 @@
 #include "qgssymbolv2.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include <QScopedPointer>
 
 /**
@@ -112,7 +113,13 @@ class CORE_EXPORT QgsMaskRendererV2 : public QgsFeatureRendererV2
   /** Embedded renderer */
   QScopedPointer<QgsFeatureRendererV2> mSubRenderer;
 
-  typedef QMap< QByteArray, QList<QgsFeature> > FeatureCategoryMap;
+  /** Structure where the reversed geometry is built during renderFeature */
+  struct CombinedFeature
+  {
+    QgsMultiPolygon multiPolygon; //< the final combined geometry
+    QgsFeature feature;           //< one feature (for attriute-based rendering)
+  };
+  typedef QMap< QByteArray, CombinedFeature > FeatureCategoryMap;
   /** where features are stored, based on their symbol category */
   FeatureCategoryMap mFeaturesCategoryMap;
 

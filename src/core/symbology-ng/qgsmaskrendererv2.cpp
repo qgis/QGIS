@@ -73,6 +73,12 @@ bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& co
 {
   Q_UNUSED( context );
 
+  // store this feature as a feature to render with decoration if needed
+  if ( selected || drawVertexMarker )
+  {
+    mFeatureDecorations.append( FeatureDecoration( feature, selected, drawVertexMarker, layer) );
+  }
+
   // Features are grouped by category of symbols (returned by symbol(s)ForFeature)
   // This way, users can have multiple inverted polygon fills for a layer,
   // for instance, with rule based renderer and different symbols
@@ -103,24 +109,10 @@ bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& co
       catId.append( reinterpret_cast<const char*>(&sym), sizeof(sym) );
     }
   }
-  if ( !catId.isEmpty() )
+
+  if ( catId.isEmpty() )
   {
-    mFeaturesCategoryMap[catId].append( feature );
-  }
-
-  // store this feature as a feature to render with decoration if needed
-  if ( selected || drawVertexMarker )
-  {
-    mFeatureDecorations.append( FeatureDecoration( feature, selected, drawVertexMarker, layer) );
-  }
-
-  return true;
-}
-
-void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
-{
-  if ( !mSubRenderer ) {
-    return;
+    return false;
   }
 
   // We build here a "reversed" geometry of all the polygons
@@ -132,12 +124,9 @@ void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
   //
   // No validity check is done, on purpose, it will be very slow and painting
   // operations do not need geometries to be valid
-  for ( FeatureCategoryMap::iterator cit = mFeaturesCategoryMap.begin(); cit != mFeaturesCategoryMap.end(); ++cit)
+  if ( ! mFeaturesCategoryMap.contains(catId) )
   {
-    QgsMultiPolygon geom;
-    geom.push_back( QgsPolygon() );
-
-    // build a rectangle out of the current extent
+    // add the exterior ring
     QgsRectangle e = context.extent();
     // add some space to hide borders
     e.scale(2.0);
@@ -147,34 +136,54 @@ void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
     extent_ring.push_back( QgsPoint(e.xMaximum(), e.yMaximum()) );
     extent_ring.push_back( QgsPoint(e.xMinimum(), e.yMaximum()) );
     extent_ring.push_back( QgsPoint(e.xMinimum(), e.yMinimum()) );
-    geom[0].push_back( extent_ring );
+    CombinedFeature cFeat;
+    QgsPolygon exterior_ring_poly;
+    exterior_ring_poly.append(extent_ring);
+    cFeat.multiPolygon.append(exterior_ring_poly);
+    // store the first feature
+    cFeat.feature = feature;
+    mFeaturesCategoryMap.insert( catId, cFeat );
+  }
 
-    for ( QList<QgsFeature>::iterator fit = cit.value().begin(); fit != cit.value().end(); ++fit )
-    {
-      if ( ! fit->geometry() ) {
-        continue;
-      }
-      QgsMultiPolygon multi;
-      if ( (fit->geometry()->wkbType() == QGis::WKBPolygon) || (fit->geometry()->wkbType() == QGis::WKBPolygon25D) ) {
-        multi.push_back( fit->geometry()->asPolygon() );
-      }
-      else if ( (fit->geometry()->wkbType() == QGis::WKBMultiPolygon) || (fit->geometry()->wkbType() == QGis::WKBMultiPolygon25D) ) {
-        multi = fit->geometry()->asMultiPolygon();
-      }
-      for ( int i = 0; i < multi.size(); i++ ) {
-        // add the exterior ring as interior ring
-        geom[0].push_back( multi[i][0] );
-        // add interior rings as new exterior rings
-        for ( int j = 1; j < multi[i].size(); j++ ) {
-          QgsPolygon new_poly;
-          new_poly.push_back( multi[i][j] );
-          geom.push_back( new_poly );
-        }
-      }
+  // update the gometry
+  CombinedFeature& cFeat = mFeaturesCategoryMap[catId];
+  QgsMultiPolygon multi;
+  QgsGeometry* geom = feature.geometry();
+  if ( !geom )
+  {
+    return false;
+  }
+  if ( (geom->wkbType() == QGis::WKBPolygon) ||
+       (geom->wkbType() == QGis::WKBPolygon25D) ) {
+    multi.append(geom->asPolygon() );
+  }
+  else if ( (geom->wkbType() == QGis::WKBMultiPolygon) ||
+            (geom->wkbType() == QGis::WKBMultiPolygon25D) ) {
+    multi = geom->asMultiPolygon();
+  }
+  for ( int i = 0; i < multi.size(); i++ ) {
+    // add the exterior ring as interior ring to the first polygon
+    cFeat.multiPolygon[0].append( multi[i][0] );
+    // add interior rings as new polygons
+    for ( int j = 1; j < multi[i].size(); j++ ) {
+      QgsPolygon new_poly;
+      new_poly.append( multi[i][j] );
+      cFeat.multiPolygon.append( new_poly );
     }
+  }
+  return true;
+}
 
-    QgsFeature feat( cit.value()[0] );
-    feat.setGeometry( QgsGeometry::fromMultiPolygon( geom ) );
+void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
+{
+  if ( !mSubRenderer ) {
+    return;
+  }
+
+  for ( FeatureCategoryMap::iterator cit = mFeaturesCategoryMap.begin(); cit != mFeaturesCategoryMap.end(); ++cit)
+  {
+    QgsFeature feat( cit.value().feature );
+    feat.setGeometry( QgsGeometry::fromMultiPolygon( cit.value().multiPolygon ) );
     mSubRenderer->renderFeature( feat, context );
   }
 
@@ -184,9 +193,10 @@ void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
     QgsRectangle e = context.extent();
     // add some space to hide borders
     e.scale(2.0);
+    // empty feature with default attributes
     QgsFeature feat( mFields );
     feat.setGeometry( QgsGeometry::fromRect(e) );
-    mSubRenderer->renderFeature( feat, context );    
+    mSubRenderer->renderFeature( feat, context );
   }
 
   // draw feature decorations
