@@ -52,13 +52,21 @@ QgsMaskRendererV2Widget::QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyl
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
-  if ( !renderer || renderer->type() != "maskRenderer" )
+  if ( !renderer )
   {
+    // a new renderer
     mRenderer.reset( new QgsMaskRendererV2() );
+  }
+  else if ( renderer && renderer->type() != "maskRenderer" )
+  {
+    // an existing renderer, but not a mask renderer
+    // create a mask renderer, with the existing renderer embedded
+    mRenderer.reset( new QgsMaskRendererV2( renderer ) );
   }
   else
   {
-    mRenderer.reset( static_cast<QgsMaskRendererV2*>( renderer ) );
+    // an existing mask renderer
+    mRenderer.reset( static_cast<QgsMaskRendererV2*>(renderer) );
   }
 
   int currentEmbeddedIdx = 0;
