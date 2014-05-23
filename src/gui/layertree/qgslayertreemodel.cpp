@@ -183,7 +183,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
     if ( QgsLayerTree::isGroup( node ) )
-      return QgsDataCollectionItem::iconDir();
+      return iconGroup();
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
@@ -802,4 +802,15 @@ bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex& paren
     return true;
   }
   return false;
+}
+
+
+const QIcon& QgsLayerTreeModel::iconGroup()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
+
+  return icon;
 }

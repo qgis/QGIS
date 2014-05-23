@@ -124,6 +124,8 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void connectToLayer( QgsLayerTreeLayer* nodeLayer );
     void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
 
+    static const QIcon& iconGroup();
+
   protected:
     QgsLayerTreeGroup* mRootNode; // not owned!
     Flags mFlags;
