@@ -208,8 +208,12 @@ QString QgsMaskRendererV2::dump() const
 
 QgsFeatureRendererV2* QgsMaskRendererV2::clone()
 {
-  QgsMaskRendererV2* r = new QgsMaskRendererV2( mSubRenderer.data() );
-  return r;
+  if ( mSubRenderer.isNull() )
+  {
+    return new QgsMaskRendererV2( 0 );
+  }
+  // else
+  return new QgsMaskRendererV2( mSubRenderer->clone() );
 }
 
 QgsFeatureRendererV2* QgsMaskRendererV2::create( QDomElement& element )
