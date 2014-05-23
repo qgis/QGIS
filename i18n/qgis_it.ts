@@ -8950,7 +8950,7 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     </message>
     <message>
         <source>Python warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Avviso Python</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -13068,12 +13068,12 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="164"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished">Intercettato errore di semplificazione: %1</translation>
+        <translation>Intercettato errore di semplificazione: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="121"/>
         <source>empty capabilities document</source>
-        <translation type="unfinished">il documento di capabilities è vuoto</translation>
+        <translation>il documento di capabilities è vuoto</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="211"/>
@@ -13088,7 +13088,7 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished">Impossibile ottenere le WMS capabilities: %1 alla linea %2 colonna %3
+        <translation>Impossibile ottenere le WMS capabilities: %1 alla linea %2 colonna %3
 Questo è probabilmente dovuto ad un URL non corretto per il server WMS.
 La risposta è stata:
 
@@ -13101,7 +13101,7 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished">Impossibile ottenere le WMS capabilities nel formato atteso (DTD): non trovato %1 nè %2.
+        <translation>Impossibile ottenere le WMS capabilities nel formato atteso (DTD): non trovato %1 nè %2.
 Questo è probabilmente dovuto ad un URL non corretto per il server WMS.
 Etichetta:%3
 La risposta è stata:
@@ -13110,12 +13110,12 @@ La risposta è stata:
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1467"/>
         <source>Generated default style</source>
-        <translation type="unfinished">Stile predefinito generato</translation>
+        <translation>Stile predefinito generato</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1468"/>
         <source>Style was missing in capabilities</source>
-        <translation type="unfinished">Lo stile mancava di capabilities</translation>
+        <translation>Stile mancante nelle capabilities</translation>
     </message>
 </context>
 <context>
@@ -14805,7 +14805,7 @@ Secondo me si (rospus ;-)</translatorcomment>
         <location filename="../src/app/qgisapp.cpp" line="5675"/>
         <location filename="../src/app/qgisapp.cpp" line="5681"/>
         <source>Paste features</source>
-        <translation type="unfinished"></translation>
+        <translation>Incolla elementi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5669"/>
@@ -14815,12 +14815,12 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5676"/>
         <source>%1 features were successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 elementi sono stati incollati con successo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5682"/>
         <source>%1 of %2 features could be successfully pasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 di %2 elementi sono stati incollati con successo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5709"/>
@@ -14885,7 +14885,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9396"/>
         <source>Network request timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Richiesta di rete è andata in timeout</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9396"/>
@@ -21564,7 +21564,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="119"/>
         <source>Shape style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile della geometria modificato</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="144"/>
@@ -35480,7 +35480,7 @@ Numero di geometrie inviate al sistema di etichettatura, anche se non tutte poss
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1188"/>
         <source>Destination CRS set to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>SR di destinazione impostato a %1</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1208"/>
@@ -36393,7 +36393,7 @@ non visualizzati</translation>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="29"/>
         <source>Delete ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina buco</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="69"/>
@@ -41867,7 +41867,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1048"/>
         <source>QSettings</source>
-        <translation type="unfinished"></translation>
+        <translation>QSettings</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1074"/>
@@ -45316,7 +45316,7 @@ metterei &quot;questa&quot; al posto di &quot;vostra&quot; (ght)
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1167"/>
         <source>Vote sent successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Voto inviato con successo</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1171"/>
