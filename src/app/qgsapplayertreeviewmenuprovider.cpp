@@ -143,8 +143,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       // add custom layer actions - should this go at end?
-      QList< LegendLayerAction > lyrActions = 
-		QgsProject::instance()->layerTreeRegistryBridge()->legendLayerActions( layer->type() );
+      QList< LegendLayerAction > lyrActions = legendLayerActions( layer->type() );
 
       if ( ! lyrActions.isEmpty() )
       {
@@ -236,3 +235,76 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   return menu;
 }
 
+
+
+void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, QString menu, QString id,
+                                      QgsMapLayer::LayerType type, bool allLayers )
+{
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
+}
+
+bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it ).removeAt( i );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
+{
+  legendLayerActions( layer->type() );
+  if ( !action || !layer || ! mLegendLayerActionMap.contains( layer->type() ) )
+    return;
+
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
+  = mLegendLayerActionMap.find( layer->type() );
+  for ( int i = 0; i < it->count(); i++ )
+  {
+  if ( ( *it )[i].action == action )
+  {
+    ( *it )[i].layers.append( layer );
+    return;
+  }
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLayer* layer )
+{
+  if ( ! layer || ! mLegendLayerActionMap.contains( layer->type() ) )
+    return;
+
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
+  = mLegendLayerActionMap.find( layer->type() );
+  for ( int i = 0; i < it->count(); i++ )
+  {
+  ( *it )[i].layers.removeAll( layer );
+  }
+}
+
+QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( QgsMapLayer::LayerType type ) const
+{
+#ifdef QGISDEBUG
+  if ( mLegendLayerActionMap.contains( type ) )
+  {
+  QgsDebugMsg( QString("legendLayerActions for layers of type %1:").arg( type ) );
+
+  foreach ( LegendLayerAction lyrAction, mLegendLayerActionMap[ type ] )
+  {
+    QgsDebugMsg( QString("%1/%2 - %3 layers").arg( lyrAction.menu ).arg( lyrAction.action->text() ).arg( lyrAction.layers.count()) );
+  }
+  }
+#endif
+
+  return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}

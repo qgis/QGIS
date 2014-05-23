@@ -16,6 +16,7 @@
 
 #include "qgsapplegendinterface.h"
 
+#include "qgsapplayertreeviewmenuprovider.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
@@ -301,17 +302,29 @@ void QgsAppLegendInterface::onRemovedChildren()
 void QgsAppLegendInterface::addLegendLayerAction( QAction* action,
     QString menu, QString id, QgsMapLayer::LayerType type, bool allLayers )
 {
-  QgsProject::instance()->layerTreeRegistryBridge()->addLegendLayerAction( action, menu, id, type, allLayers );
+  QgsAppLayerTreeViewMenuProvider* menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider*>(mLayerTreeView->menuProvider());
+  if (!menuProvider)
+    return;
+
+  menuProvider->addLegendLayerAction( action, menu, id, type, allLayers );
 }
 
 void QgsAppLegendInterface::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
 {
-  QgsProject::instance()->layerTreeRegistryBridge()->addLegendLayerActionForLayer( action, layer );
+  QgsAppLayerTreeViewMenuProvider* menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider*>(mLayerTreeView->menuProvider());
+  if (!menuProvider)
+    return;
+
+  menuProvider->addLegendLayerActionForLayer( action, layer );
 }
 
 bool QgsAppLegendInterface::removeLegendLayerAction( QAction* action )
 {
-  return QgsProject::instance()->layerTreeRegistryBridge()->removeLegendLayerAction( action );
+  QgsAppLayerTreeViewMenuProvider* menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider*>(mLayerTreeView->menuProvider());
+  if (!menuProvider)
+    return false;
+
+  menuProvider->removeLegendLayerAction( action );
 }
 
 QgsMapLayer* QgsAppLegendInterface::currentLayer()
