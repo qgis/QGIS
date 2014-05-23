@@ -949,6 +949,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->nextFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -961,6 +962,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->prevFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -973,6 +975,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->firstFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -985,6 +988,7 @@ void QgsComposer::on_mActionAtlasLast_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
   emit( atlasPreviewFeatureChanged() );
 }
