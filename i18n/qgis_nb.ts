@@ -31567,6 +31567,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <location filename="../src/app/qgslabelinggui.cpp" line="62"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="63"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="64"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="65"/>
         <source>map units</source>
         <translation>kartenheter</translation>
     </message>
@@ -31580,6 +31581,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <location filename="../src/app/qgslabelinggui.cpp" line="62"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="63"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="64"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="65"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
@@ -31589,92 +31591,92 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>% av lengde</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="386"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="392"/>
         <source>%1 not found. Default substituted.</source>
         <translation>%1 ikke funnet. Substituert med standard.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="387"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="393"/>
         <source>Chosen font</source>
         <translation>Valgt skrifttype</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="814"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="825"/>
         <source>string </source>
         <translation>streng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="819"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="830"/>
         <source>[&lt;b&gt;family&lt;/b&gt;|&lt;b&gt;family[foundry]&lt;/b&gt;],&lt;br&gt;e.g. Helvetica or Helvetica [Cronyx]</source>
         <translation>[&lt;b&gt;familie&lt;/b&gt;|&lt;b&gt;familie[variant]&lt;/b&gt;],&lt;br&gt;fx Helvetica eller Helvetica [Cronyx]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="824"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="835"/>
         <source>[&lt;b&gt;font style name&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;e.g. Bold Condensed or Light Italic</source>
         <translation>[&lt;b&gt;skrifttypenavn&lt;/b&gt;|&lt;b&gt;Ignorér&lt;/b&gt;],&lt;br&gt;f.eks. Fet Kondensert eller Lett Kursiv</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="868"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="879"/>
         <source>double [0.0-10.0]</source>
         <translation>desimaltall [0.0-10.0]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="890"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="901"/>
         <source>int [0-20]</source>
         <translation>heltall [0-20]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="979"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="990"/>
         <source>int [0-2000]</source>
         <translation>heltall [0-2000]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="991"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1002"/>
         <source>int&lt;br&gt;</source>
         <translation>heltall&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1006"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1017"/>
         <source>double coord [&lt;b&gt;in,out&lt;/b&gt; as 20.0-60.0,20.0-95.0]</source>
         <translation>dobbel-koordinat [&lt;b&gt;inn,ut&lt;/b&gt; som 20.0-60.0,20.0-95.0]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1009"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1024"/>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
         <translation>I redigeringstilstand er lagets relevante påskrifts-kartverktøy&lt;br&gt;&amp;nbsp;&amp;nbsp;Definert attributtfelt -&amp;gt; &lt;i&gt;aktivert&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Definert uttrykk -&amp;gt; &lt;i&gt;deaktivert&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1032"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1047"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1&lt;br&gt;Value of 0 disables the specific limit.</source>
         <translation>Verdien &amp;lt; 0 representerer en skala tettere på enn 1:1, f.eks.-10 = 10:1&lt;br&gt;Verdi 0 deaktiverer den spesifikke grensen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1048"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1063"/>
         <source>int [1-1000]</source>
         <translation>heltall [0-1000]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1050"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1065"/>
         <source>int [1-10000]</source>
         <translation>heltall [0-10000]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1115"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1130"/>
         <source>Text/Buffer sample</source>
         <translation>Tekst-/buffer-eksempel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1122"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1137"/>
         <source> @ %1 pts (using map units)</source>
         <translation> @ %1 punkter (vha. kartenheter)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1135"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1150"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
         <translation> @ %1 punkter (vha. kartenheter, BUFFER I MILLIMETER)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1155"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1170"/>
         <source> (BUFFER NOT SHOWN, in map units)</source>
         <translation> (BUFFER IKKE VIST, i kartenheter)</translation>
     </message>
@@ -31683,37 +31685,37 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation type="obsolete">Uttrykksbasert påskrift</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1288"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1303"/>
         <source>No change</source>
         <translation>Ingen endring</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1289"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1304"/>
         <source>All uppercase</source>
         <translation>Alle store bokstaver</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1290"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1305"/>
         <source>All lowercase</source>
         <translation>Alle små bokstaver</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1294"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1309"/>
         <source>Capitalize first letter</source>
         <translation>Stor første bokstav</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1450"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1465"/>
         <source>Size%1</source>
         <translation>Størrelse%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1450"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1465"/>
         <source> X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1500"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1515"/>
         <source>File not found</source>
         <translation>Fil ikke funnet</translation>
     </message>
@@ -31804,28 +31806,30 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <location filename="../src/ui/qgslabelingguibase.ui" line="3603"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3610"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3617"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4070"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4100"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4343"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4408"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4415"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4522"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4529"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4607"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4677"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4772"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4792"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4837"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4890"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4910"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5090"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5153"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5185"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5215"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5284"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5319"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5382"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5389"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3879"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3889"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4134"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4164"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4407"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4472"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4479"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4586"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4593"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4671"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4741"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4863"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4883"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4928"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4981"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5001"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5181"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5244"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5276"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5306"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5375"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5410"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5473"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5480"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -31862,96 +31866,96 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Buffer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4031"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4095"/>
         <source>Centroid</source>
         <translation>Tyngdepunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4123"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4143"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4163"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4183"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4203"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4223"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4243"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4263"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4187"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4207"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4227"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4247"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4267"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4287"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4307"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4327"/>
         <source>abc</source>
         <translation>abc</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4291"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4355"/>
         <source>Quadrant</source>
         <translation>Kvadrant</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4512"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4576"/>
         <source>Distance</source>
         <translation>Avstand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4739"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5448"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4830"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5539"/>
         <source>Data defined</source>
         <translation>Datadefinert</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4765"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4856"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4785"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4876"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4821"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4912"/>
         <source>Coordinate</source>
         <translation>Koordinat</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4850"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4941"/>
         <source>Preserve data rotation values</source>
         <translation>Bevar datarotasjonsverdier</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4883"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4974"/>
         <source>horizontal</source>
         <translation>horisontal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4903"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4994"/>
         <source>vertical</source>
         <translation>vertikal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5057"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5148"/>
         <source>Label options</source>
         <translation>Påskriftsinnstillinger</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5137"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5166"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5228"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5257"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</source>
         <translation>Verdi &amp;lt; 0 representerer en skala tettere enn 1:1, f.eks. -10 = 10:1. &lt;br&gt; Verdien 0 deaktiverer denne spesifikke begrensningen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5208"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5299"/>
         <source>Pixel size-based visibility (labels in map units)</source>
         <translation>Pikselstørrelse-basert synlighet (påskrifter i kartenheter)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5541"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5632"/>
         <source>Feature options</source>
         <translation>Objektinnstillinger</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5667"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5758"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5083"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5174"/>
         <source>Scale-based visibility</source>
         <translation>Skalbasert synlighet</translation>
     </message>
@@ -31996,7 +32000,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="558"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="561"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5023"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5114"/>
         <source>Rendering</source>
         <translation>Opptegning</translation>
     </message>
@@ -32089,7 +32093,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1518"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4828"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4919"/>
         <source>Alignment</source>
         <translation>Justering</translation>
     </message>
@@ -32137,7 +32141,12 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Linjesammenslagningsstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5687"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3859"/>
+        <source>Repeat</source>
+        <translation type="unfinished">Gjenta</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5778"/>
         <source>Discourage labels from covering features</source>
         <translation>Forhindre påskrifter i å dekke objekter</translation>
     </message>
@@ -32212,14 +32221,14 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation type="obsolete">mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5140"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5268"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5231"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5359"/>
         <source>Minimum </source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5169"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5303"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5260"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5394"/>
         <source>Maximum </source>
         <translation>Maksimum</translation>
     </message>
@@ -32239,32 +32248,32 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Vis plusstegn</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4936"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5027"/>
         <source>Priority</source>
         <translation>Prioritet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4951"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5042"/>
         <source>Low</source>
         <translation>Lav</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4977"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5068"/>
         <source>High</source>
         <translation>Høy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5556"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5647"/>
         <source>Label every part of multi-part features</source>
         <translation>Sett påskrift på hver del i flerdelsobjekter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5563"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5654"/>
         <source>Merge connected lines to avoid duplicate labels</source>
         <translation>Slå sammen linjer med kontakt for å unngå duplisering av påskrifter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5674"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5765"/>
         <source>Suppress labeling of features smaller than</source>
         <translation>Undertrykk påskrifter på objekter mindre enn</translation>
     </message>
@@ -32278,28 +32287,28 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2529"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4575"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4814"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4639"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4905"/>
         <source>Rotation</source>
         <translation>Rotasjon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3994"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4058"/>
         <source>Line orientation dependent position</source>
         <translation>Posisjon avhengig av linjeorientering</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4844"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4935"/>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
         <translation>Avmarkér for å skrive rotasjon utledet av påskriftverktøy, og NULL ved frigjøring</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5402"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5493"/>
         <source>Always show</source>
         <translation>Vis alltid</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5418"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5509"/>
         <source>Show label</source>
         <translation>Vis påskrift</translation>
     </message>
@@ -32334,18 +32343,18 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Motsatt retning</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5297"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5388"/>
         <source>Labels will not show if larger than this on screen</source>
         <translation>Påskrifter vil ikke bli vist hvis de er større enn dette på skjermen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5265"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5300"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5356"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5391"/>
         <source> px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5262"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5353"/>
         <source>Labels will not show if smaller than this on screen</source>
         <translation>Påskrifter vil ikke bli vist hvis de er mindre enn dette på skjermen</translation>
     </message>
@@ -32389,7 +32398,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3084"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4453"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4517"/>
         <source>Offset X,Y</source>
         <translation>Forskyving X,Y</translation>
     </message>
@@ -32544,7 +32553,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabelingguibase.ui" line="3407"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4594"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4658"/>
         <source>˚</source>
         <translation>˚</translation>
     </message>
@@ -32564,107 +32573,107 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Horisontal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3857"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3921"/>
         <source>Offset from centroid</source>
         <translation>Forskyving fra tyngdepunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3873"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3937"/>
         <source>Around centroid</source>
         <translation>Rundt tyngdepunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3880"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3944"/>
         <source>Horizontal (slow)</source>
         <translation>Horisontal (langsom)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3887"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3951"/>
         <source>Free (slow)</source>
         <translation>Fritt (langsomt)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3900"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3964"/>
         <source>Using perimeter</source>
         <translation>Bruk permieter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4047"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4111"/>
         <source>visible polygon</source>
         <translation>synlig flate</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4063"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4127"/>
         <source>whole polygon</source>
         <translation>hel flate</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3962"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4026"/>
         <source>Above line</source>
         <translation>Ovenfor linje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3978"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4042"/>
         <source>On line</source>
         <translation>På linje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3985"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4049"/>
         <source>Below line</source>
         <translation>Nedenfor linje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4690"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4754"/>
         <source>outside</source>
         <translation>utenfor</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4657"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4721"/>
         <source>inside</source>
         <translation>inni</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4716"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4780"/>
         <source>Maximum angle between curved characters</source>
         <translation>Maksimumsvinkel mellom kurvede tegn</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5338"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5429"/>
         <source>Show all labels for this layer (including colliding labels)</source>
         <translation>Vis alle påskrifter for dette lag (inkludert kolliderende påskrifter)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5528"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5619"/>
         <source>Show upside-down labels</source>
         <translation>Vis opp-ned påskrifter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5489"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5580"/>
         <source>never</source>
         <translation>aldri</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5505"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5596"/>
         <source>when rotation defined</source>
         <translation>når rotasjon er definert</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5476"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5567"/>
         <source>always</source>
         <translation>alltid</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5623"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5714"/>
         <source>Limit number of features to be labeled to</source>
         <translation>Begrens antall objekter som skal ha påskrift</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5607"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5698"/>
         <source>Number of features sent to labeling engine, though not all may be labeled</source>
         <translation>Antall objekter sendt til påskriftsmotor, selv om kanskje ikke alle får påskrift</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3947"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4011"/>
         <source>Position</source>
         <translation>Posisjon</translation>
     </message>
