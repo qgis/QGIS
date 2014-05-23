@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaskrendererv2widget.h
+    qgsinvertedpolygonrendererwidget.h
     ---------------------
     begin                : April 2014
     copyright            : (C) 2014 Hugo Mercier / Oslandia
@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMASKRENDERERV2WIDGET_H
-#define QGSMASKRENDERERV2WIDGET_H
+#ifndef QGSINVERTEDPOLYGONRENDERERWIDGET_H
+#define QGSINVERTEDPOLYGONRENDERERWIDGET_H
 
-#include "ui_qgsmaskrendererwidgetbase.h"
-#include "qgsmaskrendererv2.h"
+#include "ui_qgsinvertedpolygonrendererwidgetbase.h"
+#include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererv2widget.h"
 
 class QMenu;
 
 /**
- * A widget used represent options of a QgsMaskRendererV2
+ * A widget used represent options of a QgsInvertedPolygonRenderer
  */
-class GUI_EXPORT QgsMaskRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsMaskRendererWidgetBase
+class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {
   Q_OBJECT
 
@@ -41,14 +41,14 @@ class GUI_EXPORT QgsMaskRendererV2Widget : public QgsRendererV2Widget, private U
    * @param style
    * @param renderer the mask renderer (will take ownership)
    */
-  QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+  QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
   /** @returns the current feature renderer */
   virtual QgsFeatureRendererV2* renderer();
 
  protected:
   /** the mask renderer */
-  QScopedPointer<QgsMaskRendererV2> mRenderer;
+  QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
   /** the widget used to represent the mask's embedded renderer */
   QScopedPointer<QgsRendererV2Widget> mEmbeddedRendererWidget;
 

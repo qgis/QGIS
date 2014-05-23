@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaskrendererv2.h
+    qgsinvertedpolygonrenderer.h
     ---------------------
     begin                : April 2014
     copyright            : (C) 2014 Hugo Mercier / Oslandia
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMASKRENDERERV2_H
-#define QGSMASKRENDERERV2_H
+#ifndef QGSINVERTEDPOLYGONRENDERER_H
+#define QGSINVERTEDPOLYGONRENDERER_H
 
 #include "qgis.h"
 #include "qgsrendererv2.h"
@@ -24,7 +24,7 @@
 #include <QScopedPointer>
 
 /**
- * QgsMaskRendererV2 is a polygon-only feature renderer used to
+ * QgsInvertedPolygonRenderer is a polygon-only feature renderer used to
  * display features inverted, where the exterior is turned to an interior
  * and where the exterior theoretically spans the entire plane, allowing
  * to mask the surroundings of some features.
@@ -35,15 +35,15 @@
  * Features are collected to form one "inverted" polygon
  * during renderFeature() and rendered on stopRender().
  */
-class CORE_EXPORT QgsMaskRendererV2 : public QgsFeatureRendererV2
+class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
 {
   public:
 
   /** Constructor
    * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned
    */
-  QgsMaskRendererV2( const QgsFeatureRendererV2* embeddedRenderer = 0 );
-  virtual ~QgsMaskRendererV2();
+  QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer = 0 );
+  virtual ~QgsInvertedPolygonRenderer();
 
   /** Used to clone this feature renderer.*/
   virtual QgsFeatureRendererV2* clone();
@@ -106,9 +106,9 @@ class CORE_EXPORT QgsMaskRendererV2 : public QgsFeatureRendererV2
 
  private:
   /** Private copy constructor. @see clone() */
-  QgsMaskRendererV2( const QgsMaskRendererV2& );
+  QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& );
   /** Private assignment operator. @see clone() */
-  QgsMaskRendererV2& operator=( const QgsMaskRendererV2& );
+  QgsInvertedPolygonRenderer& operator=( const QgsInvertedPolygonRenderer& );
 
   /** Embedded renderer */
   QScopedPointer<QgsFeatureRendererV2> mSubRenderer;

@@ -20,7 +20,7 @@
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsrulebasedrendererv2.h"
 #include "qgspointdisplacementrenderer.h"
-#include "qgsmaskrendererv2.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 QgsRendererV2Registry::QgsRendererV2Registry()
 {
@@ -46,9 +46,9 @@ QgsRendererV2Registry::QgsRendererV2Registry()
                                           QObject::tr( "Point displacement" ),
                                           QgsPointDisplacementRenderer::create ) );
 
-  addRenderer( new QgsRendererV2Metadata( "maskRenderer",
-                                          QObject::tr( "Mask" ),
-                                          QgsMaskRendererV2::create ) );
+  addRenderer( new QgsRendererV2Metadata( "invertedPolygonRenderer",
+                                          QObject::tr( "Inverted polygons" ),
+                                          QgsInvertedPolygonRenderer::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()

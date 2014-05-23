@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaskrendererv2widget.cpp
+    qgsinvertedpolygonrendererwidget.cpp
     ---------------------
     begin                : April 2014
     copyright            : (C) 2014 Hugo Mercier / Oslandia
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmaskrendererv2widget.h"
-#include "qgsmaskrendererv2.h"
+#include "qgsinvertedpolygonrendererwidget.h"
+#include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererv2registry.h"
 
 #include "qgssymbolv2.h"
@@ -21,12 +21,12 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
-QgsRendererV2Widget* QgsMaskRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
-  return new QgsMaskRendererV2Widget( layer, style, renderer );
+  return new QgsInvertedPolygonRendererWidget( layer, style, renderer );
 }
 
-QgsMaskRendererV2Widget::QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
 {
   if ( !layer ) {
@@ -42,7 +42,7 @@ QgsMaskRendererV2Widget::QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyl
     //setup blank dialog
     mRenderer.reset( 0 );
     QGridLayout* layout = new QGridLayout( this );
-    QLabel* label = new QLabel( tr( "The mask renderer only applies to polygon and multipolygon layers. \n"
+    QLabel* label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )
                                 .arg( layer->name() ), this );
     layout->addWidget( label );
@@ -55,18 +55,18 @@ QgsMaskRendererV2Widget::QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyl
   if ( !renderer )
   {
     // a new renderer
-    mRenderer.reset( new QgsMaskRendererV2() );
+    mRenderer.reset( new QgsInvertedPolygonRenderer() );
   }
-  else if ( renderer && renderer->type() != "maskRenderer" )
+  else if ( renderer && renderer->type() != "invertedPolygonRenderer" )
   {
-    // an existing renderer, but not a mask renderer
-    // create a mask renderer, with the existing renderer embedded
-    mRenderer.reset( new QgsMaskRendererV2( renderer ) );
+    // an existing renderer, but not an inverted renderer
+    // create an inverted renderer, with the existing renderer embedded
+    mRenderer.reset( new QgsInvertedPolygonRenderer( renderer ) );
   }
   else
   {
-    // an existing mask renderer
-    mRenderer.reset( static_cast<QgsMaskRendererV2*>(renderer) );
+    // an existing inverted renderer
+    mRenderer.reset( static_cast<QgsInvertedPolygonRenderer*>(renderer) );
   }
 
   int currentEmbeddedIdx = 0;
@@ -77,8 +77,8 @@ QgsMaskRendererV2Widget::QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyl
   mRendererComboBox->blockSignals( true );
   for ( ; it != rendererList.constEnd(); ++it, ++idx )
   {
-    if (( *it != "maskRenderer" ) &&    //< a mask renderer cannot contain another mask renderer
-        ( *it != "pointDisplacement" )) //< a mask renderer can only contain a polygon renderer
+    if (( *it != "invertedPolygonRenderer" ) && //< an inverted renderer cannot contain another inverted renderer
+        ( *it != "pointDisplacement" ))         //< an inverted renderer can only contain a polygon renderer
     {
       QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );
@@ -101,7 +101,7 @@ QgsMaskRendererV2Widget::QgsMaskRendererV2Widget( QgsVectorLayer* layer, QgsStyl
   }
 }
 
-QgsFeatureRendererV2* QgsMaskRendererV2Widget::renderer()
+QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )
   {
@@ -114,7 +114,7 @@ QgsFeatureRendererV2* QgsMaskRendererV2Widget::renderer()
   return mRenderer.data();
 }
 
-void QgsMaskRendererV2Widget::on_mRendererComboBox_currentIndexChanged( int index )
+void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererId );

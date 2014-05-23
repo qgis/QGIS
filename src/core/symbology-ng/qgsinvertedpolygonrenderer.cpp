@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaskrendererv2.cpp
+    qgsinvertedpolygonrenderer.cpp
     ---------------------
     begin                : April 2014
     copyright            : (C) 2014 Hugo Mercier / Oslandia
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaskrendererv2.h"
+#include "qgsinvertedpolygonrenderer.h"
 
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -27,8 +27,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsMaskRendererV2::QgsMaskRendererV2( const QgsFeatureRendererV2* subRenderer )
-  : QgsFeatureRendererV2( "maskRenderer" )
+QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* subRenderer )
+  : QgsFeatureRendererV2( "invertedPolygonRenderer" )
 {
   if ( subRenderer ) {
     setEmbeddedRenderer( subRenderer );
@@ -38,11 +38,11 @@ QgsMaskRendererV2::QgsMaskRendererV2( const QgsFeatureRendererV2* subRenderer )
   }
 }
 
-QgsMaskRendererV2::~QgsMaskRendererV2()
+QgsInvertedPolygonRenderer::~QgsInvertedPolygonRenderer()
 {
 }
 
-void QgsMaskRendererV2::setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer )
+void QgsInvertedPolygonRenderer::setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer )
 {
   if ( subRenderer ) {
     mSubRenderer.reset( const_cast<QgsFeatureRendererV2*>(subRenderer)->clone() );
@@ -52,12 +52,12 @@ void QgsMaskRendererV2::setEmbeddedRenderer( const QgsFeatureRendererV2* subRend
   }
 }
 
-const QgsFeatureRendererV2* QgsMaskRendererV2::embeddedRenderer() const
+const QgsFeatureRendererV2* QgsInvertedPolygonRenderer::embeddedRenderer() const
 {
   return mSubRenderer.data();
 }
 
-void QgsMaskRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSubRenderer ) {
     return;
@@ -100,7 +100,7 @@ void QgsMaskRendererV2::startRender( QgsRenderContext& context, const QgsFields&
   mExtentPolygon.append(exteriorRing);
 }
 
-bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( context );
 
@@ -218,7 +218,7 @@ bool QgsMaskRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& co
   return true;
 }
 
-void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
+void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
 {
   if ( !mSubRenderer ) {
     return;
@@ -258,27 +258,27 @@ void QgsMaskRendererV2::stopRender( QgsRenderContext& context )
   }
 }
 
-QString QgsMaskRendererV2::dump() const
+QString QgsInvertedPolygonRenderer::dump() const
 {
   if ( !mSubRenderer ) {
-    return "MASK: NULL";
+    return "INVERTED: NULL";
   }
-  return "MASK [" + mSubRenderer->dump() + "]";
+  return "INVERTED [" + mSubRenderer->dump() + "]";
 }
 
-QgsFeatureRendererV2* QgsMaskRendererV2::clone()
+QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone()
 {
   if ( mSubRenderer.isNull() )
   {
-    return new QgsMaskRendererV2( 0 );
+    return new QgsInvertedPolygonRenderer( 0 );
   }
   // else
-  return new QgsMaskRendererV2( mSubRenderer->clone() );
+  return new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
 }
 
-QgsFeatureRendererV2* QgsMaskRendererV2::create( QDomElement& element )
+QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
 {
-  QgsMaskRendererV2* r = new QgsMaskRendererV2();
+  QgsInvertedPolygonRenderer* r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = element.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
@@ -288,10 +288,10 @@ QgsFeatureRendererV2* QgsMaskRendererV2::create( QDomElement& element )
   return r;
 }
 
-QDomElement QgsMaskRendererV2::save( QDomDocument& doc )
+QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( "type", "maskRenderer" );
+  rendererElem.setAttribute( "type", "invertedPolygonRenderer" );
 
   if ( mSubRenderer )
   {
@@ -302,7 +302,7 @@ QDomElement QgsMaskRendererV2::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbolV2* QgsMaskRendererV2::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature )
 {
   if ( !mSubRenderer ) {
     return 0;
@@ -310,7 +310,7 @@ QgsSymbolV2* QgsMaskRendererV2::symbolForFeature( QgsFeature& feature )
   return mSubRenderer->symbolForFeature( feature );
 }
 
-QgsSymbolV2List QgsMaskRendererV2::symbolsForFeature( QgsFeature& feature )
+QgsSymbolV2List QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature )
 {
   if ( !mSubRenderer ) {
     return QgsSymbolV2List();
@@ -318,7 +318,7 @@ QgsSymbolV2List QgsMaskRendererV2::symbolsForFeature( QgsFeature& feature )
   return mSubRenderer->symbolsForFeature( feature );
 }
 
-QgsSymbolV2List QgsMaskRendererV2::symbols()
+QgsSymbolV2List QgsInvertedPolygonRenderer::symbols()
 {
   if ( !mSubRenderer ) {
     return QgsSymbolV2List();
@@ -326,7 +326,7 @@ QgsSymbolV2List QgsMaskRendererV2::symbols()
   return mSubRenderer->symbols();
 }
 
-int QgsMaskRendererV2::capabilities()
+int QgsInvertedPolygonRenderer::capabilities()
 {
   if ( !mSubRenderer ) {
     return 0;
@@ -334,7 +334,7 @@ int QgsMaskRendererV2::capabilities()
   return mSubRenderer->capabilities();
 }
 
-QList<QString> QgsMaskRendererV2::usedAttributes()
+QList<QString> QgsInvertedPolygonRenderer::usedAttributes()
 {
   if ( !mSubRenderer ) {
     return QList<QString>();
@@ -342,7 +342,7 @@ QList<QString> QgsMaskRendererV2::usedAttributes()
   return mSubRenderer->usedAttributes();
 }
 
-QgsLegendSymbologyList QgsMaskRendererV2::legendSymbologyItems( QSize iconSize )
+QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize iconSize )
 {
   if ( !mSubRenderer ) {
     return QgsLegendSymbologyList();
@@ -350,7 +350,7 @@ QgsLegendSymbologyList QgsMaskRendererV2::legendSymbologyItems( QSize iconSize )
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsMaskRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, QString rule )
 {
   if ( !mSubRenderer ) {
     return QgsLegendSymbolList();
@@ -358,7 +358,7 @@ QgsLegendSymbolList QgsMaskRendererV2::legendSymbolItems( double scaleDenominato
   return mSubRenderer->legendSymbolItems( scaleDenominator, rule );
 }
 
-bool QgsMaskRendererV2::willRenderFeature( QgsFeature& feat )
+bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat )
 {
   if ( !mSubRenderer ) {
     return false;
