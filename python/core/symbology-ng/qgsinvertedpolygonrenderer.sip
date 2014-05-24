@@ -1,4 +1,4 @@
-class QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
+class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
 {
 %TypeHeaderCode
 #include <qgsinvertedpolygonrenderer.h>
@@ -8,11 +8,11 @@ class QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
   /** Constructor
    * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned
    */
-  QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer = 0 );
+  QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer /Transfer/ = 0 );
   virtual ~QgsInvertedPolygonRenderer();
 
   /** Used to clone this feature renderer.*/
-  virtual QgsFeatureRendererV2* clone();
+  virtual QgsFeatureRendererV2* clone() /Factory/;
 
   virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -52,7 +52,7 @@ class QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
   virtual bool willRenderFeature( QgsFeature& feat );
 
   /** Creates a renderer out of an XML, for loading*/
-  static QgsFeatureRendererV2* create( QDomElement& element );
+  static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
 
   /** Creates an XML representation of the renderer. Used for saving purpose
    * @param doc the XML document where to create the XML subtree

@@ -1,4 +1,4 @@
-class QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, private Ui::QgsInvertedPolygonRendererWidgetBase
+class QgsInvertedPolygonRendererWidget : QgsRendererV2Widget
 {
 %TypeHeaderCode
 #include <qgsinvertedpolygonrendererwidget.h>
@@ -9,7 +9,7 @@ class QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, private Ui:
    * @param style
    * @param renderer the mask renderer (will take ownership)
    */
-  static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+  static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
 
   /** Constructor
    * @param layer the layer where this renderer is applied

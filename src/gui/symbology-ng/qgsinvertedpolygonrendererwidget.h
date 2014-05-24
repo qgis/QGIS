@@ -23,6 +23,8 @@ class QMenu;
 
 /**
  * A widget used represent options of a QgsInvertedPolygonRenderer
+ *
+ * @note added in 2.4
  */
 class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {

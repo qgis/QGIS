@@ -34,6 +34,8 @@
  * 
  * Features are collected to form one "inverted" polygon
  * during renderFeature() and rendered on stopRender().
+ *
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
 {
