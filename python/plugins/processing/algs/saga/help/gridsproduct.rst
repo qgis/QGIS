@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridsproduct', grids, result)
+	processing.runalg('saga:gridsproduct', grids, result)

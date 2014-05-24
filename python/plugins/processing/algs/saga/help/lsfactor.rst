@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:lsfactor', slope, area, conv, method, erosivity, stability, ls)
+	processing.runalg('saga:lsfactor', slope, area, conv, method, erosivity, stability, ls)
 
 	Available options for selection parameters:
 

@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:globalmoransiforgrids', grid, contiguity, result)
+	processing.runalg('saga:globalmoransiforgrids', grid, contiguity, result)
 
 	Available options for selection parameters:
 

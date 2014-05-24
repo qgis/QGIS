@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:addgridvaluestoshapes', shapes, grids, interpol, result)
+	processing.runalg('saga:addgridvaluestoshapes', shapes, grids, interpol, result)
 
 	Available options for selection parameters:
 

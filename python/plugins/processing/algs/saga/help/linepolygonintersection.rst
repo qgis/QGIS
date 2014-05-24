@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:linepolygonintersection', lines, polygons, method, intersect)
+	processing.runalg('saga:linepolygonintersection', lines, polygons, method, intersect)
 
 	Available options for selection parameters:
 

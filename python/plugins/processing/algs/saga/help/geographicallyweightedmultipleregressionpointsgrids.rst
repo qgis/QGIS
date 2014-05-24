@@ -40,7 +40,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:geographicallyweightedmultipleregressionpointsgrids', predictors, parameters, points, dependent, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, range, radius, mode, npoints, maxpoints, minpoints, regression, quality, slopes, residuals)
+	processing.runalg('saga:geographicallyweightedmultipleregressionpointsgrids', predictors, parameters, points, dependent, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, range, radius, mode, npoints, maxpoints, minpoints, regression, quality, slopes, residuals)
 
 	Available options for selection parameters:
 

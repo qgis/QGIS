@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:closegapswithspline', grid, mask, maxgapcells, maxpoints, localpoints, extended, neighbours, radius, relaxation, closed)
+	processing.runalg('saga:closegapswithspline', grid, mask, maxgapcells, maxpoints, localpoints, extended, neighbours, radius, relaxation, closed)
 
 	Available options for selection parameters:
 

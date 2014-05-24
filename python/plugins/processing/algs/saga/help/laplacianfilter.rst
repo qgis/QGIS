@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:laplacianfilter', input, method, sigma, radius, mode, result)
+	processing.runalg('saga:laplacianfilter', input, method, sigma, radius, mode, result)
 
 	Available options for selection parameters:
 

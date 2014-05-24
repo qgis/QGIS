@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridorientation', input, method, result)
+	processing.runalg('saga:gridorientation', input, method, result)
 
 	Available options for selection parameters:
 

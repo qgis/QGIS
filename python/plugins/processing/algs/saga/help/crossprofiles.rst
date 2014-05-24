@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:crossprofiles', dem, lines, dist_line, dist_profile, num_profile, profiles)
+	processing.runalg('saga:crossprofiles', dem, lines, dist_line, dist_profile, num_profile, profiles)

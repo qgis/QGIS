@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:morphologicalfilter', input, mode, radius, method, result)
+	processing.runalg('saga:morphologicalfilter', input, mode, radius, method, result)
 
 	Available options for selection parameters:
 

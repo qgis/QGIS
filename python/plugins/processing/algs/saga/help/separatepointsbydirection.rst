@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:separatepointsbydirection', points, directions, tolerance, output)
+	processing.runalg('saga:separatepointsbydirection', points, directions, tolerance, output)

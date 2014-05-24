@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:slopelength', dem, length)
+	processing.runalg('saga:slopelength', dem, length)

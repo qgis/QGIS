@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:downslopedistancegradient', dem, distance, output, gradient, difference)
+	processing.runalg('saga:downslopedistancegradient', dem, distance, output, gradient, difference)
 
 	Available options for selection parameters:
 

@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:crossclassificationandtabulation', input, input2, maxnumclass, resultgrid, resulttable)
+	processing.runalg('saga:crossclassificationandtabulation', input, input2, maxnumclass, resultgrid, resulttable)

@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convertpointstolines', points, order, separate, lines)
+	processing.runalg('saga:convertpointstolines', points, order, separate, lines)

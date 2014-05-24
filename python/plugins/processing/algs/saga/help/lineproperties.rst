@@ -29,4 +29,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:lineproperties', lines, bparts, bpoints, blength, output)
+	processing.runalg('saga:lineproperties', lines, bparts, bpoints, blength, output)

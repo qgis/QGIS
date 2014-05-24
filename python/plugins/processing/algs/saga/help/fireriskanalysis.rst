@@ -38,4 +38,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fireriskanalysis', dem, fuel, windspd, winddir, m1h, m10h, m100h, mherb, mwood, value, baseprob, montecarlo, interval, danger, compprob, priority)
+	processing.runalg('saga:fireriskanalysis', dem, fuel, windspd, winddir, m1h, m10h, m100h, mherb, mwood, value, baseprob, montecarlo, interval, danger, compprob, priority)

@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gradientvectorfrompolartocartesiancoordinates', dir, len, units, system, system_zero, system_orient, dx, dy)
+	processing.runalg('saga:gradientvectorfrompolartocartesiancoordinates', dir, len, units, system, system_zero, system_orient, dx, dy)
 
 	Available options for selection parameters:
 

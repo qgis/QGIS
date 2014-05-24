@@ -35,7 +35,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:cutshapeslayer', shapes, method, target, cut_ax, cut_bx, cut_ay, cut_by, cut_dx, cut_dy, shapes_shapes, polygons_polygons, cut, extent)
+	processing.runalg('saga:cutshapeslayer', shapes, method, target, cut_ax, cut_bx, cut_ay, cut_by, cut_dx, cut_dy, shapes_shapes, polygons_polygons, cut, extent)
 
 	Available options for selection parameters:
 

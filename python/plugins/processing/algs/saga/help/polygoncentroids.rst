@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygoncentroids', polygons, method, centroids)
+	processing.runalg('saga:polygoncentroids', polygons, method, centroids)

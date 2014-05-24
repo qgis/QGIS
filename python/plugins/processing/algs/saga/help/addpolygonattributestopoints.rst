@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:addpolygonattributestopoints', input, polygons, field, output)
+	processing.runalg('saga:addpolygonattributestopoints', input, polygons, field, output)

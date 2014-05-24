@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:clipgridwithpolygon', input, polygons, output)
+	processing.runalg('saga:clipgridwithpolygon', input, polygons, output)

@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:realareacalculation', dem, area)
+	processing.runalg('saga:realareacalculation', dem, area)

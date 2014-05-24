@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:multilevelbsplineinterpolationfromgrid', gridpoints, target, method, epsilon, level_max, datatype, output_extent, user_size, user_grid)
+	processing.runalg('saga:multilevelbsplineinterpolationfromgrid', gridpoints, target, method, epsilon, level_max, datatype, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

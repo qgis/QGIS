@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:closegaps', input, mask, threshold, result)
+	processing.runalg('saga:closegaps', input, mask, threshold, result)

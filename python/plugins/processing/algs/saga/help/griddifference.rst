@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:griddifference', a, b, c)
+	processing.runalg('saga:griddifference', a, b, c)

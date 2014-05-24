@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:watershedbasins', elevation, channels, sinkroute, minsize, basins)
+	processing.runalg('saga:watershedbasins', elevation, channels, sinkroute, minsize, basins)

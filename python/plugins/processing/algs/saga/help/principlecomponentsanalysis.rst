@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:principlecomponentsanalysis', table, method, nfirst, pca)
+	processing.runalg('saga:principlecomponentsanalysis', table, method, nfirst, pca)
 
 	Available options for selection parameters:
 

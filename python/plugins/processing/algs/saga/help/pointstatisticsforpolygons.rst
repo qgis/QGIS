@@ -32,4 +32,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:pointstatisticsforpolygons', points, polygons, sum, avg, var, dev, min, max, num, statistics)
+	processing.runalg('saga:pointstatisticsforpolygons', points, polygons, sum, avg, var, dev, min, max, num, statistics)

@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:addcoordinatestopoints', input, output)
+	processing.runalg('saga:addcoordinatestopoints', input, output)

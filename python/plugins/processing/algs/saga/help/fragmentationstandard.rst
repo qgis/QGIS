@@ -37,7 +37,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fragmentationstandard', classes, class, neighborhood_min, neighborhood_max, aggregation, border, weight, density_min, density_int, circular, diagonal, density, connectivity, fragmentation, fragstats)
+	processing.runalg('saga:fragmentationstandard', classes, class, neighborhood_min, neighborhood_max, aggregation, border, weight, density_min, density_int, circular, diagonal, density, connectivity, fragmentation, fragstats)
 
 	Available options for selection parameters:
 

@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:overlandflowdistancetochannelnetwork', elevation, channels, method, distance, distvert, disthorz)
+	processing.runalg('saga:overlandflowdistancetochannelnetwork', elevation, channels, method, distance, distvert, disthorz)
 
 	Available options for selection parameters:
 

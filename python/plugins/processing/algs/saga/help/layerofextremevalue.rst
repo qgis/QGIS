@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:layerofextremevalue', grids, criteria, result)
+	processing.runalg('saga:layerofextremevalue', grids, criteria, result)
 
 	Available options for selection parameters:
 

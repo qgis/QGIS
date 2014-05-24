@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:invertdatanodata', input, output)
+	processing.runalg('saga:invertdatanodata', input, output)

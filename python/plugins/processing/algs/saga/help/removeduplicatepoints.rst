@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:removeduplicatepoints', points, field, method, numeric, result)
+	processing.runalg('saga:removeduplicatepoints', points, field, method, numeric, result)
 
 	Available options for selection parameters:
 

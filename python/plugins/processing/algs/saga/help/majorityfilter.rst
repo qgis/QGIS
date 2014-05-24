@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:majorityfilter', input, mode, radius, threshold, result)
+	processing.runalg('saga:majorityfilter', input, mode, radius, threshold, result)
 
 	Available options for selection parameters:
 

@@ -34,7 +34,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:channelnetwork', elevation, sinkroute, init_grid, init_method, init_value, div_grid, div_cells, trace_weight, minlen, chnlntwrk, chnlroute, shapes)
+	processing.runalg('saga:channelnetwork', elevation, sinkroute, init_grid, init_method, init_value, div_grid, div_cells, trace_weight, minlen, chnlntwrk, chnlroute, shapes)
 
 	Available options for selection parameters:
 

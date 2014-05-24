@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:patching', original, additional, interpolation, completed)
+	processing.runalg('saga:patching', original, additional, interpolation, completed)
 
 	Available options for selection parameters:
 

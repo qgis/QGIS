@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:griddivision', a, b, c)
+	processing.runalg('saga:griddivision', a, b, c)

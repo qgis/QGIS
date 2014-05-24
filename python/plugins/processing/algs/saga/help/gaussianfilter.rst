@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gaussianfilter', input, sigma, mode, radius, result)
+	processing.runalg('saga:gaussianfilter', input, sigma, mode, radius, result)
 
 	Available options for selection parameters:
 

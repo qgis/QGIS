@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:pointsfilter', points, field, radius, minnum, maxnum, quadrants, method, tolerance, percent, filter)
+	processing.runalg('saga:pointsfilter', points, field, radius, minnum, maxnum, quadrants, method, tolerance, percent, filter)
 
 	Available options for selection parameters:
 

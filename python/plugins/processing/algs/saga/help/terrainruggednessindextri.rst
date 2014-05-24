@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:terrainruggednessindextri', dem, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, tri)
+	processing.runalg('saga:terrainruggednessindextri', dem, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, tri)
 
 	Available options for selection parameters:
 

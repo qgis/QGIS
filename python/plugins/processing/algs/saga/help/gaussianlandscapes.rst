@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gaussianlandscapes', nx, ny, h, method, m, grid)
+	processing.runalg('saga:gaussianlandscapes', nx, ny, h, method, m, grid)
 
 	Available options for selection parameters:
 

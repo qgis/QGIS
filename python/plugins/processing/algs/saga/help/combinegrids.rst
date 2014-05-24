@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:combinegrids', grid1, grid2, lookup, result)
+	processing.runalg('saga:combinegrids', grid1, grid2, lookup, result)

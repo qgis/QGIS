@@ -35,7 +35,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:geographicallyweightedmultipleregressionpoints', 
+	processing.runalg('saga:geographicallyweightedmultipleregressionpoints', 
 						points, dependent, distance_weighting_weighting, 
 						distance_weighting_idw_power, distance_weighting_idw_offset, 
 						distance_weighting_bandwidth, range, radius, mode, npoints, 

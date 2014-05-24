@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:thinplatesplineglobal', shapes, field, target, regul, output_extent, user_size, user_grid)
+	processing.runalg('saga:thinplatesplineglobal', shapes, field, target, regul, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

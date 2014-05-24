@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:pointsthinning', points, field, resolution, thinned)
+	processing.runalg('saga:pointsthinning', points, field, resolution, thinned)

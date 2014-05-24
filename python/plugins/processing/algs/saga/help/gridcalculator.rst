@@ -58,4 +58,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridcalculator', grids, formula, use_nodata, result)
+	processing.runalg('saga:gridcalculator', grids, formula, use_nodata, result)

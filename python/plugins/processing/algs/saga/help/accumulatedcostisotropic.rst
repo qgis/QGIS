@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:accumulatedcostisotropic', cost, points, threshold, acccost, closestpt)
+	processing.runalg('saga:accumulatedcostisotropic', cost, points, threshold, acccost, closestpt)

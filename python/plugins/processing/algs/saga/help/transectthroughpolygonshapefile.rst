@@ -40,4 +40,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:transectthroughpolygonshapefile', transect, theme, theme_field, transect_result)
+	processing.runalg('saga:transectthroughpolygonshapefile', transect, theme, theme_field, transect_result)

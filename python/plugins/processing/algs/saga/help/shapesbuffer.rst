@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:shapesbuffer', shapes, buf_type, buf_dist, buf_field, buf_scale, buf_zones, dcircle, dissolve, buffer)
+	processing.runalg('saga:shapesbuffer', shapes, buf_type, buf_dist, buf_field, buf_scale, buf_zones, dcircle, dissolve, buffer)
 
 	Available options for selection parameters:
 

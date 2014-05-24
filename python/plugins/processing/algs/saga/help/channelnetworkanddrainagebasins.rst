@@ -31,4 +31,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:channelnetworkanddrainagebasins', dem, threshold, direction, connection, order, basin, segments, basins, nodes)
+	processing.runalg('saga:channelnetworkanddrainagebasins', dem, threshold, direction, connection, order, basin, segments, basins, nodes)

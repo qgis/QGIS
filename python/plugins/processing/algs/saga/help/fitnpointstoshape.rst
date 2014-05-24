@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fitnpointstoshape', shapes, numpoints, points)
+	processing.runalg('saga:fitnpointstoshape', shapes, numpoints, points)

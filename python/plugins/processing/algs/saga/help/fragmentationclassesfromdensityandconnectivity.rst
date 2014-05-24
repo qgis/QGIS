@@ -29,4 +29,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fragmentationclassesfromdensityandconnectivity', density, connectivity, border, weight, density_min, density_int, fragmentation)
+	processing.runalg('saga:fragmentationclassesfromdensityandconnectivity', density, connectivity, border, weight, density_min, density_int, fragmentation)

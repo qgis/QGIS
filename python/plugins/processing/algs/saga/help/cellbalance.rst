@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:cellbalance', dem, weights, weight, method, balance)
+	processing.runalg('saga:cellbalance', dem, weights, weight, method, balance)
 
 	Available options for selection parameters:
 

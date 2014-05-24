@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:lakeflood', elev, seeds, level, outdepth, outlevel)
+	processing.runalg('saga:lakeflood', elev, seeds, level, outdepth, outlevel)

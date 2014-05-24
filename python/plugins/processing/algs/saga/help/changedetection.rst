@@ -36,7 +36,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:changedetection', initial, ini_lut, ini_lut_min, ini_lut_max, ini_lut_nam, final, fin_lut, fin_lut_min, fin_lut_max, fin_lut_nam, nochange, output, change, changes)
+	processing.runalg('saga:changedetection', initial, ini_lut, ini_lut_min, ini_lut_max, ini_lut_nam, final, fin_lut, fin_lut_min, fin_lut_max, fin_lut_nam, nochange, output, change, changes)
 
 	Available options for selection parameters:
 

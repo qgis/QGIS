@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:thiessenpolygons', points, polygons)
+	processing.runalg('saga:thiessenpolygons', points, polygons)

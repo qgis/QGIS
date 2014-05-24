@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:verticaldistancetochannelnetwork', elevation, channels, threshold, nounderground, distance, baselevel)
+	processing.runalg('saga:verticaldistancetochannelnetwork', elevation, channels, threshold, nounderground, distance, baselevel)

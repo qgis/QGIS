@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:getshapesextents', shapes, parts, extents)
+	processing.runalg('saga:getshapesextents', shapes, parts, extents)

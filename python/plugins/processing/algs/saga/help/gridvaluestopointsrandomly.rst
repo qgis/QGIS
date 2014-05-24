@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridvaluestopointsrandomly', grid, freq, points)
+	processing.runalg('saga:gridvaluestopointsrandomly', grid, freq, points)

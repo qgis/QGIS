@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:userdefinedfilter', input, filter, filter_3x3, result)
+	processing.runalg('saga:userdefinedfilter', input, filter, filter_3x3, result)

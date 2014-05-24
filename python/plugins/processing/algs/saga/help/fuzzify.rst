@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fuzzify', input, a, b, c, d, type, autofit, output)
+	processing.runalg('saga:fuzzify', input, a, b, c, d, type, autofit, output)
 
 	Available options for selection parameters:
 

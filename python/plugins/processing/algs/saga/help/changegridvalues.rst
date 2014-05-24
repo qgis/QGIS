@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:changegridvalues', grid_in, method, lookup, grid_out)
+	processing.runalg('saga:changegridvalues', grid_in, method, lookup, grid_out)
 
 	Available options for selection parameters:
 

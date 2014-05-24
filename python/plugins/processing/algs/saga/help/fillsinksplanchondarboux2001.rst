@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fillsinksplanchondarboux2001', dem, minslope, result)
+	processing.runalg('saga:fillsinksplanchondarboux2001', dem, minslope, result)
