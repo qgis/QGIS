@@ -149,7 +149,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @param index The selection to set
      */
-    void setEditSelection(const QModelIndex& index , QItemSelectionModel::SelectionFlags command );
+    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
 
     /**
      * Select all currently visible features

@@ -3481,7 +3481,8 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
 
 void QgsComposer::loadAtlasPredefinedScalesFromProject()
 {
-  if ( !mComposition ) {
+  if ( !mComposition )
+  {
     return;
   }
   QgsAtlasComposition& atlasMap = mComposition->atlasComposition();
@@ -3499,8 +3500,8 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
 
   for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
   {
-    QStringList parts(scaleIt->split(':'));
-    if (parts.size() == 2)
+    QStringList parts( scaleIt->split( ':' ) );
+    if ( parts.size() == 2 )
     {
       pScales.push_back( parts[1].toDouble() );
     }

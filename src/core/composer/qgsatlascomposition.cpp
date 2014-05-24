@@ -493,7 +493,8 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
       double ratio = scales[i] / scale;
       n_width = extent.width() * ratio;
       n_height = extent.height() * ratio;
-      if ( (n_width >= new_extent.width()) && (n_height >= new_extent.height()) ) {
+      if (( n_width >= new_extent.width() ) && ( n_height >= new_extent.height() ) )
+      {
         // this is the smallest extent that embeds the feature, stop here
         break;
       }

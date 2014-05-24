@@ -24,12 +24,12 @@ QgsColorWidgetFactory::QgsColorWidgetFactory( const QString& name )
 }
 
 
-QgsEditorWidgetWrapper* QgsColorWidgetFactory::create(QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent) const
+QgsEditorWidgetWrapper* QgsColorWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsColorWidget( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsColorWidgetFactory::configWidget(QgsVectorLayer* vl, int fieldIdx, QWidget* parent) const
+QgsEditorConfigWidget* QgsColorWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Field contains a color." ) );
 }

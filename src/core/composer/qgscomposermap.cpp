@@ -1323,11 +1323,13 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
     mAtlasDriven = ( atlasElem.attribute( "atlasDriven", "0" ) != "0" );
-    if ( atlasElem.hasAttribute("fixedScale") ) { // deprecated XML
-      mAtlasScalingMode = (atlasElem.attribute( "fixedScale", "0" ) != "0") ? Fixed : Auto;
+    if ( atlasElem.hasAttribute( "fixedScale" ) ) // deprecated XML
+    {
+      mAtlasScalingMode = ( atlasElem.attribute( "fixedScale", "0" ) != "0" ) ? Fixed : Auto;
     }
-    else if ( atlasElem.hasAttribute("scalingMode") ) {
-      mAtlasScalingMode = static_cast<AtlasScalingMode>(atlasElem.attribute("scalingMode").toInt());
+    else if ( atlasElem.hasAttribute( "scalingMode" ) )
+    {
+      mAtlasScalingMode = static_cast<AtlasScalingMode>( atlasElem.attribute( "scalingMode" ).toInt() );
     }
     mAtlasMargin = atlasElem.attribute( "margin", "0.1" ).toDouble();
   }

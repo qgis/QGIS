@@ -1013,9 +1013,9 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   maxCurvedCharAngleOut = layer->customProperty( "labeling/maxCurvedCharAngleOut", QVariant( -20.0 ) ).toDouble();
   priority = layer->customProperty( "labeling/priority" ).toInt();
   repeatDistance = layer->customProperty( "labeling/repeatDistance", 0.0 ).toDouble();
-  repeatDistanceUnit = (SizeUnit) layer->customProperty( "labeling/repeatDistanceUnit", QVariant( MM )).toUInt();
-  repeatDistanceMapUnitScale.minScale = layer->customProperty( "labeling/repeatDistanceMapUnitMinScale", 0.0).toDouble();
-  repeatDistanceMapUnitScale.maxScale = layer->customProperty( "labeling/repeatDistanceMapUnitMaxScale", 0.0).toDouble();
+  repeatDistanceUnit = ( SizeUnit ) layer->customProperty( "labeling/repeatDistanceUnit", QVariant( MM ) ).toUInt();
+  repeatDistanceMapUnitScale.minScale = layer->customProperty( "labeling/repeatDistanceMapUnitMinScale", 0.0 ).toDouble();
+  repeatDistanceMapUnitScale.maxScale = layer->customProperty( "labeling/repeatDistanceMapUnitMaxScale", 0.0 ).toDouble();
 
   // rendering
   int scalemn = layer->customProperty( "labeling/scaleMin", QVariant( 0 ) ).toInt();
@@ -2260,7 +2260,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   {
     if ( !repeatdistinmapunit ) //convert distance from mm/map units to pixels
     {
-      repeatDist *= repeatDistanceMapUnitScale.computeMapUnitsPerPixel(context) * context.scaleFactor();
+      repeatDist *= repeatDistanceMapUnitScale.computeMapUnitsPerPixel( context ) * context.scaleFactor();
     }
     else //mm
     {

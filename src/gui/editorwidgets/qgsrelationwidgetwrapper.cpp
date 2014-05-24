@@ -20,9 +20,9 @@
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor, QWidget* parent )
-  :  QgsWidgetWrapper( vl, editor, parent )
-  , mRelation( relation )
-  , mRelationWidget( 0 )
+    : QgsWidgetWrapper( vl, editor, parent )
+    , mRelation( relation )
+    , mRelationWidget( 0 )
 {
 }
 
@@ -34,12 +34,12 @@ QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
-  delete ( mRelationWidget );
+  delete( mRelationWidget );
   mRelationWidget = QgsRelationEditorWidget::createRelationEditor( mRelation, feature, context(), widget() );
   widget()->layout()->addWidget( mRelationWidget );
 }
 
-void QgsRelationWidgetWrapper::initWidget(QWidget* editor)
+void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 {
   if ( !editor->layout() )
     editor->setLayout( new QGridLayout( editor ) );

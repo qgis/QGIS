@@ -31,7 +31,7 @@ class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
     virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
 
   private:
-    bool supportsField(QgsVectorLayer *vl, int fieldIdx);
+    bool supportsField( QgsVectorLayer *vl, int fieldIdx );
 };
 
 #endif // QGSRANGEWIDGETFACTORY_H

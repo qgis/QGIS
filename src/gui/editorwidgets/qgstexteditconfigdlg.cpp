@@ -15,10 +15,10 @@
 
 #include "qgstexteditconfigdlg.h"
 
-QgsTextEditConfigDlg::QgsTextEditConfigDlg(QgsVectorLayer* vl, int fieldIdx, QWidget* parent)
-  : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
-  setupUi(this);
+  setupUi( this );
 }
 
 

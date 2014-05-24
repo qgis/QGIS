@@ -24,17 +24,17 @@ QgsPhotoWidgetFactory::QgsPhotoWidgetFactory( const QString& name )
 }
 
 
-QgsEditorWidgetWrapper* QgsPhotoWidgetFactory::create(QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent) const
+QgsEditorWidgetWrapper* QgsPhotoWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsPhotoWidget( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsPhotoWidgetFactory::configWidget(QgsVectorLayer* vl, int fieldIdx, QWidget* parent) const
+QgsEditorConfigWidget* QgsPhotoWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsPhotoConfigDlg( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsPhotoWidgetFactory::readConfig(const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx)
+QgsEditorWidgetConfig QgsPhotoWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
@@ -47,7 +47,7 @@ QgsEditorWidgetConfig QgsPhotoWidgetFactory::readConfig(const QDomElement& confi
   return cfg;
 }
 
-void QgsPhotoWidgetFactory::writeConfig(const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx)
+void QgsPhotoWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc )
   Q_UNUSED( layer )

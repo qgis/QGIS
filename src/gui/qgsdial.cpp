@@ -4,7 +4,7 @@
 
 QgsDial::QgsDial( QWidget *parent ) : QDial( parent )
 {
-  setMinimumSize( QSize(50, 50) );
+  setMinimumSize( QSize( 50, 50 ) );
 }
 
 void QgsDial::paintEvent( QPaintEvent *event )

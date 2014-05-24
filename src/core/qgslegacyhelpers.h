@@ -28,7 +28,7 @@ class CORE_EXPORT QgsLegacyHelpers
 
   private:
     QgsLegacyHelpers()
-      {}
+    {}
 };
 
 #endif // QGSLEGACYHELPERS_H

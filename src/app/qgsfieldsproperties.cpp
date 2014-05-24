@@ -230,7 +230,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, attrEditTypeCol, pb );
 
-  connect( pb, SIGNAL( pressed() ), this, SLOT(attributeTypeDialog()) );
+  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog() ) );
 
   setConfigForRow( row, cfg );
 
@@ -421,7 +421,7 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
   cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetV2Config();
-  
+
   pb->setText( attributeTypeDialog.editorWidgetV2Text() );
 
   setConfigForRow( row, cfg );

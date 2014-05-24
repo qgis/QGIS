@@ -300,7 +300,8 @@ void TestQgsAtlasComposition::predefinedscales_render()
 
   {
     const QVector<double>& setScales = mAtlas->predefinedScales();
-    for ( int i = 0; i < setScales.size(); i++ ) {
+    for ( int i = 0; i < setScales.size(); i++ )
+    {
       QVERIFY( setScales[i] == scales[i] );
     }
   }

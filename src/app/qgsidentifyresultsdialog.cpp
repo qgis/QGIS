@@ -413,7 +413,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     if ( widgetType == "Hidden" )
       delete attrItem;
-        continue;
+    continue;
 
     value = representValue( vlayer, fields[i].name(), attrs[i] );
 

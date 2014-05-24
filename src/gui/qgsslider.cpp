@@ -2,14 +2,14 @@
 
 #include <QRect>
 
-QgsSlider::QgsSlider ( QWidget * parent ) : QSlider ( parent )
+QgsSlider::QgsSlider( QWidget * parent ) : QSlider( parent )
 {
-  setMinimumSize( QSize(100, 40) );
+  setMinimumSize( QSize( 100, 40 ) );
 }
 
-QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget * parent) : QSlider( orientation, parent )
+QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget * parent ) : QSlider( orientation, parent )
 {
-  setMinimumSize( QSize(100, 40) );
+  setMinimumSize( QSize( 100, 40 ) );
 }
 
 void QgsSlider::paintEvent( QPaintEvent *event )

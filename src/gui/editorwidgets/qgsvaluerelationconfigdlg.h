@@ -30,7 +30,7 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
     // QgsEditorConfigWidget interface
   public:
     QgsEditorWidgetConfig config();
-    void setConfig(const QgsEditorWidgetConfig& config);
+    void setConfig( const QgsEditorWidgetConfig& config );
 };
 
 #endif // QGSVALUERELATIONCONFIGDLG_H

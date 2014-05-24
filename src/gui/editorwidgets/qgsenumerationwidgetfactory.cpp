@@ -36,7 +36,7 @@ QgsEditorConfigWidget* QgsEnumerationWidgetFactory::configWidget( QgsVectorLayer
 }
 
 
-bool QgsEnumerationWidgetFactory::isFieldSupported(QgsVectorLayer* vl, int fieldIdx)
+bool QgsEnumerationWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
   QStringList list;
   vl->dataProvider()->enumValues( fieldIdx, list );

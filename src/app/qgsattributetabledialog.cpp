@@ -225,9 +225,9 @@ void QgsAttributeTableDialog::updateTitle()
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
-    mRunFieldCalc->setText( tr( "Update All") );
+    mRunFieldCalc->setText( tr( "Update All" ) );
   else
-    mRunFieldCalc->setText( tr( "Update Filtered") );
+    mRunFieldCalc->setText( tr( "Update Filtered" ) );
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )

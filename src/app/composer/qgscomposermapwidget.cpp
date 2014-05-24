@@ -199,7 +199,7 @@ void QgsComposerMapWidget::on_mAtlasMarginRadio_toggled( bool checked )
 {
   mAtlasMarginSpinBox->setEnabled( checked );
 
-  if (checked && mComposerMap)
+  if ( checked && mComposerMap )
   {
     mComposerMap->setAtlasScalingMode( QgsComposerMap::Auto );
     updateMapForAtlas();
@@ -224,7 +224,7 @@ void QgsComposerMapWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
     return;
   }
 
-  if (checked)
+  if ( checked )
   {
     mComposerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
     updateMapForAtlas();

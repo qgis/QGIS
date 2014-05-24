@@ -47,7 +47,7 @@ QgsEditorWidgetConfig QgsDateTimeEditFactory::readConfig( const QDomElement &con
   return cfg;
 }
 
-void QgsDateTimeEditFactory::writeConfig(const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx)
+void QgsDateTimeEditFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer );
@@ -58,7 +58,7 @@ void QgsDateTimeEditFactory::writeConfig(const QgsEditorWidgetConfig& config, QD
   configElement.setAttribute( "calendar_popup", config["calendar_popup"].toBool() );
 }
 
-QString QgsDateTimeEditFactory::representValue(QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value) const
+QString QgsDateTimeEditFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )

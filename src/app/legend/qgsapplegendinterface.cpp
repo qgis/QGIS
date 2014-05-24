@@ -324,7 +324,7 @@ bool QgsAppLegendInterface::removeLegendLayerAction( QAction* action )
   if ( !menuProvider )
     return false;
 
-  menuProvider->removeLegendLayerAction( action );
+  return menuProvider->removeLegendLayerAction( action );
 }
 
 QgsMapLayer* QgsAppLegendInterface::currentLayer()
