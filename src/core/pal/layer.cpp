@@ -286,68 +286,80 @@ namespace pal
     }
 
     // if multiple labels are requested for lines, split the line in pieces of desired distance
-    if(repeatDistance > 0) {
+    if ( repeatDistance > 0 )
+    {
       int nSimpleGeometries = simpleGeometries->size();
-      for(int i = 0; i < nSimpleGeometries; ++i) {
+      for ( int i = 0; i < nSimpleGeometries; ++i )
+      {
         const GEOSGeometry* geom = simpleGeometries->pop_front();
-        if(GEOSGeomTypeId(geom) == GEOS_LINESTRING) {
+        if ( GEOSGeomTypeId( geom ) == GEOS_LINESTRING )
+        {
+          const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( geom );
 
           // get number of points
-          int n = GEOSGeomGetNumPoints(geom);
+          unsigned int n;
+          GEOSCoordSeq_getSize( cs, &n );
 
           // Read points
-          std::vector<Point> points(n);
-          for(int i = 0; i < n; ++i) {
-            GEOSGeometry* p = GEOSGeomGetPointN(geom, i);
-            GEOSGeomGetX(p, &points[i].x);
-            GEOSGeomGetY(p, &points[i].y);
-            GEOSGeom_destroy(p);
+          std::vector<Point> points( n );
+          for ( unsigned int i = 0; i < n; ++i )
+          {
+            GEOSCoordSeq_getX( cs, i, &points[i].x );
+            GEOSCoordSeq_getY( cs, i, &points[i].y );
           }
 
           // Cumulative length vector
-          std::vector<double> len(n, 0);
-          for(int i = 1; i < n; ++i) {
+          std::vector<double> len( n, 0 );
+          for ( unsigned int i = 1; i < n; ++i )
+          {
             double dx = points[i].x - points[i - 1].x;
             double dy = points[i].y - points[i - 1].y;
-            len[i] = len[i - 1] + std::sqrt(dx * dx + dy * dy);
+            len[i] = len[i - 1] + std::sqrt( dx * dx + dy * dy );
           }
 
           // Walk along line
-          int cur = 0;
+          unsigned int cur = 0;
           double lambda = 0;
           std::vector<Point> part;
-          while(true) {
+          for ( ;; )
+          {
             lambda += repeatDistance;
-            for(; cur < n && lambda > len[cur]; ++cur) {
-              part.push_back(points[cur]);
+            for ( ; cur < n && lambda > len[cur]; ++cur )
+            {
+              part.push_back( points[cur] );
             }
-            if(cur >= n) {
+            if ( cur >= n )
+            {
               break;
             }
-            double c = (lambda - len[cur - 1]) / (len[cur] - len[cur - 1]);
+            double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
             Point p;
-            p.x = points[cur - 1].x + c * (points[cur].x - points[cur - 1].x);
-            p.y = points[cur - 1].y + c * (points[cur].y - points[cur - 1].y);
-            part.push_back(p);
-            GEOSCoordSequence* cooSeq = GEOSCoordSeq_create(part.size(), 2);
-            for(std::size_t i = 0; i < part.size(); ++i) {
-              GEOSCoordSeq_setX(cooSeq, i, part[i].x);
-              GEOSCoordSeq_setY(cooSeq, i, part[i].y);
+            p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
+            p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
+            part.push_back( p );
+            GEOSCoordSequence* cooSeq = GEOSCoordSeq_create( part.size(), 2 );
+            for ( std::size_t i = 0; i < part.size(); ++i )
+            {
+              GEOSCoordSeq_setX( cooSeq, i, part[i].x );
+              GEOSCoordSeq_setY( cooSeq, i, part[i].y );
             }
 
-            simpleGeometries->push_back(GEOSGeom_createLineString(cooSeq));
+            simpleGeometries->push_back( GEOSGeom_createLineString( cooSeq ) );
             part.clear();
-            part.push_back(p);
+            part.push_back( p );
           }
           // Create final part
-          part.push_back(points[n - 1]);
-          GEOSCoordSequence* cooSeq = GEOSCoordSeq_create(part.size(), 2);
-          for(std::size_t i = 0; i < part.size(); ++i) {
-            GEOSCoordSeq_setX(cooSeq, i, part[i].x);
-            GEOSCoordSeq_setY(cooSeq, i, part[i].y);
+          part.push_back( points[n - 1] );
+          GEOSCoordSequence* cooSeq = GEOSCoordSeq_create( part.size(), 2 );
+          for ( std::size_t i = 0; i < part.size(); ++i )
+          {
+            GEOSCoordSeq_setX( cooSeq, i, part[i].x );
+            GEOSCoordSeq_setY( cooSeq, i, part[i].y );
           }
-          simpleGeometries->push_back(GEOSGeom_createLineString(cooSeq));
-        }else{
+          simpleGeometries->push_back( GEOSGeom_createLineString( cooSeq ) );
+        }
+        else
+        {
           simpleGeometries->push_back( geom );
         }
       }
@@ -418,7 +430,7 @@ namespace pal
     modMutex->unlock();
 
     // if using only biggest parts...
-    if (( (mode == LabelPerFeature && repeatDistance == 0.0) || f->fixedPosition() ) && biggest_part != NULL )
+    if ((( mode == LabelPerFeature && repeatDistance == 0.0 ) || f->fixedPosition() ) && biggest_part != NULL )
     {
       addFeaturePart( biggest_part, labelText );
       first_feat = false;
