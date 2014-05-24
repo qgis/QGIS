@@ -408,12 +408,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     attrItem->setData( 1, Qt::UserRole, value );
 
-
-    const QString widgetType = vlayer->editorWidgetV2( i );
-
-    if ( widgetType == "Hidden" )
+    if ( vlayer->editorWidgetV2( i ) == "Hidden" )
+    {
       delete attrItem;
-    continue;
+      continue;
+    }
 
     value = representValue( vlayer, fields[i].name(), attrs[i] );
 
