@@ -8606,12 +8606,12 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometry.cpp" line="2373"/>
         <location filename="../src/core/qgsgeometry.cpp" line="2508"/>
         <location filename="../src/core/qgsgeometry.cpp" line="2573"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3379"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4752"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4846"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5932"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5961"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5984"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3392"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4820"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4914"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6000"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6029"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6052"/>
         <source>Exception: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8633,18 +8633,18 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometry.cpp" line="2373"/>
         <location filename="../src/core/qgsgeometry.cpp" line="2508"/>
         <location filename="../src/core/qgsgeometry.cpp" line="2573"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3379"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4752"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4846"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5589"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5932"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5961"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5984"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3392"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4820"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4914"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5657"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6000"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6029"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6052"/>
         <source>GEOS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="5589"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5657"/>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9607,28 +9607,33 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="28"/>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="29"/>
         <source>Single Symbol</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="33"/>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="34"/>
         <source>Categorized</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="36"/>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="37"/>
         <source>Graduated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="40"/>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="41"/>
         <source>Rule-based</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="45"/>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="46"/>
         <source>Point displacement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="50"/>
+        <source>Inverted polygons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10664,6 +10669,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1776"/>
+        <source>OpenFileGDB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1666"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1668"/>
         <source>ESRI Personal GeoDatabase</source>
@@ -10727,11 +10737,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1772"/>
         <source>OGDI Vectors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1776"/>
-        <source>OpenFileGDB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -13628,7 +13633,7 @@ User DB Path:	%9
 <context>
     <name>QgsAtlasComposition</name>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="705"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="706"/>
         <source>Filename parsing error: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13653,7 +13658,7 @@ User DB Path:	%9
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="728"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="729"/>
         <source>Filename eval error: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14086,17 +14091,9 @@ User DB Path:	%9
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select all</source>
-        <translation type="obsolete">Seleccioneu tot</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="133"/>
         <source>Sorting</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="obsolete">Columna</translation>
     </message>
 </context>
 <context>
@@ -16866,11 +16863,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="93"/>
-        <source>Refresh HTML</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
         <source>Resize mode</source>
         <translation type="unfinished"></translation>
@@ -16893,6 +16885,11 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="145"/>
         <source> mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="93"/>
+        <source>Refresh HTML</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18509,6 +18506,11 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="108"/>
+        <source>Image source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="77"/>
         <source>Path</source>
         <translation type="unfinished"></translation>
@@ -18520,18 +18522,18 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="108"/>
-        <source>Image source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="115"/>
-        <source>Placement</source>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="160"/>
+        <source>Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="122"/>
         <source>Resize mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="115"/>
+        <source>Placement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -18557,11 +18559,6 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="150"/>
         <source>Resize frame to image size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="160"/>
-        <source>Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -29594,28 +29591,8 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="124"/>
-        <source>Collapse tree.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="138"/>
-        <source>New results will be expanded by default.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="166"/>
         <source>Clear Results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="183"/>
-        <source>Copy selected feature to clipboard.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="203"/>
-        <source>Print selected HTML response.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -29631,6 +29608,26 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="273"/>
         <source>Auto open form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="124"/>
+        <source>Collapse tree.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="138"/>
+        <source>New results will be expanded by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="183"/>
+        <source>Copy selected feature to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="203"/>
+        <source>Print selected HTML response.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -29672,119 +29669,119 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="433"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="751"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="432"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="750"/>
         <source>(Derived)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="448"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="447"/>
         <source>(Actions)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="454"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="827"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="937"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1289"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="453"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="826"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="936"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1288"/>
         <source>Edit feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="454"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="827"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="937"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1289"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="453"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="826"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="936"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1288"/>
         <source>View feature form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="696"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="695"/>
         <source>Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="943"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="942"/>
         <source>Zoom to feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="944"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="943"/>
         <source>Copy feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="945"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="944"/>
         <source>Toggle feature selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="948"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="947"/>
         <source>Copy attribute value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="949"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="948"/>
         <source>Copy feature attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="962"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="961"/>
         <source>Copy GetFeatureInfo request URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="970"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="969"/>
         <source>Clear results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="971"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="970"/>
         <source>Clear highlights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="972"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="971"/>
         <source>Highlight all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="973"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="972"/>
         <source>Highlight layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="976"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="975"/>
         <source>Activate layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="977"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="976"/>
         <source>Layer properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="980"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="979"/>
         <source>Expand all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="981"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="980"/>
         <source>Collapse all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1567"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1566"/>
         <source>Attributes changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1726"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1725"/>
         <source>Cannot print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1726"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1725"/>
         <source>Cannot print this item</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30001,6 +29998,28 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="49"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="55"/>
         <source>&amp;Interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsInvertedPolygonRendererWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsinvertedpolygonrendererwidget.cpp" line="45"/>
+        <source>The inverted polygon renderer only applies to polygon and multipolygon layers. 
+&apos;%1&apos; is not a polygon layer and then cannot be displayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsInvertedPolygonRendererWidgetBase</name>
+    <message>
+        <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="22"/>
+        <source>Sub renderer:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -30616,37 +30635,37 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1303"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1304"/>
         <source>No change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1304"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1305"/>
         <source>All uppercase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1305"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1306"/>
         <source>All lowercase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1309"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1310"/>
         <source>Capitalize first letter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1465"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1466"/>
         <source>Size%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1465"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1466"/>
         <source> X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1515"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1516"/>
         <source>File not found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30659,930 +30678,930 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="50"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="32"/>
         <source>Label this layer with</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="298"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="724"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="844"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="851"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="858"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="865"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="872"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="960"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="983"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1063"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1108"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1149"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1203"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1245"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1257"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1431"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1448"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1553"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1596"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1690"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1700"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1754"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1764"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="271"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="670"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="790"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="797"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="804"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="811"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="818"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="897"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="920"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1000"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1045"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1086"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1140"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1182"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1194"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1350"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1367"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1472"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1506"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1591"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1601"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1646"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1656"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1721"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1735"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1790"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1838"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1852"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1907"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1955"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1972"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2059"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2107"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2114"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2270"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2277"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2309"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2316"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2461"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2536"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2565"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2572"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2579"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2599"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2652"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2714"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2731"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1855"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1933"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1981"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1988"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2135"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2142"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2174"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2181"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2317"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2392"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2421"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2428"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2435"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2455"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2499"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2561"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2578"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2633"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2653"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2690"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2711"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2766"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2786"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2806"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2843"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2864"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2919"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2948"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2955"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2965"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3011"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3018"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3077"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3139"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3261"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3554"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3561"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3568"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3575"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3582"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3589"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3596"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3603"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3610"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3617"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3879"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3889"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4134"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4164"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4407"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4472"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4479"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4586"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4593"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4671"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4741"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4863"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4883"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4928"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4981"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5001"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5181"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5244"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5276"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5306"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5375"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5410"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5473"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5480"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2793"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2803"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2849"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2856"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2915"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2977"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3090"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3383"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3390"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3397"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3404"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3411"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3418"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3425"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3432"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3439"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3446"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3836"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3857"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4100"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4156"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4163"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4261"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4268"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4337"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4382"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4392"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4453"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4548"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4568"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4613"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4657"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4677"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4848"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4911"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4943"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4973"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5042"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5077"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5131"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5138"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="236"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="279"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="209"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="252"/>
         <source>Lorem Ipsum</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="276"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="249"/>
         <source>Sample text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="295"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="268"/>
         <source>Reset sample text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="337"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="310"/>
         <source>Size for sample text in map units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="390"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="363"/>
         <source>Sample background color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1609"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1519"/>
         <source>Line direction symbol</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1900"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1783"/>
         <source>Formatted numbers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1935"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1818"/>
         <source>Decimal places </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1965"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1848"/>
         <source>Show plus sign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1403"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1322"/>
         <source>Multiple lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="92"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="74"/>
         <source>Automated placement settings (apply to all layers)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="158"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="131"/>
         <source>Text/Buffer Sample</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="486"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3434"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="450"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3263"/>
         <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="462"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="465"/>
+        <source>Formatting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="498"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="501"/>
-        <source>Formatting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="534"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="537"/>
         <source>Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="558"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="561"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5114"/>
-        <source>Rendering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="695"/>
-        <source>letter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="990"/>
-        <source>Spacing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1019"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2263"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2893"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3472"/>
-        <source>Blend mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1034"/>
-        <source>word</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1095"/>
-        <source>Underlined text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1189"/>
-        <source>Bold text
-(data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1193"/>
-        <source>B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1231"/>
-        <source>Italic text
-(data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1235"/>
-        <source>I</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1302"/>
-        <source>Font is missing.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1364"/>
-        <source>Text formatting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1461"/>
-        <source>Wrap on character</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1474"/>
-        <source>Line height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1490"/>
-        <source>Line height spacing for multi-line text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1493"/>
-        <source> line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1518"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4919"/>
-        <source>Alignment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1528"/>
-        <source>Paragraph style alignment of multi-line text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1535"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1643"/>
-        <source>Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1540"/>
-        <source>Center</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1545"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1707"/>
-        <source>Right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3859"/>
-        <source>Repeat</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5778"/>
-        <source>Discourage labels from covering features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="489"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="623"/>
-        <source>Text style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="834"/>
-        <source>Available typeface styles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1098"/>
-        <source>U</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1136"/>
-        <source>Strikeout text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1139"/>
-        <source>S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="761"/>
-        <source>Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="793"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2256"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2662"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3502"/>
-        <source>Transparency</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="934"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2240"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2702"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3459"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3542"/>
-        <source> %</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="783"/>
-        <source>Capitalization style of text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="708"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1047"/>
-        <source>Space in pixels or map units, relative to size unit choice</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="953"/>
-        <source>Type case</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="806"/>
-        <source>Font</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="973"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2137"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3492"/>
-        <source>Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1270"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2329"/>
-        <source>Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="510"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="513"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2814"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3439"/>
-        <source>Buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5388"/>
-        <source>Labels will not show if larger than this on screen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5356"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5391"/>
-        <source> px</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4830"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5539"/>
-        <source>Data defined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4856"/>
-        <source>X</source>
-        <translation type="unfinished">X</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4876"/>
-        <source>Y</source>
-        <translation type="unfinished">Y</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4912"/>
-        <source>Coordinate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4941"/>
-        <source>Preserve data rotation values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4974"/>
-        <source>horizontal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4994"/>
-        <source>vertical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5148"/>
-        <source>Label options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5228"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5257"/>
-        <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5260"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5394"/>
-        <source>Maximum </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5299"/>
-        <source>Pixel size-based visibility (labels in map units)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5353"/>
-        <source>Labels will not show if smaller than this on screen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5231"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5359"/>
-        <source>Minimum </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1674"/>
-        <source>&lt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5174"/>
-        <source>Scale-based visibility</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1738"/>
-        <source>&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="546"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="549"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1777"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3671"/>
-        <source>Placement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1805"/>
-        <source>left/right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1821"/>
-        <source>above</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1828"/>
-        <source>below</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1845"/>
-        <source>Reverse direction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5027"/>
-        <source>Priority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5042"/>
-        <source>Low</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5068"/>
-        <source>High</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3766"/>
-        <source>Around point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3776"/>
-        <source>Offset from point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3818"/>
-        <source>Parallel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3805"/>
-        <source>Curved</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2020"/>
-        <source>Text buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2072"/>
-        <source>Draw text buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2342"/>
-        <source>Color buffer&apos;s fill</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2441"/>
-        <source>Draw background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2624"/>
-        <source>Size X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2631"/>
-        <source>Size type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2645"/>
-        <source>Size Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2779"/>
-        <source>Fill color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2799"/>
-        <source>Border color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3241"/>
-        <source>Draw drop shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3322"/>
-        <source>Blur radius</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3335"/>
-        <source>Blur only alpha pixels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3361"/>
-        <source>Label&apos;s rotation is ignored</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3364"/>
-        <source>Use global shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3407"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4658"/>
-        <source>˚</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3429"/>
-        <source>Lowest label component</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3452"/>
-        <source>Draw under</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3828"/>
-        <source>Horizontal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3921"/>
-        <source>Offset from centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3937"/>
-        <source>Around centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3944"/>
-        <source>Horizontal (slow)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3951"/>
-        <source>Free (slow)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3964"/>
-        <source>Using perimeter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4111"/>
-        <source>visible polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4127"/>
-        <source>whole polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2529"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4639"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4905"/>
-        <source>Rotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4026"/>
-        <source>Above line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4042"/>
-        <source>On line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4049"/>
-        <source>Below line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4058"/>
-        <source>Line orientation dependent position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4095"/>
-        <source>Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4187"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4207"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4227"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4247"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4267"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4287"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4307"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4327"/>
-        <source>abc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4355"/>
-        <source>Quadrant</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4576"/>
-        <source>Distance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4754"/>
-        <source>outside</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4721"/>
-        <source>inside</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4780"/>
-        <source>Maximum angle between curved characters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2147"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2760"/>
-        <source>Pen join style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3196"/>
-        <source>Drop shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3479"/>
-        <source>Offset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3315"/>
-        <source>Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="522"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="525"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2396"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3444"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4781"/>
+        <source>Rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="641"/>
+        <source>letter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="927"/>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="956"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2128"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2740"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3301"/>
+        <source>Blend mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="971"/>
+        <source>word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1032"/>
+        <source>Underlined text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1126"/>
+        <source>Bold text
+(data defined only, overrides Style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1130"/>
+        <source>B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1168"/>
+        <source>Italic text
+(data defined only, overrides Style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1172"/>
+        <source>I</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1230"/>
+        <source>Font is missing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1283"/>
+        <source>Text formatting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1380"/>
+        <source>Wrap on character</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1393"/>
+        <source>Line height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1409"/>
+        <source>Line height spacing for multi-line text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1412"/>
+        <source> line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1437"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4604"/>
+        <source>Alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1447"/>
+        <source>Paragraph style alignment of multi-line text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1454"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1553"/>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1459"/>
+        <source>Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1464"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1608"/>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4362"/>
+        <source>Repeat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5409"/>
+        <source>Discourage labels from covering features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="453"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="578"/>
+        <source>Text style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="780"/>
+        <source>Available typeface styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1035"/>
+        <source>U</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1073"/>
+        <source>Strikeout text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1076"/>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="707"/>
+        <source>Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="739"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2121"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2509"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3331"/>
+        <source>Transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="871"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2105"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2549"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3288"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3371"/>
+        <source> %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="729"/>
+        <source>Capitalization style of text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="654"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="984"/>
+        <source>Space in pixels or map units, relative to size unit choice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="890"/>
+        <source>Type case</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="752"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="910"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2011"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3321"/>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1207"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2194"/>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="474"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="477"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2661"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3268"/>
+        <source>Buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5055"/>
+        <source>Labels will not show if larger than this on screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5023"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5058"/>
+        <source> px</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4515"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5197"/>
+        <source>Data defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4541"/>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4561"/>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4597"/>
+        <source>Coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4626"/>
+        <source>Preserve data rotation values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4650"/>
+        <source>horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4670"/>
+        <source>vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4815"/>
+        <source>Label options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4895"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4924"/>
+        <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4927"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5061"/>
+        <source>Maximum </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4966"/>
+        <source>Pixel size-based visibility (labels in map units)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5020"/>
+        <source>Labels will not show if smaller than this on screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4898"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5026"/>
+        <source>Minimum </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1575"/>
+        <source>&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4841"/>
+        <source>Scale-based visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1630"/>
+        <source>&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="510"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="513"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1669"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3491"/>
+        <source>Placement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1688"/>
+        <source>left/right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1704"/>
+        <source>above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1711"/>
+        <source>below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1728"/>
+        <source>Reverse direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4703"/>
+        <source>Priority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4718"/>
+        <source>Low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4744"/>
+        <source>High</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3568"/>
+        <source>Around point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3578"/>
+        <source>Offset from point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3611"/>
+        <source>Parallel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3598"/>
+        <source>Curved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1894"/>
+        <source>Text buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1946"/>
+        <source>Draw text buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2207"/>
+        <source>Color buffer&apos;s fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2297"/>
+        <source>Draw background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2471"/>
+        <source>Size X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2478"/>
+        <source>Size type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2492"/>
+        <source>Size Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2626"/>
+        <source>Fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2646"/>
+        <source>Border color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3070"/>
+        <source>Draw drop shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3151"/>
+        <source>Blur radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3164"/>
+        <source>Blur only alpha pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3190"/>
+        <source>Label&apos;s rotation is ignored</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3193"/>
+        <source>Use global shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3236"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4324"/>
+        <source>˚</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3258"/>
+        <source>Lowest label component</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3281"/>
+        <source>Draw under</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3621"/>
+        <source>Horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3641"/>
+        <source>Offset from centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3657"/>
+        <source>Around centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3664"/>
+        <source>Horizontal (slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3671"/>
+        <source>Free (slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3684"/>
+        <source>Using perimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3813"/>
+        <source>visible polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3829"/>
+        <source>whole polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2385"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4305"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4590"/>
+        <source>Rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3737"/>
+        <source>Above line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3753"/>
+        <source>On line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3760"/>
+        <source>Below line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3769"/>
+        <source>Line orientation dependent position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3797"/>
+        <source>Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3880"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3900"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3920"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3940"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3960"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3980"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4000"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4020"/>
+        <source>abc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4048"/>
+        <source>Quadrant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4251"/>
+        <source>Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4466"/>
+        <source>outside</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4433"/>
+        <source>inside</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4492"/>
+        <source>Maximum angle between curved characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2021"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2607"/>
+        <source>Pen join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3025"/>
+        <source>Drop shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3308"/>
+        <source>Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3144"/>
+        <source>Scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="486"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="489"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2252"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3273"/>
         <source>Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2850"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2697"/>
         <source>Load symbol parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2819"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2911"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2666"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2758"/>
         <source>Fixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3084"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4517"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2922"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4201"/>
         <source>Offset X,Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3034"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2872"/>
         <source>Rectangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3039"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2877"/>
         <source>Square</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3044"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2882"/>
         <source>Ellipse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3049"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2887"/>
         <source>Circle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3054"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2892"/>
         <source>SVG</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2638"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2485"/>
         <source>Shape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2901"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2748"/>
         <source>Sync with label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2906"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2753"/>
         <source>Offset of label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2486"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2342"/>
         <source>Radius X,Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2857"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2704"/>
         <source>Border width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3002"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2840"/>
         <source>symbol units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5654"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5303"/>
         <source>Merge connected lines to avoid duplicate labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5647"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5296"/>
         <source>Label every part of multi-part features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5632"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5281"/>
         <source>Feature options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5765"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5396"/>
         <source>Suppress labeling of features smaller than</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5758"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5389"/>
         <source> mm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5429"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5096"/>
         <source>Show all labels for this layer (including colliding labels)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5619"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5268"/>
         <source>Show upside-down labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5580"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5229"/>
         <source>never</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5596"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5245"/>
         <source>when rotation defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5567"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5216"/>
         <source>always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5714"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5354"/>
         <source>Limit number of features to be labeled to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5698"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5338"/>
         <source>Number of features sent to labeling engine, though not all may be labeled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4011"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3722"/>
         <source>Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4935"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4620"/>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5493"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5151"/>
         <source>Always show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="5509"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5167"/>
         <source>Show label</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32669,45 +32688,45 @@ not displayed</source>
 <context>
     <name>QgsMapToolSplitFeatures</name>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
         <source>Coordinate transform error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="67"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="84"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="81"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="103"/>
         <source>Features split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="95"/>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="103"/>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="112"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="109"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="117"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="125"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="134"/>
         <source>No feature split done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="88"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="110"/>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="96"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="118"/>
         <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="104"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="126"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="113"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="135"/>
         <source>An error occured during feature splitting</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32715,49 +32734,49 @@ not displayed</source>
 <context>
     <name>QgsMapToolSplitParts</name>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="65"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="81"/>
         <source>Coordinate transform error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="66"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="82"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="80"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="100"/>
         <source>Parts split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="86"/>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="94"/>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="102"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="106"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="114"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="122"/>
         <source>No part split done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="87"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="107"/>
         <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="95"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="115"/>
         <source>Cut edges detected. Make sure the line splits parts into multiple parts.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="103"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="123"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="111"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="131"/>
         <source>Split error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="112"/>
+        <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="132"/>
         <source>An error occured during feature splitting</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42929,15 +42948,6 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1524"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1682"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
@@ -43283,6 +43293,15 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="145"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="148"/>
         <source>Metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1524"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -53425,6 +53444,11 @@ Description: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="245"/>
+        <source>Open Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="119"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
@@ -53447,11 +53471,6 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="219"/>
         <source>Symbols in group</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="245"/>
-        <source>Open Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
