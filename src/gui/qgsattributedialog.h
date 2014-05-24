@@ -78,7 +78,7 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
 
     /**
      * @brief setHighlight
-     * @param The highlight. Ownership is taken.
+     * @param h The highlight. Ownership is taken.
      */
     void setHighlight( QgsHighlight *h );
 

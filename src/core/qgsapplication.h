@@ -283,7 +283,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note added in 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
     /** Set maximum concurrent thread count
-     * @note must be between 1 and #cores, -1 means use all available cores
+     * @note must be between 1 and \#cores, -1 means use all available cores
      * @note added in 2.4 */
     static void setMaxThreads( int maxThreads );
 
