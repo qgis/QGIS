@@ -375,6 +375,7 @@ class CORE_EXPORT QgsPalLayerSettings
     unsigned int placementFlags;
 
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
+    bool centroidInside; // whether centroid-point calculated must be inside polygon 
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QgsMapUnitScale distMapUnitScale;
