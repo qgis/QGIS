@@ -28,34 +28,34 @@ class QMenu;
  */
 class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
- public:
-  /** static creation method
-   * @param layer the layer where this renderer is applied
-   * @param style
-   * @param renderer the mask renderer (will take ownership)
-   */
-  static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+  public:
+    /** static creation method
+     * @param layer the layer where this renderer is applied
+     * @param style
+     * @param renderer the mask renderer (will take ownership)
+     */
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
-  /** Constructor
-   * @param layer the layer where this renderer is applied
-   * @param style
-   * @param renderer the mask renderer (will take ownership)
-   */
-  QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    /** Constructor
+     * @param layer the layer where this renderer is applied
+     * @param style
+     * @param renderer the mask renderer (will take ownership)
+     */
+    QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
-  /** @returns the current feature renderer */
-  virtual QgsFeatureRendererV2* renderer();
+    /** @returns the current feature renderer */
+    virtual QgsFeatureRendererV2* renderer();
 
- protected:
-  /** the mask renderer */
-  QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
-  /** the widget used to represent the mask's embedded renderer */
-  QScopedPointer<QgsRendererV2Widget> mEmbeddedRendererWidget;
+  protected:
+    /** the mask renderer */
+    QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
+    /** the widget used to represent the mask's embedded renderer */
+    QScopedPointer<QgsRendererV2Widget> mEmbeddedRendererWidget;
 
- private slots:
-  void on_mRendererComboBox_currentIndexChanged( int index );
+  private slots:
+    void on_mRendererComboBox_currentIndexChanged( int index );
 };
 
 
