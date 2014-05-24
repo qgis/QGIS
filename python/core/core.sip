@@ -206,6 +206,7 @@
 %Include symbology-ng/qgssinglesymbolrendererv2.sip
 %Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrulebasedrendererv2.sip
+%Include symbology-ng/qgsinvertedpolygonrenderer.sip
 %Include symbology-ng/qgsrendererv2.sip
 %Include symbology-ng/qgsrendererv2registry.sip
 
