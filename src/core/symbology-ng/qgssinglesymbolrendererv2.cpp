@@ -50,7 +50,17 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mTempSymbol.data() );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
-    markerSymbol->setSize( sizeScale * mOrigSize );
+    switch(mScaleMethod)
+    {
+      case QgsSymbolV2::ScaleDiameter:
+        markerSymbol->setSize( sizeScale * mOrigSize );
+        break;
+      case QgsSymbolV2::ScaleArea:
+        markerSymbol->setSize( sqrt(sizeScale) * mOrigSize );
+        break;
+      default:
+        break;
+    }
     markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( mTempSymbol->type() == QgsSymbolV2::Line )

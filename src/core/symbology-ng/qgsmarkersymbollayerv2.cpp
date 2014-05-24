@@ -508,13 +508,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
 
   double scaledSize = mSize;
-  if ( hasDataDefinedSize )
+  if ( sizeExpression )
   {
-    if ( sizeExpression )
-    {
-      scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
-    }
-
+    scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
     if ( mScaleMethod == QgsSymbolV2::ScaleArea )
     {
       scaledSize = sqrt( scaledSize );
@@ -1209,14 +1205,12 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   double scaledSize = mSize;
   QgsExpression* sizeExpression = expression( "size" );
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
-
   if ( sizeExpression )
   {
     scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
 
-  if ( hasDataDefinedSize )
+  if ( expression( "size" ) )
   {
     switch ( mScaleMethod )
     {
