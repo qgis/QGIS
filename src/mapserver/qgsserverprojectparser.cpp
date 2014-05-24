@@ -469,8 +469,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
       attributeElem.setAttribute( "typeName", field.typeName() );
 
       //edit type to text
-      QgsVectorLayer::EditType typeEnum = vLayer->editType( idx );
-      attributeElem.setAttribute( "editType", editTypeString( typeEnum ) );
+      attributeElem.setAttribute( "editType", vLayer->editorWidgetV2( idx ) );
       attributeElem.setAttribute( "comment", field.comment() );
       attributeElem.setAttribute( "length", field.length() );
       attributeElem.setAttribute( "precision", field.precision() );

@@ -2903,12 +2903,12 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
     return attributeVal;
   }
 
-  QgsVectorLayer::EditType type = vl->editType( idx );
-  if ( type == QgsVectorLayer::ValueMap )
+  QString type = vl->editorWidgetV2( idx );
+  if ( type == "ValueMap" )
   {
-    QMap<QString, QVariant> valueMap = vl->valueMap( idx );
-    QMap<QString, QVariant>::const_iterator vmapIt = valueMap.constBegin();
-    for ( ; vmapIt != valueMap.constEnd(); ++vmapIt )
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QMap<QString, QVariant>::const_iterator vmapIt = cfg.constBegin();
+    for ( ; vmapIt != cfg.constEnd(); ++vmapIt )
     {
       if ( vmapIt.value().toString() == attributeVal )
       {
@@ -2916,17 +2916,17 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
       }
     }
   }
-  else if ( type == QgsVectorLayer::ValueRelation )
+  else if ( type == "ValueRelation" )
   {
-    QgsVectorLayer::ValueRelationData vrdata = vl->valueRelation( idx );
-    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( vrdata.mLayer ) );
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( cfg.value( "Layer" ).toString() ) );
     if ( !layer )
     {
       return attributeVal;
     }
 
     QString outputString;
-    if ( vrdata.mAllowMulti )
+    if ( cfg.value( "AllowMulti" ).toBool() )
     {
       QString valueString = attributeVal;
       QStringList valueList = valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
@@ -2936,7 +2936,12 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
         {
           outputString += ";";
         }
-        outputString += relationValue( valueList.at( i ), layer, vrdata.mKey, vrdata.mValue );
+        outputString += relationValue(
+                          valueList.at( i ),
+                          layer,
+                          cfg.value( "Key" ).toString(),
+                          cfg.value( "Value" ).toString()
+                        );
       }
     }
     return outputString;
