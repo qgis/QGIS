@@ -248,7 +248,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>5</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -268,8 +268,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>399</width>
-                <height>538</height>
+                <width>647</width>
+                <height>589</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1293,8 +1293,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>407</width>
-                <height>367</height>
+                <width>647</width>
+                <height>589</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1603,8 +1603,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>524</width>
-                <height>669</height>
+                <width>630</width>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1713,6 +1713,9 @@
                    <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                     <property name="title">
                      <string>Enable feature simplification by default for newly added layers</string>
+                    </property>
+                    <property name="flat">
+                     <bool>true</bool>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -1917,6 +1920,9 @@
                    <widget class="QGroupBox" name="groupBox_17">
                     <property name="title">
                      <string>Contrast enhancement</string>
+                    </property>
+                    <property name="flat">
+                     <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_11">
                      <item>
