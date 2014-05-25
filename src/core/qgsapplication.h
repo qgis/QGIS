@@ -35,6 +35,9 @@ class CORE_EXPORT QgsApplication : public QApplication
 {
     Q_OBJECT
   public:
+    static const char* QGIS_ORGANIZATION_NAME;
+    static const char* QGIS_ORGANIZATION_DOMAIN;
+    static const char* QGIS_APPLICATION_NAME;
     //! @note customConfigDir parameter added in v1.6
     QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
