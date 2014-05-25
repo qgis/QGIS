@@ -33,10 +33,8 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
 
   if ( mComposition )
   {
-    //connect to atlas toggling on/off and coverage layer and feature changes
+    //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( repaint() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( repaint() ) );
     connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
   }
 }
@@ -55,10 +53,8 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
 
   if ( mComposition )
   {
-    //connect to atlas toggling on/off and coverage layer and feature changes
+    //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( repaint() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( repaint() ) );
     connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
   }
 }

@@ -62,12 +62,8 @@ void QgsComposerPicture::init()
 {
   //connect some signals
 
-  //connect to atlas toggling on/off and coverage layer changes
-  //to update the picture source expression
-  connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updatePictureExpression() ) );
-  connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updatePictureExpression() ) );
-
   //connect to atlas feature changing
+  //to update the picture source expression
   connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshPicture() ) );
 
   //connect to composer print resolution changing

@@ -243,7 +243,7 @@ void TestQgsComposerPicture::pictureClipAnchorOversize()
   mComposerPicture->setSceneRect( QRectF( 70, 70, 150, 120 ) );
   mComposerPicture->setPictureAnchor( QgsComposerItem::LowerMiddle );
 
-  QgsCompositionChecker checker( "expected_composerpicture_clip_anchoroversize", mComposition );
+  QgsCompositionChecker checker( "composerpicture_clip_anchoroversize", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
