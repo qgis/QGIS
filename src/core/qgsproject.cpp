@@ -942,6 +942,9 @@ bool QgsProject::read()
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
 
+  // make sure the are just valid layers
+  QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
+
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 

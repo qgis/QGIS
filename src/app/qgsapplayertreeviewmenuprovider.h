@@ -37,6 +37,9 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 
 
   protected:
+
+    void addCustomLayerActions( QMenu* menu, QgsMapLayer* layer );
+
     QgsLayerTreeView* mView;
     QgsMapCanvas* mCanvas;
 

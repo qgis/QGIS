@@ -205,3 +205,21 @@ bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer*>& layerNo
   }
   return false;
 }
+
+void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup* group )
+{
+  QList<QgsLayerTreeNode*> nodesToRemove;
+  foreach ( QgsLayerTreeNode* node, group->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+      removeInvalidLayers( QgsLayerTree::toGroup( node ) );
+    else if ( QgsLayerTree::isLayer( node ) )
+    {
+      if ( !QgsLayerTree::toLayer( node )->layer() )
+        nodesToRemove << node;
+    }
+  }
+
+  foreach ( QgsLayerTreeNode* node, nodesToRemove )
+    group->removeChildNode( node );
+}

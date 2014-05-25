@@ -45,6 +45,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     static bool layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes );
     static bool layersModified( const QList<QgsLayerTreeLayer*>& layerNodes );
 
+    static void removeInvalidLayers(QgsLayerTreeGroup* group );
 
   protected:
     static void addLegendGroupToTreeWidget( const QDomElement& groupElem, QgsLayerTreeGroup* parent );

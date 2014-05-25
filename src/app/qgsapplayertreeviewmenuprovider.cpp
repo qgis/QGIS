@@ -142,67 +142,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         duplicateLayersAction->setEnabled( false );
       }
 
-      // add custom layer actions - should this go at end?
-      QList< LegendLayerAction > lyrActions = legendLayerActions( layer->type() );
-
-      if ( ! lyrActions.isEmpty() )
-      {
-        menu->addSeparator();
-        QList<QMenu*> theMenus;
-        for ( int i = 0; i < lyrActions.count(); i++ )
-        {
-          if ( lyrActions[i].allLayers || lyrActions[i].layers.contains( layer ) )
-          {
-            if ( lyrActions[i].menu.isEmpty() )
-            {
-              menu->addAction( lyrActions[i].action );
-            }
-            else
-            {
-              // find or create menu for given menu name
-              // adapted from QgisApp::getPluginMenu( QString menuName )
-              QString menuName = lyrActions[i].menu;
-#ifdef Q_WS_MAC
-              // Mac doesn't have '&' keyboard shortcuts.
-              menuName.remove( QChar( '&' ) );
-#endif
-              QAction* before = 0;
-              QMenu* newMenu = 0;
-              QString dst = menuName;
-              dst.remove( QChar( '&' ) );
-              foreach ( QMenu* menu, theMenus )
-              {
-                QString src = menu->title();
-                src.remove( QChar( '&' ) );
-                int comp = dst.localeAwareCompare( src );
-                if ( comp < 0 )
-                {
-                  // Add item before this one
-                  before = menu->menuAction();
-                  break;
-                }
-                else if ( comp == 0 )
-                {
-                  // Plugin menu item already exists
-                  newMenu = menu;
-                  break;
-                }
-              }
-              if ( ! newMenu )
-              {
-                // It doesn't exist, so create
-                newMenu = new QMenu( menuName );
-                theMenus.append( newMenu );
-                // Where to put it? - we worked that out above...
-                menu->insertMenu( before, newMenu );
-              }
-              // QMenu* menu = getMenu( lyrActions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
-              newMenu->addAction( lyrActions[i].action );
-            }
-          }
-        }
-        menu->addSeparator();
-      }
+      addCustomLayerActions( menu, layer );
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
         menu->addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
@@ -307,4 +247,72 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
 #endif
 
   return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}
+
+void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMapLayer* layer )
+{
+  if ( !layer )
+    return;
+
+  // add custom layer actions - should this go at end?
+  QList< LegendLayerAction > lyrActions = legendLayerActions( layer->type() );
+
+  if ( ! lyrActions.isEmpty() )
+  {
+    menu->addSeparator();
+    QList<QMenu*> theMenus;
+    for ( int i = 0; i < lyrActions.count(); i++ )
+    {
+      if ( lyrActions[i].allLayers || lyrActions[i].layers.contains( layer ) )
+      {
+        if ( lyrActions[i].menu.isEmpty() )
+        {
+          menu->addAction( lyrActions[i].action );
+        }
+        else
+        {
+          // find or create menu for given menu name
+          // adapted from QgisApp::getPluginMenu( QString menuName )
+          QString menuName = lyrActions[i].menu;
+#ifdef Q_WS_MAC
+          // Mac doesn't have '&' keyboard shortcuts.
+          menuName.remove( QChar( '&' ) );
+#endif
+          QAction* before = 0;
+          QMenu* newMenu = 0;
+          QString dst = menuName;
+          dst.remove( QChar( '&' ) );
+          foreach ( QMenu* menu, theMenus )
+          {
+            QString src = menu->title();
+            src.remove( QChar( '&' ) );
+            int comp = dst.localeAwareCompare( src );
+            if ( comp < 0 )
+            {
+              // Add item before this one
+              before = menu->menuAction();
+              break;
+            }
+            else if ( comp == 0 )
+            {
+              // Plugin menu item already exists
+              newMenu = menu;
+              break;
+            }
+          }
+          if ( ! newMenu )
+          {
+            // It doesn't exist, so create
+            newMenu = new QMenu( menuName );
+            theMenus.append( newMenu );
+            // Where to put it? - we worked that out above...
+            menu->insertMenu( before, newMenu );
+          }
+          // QMenu* menu = getMenu( lyrActions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
+          newMenu->addAction( lyrActions[i].action );
+        }
+      }
+    }
+    menu->addSeparator();
+  }
 }
