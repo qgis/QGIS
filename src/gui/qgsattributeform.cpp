@@ -227,21 +227,15 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
 
 void QgsAttributeForm::synchronizeEnabledState()
 {
+  bool enabled = mLayer->isEditable();
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
   {
-    if ( mFeature.isValid() && mLayer->isEditable() )
-    {
-      ww->setEnabled( true );
-    }
-    else
-    {
-      ww->setEnabled( false );
-    }
+     ww->setEnabled( enabled );
   }
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
-    okButton->setEnabled( mFeature.isValid() && mLayer->isEditable() );
+    okButton->setEnabled( enabled );
 }
 
 void QgsAttributeForm::init()
