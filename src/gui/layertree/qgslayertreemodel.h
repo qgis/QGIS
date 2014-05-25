@@ -96,8 +96,8 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     void refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer );
 
-    QgsLayerTreeNode* currentNode() const { return mCurrentNode; }
-    void setCurrentNode( QgsLayerTreeNode* currentNode );
+    QModelIndex currentIndex() const { return mCurrentIndex; }
+    void setCurrentIndex( const QModelIndex& currentIndex );
 
   signals:
 
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
 
-    QgsLayerTreeNode* mCurrentNode;
+    QPersistentModelIndex mCurrentIndex;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

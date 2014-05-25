@@ -32,7 +32,6 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
     , mFlags( ShowSymbology )
-    , mCurrentNode( 0 )
 {
   Q_ASSERT( mRootNode );
 
@@ -242,7 +241,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       f.setItalic( true );
     if ( QgsLayerTree::isLayer( node ) )
       f.setBold( true );
-    if ( node == mCurrentNode )
+    if ( index == mCurrentIndex )
       f.setUnderline( true );
     return f;
   }
@@ -402,21 +401,15 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   addSymbologyToLayer( nodeLayer );
 }
 
-void QgsLayerTreeModel::setCurrentNode( QgsLayerTreeNode* currentNode )
+void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
 {
-  if ( mCurrentNode )
-  {
-    QModelIndex idx = node2index( mCurrentNode );
-    emit dataChanged( idx, idx );
-  }
+  QModelIndex oldIndex = mCurrentIndex;
+  mCurrentIndex = currentIndex;
 
-  mCurrentNode = currentNode;
-
-  if ( mCurrentNode )
-  {
-    QModelIndex idx = node2index( mCurrentNode );
-    emit dataChanged( idx, idx );
-  }
+  if ( oldIndex.isValid() )
+    emit dataChanged( oldIndex, oldIndex );
+  if ( currentIndex.isValid() )
+    emit dataChanged( currentIndex, currentIndex );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )

@@ -70,14 +70,16 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
   protected slots:
 
     void modelRowsInserted( QModelIndex index, int start, int end );
+    void modelRowsRemoved();
 
     void updateExpandedStateToNode( QModelIndex index );
 
-    void onCurrentChanged( QModelIndex current, QModelIndex previous );
+    void onCurrentChanged();
 
   protected:
     QgsLayerTreeViewDefaultActions* mDefaultActions;
     QgsLayerTreeViewMenuProvider* mMenuProvider;
+    QPersistentModelIndex mCurrentIndex;
 };
 
 /** interface to allow custom menus */
