@@ -93,6 +93,22 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      */
     bool editable() { return mAttributeForm->editable(); }
 
+    /**
+     * Toggles the form mode between edit feature and add feature.
+     * If set to true, the dialog will be editable even with an invalid feature.
+     * If set to true, the dialog will add a new feature when the form is accepted.
+     *
+     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     */
+    void setIsAddDialog( bool isAddDialog ) { mAttributeForm->setIsAddDialog( isAddDialog ); }
+
+    /**
+     * Sets the edit command message (Undo) that will be used when the dialog is accepted
+     *
+     * @param message The message
+     */
+    void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
+
   public slots:
     void accept();
 

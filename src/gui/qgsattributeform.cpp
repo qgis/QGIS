@@ -42,6 +42,8 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature feature
     , mContext( context )
     , mFormNr( sFormCounter++ )
     , mIsSaving( false )
+    , mIsAddDialog( false )
+    , mEditCommandMessage( tr( "Attributes changed" ) )
 {
   init();
   initPython();
@@ -60,11 +62,16 @@ QgsAttributeForm::~QgsAttributeForm()
 void QgsAttributeForm::hideButtonBox()
 {
   mButtonBox->hide();
+
+  // Make sure that changes are taken into account if somebody tries to figure out if there have been some
+  connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
 }
 
 void QgsAttributeForm::showButtonBox()
 {
   mButtonBox->show();
+
+  disconnect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
 }
 
 void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )
@@ -75,6 +82,13 @@ void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )
 bool QgsAttributeForm::editable()
 {
   return mFeature.isValid() && mLayer->isEditable() ;
+}
+
+void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
+{
+  mIsAddDialog = isAddDialog;
+
+  synchronizeEnabledState();
 }
 
 void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& value )
@@ -118,7 +132,8 @@ bool QgsAttributeForm::save()
   if ( !success )
     return false;
 
-  if ( mFeature.isValid() )
+
+  if ( mFeature.isValid() || mIsAddDialog )
   {
     bool doUpdate = false;
 
@@ -154,27 +169,42 @@ bool QgsAttributeForm::save()
 
     if ( doUpdate )
     {
-      mLayer->beginEditCommand( tr( "Attributes changed" ) );
+      mLayer->beginEditCommand( mEditCommandMessage );
 
-      for ( int i = 0; i < dst.count(); ++i )
+      if ( mIsAddDialog )
       {
-        if ( dst[i] == src[i] || !src[i].isValid() )
-          continue;
-
-        success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
-      }
-
-      if ( success )
-      {
-        mLayer->endEditCommand();
-        mFeature.setAttributes( dst );
+        mFeature.setValid( true );
+        mLayer->beginEditCommand( mEditCommandMessage );
+        bool res = mLayer->addFeature( updatedFeature );
+        if ( res )
+          mLayer->endEditCommand();
+        else
+          mLayer->destroyEditCommand();
       }
       else
       {
-        mLayer->destroyEditCommand();
+        for ( int i = 0; i < dst.count(); ++i )
+        {
+          if ( dst[i] == src[i] || !src[i].isValid() )
+            continue;
+
+          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
+        }
+
+        if ( success )
+        {
+          mLayer->endEditCommand();
+          mFeature.setAttributes( dst );
+        }
+        else
+        {
+          mLayer->destroyEditCommand();
+        }
       }
     }
   }
+
+  emit featureSaved( mFeature );
 
   mIsSaving = false;
 
@@ -227,21 +257,16 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
 
 void QgsAttributeForm::synchronizeEnabledState()
 {
+  bool isEditable = ( mFeature.isValid() || mIsAddDialog ) && mLayer->isEditable();
+
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
   {
-    if ( mFeature.isValid() && mLayer->isEditable() )
-    {
-      ww->setEnabled( true );
-    }
-    else
-    {
-      ww->setEnabled( false );
-    }
+    ww->setEnabled( isEditable );
   }
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
-    okButton->setEnabled( mFeature.isValid() && mLayer->isEditable() );
+    okButton->setEnabled( isEditable );
 }
 
 void QgsAttributeForm::init()
@@ -360,7 +385,6 @@ void QgsAttributeForm::init()
   connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( resetValues() ) );
 
-  connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( synchronizeEnabledState() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( synchronizeEnabledState() ) );
 

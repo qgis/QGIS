@@ -165,10 +165,10 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
       QgsDebugMsg( QString( "Using specified default %1 for %2" ).arg( defaultAttributes.value( idx ).toString() ).arg( idx ) );
       mFeature.setAttribute( idx, defaultAttributes.value( idx ) );
     }
-    else if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )
+    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
     {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-      mFeature.setAttribute( idx, mLastUsedValues[ mLayer ][idx] );
+      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+      mFeature.setAttribute( idx, sLastUsedValues[ mLayer ][idx] );
     }
     else
     {
@@ -178,7 +178,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
 
   bool res = false;
 
-  mLayer->beginEditCommand( text() );
+
 
   // show the dialog to enter attribute values
   bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
@@ -196,7 +196,13 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
   }
   if ( isDisabledAttributeValuesDlg )
   {
+    mLayer->beginEditCommand( text() );
     res = mLayer->addFeature( mFeature );
+
+    if ( res )
+      mLayer->endEditCommand();
+    else
+      mLayer->destroyEditCommand();
   }
   else
   {
@@ -205,36 +211,34 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
       origValues = mFeature.attributes();
 
     QgsAttributeDialog *dialog = newDialog( false );
-    if ( dialog->exec() )
+    dialog->setIsAddDialog( true );
+    dialog->setEditCommandMessage( text() );
+    dialog->exec();
+    if ( reuseLastValues )
     {
-      if ( reuseLastValues )
-      {
-        for ( int idx = 0; idx < fields.count(); ++idx )
-        {
-          const QgsAttributes &newValues = mFeature.attributes();
-          if ( origValues[idx] != newValues[idx] )
-          {
-            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-            mLastUsedValues[ mLayer ][idx] = newValues[idx];
-          }
-        }
-      }
-
-      res = mLayer->addFeature( mFeature );
-    }
-    else
-    {
-      QgsDebugMsg( "Adding feature to layer failed" );
-      res = false;
+      connect( dialog->dialog(), SIGNAL( featureSaved( const QgsFeature& feature ) ), this, SLOT( updateLastUsedValues( const QgsFeature& feature ) ) );
     }
   }
-
-  if ( res )
-    mLayer->endEditCommand();
-  else
-    mLayer->destroyEditCommand();
 
   return res;
 }
 
-QMap<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::mLastUsedValues;
+void QgsFeatureAction::updateLastUsedValues( const QgsFeature& feature )
+{
+  QgsAttributeForm* form = qobject_cast<QgsAttributeForm*>( sender() );
+  Q_ASSERT( form );
+
+  QgsFields fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    const QgsAttributes &newValues = feature.attributes();
+    QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
+    if ( origValues[idx] != newValues[idx] )
+    {
+      QgsDebugMsg( QString( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+      sLastUsedValues[ mLayer ][idx] = newValues[idx];
+    }
+  }
+}
+
+QMap<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;
