@@ -31,7 +31,7 @@ QWidget* QgsWidgetWrapper::widget()
   if ( !mWidget )
   {
     mWidget = createWidget( mParent );
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
+    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper*>( this ) );
     initWidget( mWidget );
   }
 
@@ -41,12 +41,6 @@ QWidget* QgsWidgetWrapper::widget()
 void QgsWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
 {
   mConfig = config;
-  // If an editor widget was supplied, we can initialize this now
-  if ( mWidget )
-  {
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
-    initWidget( mWidget );
-  }
 }
 
 void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext& context )
