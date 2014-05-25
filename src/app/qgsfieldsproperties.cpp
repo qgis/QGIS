@@ -152,7 +152,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       break;
 
     case QgsAttributeEditorElement::AeTypeRelation:
-      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() ) );
+      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() ) );
       break;
 
     case QgsAttributeEditorElement::AeTypeContainer:
