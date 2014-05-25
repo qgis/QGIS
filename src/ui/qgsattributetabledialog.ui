@@ -547,8 +547,17 @@
       <property name="spacing">
        <number>3</number>
       </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
       <property name="topMargin">
        <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
       </property>
       <item>
        <widget class="QComboBox" name="mFieldCombo"/>
@@ -570,7 +579,7 @@
       <item>
        <widget class="QLineEdit" name="mUpdateExpressionText">
         <property name="placeholderText">
-         <string>update expression...</string>
+         <string>[update field expression]</string>
         </property>
        </widget>
       </item>
