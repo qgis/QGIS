@@ -62,10 +62,14 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl , int fieldId
                                         + 2 );
   selectionListWidget->setMaximumWidth( selectionListWidget->sizeHintForColumn( 0 )
                                         + 2 );
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/QgsAttributeTypeDialog/geometry", saveGeometry() );
 }
 
 const QString QgsAttributeTypeDialog::editorWidgetV2Type()
