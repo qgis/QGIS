@@ -47,6 +47,7 @@ class TestQgsInvertedPolygon: public QObject
 
     void singleSubRenderer();
     void graduatedSubRenderer();
+    void preprocess();
 
   private:
     bool mTestHasError;
@@ -73,7 +74,7 @@ void TestQgsInvertedPolygon::initTestCase()
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
+  QString myPolysFileName = mTestDataDir + "polys_overlapping.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
@@ -113,6 +114,14 @@ void TestQgsInvertedPolygon::graduatedSubRenderer()
   mReport += "<h2>Inverted polygon renderer, graduated sub renderer test</h2>\n";
   QVERIFY( setQml( "inverted_polys_graduated.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_graduated" ) );
+}
+
+void TestQgsInvertedPolygon::preprocess()
+{
+  // FIXME will have to find some overlapping polygons
+  mReport += "<h2>Inverted polygon renderer, preprocessing test</h2>\n";  
+  QVERIFY( setQml( "inverted_polys_preprocess.qml" ) );
+  QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
 
 //

@@ -54,6 +54,7 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, 
 
  private slots:
   void on_mRendererComboBox_currentIndexChanged( int index );
+  void on_mMergePolygonsCheckBox_stateChanged( int state );
 };
 
 

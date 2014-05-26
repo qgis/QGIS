@@ -104,6 +104,16 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
    */
   const QgsFeatureRendererV2* embeddedRenderer() const;
 
+  /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
+  bool preprocessingEnabled() const { return mPreprocessingEnabled; }
+  /** 
+      @param enabled enables or disables the preprocessing.
+      When enabled, geometries will be merged with an union before being rendered.
+      It allows to fix some rendering artefacts (when rendering overlapping polygons for instance).
+      This will involve some CPU-demanding computations and is thus disabled by default.
+  */
+  void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
+
  private:
   /** Private copy constructor. @see clone() */
   QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& );
@@ -145,6 +155,9 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     feature(a_feature),selected(a_selected), drawMarkers(a_drawMarkers), layer(a_layer) {}
   };
   QList<FeatureDecoration> mFeatureDecorations;
+
+  /** whether to preprocess (merge) geometries before rendering*/
+  bool mPreprocessingEnabled;
 };
 
 

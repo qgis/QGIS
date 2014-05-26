@@ -28,7 +28,7 @@
 #include <QDomElement>
 
 QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* subRenderer )
-  : QgsFeatureRendererV2( "invertedPolygonRenderer" )
+  : QgsFeatureRendererV2( "invertedPolygonRenderer" ), mPreprocessingEnabled( false )
 {
   if ( subRenderer ) {
     setEmbeddedRenderer( subRenderer );
@@ -154,15 +154,6 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     return false;
   }
 
-  // We build here a "reversed" geometry of all the polygons
-  //
-  // The final geometry is a multipolygon F, with :
-  // * the first polygon of F having the current extent as its exterior ring
-  // * each polygon's exterior ring is added as interior ring of the first polygon of F
-  // * each polygon's interior ring is added as new polygons in F
-  //
-  // No validity check is done, on purpose, it will be very slow and painting
-  // operations do not need geometries to be valid
   if ( ! mFeaturesCategoryMap.contains(catId) )
   {
     // the exterior ring must be a square in the destination CRS
@@ -173,7 +164,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     mFeaturesCategoryMap.insert( catId, cFeat );
   }
 
-  // update the gometry
+  // update the geometry
   CombinedFeature& cFeat = mFeaturesCategoryMap[catId];
   QgsMultiPolygon multi;
   QgsGeometry* geom = feature.geometry();
@@ -190,37 +181,69 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     multi = geom->asMultiPolygon();
   }
 
-  for ( int i = 0; i < multi.size(); i++ ) {
-    // add the exterior ring as interior ring to the first polygon
-    if ( mTransform ) {
-      QgsPolyline new_ls;
-      QgsPolyline& old_ls = multi[i][0];
-      for ( int k = 0; k < old_ls.size(); k++ ) {
-        new_ls.append( mTransform->transform( old_ls[k] ) );
-      }
-      cFeat.multiPolygon[0].append( new_ls );
+  if ( mPreprocessingEnabled )
+  {
+    // preprocessing
+    if ( ! cFeat.feature.geometry() )
+    {
+      // first feature: add the current geometry
+      cFeat.feature.setGeometry( new QgsGeometry(*geom) );
     }
     else
     {
-      cFeat.multiPolygon[0].append( multi[i][0] );
+      // other features: combine them (union)
+      QgsGeometry* combined = cFeat.feature.geometry()->combine( geom );
+      if ( combined && combined->isGeosValid() )
+      {
+        cFeat.feature.setGeometry( combined );
+      }
     }
-    // add interior rings as new polygons
-    for ( int j = 1; j < multi[i].size(); j++ ) {
-      QgsPolygon new_poly;
+  }
+  else
+  {
+    // No preprocessing involved.
+    // We build here a "reversed" geometry of all the polygons
+    //
+    // The final geometry is a multipolygon F, with :
+    // * the first polygon of F having the current extent as its exterior ring
+    // * each polygon's exterior ring is added as interior ring of the first polygon of F
+    // * each polygon's interior ring is added as new polygons in F
+    //
+    // No validity check is done, on purpose, it will be very slow and painting
+    // operations do not need geometries to be valid
+
+    for ( int i = 0; i < multi.size(); i++ ) {
+      // add the exterior ring as interior ring to the first polygon
       if ( mTransform ) {
         QgsPolyline new_ls;
-        QgsPolyline& old_ls = multi[i][j];
+        QgsPolyline& old_ls = multi[i][0];
         for ( int k = 0; k < old_ls.size(); k++ ) {
           new_ls.append( mTransform->transform( old_ls[k] ) );
         }
-        new_poly.append( new_ls );
+        cFeat.multiPolygon[0].append( new_ls );
       }
       else
       {
-        new_poly.append( multi[i][j] );
+        cFeat.multiPolygon[0].append( multi[i][0] );
       }
+      // add interior rings as new polygons
+      for ( int j = 1; j < multi[i].size(); j++ ) {
+        QgsPolygon new_poly;
+        if ( mTransform ) {
+          QgsPolyline new_ls;
+          QgsPolyline& old_ls = multi[i][j];
+          for ( int k = 0; k < old_ls.size(); k++ ) {
+            new_ls.append( mTransform->transform( old_ls[k] ) );
+          }
+          new_poly.append( new_ls );
+        }
+        else
+        {
+          new_poly.append( multi[i][j] );
+        }
 
-      cFeat.multiPolygon.append( new_poly );
+        cFeat.multiPolygon.append( new_poly );
+      }
     }
   }
   return true;
@@ -239,7 +262,24 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   for ( FeatureCategoryMap::iterator cit = mFeaturesCategoryMap.begin(); cit != mFeaturesCategoryMap.end(); ++cit)
   {
     QgsFeature feat( cit.value().feature );
-    feat.setGeometry( QgsGeometry::fromMultiPolygon( cit.value().multiPolygon ) );
+    if ( !mPreprocessingEnabled )
+    {
+      // no preprocessing - the final polygon has already been prepared
+      feat.setGeometry( QgsGeometry::fromMultiPolygon( cit.value().multiPolygon ) );
+    }
+    else
+    {
+      // preprocessing mode - we still have to invert (using difference)
+      if ( feat.geometry() )
+      {
+        QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
+        QgsGeometry *final = rect->difference( feat.geometry() );
+        if ( final )
+        {
+          feat.setGeometry( final );
+        }
+      }
+    }
     mSubRenderer->renderFeature( feat, context );
   }
 
@@ -280,12 +320,17 @@ QString QgsInvertedPolygonRenderer::dump() const
 
 QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone()
 {
+  QgsInvertedPolygonRenderer* newRenderer;
   if ( mSubRenderer.isNull() )
   {
-    return new QgsInvertedPolygonRenderer( 0 );
+    newRenderer = new QgsInvertedPolygonRenderer( 0 );
   }
-  // else
-  return new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
+  else
+  {
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
+  }
+  newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
+  return newRenderer;
 }
 
 QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
@@ -297,6 +342,7 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
   {
     r->setEmbeddedRenderer( QgsFeatureRendererV2::load( embeddedRendererElem ) );
   }
+  r->setPreprocessingEnabled( element.attribute( "preprocessing", "0" ).toInt() == 1 );
   return r;
 }
 
@@ -304,6 +350,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "invertedPolygonRenderer" );
+  rendererElem.setAttribute( "preprocessing", preprocessingEnabled() ? "1" : "0" );
 
   if ( mSubRenderer )
   {

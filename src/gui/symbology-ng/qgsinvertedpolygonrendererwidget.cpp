@@ -67,6 +67,9 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   {
     // an existing inverted renderer
     mRenderer.reset( static_cast<QgsInvertedPolygonRenderer*>(renderer) );
+    mMergePolygonsCheckBox->blockSignals( true );
+    mMergePolygonsCheckBox->setCheckState( mRenderer->preprocessingEnabled() ? Qt::Checked : Qt::Unchecked );
+    mMergePolygonsCheckBox->blockSignals( false );
   }
 
   int currentEmbeddedIdx = 0;
@@ -122,11 +125,15 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   {
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>(mRenderer->embeddedRenderer())->clone() ) );
 
-    if ( mLayout->count() > 1 ) {
+    if ( mLayout->count() > 2 ) {
       // remove the current renderer widget
-      mLayout->takeAt( 1 );
+      mLayout->takeAt( 2 );
     }
     mLayout->addWidget( mEmbeddedRendererWidget.data() );
   }
 }
 
+void QgsInvertedPolygonRendererWidget::on_mMergePolygonsCheckBox_stateChanged( int state )
+{
+  mRenderer->setPreprocessingEnabled( state == Qt::Checked );
+}
