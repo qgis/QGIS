@@ -169,6 +169,15 @@ bool QgsVectorLayerRenderer::render()
     simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
 
     featureRequest.setSimplifyMethod( simplifyMethod );
+
+    QgsVectorSimplifyMethod vectorMethod = mSimplifyMethod;
+    mContext.setVectorSimplifyMethod( vectorMethod );
+  }
+  else
+  {
+    QgsVectorSimplifyMethod vectorMethod;
+    vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+    mContext.setVectorSimplifyMethod( vectorMethod );
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );

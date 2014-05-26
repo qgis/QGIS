@@ -33,7 +33,7 @@ QgsRenderContext::QgsRenderContext()
     mLabelingEngine( NULL ),
     mUseRenderingOptimization( true )
 {
-
+    mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()
