@@ -386,7 +386,7 @@ int main( int argc, char * argv[] )
       QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
       if ( !p )
       {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading gthe project file or the SLD configuration" ) );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
         continue;
       }
       //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
