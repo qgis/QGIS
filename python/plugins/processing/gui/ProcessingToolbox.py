@@ -72,6 +72,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
 
+        Processing.setToolbox(self)
         self.fillTree()
 
     def textChanged(self):

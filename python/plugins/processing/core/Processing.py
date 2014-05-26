@@ -67,6 +67,8 @@ class Processing:
     listeners = []
     providers = []
 
+    toolbox = None
+
     # A dictionary of algorithms. Keys are names of providers
     # and values are list with all algorithms from that provider
     algs = {}
@@ -80,6 +82,10 @@ class Processing:
     modeler = ModelerAlgorithmProvider()
 
     @staticmethod
+    def setToolbox(toolbox):
+        Processing.toolbox = toolbox
+
+    @staticmethod
     def addProvider(provider, updateList=False):
         """Use this method to add algorithms from external providers.
         """
@@ -91,8 +97,8 @@ class Processing:
             provider.initializeSettings()
             Processing.providers.append(provider)
             ProcessingConfig.readSettings()
-            if updateList:
-                Processing.updateAlgsList()
+            if updateList and Processing.toolbox:
+                Processing.toolbox.updateTree()
         except:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    'Could not load provider:'
@@ -111,7 +117,8 @@ class Processing:
             provider.unload()
             Processing.providers.remove(provider)
             ProcessingConfig.readSettings()
-            Processing.updateAlgsList()
+            if Processing.toolbox:
+                Processing.toolbox.updateTree()
         except:
             # This try catch block is here to avoid problems if the
             # plugin with a provider is unloaded after the Processing
