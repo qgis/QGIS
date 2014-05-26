@@ -194,6 +194,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QAction* mActionToggleEditing;
 
     QDockWidget* mDock;
+    QgsDistanceArea* myDa;
 
     QMenu* mFilterColumnsMenu;
     QSignalMapper* mFilterActionMapper;
