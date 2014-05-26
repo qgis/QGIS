@@ -45,6 +45,15 @@ int QgsAppLegendInterface::addGroup( QString name, bool expand, QTreeWidgetItem*
   return addGroup( name, expand, -1 );
 }
 
+void QgsAppLegendInterface::setExpanded( QgsLayerTreeNode *node, bool expand )
+{
+  QModelIndex idx = mLayerTreeView->layerTreeModel()->node2index( node );
+  if ( expand )
+    mLayerTreeView->expand( idx );
+  else
+    mLayerTreeView->collapse( idx );
+}
+
 int QgsAppLegendInterface::addGroup( QString name, bool expand, int parentIndex )
 {
   QgsLayerTreeGroup* parentGroup = parentIndex == -1 ? mLayerTreeView->layerTreeModel()->rootGroup() : groupIndexToNode( parentIndex );
@@ -52,7 +61,7 @@ int QgsAppLegendInterface::addGroup( QString name, bool expand, int parentIndex 
     return -1;
 
   QgsLayerTreeGroup* group = parentGroup->addGroup( name );
-  group->setExpanded( expand );
+  setExpanded( group, expand );
   return groupNodeToIndex( group );
 }
 
@@ -76,7 +85,7 @@ void QgsAppLegendInterface::moveLayer( QgsMapLayer * ml, int groupIndex )
   if ( !nodeLayer || !QgsLayerTree::isGroup( nodeLayer->parent() ) )
     return;
 
-  group->addLayer( ml );
+  group->insertLayer( 0, ml );
 
   QgsLayerTreeGroup* nodeLayerParentGroup = QgsLayerTree::toGroup( nodeLayer->parent() );
   nodeLayerParentGroup->removeChildNode( nodeLayer );
@@ -85,7 +94,7 @@ void QgsAppLegendInterface::moveLayer( QgsMapLayer * ml, int groupIndex )
 void QgsAppLegendInterface::setGroupExpanded( int groupIndex, bool expand )
 {
   if ( QgsLayerTreeGroup* group = groupIndexToNode( groupIndex ) )
-    group->setExpanded( expand );
+    setExpanded( group, expand );
 }
 
 void QgsAppLegendInterface::setGroupVisible( int groupIndex, bool visible )
@@ -155,7 +164,7 @@ void QgsAppLegendInterface::setLayerVisible( QgsMapLayer * ml, bool visible )
 void QgsAppLegendInterface::setLayerExpanded( QgsMapLayer * ml, bool expand )
 {
   if ( QgsLayerTreeLayer* nodeLayer = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( ml->id() ) )
-    nodeLayer->setExpanded( expand );
+    setExpanded( nodeLayer, expand );
 }
 
 static void _collectGroups( QgsLayerTreeGroup* parentGroup, QStringList& list )

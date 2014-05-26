@@ -111,11 +111,11 @@ class QgsAppLegendInterface : public QgsLegendInterface
     void onRemovedChildren();
 
   private:
-
     //! Pointer to QgsLegend object
     QgsLayerTreeView* mLayerTreeView;
     QgsLayerTreeGroup* groupIndexToNode( int itemIndex );
     int groupNodeToIndex( QgsLayerTreeGroup* group );
+    void setExpanded( QgsLayerTreeNode *node, bool expand );
 };
 
 #endif //QGSLEGENDAPPIFACE_H
