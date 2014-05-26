@@ -137,6 +137,11 @@ bool QgsAttributeForm::save()
   {
     bool doUpdate = false;
 
+    // An add dialog should perform an action by default
+    // and not only if attributes have "changed"
+    if ( mIsAddDialog )
+      doUpdate = true;
+
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
 
