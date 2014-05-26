@@ -8486,15 +8486,15 @@ Działa na aktualnie edytowanej warstwie</translation>
     <name>MetaSearch</name>
     <message>
         <source>MetaSearch plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wyszukiwarka</translation>
     </message>
     <message>
         <source>Search Metadata Catalogues</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przeglądaj katalog wyszukiwarki</translation>
     </message>
     <message>
         <source>MetaSearch plugin help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pomoc wtyczki Wyszukiwarka</translation>
     </message>
     <message>
         <source>Get Help on MetaSearch</source>
@@ -8506,28 +8506,28 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="14"/>
         <source>MetaSearch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wyszukiwarka</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="24"/>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="80"/>
         <source>Search</source>
-        <translation type="unfinished">Szukaj</translation>
+        <translation>Szukaj</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="30"/>
         <source>Find</source>
-        <translation type="unfinished">Znajdź</translation>
+        <translation>Znajdź</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="36"/>
         <source>Set global</source>
-        <translation type="unfinished"></translation>
+        <translation>Cały zasięg</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="46"/>
         <source>Map extent</source>
-        <translation type="unfinished">Zasięg mapy</translation>
+        <translation>Zasięg mapy</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="53"/>
@@ -8542,7 +8542,7 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="70"/>
         <source>Records</source>
-        <translation type="unfinished"></translation>
+        <translation>obiektów</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="87"/>
@@ -8557,228 +8557,229 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="104"/>
         <source>        From</source>
-        <translation type="unfinished"></translation>
+        <translation>              w</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="111"/>
         <source>Keywords</source>
-        <translation type="unfinished">Słowa kluczowe</translation>
+        <translation>Słowa kluczowe</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="121"/>
         <source>Results</source>
-        <translation type="unfinished">Wyniki</translation>
+        <translation>Wyniki</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="127"/>
         <source>&gt;</source>
-        <translation type="unfinished">&gt;</translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="134"/>
         <source>&lt;&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="141"/>
         <source>Add WCS</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj WCS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="148"/>
         <source>Add WMS/WMTS</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj WMS/WMTS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="158"/>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="165"/>
         <source>Add WFS</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj WFS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="172"/>
         <source>Abstract</source>
-        <translation type="unfinished">Abstrakt</translation>
+        <translation>Abstrakt</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="186"/>
         <source>Double click to see full record information</source>
-        <translation type="unfinished"></translation>
+        <translation>Dwuklik, aby wyświetlić wszystkie obiekty</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="211"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="216"/>
         <source>Title</source>
-        <translation type="unfinished">Tytuł</translation>
+        <translation>Tytuł</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="224"/>
         <source>View search results as XML</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl jako XML</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="231"/>
         <source>&gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="254"/>
         <source>Services</source>
-        <translation type="unfinished"></translation>
+        <translation>Usługi</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="263"/>
         <source>Service info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="270"/>
         <source>GetCapabilities response</source>
-        <translation type="unfinished"></translation>
+        <translation>GetCapabilities</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="277"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowe</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="284"/>
         <source>Edit</source>
-        <translation type="unfinished">Edytuj</translation>
+        <translation>Edytuj</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="291"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="298"/>
         <source>Save</source>
-        <translation type="unfinished">Zapisz</translation>
+        <translation>Zapisz</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="312"/>
         <source>Add default services</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj domyślne usługi</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="319"/>
         <source>Load</source>
-        <translation type="unfinished">Wczytaj</translation>
+        <translation>Wczytaj</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="327"/>
         <source>Settings</source>
-        <translation type="unfinished">Ustawienia</translation>
+        <translation>Ustawienia</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="339"/>
         <source>Connection naming</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazewnictwo połączeń</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="345"/>
         <source>When saving the connection of an OWS service</source>
-        <translation type="unfinished"></translation>
+        <translation>Przy zapisie usług OWS</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="352"/>
         <source>Use the OWS Service Title and ask before overwriting</source>
-        <translation type="unfinished"></translation>
+        <translation>użyj tytułu usługi OWS i pytaj przy nadpisywaniu</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="362"/>
         <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Co oznacza tutaj &apos;already available&apos;? Że już jest czy że jeszcze nie ma?</translatorcomment>
+        <translation type="unfinished">użyj tytułu usługi OWS i nie pytaj przy nadpisywaniu</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="369"/>
         <source>Use a temporary name, which you can change later</source>
-        <translation type="unfinished"></translation>
+        <translation>użyj nazwy tymczasowej, którą później można zmienić</translation>
     </message>
     <message>
         <source>No services/connections defined. To get started with MetaSearch, create a new connection by clicking &apos;New&apos; or click &apos;Add default services&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie zdefiniowano usług/połączeń. Aby rozpocząc pracę, stwórz nowe połączenie przyciskiem &apos;Nowe&apos; lub &apos;Dodaj domyślne usługi&apos;</translation>
     </message>
     <message>
         <source>New Catalogue service</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy katalog usług</translation>
     </message>
     <message>
         <source>Edit Catalogue service</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytuj katalog usług</translation>
     </message>
     <message>
         <source>Remove service %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Usunąć usługę %s?</translation>
     </message>
     <message>
         <source>Confirm delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Zatwierdź usunięcie</translation>
     </message>
     <message>
         <source>%s exists.  Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>%s istnieje. Nadpisać?</translation>
     </message>
     <message>
         <source>Loading connections</source>
-        <translation type="unfinished">Ładowanie połączeń</translation>
+        <translation>Ładowanie połączeń</translation>
     </message>
     <message>
         <source>Search error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wyszukiwania</translation>
     </message>
     <message>
         <source>Search error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wyszukiwania: %s</translation>
     </message>
     <message>
         <source>Connection error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia</translation>
     </message>
     <message>
         <source>Connection error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia: %s</translation>
     </message>
     <message>
         <source>0 results</source>
-        <translation type="unfinished"></translation>
+        <translation>0 wyników</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlane %d - %d z %d wyników %s</translation>
     </message>
     <message>
         <source>No abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak abstraktu</translation>
     </message>
     <message>
         <source>End of results. Go to start?</source>
-        <translation type="unfinished"></translation>
+        <translation>Koniec wyników. Przejść na początek?</translation>
     </message>
     <message>
         <source>Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nawigacja</translation>
     </message>
     <message>
         <source>Start of results. Go to end?</source>
-        <translation type="unfinished"></translation>
+        <translation>Początek wyników. Przejść na koniec?</translation>
     </message>
     <message>
         <source>Error connecting to %s: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia z %s: %s</translation>
     </message>
     <message>
         <source>Connection %s exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie %s już istnieje. Nadpisać?</translation>
     </message>
     <message>
         <source>Saving server</source>
@@ -8786,27 +8787,27 @@ Działa na aktualnie edytowanej warstwie</translation>
     </message>
     <message>
         <source>GetRecords error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Błąd GetRecords</translation>
     </message>
     <message>
         <source>Error getting response: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd pobierania wyniku: %s</translation>
     </message>
     <message>
         <source>Error connecting to service: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia z usługą: %s</translation>
     </message>
     <message>
         <source>Value Error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Błąd wartości: %s</translation>
     </message>
     <message>
         <source>Unknown Error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany błąd: %s</translation>
     </message>
     <message>
         <source>CSW Connection error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia CSW</translation>
     </message>
 </context>
 <context>
@@ -8994,7 +8995,7 @@ Linia z błędem: %1</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="14"/>
         <source>Create a new Catalogue connection</source>
-        <translation type="unfinished">Utwórz nowe połączenie z katalogiem</translation>
+        <translation>Utwórz nowe połączenie z katalogiem</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/newconnectiondialog.ui" line="20"/>
