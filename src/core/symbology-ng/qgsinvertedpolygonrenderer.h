@@ -129,9 +129,12 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     QgsMultiPolygon multiPolygon; //< the final combined geometry
     QgsFeature feature;           //< one feature (for attriute-based rendering)
   };
-  typedef QMap< QByteArray, CombinedFeature > FeatureCategoryMap;
-  /** where features are stored, based on their symbol category */
+  typedef QVector<CombinedFeature> FeatureCategoryMap;
+  /** where features are stored, based on the index of their symbol category @see mSymbolCategories */
   FeatureCategoryMap mFeaturesCategoryMap;
+
+  /** maps a category to an index */
+  QMap<QByteArray, int> mSymbolCategories;
 
   /** the polygon used as exterior ring that covers the current extent */
   QgsPolygon mExtentPolygon;

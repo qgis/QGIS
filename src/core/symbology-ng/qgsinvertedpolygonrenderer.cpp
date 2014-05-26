@@ -154,18 +154,19 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     return false;
   }
 
-  if ( ! mFeaturesCategoryMap.contains(catId) )
+  if ( ! mSymbolCategories.contains(catId) )
   {
     // the exterior ring must be a square in the destination CRS
     CombinedFeature cFeat;
     cFeat.multiPolygon.append( mExtentPolygon );
     // store the first feature
     cFeat.feature = feature;
-    mFeaturesCategoryMap.insert( catId, cFeat );
+    mSymbolCategories.insert( catId, mSymbolCategories.count() );
+    mFeaturesCategoryMap.append( cFeat );
   }
 
   // update the geometry
-  CombinedFeature& cFeat = mFeaturesCategoryMap[catId];
+  CombinedFeature& cFeat = mFeaturesCategoryMap[ mSymbolCategories[catId] ];
   QgsMultiPolygon multi;
   QgsGeometry* geom = feature.geometry();
   if ( !geom )
@@ -261,11 +262,11 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
 
   for ( FeatureCategoryMap::iterator cit = mFeaturesCategoryMap.begin(); cit != mFeaturesCategoryMap.end(); ++cit)
   {
-    QgsFeature feat( cit.value().feature );
+    QgsFeature feat( cit->feature );
     if ( !mPreprocessingEnabled )
     {
       // no preprocessing - the final polygon has already been prepared
-      feat.setGeometry( QgsGeometry::fromMultiPolygon( cit.value().multiPolygon ) );
+      feat.setGeometry( QgsGeometry::fromMultiPolygon( cit->multiPolygon ) );
     }
     else
     {
