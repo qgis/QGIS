@@ -207,6 +207,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mFieldCombo->setModel( mFieldModel );
   connect( mOpenExpressionWidget, SIGNAL( clicked() ), this, SLOT( openExpressionBuilder() ) );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
+  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
   editingToggled();
 }
 
