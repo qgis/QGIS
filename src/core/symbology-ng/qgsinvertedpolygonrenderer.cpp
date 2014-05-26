@@ -63,7 +63,6 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
     return;
   }
 
-  mSubRenderer->startRender( context, fields );
   mFeaturesCategoryMap.clear();
   mFeatureDecorations.clear();
   mFields = fields;
@@ -81,7 +80,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   // convert viewport to dest CRS
   QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
-  e.adjust( -e.width()*10, -e.height()*10, e.width()*10, e.height()*10 );
+  e.adjust( -e.width()*5, -e.height()*5, e.width()*5, e.height()*5 );
   QgsPolyline exteriorRing;
   exteriorRing << mtp.toMapCoordinates( e.topLeft() );
   exteriorRing << mtp.toMapCoordinates( e.topRight() );
@@ -89,20 +88,28 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   exteriorRing << mtp.toMapCoordinates( e.bottomLeft() );
   exteriorRing << mtp.toMapCoordinates( e.topLeft() );
 
-  mTransform = context.coordinateTransform();
+  // copy the rendering context
+  mContext = context;
+
   // If reprojection is enabled, we must reproject during renderFeature
   // and act as if there is no reprojection
   // If we don't do that, there is no need to have a simple rectangular extent
   // that covers the whole screen
   // (a rectangle in the destCRS cannot be expressed as valid coordinates in the sourceCRS in general)
-  if (mTransform)
+  if ( context.coordinateTransform() )
   {
     // disable projection
-    context.setCoordinateTransform(0);
+    mContext.setCoordinateTransform(0);
+    // recompute extent so that polygon clipping is correct
+    QRect v( context.painter()->viewport() );
+    mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
+    // do we have to recompute the MapToPixel ?
   }
 
   mExtentPolygon.clear();
   mExtentPolygon.append(exteriorRing);
+
+  mSubRenderer->startRender( mContext, fields );
 }
 
 bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
@@ -173,6 +180,13 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   {
     return false;
   }
+
+  const QgsCoordinateTransform* xform = context.coordinateTransform();
+  if ( xform )
+  {
+    geom->transform( *xform );
+  }
+
   if ( (geom->wkbType() == QGis::WKBPolygon) ||
        (geom->wkbType() == QGis::WKBPolygon25D) ) {
     multi.append(geom->asPolygon() );
@@ -215,34 +229,12 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
     for ( int i = 0; i < multi.size(); i++ ) {
       // add the exterior ring as interior ring to the first polygon
-      if ( mTransform ) {
-        QgsPolyline new_ls;
-        QgsPolyline& old_ls = multi[i][0];
-        for ( int k = 0; k < old_ls.size(); k++ ) {
-          new_ls.append( mTransform->transform( old_ls[k] ) );
-        }
-        cFeat.multiPolygon[0].append( new_ls );
-      }
-      else
-      {
-        cFeat.multiPolygon[0].append( multi[i][0] );
-      }
+      cFeat.multiPolygon[0].append( multi[i][0] );
+
       // add interior rings as new polygons
       for ( int j = 1; j < multi[i].size(); j++ ) {
         QgsPolygon new_poly;
-        if ( mTransform ) {
-          QgsPolyline new_ls;
-          QgsPolyline& old_ls = multi[i][j];
-          for ( int k = 0; k < old_ls.size(); k++ ) {
-            new_ls.append( mTransform->transform( old_ls[k] ) );
-          }
-          new_poly.append( new_ls );
-        }
-        else
-        {
-          new_poly.append( multi[i][j] );
-        }
-
+        new_poly.append( multi[i][j] );
         cFeat.multiPolygon.append( new_poly );
       }
     }
@@ -281,7 +273,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
         }
       }
     }
-    mSubRenderer->renderFeature( feat, context );
+    mSubRenderer->renderFeature( feat, mContext );
   }
 
   // when no features are visible, we still have to draw the exterior rectangle
@@ -293,22 +285,16 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     // empty feature with default attributes
     QgsFeature feat( mFields );
     feat.setGeometry( QgsGeometry::fromPolygon( mExtentPolygon ) );
-    mSubRenderer->renderFeature( feat, context );
+    mSubRenderer->renderFeature( feat, mContext );
   }
 
   // draw feature decorations
   foreach (FeatureDecoration deco, mFeatureDecorations )
   {
-    mSubRenderer->renderFeature( deco.feature, context, deco.layer, deco.selected, deco.drawMarkers );
+    mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }
 
-  mSubRenderer->stopRender( context );
-
-  if ( mTransform )
-  {
-    // restore the coordinate transform if needed
-    context.setCoordinateTransform( mTransform );
-  }
+  mSubRenderer->stopRender( mContext );
 }
 
 QString QgsInvertedPolygonRenderer::dump() const

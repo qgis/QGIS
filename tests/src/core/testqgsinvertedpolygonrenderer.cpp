@@ -48,11 +48,12 @@ class TestQgsInvertedPolygon: public QObject
     void singleSubRenderer();
     void graduatedSubRenderer();
     void preprocess();
+    void projectionTest();
 
   private:
     bool mTestHasError;
     bool setQml( QString qmlFile );
-    bool imageCheck( QString theType );
+  bool imageCheck( QString theType, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QString mTestDataDir;
@@ -124,6 +125,19 @@ void TestQgsInvertedPolygon::preprocess()
   QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
 
+//-8639421,8382691 : -3969110,12570905
+void TestQgsInvertedPolygon::projectionTest()
+{
+  // FIXME will have to find some overlapping polygons
+  mReport += "<h2>Inverted polygon renderer, projection test</h2>\n";
+  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem("EPSG:2154") );
+  mMapSettings.setCrsTransformEnabled( true );
+  QgsRectangle extent( QgsPoint(-8639421,8382691), QgsPoint(-3969110,12570905) );
+  QVERIFY( setQml( "inverted_polys_single.qml" ) );
+  QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
+  mMapSettings.setCrsTransformEnabled( false );
+}
+
 //
 // Private helper functions not called directly by CTest
 //
@@ -144,11 +158,18 @@ bool TestQgsInvertedPolygon::setQml( QString qmlFile )
   return myStyleFlag;
 }
 
-bool TestQgsInvertedPolygon::imageCheck( QString theTestType )
+bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle* extent )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mMapSettings.setExtent( mpPolysLayer->extent() );
+  if ( !extent )
+  {
+    mMapSettings.setExtent( mpPolysLayer->extent() );
+  }
+  else
+  {
+    mMapSettings.setExtent( *extent );
+  }
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );

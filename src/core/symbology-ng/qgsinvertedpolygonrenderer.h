@@ -139,8 +139,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
   /** the polygon used as exterior ring that covers the current extent */
   QgsPolygon mExtentPolygon;
 
-  /** the current coordinate transform (or null) */
-  const QgsCoordinateTransform* mTransform;
+  /** the context used for rendering */
+  QgsRenderContext mContext;
 
   /** fields of each feature*/
   QgsFields mFields;
