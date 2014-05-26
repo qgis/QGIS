@@ -33,7 +33,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
 
-    // TODO: expand all, collapse all
+    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+
     // TODO: update drawing order
   }
   else if ( QgsLayerTreeNode* node = mView->layerTreeModel()->index2node( idx ) )
