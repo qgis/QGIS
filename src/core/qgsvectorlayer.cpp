@@ -43,6 +43,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsexpressionfieldbuffer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
@@ -200,6 +201,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mDataProvider;
   delete mEditBuffer;
   delete mJoinBuffer;
+  delete mExpressionFieldBuffer;
   delete mCache;
   delete mLabel;
   delete mDiagramLayerSettings;
@@ -1301,6 +1303,10 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
   mJoinBuffer->readXml( layer_node );
 
+  if ( !mExpressionFieldBuffer )
+    mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
+  mExpressionFieldBuffer->readXml( layer_node );
+
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
@@ -1354,7 +1360,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       mWkbType = mDataProvider->geometryType();
 
       mJoinBuffer = new QgsVectorLayerJoinBuffer();
-
+      mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
       updateFields();
 
       // look at the fields in the layer and set the primary
@@ -1465,6 +1471,9 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
+
+  // save expression fields
+  mExpressionFieldBuffer->writeXml( layer_node, document );
 
   // renderer specific settings
   QString errorMsg;
@@ -2624,7 +2633,8 @@ bool QgsVectorLayer::fieldEditable( int idx )
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
   {
-    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin )
+    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin
+         || mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
       return false;
     return mFieldEditables.value( fields[idx].name(), true );
   }
@@ -2733,6 +2743,22 @@ const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
   return mJoinBuffer->vectorJoins();
 }
 
+void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
+{
+  mExpressionFieldBuffer->addExpression( exp, fld );
+  updateFields();
+  int idx = mUpdatedFields.indexFromName( fld.name() );
+  emit( attributeAdded( idx ) );
+}
+
+void QgsVectorLayer::removeExpressionField( int index )
+{
+  int oi = mUpdatedFields.fieldOriginIndex( index );
+  mExpressionFieldBuffer->removeExpression( oi );
+  updateFields();
+  emit( attributeDeleted( index ) );
+}
+
 void QgsVectorLayer::updateFields()
 {
   if ( !mDataProvider )
@@ -2747,6 +2773,9 @@ void QgsVectorLayer::updateFields()
   // joined fields
   if ( mJoinBuffer && mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mUpdatedFields );
+
+  if ( mExpressionFieldBuffer )
+    mExpressionFieldBuffer->updateFields( mUpdatedFields );
 
   emit updatedFields();
 }
@@ -2785,7 +2814,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
     return vl->dataProvider()->uniqueValues( sourceLayerIndex, uniqueValues, limit );
   }
-  else if ( origin == QgsFields::OriginEdit )
+  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
     if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
@@ -2845,7 +2874,7 @@ QVariant QgsVectorLayer::minimumValue( int index )
 
     return vl->minimumValue( sourceLayerIndex );
   }
-  else if ( origin == QgsFields::OriginEdit )
+  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
     if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )

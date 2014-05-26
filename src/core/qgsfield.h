@@ -22,6 +22,8 @@
 
 typedef QList<int> QgsAttributeList;
 
+class QgsExpression;
+
 /** \ingroup core
   * Encapsulate a field in an attribute table or data source.
   * QgsField stores metadata about an attribute field, including name, type
@@ -65,7 +67,7 @@ class CORE_EXPORT QgsField
     /**
       Gets the field type. Field types vary depending on the data source. Examples
       are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attenpt to standardize the value.
+      the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
     const QString & typeName() const;
@@ -124,7 +126,7 @@ class CORE_EXPORT QgsField
       */
     void setComment( const QString & comment );
 
-    /**Formats string for display*/
+    /** Formats string for display*/
     QString displayString( const QVariant& v ) const;
 
   private:
@@ -167,23 +169,28 @@ class CORE_EXPORT QgsFields
       OriginUnknown,   //!< it has not been specified where the field comes from
       OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
       OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
-      OriginEdit       //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+      OriginEdit,      //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+      OriginExpression //!< field is calculated from an expression
     };
 
     typedef struct Field
     {
       Field(): origin( OriginUnknown ), originIndex( -1 ) {}
       Field( const QgsField& f, FieldOrigin o, int oi ): field( f ), origin( o ), originIndex( oi ) {}
+      Field( const QgsField& f, int oi, const QString& exp ): field( f ), origin( OriginExpression ), originIndex( oi ), expression( exp ) {}
 
       QgsField field;      //!< field
       FieldOrigin origin;  //!< origin of the field
       int originIndex;     //!< index specific to the origin
+      QString expression;  //!< An expression to calculate the field or a NULL string if origin is not OriginExpression
     } Field;
 
     //! Remove all fields
     void clear();
     //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
     bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
+    bool appendExpressionField( const QgsField& field, int originIndex, const QString& expression );
     //! Remove a field with the given index
     void remove( int fieldIdx );
     //! Extend with fields from another QgsFields container
@@ -215,6 +222,8 @@ class CORE_EXPORT QgsFields
     FieldOrigin fieldOrigin( int fieldIdx ) const { return mFields[fieldIdx].origin; }
     //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
+
+
 
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }

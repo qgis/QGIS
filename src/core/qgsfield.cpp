@@ -150,6 +150,17 @@ bool QgsFields::append( const QgsField& field, FieldOrigin origin, int originInd
   return true;
 }
 
+bool QgsFields::appendExpressionField( const QgsField& field, int originIndex, const QString& expression )
+{
+  if ( mNameToIndex.contains( field.name() ) )
+    return false;
+
+  mFields.append( Field( field, originIndex, expression ) );
+
+  mNameToIndex.insert( field.name(), mFields.count() - 1 );
+  return true;
+}
+
 void QgsFields::remove( int fieldIdx )
 {
   mNameToIndex.remove( mFields[fieldIdx].field.name() );

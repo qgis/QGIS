@@ -591,16 +591,24 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    mLayer->beginEditCommand( tr( "Attribute added" ) );
-    if ( mLayer->addAttribute( dialog.field() ) )
+    if ( dialog.mode() == QgsAddAttrDialog::VirtualField )
     {
-      mLayer->endEditCommand();
+      mLayer->addExpressionField( dialog.expression(), dialog.field() );
     }
     else
     {
-      QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
-      mLayer->destroyEditCommand();
+      mLayer->beginEditCommand( tr( "Attribute added" ) );
+      if ( mLayer->addAttribute( dialog.field() ) )
+      {
+        mLayer->endEditCommand();
+      }
+      else
+      {
+        QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
+        mLayer->destroyEditCommand();
+      }
     }
+
     // update model - a field has been added or updated
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     columnBoxInit();

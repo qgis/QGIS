@@ -37,28 +37,29 @@
 class QPainter;
 class QImage;
 
+class QgsAbstractGeometrySimplifier;
 class QgsAttributeAction;
 class QgsCoordinateTransform;
+class QgsDiagramLayerSettings;
+class QgsDiagramRendererV2;
 class QgsEditorWidgetWrapper;
+class QgsExpressionFieldBuffer;
+class QgsFeatureRendererV2;
 class QgsFeatureRequest;
 class QgsGeometry;
+class QgsGeometryCache;
 class QgsGeometryVertexIndex;
 class QgsLabel;
 class QgsMapToPixel;
 class QgsRectangle;
+class QgsRectangle;
 class QgsRelation;
 class QgsRelationManager;
-class QgsVectorDataProvider;
 class QgsSingleSymbolRendererV2;
-class QgsRectangle;
-class QgsVectorLayerJoinBuffer;
-class QgsFeatureRendererV2;
-class QgsDiagramRendererV2;
-class QgsDiagramLayerSettings;
-class QgsGeometryCache;
-class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
-class QgsAbstractGeometrySimplifier;
+class QgsVectorDataProvider;
+class QgsVectorLayerEditBuffer;
+class QgsVectorLayerJoinBuffer;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -634,6 +635,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** @note added in 1.7 */
     const QList< QgsVectorJoinInfo >& vectorJoins() const;
+
+    /**
+     * Add a new field which is calculated by the expression specified
+     *
+     * @param exp The expression which calculates the field
+     *
+     * @note added in 2.6
+     */
+    void addExpressionField( const QString& exp, const QgsField& fld );
+
+    /**
+     * Remove an expression field
+     *
+     * @param index The index of the field
+     *
+     * @note added in 2.6
+     */
+    void removeExpressionField( int index );
 
     /** Get the label object associated with this layer */
     QgsLabel *label();
@@ -1765,6 +1784,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer* mJoinBuffer;
+
+    //! stores information about expression fields on this layer
+    QgsExpressionFieldBuffer* mExpressionFieldBuffer;
 
     //diagram rendering object. 0 if diagram drawing is disabled
     QgsDiagramRendererV2* mDiagramRenderer;

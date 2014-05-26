@@ -19,12 +19,14 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QMessageBox>
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
+    , mLayer( vlayer )
 {
   setupUi( this );
 
@@ -50,9 +52,12 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   }
 
   on_mTypeBox_currentIndexChanged( 0 );
+  on_mFieldModeButtonGroup_buttonClicked( mButtonProviderField );
 
   if ( mIsShapeFile )
     mNameEdit->setMaxLength( 10 );
+
+  mExpressionWidget->setLayer( vlayer );
 }
 
 void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
@@ -68,6 +73,20 @@ void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
   if ( mLength->value() > mLength->maximum() )
     mLength->setValue( mLength->maximum() );
   setPrecisionMinMax();
+}
+
+void QgsAddAttrDialog::on_mFieldModeButtonGroup_buttonClicked( QAbstractButton* button )
+{
+  if ( button == mButtonProviderField )
+  {
+    mExpressionWidget->hide();
+    mExpressionLabel->hide();
+  }
+  else
+  {
+    mExpressionWidget->show();
+    mExpressionLabel->show();
+  }
 }
 
 void QgsAddAttrDialog::on_mLength_editingFinished()
@@ -115,4 +134,17 @@ QgsField QgsAddAttrDialog::field() const
            mLength->value(),
            mPrec->value(),
            mCommentEdit->text() );
+}
+
+const QString QgsAddAttrDialog::expression() const
+{
+  return mExpressionWidget->currentField();
+}
+
+QgsAddAttrDialog::AttributeMode QgsAddAttrDialog::mode() const
+{
+  if ( mButtonVirtualField->isChecked() )
+    return VirtualField;
+  else
+    return ProviderField;
 }
