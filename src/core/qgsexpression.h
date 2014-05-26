@@ -154,6 +154,10 @@ class CORE_EXPORT QgsExpression
     void setScale( double scale ) { mScale = scale; }
 
     int scale() {return mScale; }
+    
+    void setCanvas( QString canvas ) { mCanvas = canvas; }
+    
+    QString canvas() { return mCanvas; }    
 
     //! Return the expression string that was given when created.
     const QString expression() const { return dump(); }
@@ -614,6 +618,7 @@ class CORE_EXPORT QgsExpression
 
     int mRowNumber;
     double mScale;
+    QString mCanvas;    
     QString mExp;
 
     static QMap<QString, QVariant> gmSpecialColumns;

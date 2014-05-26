@@ -1758,6 +1758,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       return;
     }
     exp->setScale( context.rendererScale() );
+    exp->setCanvas( context.extent().asPolygon() );
 //    QVariant result = exp->evaluate( &f, layer->pendingFields() );
     QVariant result = exp->evaluate( &f ); // expression prepared in QgsPalLabeling::prepareLayer()
     if ( exp->hasEvalError() )
