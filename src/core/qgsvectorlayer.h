@@ -1584,9 +1584,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
-    /** Signal emitted on symbology changes, when setRendererV2() is called */
-    void rendererChanged();
-
     /** Signal emitted when setFeatureBlendMode() is called */
     void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );
 
