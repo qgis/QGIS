@@ -44,7 +44,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     if ( QgsLayerTree::isGroup( node ) )
     {
       menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
-      menu->addAction( actions->actionRemoveGroupOrLayer( menu ) );
+
+      menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
                        tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCRS() ) );
@@ -72,7 +73,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
       }
 
-      menu->addAction( actions->actionRemoveGroupOrLayer( menu ) );
+      menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       // duplicate layer
       QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
