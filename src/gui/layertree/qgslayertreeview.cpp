@@ -53,7 +53,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel* model )
     return;
 
   connect( model, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelRowsInserted( QModelIndex, int, int ) ) );
-  connect( model, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelRowsRemoved( QModelIndex, int, int ) ) );
+  connect( model, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelRowsRemoved() ) );
 
   QTreeView::setModel( model );
 
