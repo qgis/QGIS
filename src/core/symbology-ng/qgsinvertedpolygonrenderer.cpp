@@ -73,6 +73,11 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   // It must be computed in the destination CRS if reprojection is enabled.
   const QgsMapToPixel& mtp( context.mapToPixel() );
 
+  if ( !context.painter() )
+  {
+    return;
+  }
+
   // convert viewport to dest CRS
   QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
@@ -102,7 +107,10 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
 
 bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
-  Q_UNUSED( context );
+  if ( !context.painter() )
+  {
+    return false;
+  }
 
   // store this feature as a feature to render with decoration if needed
   if ( selected || drawVertexMarker )
@@ -221,6 +229,10 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
 {
   if ( !mSubRenderer ) {
+    return;
+  }
+  if ( !context.painter() )
+  {
     return;
   }
 
