@@ -191,6 +191,16 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
 
+#ifdef Q_OS_WIN
+    /**
+     * Expands a shortened Windows path to its full path name.
+     * @returns full path name.
+     * @param path a (possibly) shortened Windows path
+     * @note added in 2.3
+     */
+    QString fullPath( const QString &path );
+#endif
+
   private slots:
     void onButtonClicked();
 
