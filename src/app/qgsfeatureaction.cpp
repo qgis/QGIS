@@ -194,7 +194,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
     case QgsVectorLayer::SuppressDefault:
       break;
   }
-  if ( isDisabledAttributeValuesDlg )
+  if ( isDisabledAttributeValuesDlg || mLayer->pendingFields().count() == 0 )
   {
     mLayer->beginEditCommand( text() );
     res = mLayer->addFeature( mFeature );
