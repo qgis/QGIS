@@ -3095,10 +3095,12 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
     }
 
     QgsDebugMsg( "SvgPath: " + svgPath );
-    QFileInfo myInfo( name );
-    QString myFileName = myInfo.fileName(); // foo.svg
-    QString myLowestDir = myInfo.dir().dirName();
-    QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
+    // Not sure why to lowest dir was used instead of full relative path, it was causing #8664
+    //QFileInfo myInfo( name );
+    //QString myFileName = myInfo.fileName(); // foo.svg
+    //QString myLowestDir = myInfo.dir().dirName();
+    //QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
+    QString myLocalPath = svgPath + QDir::separator() + name;
 
     QgsDebugMsg( "Alternative svg path: " + myLocalPath );
     if ( QFile( myLocalPath ).exists() )
@@ -3106,26 +3108,22 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
       QgsDebugMsg( "Svg found in alternative path" );
       return QFileInfo( myLocalPath ).canonicalFilePath();
     }
-    else if ( myInfo.isRelative() )
-    {
-      QFileInfo pfi( QgsProject::instance()->fileName() );
-      QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
-      if ( pfi.exists() && QFile( alternatePath ).exists() )
-      {
-        QgsDebugMsg( "Svg found in alternative path" );
-        return QFileInfo( alternatePath ).canonicalFilePath();
-      }
-      else
-      {
-        QgsDebugMsg( "Svg not found in project path" );
-      }
-    }
-    else
-    {
-      //couldnt find the file, no happy ending :-(
-      QgsDebugMsg( "Computed alternate path but no svg there either" );
-    }
   }
+
+  QFileInfo pfi( QgsProject::instance()->fileName() );
+  QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
+  if ( pfi.exists() && QFile( alternatePath ).exists() )
+  {
+    QgsDebugMsg( "Svg found in alternative path" );
+    return QFileInfo( alternatePath ).canonicalFilePath();
+  }
+  else
+  {
+    QgsDebugMsg( "Svg not found in project path" );
+  }
+  //couldnt find the file, no happy ending :-(
+  QgsDebugMsg( "Computed alternate path but no svg there either" );
+
   return QString();
 }
 
