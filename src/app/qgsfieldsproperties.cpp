@@ -516,15 +516,22 @@ void QgsFieldsProperties::on_mAddAttributeButton_clicked()
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    mLayer->beginEditCommand( "Attribute added" );
-    if ( !addAttribute( dialog.field() ) )
+    if ( dialog.mode() == QgsAddAttrDialog::VirtualField )
     {
-      mLayer->destroyEditCommand();
-      QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
+      mLayer->addExpressionField( dialog.expression(), dialog.field() );
     }
     else
     {
-      mLayer->endEditCommand();
+      mLayer->beginEditCommand( "Attribute added" );
+      if ( !addAttribute( dialog.field() ) )
+      {
+        mLayer->destroyEditCommand();
+        QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
+      }
+      else
+      {
+        mLayer->endEditCommand();
+      }
     }
   }
 }
@@ -766,7 +773,8 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
 {
   mEditable = layer->fieldEditable( idx );
-  mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin;
+  mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin
+                     && layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->labelOnTop( idx );
   mEditorWidgetV2Type = layer->editorWidgetV2( idx );
   mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );

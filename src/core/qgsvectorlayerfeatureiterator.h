@@ -21,11 +21,11 @@
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
+class QgsExpressionFieldBuffer;
 class QgsVectorLayer;
 class QgsVectorLayerEditBuffer;
-struct QgsVectorJoinInfo;
 class QgsVectorLayerJoinBuffer;
-
+struct QgsVectorJoinInfo;
 
 class QgsVectorLayerFeatureIterator;
 
@@ -45,6 +45,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsAbstractFeatureSource* mProviderFeatureSource;
 
     QgsVectorLayerJoinBuffer* mJoinBuffer;
+
+    QgsExpressionFieldBuffer* mExpressionFieldBuffer;
 
     QgsFields mFields;
 
@@ -104,6 +106,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     void rewindEditBuffer();
     void prepareJoins();
+    void prepareExpressions();
     bool fetchNextAddedFeature( QgsFeature& f );
     bool fetchNextChangedGeomFeature( QgsFeature& f );
     bool fetchNextChangedAttributeFeature( QgsFeature& f );
@@ -111,6 +114,15 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
     bool nextFeatureFid( QgsFeature& f );
     void addJoinedAttributes( QgsFeature &f );
+    /**
+     * Adds attributes that don't source from the provider but are added inside QGIS
+     * Includes
+     *  - Joined fields
+     *  - Expression fields
+     *
+     * @param f The feature will be modified
+     */
+    void addVirtualAttributes( QgsFeature &f );
 
     /** Update feature with uncommited attribute updates */
     void updateChangedAttributes( QgsFeature& f );
@@ -137,6 +149,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     /** information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
     QMap<QgsVectorLayer*, FetchJoinInfo> mFetchJoinInfo;
+
+    QMap<int, QgsExpression*> mExpressionFieldInfo;
 
   private:
     //! optional object to locally simplify edited (changed or added) geometries fetched by this feature iterator

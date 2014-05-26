@@ -181,7 +181,8 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
   }
 
   if ( field < 0 || field >= L->pendingFields().count() ||
-       L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin )
+       L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin ||
+       L->pendingFields().fieldOrigin( field ) == QgsFields::OriginExpression )
     return false;
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );

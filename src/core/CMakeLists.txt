@@ -75,6 +75,7 @@ SET(QGIS_CORE_SRCS
   qgserror.cpp
   qgsexpression.cpp
   qgsexpression_texts.cpp
+  qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
@@ -454,6 +455,7 @@ SET(QGIS_CORE_HDRS
   qgserror.h
   qgsexception.h
   qgsexpression.h
+  qgsexpressionfieldbuffer.h
   qgsfeature.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h

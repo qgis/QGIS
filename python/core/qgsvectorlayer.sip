@@ -280,6 +280,24 @@ class QgsVectorLayer : QgsMapLayer
     /** @note added in 1.7 */
     const QList< QgsVectorJoinInfo >& vectorJoins() const;
 
+    /**
+     * Add a new field which is calculated by the expression specified
+     *
+     * @param exp The expression which calculates the field
+     *
+     * @note added in 2.6
+     */
+    void addExpressionField( const QString& exp, const QgsField& fld );
+
+    /**
+     * Remove an expression field
+     *
+     * @param exp The expression which calculates the field
+     *
+     * @note added in 2.6
+     */
+    void removeExpressionField( int index );
+
     /** Get the label object associated with this layer */
     QgsLabel *label();
 
