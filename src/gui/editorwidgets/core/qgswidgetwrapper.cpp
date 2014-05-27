@@ -62,7 +62,7 @@ const QgsEditorWidgetConfig QgsWidgetWrapper::config()
   return mConfig;
 }
 
-const QgsAttributeEditorContext&QgsWidgetWrapper::context()
+const QgsAttributeEditorContext& QgsWidgetWrapper::context()
 {
   return mContext;
 }
