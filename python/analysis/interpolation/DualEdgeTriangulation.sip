@@ -25,6 +25,7 @@ class DualEdgeTriangulation: Triangulation
     /**Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     int getOppositePoint( int p1, int p2 );
     /**Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'*/
+    //! @note not available in python bindings
     // virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
     /**Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3*/
     virtual bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
@@ -77,14 +78,18 @@ class DualEdgeTriangulation: Triangulation
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     /**inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure*/
     int insertForcedSegment( int p1, int p2, bool breakline );
+    /**Threshold for the leftOfTest to handle numerical instabilities*/
+    //const static double leftOfTresh=0.00001;
+    /**Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted*/
+    const static int nBaseOfRuns = 300000;
     /**Returns the number of an edge which points to the point with number 'point' or -1 if there is an error*/
     int baseEdgeOfPoint( int point );
     /**returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occured (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong*/
     int baseEdgeOfTriangle( Point3D* point );
     /**Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.*/
-    bool checkSwap( unsigned int edge );
+    bool checkSwap( unsigned int edge, unsigned int recursivDeep );
     /**Swaps 'edge' and test recursively for other swaps (delaunay criterion)*/
-    void doSwap( unsigned int edge );
+    void doSwap( unsigned int edge, unsigned int recursivDeep );
     /**Swaps 'edge' and does no recursiv testing*/
     void doOnlySwap( unsigned int edge );
     /**Returns true, if it is possible to swap an edge, otherwise false(concave quad or edge on (or outside) the convex hull)*/

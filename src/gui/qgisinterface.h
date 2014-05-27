@@ -208,7 +208,7 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Add toolbar with specified name
     virtual QToolBar *addToolBar( QString name ) = 0;
 
-    //!  Add a toolbar
+    //! Add a toolbar
     //! @note added in 2.3
     virtual void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 

@@ -27,7 +27,7 @@
 			<section label="Import raster into GRASS">
                                 <section label="Import raster into GRASS from QGIS view">
 					<grass name="r.in.gdal.qgis"/>
-                                	<grass name="r.in.gdal.qgis.loc"/>
+					<grass name="r.in.gdal.qgis.loc"/>
 				</section>
 				<section label="Register external data sources in GRASS" version_min="6.4">
 					<grass name="r.external"/>
@@ -54,8 +54,8 @@
 	                                <grass name="v.in.ogr.qgis"/>
 					<grass name="v.in.ogr"/>
 					<grass name="v.in.ogr.loc"/>
-                	                <grass name="v.in.ogr.all"/> 
-                        	        <grass name="v.in.ogr.all.loc"/> 
+					<grass name="v.in.ogr.all"/>
+					<grass name="v.in.ogr.all.loc"/>
 					<grass name="v.in.dxf"/>
 					<grass name="v.in.e00"/>
 					<grass name="v.in.ascii"/>
@@ -118,18 +118,18 @@
 	</section>
 
 	<section label="Region settings">
-		<grass name="g.region.save"/> 
-		<grass name="g.region.zoom"/> 
-		<grass name="g.region.multiple.raster"/> 
+		<grass name="g.region.save"/>
+		<grass name="g.region.zoom"/>
+		<grass name="g.region.multiple.raster"/>
 		<grass name="g.region.multiple.vector"/>
 	</section>
 	<section label="Projection management">
 		<section label="Print projection information of the current location">
  			<grass name="g.proj.print"/>
 		</section>
-		<section label="Print projection information from a georeferenced file"> 
+		<section label="Print projection information from a georeferenced file">
 			<grass name="g.proj.geo"/>
-			<grass name="g.proj.ascii"/> 
+			<grass name="g.proj.ascii"/>
 			<grass name="g.proj.proj"/>
 		</section>
 	</section>
@@ -190,14 +190,14 @@
 				<grass name="v.neighbors"/>
 			</section>
 			<section label="Overlay maps">
-                                <grass name="r.cross"/> 
-                                <grass name="r.series"/> 
-                                <grass name="r.patch"/> 
+                                <grass name="r.cross"/>
+                                <grass name="r.series"/>
+                                <grass name="r.patch"/>
 				<grass name="r.statistics"/>
 			</section>
 			<section label="Solar and irradiation model">
-                                <grass name="r.sunmask.position"/> 
-                                <grass name="r.sunmask.date.time"/> 
+                                <grass name="r.sunmask.position"/>
+                                <grass name="r.sunmask.date.time"/>
 			</section>
 			<section label="Terrain analysis">
 				<grass name="r.cost.coord"/>
@@ -373,7 +373,7 @@
 				<grass name="v.net.steiner"/>
 			</section>
 			<section label="Overlay">
-                                <grass name="v.patch"/> 
+                                <grass name="v.patch"/>
 				<grass name="v.overlay.or"/>
 				<grass name="v.overlay.and"/>
 				<grass name="v.overlay.not"/>

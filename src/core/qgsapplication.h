@@ -273,7 +273,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); }
+    static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver

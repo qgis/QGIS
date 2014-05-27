@@ -35,7 +35,10 @@ class QgsRenderChecker
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName );
+    //! @deprecated since 2.4 - use setMapSettings()
     void setMapRenderer( QgsMapRenderer *  thepMapRenderer ) /Deprecated/;
+
+    //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
 
     /** Set tolerance for color components used by runTest() and compareImages().
@@ -79,5 +82,4 @@ class QgsRenderChecker
     bool isKnownAnomaly( QString theDiffImageFile );
 
     QString expectedImageFile();
-
 };

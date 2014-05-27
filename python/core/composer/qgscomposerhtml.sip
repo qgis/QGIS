@@ -10,7 +10,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
     ~QgsComposerHtml();
 
     void setUrl( const QUrl& url );
-    const QUrl& url() const;  
+    const QUrl& url() const;
 
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );
@@ -19,7 +19,10 @@ class QgsComposerHtml: QgsComposerMultiFrame
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
-    
+
+    //overriden to break frames without dividing lines of text
+    double findNearbyPageBreak( double yPos );
+
     /**Returns whether html item is using smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
      * @returns true if html item is using smart breaks
@@ -34,7 +37,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see useSmartBreaks
      */
     void setUseSmartBreaks( bool useSmartBreaks );
-    
+
     /**Sets the maximum distance allowed when calculating where to place page breaks
      * in the html. This distance is the maximum amount of empty space allowed
      * at the bottom of a frame after calculating the optimum break location. Setting
@@ -59,12 +62,12 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see useSmartBreaks
      */
     double maxBreakDistance() const;
-    
- public slots:
-    
+
+  public slots:
+
     /**Reloads the html source from the url and redraws the item.
      * @see setUrl
      * @see url
      */
-    void loadHtml();  
+    void loadHtml();
 };

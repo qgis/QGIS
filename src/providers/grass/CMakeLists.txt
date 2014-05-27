@@ -64,7 +64,7 @@ ELSE (GRASS_MAJOR_VERSION LESS 7 )
     ${GRASS_LIBRARY_gproj}
   )
 ENDIF (GRASS_MAJOR_VERSION LESS 7 )
-  
+
 TARGET_LINK_LIBRARIES(qgisgrass ${GRASS_TARGET_LINK_LIBRARIES})
 
 IF (APPLE)
@@ -105,7 +105,7 @@ IF(WITH_GRASS_DIRECT)
     "G_ask_any"
     "G_ask_in_mapset"
     "G_ask_new"
-    "G_ask_old" 
+    "G_ask_old"
     "G__calloc"
     "G_chop"
     "G_chrcat"
@@ -179,7 +179,7 @@ IF(WITH_GRASS_DIRECT)
     "G_incr_void_ptr"
     "G_index"
     "G_info_format"
-    "G_init_cats" 
+    "G_init_cats"
     "G_init_cell_stats"
     "G_init_colors"
     "G_init_fp_range"
@@ -307,7 +307,7 @@ IF(WITH_GRASS_DIRECT)
   )
 
 
-  # List of functions which are implemented in qgsgrassgislib.cpp and 
+  # List of functions which are implemented in qgsgrassgislib.cpp and
   # thus we only need prototype
   SET ( FUNCTION_PROTOTYPES
     "G_area_of_cell_at_row"
@@ -442,7 +442,7 @@ IF(WITH_GRASS_DIRECT)
   STRING(REGEX REPLACE "#[^\r\n]*" "" HEADER_FILE "${HEADER_FILE}")
 
   # Add functions defined in glocale.h, colors.h and spawn.h
-  SET ( HEADER_FILE 
+  SET ( HEADER_FILE
     ${HEADER_FILE}
     "char *G_gettext(const char *, const char *);"
     "int G_num_standard_colors(void);"
@@ -499,9 +499,9 @@ IF(WITH_GRASS_DIRECT)
         # Declare all
         LIST ( APPEND PROTOTYPES "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAM_TYPES} )\;\n" )
 
-        # Define only those not implemented in qgsgrassgislib.cpp 
+        # Define only those not implemented in qgsgrassgislib.cpp
         LIST (FIND FUNCTIONS "${FUNCTION_NAME}" FUNCTION_IDX)
-        IF( ${FUNCTION_IDX} GREATER -1 ) 
+        IF( ${FUNCTION_IDX} GREATER -1 )
           LIST ( APPEND FUNCTIONS_MAP "// ${ROW}\n" )
           # Declare function type
           LIST ( APPEND FUNCTIONS_MAP "typedef ${FUNCTION_TYPE} ${POINTER} ${FUNCTION_NAME}_type(${PARAM_TYPES})\;\n\n" )
@@ -530,8 +530,8 @@ IF(WITH_GRASS_DIRECT)
   ENDIF(MSVC)
   ADD_LIBRARY( ${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
 
-  # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same 
-  # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed 
+  # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same
+  # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed
   # in different directory
   SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
     CLEAN_DIRECT_OUTPUT 1

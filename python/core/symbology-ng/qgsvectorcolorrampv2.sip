@@ -110,6 +110,7 @@ class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
     virtual QgsStringMap properties() const;
 
     void updateColors();
+
     int count() const;
     int hueMin() const;
     int hueMax() const;
@@ -157,6 +158,8 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
+    virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
 
     virtual QString type() const;
@@ -166,6 +169,7 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
     virtual QgsStringMap properties() const;
 
     QString schemeName() const;
+    virtual int count() const;
     int colors() const;
 
     void setSchemeName( QString schemeName );

@@ -315,6 +315,9 @@ class QgsComposerMap : QgsComposerItem
     @note this function was added in version 1.4*/
     void updateBoundingRect();
 
+    /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
+    virtual void setFrameOutlineWidth( double outlineWidth );
+
     /**Sets length of the cros segments (if grid style is cross)
     @note this function was added in version 1.4*/
     void setCrossLength( double l );
@@ -325,7 +328,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated Use setMapRotation( double rotation ) instead
      */
     void setRotation( double r ) /Deprecated/;
-    
+
     /**Returns the rotation used for drawing the map within the composer item
      * @deprecated Use mapRotation() instead
      */
@@ -391,13 +394,11 @@ class QgsComposerMap : QgsComposerItem
      * instead
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
-    
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
-    
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
@@ -410,7 +411,7 @@ class QgsComposerMap : QgsComposerItem
      * @see atlasScalingMode
     */
     bool atlasDriven() const;
-    
+
     /**Sets whether the map extent will follow the current atlas feature.
      * @param enabled set to true if the map extents should be set by the current atlas feature.
      * @see atlasDriven
@@ -422,7 +423,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated since 2.4 Use atlasScalingMode() instead
     */
     bool atlasFixedScale() const /Deprecated/;
-    
+
     /**Set to true if the map should use a fixed scale when in atlas mode
      * @deprecated since 2.4 Use setAtlasScalingMode() instead
     */
@@ -437,7 +438,7 @@ class QgsComposerMap : QgsComposerItem
      * @see atlasDriven
     */
     AtlasScalingMode atlasScalingMode();
-    
+
     /**Sets the current atlas scaling mode. This controls how the map's extents
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
@@ -455,7 +456,7 @@ class QgsComposerMap : QgsComposerItem
      * @see setAtlasMargin
     */
     double atlasMargin() const;
-    
+
     /**Sets the margin size (percentage) used when the map is in atlas mode.
      * @param margin size in percentage to leave around the atlas feature's extent
      * @note this is only used if atlasScalingMode() is Auto.
@@ -492,4 +493,6 @@ class QgsComposerMap : QgsComposerItem
     void updateCachedImage( );
     /**Call updateCachedImage if item is in render mode*/
     void renderModeUpdateCachedImage();
+
+    void overviewExtentChanged();
 };

@@ -120,7 +120,7 @@ class QgsPropertyKey : QgsProperty
 
     /// every key has a name
     // @{
-    QString & name();
+    QString &name();
     // @}
 
 

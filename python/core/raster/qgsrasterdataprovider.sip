@@ -49,6 +49,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int colorInterpretation( int theBandNo ) const;
 
     QString colorName( int colorInterpretation ) const;
+
+    /** Reload data (data could change) */
     virtual bool reload();
 
     virtual QString colorInterpretationName( int theBandNo ) const;
@@ -68,8 +70,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int xSize() const;
     virtual int ySize() const;
 
-    /** read block of data  */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
+    /** Read block of data using given extent and size. */
+    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) / Factory /;
 
     /* Return true if source band has no data value */
     virtual bool srcHasNoDataValue( int bandNo ) const;
@@ -86,7 +88,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual void setUserNoDataValue( int bandNo, QgsRasterRangeList noData );
 
     /** Get list of user no data value ranges */
-    virtual  QgsRasterRangeList userNoDataValues( int bandNo ) const;
+    virtual QgsRasterRangeList userNoDataValues( int bandNo ) const;
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const;
 

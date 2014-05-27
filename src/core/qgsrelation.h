@@ -118,6 +118,7 @@ class CORE_EXPORT QgsRelation
      * The second element of each pair are the field names of the matching primary key.
      *
      * @param fieldPair A pair of two strings
+     * @note not available in python bindings
      */
     void addFieldPair( FieldPair fieldPair );
 

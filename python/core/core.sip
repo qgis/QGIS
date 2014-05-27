@@ -222,5 +222,3 @@
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
 %Include dxf/qgsdxfexport.sip
- 
- 

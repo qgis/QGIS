@@ -8,8 +8,9 @@ class QgsOptionsDialogBase : QDialog
      * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
      * @param parent parent object (owner)
      * @param fl widget flags
+     * @param settings custom QSettings pointer
      */
-    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WindowFlags fl = 0, QSettings* settings = 0 );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.

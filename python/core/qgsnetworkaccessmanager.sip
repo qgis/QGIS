@@ -1,3 +1,5 @@
+%Feature PROXY_FACTORY
+
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -15,9 +17,6 @@
  * that the fallback proxy should not be used for, then no proxy will be used.
  *
  */
-
-%Feature PROXY_FACTORY
-
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
 %TypeHeaderCode
@@ -58,9 +57,15 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! Get QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
 
+    //! Setup the NAM according to the user's settings
+    void setupDefaultProxyAndCache();
+
+    bool useSystemProxy();
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
+    void requestTimedOut( QNetworkReply * );
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );

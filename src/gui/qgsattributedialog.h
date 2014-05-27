@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      */
     void setHighlight( QgsHighlight *h );
 
-    QDialog* dialog() { return mDialog; }
+    QDialog *dialog() { return mDialog; }
 
     QgsAttributeForm* attributeForm() { return mAttributeForm; }
 

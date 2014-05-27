@@ -1,4 +1,16 @@
 
+struct LayerRenderJob
+{
+  QgsRenderContext context;
+  QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
+  QgsMapLayerRenderer* renderer; // must be deleted
+  QPainter::CompositionMode blendMode;
+  bool cached; // if true, img already contains cached image from previous rendering
+  QString layerId;
+};
+
+typedef QList<LayerRenderJob> LayerRenderJobs;
+
 /** abstract base class renderer jobs that asynchronously start map rendering */
 class QgsMapRendererJob : QObject
 {
@@ -59,6 +71,32 @@ class QgsMapRendererJob : QObject
     //! emitted when asynchronous rendering is finished (or canceled).
     void finished();
 
+  protected:
+
+    /** Convenience function to project an extent into the layer source
+     * CRS, but also split it into two extents if it crosses
+     * the +/- 180 degree line. Modifies the given extent to be in the
+     * source CRS coordinates, and if it was split, returns true, and
+     * also sets the contents of the r2 parameter
+     */
+    static bool reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
+
+    //! @note not available in python bindings
+    // LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
+
+    //! @note not available in python bindings
+    // void cleanupJobs( LayerRenderJobs& jobs );
+
+    static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
+
+    bool needTemporaryImage( QgsMapLayer* ml );
+
+    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
+    static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
+    static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
+
+    //! called when rendering has finished to update all layers' geometry caches
+    void updateLayerGeometryCaches();
 };
 
 
@@ -129,6 +167,17 @@ class QgsMapRendererParallelJob : QgsMapRendererQImageJob
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage();
+
+  protected slots:
+    //! layers are rendered, labeling is still pending
+    void renderLayersFinished();
+    //! all rendering is finished, including labeling
+    void renderingFinished();
+
+  protected:
+
+    static void renderLayerStatic( LayerRenderJob& job );
+    static void renderLabelsStatic( QgsMapRendererParallelJob* self );
 };
 
 
@@ -152,5 +201,15 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
     virtual bool isActive() const;
     virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
 
-    // TODO wrap??? const LayerRenderJobs& jobs() const;
+    //! @note not available in python bindings
+    // const LayerRenderJobs& jobs() const { return mLayerJobs; }
+
+  protected slots:
+    void futureFinished();
+
+  protected:
+    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
+
+    // these methods are called within worker thread
+    void doRender();
 };

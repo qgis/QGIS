@@ -15,12 +15,12 @@ class QgsMapCanvasLayer
     bool isVisible() const;
     bool isInOverview() const;
 
-    QgsMapLayer* layer();
+    const QgsMapLayer* layer() const;
 };
 
 
-/*! \class QgsMapCanvas
- * \brief Map canvas class for displaying all GIS data types.
+/** \ingroup gui
+ * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
 class QgsMapCanvas : QGraphicsView
@@ -92,11 +92,11 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     bool isParallelRenderingEnabled() const;
 
-    //! Set how often map preview should be updated while it is being rendered (in miliseconds)
+    //! Set how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
     void setMapUpdateInterval( int timeMiliseconds );
 
-    //! Find out how often map preview should be updated while it is being rendered (in miliseconds)
+    //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
     int mapUpdateInterval() const;
 
@@ -263,7 +263,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! returns last position of mouse cursor
     QPoint mouseLastXY();
-	
+
     /** Enables a preview mode for the map canvas
      * @param previewEnabled set to true to enable a preview mode
      * @see setPreviewMode
@@ -292,7 +292,7 @@ class QgsMapCanvas : QGraphicsView
      * @see setPreviewMode
      * @see previewModeEnabled
      * @note added in 2.3 */
-    QgsPreviewEffect::PreviewMode previewMode() const;	
+    QgsPreviewEffect::PreviewMode previewMode() const;
 
   public slots:
 
@@ -385,8 +385,9 @@ class QgsMapCanvas : QGraphicsView
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool *tool );
 
-    //! Emit map tool changed with the old tool
-    //! @note added in 2.3
+    /** Emit map tool changed with the old tool
+     * @note added in 2.3
+     */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool* oldTool );
 
     // ### QGIS 3: remove the signal

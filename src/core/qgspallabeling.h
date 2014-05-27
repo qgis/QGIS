@@ -64,8 +64,10 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsPalLayerSettings
 {
   public:
+    Q_NOWARN_DEPRECATED_PUSH
     QgsPalLayerSettings();
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
+    Q_NOWARN_DEPRECATED_POP
     ~QgsPalLayerSettings();
 
     //! @note added in 2.4
@@ -268,7 +270,6 @@ class CORE_EXPORT QgsPalLayerSettings
       Show = 15,
       AlwaysShow = 20
     };
-
 
     // whether to label this layer
     bool enabled;
@@ -603,6 +604,8 @@ class CORE_EXPORT QgsLabelComponent
         , mDpiRatio( 1.0 )
     {}
 
+    // methods
+
     const QString& text() { return mText; }
     void setText( const QString& text ) { mText = text; }
 
@@ -674,7 +677,6 @@ class CORE_EXPORT QgsLabelComponent
     // a ratio of native painter dpi and that of rendering context's painter
     double mDpiRatio;
 };
-
 
 
 /**
@@ -864,5 +866,3 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 };
 
 #endif // QGSPALLABELING_H
-
-

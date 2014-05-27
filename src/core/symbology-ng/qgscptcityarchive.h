@@ -64,7 +64,7 @@ class CORE_EXPORT QgsCptCityArchive
 
     // items
     QVector< QgsCptCityDataItem* > rootItems() const { return mRootItems; }
-    QVector<QgsCptCityDataItem*> selectionItems() const { return mSelectionItems; }
+    QVector< QgsCptCityDataItem* > selectionItems() const { return mSelectionItems; }
 
   protected:
 
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
-    virtual QWidget * paramWidget() { return 0; }
+    virtual QWidget *paramWidget() { return 0; }
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions() { return QList<QAction*>(); }

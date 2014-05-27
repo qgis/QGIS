@@ -173,6 +173,7 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void offsetChanged();
     void on_mOffsetUnitWidget_changed( );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mIgnoreRingsCheckBox_stateChanged( int state );
 };
 
 ///////////
@@ -286,6 +287,7 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
+
     QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 

@@ -39,5 +39,4 @@ class QgsPluginManagerInterface : QObject
 
     //! show the given message in the Plugin Manager internal message bar
     virtual void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) = 0;
-
 };

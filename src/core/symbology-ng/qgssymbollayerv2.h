@@ -223,8 +223,6 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 
-    bool hasDataDefinedSize() const;
-
     //handles marker offset and anchor point shift together
     void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 

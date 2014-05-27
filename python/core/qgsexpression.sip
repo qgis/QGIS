@@ -126,6 +126,18 @@ class QgsExpression
       // strings
       boConcat,
     };
+    enum SpatialOperator
+    {
+      soBbox,
+      soIntersects,
+      soContains,
+      soCrosses,
+      soEquals,
+      soDisjoint,
+      soOverlaps,
+      soTouches,
+      soWithin,
+    };
 
     // static const char* BinaryOperatorText[];
     // static const char* UnaryOperatorText[];
@@ -288,6 +300,8 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+
+        int precedence() const;
     };
 
     class NodeInOperator : QgsExpression::Node

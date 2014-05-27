@@ -21,8 +21,19 @@ class QgsEditorConfigWidget : QWidget
 
   public:
     explicit QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ );
+
+    /**
+     * Returns the field for which this configuration widget applies
+     *
+     * @return The field index
+     */
     int field();
 
+    /**
+     * Returns the layer for which this configuration widget applies
+     *
+     * @return The layer
+     */
     QgsVectorLayer* layer();
 
     virtual QgsEditorWidgetConfig config() = 0;

@@ -24,9 +24,9 @@
 class ANALYSIS_EXPORT Line3D
 {
   private:
-    /**copy constructor, declared privat to not use it*/
+    /** copy constructor, declared private to not use it*/
     Line3D( const Line3D& );
-    /**assignment operator, declared privat to not use it*/
+    /** assignment operator, declared private to not use it*/
     Line3D& operator=( const Line3D& );
   protected:
     Node* head;

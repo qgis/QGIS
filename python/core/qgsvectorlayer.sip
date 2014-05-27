@@ -153,8 +153,8 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 2.1 */
     enum FeatureFormSuppress
     {
-      SuppressDefault = 0, // use the application-wide setting
-      SuppressOn = 1,
+      SuppressDefault, // use the application-wide setting
+      SuppressOn,
       SuppressOff = 2
     };
 

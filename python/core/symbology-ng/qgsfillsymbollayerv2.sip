@@ -98,9 +98,8 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
 %End
-
   public:
-  
+
     enum GradientColorType
     {
       SimpleTwoColor,
@@ -225,9 +224,8 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
 %End
-
   public:
-  
+
     enum ShapeburstColorType
     {
       SimpleTwoColor,

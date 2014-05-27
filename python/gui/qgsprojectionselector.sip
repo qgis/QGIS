@@ -86,6 +86,9 @@ class QgsProjectionSelector : QWidget
     void on_cbxHideDeprecated_stateChanged();
     void on_leSearch_textChanged( const QString & );
 
+    //! mark selected projection for push to front
+    void pushProjectionToFront();
+
   protected:
     /** Used to ensure the projection list view is actually populated */
     void showEvent( QShowEvent * theEvent );

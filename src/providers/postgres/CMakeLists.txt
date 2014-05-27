@@ -50,7 +50,7 @@ TARGET_LINK_LIBRARIES (postgresprovider
 
 ########################################################
 # Install
-                
+
 INSTALL(TARGETS postgresprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

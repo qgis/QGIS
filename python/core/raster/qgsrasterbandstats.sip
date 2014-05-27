@@ -11,15 +11,15 @@ class QgsRasterBandStats
   public:
     enum Stats
     {
-      None         = 0,
-      Min          = 1,
-      Max          = 2,
-      Range        = 4,
-      Sum          = 8,
-      Mean         = 16,
-      StdDev       = 32,
-      SumOfSquares = 64,
-      All          = 127
+      None,
+      Min,
+      Max,
+      Range,
+      Sum,
+      Mean,
+      StdDev,
+      SumOfSquares,
+      All
     };
 
     QgsRasterBandStats();
@@ -69,4 +69,3 @@ class QgsRasterBandStats
     /** \brief Extent used to calc statistics */
     QgsRectangle extent;
 };
-

@@ -24,6 +24,9 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
+    //overriden so that clip path can be set when using draw inside polygon option
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const /Factory/;

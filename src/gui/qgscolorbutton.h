@@ -111,7 +111,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      */
     void setAcceptLiveUpdates( bool accept ) { mAcceptLiveUpdates = accept; }
 
-
   public slots:
     /**
      * Sets the background pixmap for the button based upon set color and transparency.
@@ -135,9 +134,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
 
   protected:
     void changeEvent( QEvent* e );
-#if 0 // causes too many cyclical updates, but may be needed on some platforms
-    void paintEvent( QPaintEvent* e );
-#endif
     void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
 

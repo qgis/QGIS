@@ -81,6 +81,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * If you want the form to be saved, leave the parameter untouched.
      *
      * @param ok  Set this parameter to false if you don't want the form to be saved
+     * @note not available  in python bindings
      */
     void beforeSave( bool& ok );
 

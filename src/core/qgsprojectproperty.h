@@ -125,7 +125,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
         : value_( value )
     {}
 
-    virtual ~ QgsPropertyValue() {}
+    virtual ~QgsPropertyValue() {}
 
     /** returns true if is a QgsPropertyKey */
     virtual bool isKey() const { return false; }
@@ -195,11 +195,9 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
     /// every key has a name
     // @{
-    const QString &name() const
-    { return mName; }
+    const QString &name() const { return mName; }
 
-    QString & name()
-    { return mName; }
+    QString &name() { return mName; }
     // @}
 
 

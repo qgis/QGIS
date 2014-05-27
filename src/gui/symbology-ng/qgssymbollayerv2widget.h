@@ -488,5 +488,3 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
 
 #endif
-
-

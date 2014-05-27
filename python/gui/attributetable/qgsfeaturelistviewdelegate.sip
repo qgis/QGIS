@@ -18,6 +18,8 @@ class QgsFeatureListViewDelegate : QItemDelegate
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
+    void setCurrentFeatureEdited( bool state );
+
   signals:
     void editButtonClicked( QModelIndex& index );
 
