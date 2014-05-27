@@ -87,6 +87,12 @@ QgsMapLayer* QgsLayerTreeView::currentLayer() const
 
 void QgsLayerTreeView::setCurrentLayer( QgsMapLayer* layer )
 {
+  if ( !layer )
+  {
+    setCurrentIndex( QModelIndex() );
+    return;
+  }
+
   QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layer->id() );
   if ( !nodeLayer )
     return;
