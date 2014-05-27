@@ -20,6 +20,7 @@
 #include <QList>
 
 class QDomElement;
+class QDomDocument;
 class QStringList;
 
 class QgsLayerTreeGroup;
@@ -38,6 +39,8 @@ class CORE_EXPORT QgsLayerTreeUtils
     static bool readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem );
     //! Try to load custom layer order from <legend> tag from project files from QGIS 2.2 and below
     static bool readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order );
+    //! Return <legend> tag used in QGIS 2.2 and below
+    static QDomElement writeOldLegend( QDomDocument& doc, QgsLayerTreeGroup* root, bool hasCustomOrder, const QStringList& order );
 
     static QString checkStateToXml( Qt::CheckState state );
     static Qt::CheckState checkStateFromXml( QString txt );
@@ -45,7 +48,9 @@ class CORE_EXPORT QgsLayerTreeUtils
     static bool layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes );
     static bool layersModified( const QList<QgsLayerTreeLayer*>& layerNodes );
 
-    static void removeInvalidLayers(QgsLayerTreeGroup* group );
+    static void removeInvalidLayers( QgsLayerTreeGroup* group );
+
+    static void removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
 
   protected:
     static void addLegendGroupToTreeWidget( const QDomElement& groupElem, QgsLayerTreeGroup* parent );

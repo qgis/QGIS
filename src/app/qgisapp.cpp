@@ -9546,6 +9546,20 @@ void QgisApp::projectChanged( const QDomDocument &doc )
 
 void QgisApp::writeProject( QDomDocument &doc )
 {
+  // QGIS server does not use QgsProject for loading of QGIS project.
+  // In order to allow reading of new projects, let's also write the original <legend> tag to the project.
+  // Ideally the server should be ported to new layer tree implementation, but that requires
+  // non-trivial changes to the server components.
+  // The <legend> tag is ignored by QGIS application in >= 2.4 and this way also the new project files
+  // can be opened in older versions of QGIS without loosing information about layer groups.
+
+  QgsLayerTreeNode* clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
+  QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
+  QDomElement oldLegendElem = QgsLayerTreeUtils::writeOldLegend( doc, QgsLayerTree::toGroup( clonedRoot ),
+                mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
+  delete clonedRoot;
+  doc.firstChildElement( "qgis" ).appendChild( oldLegendElem );
+
   projectChanged( doc );
 }
 

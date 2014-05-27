@@ -995,21 +995,6 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup* group )
   }
 }
 
-void QgsProject::removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group )
-{
-  foreach ( QgsLayerTreeNode* child, group->children() )
-  {
-    if ( QgsLayerTree::isGroup( child ) )
-    {
-      if ( child->customProperty( "embedded" ).toInt() )
-        QgsLayerTree::toGroup( child )->removeAllChildren();
-      else
-        removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( child ) );
-    }
-  }
-}
-
-
 
 bool QgsProject::read( QDomNode & layerNode )
 {
@@ -1090,7 +1075,7 @@ bool QgsProject::write()
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode* clonedRoot = mRootGroup->clone();
-  removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
+  QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   clonedRoot->writeXML( qgisNode );
   delete clonedRoot;
 
