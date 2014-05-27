@@ -397,7 +397,7 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 {
   // temporary solution for WMS legend
-  if ( mLayerTreeView->layerTreeModel()->index2symnode( index ) )
+  if ( mLayerTreeView->layerTreeModel()->isIndexSymbologyNode( index ) )
   {
     QModelIndex parent = mLayerTreeView->layerTreeModel()->parent( index );
     QgsLayerTreeNode* node = mLayerTreeView->layerTreeModel()->index2node( parent );
@@ -9556,7 +9556,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   QgsLayerTreeNode* clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QDomElement oldLegendElem = QgsLayerTreeUtils::writeOldLegend( doc, QgsLayerTree::toGroup( clonedRoot ),
-                mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
+                              mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
   delete clonedRoot;
   doc.firstChildElement( "qgis" ).appendChild( oldLegendElem );
 

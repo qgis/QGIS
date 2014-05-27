@@ -398,6 +398,22 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
   return nodesFinal;
 }
 
+bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
+{
+  return index2symnode( index ) != 0;
+}
+
+QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const
+{
+  QgsLayerTreeModelSymbologyNode* symNode = index2symnode( index );
+  return symNode ? symNode->parent() : 0;
+}
+
+QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup()
+{
+  return mRootNode;
+}
+
 void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
 {
   // update title
@@ -410,6 +426,11 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   endRemoveRows();
 
   addSymbologyToLayer( nodeLayer );
+}
+
+QModelIndex QgsLayerTreeModel::currentIndex() const
+{
+  return mCurrentIndex;
 }
 
 void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
@@ -806,6 +827,29 @@ bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex& paren
     return true;
   }
   return false;
+}
+
+void QgsLayerTreeModel::setFlags( QgsLayerTreeModel::Flags f )
+{
+  mFlags = f;
+}
+
+void QgsLayerTreeModel::setFlag( QgsLayerTreeModel::Flag f, bool on )
+{
+  if ( on )
+    mFlags |= f;
+  else
+    mFlags &= ~f;
+}
+
+QgsLayerTreeModel::Flags QgsLayerTreeModel::flags() const
+{
+  return mFlags;
+}
+
+bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
+{
+  return mFlags.testFlag( f );
 }
 
 

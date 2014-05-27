@@ -177,9 +177,8 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
   else
   {
     // possibly a symbology node
-    QgsLayerTreeModelSymbologyNode* symnode = layerTreeModel()->index2symnode( index );
-    if ( symnode )
-      return symnode->parent()->layer();
+    if ( layerTreeModel()->isIndexSymbologyNode( index ) )
+      return layerTreeModel()->layerNodeForSymbologyNode( index )->layer();
   }
 
   return 0;
