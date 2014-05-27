@@ -125,16 +125,16 @@ void TestQgsInvertedPolygon::preprocess()
   QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
 
-//-8639421,8382691 : -3969110,12570905
 void TestQgsInvertedPolygon::projectionTest()
 {
-  // FIXME will have to find some overlapping polygons
   mReport += "<h2>Inverted polygon renderer, projection test</h2>\n";
   mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem("EPSG:2154") );
   mMapSettings.setCrsTransformEnabled( true );
   QgsRectangle extent( QgsPoint(-8639421,8382691), QgsPoint(-3969110,12570905) );
   QVERIFY( setQml( "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
+  QVERIFY( setQml( "inverted_polys_preprocess.qml" ) );
+  QVERIFY( imageCheck( "inverted_polys_projection2", &extent ) );
   mMapSettings.setCrsTransformEnabled( false );
 }
 
