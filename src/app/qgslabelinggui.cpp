@@ -1290,12 +1290,12 @@ void QgsLabelingGui::updatePlacementWidgets()
   }
 
   mPlacementLineFrame->setVisible( showLineFrame );
-  mPlacmentCentroidFrame->setVisible( showCentroidFrame );
+  mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
-  mPlacmentRepeatDistanceFrame->setVisible( curWdgt == pageLine );
+  mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );

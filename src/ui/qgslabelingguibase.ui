@@ -3706,7 +3706,7 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QFrame" name="mPlacmentCentroidFrame">
+                       <widget class="QFrame" name="mPlacementCentroidFrame">
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
                         </property>
@@ -4281,7 +4281,7 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QFrame" name="mPlacmentRepeatDistanceFrame">
+                       <widget class="QFrame" name="mPlacementRepeatDistanceFrame">
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
                         </property>
