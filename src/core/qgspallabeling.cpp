@@ -1985,7 +1985,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
+  GEOSGeometry* geos_geom_clone;
+  if ( GEOSGeomTypeId( geos_geom ) == GEOS_POLYGON && repeatDistance > 0 && placement == Line )
+  {
+    geos_geom_clone = GEOSBoundary( geos_geom );
+  }
+  else
+  {
+    geos_geom_clone = GEOSGeom_clone( geos_geom );
+  }
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
