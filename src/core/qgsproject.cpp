@@ -966,7 +966,11 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup* group )
       QgsLayerTreeGroup* childGroup = QgsLayerTree::toGroup( child );
       if ( childGroup->customProperty( "embedded" ).toInt() )
       {
-        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), childGroup->customProperty( "embedded_project" ).toString() );
+        // make sure to convert the path from relative to absolute
+        QString projectPath = readPath( childGroup->customProperty( "embedded_project" ).toString() );
+        childGroup->setCustomProperty( "embedded_project", projectPath );
+
+        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), projectPath );
         if ( newGroup )
         {
           QList<QgsLayerTreeNode*> clonedChildren;
