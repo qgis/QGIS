@@ -53,7 +53,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     bool addFeature( const QgsAttributeMap& defaultAttributes = QgsAttributeMap() );
 
   private slots:
-    void updateLastUsedValues( const QgsFeature& feature );
+    void onFeatureSaved( const QgsFeature& feature );
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
@@ -62,6 +62,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QgsFeature &mFeature;
     int mAction;
     int mIdx;
+
+    bool mFeatureSaved;
 
     static QMap<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };

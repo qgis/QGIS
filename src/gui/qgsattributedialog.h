@@ -84,6 +84,8 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
 
     QDialog* dialog() { return mDialog; }
 
+    QgsAttributeForm* attributeForm() { return mAttributeForm; }
+
     const QgsFeature* feature() { return &mAttributeForm->feature(); }
 
     /**

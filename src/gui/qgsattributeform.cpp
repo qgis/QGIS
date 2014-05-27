@@ -132,6 +132,7 @@ bool QgsAttributeForm::save()
   if ( !success )
     return false;
 
+  QgsFeature updatedFeature = QgsFeature( mFeature );
 
   if ( mFeature.isValid() || mIsAddDialog )
   {
@@ -161,7 +162,6 @@ bool QgsAttributeForm::save()
       }
     }
 
-    QgsFeature updatedFeature = QgsFeature( mFeature );
     updatedFeature.setAttributes( dst );
 
     Q_FOREACH( QgsAttributeFormInterface* iface, mInterfaces )
@@ -174,8 +174,6 @@ bool QgsAttributeForm::save()
 
     if ( doUpdate )
     {
-      mLayer->beginEditCommand( mEditCommandMessage );
-
       if ( mIsAddDialog )
       {
         mFeature.setValid( true );
@@ -188,6 +186,8 @@ bool QgsAttributeForm::save()
       }
       else
       {
+        mLayer->beginEditCommand( mEditCommandMessage );
+
         for ( int i = 0; i < dst.count(); ++i )
         {
           if ( dst[i] == src[i] || !src[i].isValid() )
@@ -209,7 +209,7 @@ bool QgsAttributeForm::save()
     }
   }
 
-  emit featureSaved( mFeature );
+  emit featureSaved( updatedFeature );
 
   mIsSaving = false;
 
