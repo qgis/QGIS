@@ -21,6 +21,9 @@
 
 #include <QDomElement>
 
+static void _readOldLegendGroup( const QDomElement& groupElem, QgsLayerTreeGroup* parent );
+static void _readOldLegendLayer( const QDomElement& layerElem, QgsLayerTreeGroup* parent );
+
 bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem )
 {
   if ( legendElem.isNull() )
@@ -33,11 +36,11 @@ bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup* root, const QDomElemen
     QDomElement currentChildElem = legendChildren.at( i ).toElement();
     if ( currentChildElem.tagName() == "legendlayer" )
     {
-      addLegendLayerToTreeWidget( currentChildElem, root );
+      _readOldLegendLayer( currentChildElem, root );
     }
     else if ( currentChildElem.tagName() == "legendgroup" )
     {
-      addLegendGroupToTreeWidget( currentChildElem, root );
+      _readOldLegendGroup( currentChildElem, root );
     }
   }
 
@@ -196,14 +199,14 @@ Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( QString txt )
 
 
 
-void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem, QgsLayerTreeGroup* parent )
+static void _readOldLegendGroup( const QDomElement& groupElem, QgsLayerTreeGroup* parent )
 {
   QDomNodeList groupChildren = groupElem.childNodes();
 
   QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( groupElem.attribute( "name" ) );
   parent->addChildNode( groupNode );
 
-  groupNode->setVisible( checkStateFromXml( groupElem.attribute( "checked" ) ) );
+  groupNode->setVisible( QgsLayerTreeUtils::checkStateFromXml( groupElem.attribute( "checked" ) ) );
   groupNode->setExpanded( groupElem.attribute( "open" ) == "true" );
 
   if ( groupElem.attribute( "embedded" ) == "1" )
@@ -217,22 +220,22 @@ void QgsLayerTreeUtils::addLegendGroupToTreeWidget( const QDomElement& groupElem
     QDomElement currentChildElem = groupChildren.at( i ).toElement();
     if ( currentChildElem.tagName() == "legendlayer" )
     {
-      addLegendLayerToTreeWidget( currentChildElem, groupNode );
+      _readOldLegendLayer( currentChildElem, groupNode );
     }
     else if ( currentChildElem.tagName() == "legendgroup" )
     {
-      addLegendGroupToTreeWidget( currentChildElem, groupNode );
+      _readOldLegendGroup( currentChildElem, groupNode );
     }
   }
 }
 
-void QgsLayerTreeUtils::addLegendLayerToTreeWidget( const QDomElement& layerElem, QgsLayerTreeGroup* parent )
+static void _readOldLegendLayer( const QDomElement& layerElem, QgsLayerTreeGroup* parent )
 {
   QDomElement layerFileElem = layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" );
   QString layerId = layerFileElem.attribute( "layerid" );
   QgsLayerTreeLayer* layerNode = new QgsLayerTreeLayer( layerId, layerElem.attribute( "name" ) );
 
-  layerNode->setVisible( checkStateFromXml( layerElem.attribute( "checked" ) ) );
+  layerNode->setVisible( QgsLayerTreeUtils::checkStateFromXml( layerElem.attribute( "checked" ) ) );
   layerNode->setExpanded( layerElem.attribute( "open" ) == "true" );
 
   if ( layerFileElem.attribute( "isInOverview" ) == "1" )
