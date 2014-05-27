@@ -271,15 +271,26 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
     return Qt::ItemIsEnabled; // | Qt::ItemIsSelectable;
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
   if ( testFlag( AllowNodeRename ) )
     f |= Qt::ItemIsEditable;
-  if ( testFlag( AllowNodeReorder ) )
-    f |= Qt::ItemIsDragEnabled;
+
   QgsLayerTreeNode* node = index2node( index );
+  bool isEmbedded = node->customProperty( "embedded" ).toInt();
+
+  if ( testFlag( AllowNodeReorder ) )
+  {
+    // only root embedded nodes can be reordered
+    if ( !isEmbedded || ( isEmbedded && node->parent() && !node->parent()->customProperty( "embedded" ).toInt() ) )
+      f |= Qt::ItemIsDragEnabled;
+  }
+
   if ( testFlag( AllowNodeChangeVisibility ) && ( QgsLayerTree::isLayer( node ) || QgsLayerTree::isGroup( node ) ) )
     f |= Qt::ItemIsUserCheckable;
-  if ( testFlag( AllowNodeReorder ) && QgsLayerTree::isGroup( node ) )
+
+  if ( testFlag( AllowNodeReorder ) && QgsLayerTree::isGroup( node ) && !isEmbedded )
     f |= Qt::ItemIsDropEnabled;
+
   return f;
 }
 
