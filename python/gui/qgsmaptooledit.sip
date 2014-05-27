@@ -1,41 +1,15 @@
-/***************************************************************************
-    qgsmaptooledit.h  -  base class for editing map tools
-    ---------------------
-    begin                : Juli 2007
-    copyright            : (C) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSMAPTOOLEDIT_H
-#define QGSMAPTOOLEDIT_H
-
-#include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
-
-class QgsRubberBand;
-class QKeyEvent;
-
-/**Base class for map tools that edit vector geometry*/
-class APP_EXPORT QgsMapToolEdit: public QgsMapTool
+class QgsMapToolEdit: public QgsMapTool
 {
+%TypeHeaderCode
+#include <qgsmaptooledit.h>
+%End
   public:
-    QgsMapToolEdit( QgsMapCanvas* canvas );
+    QgsMapToolEdit( QgsMapCanvas* canvas /TransferThis/ );
     virtual ~QgsMapToolEdit();
 
-    virtual bool isEditTool() { return true; }
+    virtual bool isEditTool();
 
   protected:
-    /**Snapper object that reads the settings from project and option
-     and applies it to the map canvas*/
-    QgsMapCanvasSnapper mSnapper;
-
     /**Inserts vertices to the snapped segments of the editing layer.
      This is useful for topological editing if snap to segment is enabled.
      @param snapResults results collected from the snapping operation
@@ -73,5 +47,3 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapTool
        @note added in QGIS 1.9*/
     void notifyNotEditableLayer();
 };
-
-#endif

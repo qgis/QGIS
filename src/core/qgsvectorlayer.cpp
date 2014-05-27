@@ -943,6 +943,15 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& render
   return false;
 }
 
+void QgsVectorLayer::setTransactionId( const QString& id )
+{
+  mTransactionId = id;
+  if ( mDataProvider )
+  {
+    mDataProvider->setTransactionId( id );
+  }
+}
+
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
 {
   if ( !mDataProvider )
@@ -2020,7 +2029,15 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 
   updateExtents();
 
-  return mEditBuffer->changeGeometry( fid, geom );
+  if ( mTransactionId.isEmpty() )
+  {
+    return mEditBuffer->changeGeometry( fid, geom );
+  }
+  else
+  {
+    QgsGeometryMap geomMap; geomMap.insert( fid, *geom );
+    return mDataProvider->changeGeometryValues( geomMap );
+  }
 }
 
 
@@ -2035,7 +2052,16 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+  if ( mTransactionId.isEmpty() )
+  {
+    return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+  }
+  else
+  {
+    QgsAttributeMap map; map.insert( field, newValue );
+    QgsChangedAttributesMap cmap; cmap.insert( fid, map );
+    return mDataProvider->changeAttributeValues( cmap );
+  }
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )
@@ -2043,7 +2069,14 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->addAttribute( field );
+  if ( mTransactionId.isEmpty() )
+  {
+    return mEditBuffer->addAttribute( field );
+  }
+  else
+  {
+    return mDataProvider->addAttributes( QList<QgsField>() << field );
+  }
 }
 
 void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
@@ -2111,7 +2144,15 @@ bool QgsVectorLayer::deleteAttribute( int index )
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->deleteAttribute( index );
+  if ( mTransactionId.isEmpty() )
+  {
+    return mEditBuffer->deleteAttribute( index );
+  }
+  else
+  {
+    QgsAttributeIds attributeIds; attributeIds.insert( index );
+    return mDataProvider->deleteAttributes( attributeIds );
+  }
 }
 
 bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
@@ -2139,7 +2180,16 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   if ( !mEditBuffer )
     return false;
 
-  bool res = mEditBuffer->deleteFeature( fid );
+  bool res = false;
+  if ( mTransactionId.isEmpty() )
+  {
+    res = mEditBuffer->deleteFeature( fid );
+  }
+  else
+  {
+    QgsFeatureIds ids; ids.insert( fid );
+    res = mDataProvider->deleteFeatures( ids );
+  }
   if ( res )
     mSelectedFeatureIds.remove( fid ); // remove it from selection
 
@@ -2686,18 +2736,30 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 
 void QgsVectorLayer::beginEditCommand( QString text )
 {
+  if ( !mTransactionId.isEmpty() )
+  {
+    return;
+  }
   undoStack()->beginMacro( text );
   emit editCommandStarted( text );
 }
 
 void QgsVectorLayer::endEditCommand()
 {
+  if ( !mTransactionId.isEmpty() )
+  {
+    return;
+  }
   undoStack()->endMacro();
   emit editCommandEnded();
 }
 
 void QgsVectorLayer::destroyEditCommand()
 {
+  if ( !mTransactionId.isEmpty() )
+  {
+    return;
+  }
   undoStack()->endMacro();
   undoStack()->undo();
   emit editCommandDestroyed();

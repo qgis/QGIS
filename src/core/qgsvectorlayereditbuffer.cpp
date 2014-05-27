@@ -103,7 +103,6 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
     return false;
 
   // TODO: check correct geometry type
-
   L->undoStack()->push( new QgsVectorLayerUndoCommandAddFeature( this, f ) );
   return true;
 }
@@ -163,7 +162,6 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
   }
 
   // TODO: check compatible geometry
-
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeGeometry( this, fid, geom ) );
   return true;
 }

@@ -10,6 +10,7 @@
 
 %Include qgsblendmodecombobox.sip
 
+%Include qgsmaptooledit.sip
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
 %Include qgsattributeeditor.sip

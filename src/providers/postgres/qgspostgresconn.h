@@ -26,6 +26,8 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 
+class QgsVectorDataProvider;
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -150,6 +152,7 @@ class QgsPostgresResult
     Oid PQoidValue();
 
     PGresult *result() const { return mRes; }
+    QgsVectorDataProvider* memoryProvider();
 
   private:
     PGresult *mRes;
@@ -162,6 +165,11 @@ class QgsPostgresConn : public QObject
   public:
     static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true );
     void disconnect();
+
+    //transaction handling
+    static bool beginTransaction( const QString& id, const QString& connString, QString& error );
+    static QgsVectorDataProvider* executeTransactionSql( const QString& id, const QString& sql, QString& error );
+    static bool removeTransaction( const QString& id );
 
     //! get postgis version string
     QString postgisVersion();
@@ -270,6 +278,11 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 
+    static QgsPostgresConn* transactionConnection( const QString& transactionId );
+
+    QString transactionId() const { return mTransactionId; }
+    void setTransactionId( const QString& id ) { mTransactionId = id; }
+
   private:
     QgsPostgresConn( QString conninfo, bool readOnly, bool shared );
     ~QgsPostgresConn();
@@ -313,6 +326,7 @@ class QgsPostgresConn : public QObject
 
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
+    static QMap<QString, QgsPostgresConn *> sTransactionConnections;
 
     /** count number of spatial columns in a given relation */
     void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
@@ -336,6 +350,8 @@ class QgsPostgresConn : public QObject
     int mNextCursorId;
 
     bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+
+    QString mTransactionId;
 };
 
 

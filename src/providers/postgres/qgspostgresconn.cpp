@@ -22,6 +22,8 @@
 #include "qgscredentials.h"
 #include "qgsfield.h"
 #include "qgspgtablemodel.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
 #include <QApplication>
 #include <QSettings>
@@ -126,9 +128,45 @@ Oid QgsPostgresResult::PQoidValue()
   return ::PQoidValue( mRes );
 }
 
+QgsVectorDataProvider* QgsPostgresResult::memoryProvider()
+{
+  QgsVectorDataProvider* provider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( "memory", "NoGeometry" ) );
+  if ( provider )
+  {
+    QList<QgsField> attributes;
+
+    int nFields = PQnfields();
+    for ( int i = 0; i < nFields; ++i )
+    {
+      attributes.push_back( QgsField( PQfname( i ), QVariant::String ) ); //todo: other datatypes?
+    }
+    provider->addAttributes( attributes );
+
+    QgsFeatureList features;
+    int nTuples = PQntuples();
+    for ( int i = 0; i < nTuples; ++i )
+    {
+      QgsFeature fet;
+      fet.initAttributes( nFields );
+      for ( int j = 0; j < nFields; ++j )
+      {
+        fet.setAttribute( j, PQgetvalue( j, i ) );
+      }
+      features << fet;
+    }
+
+    if ( features.size() > 0 )
+    {
+      provider->addFeatures( features );
+    }
+  }
+  return provider;
+}
+
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
+QMap<QString, QgsPostgresConn *> QgsPostgresConn::sTransactionConnections;
 const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bool shared )
@@ -285,6 +323,64 @@ void QgsPostgresConn::disconnect()
   }
 
   delete this;
+}
+
+bool QgsPostgresConn::beginTransaction( const QString& id, const QString& connString, QString& error )
+{
+  QgsPostgresConn* conn = connectDb( connString, false /*readonly*/, false /*shared*/ );
+  if ( !conn )
+  {
+    return false;
+  }
+
+  sTransactionConnections.insert( id, conn );
+  conn->setTransactionId( id );
+  QgsPostgresResult r = conn->PQexec( "BEGIN TRANSACTION", true );
+  if ( r.PQresultStatus() == PGRES_COMMAND_OK )
+  {
+    return true;
+  }
+  else
+  {
+    error = r.PQresultErrorMessage();
+    return false;
+  }
+}
+
+QgsVectorDataProvider* QgsPostgresConn::executeTransactionSql( const QString& id, const QString& sql, QString& error )
+{
+  QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( id );
+  if ( it == sTransactionConnections.end() )
+  {
+    return 0;
+  }
+
+  QgsPostgresConn* conn = it.value();
+  QgsPostgresResult r = conn->PQexec( sql, true );
+  if ( r.PQresultStatus() == PGRES_TUPLES_OK /*PGRES_COMMAND_OK*/ )
+  {
+    return r.memoryProvider();
+  }
+  else
+  {
+    error = r.PQresultErrorMessage();
+    return 0;
+  }
+}
+
+bool QgsPostgresConn::removeTransaction( const QString& id )
+{
+  QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( id );
+  if ( it == sTransactionConnections.end() )
+  {
+    return false;
+  }
+
+  QgsPostgresConn* conn = it.value();
+  conn->setTransactionId( QString() );
+  sTransactionConnections.remove( id );
+  conn->disconnect();
+  return true;
 }
 
 /* private */
@@ -833,13 +929,14 @@ PGresult *QgsPostgresConn::PQexec( QString query, bool logError )
 
 bool QgsPostgresConn::openCursor( QString cursorName, QString sql )
 {
-  if ( mOpenCursors++ == 0 )
+  if ( mOpenCursors++ == 0 && mTransactionId.isEmpty() )
   {
     QgsDebugMsg( "Starting read-only transaction" );
     PQexecNR( "BEGIN READ ONLY" );
   }
   QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName ).arg( sql ), 3 );
-  return PQexecNR( QString( "DECLARE %1 BINARY CURSOR FOR %2" ).arg( cursorName ).arg( sql ) );
+  return PQexecNR( QString( "DECLARE %1 BINARY CURSOR %2 FOR %3" ).
+                   arg( cursorName ).arg( mTransactionId.isEmpty() ? QString() : QString( "WITH HOLD" ) ).arg( sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( QString cursorName )
@@ -847,7 +944,7 @@ bool QgsPostgresConn::closeCursor( QString cursorName )
   if ( !PQexecNR( QString( "CLOSE %1" ).arg( cursorName ) ) )
     return false;
 
-  if ( --mOpenCursors == 0 )
+  if ( --mOpenCursors == 0 && mTransactionId.isEmpty() )
   {
     QgsDebugMsg( "Committing read-only transaction" );
     PQexecNR( "COMMIT" );
@@ -1608,6 +1705,16 @@ void QgsPostgresConn::deleteConnection( QString theConnName )
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
   settings.remove( key );
+}
+
+QgsPostgresConn* QgsPostgresConn::transactionConnection( const QString& transactionId )
+{
+  QMap<QString, QgsPostgresConn *>::iterator it = sTransactionConnections.find( transactionId );
+  if ( it == sTransactionConnections.end() )
+  {
+    return 0;
+  }
+  return it.value();
 }
 
 bool QgsPostgresConn::cancel()

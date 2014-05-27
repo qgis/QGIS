@@ -90,6 +90,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       SimplifyGeometries =           1 << 14,
       /** supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation = 1 << 15,
+      /** supports transactions*/
+      TransactionSupport = 1 << 16
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -366,6 +368,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     static QVariant convertValue( QVariant::Type type, QString value );
 
+    void setTransactionId( const QString& id ) { mTransactionId = id; }
+    QString transactionId() const { return mTransactionId; }
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
@@ -392,6 +397,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /** Old-style mapping of index to name for QgsPalLabeling fix */
     QgsAttrPalIndexNameHash mAttrPalIndexName;
+
+    /**Transaction id (or empty string if not in transactional mode)*/
+    QString mTransactionId;
 
   private:
     /** old notation **/

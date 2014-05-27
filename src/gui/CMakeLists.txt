@@ -171,6 +171,7 @@ qgsmaplayerproxymodel.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptip.cpp
 qgsmaptool.cpp
+qgsmaptooledit.cpp
 qgsmaptoolemitpoint.cpp
 qgsmaptoolidentify.cpp
 qgsmaptoolpan.cpp
