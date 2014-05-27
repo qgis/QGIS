@@ -357,6 +357,8 @@ class CORE_EXPORT QgsProject : public QObject
 
     void loadEmbeddedNodes( QgsLayerTreeGroup* group );
 
+    void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
