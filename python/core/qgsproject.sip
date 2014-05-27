@@ -321,7 +321,7 @@ class QgsProject : QObject
     // void loadEmbeddedNodes( QgsLayerTreeGroup* group );
 
     //! @note not available in python bindings
-    void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
+    // void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read
