@@ -481,17 +481,52 @@ void QgsComposerItem::move( double dx, double dy )
   setSceneRect( newSceneRect );
 }
 
-void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode itemPoint )
+int QgsComposerItem::page() const
+{
+  double y = pos().y();
+  double h = composition()->paperHeight() + composition()->spaceBetweenPages();
+  int page = 1;
+  while ( y - h >= 0. )
+  {
+    y -= h;
+    ++page;
+  }
+  return page;
+}
+
+QPointF QgsComposerItem::pagePos() const
+{
+  QPointF p = pos();
+  double h = composition()->paperHeight() + composition()->spaceBetweenPages();
+  p.ry() -= ( page() - 1 ) * h;
+  return p;
+}
+
+void QgsComposerItem::updatePagePos( int /*newwidth*/, int newheight )
+{
+  QPointF curPagePos = pagePos();
+  int curPage = page() - 1;
+  setY( curPage * ( newheight + composition()->spaceBetweenPages() ) + curPagePos.y() );
+  emit sizeChanged();
+}
+
+void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode itemPoint, int page )
 {
   double width = rect().width();
   double height = rect().height();
-  setItemPosition( x, y, width, height, itemPoint );
+  setItemPosition( x, y, width, height, itemPoint, page );
 }
 
-void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint, bool posIncludesFrame )
+void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint, bool posIncludesFrame, int page )
 {
   double upperLeftX = x;
   double upperLeftY = y;
+
+  if ( page > 0 )
+  {
+    double h = composition()->paperHeight() + composition()->spaceBetweenPages();
+    upperLeftY += ( page - 1 ) * h;
+  }
 
   //store the item position mode
   mLastUsedPositionMode = itemPoint;

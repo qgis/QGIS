@@ -60,6 +60,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
+    void on_mPageSpinBox_valueChanged(int) { changeItemPosition(); }
     void on_mXLineEdit_editingFinished() { changeItemPosition(); }
     void on_mYLineEdit_editingFinished() { changeItemPosition(); }
     void on_mWidthLineEdit_editingFinished() { changeItemPosition(); }
@@ -85,6 +86,10 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void setValuesForGuiPositionElements();
     //sets the values for all non-position related elements
     void setValuesForGuiNonPositionElements();
+
+private slots:
+    // sets the number of pages in the page number spinbox
+    void setPages();
 
   private:
     QgsComposerItemWidget();

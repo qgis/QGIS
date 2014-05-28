@@ -133,8 +133,17 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
+    /** gets the page the item is currently on */
+    int page() const;
+
+    /** Returns the position relative to the current page */
+    QPointF pagePos() const;
+
+    /** Updates the page relative position for the new paper size */
+    void updatePagePos( int newwidth, int newheight );
+
     /**Moves the item to a new position (in canvas coordinates)*/
-    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 
     /**Sets item position and width / height in one go
       @param x item position x
@@ -143,9 +152,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @param height item height
       @param itemPoint item position mode
       @param posIncludesFrame set to true if the position and size arguments include the item's frame border
-
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
