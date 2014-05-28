@@ -18531,7 +18531,7 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="24"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumny</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="76"/>
@@ -20048,17 +20048,17 @@ Baza: %2</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgscalendarconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgscalendarconfigdlgbase.ui" line="20"/>
         <source>A calendar widget to enter a date.</source>
-        <translation type="unfinished">Widżet kalendarza do wprowadzania daty.</translation>
+        <translation>Widżet kalendarza do wprowadzania daty.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgscalendarconfigdlgbase.ui" line="27"/>
         <source>Date format</source>
-        <translation type="unfinished">Format daty</translation>
+        <translation>Format daty</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgscalendarconfigdlgbase.ui" line="37"/>
@@ -20225,7 +20225,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgscheckboxconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgscheckboxconfigdlgbase.ui" line="20"/>
@@ -20261,12 +20261,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="217"/>
         <source>Copy color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj kolor</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="219"/>
         <source>Paste color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej kolor</translation>
     </message>
 </context>
 <context>
@@ -20543,12 +20543,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2178"/>
         <source>SVG error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2178"/>
         <source>There was an error in SVG output for SVG layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Wystąpił błąd przy pliku wynikowym SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2332"/>
@@ -21747,12 +21747,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="919"/>
         <source>Export Atlas as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj atlas jako PDF...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="922"/>
         <source>Export Atlas as PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj atlas jako PDF</translation>
     </message>
     <message>
         <source>Export Atlas As PDF...</source>
@@ -21953,17 +21953,17 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="50"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">do lewej</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="50"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">do środka</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="50"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">do prawej</translation>
     </message>
 </context>
 <context>
@@ -21971,12 +21971,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="170"/>
         <source>Ascending</source>
-        <translation type="unfinished">Rosnąco</translation>
+        <translation>rosnąco</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="170"/>
         <source>Descending</source>
-        <translation type="unfinished">Malejąco</translation>
+        <translation>malejąco</translation>
     </message>
 </context>
 <context>
@@ -22060,7 +22060,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="93"/>
         <source>Refresh HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Odśwież HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
@@ -22070,22 +22070,22 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="113"/>
         <source>Add Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj ramkę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="123"/>
         <source>Use smart page breaks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cwany podział na strony</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="138"/>
         <source>Maximum distance</source>
-        <translation type="unfinished">Maksymalna odległość</translation>
+        <translation>Maksymalna odległość</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="145"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation> mm</translation>
     </message>
 </context>
 <context>
@@ -23556,7 +23556,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="254"/>
         <source>View extent in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustaw do aktualnego widoku mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="264"/>
@@ -23586,7 +23586,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="324"/>
         <source>Predefined scale (best fit)</source>
-        <translation type="unfinished"></translation>
+        <translation>zdefiniowane skale (najlepsza)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="397"/>
@@ -23900,7 +23900,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
         <location filename="../src/core/composer/qgscomposerpicture.cpp" line="293"/>
         <location filename="../src/core/composer/qgscomposerpicture.cpp" line="329"/>
         <source>Composer</source>
-        <translation type="unfinished">Wydruk</translation>
+        <translation>Wydruk</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerpicture.cpp" line="329"/>
@@ -24029,92 +24029,92 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="108"/>
         <source>Image source</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło obrazu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="115"/>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Położenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="122"/>
         <source>Resize mode</source>
-        <translation type="unfinished">Zmiana rozmiaru</translation>
+        <translation>Zmiana rozmiaru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="130"/>
         <source>Zoom</source>
-        <translation type="unfinished">Powiększ</translation>
+        <translation type="unfinished">powiększ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="135"/>
         <source>Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">rozciągnij</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="140"/>
         <source>Clip</source>
-        <translation type="unfinished">Przytnij</translation>
+        <translation>przytnij</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="145"/>
         <source>Zoom and resize frame</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">powiększ i dopasuj ramkę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="150"/>
         <source>Resize frame to image size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">dopasuj ramkę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="160"/>
         <source>Expression</source>
-        <translation type="unfinished">Wyrażenie</translation>
+        <translation>Wyrażenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="190"/>
         <source>Top left</source>
-        <translation type="unfinished"></translation>
+        <translation>lewa góra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="195"/>
         <source>Top center</source>
-        <translation type="unfinished"></translation>
+        <translation>środek góra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="200"/>
         <source>Top right</source>
-        <translation type="unfinished"></translation>
+        <translation>prawa góra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="205"/>
         <source>Middle left</source>
-        <translation type="unfinished"></translation>
+        <translation>lewa środek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="210"/>
         <source>Middle</source>
-        <translation type="unfinished">środek</translation>
+        <translation>centralnie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="215"/>
         <source>Middle right</source>
-        <translation type="unfinished"></translation>
+        <translation>prawa środek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="220"/>
         <source>Bottom left</source>
-        <translation type="unfinished"></translation>
+        <translation>lewy dół</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="225"/>
         <source>Bottom center</source>
-        <translation type="unfinished"></translation>
+        <translation>środek dół</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="230"/>
         <source>Bottom right</source>
-        <translation type="unfinished"></translation>
+        <translation>prawy dół</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="247"/>
@@ -24763,17 +24763,17 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="507"/>
         <source>Descending</source>
-        <translation type="unfinished">Malejąco</translation>
+        <translation>malejąco</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="510"/>
         <source>Ascending</source>
-        <translation type="unfinished">Rosnąco</translation>
+        <translation>rosnąco</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="542"/>
         <source>Attribute</source>
-        <translation type="unfinished">Atrybut</translation>
+        <translation>Atrybut</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerattributetablemodel.cpp" line="545"/>
@@ -24927,7 +24927,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="92"/>
         <source>Refresh table data</source>
-        <translation type="unfinished"></translation>
+        <translation>Odśwież dane w tabeli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="129"/>
@@ -24982,27 +24982,27 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="262"/>
         <source>Header alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównanie nagłówka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="270"/>
         <source>Follow column alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>zgodne z kolumną</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="275"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>lewa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="280"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>środek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="285"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>prawa</translation>
     </message>
     <message>
         <source>Grid stroke width</source>
