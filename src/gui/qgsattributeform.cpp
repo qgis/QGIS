@@ -266,7 +266,13 @@ void QgsAttributeForm::synchronizeEnabledState()
 
   Q_FOREACH( QgsWidgetWrapper* ww, mWidgets )
   {
-    ww->setEnabled( isEditable );
+    bool fieldEditable = true;
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww )
+    {
+      fieldEditable = mLayer->fieldEditable( eww->fieldIdx() );
+    }
+    ww->setEnabled( isEditable && fieldEditable );
   }
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
