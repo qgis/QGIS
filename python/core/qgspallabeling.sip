@@ -693,6 +693,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
+
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) /Deprecated/;

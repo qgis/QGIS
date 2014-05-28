@@ -1516,7 +1516,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
 
   QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
-  int return_id;
+  qint64 return_id;
   if ( myResult == SQLITE_OK )
   {
     return_id = sqlite3_last_insert_rowid( myDatabase );

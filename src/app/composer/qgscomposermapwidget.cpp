@@ -250,7 +250,7 @@ void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
   {
     // restore to fixed scale if no predefined scales exist
     mAtlasFixedScaleRadio->blockSignals( true );
-    mAtlasFixedScaleRadio->setChecked( Qt::Checked );
+    mAtlasFixedScaleRadio->setChecked( true );
     mAtlasFixedScaleRadio->blockSignals( false );
     mComposerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
   }
