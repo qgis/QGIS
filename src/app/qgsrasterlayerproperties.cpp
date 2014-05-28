@@ -67,10 +67,11 @@
 #include <QVector>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl ),
+    : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl )
     // Constant that signals property not used.
-    TRSTRING_NOT_SET( tr( "Not Set" ) ),
-    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ), mRendererWidget( 0 )
+    , TRSTRING_NOT_SET( tr( "Not Set" ) )
+    , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ), mRendererWidget( 0 )
+    , mMapCanvas( theCanvas )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -80,9 +81,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
-
-  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.svg" ) );
-  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.svg" ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -116,17 +114,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
   // set up the scale based layer visibility stuff....
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
-  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
-  if ( projectScales )
-  {
-    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
-    cbMinimumScale->updateScales( scalesList );
-    cbMaximumScale->updateScales( scalesList );
-  }
-  cbMinimumScale->setScale( 1.0 / lyr->minimumScale() );
-  cbMaximumScale->setScale( 1.0 / lyr->maximumScale() );
-
+  mScaleRangeWidget->setScaleRange( 1.0 / lyr->maximumScale(), 1.0 / lyr->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
 
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
@@ -141,7 +131,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
   pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
 
-  mMapCanvas = theCanvas;
   mPixelSelectorTool = 0;
   if ( mMapCanvas )
   {
@@ -856,8 +845,9 @@ void QgsRasterLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  mRasterLayer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
-  mRasterLayer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
+  // caution: layer uses scale denoms, widget uses true scales
+  mRasterLayer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
+  mRasterLayer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );
 
   //update the legend pixmap
   // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
@@ -1622,6 +1612,9 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
 
 void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
 {
+
+  apply(); // make sure the style to save is uptodate
+
   // a flag passed by reference
   bool defaultSavedFlag = false;
   // after calling this the above flag will be set true for success
@@ -1691,6 +1684,8 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   if ( !outputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
     outputFileName += ".qml";
 
+  apply(); // make sure the style to save is uptodate
+
   bool defaultLoadedFlag = false;
   QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
@@ -1715,16 +1710,6 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
   {
     buttonBuildPyramids->setEnabled( true );
   }
-}
-
-void QgsRasterLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
-{
-  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
-}
-
-void QgsRasterLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
-{
-  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()

@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:shapestogrid', input, field, multiple, line_type, grid_type, target, output_extent, user_size, user_grid)
+	processing.runalg('saga:shapestogrid', input, field, multiple, line_type, grid_type, target, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

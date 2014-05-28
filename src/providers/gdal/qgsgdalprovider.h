@@ -157,8 +157,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QGis::DataType dataType( int bandNo ) const;
     QGis::DataType srcDataType( int bandNo ) const;
 
-    QGis::DataType dataTypeFormGdal( int theGdalDataType ) const;
-
     int bandCount() const;
 
     int colorInterpretation( int bandNo ) const;
@@ -176,6 +174,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+
+    /** Read band scale for raster value
+     * @@note added in 2.3 */
+    double bandScale( int bandNo ) const;
+    /** Read band offset for raster value
+     * @@note added in 2.3 */
+    double bandOffset( int bandNo ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 

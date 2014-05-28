@@ -304,8 +304,27 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
       QgsGeometry* intersectionPoint = lineA->intersection( lineB );
       if ( intersectionPoint->type()  == QGis::Point )
       {
-        iSegIt->snappedVertex = intersectionPoint->asPoint();
-        myResults.append( *iSegIt );
+        //We have to check the intersection point is inside the tolerance distance for both layers
+        double toleranceA, toleranceB;
+        for ( int i = 0 ;i < snapLayers.size();++i )
+        {
+          if ( snapLayers[i].mLayer == oSegIt->layer )
+          {
+            toleranceA = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
+          }
+          if ( snapLayers[i].mLayer == iSegIt->layer )
+          {
+            toleranceB = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
+          }
+        }
+        QgsPoint point = mMapCanvas->getCoordinateTransform()->toMapCoordinates( p );
+        QgsGeometry* cursorPoint = QgsGeometry::fromPoint( point );
+        double distance = intersectionPoint->distance( *cursorPoint );
+        if ( distance < toleranceA && distance < toleranceB )
+        {
+          iSegIt->snappedVertex = intersectionPoint->asPoint();
+          myResults.append( *iSegIt );
+        }
       }
     }
   }

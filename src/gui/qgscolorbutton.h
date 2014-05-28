@@ -19,6 +19,7 @@
 #include <QPushButton>
 #include <QTemporaryFile>
 
+class QMimeData;
 
 /** \ingroup gui
  * \class QgsColorButton
@@ -30,6 +31,11 @@
 class GUI_EXPORT QgsColorButton: public QPushButton
 {
     Q_OBJECT
+    Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
+    Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
+    Q_PROPERTY( QColor color READ color WRITE setColor )
+    Q_FLAGS( QColorDialog::ColorDialogOptions )
+    Q_PROPERTY( QColorDialog::ColorDialogOptions colorDialogOptions READ colorDialogOptions WRITE setColorDialogOptions )
 
   public:
     /**
@@ -128,11 +134,28 @@ class GUI_EXPORT QgsColorButton: public QPushButton
 
   protected:
     void changeEvent( QEvent* e );
-#if 0 // causes too many cyclical updates, but may be needed on some platforms
-    void paintEvent( QPaintEvent* e );
-#endif
     void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
+
+    /**
+     * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
+     */
+    void mousePressEvent( QMouseEvent* e );
+
+    /**
+     * Reimplemented to allow dragging colors from button
+     */
+    void mouseMoveEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to accept dragged colors
+     */
+    void dragEnterEvent( QDragEnterEvent * e ) ;
+
+    /**
+     * Reimplemented to accept dropped colors
+     */
+    void dropEvent( QDropEvent *e );
 
   private:
     QString mColorDialogTitle;
@@ -141,6 +164,32 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     bool mAcceptLiveUpdates;
     QTemporaryFile mTempPNG;
     bool mColorSet; // added in QGIS 2.1
+
+    QPoint mDragStartPosition;
+
+    /**
+     * Shows the color button context menu and handles copying and pasting color values.
+     */
+    void showContextMenu( QMouseEvent* event );
+
+    /**
+     * Creates mime data from the current color. Sets both the mime data's color data, and the
+     * mime data's text with the color's hex code.
+     * @note added in 2.3
+     * @see colorFromMimeData
+     */
+    QMimeData* createColorMimeData() const;
+
+    /**
+     * Attempts to parse mimeData as a color, either via the mime data's color data or by
+     * parsing a textual representation of a color.
+     * @returns true if mime data could be intrepreted as a color
+     * @param mimeData mime data
+     * @param resultColor QColor to store evaluated color
+     * @note added in 2.3
+     * @see createColorMimeData
+     */
+    bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
 
   private slots:
     void onButtonClicked();

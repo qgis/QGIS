@@ -32,6 +32,7 @@ from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputFile import OutputFile
 from processing.outputs.OutputString import OutputString
+from processing.outputs.OutputDirectory import OutputDirectory
 
 
 class OutputFactory:
@@ -46,6 +47,7 @@ class OutputFactory:
             OutputNumber,
             OutputFile,
             OutputString,
+            OutputDirectory
             ]
         for clazz in classes:
             if s.startswith(clazz().outputTypeName()):
@@ -53,4 +55,4 @@ class OutputFactory:
                 if len(tokens) == 2:
                     return clazz(tokens[0], tokens[1])
                 else:
-                    return clazz(tokens[0], tokens[1], tokens[2] == str(True))
+                    return clazz(tokens[0], tokens[1], tokens[2])

@@ -12,4 +12,4 @@ Returns a string representation of a color based on its hue, saturation, and lig
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     color_hsl(100,50,70) &rarr; '#a6d98c'</p>
+     color_hsl(100,50,70) &rarr; '166,217,140'</p>

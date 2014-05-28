@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
-    <height>591</height>
+    <width>538</width>
+    <height>635</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,6 +25,9 @@
    </iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>

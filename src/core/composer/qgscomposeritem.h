@@ -252,7 +252,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @note introduced in 2.0
      * @see hasBackground
      */
-    void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
+    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
 
     /** Gets the background color for this item
      * @returns background color
@@ -268,20 +268,20 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void setBackgroundColor( const QColor& backgroundColor );
 
     /** Returns the item's composition blending mode */
-    QPainter::CompositionMode blendMode() const {return mBlendMode;}
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /** Sets the item's composition blending mode*/
     void setBlendMode( QPainter::CompositionMode blendMode );
 
     /** Returns the item's transparency */
-    int transparency() const {return mTransparency;}
+    int transparency() const { return mTransparency; }
     /** Sets the item's transparency */
     void setTransparency( int transparency );
 
     /** Returns true if effects (eg blend modes) are enabled for the item
      * @note introduced in 2.0
     */
-    bool effectsEnabled() const {return mEffectsEnabled;}
+    bool effectsEnabled() const { return mEffectsEnabled; }
     /** Sets whether effects (eg blend modes) are enabled for the item
      * @note introduced in 2.0
     */
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
 
-    const QgsComposition* composition() const {return mComposition;}
+    const QgsComposition* composition() const { return mComposition; }
     QgsComposition* composition() {return mComposition;}
 
     virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
@@ -313,8 +313,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      to work around the Qt font bug)*/
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
-    /**Like the above, but with a rectangle for multiline text*/
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop ) const;
+    /**Like the above, but with a rectangle for multiline text
+     * @param p painter to use
+     * @param rect rectangle to draw into
+     * @param text text to draw
+     * @param font font to use
+     * @param halignment optional horizontal alignment
+     * @param valignment optional vertical alignment
+     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+    */
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
     /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
@@ -341,17 +349,17 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Returns position lock for mouse drags (true means locked)
     @note this method was added in version 1.2*/
-    bool positionLock() const {return mItemPositionLocked;}
+    bool positionLock() const { return mItemPositionLocked; }
 
     /**Returns the rotation for the composer item
     @note this method was added in version 2.1*/
-    double itemRotation() const {return mItemRotation;}
+    double itemRotation() const { return mItemRotation; }
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
      *             instead
      */
-    Q_DECL_DEPRECATED double rotation() const {return mItemRotation;}
+    Q_DECL_DEPRECATED double rotation() const { return mItemRotation; }
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }

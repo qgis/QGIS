@@ -164,11 +164,11 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends}
 Replaces: libqgis{QGIS_ABI}
-Description: QGIS - shared python library
+Description: QGIS - shared Python library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the shared python library.
+ This package contains the shared Python library.
 
 Package: libqgissqlanyconnection{QGIS_ABI}
 Architecture: any
@@ -210,6 +210,7 @@ Depends:
  python-qt4-dev (>=4.1.0),
  qt4-designer,
  ${misc:Depends}
+Recommends: libqgis-customwidgets{QGIS_ABI}
 Provides: qgis-dev
 Replaces:
  libqgis1-dev
@@ -259,6 +260,13 @@ Depends:
  python-qgis-common (= ${source:Version}),
  python-psycopg2,
  python-qscintilla2,
+ python-httplib2,
+ python-jinja2,
+ python-markupsafe,
+ python-pygments,
+ python-dateutil,
+ python-tz,
+ python-six,
 #sid jessie quantal trusty sid-oracle# python-pyspatialite,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
@@ -331,6 +339,18 @@ Description: QGIS mapserver
  .
  This package contains the QGIS mapserver.
 
+Package: libqgis-customwidgets{QGIS_ABI}
+Architecture: any
+Depends:
+ qt4-designer,
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS custom widgets for Qt Designer
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains a library to use specific QGIS widgets in Qt Designer.
+
 Package: qgis-sqlanywhere
 Architecture: any
 Depends:
@@ -386,7 +406,7 @@ Description: OSG globe plugin for QGIS - architecture-independent data
 #sid-oracle#Package: qgis-oracle-provider
 #sid-oracle#Architecture: any
 #sid-oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
-#sid-oracle#Section: contrib/databases
+#sid-oracle#Section: contrib/database
 #sid-oracle#Description: QGIS oracle provider
 #sid-oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
 #sid-oracle# display databases of geographic information.

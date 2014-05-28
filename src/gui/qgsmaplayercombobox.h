@@ -30,6 +30,9 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {
     Q_OBJECT
+    Q_FLAGS( QgsMapLayerProxyModel::Filters )
+    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+
   public:
     /**
      * @brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
@@ -37,26 +40,21 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      */
     explicit QgsMapLayerComboBox( QWidget *parent = 0 );
 
-    /**
-     * @brief setFilters allows fitering according to layer type and/or geometry type.
-     */
+    //! setFilters allows fitering according to layer type and/or geometry type.
     void setFilters( QgsMapLayerProxyModel::Filters filters );
 
-    /**
-     * @brief currentLayer returns the current layer selected in the combo box
-     */
+    //! currently used filter on list layers
+    QgsMapLayerProxyModel::Filters filters() { return mProxyModel->filters(); }
+
+    //! currentLayer returns the current layer selected in the combo box
     QgsMapLayer* currentLayer();
 
   public slots:
-    /**
-     * @brief setLayer set the current layer selected in the combo
-     */
+    //! setLayer set the current layer selected in the combo
     void setLayer( QgsMapLayer* layer );
 
   signals:
-    /**
-     * @brief layerChanged this signal is emitted whenever the currently selected layer changes
-     */
+    //! layerChanged this signal is emitted whenever the currently selected layer changes
     void layerChanged( QgsMapLayer* layer );
 
   protected slots:
@@ -64,7 +62,6 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
   private:
     QgsMapLayerProxyModel* mProxyModel;
-
 };
 
 #endif // QGSMAPLAYERCOMBOBOX_H

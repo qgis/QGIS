@@ -1,0 +1,12 @@
+<h3>bounds function</h3>
+Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+<h4>Syntax</h4>
+<pre>bounds(geom)</pre>
+
+<h4>Arguments</h4>
+geom &rarr; a geometry
+
+<h4>Example</h4>
+<pre> bounds($geometry) &rarr; returns bounding box of $geometry</pre>
+

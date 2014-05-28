@@ -232,7 +232,7 @@ class GeoAlgorithm:
         self.runHookScript(scriptFile, progress)
 
     def runHookScript(self, filename, progress):
-        if not os.path.exists(filename):
+        if filename is None or not os.path.exists(filename):
             return
         try:
             script = 'import processing\n'
@@ -358,10 +358,12 @@ class GeoAlgorithm:
                         if p is not None:
                             self.crs = p.crs()
                             return
-        qgis = dataobjects.interface.iface
-        if qgis is None:
-          return
-        self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
+        try:
+            from qgis.utils import iface
+            self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
+        except:
+            pass
+
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

@@ -35,6 +35,9 @@ class CORE_EXPORT QgsApplication : public QApplication
 {
     Q_OBJECT
   public:
+    static const char* QGIS_ORGANIZATION_NAME;
+    static const char* QGIS_ORGANIZATION_DOMAIN;
+    static const char* QGIS_APPLICATION_NAME;
     //! @note customConfigDir parameter added in v1.6
     QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
@@ -270,7 +273,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); }
+    static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -278,6 +281,14 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @see skippedGdalDrivers
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
+
+    /** Get maximum concurrent thread count
+     * @note added in 2.4 */
+    static int maxThreads() { return ABISYM( mMaxThreads ); }
+    /** Set maximum concurrent thread count
+     * @note must be between 1 and \#cores, -1 means use all available cores
+     * @note added in 2.4 */
+    static void setMaxThreads( int maxThreads );
 
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
@@ -320,6 +331,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @see skipGdalDriver, restoreGdalDriver
      * @note added in 2.0 */
     static QStringList ABISYM( mGdalSkipList );
+    /**
+     * @note added in 2.4 */
+    static int ABISYM( mMaxThreads );
 };
 
 #endif

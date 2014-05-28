@@ -17,10 +17,14 @@
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <QTemporaryFile>
+#include <QMouseEvent>
+#include <QMenu>
+#include <QClipboard>
 
 /*!
   \class QgsColorButton
@@ -47,6 +51,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::Colo
     , mTempPNG( NULL )
     , mColorSet( false )
 {
+  setAcceptDrops( true );
   connect( this, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
 }
 
@@ -85,6 +90,157 @@ void QgsColorButton::onButtonClicked()
 
   // reactivate button's window
   activateWindow();
+}
+
+void QgsColorButton::mousePressEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::RightButton )
+  {
+    showContextMenu( e );
+    return;
+  }
+  else if ( e->button() == Qt::LeftButton )
+  {
+    mDragStartPosition = e->pos();
+  }
+  QPushButton::mousePressEvent( e );
+}
+
+QMimeData * QgsColorButton::createColorMimeData() const
+{
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setColorData( QVariant( mColor ) );
+  mimeData->setText( mColor.name() );
+  return mimeData;
+}
+
+bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resultColor )
+{
+  //attempt to read color data directly from mime
+  QColor mimeColor = qVariantValue<QColor>( mimeData->colorData() );
+  if ( mimeColor.isValid() )
+  {
+    if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
+    {
+      //remove alpha channel
+      mimeColor.setAlpha( 255 );
+    }
+    resultColor = mimeColor;
+    return true;
+  }
+
+  //attempt to intrepret a color from mime text data
+  bool hasAlpha = false;
+  QColor textColor = QgsSymbolLayerV2Utils::parseColorWithAlpha( mimeData->text(), hasAlpha );
+  if ( textColor.isValid() )
+  {
+    if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
+    {
+      //remove alpha channel
+      textColor.setAlpha( 255 );
+    }
+    else if ( !hasAlpha )
+    {
+      //mime color has no explicit alpha component, so keep existing alpha
+      textColor.setAlpha( mColor.alpha() );
+    }
+    resultColor = textColor;
+    return true;
+  }
+
+  //could not get color from mime data
+  return false;
+}
+
+void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
+{
+  if ( !( e->buttons() & Qt::LeftButton ) )
+  {
+    QPushButton::mouseMoveEvent( e );
+    return;
+  }
+
+  if (( e->pos() - mDragStartPosition ).manhattanLength() < QApplication::startDragDistance() )
+  {
+    QPushButton::mouseMoveEvent( e );
+    return;
+  }
+
+  QDrag *drag = new QDrag( this );
+  drag->setMimeData( createColorMimeData() );
+
+  //craft a pixmap for the drag icon
+  QImage colorImage( 50, 50, QImage::Format_RGB32 );
+  QPainter imagePainter;
+  imagePainter.begin( &colorImage );
+  //start with a light gray background
+  imagePainter.fillRect( QRect( 0, 0, 50, 50 ), QBrush( QColor( 200, 200, 200 ) ) );
+  //draw rect with white border, filled with current color
+  QColor pixmapColor = mColor;
+  pixmapColor.setAlpha( 255 );
+  imagePainter.setBrush( QBrush( pixmapColor ) );
+  imagePainter.setPen( QPen( Qt::white ) );
+  imagePainter.drawRect( QRect( 1, 1, 47, 47 ) );
+  imagePainter.end();
+  //set as drag pixmap
+  drag->setPixmap( QPixmap::fromImage( colorImage ) );
+
+  drag->exec( Qt::CopyAction );
+  setDown( false );
+}
+
+void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
+{
+  //is dragged data valid color data?
+  QColor mimeColor;
+  if ( colorFromMimeData( e->mimeData(), mimeColor ) )
+  {
+    e->acceptProposedAction();
+  }
+}
+
+void QgsColorButton::dropEvent( QDropEvent *e )
+{
+  //is dropped data valid color data?
+  QColor mimeColor;
+  if ( colorFromMimeData( e->mimeData(), mimeColor ) )
+  {
+    e->acceptProposedAction();
+    setColor( mimeColor );
+  }
+}
+
+void QgsColorButton::showContextMenu( QMouseEvent *event )
+{
+  QMenu colorContextMenu;
+
+  QAction* copyColorAction = new QAction( tr( "Copy color" ), 0 );
+  colorContextMenu.addAction( copyColorAction );
+  QAction* pasteColorAction = new QAction( tr( "Paste color" ), 0 );
+  pasteColorAction->setEnabled( false );
+  colorContextMenu.addSeparator();
+  colorContextMenu.addAction( pasteColorAction );
+
+  QColor clipColor;
+  if ( colorFromMimeData( QApplication::clipboard()->mimeData(), clipColor ) )
+  {
+    pasteColorAction->setEnabled( true );
+  }
+
+  QAction* selectedAction = colorContextMenu.exec( event->globalPos( ) );
+  if ( selectedAction == copyColorAction )
+  {
+    //copy color
+    QApplication::clipboard()->setMimeData( createColorMimeData() );
+  }
+  else if ( selectedAction == pasteColorAction )
+  {
+    //paste color
+    setColor( clipColor );
+  }
+
+  delete copyColorAction;
+  delete pasteColorAction;
 }
 
 void QgsColorButton::setValidColor( const QColor& newColor )

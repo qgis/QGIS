@@ -323,6 +323,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   wmsCapabilitiesElement.setAttribute( "version", version );
   doc.appendChild( wmsCapabilitiesElement );
 
+  //todo: add service capabilities
+  if ( mConfigParser )
+  {
+    mConfigParser->serviceCapabilities( wmsCapabilitiesElement, doc );
+  }
+
   //wms:Capability element
   QDomElement capabilityElement = doc.createElement( "Capability"/*wms:Capability*/ );
   wmsCapabilitiesElement.appendChild( capabilityElement );
@@ -758,6 +764,15 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   {
     layerFontColor = QColor( 0, 0, 0 );
   }
+  QMap<QString, QString>::const_iterator layerTitleIt = mParameters.find( "LAYERTITLE" );
+  if ( layerTitleIt != mParameters.constEnd() )
+  {
+    mDrawLegendLayerLabel = layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive );
+  }
+  else
+  {
+    mDrawLegendLayerLabel = true;
+  }
 
 
   itemFont = mConfigParser->legendItemFont();
@@ -793,6 +808,15 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   else
   {
     itemFontColor = QColor( 0, 0, 0 );
+  }
+  QMap<QString, QString>::const_iterator itemLabelIt = mParameters.find( "RULELABEL" );
+  if ( itemLabelIt != mParameters.constEnd() )
+  {
+    mDrawLegendItemLabel = itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive );
+  }
+  else
+  {
+    mDrawLegendItemLabel = true;
   }
 }
 
@@ -1955,28 +1979,40 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
   }
 
   QFontMetricsF layerFontMetrics( layerFont );
-  currentY += layerFontMetrics.ascent() / fontOversamplingFactor;
+  if ( mDrawLegendLayerLabel )
+  {
+    currentY += layerFontMetrics.ascent() / fontOversamplingFactor;
+  }
 
   //draw layer title first
   if ( p )
   {
-    p->save();
-    p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-    p->setPen( layerFontColor );
-    p->setFont( layerFont );
-    p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
-    p->restore();
+    if ( mDrawLegendLayerLabel )
+    {
+      p->save();
+      p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
+      p->setPen( layerFontColor );
+      p->setFont( layerFont );
+      p->drawText( boxSpace * fontOversamplingFactor, currentY * fontOversamplingFactor, item->text() );
+      p->restore();
+    }
   }
   else
   {
     double layerItemWidth = layerFontMetrics.width( item->text() ) / fontOversamplingFactor + boxSpace;
     if ( layerItemWidth > maxTextWidth )
     {
-      maxTextWidth = layerItemWidth;
+      if ( mDrawLegendLayerLabel )
+      {
+        maxTextWidth = layerItemWidth;
+      }
     }
   }
 
-  currentY += layerTitleSpace;
+  if ( mDrawLegendLayerLabel )
+  {
+    currentY += layerTitleSpace;
+  }
 
   //then draw all the children
   QFontMetricsF itemFontMetrics( itemFont );
@@ -2023,25 +2059,38 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
         break;
     }
 
-    //finally draw text
-    currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
+    if ( mDrawLegendItemLabel )
+    {
+      //finally draw text
+      currentTextWidth = itemFontMetrics.width( currentComposerItem->text() ) / fontOversamplingFactor;
+    }
+    else
+    {
+      currentTextWidth = 0;
+    }
     double symbolItemHeight = qMax( itemFontMetrics.ascent() / fontOversamplingFactor, currentSymbolHeight );
 
     if ( p )
     {
-      p->save();
-      p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
-      p->setPen( itemFontColor );
-      p->setFont( itemFont );
-      p->drawText( maxSymbolWidth * fontOversamplingFactor,
-                   ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
-      p->restore();
+      if ( mDrawLegendItemLabel )
+      {
+        p->save();
+        p->scale( 1.0 / fontOversamplingFactor, 1.0 / fontOversamplingFactor );
+        p->setPen( itemFontColor );
+        p->setFont( itemFont );
+        p->drawText( maxSymbolWidth * fontOversamplingFactor,
+                     ( currentY + symbolItemHeight / 2.0 ) * fontOversamplingFactor + itemFontMetrics.ascent() / 2.0, currentComposerItem->text() );
+        p->restore();
+      }
     }
     else
     {
       if ( currentTextWidth > maxTextWidth )
       {
-        maxTextWidth = currentTextWidth;
+        if ( mDrawLegendItemLabel )
+        {
+          maxTextWidth = currentTextWidth;
+        }
       }
       double symbolWidth = boxSpace + currentSymbolWidth + iconLabelSpace;
       if ( symbolWidth > maxSymbolWidth )
@@ -2860,12 +2909,12 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
     return attributeVal;
   }
 
-  QgsVectorLayer::EditType type = vl->editType( idx );
-  if ( type == QgsVectorLayer::ValueMap )
+  QString type = vl->editorWidgetV2( idx );
+  if ( type == "ValueMap" )
   {
-    QMap<QString, QVariant> valueMap = vl->valueMap( idx );
-    QMap<QString, QVariant>::const_iterator vmapIt = valueMap.constBegin();
-    for ( ; vmapIt != valueMap.constEnd(); ++vmapIt )
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QMap<QString, QVariant>::const_iterator vmapIt = cfg.constBegin();
+    for ( ; vmapIt != cfg.constEnd(); ++vmapIt )
     {
       if ( vmapIt.value().toString() == attributeVal )
       {
@@ -2873,30 +2922,60 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
       }
     }
   }
-  else if ( type == QgsVectorLayer::ValueRelation )
+  else if ( type == "ValueRelation" )
   {
-    QgsVectorLayer::ValueRelationData vrdata = vl->valueRelation( idx );
-    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( vrdata.mLayer ) );
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( cfg.value( "Layer" ).toString() ) );
     if ( !layer )
     {
       return attributeVal;
     }
 
-    int keyId = layer->fieldNameIndex( vrdata.mKey );
-    int valueId = layer->fieldNameIndex( vrdata.mValue );
-    if ( keyId == -1 || valueId == -1 )
+    QString outputString;
+    if ( cfg.value( "AllowMulti" ).toBool() )
     {
-      return attributeVal;
-    }
-
-    QgsFeatureIterator fIt = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << keyId << valueId ) );
-    QgsFeature f;
-    while ( fIt.nextFeature( f ) )
-    {
-      if ( f.attribute( vrdata.mKey ).toString() == attributeVal )
+      QString valueString = attributeVal;
+      QStringList valueList = valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+      for ( int i = 0; i < valueList.size(); ++i )
       {
-        return f.attribute( vrdata.mValue ).toString();
+        if ( i > 0 )
+        {
+          outputString += ";";
+        }
+        outputString += relationValue(
+                          valueList.at( i ),
+                          layer,
+                          cfg.value( "Key" ).toString(),
+                          cfg.value( "Value" ).toString()
+                        );
       }
+    }
+    return outputString;
+  }
+  return attributeVal;
+}
+
+QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer* layer, const QString& key, const QString& value )
+{
+  if ( !layer )
+  {
+    return attributeVal;
+  }
+
+  int keyId = layer->fieldNameIndex( key );
+  int valueId = layer->fieldNameIndex( value );
+  if ( keyId == -1 || valueId == -1 )
+  {
+    return attributeVal;
+  }
+
+  QgsFeatureIterator fIt = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << keyId << valueId ) );
+  QgsFeature f;
+  while ( fIt.nextFeature( f ) )
+  {
+    if ( f.attribute( key ).toString() == attributeVal )
+    {
+      return f.attribute( value ).toString();
     }
   }
   return attributeVal;

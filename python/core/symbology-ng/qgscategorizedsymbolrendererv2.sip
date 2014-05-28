@@ -63,7 +63,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.0
     void updateSymbols( QgsSymbolV2 * sym );
 
-    const QgsCategoryList& categories();
+    const QgsCategoryList& categories() const;
 
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( QVariant val );

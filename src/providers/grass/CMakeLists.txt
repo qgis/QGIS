@@ -64,7 +64,7 @@ ELSE (GRASS_MAJOR_VERSION LESS 7 )
     ${GRASS_LIBRARY_gproj}
   )
 ENDIF (GRASS_MAJOR_VERSION LESS 7 )
-  
+
 TARGET_LINK_LIBRARIES(qgisgrass ${GRASS_TARGET_LINK_LIBRARIES})
 
 IF (APPLE)
@@ -105,7 +105,7 @@ IF(WITH_GRASS_DIRECT)
     "G_ask_any"
     "G_ask_in_mapset"
     "G_ask_new"
-    "G_ask_old" 
+    "G_ask_old"
     "G__calloc"
     "G_chop"
     "G_chrcat"
@@ -179,7 +179,7 @@ IF(WITH_GRASS_DIRECT)
     "G_incr_void_ptr"
     "G_index"
     "G_info_format"
-    "G_init_cats" 
+    "G_init_cats"
     "G_init_cell_stats"
     "G_init_colors"
     "G_init_fp_range"
@@ -307,7 +307,7 @@ IF(WITH_GRASS_DIRECT)
   )
 
 
-  # List of functions which are implemented in qgsgrassgislib.cpp and 
+  # List of functions which are implemented in qgsgrassgislib.cpp and
   # thus we only need prototype
   SET ( FUNCTION_PROTOTYPES
     "G_area_of_cell_at_row"
@@ -442,7 +442,7 @@ IF(WITH_GRASS_DIRECT)
   STRING(REGEX REPLACE "#[^\r\n]*" "" HEADER_FILE "${HEADER_FILE}")
 
   # Add functions defined in glocale.h, colors.h and spawn.h
-  SET ( HEADER_FILE 
+  SET ( HEADER_FILE
     ${HEADER_FILE}
     "char *G_gettext(const char *, const char *);"
     "int G_num_standard_colors(void);"
@@ -499,9 +499,9 @@ IF(WITH_GRASS_DIRECT)
         # Declare all
         LIST ( APPEND PROTOTYPES "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAM_TYPES} )\;\n" )
 
-        # Define only those not implemented in qgsgrassgislib.cpp 
+        # Define only those not implemented in qgsgrassgislib.cpp
         LIST (FIND FUNCTIONS "${FUNCTION_NAME}" FUNCTION_IDX)
-        IF( ${FUNCTION_IDX} GREATER -1 ) 
+        IF( ${FUNCTION_IDX} GREATER -1 )
           LIST ( APPEND FUNCTIONS_MAP "// ${ROW}\n" )
           # Declare function type
           LIST ( APPEND FUNCTIONS_MAP "typedef ${FUNCTION_TYPE} ${POINTER} ${FUNCTION_NAME}_type(${PARAM_TYPES})\;\n\n" )
@@ -530,8 +530,8 @@ IF(WITH_GRASS_DIRECT)
   ENDIF(MSVC)
   ADD_LIBRARY( ${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
 
-  # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same 
-  # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed 
+  # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same
+  # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed
   # in different directory
   SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
@@ -561,47 +561,58 @@ TARGET_LINK_LIBRARIES(grassprovider qgisgrass)
 # grass raster provider
 #
 
-IF (GRASS_MAJOR_VERSION LESS 7 )
-  QT4_WRAP_CPP(GRASS_RASTERPROVIDER_MOC_SRCS qgsgrassrasterprovider.h)
-  ADD_LIBRARY(grassrasterprovider MODULE qgsgrassrasterprovider.cpp ${GRASS_RASTERPROVIDER_MOC_SRCS})
-  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
-  TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
-ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+QT4_WRAP_CPP(GRASS_RASTERPROVIDER_MOC_SRCS qgsgrassrasterprovider.h)
+ADD_LIBRARY(grassrasterprovider MODULE qgsgrassrasterprovider.cpp ${GRASS_RASTERPROVIDER_MOC_SRCS})
+SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
+TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
 
 # override default path where built files are put to allow running qgis without installing
 # the modules go under libexec subdir
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/modules)
 
-# TODO: upgrade to GRASS 7
+#
+# grass raster display module
+#
+ADD_EXECUTABLE(qgis.d.rast qgis.d.rast.c)
 IF (GRASS_MAJOR_VERSION LESS 7 )
-
-  #
-  # grass raster display module
-  #
-
-  ADD_EXECUTABLE(qgis.d.rast qgis.d.rast.c)
   TARGET_LINK_LIBRARIES(qgis.d.rast
     ${GRASS_LIBRARY_gis}
     ${GRASS_LIBRARY_datetime}
     ${GDAL_LIBRARY}
   )
+ELSE (GRASS_MAJOR_VERSION LESS 7 )
+  TARGET_LINK_LIBRARIES(qgis.d.rast
+    ${GRASS_LIBRARY_gis}
+    ${GRASS_LIBRARY_datetime}
+    ${GRASS_LIBRARY_raster}
+    ${GDAL_LIBRARY}
+  )
+ENDIF (GRASS_MAJOR_VERSION LESS 7 )
 
-  #
-  # grass info module
-  #
+#
+# grass info module
+#
 
-  ADD_EXECUTABLE(qgis.g.info qgis.g.info.c)
+ADD_EXECUTABLE(qgis.g.info qgis.g.info.c)
+IF (GRASS_MAJOR_VERSION LESS 7 )
   TARGET_LINK_LIBRARIES(qgis.g.info
     ${GRASS_LIBRARY_gis}
     ${GRASS_LIBRARY_datetime}
     ${GRASS_LIBRARY_gproj}
     ${GDAL_LIBRARY}
   )
-  IF (UNIX)
-    TARGET_LINK_LIBRARIES(qgis.g.info m)
-  ENDIF (UNIX)
-
+ELSE (GRASS_MAJOR_VERSION LESS 7 )
+  TARGET_LINK_LIBRARIES(qgis.g.info
+    ${GRASS_LIBRARY_gis}
+    ${GRASS_LIBRARY_datetime}
+    ${GRASS_LIBRARY_gproj}
+    ${GRASS_LIBRARY_raster}
+    ${GDAL_LIBRARY}
+  )
 ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+IF (UNIX)
+  TARGET_LINK_LIBRARIES(qgis.g.info m)
+ENDIF (UNIX)
 
 ########################################################
 # Install
@@ -619,14 +630,11 @@ INSTALL(TARGETS grassprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-# TODO: upgrade to GRASS 7
-IF (GRASS_MAJOR_VERSION LESS 7 )
-  INSTALL(TARGETS grassrasterprovider
-    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+INSTALL(TARGETS grassrasterprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-  INSTALL(TARGETS qgis.d.rast qgis.g.info
-    RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+INSTALL(TARGETS qgis.d.rast qgis.g.info
+  RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
-ENDIF (GRASS_MAJOR_VERSION LESS 7 )

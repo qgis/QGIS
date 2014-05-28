@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing import interface
+from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
@@ -101,7 +101,7 @@ class FieldsCalculator(GeoAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs().srsid())
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         da.setEllipsoidalMode(canvas.mapRenderer().hasCrsTransformEnabled())
         da.setEllipsoid(QgsProject.instance().readEntry('Measure',
                                                         '/Ellipsoid',

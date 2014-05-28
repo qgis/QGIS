@@ -1593,7 +1593,7 @@
         <widget objectName="editableUniqueValues" class="QCheckBox" label="Editable"/>
       </widget>
       <widget objectName="rangePage" class="QWidget" label="">
-        <widget objectName="rangeLabel" class="QLabel" label="Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box."/>
+        <widget objectName="rangeLabel" class="QLabel" label="Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box."/>
         <widget objectName="rangeWidget" class="QComboBox" label=""/>
         <widget objectName="minimumLabel" class="QLabel" label="Minimum"/>
         <widget objectName="maximumLabel" class="QLabel" label="Maximum"/>

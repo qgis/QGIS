@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygondissolve', polygons, field_1, field_2, field_3, dissolve, dissolved)
+	processing.runalg('saga:polygondissolve', polygons, field_1, field_2, field_3, dissolve, dissolved)
 
 	Available options for selection parameters:
 

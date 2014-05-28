@@ -1087,6 +1087,56 @@ static QVariant fcnGeomPerimeter( const QVariantList& , const QgsFeature* f, Qgs
   return QVariant( calc->measurePerimeter( f->geometry() ) );
 }
 
+static QVariant fcnBounds( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* geomBounds = QgsGeometry::fromRect( geom.boundingBox() );
+  if ( geomBounds )
+  {
+    return QVariant::fromValue( *geomBounds );
+  }
+  else
+  {
+    return QVariant();
+  }
+}
+
+static QVariant fcnBoundsWidth( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( geom.boundingBox().width() );
+}
+
+static QVariant fcnBoundsHeight( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( geom.boundingBox().height() );
+}
+
+static QVariant fcnXMin( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( geom.boundingBox().xMinimum() );
+}
+
+static QVariant fcnXMax( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( geom.boundingBox().xMaximum() );
+}
+
+static QVariant fcnYMin( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( geom.boundingBox().yMinimum() );
+}
+
+static QVariant fcnYMax( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( geom.boundingBox().yMaximum() );
+}
+
 static QVariant fcnBbox( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -1574,14 +1624,18 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "color_hsva", 4, fncColorHsva, "Color" )
     << new StaticFunction( "color_cmyk", 4, fcnColorCmyk, "Color" )
     << new StaticFunction( "color_cmyka", 5, fncColorCmyka, "Color" )
-    << new StaticFunction( "xat", 1, fcnXat, "Geometry", "", true )
-    << new StaticFunction( "yat", 1, fcnYat, "Geometry", "", true )
+    << new StaticFunction( "$geometry", 0, fcnGeometry, "Geometry", "" , true )
     << new StaticFunction( "$area", 0, fcnGeomArea, "Geometry", "", true )
     << new StaticFunction( "$length", 0, fcnGeomLength, "Geometry", "", true )
     << new StaticFunction( "$perimeter", 0, fcnGeomPerimeter, "Geometry", "", true )
     << new StaticFunction( "$x", 0, fcnX, "Geometry", "", true )
     << new StaticFunction( "$y", 0, fcnY, "Geometry", "" , true )
-    << new StaticFunction( "$geometry", 0, fcnGeometry, "Geometry", "" , true )
+    << new StaticFunction( "xat", 1, fcnXat, "Geometry", "", true )
+    << new StaticFunction( "yat", 1, fcnYat, "Geometry", "", true )
+    << new StaticFunction( "xmin", 1, fcnXMin, "Geometry", "", true )
+    << new StaticFunction( "xmax", 1, fcnXMax, "Geometry", "", true )
+    << new StaticFunction( "ymin", 1, fcnYMin, "Geometry", "", true )
+    << new StaticFunction( "ymax", 1, fcnYMax, "Geometry", "", true )
     << new StaticFunction( "geomFromWKT", 1, fcnGeomFromWKT, "Geometry" )
     << new StaticFunction( "geomFromGML", 1, fcnGeomFromGML, "Geometry" )
     << new StaticFunction( "bbox", 2, fcnBbox, "Geometry" )
@@ -1594,6 +1648,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "within", 2, fcnWithin, "Geometry" )
     << new StaticFunction( "buffer", -1, fcnBuffer, "Geometry" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "Geometry" )
+    << new StaticFunction( "bounds", 1, fcnBounds, "Geometry", "", true )
+    << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "Geometry", "", true )
+    << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "Geometry", "", true )
     << new StaticFunction( "convexHull", 1, fcnConvexHull, "Geometry" )
     << new StaticFunction( "difference", 2, fcnDifference, "Geometry" )
     << new StaticFunction( "distance", 2, fcnDistance, "Geometry" )

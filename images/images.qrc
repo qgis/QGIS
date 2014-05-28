@@ -43,6 +43,7 @@
         <file>north_arrows/gpsarrow.svg</file>
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
+        <file>composer/missing_image.svg</file>
         <file>themes/default/cap_flat.png</file>
         <file>themes/default/cap_round.png</file>
         <file>themes/default/cap_square.png</file>
@@ -411,6 +412,8 @@
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
         <file>themes/default/scale_bar.png</file>
+        <file>themes/default/stars_empty.png</file>
+        <file>themes/default/stars_full.png</file>
         <file>themes/default/styleicons/color.png</file>
         <file>themes/default/styleicons/style-line.png</file>
         <file>themes/default/styleicons/style-point.png</file>
@@ -453,6 +456,7 @@
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
         <file>flags/te.png</file>
+        <file>flags/tl.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

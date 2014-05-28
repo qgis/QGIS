@@ -18,13 +18,13 @@
 #include "nodetool/qgsselectedfeature.h"
 #include "nodetool/qgsvertexentry.h"
 
-#include "qgsproject.h"
+#include "qgisapp.h"
+#include "qgslayertreeview.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgisapp.h"
-#include "qgslegend.h"
 
 #include <QMouseEvent>
 #include <QRubberBand>
@@ -370,7 +370,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     emit messageDiscarded();
 
     mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
-    connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+    connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     mIsPoint = vlayer->geometryType() == QGis::Point;
@@ -657,7 +657,7 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     Q_ASSERT( vlayer );
 
-    disconnect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+    disconnect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     disconnect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
 

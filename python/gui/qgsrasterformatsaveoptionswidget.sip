@@ -50,6 +50,9 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void swapOptionsUI( int newIndex = -1 );
     void updateControls();
 
+  protected:
+    virtual void showEvent( QShowEvent * event );
+
   signals:
     void optionsChanged();
 

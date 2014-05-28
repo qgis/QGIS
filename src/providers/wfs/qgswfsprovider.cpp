@@ -301,13 +301,6 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     QDomElement featureElem = transactionDoc.createElementNS( mWfsNamespace, tname );
 
-    //add thematic attributes
-    const QgsFields* fields = featureIt->fields();
-    if ( !fields )
-    {
-      continue;
-    }
-
     QgsAttributes featureAttributes = featureIt->attributes();
     int nAttrs = featureAttributes.size();
     for ( int i = 0; i < nAttrs; ++i )
@@ -315,7 +308,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
       const QVariant& value = featureAttributes.at( i );
       if ( value.isValid() && !value.isNull() )
       {
-        QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, fields->field( i ).name() );
+        QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, mFields.at( i ).name() );
         QDomText fieldText = transactionDoc.createTextNode( value.toString() );
         fieldElem.appendChild( fieldText );
         featureElem.appendChild( fieldElem );

@@ -261,6 +261,8 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , extent_( 0 )
     , ogrLayer( 0 )
     , ogrOrigLayer( 0 )
+    , mLayerIndex( 0 )
+    , mIsSubLayer( false )
     , mOgrGeometryTypeFilter( wkbUnknown )
     , ogrDriver( 0 )
     , valid( false )
@@ -276,7 +278,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // make connection to the data source
 
-  QgsDebugMsg( "Data source uri is " + uri );
+  QgsDebugMsg( "Data source uri is [" + uri + "]" );
 
   // try to open for update, but disable error messages to avoid a
   // message if the file is read only, because we cope with that
@@ -315,10 +317,15 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
         {
           mLayerIndex = -1;
         }
+        else
+        {
+          mIsSubLayer = true;
+        }
       }
       else if ( field == "layername" )
       {
         mLayerName = value;
+        mIsSubLayer = true;
       }
 
       if ( field == "subset" )
@@ -397,7 +404,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       setEncoding( encoding() );
 
       valid = setSubsetString( mSubsetString );
-      QgsDebugMsg( "Data source is valid" );
+      if ( valid )
+      {
+        QgsDebugMsg( "Data source is valid" );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), tr( "OGR" ) );
+      }
     }
     else
     {
@@ -594,7 +608,16 @@ QStringList QgsOgrProvider::subLayers() const
     QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
-    QgsDebugMsg( QString( "layerGeomType = %1" ).arg( layerGeomType ) );
+    // ignore this layer if a sublayer was requested and it is not this one
+    if ( mIsSubLayer &&
+         (( !mLayerName.isNull() && theLayerName != mLayerName ) ||
+          ( mLayerName.isNull() && mLayerIndex >= 0 && i != ( unsigned int )mLayerIndex ) ) )
+    {
+      QgsDebugMsg( QString( "subLayers() ignoring layer #%1 (%2)" ).arg( i ).arg( theLayerName ) );
+      continue;
+    }
+
+    QgsDebugMsg( QString( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( theLayerName ).arg( layerGeomType ) );
 
     if ( layerGeomType != wkbUnknown )
     {
@@ -1557,7 +1580,8 @@ QString  QgsOgrProvider::description() const
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  // return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
 } // createFileFilter_
 
 
@@ -1685,6 +1709,11 @@ QString createFilters( QString type )
         myFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), "*.gpx" );
         myExtensions << "gpx";
       }
+      else if ( driverName.startsWith( "GPKG" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), "*.gpkg" );
+        myExtensions << "gpkg";
+      }
       else if ( driverName.startsWith( "GRASS" ) )
       {
         myDirectoryDrivers += QObject::tr( "Grass Vector" ) + ",GRASS;";
@@ -1742,6 +1771,10 @@ QString createFilters( QString type )
       {
         myDatabaseDrivers += QObject::tr( "OGDI Vectors" ) + ",OGDI;";
       }
+      else if ( driverName.startsWith( "OpenFileGDB" ) )
+      {
+        myDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
+      }
       else if ( driverName.startsWith( "PostgreSQL" ) )
       {
         myDatabaseDrivers += QObject::tr( "PostgreSQL" ) + ",PostgreSQL;";
@@ -1758,9 +1791,14 @@ QString createFilters( QString type )
                                             "*catd.ddf" );
         myWildcards << "*catd.ddf";
       }
+      else if ( driverName.startsWith( "SOSI" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Systematic Organization of Spatial Information [SOSI]" ), "*.sos" );
+        myExtensions << "sos";
+      }
       else if ( driverName.startsWith( "SQLite" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ), "*.sqlite *.db" );
+        myFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), "*.sqlite *.db" );
         myExtensions << "sqlite" << "db";
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
@@ -1802,7 +1840,14 @@ QString createFilters( QString type )
 
     }                          // each loaded OGR driver
 
-    // VSIFileHandler (.zip and .gz files)
+    // sort file filters alphabetically
+    QgsDebugMsg( "myFileFilters: " + myFileFilters );
+    QStringList filters = myFileFilters.split( ";;", QString::SkipEmptyParts );
+    filters.sort();
+    myFileFilters = filters.join( ";;" ) + ";;";
+    QgsDebugMsg( "myFileFilters: " + myFileFilters );
+
+    // VSIFileHandler (.zip and .gz files) - second
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
@@ -1810,15 +1855,19 @@ QString createFilters( QString type )
     QSettings settings;
     if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
     {
-      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
+      myFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" ) );
       myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
 
     }
 #endif
 
-    // can't forget the default case
+    // can't forget the default case - first
+    myFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
 
-    myFileFilters += QObject::tr( "All files" ) + " (*)";
+    // cleanup
+    if ( myFileFilters.endsWith( ";;" ) ) myFileFilters.chop( 2 );
+
+    QgsDebugMsg( "myFileFilters: " + myFileFilters );
   }
 
   if ( type == "file" )

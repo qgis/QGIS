@@ -29,7 +29,7 @@ import imp
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from processing import interface
+from qgis.utils import iface
 from processing.core.Processing import Processing
 from processing.gui.MissingDependencyDialog import MissingDependencyDialog
 from processing.gui.ParametersDialog import ParametersDialog
@@ -112,7 +112,7 @@ class CommanderWindow(QtGui.QDialog):
 
         #Add menu entries
         menuActions = []
-        actions = Processing.getInterface().mainWindow().menuBar().actions()
+        actions = iface.mainWindow().menuBar().actions()
         for action in actions:
             menuActions.extend(self.getActions(action))
         for action in menuActions:
@@ -170,8 +170,7 @@ class CommanderWindow(QtGui.QDialog):
         elif s.startswith('Menu action: '):
             actionName = s[len('Menu action: '):]
             menuActions = []
-            actions = \
-                    Processing.getInterface().mainWindow().menuBar().actions()
+            actions = iface.mainWindow().menuBar().actions()
             for action in actions:
                 menuActions.extend(self.getActions(action))
             for action in menuActions:
@@ -212,7 +211,7 @@ class CommanderWindow(QtGui.QDialog):
         dlg = alg.getCustomParametersDialog()
         if not dlg:
             dlg = ParametersDialog(alg)
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
         dlg.exec_()

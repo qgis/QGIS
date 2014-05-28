@@ -13,4 +13,3 @@ class QgsColorBrewerPalette
     // extracted ColorBrewer data
     static const char *brewerString;
 };
-

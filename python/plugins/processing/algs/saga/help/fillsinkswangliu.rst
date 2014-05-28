@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fillsinkswangliu', elev, minslope, filled, fdir, wshed)
+	processing.runalg('saga:fillsinkswangliu', elev, minslope, filled, fdir, wshed)

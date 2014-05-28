@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convertdatastoragetype', input, type, output)
+	processing.runalg('saga:convertdatastoragetype', input, type, output)
 
 	Available options for selection parameters:
 

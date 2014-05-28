@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:thresholdbuffer', features, value, thresholdgrid, threshold, thresholdtype, buffer)
+	processing.runalg('saga:thresholdbuffer', features, value, thresholdgrid, threshold, thresholdtype, buffer)
 
 	Available options for selection parameters:
 

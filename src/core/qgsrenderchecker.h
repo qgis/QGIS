@@ -74,7 +74,6 @@ class CORE_EXPORT QgsRenderChecker
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
 
-
     /** Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
      * @param theColorTolerance is maximum difference for each color component
@@ -118,7 +117,6 @@ class CORE_EXPORT QgsRenderChecker
     QString expectedImageFile() { return mExpectedImageFile; };
 
   protected:
-
     QString mReport;
     unsigned int mMatchTarget;
     int mElapsedTime;
@@ -126,7 +124,6 @@ class CORE_EXPORT QgsRenderChecker
     QString mExpectedImageFile;
 
   private:
-
     QString mControlName;
     unsigned int mMismatchCount;
     unsigned int mColorTolerance;

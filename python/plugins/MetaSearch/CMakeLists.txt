@@ -1,0 +1,13 @@
+FILE(GLOB PY_FILES *.py)
+PLUGIN_INSTALL(MetaSearch . ${PY_FILES} metadata.txt)
+
+FOREACH(dir ui dialogs images resources resources/templates)
+  FILE(GLOB _items ${dir}/*)
+  SET(_files)
+  FOREACH(_item ${_items})
+    IF(NOT IS_DIRECTORY ${_item})
+      LIST(APPEND _files ${_item})
+    ENDIF(NOT IS_DIRECTORY ${_item})
+  ENDFOREACH(_item)
+  PLUGIN_INSTALL(MetaSearch ${dir} ${_files})
+ENDFOREACH(dir)

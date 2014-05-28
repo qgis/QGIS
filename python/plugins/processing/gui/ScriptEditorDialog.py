@@ -34,8 +34,8 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import *
 
 from qgis.core import *
+from qgis.utils import iface
 
-from processing import interface
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.modeler.Providers import Providers
@@ -52,7 +52,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
-    
+
     hasChanged = False
 
     def __init__(self, algType, alg):
@@ -101,7 +101,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.update = False
         self.help = None
-        
+
         self.setHasChanged(False)
 
         self.editor.setLexerType(self.algType)
@@ -109,9 +109,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
-                alg = ScriptAlgorithm(None, unicode(self.editor.toPlainText()))
+                alg = ScriptAlgorithm(None, unicode(self.editor.text()))
             elif self.algType == self.SCRIPT_R:
-                alg = RAlgorithm(None, unicode(self.editor.toPlainText()))
+                alg = RAlgorithm(None, unicode(self.editor.text()))
         else:
             alg = self.alg
 
@@ -177,7 +177,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
         self.btnSave.setEnabled(hasChanged)
-        
+
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, unicode(self.editor.text()))
@@ -190,7 +190,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         if not dlg:
             dlg = ParametersDialog(alg)
 
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
 
         dlg.show()

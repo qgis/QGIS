@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:edgecontamination', dem, contamination)
+	processing.runalg('saga:edgecontamination', dem, contamination)

@@ -29,6 +29,8 @@ QgsWCSProjectParser::~QgsWCSProjectParser()
 
 void QgsWCSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  mProjectParser.serviceCapabilities( parentElement, doc, "WCS" );
+#if 0
   QDomElement serviceElem = doc.createElement( "Service" );
 
   QDomElement propertiesElem = mProjectParser.propertiesElem();
@@ -111,6 +113,7 @@ void QgsWCSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomD
   }
 
   parentElement.appendChild( serviceElem );
+#endif //0
 }
 
 QString QgsWCSProjectParser::wcsServiceUrl() const

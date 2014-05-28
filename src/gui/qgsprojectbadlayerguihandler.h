@@ -76,10 +76,10 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
     ProviderType providerType( QDomNode & layerNode );
 
     /** set the datasource element to the new value */
-    void setDataSource( QDomNode & layerNode, QString const & dataSource );
+    void setDataSource( QDomNode & layerNode, const QString &dataSource );
 
     /** this is used to locate files that have moved or otherwise are missing */
-    bool findMissingFile( QString const & fileFilters, QDomNode & layerNode );
+    bool findMissingFile( const QString &fileFilters, QDomNode &layerNode );
 
     /** find relocated data source for the given layer
 
@@ -93,13 +93,13 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
       XXX Only implemented for file based layers.  It will need to be extended for
       XXX other data source types such as databases.
     */
-    bool findLayer( QString const & fileFilters, QDomNode const & constLayerNode );
+    bool findLayer( const QString &fileFilters, const QDomNode &constLayerNode );
 
     /** find relocated data sources for given layers
 
       These QDom objects represent QgsProject nodes that map to specific layers.
     */
-    void findLayers( QString const & fileFilters, QList<QDomNode> const & layerNodes );
+    void findLayers( const QString &fileFilters, const QList<QDomNode> &layerNodes );
 
 };
 

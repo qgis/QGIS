@@ -79,6 +79,8 @@ bool QgsGrassMapsetItem::isMapset( QString path )
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
+  QgsDebugMsg( "Entered" );
+
   QVector<QgsDataItem*> items;
 
   QStringList vectorNames = QgsGrass::vectors( mPath );

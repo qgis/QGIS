@@ -36,7 +36,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:multipleregressionanalysispointsgrids', grids, shapes, attribute, interpol, coord_x, coord_y, method, p_in, p_out, info_coeff, info_model, info_steps, residuals, regression)
+	processing.runalg('saga:multipleregressionanalysispointsgrids', grids, shapes, attribute, interpol, coord_x, coord_y, method, p_in, p_out, info_coeff, info_model, info_steps, residuals, regression)
 
 	Available options for selection parameters:
 

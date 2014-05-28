@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:sagawetnessindex', dem, t, c, gn, cs, sb)
+	processing.runalg('saga:sagawetnessindex', dem, t, c, gn, cs, sb)

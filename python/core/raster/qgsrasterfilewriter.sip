@@ -67,7 +67,7 @@ class QgsRasterFileWriter
     void setCreateOptions( const QStringList& list );
     QStringList createOptions() const;
 
-    QStringList pyramidsConfigOptions() const;
     void setPyramidsConfigOptions( const QStringList& list );
+    QStringList pyramidsConfigOptions() const;
 };
 

@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsellipsesymbollayerv2widget.cpp
-    ---------------------
-    begin                : June 2011
-    copyright            : (C) 2011 by Marco Hugentobler
-    email                : marco dot hugentobler at sourcepole dot ch
+ qgsellipsesymbollayerv2widget.cpp
+ ---------------------
+ begin                : June 2011
+ copyright            : (C) 2011 by Marco Hugentobler
+ email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -75,9 +75,12 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   blockComboSignals( true );
   if ( mLayer )
   {
-    mSymbolWidthUnitComboBox->setCurrentIndex( mLayer->symbolWidthUnit() );
-    mOutlineWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
-    mSymbolHeightUnitComboBox->setCurrentIndex( mLayer->symbolHeightUnit() );
+    mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
+    mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
+    mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
+    mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
+    mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
+    mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
   }
 
   QPointF offsetPt = mLayer->offset();
@@ -213,9 +216,9 @@ void QgsEllipseSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( 
 
 void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
 {
-  mSymbolWidthUnitComboBox->blockSignals( block );
-  mOutlineWidthUnitComboBox->blockSignals( block );
-  mSymbolHeightUnitComboBox->blockSignals( block );
+  mSymbolWidthUnitWidget->blockSignals( block );
+  mOutlineWidthUnitWidget->blockSignals( block );
+  mSymbolHeightUnitWidget->blockSignals( block );
   mHorizontalAnchorComboBox->blockSignals( block );
   mVerticalAnchorComboBox->blockSignals( block );
 }
@@ -290,3 +293,5 @@ void QgsEllipseSymbolLayerV2Widget::setOffset()
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
+
+

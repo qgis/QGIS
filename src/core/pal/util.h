@@ -74,6 +74,11 @@ namespace pal
     int  new_label;
   } ElemTrans;
 
+  struct Point
+  {
+    double x, y;
+  };
+
 
 
 #define EPSILON 1e-9

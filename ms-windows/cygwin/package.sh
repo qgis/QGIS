@@ -23,6 +23,7 @@ cmake -D BUILDNAME="cygwin" \
 	-D WITH_GLOBE=NO \
 	-D ENABLE_TESTS=YES \
 	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D WITH_CUSTOM_WIDGETS=TRUE \
         ../../..
 
 make -j8

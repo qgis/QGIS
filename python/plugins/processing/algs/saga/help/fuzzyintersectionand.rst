@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fuzzyintersectionand', grids, type, and)
+	processing.runalg('saga:fuzzyintersectionand', grids, type, and)
 
 	Available options for selection parameters:
 

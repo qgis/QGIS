@@ -596,61 +596,69 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
 } // bool QgsMapLayer::writeXML
 
-QDomDocument QgsMapLayer::asLayerDefinition()
+QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers )
 {
   QDomDocument doc( "qgis-layer-definition" );
-  QDomElement maplayer = doc.createElement( "maplayer" );
-  this->writeLayerXML( maplayer, doc );
-  maplayer.removeChild( maplayer.firstChildElement( "id" ) );
-  doc.appendChild( maplayer );
+  QDomElement layerselm = doc.createElement( "maplayers" );
+  foreach ( QgsMapLayer* layer, layers )
+  {
+    QDomElement layerelm = doc.createElement( "maplayer" );
+    layer->writeLayerXML( layerelm, doc );
+    layerelm.removeChild( layerelm.firstChildElement( "id" ) );
+    layerselm.appendChild( layerelm );
+  }
+  doc.appendChild( layerselm );
   return doc;
 }
 
-QgsMapLayer* QgsMapLayer::fromLayerDefinition( QDomDocument& document )
+QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 {
-  QDomNode layernode = document.elementsByTagName( "maplayer" ).at( 0 );
-  QDomElement layerElem = layernode.toElement();
-
-  QString type = layerElem.attribute( "type" );
-  QgsDebugMsg( type );
-  QgsMapLayer *layer = NULL;
-
-  if ( type == "vector" )
+  QList<QgsMapLayer*> layers;
+  QDomNodeList layernodes = document.elementsByTagName( "maplayer" );
+  for ( int i = 0; i < layernodes.size(); ++i )
   {
-    layer = new QgsVectorLayer;
-  }
-  else if ( type == "raster" )
-  {
-    layer = new QgsRasterLayer;
-  }
-  else if ( type == "plugin" )
-  {
-    QString typeName = layerElem.attribute( "name" );
-    layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
-  }
+    QDomNode layernode = layernodes.at( i );
+    QDomElement layerElem = layernode.toElement();
 
-  bool ok = layer->readLayerXML( layerElem );
-  if ( ok )
-    return layer;
+    QString type = layerElem.attribute( "type" );
+    QgsDebugMsg( type );
+    QgsMapLayer *layer = NULL;
 
-  delete layer;
-  return 0;
+    if ( type == "vector" )
+    {
+      layer = new QgsVectorLayer;
+    }
+    else if ( type == "raster" )
+    {
+      layer = new QgsRasterLayer;
+    }
+    else if ( type == "plugin" )
+    {
+      QString typeName = layerElem.attribute( "name" );
+      layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+    }
+
+    bool ok = layer->readLayerXML( layerElem );
+    if ( ok )
+      layers << layer;
+  }
+  return layers;
 }
 
-QgsMapLayer* QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
+QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
 {
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( "Can't open file" );
-    return 0;
+    return QList<QgsMapLayer*>();
   }
 
   QDomDocument doc;
   if ( !doc.setContent( &file ) )
   {
     QgsDebugMsg( "Can't set content" );
-    return 0;
+    return QList<QgsMapLayer*>();
   }
 
   return QgsMapLayer::fromLayerDefinition( doc );

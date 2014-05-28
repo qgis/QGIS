@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fastrepresentativeness', input, lod, result, result_lod, seeds)
+	processing.runalg('saga:fastrepresentativeness', input, lod, result, result_lod, seeds)

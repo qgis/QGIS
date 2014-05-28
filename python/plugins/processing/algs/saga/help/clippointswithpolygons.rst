@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:clippointswithpolygons', points, polygons, field, method, clips)
+	processing.runalg('saga:clippointswithpolygons', points, polygons, field, method, clips)
 
 	Available options for selection parameters:
 

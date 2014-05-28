@@ -229,9 +229,6 @@ class QgsRasterLayer : QgsMapLayer
      */
     void dataChanged();
 
-    /** Signal emitted when the symbology changes, through call to setRenderer() */
-    void rendererChanged();
-
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage );

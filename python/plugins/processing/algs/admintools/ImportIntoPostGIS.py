@@ -36,6 +36,7 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
+from processing.parameters.ParameterTableField import ParameterTableField
 from processing.tools import dataobjects
 import postgis_utils
 
@@ -50,6 +51,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
     CREATEINDEX = 'CREATEINDEX'
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
+    DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
+    PRIMARY_KEY = 'PRIMARY_KEY'
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/postgis.png')
@@ -60,6 +63,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
+        dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
+        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
@@ -87,15 +92,22 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if not geomColumn:
             geomColumn = 'the_geom'
 
-        uri = QgsDataSourceURI()
-        uri.setConnection(host, str(port), database, username, password)
-        uri.setDataSource(schema, table, geomColumn, '')
-
         options = {}
         if overwrite:
             options['overwrite'] = True
         if convertLowerCase:
             options['lowercaseFieldNames'] = True
+            geomColumn = geomColumn.lower()
+        if dropStringLength:
+            options['dropStringConstraints'] = True
+
+        uri = QgsDataSourceURI()
+        uri.setConnection(host, str(port), database, username, password)
+        if primaryKeyField:
+            uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
+        else:
+            uri.setDataSource(schema, table, geomColumn, '')
+
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
         (ret, errMsg) = QgsVectorLayerImport.importLayer(
@@ -133,6 +145,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)'))
         self.addParameter(ParameterString(self.TABLENAME, 'Table to import to'
                           ))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY, 'Primary key field',
+                          self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN, 'Geometry column', 'the_geom'
                           ))
         self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite', True))
@@ -140,3 +154,5 @@ class ImportIntoPostGIS(GeoAlgorithm):
                           'Create spatial index', True))
         self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
                           'Convert field names to lowercase', False))
+        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
+                          'Drop length constraints on character fields', False))

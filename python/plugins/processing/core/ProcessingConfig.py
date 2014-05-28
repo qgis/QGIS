@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from PyQt4 import QtGui
+from PyQt4 import QtGui,QtCore
 from processing.tools.system import *
 
 
@@ -142,15 +142,18 @@ class ProcessingConfig:
 
 
     @staticmethod
-    def readSettings():        
+    def readSettings():
         for setting in ProcessingConfig.settings.values():
             setting.read()
-                   
+
 
     @staticmethod
     def getSetting(name):
         if name in ProcessingConfig.settings.keys():
-            return ProcessingConfig.settings[name].value
+            v = ProcessingConfig.settings[name].value
+            if isinstance(v, QtCore.QPyNullVariant):
+                v = None
+            return v
         else:
             return None
 
@@ -177,15 +180,15 @@ class Setting:
         self.value = default
         self.hidden = hidden
         self.valuetype = valuetype
-        
+
     def read(self):
-        qsettings = QSettings()        
+        qsettings = QSettings()
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
                 value = str(value).lower() == str(True).lower()
             self.value = value
-    
+
     def save(self):
         QSettings().setValue(self.qname, self.value)
 

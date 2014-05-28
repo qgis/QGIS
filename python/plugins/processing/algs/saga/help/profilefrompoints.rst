@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:profilefrompoints', grid, table, x, y, result)
+	processing.runalg('saga:profilefrompoints', grid, table, x, y, result)

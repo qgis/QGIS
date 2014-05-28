@@ -23,7 +23,7 @@
 #include <qgsrubberband.h>
 #include <qgisapp.h>
 #include <qgsmaprenderer.h>
-#include <qgslegend.h>
+#include <qgslayertreeview.h>
 #include <qgsproject.h>
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
@@ -107,7 +107,7 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   mGeometry = 0;
 
   // signal changing of current layer
-  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 
   // feature was deleted
   connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );

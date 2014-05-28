@@ -137,32 +137,51 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       {
         newFrameY += currentItem->pos().y() - ( page - 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
       }
-      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->pos().x(),
-          newFrameY,
-          currentItem->rect().width(), frameHeight );
+
+      //create new frame
+      QgsComposerFrame* newFrame = createNewFrame( currentItem,
+                                   QPointF( currentItem->pos().x(), newFrameY ),
+                                   QSizeF( currentItem->rect().width(), frameHeight ) );
+
       if ( mResizeMode == RepeatOnEveryPage )
       {
         newFrame->setContentSection( QRectF( 0, 0, newFrame->rect().width(), newFrame->rect().height() ) );
+        currentY += frameHeight;
       }
       else
       {
-        newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
+        double contentHeight = findNearbyPageBreak( currentY + newFrame->rect().height() ) - currentY;
+        newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), contentHeight ) );
+        currentY += contentHeight;
       }
 
-      //copy some settings from the parent frame
-      newFrame->setBackgroundColor( currentItem->backgroundColor() );
-      newFrame->setBackgroundEnabled( currentItem->hasBackground() );
-      newFrame->setBlendMode( currentItem->blendMode() );
-      newFrame->setFrameEnabled( currentItem->hasFrame() );
-      newFrame->setFrameJoinStyle( currentItem->frameJoinStyle() );
-      newFrame->setFrameOutlineWidth( currentItem->frameOutlineWidth() );
-      newFrame->setOpacity( currentItem->opacity() );
-
-      currentY += frameHeight;
       currentItem = newFrame;
-      addFrame( newFrame, false );
     }
   }
+}
+
+QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size )
+{
+  if ( !currentFrame )
+  {
+    return 0;
+  }
+
+  QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, pos.x(),
+      pos.y(), size.width(), size.height() );
+
+  //copy some settings from the parent frame
+  newFrame->setBackgroundColor( currentFrame->backgroundColor() );
+  newFrame->setBackgroundEnabled( currentFrame->hasBackground() );
+  newFrame->setBlendMode( currentFrame->blendMode() );
+  newFrame->setFrameEnabled( currentFrame->hasFrame() );
+  newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
+  newFrame->setFrameOutlineWidth( currentFrame->frameOutlineWidth() );
+  newFrame->setOpacity( currentFrame->opacity() );
+
+  addFrame( newFrame, false );
+
+  return newFrame;
 }
 
 void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )

@@ -52,7 +52,6 @@ def getHtmlFromRstFile(rst):
     for exp, replace in exps:
         p = re.compile(exp)
         s = p.sub(replace, s)
-    print s
     return s
 
 def getHtmlFromHelpFile(alg, helpFile):

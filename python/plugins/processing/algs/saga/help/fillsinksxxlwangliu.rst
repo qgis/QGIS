@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fillsinksxxlwangliu', elev, minslope, filled)
+	processing.runalg('saga:fillsinksxxlwangliu', elev, minslope, filled)

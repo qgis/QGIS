@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:seedgeneration', grids, factor, type_surface, type_seeds, type_merge, normalize, surface, seeds_grid, seeds)
+	processing.runalg('saga:seedgeneration', grids, factor, type_surface, type_seeds, type_merge, normalize, surface, seeds_grid, seeds)
 
 	Available options for selection parameters:
 

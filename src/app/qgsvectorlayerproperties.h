@@ -20,13 +20,13 @@
 #define QGSVECTORLAYERPROPERTIES
 
 #include "qgsoptionsdialogbase.h"
+#include "qgsscalerangewidget.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
 #include "qgsattributetypedialog.h"
 #include "qgsfield.h"
-#include "qgslegenditem.h"
 #include "qgsmapcanvas.h"
 #include "qgscontexthelp.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -116,16 +116,13 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
 
-    void on_mMinimumScaleSetCurrentPushButton_clicked();
-    void on_mMaximumScaleSetCurrentPushButton_clicked();
-
     void on_mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
 
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
-    void refreshLegend( QString layerID, QgsLegendItem::Expansion expandItem );
+    void refreshLegend( QString layerID );
 
     void toggleEditing( QgsMapLayer * );
 

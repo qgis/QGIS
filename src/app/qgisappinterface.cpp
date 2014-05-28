@@ -34,7 +34,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgslegend.h"
+#include "qgslayertreeview.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
 #include "qgsfield.h"
@@ -46,11 +46,11 @@
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis ),
-    legendIface( _qgis->legend() ),
+    legendIface( _qgis->layerTreeView() ),
     pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
-  connect( qgis->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
   connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
            this, SIGNAL( currentThemeChanged( QString ) ) );
@@ -78,6 +78,11 @@ QgsLegendInterface* QgisAppInterface::legendInterface()
 QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
 {
   return &pluginManagerIface;
+}
+
+QgsLayerTreeView*QgisAppInterface::layerTreeView()
+{
+  return qgis->layerTreeView();
 }
 
 void QgisAppInterface::zoomFull()

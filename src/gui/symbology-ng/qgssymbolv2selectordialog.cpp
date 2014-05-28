@@ -182,6 +182,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   connect( btnAddLayer, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
   connect( btnRemoveLayer, SIGNAL( clicked() ), this, SLOT( removeLayer() ) );
   connect( btnLock, SIGNAL( clicked() ), this, SLOT( lockLayer() ) );
+  connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
 
   updateUi();
 
@@ -483,6 +484,34 @@ void QgsSymbolV2SelectorDialog::lockLayer()
   if ( !layer )
     return;
   layer->setLocked( btnLock->isChecked() );
+}
+
+void QgsSymbolV2SelectorDialog::saveSymbol()
+{
+  bool ok;
+  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+                                        tr( "Please enter name for the symbol:" ) , QLineEdit::Normal, tr( "New symbol" ), &ok );
+  if ( !ok || name.isEmpty() )
+    return;
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( name ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
+
+  // add new symbol to style and re-populate the list
+  mStyle->addSymbol( name, mSymbol->clone() );
+
+  // make sure the symbol is stored
+  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
 }
 
 void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )

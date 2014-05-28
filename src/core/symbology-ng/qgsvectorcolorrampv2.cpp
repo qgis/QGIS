@@ -309,26 +309,33 @@ QgsStringMap QgsVectorRandomColorRampV2::properties() const
   return map;
 }
 
-void QgsVectorRandomColorRampV2::updateColors()
+QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
+    int hueMax, int hueMin, int satMax, int satMin, int valMax, int valMin )
 {
   int h, s, v;
+  QList<QColor> colors;
 
-  mColors.clear();
   //start hue at random angle
   double currentHueAngle = 360.0 * ( double )rand() / RAND_MAX;
 
-  for ( int i = 0; i < mCount; i++ )
+  for ( int i = 0; i < count; i++ )
   {
     //increment hue by golden ratio (approx 137.507 degrees)
     //as this minimises hue nearness as count increases
     //see http://basecase.org/env/on-rainbows for more details
     currentHueAngle += 137.50776;
-    //scale hue to between mHueMax and mHueMin
-    h = ( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( mHueMax - mHueMin ) + mHueMin;
-    s = ( rand() % ( mSatMax - mSatMin + 1 ) ) + mSatMin;
-    v = ( rand() % ( mValMax - mValMin + 1 ) ) + mValMin;
-    mColors.append( QColor::fromHsv( h, s, v ) );
+    //scale hue to between hueMax and hueMin
+    h = ( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( hueMax - hueMin ) + hueMin;
+    s = ( rand() % ( satMax - satMin + 1 ) ) + satMin;
+    v = ( rand() % ( valMax - valMin + 1 ) ) + valMin;
+    colors.append( QColor::fromHsv( h, s, v ) );
   }
+  return colors;
+}
+
+void QgsVectorRandomColorRampV2::updateColors()
+{
+  mColors = QgsVectorRandomColorRampV2::randomColors( mCount, mHueMax, mHueMin, mSatMax, mSatMin, mValMax, mValMin );
 }
 
 /////////////

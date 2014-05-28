@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:spatialpointpatternanalysis', points, step, centre, stddist, bbox)
+	processing.runalg('saga:spatialpointpatternanalysis', points, step, centre, stddist, bbox)

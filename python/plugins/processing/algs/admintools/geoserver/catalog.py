@@ -41,7 +41,8 @@ from layergroup import LayerGroup, \
     UnsavedLayerGroup
 from workspace import workspace_from_index, \
     Workspace
-from processing.algs.admintools import httplib2
+
+import httplib2
 
 
 logger = logging.getLogger('gsconfig.catalog')

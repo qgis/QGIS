@@ -118,9 +118,12 @@ class QgsVectorLayer : QgsMapLayer
     {
       GeneratedLayout,
       TabLayout,
-      UiFileLayout,
+      UiFileLayout
     };
 
+    /**
+     * @deprecated Use the editorWidgetV2() system instead
+     */
     enum EditType
     {
       LineEdit,
@@ -150,8 +153,8 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 2.1 */
     enum FeatureFormSuppress
     {
-      SuppressDefault = 0, // use the application-wide setting
-      SuppressOn = 1,
+      SuppressDefault, // use the application-wide setting
+      SuppressOn,
       SuppressOff = 2
     };
 
@@ -758,16 +761,38 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @return The id for the editor widget or a NULL string if not applicable
      */
-    const QString editorWidgetV2( int fieldIdx );
+    const QString editorWidgetV2( int fieldIdx ) const;
+
+    /**
+     * Get the id for the editor widget used to represent the field at the given index
+     *
+     * @param fieldName  The name of the field
+     *
+     * @return The id for the editor widget or a NULL string if not applicable
+     *
+     * @note python method name editorWidgetV2ByName
+     */
+    const QString editorWidgetV2( const QString& fieldName ) const /PyName=editorWidgetV2ByName/;
 
     /**
      * Get the configuration for the editor widget used to represent the field at the given index
      *
      * @param fieldIdx  The index of the field
      *
-     * @return The id for the editor widget or a NULL string if not configured
+     * @return The configuration for the editor widget or an empty config if the field does not exist
      */
-    const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx );
+    const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const;
+
+    /**
+     * Get the configuration for the editor widget used to represent the field at the given index
+     *
+     * @param fieldName The name of the field
+     *
+     * @return The configuration for the editor widget or an empty config if the field does not exist
+     *
+     * @note python method name is editorWidgetV2ConfigByName
+     */
+    const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const /PyName=editorWidgetV2ConfigByName/;
 
     /**
      * Returns a list of tabs holding groups and fields
@@ -841,11 +866,19 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool rollBack( bool deleteBuffer = true );
 
-    /**get edit type*/
-    EditType editType( int idx );
+    /**
+     * Get edit type
+     *
+     * @deprecated Use @see{editorWidgetV2} instead
+     */
+    EditType editType( int idx ) /Deprecated/;
 
-    /**set edit type*/
-    void setEditType( int idx, EditType edit );
+    /**
+     * Get edit type
+     *
+     * @deprecated Use @see{setEditorWidgetV2} instead
+     */
+    void setEditType( int idx, EditType edit ) /Deprecated/;
 
     /** get the active layout for the attribute editor for this layer (added in 1.9) */
     EditorLayout editorLayout();
@@ -853,18 +886,28 @@ class QgsVectorLayer : QgsMapLayer
     /** set the active layout for the attribute editor for this layer (added in 1.9) */
     void setEditorLayout( EditorLayout editorLayout );
 
+    /**
+     * Set the editor widget type for a field
+     *
+     * @param attrIdx     Index of the field
+     * @param widgetType  Type id of the editor widget to use
+     */
     void setEditorWidgetV2( int attrIdx, const QString& widgetType );
 
+    /**
+     * Set the editor widget config for a field
+     *
+     * @param attrIdx     Index of the field
+     * @param config      The config to set for this field
+     */
     void setEditorWidgetV2Config( int attrIdx, const QMap<QString, QVariant>& config );
 
-    /** set string representing 'true' for a checkbox (added in 1.4) */
-    void setCheckedState( int idx, QString checked, QString notChecked );
-
-    /** return string representing 'true' for a checkbox (added in 1.4)
-     * @note not available in python bindings
-     * FIXME: need SIP binding for QPair<QString, QString>
+    /**
+     * Set string representing 'true' for a checkbox (added in 1.4)
+     *
+     * @deprecated Use @see{setEditorWidgetV2Config} instead
      */
-    // QPair<QString, QString> checkedState( int idx );
+    void setCheckedState( int idx, QString checked, QString notChecked ) /Deprecated/;
 
     /** get edit form (added in 1.4) */
     QString editForm();
@@ -892,16 +935,25 @@ class QgsVectorLayer : QgsMapLayer
     /** set python function for edit form initialization (added in 1.4) */
     void setEditFormInit( QString function );
 
-    /**access value map*/
-    QMap<QString, QVariant> &valueMap( int idx );
+    /**
+     * Access value map
+     * @deprecated Use @see{editorWidgetV2Config} instead
+     */
+    QMap<QString, QVariant> valueMap( int idx ) /Deprecated/;
 
-    /**access range */
-    RangeData &range( int idx );
+    /**
+     * Access range widget config data
+     *
+     * @deprecated Use @see{editorWidgetV2Config} instead
+     */
+    RangeData range( int idx ) /Deprecated/;
 
-    /**access relations
+    /**
+     * Access value relation widget data
+     *
      * @note added in 1.8
-     **/
-    ValueRelationData &valueRelation( int idx );
+     */
+    ValueRelationData valueRelation( int idx );
 
     /**
      * Get relations, where the foreign key is on this layer
@@ -911,15 +963,23 @@ class QgsVectorLayer : QgsMapLayer
      */
     QList<QgsRelation> referencingRelations( int idx );
 
-    /**access date format
+    /**
+     * Access date format
+     *
      * @note added in 1.9
+     *
+     * @deprecated Use @see{setEditorWdigetV2Config} instead
      */
-    QString &dateFormat( int idx );
+    QString dateFormat( int idx ) /Deprecated/;
 
-    /**access widget size for photo and webview widget
+    /**
+     * Access widget size for photo and webview widget
+     *
      * @note added in 1.9
+     *
+     * @deprecated Use @see{setEditorWdigetV2Config} instead
      */
-    QSize &widgetSize( int idx );
+    QSize widgetSize( int idx ) /Deprecated/;
 
     /**is edit widget editable
      * @note added in 1.9
@@ -1116,6 +1176,9 @@ class QgsVectorLayer : QgsMapLayer
     /** This signal is emitted when modifications has been done on layer */
     void layerModified();
 
+    /** Is emitted, when layer is checked for modifications. Use for last-minute additions */
+    void beforeModifiedCheck() const;
+
     /** Is emitted, when editing on this layer has started*/
     void editingStarted();
 
@@ -1176,14 +1239,32 @@ class QgsVectorLayer : QgsMapLayer
      */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
-    /** Signal emitted on symbology changes, when setRendererV2() is called */
-    void rendererChanged();
-
     /** Signal emitted when setFeatureBlendMode() is called */
     void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );
 
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
+
+    /**
+     * Signal emitted when a new edit command has been started
+     *
+     * @param text Description for this edit command
+     */
+    void editCommandStarted( const QString& text );
+
+    /**
+     * Signal emitted, when an edit command successfully ended
+     * @note This does not mean it is also committed, only that it is written
+     * to the edit buffer. See {@link beforeCommitChanges()}
+     */
+    void editCommandEnded();
+
+    /**
+     * Signal emitted, whan an edit command is destroyed
+     * @note This is not a rollback, it is only related to the current edit command.
+     * See {@link beforeRollBack()}
+     */
+    void editCommandDestroyed();
 
   protected:
     /** Set the extent */

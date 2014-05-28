@@ -82,11 +82,11 @@ def getEdgeExtraction(available_app, original_dom_document):
     renameValueField(the_root, 'filter.touzi.xradius', 'name', 'The Radius')
     renameValueField(the_root, 'filter.touzi.xradius', 'description', 'The Radius')
     remove_parameter_by_key(the_root, 'filter.touzi.yradius')
-    splitted = split_by_choice(the_root, 'filter')
+    split = split_by_choice(the_root, 'filter')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
 
@@ -102,8 +102,8 @@ def getGrayScaleMorphologicalOperation(available_app, original_dom_document):
     remove_other_choices(the_root, 'structype', 'ball')
     remove_parameter_by_key(the_root, 'structype.ball.yradius')
 
-    splitted = defaultSplit(available_app, the_root, 'filter')
-    return splitted
+    split = defaultSplit(available_app, the_root, 'filter')
+    return split
 
 
 def getOrthoRectification(available_app, original_dom_document):
@@ -145,17 +145,17 @@ def getOrthoRectification(available_app, original_dom_document):
 
 
 
-    splitted = split_by_choice(the_root, 'map')
+    split = split_by_choice(the_root, 'map')
     the_list = []
 
-    for key in splitted:
+    for key in split:
         if key == 'utm':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'map.epsg.code')
             defaultWrite('%s-%s' % (available_app, key), the_doc)
             the_list.append(the_doc)
         elif key == 'epsg':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'map.utm.northhem')
             remove_parameter_by_key(the_doc, 'map.utm.zone')
             defaultWrite('%s-%s' % (available_app, key), the_doc)
@@ -198,17 +198,17 @@ def getDimensionalityReduction(available_app, original_dom_document):
     the_root = original_dom_document
     remove_parameter_by_key(the_root, 'rescale.outmin')
     remove_parameter_by_key(the_root, 'rescale.outmax')
-    splitted = split_by_choice(the_root, 'method')
+    split = split_by_choice(the_root, 'method')
     the_list = []
-    for key in splitted:
+    for key in split:
         if key == 'maf':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'outinv')
             defaultWrite('%s-%s' % (available_app, key), the_doc)
             the_list.append(the_doc)
         else:
-            defaultWrite('%s-%s' % (available_app, key), splitted[key])
-            the_list.append(splitted[key])
+            defaultWrite('%s-%s' % (available_app, key), split[key])
+            the_list.append(split[key])
     return the_list
 
 
@@ -217,11 +217,11 @@ def getPansharpening(available_app, original_dom_document):
     Split by method (bayes, lmvm, rcs)
     """
     the_root = original_dom_document
-    splitted = split_by_choice(the_root, 'method')
+    split = split_by_choice(the_root, 'method')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
 
@@ -242,11 +242,11 @@ def getExtractROI(available_app, original_dom_document):
     the_root = original_dom_document
     remove_parameter_by_key(the_root, 'cl')
     deleteGeoidSrtm(the_root)
-    splitted = split_by_choice(the_root, 'mode')
+    split = split_by_choice(the_root, 'mode')
     the_list = []
-    for key in splitted:
+    for key in split:
         if key == 'standard':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'mode.fit.elev.dem')
             remove_parameter_by_key(the_doc, 'mode.fit.elev.geoid')
             remove_parameter_by_key(the_doc, 'mode.fit.elev.default')
@@ -255,13 +255,13 @@ def getExtractROI(available_app, original_dom_document):
             the_list.append(the_doc)
         else:
             #key == 'fit'
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'startx')
             remove_parameter_by_key(the_doc, 'starty')
             remove_parameter_by_key(the_doc, 'sizex')
             remove_parameter_by_key(the_doc, 'sizey')
             defaultWrite('%s-%s' % (available_app, key), the_doc)
-            the_list.append(splitted[key])
+            the_list.append(split[key])
     return the_list
 
 
@@ -277,11 +277,11 @@ def getRigidTransformResample(available_app, original_dom_document):
     split by transformation (id, rotation, translation)
     """
     the_root = original_dom_document
-    splitted = split_by_choice(the_root, 'transform.type')
+    split = split_by_choice(the_root, 'transform.type')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
 
@@ -317,11 +317,11 @@ def getSegmentation(available_app, original_dom_document):
     #remove_independant_choices(the_root, 'filter', 'meanshift')
     remove_choice(the_root, 'mode', 'raster')
     remove_independant_choices(the_root, 'mode', 'raster')
-    splitted = split_by_choice(the_root, 'filter')
+    split = split_by_choice(the_root, 'filter')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
 
@@ -348,11 +348,11 @@ def getComputeConfusionMatrix(available_app, original_dom_document):
     #remove_choice(the_root, 'ref', 'vector')
     #defaultWrite(available_app, the_root)
 
-    splitted = split_by_choice(the_root, 'ref')
+    split = split_by_choice(the_root, 'ref')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
     return [the_root]
@@ -401,33 +401,33 @@ def getSmoothing(available_app, original_dom_document):
     #defaultWrite(available_app, the_root)
 
     the_root = original_dom_document
-    splitted = split_by_choice(the_root, 'type')
+    split = split_by_choice(the_root, 'type')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
 
     return the_list
-    #splitted = split_by_choice(the_root, 'type')
+    #split = split_by_choice(the_root, 'type')
     #the_list = []
-    #for key in splitted:
-    #    defaultWrite('%s-%s' % (available_app, key), splitted[key])
-    #    the_list.append(splitted[key])
+    #for key in split:
+    #    defaultWrite('%s-%s' % (available_app, key), split[key])
+    #    the_list.append(split[key])
     #return the_list
 
 def getColorMapping(available_app, original_dom_document):
     """
     Remove the option colortolabel
-    Split by method : custom, continous, optimal and image and adapt parameters of each resulting app
+    Split by method : custom, continuous, optimal and image and adapt parameters of each resulting app
     """
     the_root = original_dom_document
     remove_independant_choices(the_root, 'op', 'colortolabel')
     remove_choice(the_root, 'op', 'colortolabel')
-    splitted = split_by_choice(the_root, 'method')
+    split = split_by_choice(the_root, 'method')
     the_list = []
-    for key in splitted:
+    for key in split:
         if key == 'custom':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'method.continuous.lut')
             remove_parameter_by_key(the_doc, 'method.continuous.min')
             remove_parameter_by_key(the_doc, 'method.continuous.max')
@@ -438,7 +438,7 @@ def getColorMapping(available_app, original_dom_document):
             defaultWrite('%s-%s' % (available_app, key), the_doc)
             the_list.append(the_doc)
         elif key == 'continuous':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'method.custom.lut')
             remove_parameter_by_key(the_doc, 'method.optimal.background')
             remove_parameter_by_key(the_doc, 'method.image.in')
@@ -447,7 +447,7 @@ def getColorMapping(available_app, original_dom_document):
             defaultWrite('%s-%s' % (available_app, key), the_doc)
             the_list.append(the_doc)
         elif key == 'optimal':
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'method.custom.lut')
             remove_parameter_by_key(the_doc, 'method.continuous.lut')
             remove_parameter_by_key(the_doc, 'method.continuous.min')
@@ -459,14 +459,14 @@ def getColorMapping(available_app, original_dom_document):
             the_list.append(the_doc)
         else:
             #key == 'image'
-            the_doc = splitted[key]
+            the_doc = split[key]
             remove_parameter_by_key(the_doc, 'method.custom.lut')
             remove_parameter_by_key(the_doc, 'method.continuous.lut')
             remove_parameter_by_key(the_doc, 'method.continuous.min')
             remove_parameter_by_key(the_doc, 'method.continuous.max')
             remove_parameter_by_key(the_doc, 'method.optimal.background')
             defaultWrite('%s-%s' % (available_app, key), the_doc)
-            the_list.append(splitted[key])
+            the_list.append(split[key])
     return the_list
 
 
@@ -476,11 +476,11 @@ def getFusionOfClassifications(available_app, original_dom_document):
     Split by method of fusion of classification (dempstershafer, majorityvoting)
     """
     the_root = original_dom_document
-    splitted = split_by_choice(the_root, 'method')
+    split = split_by_choice(the_root, 'method')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
 
@@ -492,11 +492,11 @@ def getTrainImagesClassifier(available_app, original_dom_document):
     """
     the_root = original_dom_document
     deleteGeoidSrtm(the_root)
-    splitted = split_by_choice(the_root, 'classifier')
+    split = split_by_choice(the_root, 'classifier')
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list
 
 
@@ -576,11 +576,11 @@ def getComputeModulusAndPhase(available_app, original_dom_document):
     For each of the resulting apps, give a new name.
     """
     the_root = original_dom_document
-    splitted = split_by_choice(the_root, 'nbinput')
+    split = split_by_choice(the_root, 'nbinput')
     the_list = []
-    for key in splitted:
+    for key in split:
         if key == 'one':
-            the_doc = splitted[key]
+            the_doc = split[key]
             old_app_name = the_doc.find('key').text
             the_doc.find('key').text = '%s-%s' % (old_app_name, 'OneEntry')
             old_longname = the_doc.find('longname').text
@@ -588,7 +588,7 @@ def getComputeModulusAndPhase(available_app, original_dom_document):
             defaultWrite('%s-%s' % (available_app, 'OneEntry'), the_doc)
             the_list.append(the_doc)
         else :
-            the_doc = splitted[key]
+            the_doc = split[key]
             old_app_name = the_doc.find('key').text
             the_doc.find('key').text = '%s-%s' % (old_app_name, 'TwoEntries')
             old_longname = the_doc.find('longname').text

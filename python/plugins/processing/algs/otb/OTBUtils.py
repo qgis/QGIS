@@ -197,7 +197,7 @@ def remove_choice(doc, parameter, choice):
 def split_by_choice(doc, parameter):
     """
     splits the given doc into several docs according to the given parameter
-    returns a dictionnary of documents
+    returns a dictionary of documents
     """
     result = {}
     choices = get_choices_of(doc, parameter)
@@ -213,7 +213,7 @@ def split_by_choice(doc, parameter):
         working_copy.find('key').text = '%s-%s' % (old_app_name, choice)
         old_longname = working_copy.find('longname').text
         working_copy.find('longname').text = '%s (%s)' % (old_app_name, choice)
-        #add it to the dictionnary
+        #add it to the dictionary
         result[choice] = working_copy
     return result
 
@@ -231,9 +231,9 @@ def defaultWrite(available_app, original_dom_document):
 
 def defaultSplit(available_app, original_dom_document, parameter):
     the_root = original_dom_document
-    splitted = split_by_choice(the_root, parameter)
+    split = split_by_choice(the_root, parameter)
     the_list = []
-    for key in splitted:
-        defaultWrite('%s-%s' % (available_app, key), splitted[key])
-        the_list.append(splitted[key])
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
     return the_list

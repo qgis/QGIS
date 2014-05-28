@@ -23,6 +23,7 @@
 #include "qgsgraduatedsymbolrendererv2widget.h"
 #include "qgsrulebasedrendererv2widget.h"
 #include "qgspointdisplacementrendererwidget.h"
+#include "qgsinvertedpolygonrendererwidget.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -66,6 +67,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
   _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
+  _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create );
   initialized = true;
 }
 

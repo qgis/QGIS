@@ -43,8 +43,7 @@ class PGTableDataModel(TableDataModel):
 		fields_txt = u", ".join(self.fields)
 		table_txt = self.db.quoteId( (self.table.schemaName(), self.table.name) )
 
-		# create named cursor and run query
-		self.cursor = self.db._get_cursor(self.table.name)
+		self.cursor = self.db._get_cursor()
 		sql = u"SELECT %s FROM %s" % (fields_txt, table_txt)
 		self.db._execute(self.cursor, sql)
 

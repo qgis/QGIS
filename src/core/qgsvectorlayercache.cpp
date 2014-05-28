@@ -39,6 +39,12 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
 }
 
+QgsVectorLayerCache::~QgsVectorLayerCache()
+{
+  qDeleteAll( mCacheIndices );
+  mCacheIndices.clear();
+}
+
 void QgsVectorLayerCache::setCacheSize( int cacheSize )
 {
   mCache.setMaxCost( cacheSize );
@@ -178,7 +184,7 @@ void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, Qg
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
-  foreach ( QgsAbstractCacheIndex* idx, mCacheIndices )
+  Q_FOREACH( QgsAbstractCacheIndex* idx, mCacheIndices )
   {
     idx->flushFeature( fid );
   }

@@ -14,12 +14,12 @@
  ***************************************************************************/
 #include "qgsundowidget.h"
 
-#include "qgsmaplayer.h"
-#include "qgsmapcanvas.h"
-#include "qgslegend.h"
-
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgslayertreeview.h"
+#include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
+
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
     : QDockWidget( parent )
@@ -29,7 +29,7 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
 
   connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo( ) ) );
   connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo( ) ) );
-  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( layerChanged( QgsMapLayer* ) ) );
 
   undoButton->setDisabled( true );

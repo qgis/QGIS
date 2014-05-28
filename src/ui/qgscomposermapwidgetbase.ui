@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-299</y>
         <width>439</width>
-        <height>1671</height>
+        <height>1699</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -305,13 +305,23 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QRadioButton" name="mAtlasFixedScaleRadio">
             <property name="enabled">
              <bool>false</bool>
             </property>
             <property name="text">
              <string>Fixed scale</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mAtlasPredefinedScaleRadio">
+            <property name="toolTip">
+             <string>Use one of the predefined scales of the project where the atlas feature best fits.</string>
+            </property>
+            <property name="text">
+             <string>Predefined scale (best fit)</string>
             </property>
            </widget>
           </item>
@@ -839,10 +849,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -850,9 +859,10 @@
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

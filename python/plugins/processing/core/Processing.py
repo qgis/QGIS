@@ -30,7 +30,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 import processing
-from processing import interface
+from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -128,13 +128,6 @@ class Processing:
                 return provider
         return Processing.modeler
 
-    @staticmethod
-    def getInterface():
-        return interface.iface
-
-    @staticmethod
-    def setInterface(iface):
-        pass
 
     @staticmethod
     def initialize():
@@ -351,8 +344,8 @@ class Processing:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         progress = SilentProgress()
-        if interface.iface is not None :
-          progress = MessageBarProgress()
+        if iface is not None :
+            progress = MessageBarProgress()
         ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
         if onFinish is not None and ret:
             onFinish(alg, progress)

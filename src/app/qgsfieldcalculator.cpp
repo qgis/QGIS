@@ -85,15 +85,26 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     mNewFieldGroupBox->setCheckable( false );
   }
 
-  mOnlyUpdateSelectedCheckBox->setChecked( vl->selectedFeaturesIds().size() > 0 );
+  bool hasselection = vl->selectedFeaturesIds().size() > 0;
+  mOnlyUpdateSelectedCheckBox->setChecked( hasselection );
+  mOnlyUpdateSelectedCheckBox->setEnabled( hasselection );
+  mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeaturesIds().size() ) );
+
+  builder->loadRecent( "fieldcalc" );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsFieldCalculator/geometry" ).toByteArray() );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/QgsFieldCalculator/geometry", saveGeometry() );
 }
 
 void QgsFieldCalculator::accept()
 {
+  builder->saveToRecent( "fieldcalc" );
 
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
@@ -140,6 +151,7 @@ void QgsFieldCalculator::accept()
 
     if ( !mVectorLayer->addAttribute( newField ) )
     {
+      QApplication::restoreOverrideCursor();
       QMessageBox::critical( 0, tr( "Provider error" ), tr( "Could not add the new field to the provider." ) );
       mVectorLayer->destroyEditCommand();
       return;
@@ -159,6 +171,7 @@ void QgsFieldCalculator::accept()
 
     if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
     {
+      QApplication::restoreOverrideCursor();
       QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
       return;
     }

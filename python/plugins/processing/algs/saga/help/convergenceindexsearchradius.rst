@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convergenceindexsearchradius', elevation, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, slope, difference, convergence)
+	processing.runalg('saga:convergenceindexsearchradius', elevation, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, slope, difference, convergence)
 
 	Available options for selection parameters:
 

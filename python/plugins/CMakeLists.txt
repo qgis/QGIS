@@ -1,37 +1,10 @@
-# Python plugins can be staged to PYTHON_OUTPUT_DIRECTORY so plugins
-# will function when app is run from build directory
-
-# When staging all plugins, use the following make targets:
-#   staged-plugins - stage plugins (usually after repo pull/build and project make)
-#   staged-plugins-pyc - stage and byte-compile all Python scripts
-#   clean-staged-plugins - removes the plugins directory and all contents
+# See ../CMakeLists.txt for info on staged-plugins* and clean-staged-plugins targets
 #
 # When developing on a plugin, use the following make targets:
 #   staged-[plugin_dir_name] - stage specific plugin, regenerating any changed resources
 #   clean-staged-[plugin_dir_name] - removes the plugin directory and its contents
 #
 # NOTE: regular project 'make install' is unaffected
-
-ADD_CUSTOM_TARGET(staged-plugins)
-
-ADD_CUSTOM_TARGET(staged-plugins-pyc DEPENDS staged-plugins
-  COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/plugins"
-  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-  COMMENT "Byte-compiling staged Python plugins..."
-)
-
-# plugins can also be staged with CMake option at build time
-IF(WITH_STAGED_PLUGINS)
-  IF(WITH_PY_COMPILE)
-    ADD_CUSTOM_TARGET(staged-plugins-on-build ALL DEPENDS staged-plugins-pyc)
-  ELSE(WITH_PY_COMPILE)
-    ADD_CUSTOM_TARGET(staged-plugins-on-build ALL DEPENDS staged-plugins)
-  ENDIF(WITH_PY_COMPILE)
-ENDIF(WITH_STAGED_PLUGINS)
-
-ADD_CUSTOM_TARGET(clean-staged-plugins
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${PYTHON_OUTPUT_DIRECTORY}/plugins
-)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/stagecount 0)
 
@@ -85,3 +58,6 @@ ADD_SUBDIRECTORY(fTools)
 ADD_SUBDIRECTORY(GdalTools)
 ADD_SUBDIRECTORY(db_manager)
 ADD_SUBDIRECTORY(processing)
+ADD_SUBDIRECTORY(MetaSearch)
+
+PY_COMPILE(staged-plugins "${PYTHON_OUTPUT_DIRECTORY}/plugins")

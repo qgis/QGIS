@@ -27,54 +27,59 @@ __revision__ = '$Format:%H$'
 
 import os.path
 import re
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.gui import *
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.outputs.OutputVector import OutputVector
+from processing.outputs.OutputDirectory import OutputDirectory
 
+from processing.ui.ui_widgetOutputSelect import Ui_widgetOutputSelect
 
-class OutputSelectionPanel(QWidget):
+class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
 
-    lastOutputFolder = None
-    SAVE_TO_TEMP_FILE = '[Save to temporary file]'
+    SAVE_TO_TEMP_FILE = QCoreApplication.translate(
+        'OutputSelectionPanel', '[Save to temporary file]')
 
     def __init__(self, output, alg):
+        QWidget.__init__(self)
+        self.setupUi(self)
+
         self.output = output
         self.alg = alg
-        super(OutputSelectionPanel, self).__init__(None)
-        self.horizontalLayout = QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QLineEdit()
+
         if hasattr(self.text, 'setPlaceholderText'):
-            self.text.setPlaceholderText(
-                    OutputSelectionPanel.SAVE_TO_TEMP_FILE)
-        self.text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.buttonPushed)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
+            self.text.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
-    def buttonPushed(self):
-        popupmenu = QMenu()
-        saveToTemporaryFileAction = QAction('Save to a temporary file',
-                self.pushButton)
-        saveToTemporaryFileAction.triggered.connect(self.saveToTemporaryFile)
-        popupmenu.addAction(saveToTemporaryFileAction)
-        if isinstance(self.output, OutputVector) \
-            and self.alg.provider.supportsNonFileBasedOutput():
-            saveToMemoryAction = QAction('Save to a memory layer',
-                    self.pushButton)
-            saveToMemoryAction.triggered.connect(self.saveToMemory)
-            popupmenu.addAction(saveToMemoryAction)
-        saveToFileAction = QAction('Save to file...', self.pushButton)
-        saveToFileAction.triggered.connect(self.saveToFile)
-        popupmenu.addAction(saveToFileAction)
+        self.btnBrowse.clicked.connect(self.selectOutput)
 
-        popupmenu.exec_(QCursor.pos())
+    def selectOutput(self):
+        if isinstance(self.output, OutputDirectory):
+            self.selectDirectory()
+        else:
+            popupMenu = QMenu()
+
+            actionSaveToTempFile = QAction(
+                self.tr('Save to a temporary file'), self.btnBrowse)
+            actionSaveToTempFile.triggered.connect(self.saveToTemporaryFile)
+            popupMenu.addAction(actionSaveToTempFile)
+
+            actionSaveToFile = QAction(
+                self.tr('Save to file...'), self.btnBrowse)
+            actionSaveToFile.triggered.connect(self.selectFile)
+            popupMenu.addAction(actionSaveToFile)
+
+            if isinstance(self.output, OutputVector) \
+                    and self.alg.provider.supportsNonFileBasedOutput():
+                actionSaveToMemory = QAction(
+                    self.tr('Save to memory layer'), self.btnBrowse)
+                actionSaveToMemory.triggered.connect(self.saveToMemory)
+                popupMenu.addAction(actionSaveToMemory)
+
+            popupMenu.exec_(QCursor.pos())
 
     def saveToTemporaryFile(self):
         self.text.setText('')
@@ -82,44 +87,56 @@ class OutputSelectionPanel(QWidget):
     def saveToMemory(self):
         self.text.setText('memory:')
 
-    def saveToFile(self):
-        filefilter = self.output.getFileFilter(self.alg)
+    def selectFile(self):
+        fileFilter = self.output.getFileFilter(self.alg)
+
         settings = QSettings()
         if settings.contains('/Processing/LastOutputPath'):
             path = settings.value('/Processing/LastOutputPath')
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
-        lastEncoding = settings.value('/Processing/encoding', 'System')
-        fileDialog = QgsEncodingFileDialog(self, 'Save file', path,
-                filefilter, lastEncoding)
+
+        encoding = settings.value('/Processing/encoding', 'System')
+        fileDialog = QgsEncodingFileDialog(
+            self, self.tr('Save file'), path, fileFilter, encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setConfirmOverwrite(True)
+
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
             encoding = unicode(fileDialog.encoding())
             self.output.encoding = encoding
-            filename = unicode(files[0])
-            selectedFilefilter = unicode(fileDialog.selectedNameFilter())
-            if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,5})", filefilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFilefilter)
+            fileName = unicode(files[0])
+            selectedFileFilter = unicode(fileDialog.selectedNameFilter())
+            if not fileName.lower().endswith(
+                    tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
+                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
                 if ext:
-                    filename = filename + ext.group(1)
-            self.text.setText(filename)
+                    fileName += ext.group(1)
+            self.text.setText(fileName)
             settings.setValue('/Processing/LastOutputPath',
-                              os.path.dirname(filename))
+                              os.path.dirname(fileName))
             settings.setValue('/Processing/encoding', encoding)
 
+    def selectDirectory(self):
+        lastDir = ''
+
+        dirName = QFileDialog.getExistingDirectory(self,
+            self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+
+        self.text.setText(dirName)
+
     def getValue(self):
-        filename = unicode(self.text.text())
-        if filename.strip() == '' or filename \
-            == OutputSelectionPanel.SAVE_TO_TEMP_FILE:
-            return None
-        if filename.startswith('memory:'):
-            return filename
+        fileName = unicode(self.text.text())
+        if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE]:
+            value = None
+        elif fileName.startswith('memory:'):
+            value = fileName
+        elif not os.path.isabs(fileName):
+            value = ProcessingConfig.getSetting(
+                ProcessingConfig.OUTPUT_FOLDER) + os.sep + fileName
         else:
-            if not os.path.isabs(filename):
-                filename = ProcessingConfig.getSetting(
-                        ProcessingConfig.OUTPUT_FOLDER) + os.sep + filename
-            return filename
+            value = fileName
+
+        return value

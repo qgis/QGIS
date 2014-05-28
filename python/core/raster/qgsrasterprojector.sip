@@ -65,4 +65,3 @@ class QgsRasterProjector : QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 };
-

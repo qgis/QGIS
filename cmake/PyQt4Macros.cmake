@@ -22,13 +22,23 @@ ENDIF(NOT PYUIC4_PROGRAM)
 
 # Adapted from QT4_WRAP_UI
 MACRO(PYQT4_WRAP_UI outfiles )
+  IF(WIN32)
+    SET(PYUIC4_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic4-wrapper.bat")
+    SET(PYUIC4_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin/${CMAKE_BUILD_TYPE}")
+  ELSE(WIN32)
+    # TODO osx
+    SET(PYUIC4_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic4-wrapper.sh")
+    SET(PYUIC4_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/lib")
+  ENDIF(WIN32)
+
   FOREACH(it ${ARGN})
     GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
     GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
     SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/ui_${outfile}.py)
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYUIC4_PROGRAM} ${infile} -o ${outfile}
+      COMMAND ${PYUIC4_WRAPPER} "${PYUIC4_PROGRAM}" "${PYUIC4_WRAPPER_PATH}" "${QGIS_OUTPUT_DIRECTORY}/python" ${infile} -o ${outfile}
       MAIN_DEPENDENCY ${infile}                       
+      DEPENDS pygui pycore
     )
     SET(${outfiles} ${${outfiles}} ${outfile})
   ENDFOREACH(it)

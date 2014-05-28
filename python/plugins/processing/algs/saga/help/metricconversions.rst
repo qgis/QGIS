@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:metricconversions', grid, conversion, conv)
+	processing.runalg('saga:metricconversions', grid, conversion, conv)
 
 	Available options for selection parameters:
 

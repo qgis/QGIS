@@ -99,6 +99,8 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
 
     int nLayers() const;
 
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+
   private:
     QgsServerProjectParser mProjectParser;
 

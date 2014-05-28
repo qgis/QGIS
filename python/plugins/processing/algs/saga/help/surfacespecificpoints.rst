@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:surfacespecificpoints', elevation, method, threshold, result)
+	processing.runalg('saga:surfacespecificpoints', elevation, method, threshold, result)
 
 	Available options for selection parameters:
 

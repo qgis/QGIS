@@ -31,4 +31,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:minimumdistanceanalysis', points, table)
+	processing.runalg('saga:minimumdistanceanalysis', points, table)

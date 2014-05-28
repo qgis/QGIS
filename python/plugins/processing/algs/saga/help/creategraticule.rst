@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:creategraticule', extent, output_extent, distx, disty, type, graticule)
+	processing.runalg('saga:creategraticule', extent, output_extent, distx, disty, type, graticule)
 
 	Available options for selection parameters:
 

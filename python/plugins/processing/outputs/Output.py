@@ -45,7 +45,7 @@ class Output(object):
         # in a vector layer). In the case of layers, hidden outputs are
         # not loaded into QGIS after the algorithm is executed. Other
         # outputs not representing layers or tables should always be hidden.
-        self.hidden = hidden
+        self.hidden = str(hidden).lower() == str(True).lower()
 
         # This value indicates whether the output has to be opened
         # after being produced by the algorithm or not

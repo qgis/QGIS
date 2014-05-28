@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>299</height>
+    <width>439</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,59 +37,44 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QTableWidget" name="mTableWidget">
+    <widget class="QTreeWidget" name="mTreeWidget">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::NoSelection</enum>
      </property>
-     <property name="showGrid">
-      <bool>false</bool>
-     </property>
-     <property name="gridStyle">
-      <enum>Qt::NoPen</enum>
-     </property>
-     <attribute name="horizontalHeaderVisible">
+     <property name="wordWrap">
       <bool>true</bool>
+     </property>
+     <attribute name="headerMinimumSectionSize">
+      <number>10</number>
      </attribute>
-     <attribute name="horizontalHeaderHighlightSections">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="verticalHeaderHighlightSections">
-      <bool>false</bool>
-     </attribute>
-     <row>
-      <property name="text">
-       <string>New Row</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string/>
-      </property>
-     </column>
      <column>
       <property name="text">
        <string>Property</string>
       </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Field</string>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
      <column>
       <property name="text">
        <string>Expression</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
      </column>
      <column>
       <property name="text">
        <string>Help</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
     </widget>

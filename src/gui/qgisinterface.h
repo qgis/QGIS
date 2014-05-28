@@ -26,14 +26,15 @@ class QMainWindow;
 class QWidget;
 
 class QgsComposerView;
-class QgsMapLayer;
+class QgsFeature;
+class QgsLayerTreeView;
+class QgsLegendInterface;
 class QgsMapCanvas;
+class QgsMapLayer;
+class QgsMessageBar;
+class QgsPluginManagerInterface;
 class QgsRasterLayer;
 class QgsVectorLayer;
-class QgsLegendInterface;
-class QgsPluginManagerInterface;
-class QgsFeature;
-class QgsMessageBar;
 class QgsVectorLayerTools;
 
 #include <QObject>
@@ -74,6 +75,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsLegendInterface* legendInterface() = 0;
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
+
+    virtual QgsLayerTreeView* layerTreeView() = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -205,7 +208,7 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Add toolbar with specified name
     virtual QToolBar *addToolBar( QString name ) = 0;
 
-    //!  Add a toolbar
+    //! Add a toolbar
     //! @note added in 2.3
     virtual void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 

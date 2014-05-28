@@ -19,6 +19,8 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
+#include <QSettings>
+
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl ): QDialog()
 {
   setupUi( this );
@@ -32,6 +34,15 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl ): QDialog()
       item->setData( Qt::UserRole, idx );
     }
   }
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsDelAttrDialog/geometry" ).toByteArray() );
+}
+
+QgsDelAttrDialog::~QgsDelAttrDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/QgsDelAttrDialog/geometry", saveGeometry() );
 }
 
 QList<int> QgsDelAttrDialog::selectedAttributes()

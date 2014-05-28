@@ -249,7 +249,7 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
 
     if ( painter )
     {
-      drawText( painter, r, *titlePart, styleFont( QgsComposerLegendStyle::Title ), halignment, Qt::AlignVCenter );
+      drawText( painter, r, *titlePart, styleFont( QgsComposerLegendStyle::Title ), halignment, Qt::AlignVCenter, Qt::TextDontClip );
     }
 
     //update max width of title

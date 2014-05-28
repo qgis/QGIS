@@ -63,8 +63,10 @@ enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
-class CORE_EXPORT QgsStyleV2
+class CORE_EXPORT QgsStyleV2 : public QObject
 {
+    Q_OBJECT
+
   public:
     QgsStyleV2();
     ~QgsStyleV2();
@@ -315,6 +317,9 @@ class CORE_EXPORT QgsStyleV2
     //! Imports the symbols and colorramps into the default style database from the given XML file
     bool importXML( QString filename );
 
+  signals:
+    void symbolSaved( QString name, QgsSymbolV2* symbol );
+
   protected:
 
     QgsSymbolV2Map mSymbols;
@@ -350,6 +355,9 @@ class CORE_EXPORT QgsStyleV2
      *  \return Success state of the update operation
      */
     bool updateSymbol( StyleEntity type, QString name );
+
+  private:
+    Q_DISABLE_COPY( QgsStyleV2 )
 };
 
 

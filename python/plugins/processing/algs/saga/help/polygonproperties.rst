@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygonproperties', polygons, bparts, bpoints, blength, barea, output)
+	processing.runalg('saga:polygonproperties', polygons, bparts, bpoints, blength, barea, output)

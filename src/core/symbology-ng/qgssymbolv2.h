@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbolv2.h
-    ---------------------
-    begin                : November 2009
-    copyright            : (C) 2009 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+ qgssymbolv2.h
+ ---------------------
+ begin                : November 2009
+ copyright            : (C) 2009 by Martin Dobias
+ email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include <QList>
 #include <QMap>
+#include "qgsmapunitscale.h"
 
 class QColor;
 class QImage;
@@ -117,6 +118,9 @@ class CORE_EXPORT QgsSymbolV2
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
 
+    QgsMapUnitScale mapUnitScale() const;
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
     //! Set alpha transparency 1 for opaque, 0 for invisible
@@ -158,7 +162,7 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* = 0 );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -167,6 +171,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
+
+    QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }
+    void setMapUnitScale( const QgsMapUnitScale& scale ) { mMapUnitScale = scale; }
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
@@ -200,6 +207,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
   private:
     QgsRenderContext& mRenderContext;
     QgsSymbolV2::OutputUnit mOutputUnit;
+    QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;
     bool mSelected;
     int mRenderHints;
@@ -301,3 +309,5 @@ QgsLineSymbol* s = new LineSymbol( [ sl ] );
 
 rend = QgsSingleSymbolRenderer( new LineSymbol() );
 */
+
+

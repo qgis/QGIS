@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridproximitybuffer', source, dist, ival, distance, alloc, buffer)
+	processing.runalg('saga:gridproximitybuffer', source, dist, ival, distance, alloc, buffer)

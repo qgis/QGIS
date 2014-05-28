@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>408</width>
-        <height>572</height>
+        <y>-34</y>
+        <width>392</width>
+        <height>606</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -241,27 +241,51 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <property name="spacing">
-             <number>6</number>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0" colspan="2">
+           <widget class="QPushButton" name="mHeaderFontPushButton">
+            <property name="text">
+             <string>Header font...</string>
             </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QPushButton" name="mContentFontPushButton">
+            <property name="text">
+             <string>Content font...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Header alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mHeaderHAlignmentComboBox">
             <item>
-             <widget class="QPushButton" name="mHeaderFontPushButton">
-              <property name="text">
-               <string>Header font...</string>
-              </property>
-             </widget>
+             <property name="text">
+              <string>Follow column alignment</string>
+             </property>
             </item>
             <item>
-             <widget class="QPushButton" name="mContentFontPushButton">
-              <property name="text">
-               <string>Content font...</string>
-              </property>
-             </widget>
+             <property name="text">
+              <string>Left</string>
+             </property>
             </item>
-           </layout>
+            <item>
+             <property name="text">
+              <string>Center</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Right</string>
+             </property>
+            </item>
+           </widget>
           </item>
          </layout>
         </widget>

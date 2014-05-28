@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:flowpathlength', elevation, seed, seeds_only, method, convergence, length)
+	processing.runalg('saga:flowpathlength', elevation, seed, seeds_only, method, convergence, length)
 
 	Available options for selection parameters:
 

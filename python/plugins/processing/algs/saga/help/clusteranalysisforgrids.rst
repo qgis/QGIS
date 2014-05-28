@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:clusteranalysisforgrids', grids, method, ncluster, normalise, oldversion, cluster, statistics)
+	processing.runalg('saga:clusteranalysisforgrids', grids, method, ncluster, normalise, oldversion, cluster, statistics)
 
 	Available options for selection parameters:
 

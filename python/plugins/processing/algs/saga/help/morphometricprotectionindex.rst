@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:morphometricprotectionindex', dem, radius, protection)
+	processing.runalg('saga:morphometricprotectionindex', dem, radius, protection)

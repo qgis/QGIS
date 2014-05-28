@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:multibandvariation', bands, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, mean, stddev, diff)
+	processing.runalg('saga:multibandvariation', bands, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, mean, stddev, diff)
 
 	Available options for selection parameters:
 

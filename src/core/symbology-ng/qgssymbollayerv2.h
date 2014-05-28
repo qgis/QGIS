@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbollayerv2.h
-    ---------------------
-    begin                : November 2009
-    copyright            : (C) 2009 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+ qgssymbollayerv2.h
+ ---------------------
+ begin                : November 2009
+ copyright            : (C) 2009 by Martin Dobias
+ email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -97,6 +97,9 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); } //= 0;
     virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; } //= 0;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); } //= 0;
+    virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); } //= 0;
 
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
     void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
@@ -196,11 +199,20 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
     QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
 
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+
     void setSizeUnit( QgsSymbolV2::OutputUnit unit ) { mSizeUnit = unit; }
     QgsSymbolV2::OutputUnit sizeUnit() const { return mSizeUnit; }
 
-    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    virtual QgsSymbolV2::OutputUnit outputUnit() const;
+    void setSizeMapUnitScale( const QgsMapUnitScale& scale ) { mSizeMapUnitScale = scale; }
+    const QgsMapUnitScale& sizeMapUnitScale() const { return mSizeMapUnitScale; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
     HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
@@ -214,18 +226,23 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     //handles marker offset and anchor point shift together
     void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
+    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const;
+
     //! @note available in python bindings as markerOffset2
     void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
-                       double& offsetX, double& offsetY ) const;
+                       double& offsetX, double& offsetY,
+                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
 
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;
     double mSize;
     QgsSymbolV2::OutputUnit mSizeUnit;
+    QgsMapUnitScale mSizeMapUnitScale;
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsMapUnitScale mOffsetMapUnitScale;
     QgsSymbolV2::ScaleMethod mScaleMethod;
     HorizontalAnchorPoint mHorizontalAnchorPoint;
     VerticalAnchorPoint mVerticalAnchorPoint;
@@ -253,6 +270,15 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     void setWidthUnit( QgsSymbolV2::OutputUnit unit ) { mWidthUnit = unit; }
     QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
 
+    void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
+
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
     virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
@@ -262,6 +288,7 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 
     double mWidth;
     QgsSymbolV2::OutputUnit mWidthUnit;
+    QgsMapUnitScale mWidthMapUnitScale;
 };
 
 class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
@@ -285,3 +312,5 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 class QgsSymbolLayerV2Widget;  // why does SIP fail, when this isn't here
 
 #endif
+
+

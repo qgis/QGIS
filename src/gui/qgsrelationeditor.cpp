@@ -40,7 +40,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QgsRelation& relation, c
 
   connect( relation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( referencingLayerEditingToggled() ) );
   connect( relation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( referencingLayerEditingToggled() ) );
-  connect( this, SIGNAL( collapsedStateChanged( bool ) ), this, SIGNAL( onCollapsedStateChanged( bool ) ) );
+  connect( this, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( onCollapsedStateChanged( bool ) ) );
 
   // Set initial state for add/remove etc. buttons
   referencingLayerEditingToggled();

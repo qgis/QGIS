@@ -43,6 +43,10 @@ class TestQgsComposerPicture: public QObject
     void pictureResizeZoomAndResize();
     void pictureResizeFrameToImage();
 
+    void pictureClipAnchor();
+    void pictureClipAnchorOversize();
+    void pictureZoomAnchor();
+
     void pictureSvgZoom();
     void pictureSvgStretch();
     void pictureSvgZoomAndResize();
@@ -211,6 +215,56 @@ void TestQgsComposerPicture::pictureResizeFrameToImage()
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
+}
+
+void TestQgsComposerPicture::pictureClipAnchor()
+{
+  //test picture anchor in Clip mode
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Clip );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 30, 50 ) );
+  mComposerPicture->setPictureAnchor( QgsComposerItem::LowerRight );
+
+  QgsCompositionChecker checker( "composerpicture_clip_anchor", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setPictureAnchor( QgsComposerItem::UpperLeft );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
+}
+
+void TestQgsComposerPicture::pictureClipAnchorOversize()
+{
+  //test picture anchor in Clip mode
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Clip );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 150, 120 ) );
+  mComposerPicture->setPictureAnchor( QgsComposerItem::LowerMiddle );
+
+  QgsCompositionChecker checker( "composerpicture_clip_anchoroversize", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setPictureAnchor( QgsComposerItem::UpperLeft );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
+}
+
+void TestQgsComposerPicture::pictureZoomAnchor()
+{
+  //test picture anchor in Zoom mode
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setSceneRect( QRectF( 70, 10, 30, 100 ) );
+  mComposerPicture->setPictureAnchor( QgsComposerItem::LowerMiddle );
+
+  QgsCompositionChecker checker( "composerpicture_zoom_anchor", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 100 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setPictureAnchor( QgsComposerItem::UpperLeft );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
 }
 

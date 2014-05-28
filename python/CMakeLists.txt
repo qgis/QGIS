@@ -1,13 +1,4 @@
-SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
-
-ADD_SUBDIRECTORY(plugins)
-ADD_SUBDIRECTORY(qsci_apis)
-ADD_SUBDIRECTORY(console)
-ADD_SUBDIRECTORY(pyplugin_installer)
-
-IF (WITH_PYSPATIALITE)
-  ADD_SUBDIRECTORY(pyspatialite)
-ENDIF (WITH_PYSPATIALITE)
+SET(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(
@@ -20,6 +11,54 @@ SET (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 FILE (MAKE_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
+
+# Python plugins and support packages can be staged to PYTHON_OUTPUT_DIRECTORY
+# so plugins will function when app is run from build directory
+
+# When staging all plugins, use the following make targets:
+#   staged-plugins - stage plugins (usually after repo pull/build and project make)
+#   staged-plugins-pyc - stage and byte-compile all
+#   clean-staged-plugins - removes the staged plugins' directories
+#
+# NOTE: regular project 'make install' is unaffected
+
+# Other target dependenciess will be added, per staged resource
+ADD_CUSTOM_TARGET(staged-plugins)
+
+# Plugins can also be staged with CMake option at build time
+IF(WITH_STAGED_PLUGINS)
+  ADD_CUSTOM_TARGET(staged-plugins-on-build ALL DEPENDS staged-plugins)
+ENDIF(WITH_STAGED_PLUGINS)
+
+# Non-default/non-option-controlled target to stage and compile plugins and extras
+ADD_CUSTOM_TARGET(staged-plugins-pyc DEPENDS staged-plugins
+  COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}"
+  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+  COMMENT "Byte-compiling build output/python directory..."
+)
+
+# Other custom commands will be added, per staged resource
+ADD_CUSTOM_TARGET(clean-staged-plugins
+  COMMAND ${CMAKE_COMMAND} -E remove_directory "${PYTHON_OUTPUT_DIRECTORY}/plugins"
+)
+
+# Macro to byte-compile a target's staged Python resource(s)
+MACRO(PY_COMPILE TARGET_NAME RESOURCE_PATHS)
+  IF(WITH_PY_COMPILE)
+    ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME}
+      POST_BUILD
+      COMMAND ${PYTHON_EXECUTABLE} -m compileall -q ${RESOURCE_PATHS}
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+      COMMENT "Byte-compiling staged resource..."
+    )
+  ENDIF(WITH_PY_COMPILE)
+ENDMACRO(PY_COMPILE)
+
+ADD_SUBDIRECTORY(plugins)
+ADD_SUBDIRECTORY(qsci_apis)
+ADD_SUBDIRECTORY(console)
+ADD_SUBDIRECTORY(pyplugin_installer)
+ADD_SUBDIRECTORY(ext-libs)
 
 INCLUDE_DIRECTORIES(
   ${PYTHON_INCLUDE_PATH}
@@ -47,6 +86,7 @@ INCLUDE_DIRECTORIES(
   ../src/gui/attributetable
   ../src/gui/editorwidgets
   ../src/gui/editorwidgets/core
+  ../src/gui/layertree
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
@@ -88,7 +128,7 @@ ENDIF(PYQT4_VERSION_NUM LESS 264196)
 FILE(GLOB_RECURSE sip_files_core core/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
-ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
+ADD_SIP_PYTHON_MODULE(qgis._core core/core.sip qgis_core)
 
 # additional gui includes
 INCLUDE_DIRECTORIES(
@@ -109,7 +149,7 @@ IF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   ADD_DEFINITIONS(-Dprotected=public)
 ENDIF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
 
-ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
+ADD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip qgis_core qgis_gui)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(
@@ -132,13 +172,13 @@ FILE(GLOB sip_files_analysis
 )
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
-ADD_SIP_PYTHON_MODULE(qgis.analysis analysis/analysis.sip qgis_core qgis_analysis)
+ADD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip qgis_core qgis_analysis)
 
 # network-analysis module
 FILE(GLOB_RECURSE sip_files_network_analysis analysis/network/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_network_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.networkanalysis.api)
-ADD_SIP_PYTHON_MODULE(qgis.networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
+ADD_SIP_PYTHON_MODULE(qgis._networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
 
 SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
@@ -147,7 +187,7 @@ IF(WITH_QSCIAPI)
   SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
 
   ADD_CUSTOM_TARGET(qsci-api ALL
-    DEPENDS python_module_qgis_gui python_module_qgis_core python_module_qgis_analysis python_module_qgis_networkanalysis)
+    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis python_module_qgis__networkanalysis)
 
   # run update/concatenate command
   ADD_CUSTOM_COMMAND(TARGET qsci-api
@@ -175,6 +215,10 @@ IF(WITH_QSCIAPI)
     COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 ENDIF(WITH_QSCIAPI)
 
+IF(WITH_CUSTOM_WIDGETS)
+  INSTALL(FILES custom_widgets/qgis_customwidgets.py DESTINATION "${PYUIC_WIDGET_PLUGIN_DIRECTORY}")
+ENDIF(WITH_CUSTOM_WIDGETS)
+
 # Plugin utilities files to copy to staging or install
 SET(PY_FILES
   __init__.py
@@ -192,16 +236,22 @@ FOREACH(pyfile ${PY_FILES})
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${pyfile}
   )
+  PY_COMPILE(pyutils "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${pyfile}")
 ENDFOREACH(pyfile)
 
-# Byte-compile staged PyQGIS utilities
-IF(WITH_PY_COMPILE)
-  ADD_CUSTOM_TARGET(pycompile-pyutils ALL
-    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/qgis"
-    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/console"
-    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/pyplugin_installer"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    COMMENT "Byte-compiling staged PyQGIS utility modules..."
-    DEPENDS pyutils
-  )
-ENDIF(WITH_PY_COMPILE)
+FOREACH(module core gui analysis networkanalysis)
+  ADD_CUSTOM_TARGET(py${module} ALL)
+  ADD_DEPENDENCIES(py${module} python_module_qgis__${module})
+  FILE(GLOB_RECURSE PY_FILES "${module}/*.py")
+  INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
+  FOREACH(pyfile ${PY_FILES})
+    ADD_CUSTOM_COMMAND(TARGET py${module}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
+      COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      DEPENDS ${PY_FILES}
+    )
+  ENDFOREACH(pyfile)
+  PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
+ENDFOREACH(module)

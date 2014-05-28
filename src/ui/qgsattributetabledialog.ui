@@ -17,6 +17,9 @@
    <property name="margin">
     <number>0</number>
    </property>
+   <property name="spacing">
+    <number>3</number>
+   </property>
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="leftMargin">
@@ -422,14 +425,14 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="7" column="0">
     <widget class="QgsDualView" name="mMainView">
      <property name="currentIndex">
       <number>-1</number>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="9" column="0">
     <layout class="QHBoxLayout">
      <property name="leftMargin">
       <number>3</number>
@@ -510,7 +513,7 @@
           <bool>true</bool>
          </property>
          <attribute name="buttonGroup">
-          <string notr="true">mMainViewButtonGroup</string>
+          <string>mMainViewButtonGroup</string>
          </attribute>
         </widget>
        </item>
@@ -530,13 +533,65 @@
           <bool>true</bool>
          </property>
          <attribute name="buttonGroup">
-          <string notr="true">mMainViewButtonGroup</string>
+          <string>mMainViewButtonGroup</string>
          </attribute>
         </widget>
        </item>
       </layout>
      </item>
     </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QFrame" name="mUpdateExpressionBox">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QComboBox" name="mFieldCombo"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>=</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mOpenExpressionWidget">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="mUpdateExpressionText">
+        <property name="placeholderText">
+         <string>[update field expression]</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mRunFieldCalc">
+        <property name="text">
+         <string>Update All</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
   <action name="mActionAdvancedFilter">

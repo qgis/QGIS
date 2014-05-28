@@ -3981,39 +3981,33 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
 
   for ( QgsGeometryMap::iterator iter = geometry_map.begin(); iter != geometry_map.end(); ++iter )
   {
-    // looping on each feature to change
-    if ( iter->asWkb() )
+    // resetting Prepared Statement and bindings
+    sqlite3_reset( stmt );
+    sqlite3_clear_bindings( stmt );
+
+    // binding GEOMETRY to Prepared Statement
+    unsigned char *wkb = NULL;
+    size_t wkb_size;
+    convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size,
+                        nDims );
+    if ( !wkb )
+      sqlite3_bind_null( stmt, 1 );
+    else
+      sqlite3_bind_blob( stmt, 1, wkb, wkb_size, free );
+    sqlite3_bind_int64( stmt, 2, FID_TO_NUMBER( iter.key() ) );
+
+    // performing actual row update
+    ret = sqlite3_step( stmt );
+    if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
+      ;
+    else
     {
-
-      // resetting Prepared Statement and bindings
-      sqlite3_reset( stmt );
-      sqlite3_clear_bindings( stmt );
-
-      // binding GEOMETRY to Prepared Statement
-      unsigned char *wkb = NULL;
-      size_t wkb_size;
-      convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size,
-                          nDims );
-      if ( !wkb )
-        sqlite3_bind_null( stmt, 1 );
-      else
-        sqlite3_bind_blob( stmt, 1, wkb, wkb_size, free );
-      sqlite3_bind_int64( stmt, 2, FID_TO_NUMBER( iter.key() ) );
-
-      // performing actual row update
-      ret = sqlite3_step( stmt );
-      if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
-        ;
-      else
-      {
-        // some unexpected error occurred
-        const char *err = sqlite3_errmsg( sqliteHandle );
-        int len = strlen( err );
-        errMsg = ( char * ) sqlite3_malloc( len + 1 );
-        strcpy( errMsg, err );
-        goto abort;
-      }
-
+      // some unexpected error occurred
+      const char *err = sqlite3_errmsg( sqliteHandle );
+      int len = strlen( err );
+      errMsg = ( char * ) sqlite3_malloc( len + 1 );
+      strcpy( errMsg, err );
+      goto abort;
     }
   }
   sqlite3_finalize( stmt );

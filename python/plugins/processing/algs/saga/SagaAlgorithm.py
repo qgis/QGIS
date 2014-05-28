@@ -63,39 +63,21 @@ class SagaAlgorithm(GeoAlgorithm):
     OUTPUT_EXTENT = 'OUTPUT_EXTENT'
 
     def __init__(self, descriptionfile):
-        # True if it should resample
-        self.resample = True
-
-        # In case several non-matching raster layers are used as input
         GeoAlgorithm.__init__(self)
+        self.hardcodedStrings = []
+        self.allowUnmatchingGridExtents = False
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
-        if self.resample:
-            # Reconsider resampling policy now that we know the input
-            # parameters
-            self.resample = self.setResamplingPolicy()
 
     def getCopy(self):
         newone = SagaAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone
 
-    def setResamplingPolicy(self):
-        count = 0
-        for param in self.parameters:
-            if isinstance(param, ParameterRaster):
-                count += 1
-            if isinstance(param, ParameterMultipleInput):
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    return True
-
-        return count > 1
-
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
 
     def defineCharacteristicsFromFile(self):
-        self.hardcodedStrings = []
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
         self.name = line
@@ -116,8 +98,8 @@ class SagaAlgorithm(GeoAlgorithm):
                 self.hardcodedStrings.append(line[len('Harcoded|') + 1:])
             elif line.startswith('Parameter'):
                 self.addParameter(ParameterFactory.getFromString(line))
-            elif line.startswith('DontResample'):
-                self.resample = False
+            elif line.startswith('AllowUnmatching'):
+                self.allowUnmatchingGridExtents = True
             elif line.startswith('Extent'):
                 # An extent parameter that wraps 4 SAGA numerical parameters
                 self.extentParamNames = line[6:].strip().split(' ')
@@ -128,71 +110,6 @@ class SagaAlgorithm(GeoAlgorithm):
             line = lines.readline().strip('\n').strip()
         lines.close()
 
-    def calculateResamplingExtent(self):
-        """This method calculates the resampling extent, but it might
-        set self.resample to False if, with the current layers, there
-        is no need to resample.
-        """
-
-        auto = ProcessingConfig.getSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
-        if auto:
-            first = True
-            self.inputExtentsCount = 0
-            for param in self.parameters:
-                if param.value:
-                    if isinstance(param, ParameterRaster):
-                        if isinstance(param.value, QgsRasterLayer):
-                            layer = param.value
-                        else:
-                            layer = dataobjects.getObjectFromUri(param.value)
-                        self.addToResamplingExtent(layer, first)
-                        first = False
-                    if isinstance(param, ParameterMultipleInput):
-                        if param.datatype \
-                            == ParameterMultipleInput.TYPE_RASTER:
-                            layers = param.value.split(';')
-                            for layername in layers:
-                                layer = dataobjects.getObjectFromUri(layername)
-                                self.addToResamplingExtent(layer, first)
-                                first = False
-            if self.inputExtentsCount < 2:
-                self.resample = False
-        else:
-            self.xmin = ProcessingConfig.getSetting(
-                    SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
-            self.xmax = ProcessingConfig.getSetting(
-                    SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
-            self.ymin = ProcessingConfig.getSetting(
-                    SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
-            self.ymax = ProcessingConfig.getSetting(
-                    SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
-            self.cellsize = ProcessingConfig.getSetting(
-                    SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
-
-    def addToResamplingExtent(self, layer, first):
-        if layer is None:
-            return
-        if first:
-            self.inputExtentsCount = 1
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-            self.cellsize = (layer.extent().xMaximum()
-                             - layer.extent().xMinimum()) / layer.width()
-        else:
-            cellsize = (layer.extent().xMaximum() -
-                        layer.extent().xMinimum()) / layer.width()
-            if self.xmin != layer.extent().xMinimum() or self.xmax \
-                != layer.extent().xMaximum() or self.ymin \
-                != layer.extent().yMinimum() or self.ymax \
-                != layer.extent().yMaximum() or self.cellsize != cellsize:
-                self.xmin = min(self.xmin, layer.extent().xMinimum())
-                self.xmax = max(self.xmax, layer.extent().xMaximum())
-                self.ymin = min(self.ymin, layer.extent().yMinimum())
-                self.ymax = max(self.ymax, layer.extent().yMaximum())
-                self.cellsize = min(self.cellsize, cellsize)
-                self.inputExtentsCount += 1
 
     def processAlgorithm(self, progress):
         if isWindows():
@@ -208,8 +125,6 @@ class SagaAlgorithm(GeoAlgorithm):
 
         # 1: Export rasters to sgrd and vectors to shp
         # Tables must be in dbf format. We check that.
-        if self.resample:
-            self.calculateResamplingExtent()
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value is None:
@@ -219,8 +134,6 @@ class SagaAlgorithm(GeoAlgorithm):
                     exportCommand = self.exportRasterLayer(value)
                     if exportCommand is not None:
                         commands.append(exportCommand)
-                if self.resample:
-                    commands.append(self.resampleRasterLayer(value))
             if isinstance(param, ParameterVector):
                 if param.value is None:
                     continue
@@ -253,9 +166,6 @@ class SagaAlgorithm(GeoAlgorithm):
                             exportCommand = self.exportRasterLayer(layerfile)
                             if exportCommand is not None:
                                 commands.append(exportCommand)
-                        if self.resample:
-                            commands.append(
-                                    self.resampleRasterLayer(layerfile))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
@@ -422,35 +332,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 break
         return cellsize
 
-    def resampleRasterLayer(self, layer):
-        """This is supposed to be run after having exported all raster
-        layers.
-        """
-
-        if layer in self.exportedLayers.keys():
-            inputFilename = self.exportedLayers[layer]
-        else:
-            inputFilename = layer
-        destFilename = getTempFilename('sgrd')
-        self.exportedLayers[layer] = destFilename
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
-        if isWindows() or isMac() or not saga208:
-            s = 'grid_tools "Resampling" -INPUT "' + inputFilename \
-                + '" -TARGET 0 -SCALE_UP_METHOD 0 -SCALE_DOWN_METHOD 0 -USER_XMIN ' \
-                + str(self.xmin) + ' -USER_XMAX ' + str(self.xmax) \
-                + ' -USER_YMIN ' + str(self.ymin) + ' -USER_YMAX ' \
-                + str(self.ymax) + ' -USER_SIZE ' + str(self.cellsize) \
-                + ' -USER_GRID "' + destFilename + '"'
-        else:
-            s = 'libgrid_tools "Resampling" -INPUT "' + inputFilename \
-                + '" -TARGET 0 -SCALE_UP_METHOD 0 -SCALE_DOWN_METHOD 0 -USER_XMIN ' \
-                + str(self.xmin) + ' -USER_XMAX ' + str(self.xmax) \
-                + ' -USER_YMIN ' + str(self.ymin) + ' -USER_YMAX ' \
-                + str(self.ymax) + ' -USER_SIZE ' + str(self.cellsize) \
-                + ' -USER_GRID "' + destFilename + '"'
-        return s
 
     def exportRasterLayer(self, source):
+        global sessionExportedLayers
         if source in sessionExportedLayers:
             self.exportedLayers[source] = sessionExportedLayers[source]
             return None
@@ -485,22 +369,33 @@ class SagaAlgorithm(GeoAlgorithm):
             html = '<p>This algorithm requires SAGA to be run.Unfortunately, \
                    it seems that SAGA is not installed in your system, or it \
                    is not correctly configured to be used from QGIS</p>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with QGIS</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">\
+                    Click here</a> to know more about how to install and configure SAGA to be used with QGIS</p>'
             return html
 
     def checkParameterValuesBeforeExecuting(self):
-        """We check that there are no multiband layers, which are not
-        supported by SAGA.
         """
-
+        We check that there are no multiband layers, which are not
+        supported by SAGA, and that raster layers have the same grid extent
+        """
+        extent = None
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
-                value = param.value
-                layer = dataobjects.getObjectFromUri(value)
-                if layer is not None and layer.bandCount() > 1:
+                layer = dataobjects.getObjectFromUri(param.value)
+                if layer is None:
+                    continue
+                if layer.bandCount() > 1:
                     return 'Input layer ' + str(layer.name()) \
                         + ' has more than one band.\n' \
                         + 'Multiband layers are not supported by SAGA'
+                if extent is None:
+                    extent = (layer.extent(), layer.height(), layer.width())
+                else:
+                    extent2 = (layer.extent(), layer.height(), layer.width())
+                    if extent != extent2:
+                        return "Input layers do not have the same grid extent."
+
+
 
     def help(self):
         name = self.cmdname.lower()

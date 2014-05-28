@@ -97,6 +97,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mAttributesToFetch.append( i );
     }
   }
+
   // get fid col if not yet required
   if ( mFidCol == -1 && !mSource->mFidColName.isEmpty() )
   {
@@ -107,7 +108,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     ++fieldCount;
   }
   // get geometry col
-  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !mSource->mGeometryColName.isEmpty() )
+  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && mSource->isSpatial() )
   {
     if ( fieldCount != 0 )
       mStatement += ",";
@@ -124,7 +125,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( request.filterType() & QgsFeatureRequest::FilterRect )
+  if ( request.filterType() & QgsFeatureRequest::FilterRect && isSpatial() )
   {
     // polygons should be CCW for SqlGeography
     QString r;
@@ -162,6 +163,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += " and (" + mSource->mSqlWhereClause + ")";
   }
 
+//  QgsDebugMsg( mStatement );
   if ( fieldCount == 0 )
   {
     QgsDebugMsg( "QgsMssqlProvider::select no fields have been requested" );

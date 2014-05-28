@@ -130,4 +130,3 @@ class QgsGraph
      */
     int findVertex( const QgsPoint& pt ) const;
 };
-

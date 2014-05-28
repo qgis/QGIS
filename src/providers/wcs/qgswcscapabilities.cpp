@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include <typeinfo>
 
-#define WCS_THRESHOLD 200  // time to wait for an answer without emitting dataChanged() 
+#define WCS_THRESHOLD 200  // time to wait for an answer without emitting dataChanged()
 #include "qgslogger.h"
 #include "qgswcscapabilities.h"
 #include "qgsowsconnection.h"

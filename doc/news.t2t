@@ -61,7 +61,7 @@ This is the minor release sports a number of great new features:
 - QGIS Server can now deliver Web Coverage Service (WCS) maps.
 - Gradients can now be used for polygon fills.
 - Classes in paletted rasters can now be labelled.
-- Colour ramps can now be inverted.
+- Color ramps can now be inverted.
 - Rules in the rule based renderer can now be copied and pasted.
 - Support for on-the-fly feature generalisation has been added.
 - For marker layers you can now define the anchor points / origin of the marker.
@@ -163,7 +163,7 @@ key new features.
       Save As...' to save any raster layer as a new layer. In the process you
       can clip, resample, and reproject the layer to a new Coordinate Reference
       System. You can also save a raster layer as a rendered image so if you for
-      example have single band raster that you have applied a colour palette to,
+      example have single band raster that you have applied a color palette to,
       you can save the rendered layer out to a georeferenced RGB layer.
 - There are many, many more new features  in QGIS 2.0 - we invite
       you to explore the software and discover them all!
@@ -188,8 +188,8 @@ key new features.
 - GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
 - Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
 - Offset Curves - a new digitising tool for creating offset curves was added.
-- Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking coloured relief maps.
-- Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows to set all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
+- Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking colored relief maps.
+- Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows setting all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
 - New scale selector with predefined scales
 - Option to add layers to selected or active group
 - Pan To Selected tool

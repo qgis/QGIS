@@ -239,6 +239,10 @@ class QgsWMSServer: public QgsOWSServer
 
     bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
 
+    // speficy if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
+    bool mDrawLegendLayerLabel;
+    bool mDrawLegendItemLabel;
+
     QDomElement createFeatureGML(
       QgsFeature* feat,
       QgsVectorLayer* layer,
@@ -250,6 +254,7 @@ class QgsWMSServer: public QgsOWSServer
 
     /**Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );
+    static QString relationValue( const QString& attributeVal, QgsVectorLayer* layer, const QString& key, const QString& value );
 };
 
 #endif

@@ -251,13 +251,14 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             i = 1
             if not self.inputFolded:
                 for param in self.element.parameters:
-                    text = self.getAdjustedText(param.description)
-                    h = -(fm.height() * 1.2) * (i + 1)
-                    h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-                    pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                            + 33, h)
-                    painter.drawText(pt, text)
-                    i += 1
+                    if not param.hidden:
+                        text = self.getAdjustedText(param.description)
+                        h = -(fm.height() * 1.2) * (i + 1)
+                        h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
+                        pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
+                                + 33, h)
+                        painter.drawText(pt, text)
+                        i += 1
             i = 1
             h = fm.height() * 1.2
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
@@ -265,13 +266,14 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             painter.drawText(pt, 'Out')
             if not self.outputFolded:
                 for out in self.element.outputs:
-                    text = self.getAdjustedText(out.description)
-                    h = fm.height() * 1.2 * (i + 1)
-                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-                    pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                            + 33, h)
-                    painter.drawText(pt, text)
-                    i += 1
+                    if not out.hidden:
+                        text = self.getAdjustedText(out.description)
+                        h = fm.height() * 1.2 * (i + 1)
+                        h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+                        pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
+                                + 33, h)
+                        painter.drawText(pt, text)
+                        i += 1
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
                                self.pixmap)
@@ -295,7 +297,6 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
     def getLinkPointForOutput(self, outputIndex):
         if isinstance(self.element, GeoAlgorithm):
-            numParams = 0
             outputIndex = (outputIndex if not self.outputFolded else -1)
             text = self.getAdjustedText(
                     self.element.outputs[outputIndex].description)

@@ -57,7 +57,7 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
     //! returns if the items can be checked or not
-    bool itemsCheckable() {return mItemCheckable;}
+    bool itemsCheckable() { return mItemCheckable; }
 
     /**
      * @brief indexFromLayer returns the model index for a given layer

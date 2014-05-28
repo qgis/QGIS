@@ -6,7 +6,7 @@
 
 class QgsVectorLayer;
 
-class QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddDlgBase
+class GUI_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddDlgBase
 {
     Q_OBJECT
 

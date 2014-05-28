@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET (SPATIALQUERY_SRCS 
+SET (SPATIALQUERY_SRCS
      qgsspatialqueryplugin.cpp
      qgsspatialquerydialog.cpp
      qgsspatialquery.cpp
@@ -11,7 +11,7 @@ SET (SPATIALQUERY_SRCS
      qgsmngprogressbar.cpp
 )
 
-SET (SPATIALQUERY_MOC_HDRS 
+SET (SPATIALQUERY_MOC_HDRS
      qgsspatialqueryplugin.h
      qgsspatialquerydialog.h
 )

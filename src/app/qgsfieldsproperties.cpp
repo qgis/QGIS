@@ -39,7 +39,8 @@
 #include <QFileDialog>
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
-    : QWidget( parent ), mLayer( layer )
+    : QWidget( parent )
+    , mLayer( layer )
 {
   if ( !layer )
     return;
@@ -151,7 +152,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       break;
 
     case QgsAttributeEditorElement::AeTypeRelation:
-      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() ) );
+      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() ) );
       break;
 
     case QgsAttributeEditorElement::AeTypeContainer:
@@ -205,7 +206,7 @@ void QgsFieldsProperties::loadRows()
   connect( mFieldsList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
 }
 
-void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
+void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
 {
   QTableWidgetItem* dataItem = new QTableWidgetItem();
   dataItem->setData( Qt::DisplayRole, idx );
@@ -225,20 +226,12 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
 
   FieldConfig cfg( mLayer, idx );
   QPushButton *pb;
-  if ( cfg.mEditType == QgsVectorLayer::EditorWidgetV2 )
-  {
-    pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetV2Type ) );
-    pb->setProperty( "EditWidgetV2", cfg.mEditType );
-  }
-  else
-  {
-    pb = new QPushButton( editTypeButtonText( cfg.mEditType ) );
-  }
-
-  mFieldsList->setCellWidget( row, attrEditTypeCol, pb );
-  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
-
+  pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetV2Type ) );
   cfg.mButton = pb;
+  mFieldsList->setCellWidget( row, attrEditTypeCol, pb );
+
+  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog() ) );
+
   setConfigForRow( row, cfg );
 
   //set the alias for the attribute
@@ -414,83 +407,22 @@ void QgsFieldsProperties::attributeTypeDialog()
   if ( index == -1 )
     return;
 
-  QgsAttributeTypeDialog attributeTypeDialog( mLayer );
 
-  attributeTypeDialog.setValueMap( cfg.mValueMap );
-  attributeTypeDialog.setRange( cfg.mRange );
-  attributeTypeDialog.setValueRelation( cfg.mValueRelationData );
+  QgsAttributeTypeDialog attributeTypeDialog( mLayer, index );
 
-  QPair<QString, QString> checkStates = cfg.mCheckedState;
-  attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
-
-  attributeTypeDialog.setDateFormat( cfg.mDateFormat );
-  attributeTypeDialog.setWidgetSize( cfg.mWidgetSize );
-  attributeTypeDialog.setFieldEditable( cfg.mEditable );
-  attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
   attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
-
-  attributeTypeDialog.setIndex( index, cfg.mEditType );
-  attributeTypeDialog.setFieldEditableEnabled( cfg.mEditableEnabled );
+  attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
 
   if ( !attributeTypeDialog.exec() )
     return;
 
-  cfg.mEditType = attributeTypeDialog.editType();
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
 
-  switch ( cfg.mEditType )
-  {
-    case QgsVectorLayer::ValueMap:
-      cfg.mValueMap = attributeTypeDialog.valueMap();
-      break;
-    case QgsVectorLayer::EditRange:
-    case QgsVectorLayer::SliderRange:
-    case QgsVectorLayer::DialRange:
-      cfg.mRange = attributeTypeDialog.rangeData();
-      break;
-    case QgsVectorLayer::CheckBox:
-      cfg.mCheckedState = attributeTypeDialog.checkedState();
-      break;
-    case QgsVectorLayer::ValueRelation:
-      cfg.mValueRelationData = attributeTypeDialog.valueRelationData();
-      break;
-    case QgsVectorLayer::Calendar:
-      cfg.mDateFormat = attributeTypeDialog.dateFormat();
-      break;
-    case QgsVectorLayer::Photo:
-    case QgsVectorLayer::WebView:
-      cfg.mWidgetSize = attributeTypeDialog.widgetSize();
-      break;
-    case QgsVectorLayer::LineEdit:
-    case QgsVectorLayer::TextEdit:
-    case QgsVectorLayer::UniqueValues:
-    case QgsVectorLayer::UniqueValuesEditable:
-    case QgsVectorLayer::Classification:
-    case QgsVectorLayer::FileName:
-    case QgsVectorLayer::Enumeration:
-    case QgsVectorLayer::Immutable:
-    case QgsVectorLayer::Hidden:
-    case QgsVectorLayer::UuidGenerator:
-    case QgsVectorLayer::Color:
-      break;
+  cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
+  cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetV2Config();
 
-    case QgsVectorLayer::EditorWidgetV2:
-      cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
-      cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetV2Config();
-      break;
-  }
-
-  if ( cfg.mEditType == QgsVectorLayer::EditorWidgetV2 )
-  {
-    pb->setText( attributeTypeDialog.editorWidgetV2Text() );
-    pb->setProperty( "EditWidgetV2", cfg.mEditType );
-  }
-  else
-  {
-    pb->setText( editTypeButtonText( cfg.mEditType ) );
-    pb->setProperty( "EditWidgetV2", QVariant() );
-  }
+  pb->setText( attributeTypeDialog.editorWidgetV2Text() );
 
   setConfigForRow( row, cfg );
 }
@@ -724,16 +656,6 @@ QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
   return editTypeMap[ type ];
 }
 
-QgsVectorLayer::EditType QgsFieldsProperties::editTypeFromButton( QPushButton* btn )
-{
-  QVariant editWidgetId = btn->property( "EditWidgetV2" );
-
-  if ( editWidgetId.isNull() )
-    return editTypeMap.key( btn->text() );
-  else
-    return QgsVectorLayer::EditorWidgetV2;
-}
-
 QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
 {
   QgsAttributeEditorElement *widgetDef = 0;
@@ -815,62 +737,8 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    QPushButton *pb = qobject_cast<QPushButton *>( mFieldsList->cellWidget( i, attrEditTypeCol ) );
-    if ( !pb )
-      continue;
-
-    mLayer->setEditType( idx, cfg.mEditType );
-
-    mLayer->setFieldEditable( idx, cfg.mEditable );
-    mLayer->setLabelOnTop( idx, cfg.mLabelOnTop );
-
-    switch ( cfg.mEditType )
-    {
-      case QgsVectorLayer::ValueMap:
-        mLayer->valueMap( idx ) = cfg.mValueMap;
-        break;
-
-      case QgsVectorLayer::EditRange:
-      case QgsVectorLayer::SliderRange:
-      case QgsVectorLayer::DialRange:
-        mLayer->range( idx ) = cfg.mRange;
-        break;
-
-      case QgsVectorLayer::CheckBox:
-        mLayer->setCheckedState( idx, cfg.mCheckedState.first, cfg.mCheckedState.second );
-        break;
-
-      case QgsVectorLayer::ValueRelation:
-        mLayer->valueRelation( idx ) = cfg.mValueRelationData;
-        break;
-
-      case QgsVectorLayer::Calendar:
-        mLayer->dateFormat( idx ) = cfg.mDateFormat;
-        break;
-
-      case QgsVectorLayer::Photo:
-      case QgsVectorLayer::WebView:
-        mLayer->widgetSize( idx ) = cfg.mWidgetSize;
-        break;
-
-      case QgsVectorLayer::LineEdit:
-      case QgsVectorLayer::UniqueValues:
-      case QgsVectorLayer::UniqueValuesEditable:
-      case QgsVectorLayer::Classification:
-      case QgsVectorLayer::FileName:
-      case QgsVectorLayer::Enumeration:
-      case QgsVectorLayer::Immutable:
-      case QgsVectorLayer::Hidden:
-      case QgsVectorLayer::TextEdit:
-      case QgsVectorLayer::UuidGenerator:
-      case QgsVectorLayer::Color:
-        break;
-
-      case QgsVectorLayer::EditorWidgetV2:
-        mLayer->setEditorWidgetV2( idx, cfg.mEditorWidgetV2Type );
-        mLayer->setEditorWidgetV2Config( idx, cfg.mEditorWidgetV2Config );
-        break;
-    }
+    mLayer->setEditorWidgetV2( idx, cfg.mEditorWidgetV2Type );
+    mLayer->setEditorWidgetV2Config( idx, cfg.mEditorWidgetV2Config );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -905,23 +773,14 @@ void QgsFieldsProperties::apply()
  */
 
 QgsFieldsProperties::FieldConfig::FieldConfig()
-    : mButton( NULL )
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
-    : mButton( NULL )
 {
   mEditable = layer->fieldEditable( idx );
   mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin;
   mLabelOnTop = layer->labelOnTop( idx );
-  mValueRelationData = layer->valueRelation( idx );
-  mValueMap = layer->valueMap( idx );
-  mRange = layer->range( idx );
-  mCheckedState = layer->checkedState( idx );
-  mEditType = layer->editType( idx );
-  mDateFormat = layer->dateFormat( idx );
-  mWidgetSize = layer->widgetSize( idx );
   mEditorWidgetV2Type = layer->editorWidgetV2( idx );
   mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );
 }

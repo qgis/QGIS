@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:strahlerorder', dem, strahler)
+	processing.runalg('saga:strahlerorder', dem, strahler)

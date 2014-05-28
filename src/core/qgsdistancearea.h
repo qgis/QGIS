@@ -65,7 +65,7 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceAuthId( QString authid );
 
     //! returns source spatial reference system
-    long sourceCrs() const { return mSourceRefSys; }
+    long sourceCrs() const { return mCoordTransform->sourceCrs().srsid(); }
     //! What sort of coordinate system is being used?
     bool geographic() const { return mCoordTransform->sourceCrs().geographicFlag(); }
 
@@ -111,8 +111,10 @@ class CORE_EXPORT QgsDistanceArea
 
   protected:
     //! measures line distance, line points are extracted from WKB
+    // @note available in python bindings
     const unsigned char* measureLine( const unsigned char* feature, double* area, bool hasZptr = false );
     //! measures polygon area and perimeter, vertices are extracted from WKB
+    // @note available in python bindings
     const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false );
 
     /**
@@ -154,9 +156,6 @@ class CORE_EXPORT QgsDistanceArea
     //! indicates whether we will transform coordinates
     bool mEllipsoidalMode;
 
-    //! id of the source spatial reference system
-    long mSourceRefSys;
-
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;
 
@@ -180,3 +179,4 @@ class CORE_EXPORT QgsDistanceArea
 };
 
 #endif
+

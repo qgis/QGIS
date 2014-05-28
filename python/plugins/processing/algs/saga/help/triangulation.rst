@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:triangulation', shapes, field, target, output_extent, user_size, user_grid)
+	processing.runalg('saga:triangulation', shapes, field, target, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

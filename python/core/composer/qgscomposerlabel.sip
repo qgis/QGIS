@@ -81,7 +81,7 @@ class QgsComposerLabel : QgsComposerItem
      * @deprecated Use setItemRotation( double rotation ) instead
      */
     virtual void setRotation( double r );
-  
+
     /* Sets rotation for the label */
     virtual void setItemRotation( double r );
 };

@@ -13,7 +13,8 @@ class QgsSymbolsListWidget : QWidget
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
-    void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
+    void symbolAddedToStyle( QString name, QgsSymbolV2* symbol );
+    void on_mSymbolUnitWidget_changed( );
     void on_mTransparencySlider_valueChanged( int value );
 
     void on_groupsCombo_currentIndexChanged( int index );

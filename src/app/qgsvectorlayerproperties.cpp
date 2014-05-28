@@ -33,7 +33,6 @@
 #include "qgslabeldialog.h"
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
-#include "qgslegenditem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -81,8 +80,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
-  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.svg" ) );
-  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.svg" ) );
+
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
@@ -360,7 +358,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
                                   "layer is shown here. To enter or modify the query, click on the Query Builder button" ) );
 
   //see if we are dealing with a pg layer here
-  grpSubset->setEnabled( true );
+  mSubsetGroupBox->setEnabled( true );
   txtSubsetSQL->setText( layer->subsetString() );
   // if the user is allowed to type an adhoc query, the app will crash if the query
   // is bad. For this reason, the sql box is disabled and the query must be built
@@ -386,16 +384,9 @@ void QgsVectorLayerProperties::syncToLayer( void )
   setDisplayField( layer-> displayField() );
 
   // set up the scale based layer visibility stuff....
-  chkUseScaleDependentRendering->setChecked( layer->hasScaleBasedVisibility() );
-  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
-  if ( projectScales )
-  {
-    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
-    cbMinimumScale->updateScales( scalesList );
-    cbMaximumScale->updateScales( scalesList );
-  }
-  cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
-  cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
+  mScaleRangeWidget->setScaleRange( 1.0 / layer->maximumScale(), 1.0 / layer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
+  mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
   // get simplify drawing configuration
   const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
@@ -491,7 +482,7 @@ void QgsVectorLayerProperties::apply()
   //
   // Set up sql subset query if applicable
   //
-  grpSubset->setEnabled( true );
+  mSubsetGroupBox->setEnabled( true );
 
   if ( txtSubsetSQL->toPlainText() != layer->subsetString() )
   {
@@ -501,9 +492,10 @@ void QgsVectorLayerProperties::apply()
   }
 
   // set up the scale based layer visibility stuff....
-  layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  layer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
-  layer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
+  layer->toggleScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
+  // caution: layer uses scale denoms, widget uses true scales
+  layer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
+  layer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );
 
   // provider-specific options
   if ( layer->dataProvider() )
@@ -580,7 +572,7 @@ void QgsVectorLayerProperties::apply()
   layer->setSimplifyMethod( simplifyMethod );
 
   // update symbology
-  emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
+  emit refreshLegend( layer->id() );
 
   layer->triggerRepaint();
   // notify the project we've made a change
@@ -1108,16 +1100,6 @@ void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 void QgsVectorLayerProperties::enableLabelOptions( bool theFlag )
 {
   labelOptionsFrame->setEnabled( theFlag );
-}
-
-void QgsVectorLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
-{
-  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
-}
-
-void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
-{
-  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked )

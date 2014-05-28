@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:multidirectionleefilter', input, noise_abs, noise_rel, weighted, method, result, stddev, dir)
+	processing.runalg('saga:multidirectionleefilter', input, noise_abs, noise_rel, weighted, method, result, stddev, dir)
 
 	Available options for selection parameters:
 

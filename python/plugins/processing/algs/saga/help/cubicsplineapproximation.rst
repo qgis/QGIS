@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:cubicsplineapproximation', shapes, field, target, npmin, npmax, nppc, k, output_extent, user_size, user_grid)
+	processing.runalg('saga:cubicsplineapproximation', shapes, field, target, npmin, npmax, nppc, k, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

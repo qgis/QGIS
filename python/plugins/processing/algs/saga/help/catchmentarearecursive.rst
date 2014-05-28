@@ -38,7 +38,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:catchmentarearecursive', elevation, sinkroute, weight, material, target, step, targets, method, convergence, carea, cheight, cslope, accu_tot, accu_left, accu_right, flowlen)
+	processing.runalg('saga:catchmentarearecursive', elevation, sinkroute, weight, material, target, step, targets, method, convergence, carea, cheight, cslope, accu_tot, accu_left, accu_right, flowlen)
 
 	Available options for selection parameters:
 

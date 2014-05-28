@@ -32,6 +32,8 @@ class QgisInterface : QObject
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
+    virtual QgsLayerTreeView* layerTreeView() = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
@@ -326,7 +328,7 @@ class QgisInterface : QObject
      * An item can be inserted before any existing action.
      */
 
-    //! Menus
+    // Menus
     virtual QMenu *fileMenu() = 0 /Deprecated/;
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;

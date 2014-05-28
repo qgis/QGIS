@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:histogramsurface', grid, method, hist)
+	processing.runalg('saga:histogramsurface', grid, method, hist)
 
 	Available options for selection parameters:
 

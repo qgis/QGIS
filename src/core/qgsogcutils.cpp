@@ -2103,7 +2103,7 @@ static bool isGeometryColumn( const QgsExpression::Node* node )
 static QgsGeometry* geometryFromConstExpr( const QgsExpression::Node* node )
 {
   // Right now we support only geomFromWKT(' ..... ')
-  // Ideally we should support any constant sub-expression (not dependant on feature's geometry or attributes)
+  // Ideally we should support any constant sub-expression (not dependent on feature's geometry or attributes)
 
   if ( node->nodeType() == QgsExpression::ntFunction )
   {

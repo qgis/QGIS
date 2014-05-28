@@ -84,7 +84,6 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     void onBeginInsertRows( const QModelIndex& parent, int first, int last );
     void onEndInsertRows( const QModelIndex& parent, int first, int last );
 
-
   private:
     QgsExpression* mExpression;
     QgsAttributeTableFilterModel* mFilterModel;

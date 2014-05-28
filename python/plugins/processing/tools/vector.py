@@ -324,3 +324,21 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
             raise RuntimeError('Layer invalid')
 
     return memLayer
+
+def checkMinDistance(point, index, distance, points):
+    """Check if distance from given point to all other points is greater
+    than given value.
+    """
+    if distance == 0:
+        return True
+
+    neighbors = index.nearestNeighbor(point, 1)
+    if len(neighbors) == 0:
+        return True
+
+    if neighbors[0] in points:
+        np = points[neighbors[0]]
+        if np.sqrDist(point) < (distance * distance):
+            return False
+
+    return True

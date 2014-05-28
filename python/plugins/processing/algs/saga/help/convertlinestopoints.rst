@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convertlinestopoints', lines, add, dist, points)
+	processing.runalg('saga:convertlinestopoints', lines, add, dist, points)

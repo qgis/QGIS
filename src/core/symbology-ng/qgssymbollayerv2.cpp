@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbollayerv2.cpp
-    ---------------------
-    begin                : November 2009
-    copyright            : (C) 2009 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+ qgssymbollayerv2.cpp
+ ---------------------
+ begin                : November 2009
+ copyright            : (C) 2009 by Martin Dobias
+ email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -226,20 +226,19 @@ void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context,
   stopRender( context );
 }
 
-void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
-{
-  mSizeUnit = unit;
-  mOffsetUnit = unit;
-}
-
 void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const
 {
-  markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY );
+  markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
+}
+
+void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
+{
+  markerOffset( context, width, height, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
 void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
     QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
-    double& offsetX, double& offsetY ) const
+    double& offsetX, double& offsetY, const QgsMapUnitScale& widthMapUnitScale, const QgsMapUnitScale& heightMapUnitScale ) const
 {
   offsetX = mOffset.x();
   offsetY = mOffset.y();
@@ -251,8 +250,8 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
     offsetY = offset.y();
   }
 
-  offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-  offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale );
+  offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale );
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
@@ -271,8 +270,8 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
     return;
   }
 
-  double anchorPointCorrectionX = width * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), widthUnit ) / 2.0;
-  double anchorPointCorrectionY = height * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), heightUnit ) / 2.0;
+  double anchorPointCorrectionX = width * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), widthUnit, widthMapUnitScale ) / 2.0;
+  double anchorPointCorrectionY = height * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), heightUnit, heightMapUnitScale ) / 2.0;
   if ( horizontalAnchorPoint == Left )
   {
     offsetX += anchorPointCorrectionX;
@@ -332,15 +331,56 @@ QgsMarkerSymbolLayerV2::VerticalAnchorPoint QgsMarkerSymbolLayerV2::decodeVertic
   }
 }
 
+void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mSizeUnit = unit;
+  mOffsetUnit = unit;
+}
+
 QgsSymbolV2::OutputUnit QgsMarkerSymbolLayerV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = mSizeUnit;
-  if ( mOffsetUnit != unit )
+  if ( mOffsetUnit != mSizeUnit )
   {
     return QgsSymbolV2::Mixed;
   }
-  return unit;
+  return mOffsetUnit;
 }
+
+void QgsMarkerSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale &scale )
+{
+  mSizeMapUnitScale = scale;
+  mOffsetMapUnitScale = scale;
+}
+
+QgsMapUnitScale QgsMarkerSymbolLayerV2::mapUnitScale() const
+{
+  if ( mSizeMapUnitScale == mOffsetMapUnitScale )
+  {
+    return mSizeMapUnitScale;
+  }
+  return QgsMapUnitScale();
+}
+
+void QgsLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mWidthUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsLineSymbolLayerV2::outputUnit() const
+{
+  return mWidthUnit;
+}
+
+void QgsLineSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale& scale )
+{
+  mWidthMapUnitScale = scale;
+}
+
+QgsMapUnitScale QgsLineSymbolLayerV2::mapUnitScale() const
+{
+  return mWidthMapUnitScale;
+}
+
 
 void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
 {
@@ -432,3 +472,5 @@ void QgsMarkerSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, Qgs
 
   writeSldMarker( doc, symbolizerElem, props );
 }
+
+

@@ -19,6 +19,7 @@
 #include "qgsattributeselectiondialog.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposerattributetable.h"
+#include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
@@ -111,21 +112,33 @@ void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
     return;
   }
 
-  QgsAttributeSelectionDialog d( mComposerTable->vectorLayer(), mComposerTable->displayAttributes(), mComposerTable->fieldAliasMap(), mComposerTable->sortAttributes(), 0 );
+  //make deep copy of current columns, so we can restore them in case of cancellation
+  QList<QgsComposerTableColumn*> currentColumns;
+  QList<QgsComposerTableColumn*>::const_iterator it = mComposerTable->columns()->constBegin();
+  for ( ; it != mComposerTable->columns()->constEnd() ; ++it )
+  {
+    QgsComposerTableColumn* copy = ( *it )->clone();
+    currentColumns.append( copy );
+  }
+
+  mComposerTable->beginCommand( tr( "Table attribute settings" ) );
+
+  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->vectorLayer(), 0 );
   if ( d.exec() == QDialog::Accepted )
   {
-    //change displayAttributes and aliases
-    mComposerTable->beginCommand( tr( "Table attribute settings" ) );
-
-    //call these methods with update=false to prevent multiple refreshing of table attributes
-    mComposerTable->setDisplayAttributes( d.enabledAttributes(), false );
-    mComposerTable->setFieldAliasMap( d.aliasMap(), false );
-    mComposerTable->setSortAttributes( d.attributeSorting(), false );
-    //finally, force a single refresh of the attributes
     mComposerTable->refreshAttributes();
-
     mComposerTable->update();
     mComposerTable->endCommand();
+
+    //clear currentColumns to free memory
+    qDeleteAll( currentColumns );
+    currentColumns.clear();
+  }
+  else
+  {
+    //undo changes
+    mComposerTable->setColumns( currentColumns );
+    mComposerTable->cancelCommand();
   }
 }
 
@@ -335,6 +348,9 @@ void QgsComposerTableWidget::updateGuiElements()
   mFeatureFilterCheckBox->setCheckState( mComposerTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
   mFeatureFilterEdit->setEnabled( mComposerTable->filterFeatures() );
   mFeatureFilterButton->setEnabled( mComposerTable->filterFeatures() );
+
+  mHeaderHAlignmentComboBox->setCurrentIndex(( int )mComposerTable->headerHAlignment() );
+
   blockAllSignals( false );
 }
 
@@ -350,6 +366,7 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
   mFeatureFilterEdit->blockSignals( b );
   mFeatureFilterCheckBox->blockSignals( b );
+  mHeaderHAlignmentComboBox->blockSignals( b );
 }
 
 void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )
@@ -434,6 +451,18 @@ void QgsComposerTableWidget::on_mFeatureFilterButton_clicked()
       mComposerTable->endCommand();
     }
   }
+}
+
+void QgsComposerTableWidget::on_mHeaderHAlignmentComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table header alignment changed" ) );
+  mComposerTable->setHeaderHAlignment(( QgsComposerTable::HeaderHAlignment )index );
+  mComposerTable->endCommand();
 }
 
 void QgsComposerTableWidget::changeLayer( QgsMapLayer *layer )

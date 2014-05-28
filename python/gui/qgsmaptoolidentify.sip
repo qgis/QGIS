@@ -77,8 +77,13 @@ class QgsMapToolIdentify : QgsMapTool
     @return a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
+  protected:
+    //! rubber bands for layer select mode
+    void deleteRubberBands();
+
   public slots:
     void formatChanged( QgsRasterLayer *layer );
+    void layerDestroyed();
 
   signals:
     void identifyProgress( int, int );

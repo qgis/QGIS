@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:changetimeformat', table, field, fmt_in, fmt_out, output)
+	processing.runalg('saga:changetimeformat', table, field, fmt_in, fmt_out, output)
 
 	Available options for selection parameters:
 

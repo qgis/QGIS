@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:converttabletopoints', table, x, y, points)
+	processing.runalg('saga:converttabletopoints', table, x, y, points)

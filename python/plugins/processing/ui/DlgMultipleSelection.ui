@@ -21,7 +21,7 @@
     <number>9</number>
    </property>
    <item>
-    <widget class="QListWidget" name="lstLayers">
+    <widget class="QListView" name="lstLayers">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
@@ -29,7 +29,7 @@
       <bool>true</bool>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+      <enum>QAbstractItemView::NoSelection</enum>
      </property>
     </widget>
    </item>

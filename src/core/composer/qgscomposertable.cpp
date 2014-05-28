@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgscomposertable.h"
-#include "qgslogger.h"
+#include "qgscomposertablecolumn.h"
 #include <QPainter>
 #include <QSettings>
+
 
 QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mLineTextDistance( 1.0 )
+    , mHeaderHAlignment( FollowColumn )
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
     , mGridColor( QColor( 0, 0, 0 ) )
@@ -39,12 +41,12 @@ QgsComposerTable::QgsComposerTable( QgsComposition* composition )
 
 QgsComposerTable::~QgsComposerTable()
 {
-
+  qDeleteAll( mColumns );
+  mColumns.clear();
 }
 
 void QgsComposerTable::refreshAttributes()
 {
-
   mMaxColumnWidthMap.clear();
   mAttributeMaps.clear();
 
@@ -83,37 +85,60 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double currentX = mGridStrokeWidth;
   double currentY;
 
-  QMap<int, QString> headerMap = headerLabels();
-  QMap<int, QString>::const_iterator columnIt = headerMap.constBegin();
+  QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
 
-  for ( ; columnIt != headerMap.constEnd(); ++columnIt )
+  int col = 0;
+  double cellHeaderHeight = fontAscentMillimeters( mHeaderFont ) + 2 * mLineTextDistance;
+  double cellBodyHeight = fontAscentMillimeters( mContentFont ) + 2 * mLineTextDistance;
+  QRectF cell;
+  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
     currentY = mGridStrokeWidth;
-    currentY += mLineTextDistance;
-    currentY += fontAscentMillimeters( mHeaderFont );
     currentX += mLineTextDistance;
-    drawText( painter, currentX, currentY, columnIt.value(), mHeaderFont );
 
-    currentY += mLineTextDistance;
+    cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellHeaderHeight );
+
+    //calculate alignment of header
+    Qt::AlignmentFlag headerAlign = Qt::AlignLeft;
+    switch ( mHeaderHAlignment )
+    {
+      case FollowColumn:
+        headerAlign = ( *columnIt )->hAlignment();
+        break;
+      case HeaderLeft:
+        headerAlign = Qt::AlignLeft;
+        break;
+      case HeaderCenter:
+        headerAlign = Qt::AlignHCenter;
+        break;
+      case HeaderRight:
+        headerAlign = Qt::AlignRight;
+        break;
+    }
+
+    drawText( painter, cell, ( *columnIt )->heading(), mHeaderFont, headerAlign, Qt::AlignVCenter, Qt::TextDontClip );
+
+    currentY += cellHeaderHeight;
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
     QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.begin();
     for ( ; attIt != mAttributeMaps.end(); ++attIt )
     {
-      currentY += fontAscentMillimeters( mContentFont );
-      currentY += mLineTextDistance;
+      cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellBodyHeight );
 
       const QgsAttributeMap &currentAttributeMap = *attIt;
-      QString str = currentAttributeMap[ columnIt.key()].toString();
-      drawText( painter, currentX, currentY, str, mContentFont );
-      currentY += mLineTextDistance;
+      QString str = currentAttributeMap[ col ].toString();
+      drawText( painter, cell, str, mContentFont, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
+
+      currentY += cellBodyHeight;
       currentY += mGridStrokeWidth;
     }
 
-    currentX += mMaxColumnWidthMap[columnIt.key()];
+    currentX += mMaxColumnWidthMap[ col ];
     currentX += mLineTextDistance;
     currentX += mGridStrokeWidth;
+    col++;
   }
 
   //and the borders
@@ -150,6 +175,12 @@ void QgsComposerTable::setHeaderFont( const QFont& f )
   adjustFrameToSize();
 }
 
+void QgsComposerTable::setHeaderHAlignment( const QgsComposerTable::HeaderHAlignment alignment )
+{
+  mHeaderHAlignment = alignment;
+  repaint();
+}
+
 void QgsComposerTable::setContentFont( const QFont& f )
 {
   mContentFont = f;
@@ -184,16 +215,52 @@ void QgsComposerTable::adjustFrameToSize()
   repaint();
 }
 
+QMap<int, QString> QgsComposerTable::headerLabels() const
+{
+  QMap<int, QString> headers;
+
+  QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
+  int col = 0;
+  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+  {
+    headers.insert( col, ( *columnIt )->heading() );
+    col++;
+  }
+  return headers;
+}
+
+void QgsComposerTable::setColumns( QList<QgsComposerTableColumn*> columns )
+{
+  //remove existing columns
+  qDeleteAll( mColumns );
+  mColumns.clear();
+
+  mColumns.append( columns );
+}
+
 bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
 {
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
+  elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
   elem.setAttribute( "contentFont", mContentFont.toString() );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColorRed", mGridColor.red() );
   elem.setAttribute( "gridColorGreen", mGridColor.green() );
   elem.setAttribute( "gridColorBlue", mGridColor.blue() );
   elem.setAttribute( "showGrid", mShowGrid );
+
+  //columns
+  QDomElement displayColumnsElem = doc.createElement( "displayColumns" );
+  QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
+  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+  {
+    QDomElement columnElem = doc.createElement( "column" );
+    ( *columnIt )->writeXML( columnElem, doc );
+    displayColumnsElem.appendChild( columnElem );
+  }
+  elem.appendChild( displayColumnsElem );
+
   return _writeXML( elem, doc );
 }
 
@@ -205,6 +272,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   }
 
   mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  mHeaderHAlignment = QgsComposerTable::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
   mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
   mLineTextDistance = itemElem.attribute( "lineTextDist", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
@@ -215,6 +283,23 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   int gridGreen = itemElem.attribute( "gridColorGreen", "0" ).toInt();
   int gridBlue = itemElem.attribute( "gridColorBlue", "0" ).toInt();
   mGridColor = QColor( gridRed, gridGreen, gridBlue );
+
+  //restore column specifications
+  qDeleteAll( mColumns );
+  mColumns.clear();
+  QDomNodeList columnsList = itemElem.elementsByTagName( "displayColumns" );
+  if ( columnsList.size() > 0 )
+  {
+    QDomElement columnsElem =  columnsList.at( 0 ).toElement();
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( "column" );
+    for ( int i = 0; i < columnEntryList.size(); ++i )
+    {
+      QDomElement columnElem = columnEntryList.at( i ).toElement();
+      QgsComposerTableColumn* column = new QgsComposerTableColumn;
+      column->readXML( columnElem );
+      mColumns.append( column );
+    }
+  }
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
@@ -229,11 +314,13 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
 bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const
 {
   maxWidthMap.clear();
-  QMap<int, QString> headerMap = headerLabels();
-  QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
-  for ( ; headerIt != headerMap.constEnd(); ++headerIt )
+  QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
+
+  int col = 0;
+  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    maxWidthMap.insert( headerIt.key(), textWidthMillimeters( mHeaderFont, headerIt.value() ) );
+    maxWidthMap.insert( col, textWidthMillimeters( mHeaderFont, ( *columnIt )->heading() ) );
+    col++;
   }
 
   //go through all the attributes and adapt the max width values
@@ -310,6 +397,3 @@ void QgsComposerTable::drawVerticalGridLines( QPainter* p, const QMap<int, doubl
     currentX += mGridStrokeWidth;
   }
 }
-
-
-

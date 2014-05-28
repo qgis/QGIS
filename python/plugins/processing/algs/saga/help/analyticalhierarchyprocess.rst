@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:analyticalhierarchyprocess', grids, table, output)
+	processing.runalg('saga:analyticalhierarchyprocess', grids, table, output)

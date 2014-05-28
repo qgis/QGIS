@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:orderedweightedaveragingowa', grids, weights, output)
+	processing.runalg('saga:orderedweightedaveragingowa', grids, weights, output)

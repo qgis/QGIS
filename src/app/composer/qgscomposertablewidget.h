@@ -54,6 +54,7 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void on_mFeatureFilterCheckBox_stateChanged( int state );
     void on_mFeatureFilterEdit_editingFinished();
     void on_mFeatureFilterButton_clicked();
+    void on_mHeaderHAlignmentComboBox_currentIndexChanged( int index );
     void changeLayer( QgsMapLayer* layer );
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/

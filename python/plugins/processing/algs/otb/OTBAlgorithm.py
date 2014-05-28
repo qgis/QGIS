@@ -227,7 +227,7 @@ class OTBAlgorithm(GeoAlgorithm):
                             else :
                                 indexSubdataset = -1
                         else :
-                            print "Error : no match of ", dataset, "$ in gdalinfo " + data
+                            #print "Error : no match of ", dataset, "$ in gdalinfo " + data
                             indexSubdataset = -1
 
 

@@ -218,17 +218,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
 
-    /** Returns the layer as a layer definition document
+    /** Returns the given layer as a layer definition document
         Layer definitions store the data source as well as styling and custom properties.
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    QDomDocument asLayerDefinition( );
+    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers );
 
     /** Creates a new layer from a layer defininition document
     */
-    static QgsMapLayer* fromLayerDefinition( QDomDocument& document );
-    static QgsMapLayer* fromLayerDefinitionFile( const QString qlrfile );
+    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
+    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
@@ -442,6 +442,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
     void blendModeChanged( const QPainter::CompositionMode &blendMode );
+
+    /** Signal emitted when renderer is changed */
+    void rendererChanged();
 
   protected:
     /** Set the extent */

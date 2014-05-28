@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:patternanalysis', input, winsize, maxnumclass, relative, diversity, dominance, fragmentation, ndc, cvn)
+	processing.runalg('saga:patternanalysis', input, winsize, maxnumclass, relative, diversity, dominance, fragmentation, ndc, cvn)
 
 	Available options for selection parameters:
 

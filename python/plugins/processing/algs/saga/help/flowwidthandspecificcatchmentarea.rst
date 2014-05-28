@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:flowwidthandspecificcatchmentarea', dem, tca, method, width, sca)
+	processing.runalg('saga:flowwidthandspecificcatchmentarea', dem, tca, method, width, sca)
 
 	Available options for selection parameters:
 

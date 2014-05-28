@@ -29,7 +29,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-from processing import interface
+from qgis.utils import iface
 from processing.tools import dataobjects
 
 from processing.ui.ui_DlgNumberInput import Ui_DlgNumberInput
@@ -99,7 +99,7 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
         canvasItem = QTreeWidgetItem()
         canvasItem.setText(0, self.tr('Values from QGIS map canvas'))
         self.treeValues.addTopLevelItem(canvasItem)
-        extent = interface.iface.mapCanvas().extent()
+        extent = iface.mapCanvas().extent()
         extentItem = QTreeWidgetItem()
         extentItem.setText(0, self.tr('Current extent'))
         extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
@@ -108,7 +108,7 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
         extentItem.addChild(TreeValueItem(self.tr('Max Y'), extent.yMaximum()))
         canvasItem.addChild(extentItem)
 
-        extent = interface.iface.mapCanvas().fullExtent()
+        extent = iface.mapCanvas().fullExtent()
         extentItem = QTreeWidgetItem()
         extentItem.setText(0,
                 self.tr('Full extent of all layers in map canvas'))

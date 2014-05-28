@@ -36,6 +36,7 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
     , mFeature( f )
     , mAction( action )
     , mIdx( defaultAttr )
+    , mFeatureSaved( false )
 {
 }
 
@@ -165,20 +166,16 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
       QgsDebugMsg( QString( "Using specified default %1 for %2" ).arg( defaultAttributes.value( idx ).toString() ).arg( idx ) );
       mFeature.setAttribute( idx, defaultAttributes.value( idx ) );
     }
-    else if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )
+    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
     {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-      mFeature.setAttribute( idx, mLastUsedValues[ mLayer ][idx] );
+      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+      mFeature.setAttribute( idx, sLastUsedValues[ mLayer ][idx] );
     }
     else
     {
       mFeature.setAttribute( idx, provider->defaultValue( idx ) );
     }
   }
-
-  bool res = false;
-
-  mLayer->beginEditCommand( text() );
 
   // show the dialog to enter attribute values
   bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
@@ -196,45 +193,54 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
   }
   if ( isDisabledAttributeValuesDlg )
   {
-    res = mLayer->addFeature( mFeature );
+    mLayer->beginEditCommand( text() );
+    mFeatureSaved = mLayer->addFeature( mFeature );
+
+    if ( mFeatureSaved )
+      mLayer->endEditCommand();
+    else
+      mLayer->destroyEditCommand();
   }
   else
   {
-    QgsAttributes origValues;
-    if ( reuseLastValues )
-      origValues = mFeature.attributes();
-
     QgsAttributeDialog *dialog = newDialog( false );
-    if ( dialog->exec() )
-    {
-      if ( reuseLastValues )
-      {
-        for ( int idx = 0; idx < fields.count(); ++idx )
-        {
-          const QgsAttributes &newValues = mFeature.attributes();
-          if ( origValues[idx] != newValues[idx] )
-          {
-            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-            mLastUsedValues[ mLayer ][idx] = newValues[idx];
-          }
-        }
-      }
+    dialog->setIsAddDialog( true );
+    dialog->setEditCommandMessage( text() );
 
-      res = mLayer->addFeature( mFeature );
-    }
-    else
-    {
-      QgsDebugMsg( "Adding feature to layer failed" );
-      res = false;
-    }
+    connect( dialog->attributeForm(), SIGNAL( featureSaved( QgsFeature ) ), this, SLOT( onFeatureSaved( QgsFeature ) ) );
+
+    dialog->exec();
   }
 
-  if ( res )
-    mLayer->endEditCommand();
-  else
-    mLayer->destroyEditCommand();
-
-  return res;
+  // Will be set in the onFeatureSaved SLOT
+  return mFeatureSaved;
 }
 
-QMap<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::mLastUsedValues;
+void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
+{
+  QgsAttributeForm* form = qobject_cast<QgsAttributeForm*>( sender() );
+  Q_ASSERT( form );
+
+  mFeatureSaved = true;
+
+  QSettings settings;
+  bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
+  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+
+  if ( reuseLastValues )
+  {
+    QgsFields fields = mLayer->pendingFields();
+    for ( int idx = 0; idx < fields.count(); ++idx )
+    {
+      const QgsAttributes &newValues = feature.attributes();
+      QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
+      if ( origValues[idx] != newValues[idx] )
+      {
+        QgsDebugMsg( QString( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+        sLastUsedValues[ mLayer ][idx] = newValues[idx];
+      }
+    }
+  }
+}
+
+QMap<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;

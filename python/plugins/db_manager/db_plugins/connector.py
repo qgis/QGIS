@@ -183,7 +183,7 @@ class DBConnector:
 		if hasattr(identifier, '__iter__'):
 			ids = list()
 			for i in identifier:
-				if i == None:
+				if i == None or i == "":
 					continue
 				ids.append( self.quoteId(i) )
 			return u'.'.join( ids )

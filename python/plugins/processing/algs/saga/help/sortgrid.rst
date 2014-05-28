@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:sortgrid', grid, down, output)
+	processing.runalg('saga:sortgrid', grid, down, output)

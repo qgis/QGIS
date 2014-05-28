@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convertpolygonstolines', polygons, lines)
+	processing.runalg('saga:convertpolygonstolines', polygons, lines)

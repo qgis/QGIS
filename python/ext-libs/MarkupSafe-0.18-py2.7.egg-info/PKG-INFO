@@ -1,0 +1,71 @@
+Metadata-Version: 1.1
+Name: MarkupSafe
+Version: 0.18
+Summary: Implements a XML/HTML/XHTML Markup safe string for Python
+Home-page: http://github.com/mitsuhiko/markupsafe
+Author: Armin Ronacher
+Author-email: armin.ronacher@active-4.com
+License: BSD
+Description: MarkupSafe
+        ==========
+        
+        Implements a unicode subclass that supports HTML strings:
+        
+        >>> from markupsafe import Markup, escape
+        >>> escape("<script>alert(document.cookie);</script>")
+        Markup(u'&lt;script&gt;alert(document.cookie);&lt;/script&gt;')
+        >>> tmpl = Markup("<em>%s</em>")
+        >>> tmpl % "Peter > Lustig"
+        Markup(u'<em>Peter &gt; Lustig</em>')
+        
+        If you want to make an object unicode that is not yet unicode
+        but don't want to lose the taint information, you can use the
+        `soft_unicode` function.  (On Python 3 you can also use `soft_str` which
+        is a different name for the same function).
+        
+        >>> from markupsafe import soft_unicode
+        >>> soft_unicode(42)
+        u'42'
+        >>> soft_unicode(Markup('foo'))
+        Markup(u'foo')
+        
+        Objects can customize their HTML markup equivalent by overriding
+        the `__html__` function:
+        
+        >>> class Foo(object):
+        ...  def __html__(self):
+        ...   return '<strong>Nice</strong>'
+        ...
+        >>> escape(Foo())
+        Markup(u'<strong>Nice</strong>')
+        >>> Markup(Foo())
+        Markup(u'<strong>Nice</strong>')
+        
+        Since MarkupSafe 0.10 there is now also a separate escape function
+        called `escape_silent` that returns an empty string for `None` for
+        consistency with other systems that return empty strings for `None`
+        when escaping (for instance Pylons' webhelpers).
+        
+        If you also want to use this for the escape method of the Markup
+        object, you can create your own subclass that does that::
+        
+            from markupsafe import Markup, escape_silent as escape
+        
+            class SilentMarkup(Markup):
+                __slots__ = ()
+        
+                @classmethod
+                def escape(cls, s):
+                    return cls(escape(s))
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Markup :: HTML

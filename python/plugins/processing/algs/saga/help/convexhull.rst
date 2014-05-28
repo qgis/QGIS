@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convexhull', shapes, polypoints, hulls, boxes)
+	processing.runalg('saga:convexhull', shapes, polypoints, hulls, boxes)
 
 	Available options for selection parameters:
 

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <stdexcept>
+#include <QtAlgorithms>
 
 #include "qgsatlascomposition.h"
 #include "qgsvectorlayer.h"
@@ -23,10 +24,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposershape.h"
-#include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mComposition( composition ),
@@ -107,53 +106,6 @@ void QgsAtlasComposition::setComposerMap( QgsComposerMap* map )
   map->setAtlasDriven( true );
 }
 
-bool QgsAtlasComposition::fixedScale() const
-{
-  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return false;
-  }
-
-  return map->atlasFixedScale();
-}
-
-void QgsAtlasComposition::setFixedScale( bool fixed )
-{
-  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasFixedScale( fixed );
-}
-
-float QgsAtlasComposition::margin() const
-{
-  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return 0;
-  }
-
-  return map->atlasMargin();
-}
-
-void QgsAtlasComposition::setMargin( float margin )
-{
-  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasMargin(( double ) margin );
-}
 
 int QgsAtlasComposition::sortKeyAttributeIndex() const
 {
@@ -313,13 +265,7 @@ void QgsAtlasComposition::endRender()
     return;
   }
 
-  // reset label expression contexts
-  QList<QgsComposerLabel*> labels;
-  mComposition->composerItems( labels );
-  for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
-  {
-    ( *lit )->setExpressionContext( 0, 0 );
-  }
+  emit featureChanged( 0 );
 
   updateAtlasMaps();
 
@@ -412,25 +358,6 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   evalFeatureFilename();
 
   emit featureChanged( &mCurrentFeature );
-
-  // TODO - move these updates to shape/page item
-
-  // update shapes (in case they use data defined symbology with atlas properties)
-  QList<QgsComposerShape*> shapes;
-  mComposition->composerItems( shapes );
-  for ( QList<QgsComposerShape*>::iterator lit = shapes.begin(); lit != shapes.end(); ++lit )
-  {
-    ( *lit )->update();
-  }
-
-  // update page background (in case it uses data defined symbology with atlas properties)
-  QList<QgsPaperItem*> pages;
-  mComposition->composerItems( pages );
-  for ( QList<QgsPaperItem*>::iterator pageIt = pages.begin(); pageIt != pages.end(); ++pageIt )
-  {
-    ( *pageIt )->update();
-  }
-
   emit statusMsgChanged( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
   //update composer maps
@@ -509,7 +436,22 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   QgsRectangle new_extent = mTransformedFeatureBounds;
   QgsRectangle mOrigExtent = map->extent();
 
-  if ( map->atlasFixedScale() )
+  //sanity check - only allow fixed scale mode for point layers
+  bool isPointLayer = false;
+  switch ( mCoverageLayer->wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      isPointLayer = true;
+      break;
+    default:
+      isPointLayer = false;
+      break;
+  }
+
+  if ( map->atlasScalingMode() == QgsComposerMap::Fixed  || isPointLayer  )
   {
     // only translate, keep the original scale (i.e. width x height)
 
@@ -522,7 +464,40 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
                                xx + mOrigExtent.width(),
                                yy + mOrigExtent.height() );
   }
-  else
+  else if ( map->atlasScalingMode() == QgsComposerMap::Predefined )
+  {
+    // choose one of the predefined scales
+    QgsScaleCalculator calc;
+    calc.setMapUnits( composition()->mapSettings().mapUnits() );
+    calc.setDpi( 25.4 );
+    double scale = calc.calculate( map->extent(), map->rect().width() );
+    QgsRectangle extent = map->extent();
+
+    double n_width = extent.width(), n_height = extent.height();
+    const QVector<double>& scales = mPredefinedScales;
+    for ( int i = 0; i < scales.size(); i++ )
+    {
+      double ratio = scales[i] / scale;
+      n_width = extent.width() * ratio;
+      n_height = extent.height() * ratio;
+      if (( n_width >= new_extent.width() ) && ( n_height >= new_extent.height() ) )
+      {
+        // this is the smallest extent that embeds the feature, stop here
+        break;
+      }
+    }
+
+    // compute new extent, centered on feature
+    double geom_center_x = ( xa1 + xa2 ) / 2.0;
+    double geom_center_y = ( ya1 + ya2 ) / 2.0;
+    double xx = geom_center_x - n_width / 2.0;
+    double yy = geom_center_y - n_height / 2.0;
+    new_extent = QgsRectangle( xx,
+                               yy,
+                               xx + n_width,
+                               yy + n_height );
+  }
+  else if ( map->atlasScalingMode() == QgsComposerMap::Auto )
   {
     // auto scale
 
@@ -648,7 +623,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   bool fixedScale = atlasElem.attribute( "fixedScale", "false" ) == "true" ? true : false;
   if ( composerMap && fixedScale )
   {
-    composerMap->setAtlasFixedScale( true );
+    composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
   }
 
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
@@ -745,4 +720,59 @@ void QgsAtlasComposition::evalFeatureFilename()
   }
 }
 
+void QgsAtlasComposition::setPredefinedScales( const QVector<double>& scales )
+{
+  mPredefinedScales = scales;
+  // make sure the list is sorted
+  qSort( mPredefinedScales.begin(), mPredefinedScales.end() );
+}
 
+Q_NOWARN_DEPRECATED_PUSH
+bool QgsAtlasComposition::fixedScale() const
+{
+  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return false;
+  }
+
+  return map->atlasFixedScale();
+}
+
+void QgsAtlasComposition::setFixedScale( bool fixed )
+{
+  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return;
+  }
+
+  map->setAtlasScalingMode( fixed ? QgsComposerMap::Fixed : QgsComposerMap::Auto );
+}
+
+float QgsAtlasComposition::margin() const
+{
+  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return 0;
+  }
+
+  return map->atlasMargin();
+}
+
+void QgsAtlasComposition::setMargin( float margin )
+{
+  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
+  QgsComposerMap * map = composerMap();
+  if ( !map )
+  {
+    return;
+  }
+
+  map->setAtlasMargin(( double ) margin );
+}
+Q_NOWARN_DEPRECATED_POP

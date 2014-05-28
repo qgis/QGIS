@@ -18,6 +18,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
 #include "qgsexpression.h"
+#include "qgsnetworkaccessmanager.h"
+
 #include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
@@ -54,10 +56,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
     setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
   }
 
-  //connect to atlas toggling on/off and coverage layer and feature changes
+  //connect to atlas feature changes
   //to update the expression context
-  connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( refreshExpressionContext() ) );
-  connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( refreshExpressionContext() ) );
   connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
 
 }
@@ -87,7 +87,8 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   {
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
 
-    QWebPage* webPage = new QWebPage();
+    QWebPage *webPage = new QWebPage();
+    webPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
     //Setup event loop and timeout for rendering html
     QEventLoop loop;
@@ -149,7 +150,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     //debug
     //painter->setPen( QColor( Qt::red ) );
     //painter->drawRect( painterRect );
-    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment );
+    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment, Qt::TextWordWrap );
   }
 
   painter->restore();
@@ -202,6 +203,9 @@ void QgsComposerLabel::refreshExpressionContext()
   if ( mComposition->atlasComposition().enabled() )
   {
     vl = mComposition->atlasComposition().coverageLayer();
+  }
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
     feature = mComposition->atlasComposition().currentFeature();
   }
 

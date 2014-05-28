@@ -20,7 +20,7 @@
 *                                                                         *
 ***************************************************************************
 
-When an OTB algorithms is run, this file allows to adapt user parameter to fit the otbapplication.
+When an OTB algorithms is run, this file allows adapting user parameter to fit the otbapplication.
 
 Most of the following functions are like follows :
     adaptNameOfTheOTBApplication(commands_list)
@@ -214,7 +214,7 @@ def adaptComputeConfusionMatrix(commands_list):
 
 def adaptRadiometricIndices(commands_list):
     """
-    Replace indice nickname by its corresponding entry in the following dictionnary :
+    Replace indice nickname by its corresponding entry in the following dictionary :
     indices = {"ndvi" : "Vegetation:NDVI", "tndvi" : "Vegetation:TNDVI",  "rvi" : "Vegetation:RVI",  "savi" : "Vegetation:SAVI",
            "tsavi" : "Vegetation:TSAVI", "msavi" : "Vegetation:MSAVI",  "msavi2" : "Vegetation:MSAVI2",  "gemi" : "Vegetation:GEMI",
            "ipvi" : "Vegetation:IPVI",

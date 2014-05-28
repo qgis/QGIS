@@ -2,7 +2,7 @@
                       qgsfeatureaction.h  -  description
                                ------------------
         begin                : 2010-09-20
-        copyright            : (C) 2010 by Jürgen E. Fischer
+        copyright            : (C) 2010 by JÃ¼rgen E. Fischer
         email                : jef at norbit dot de
  ***************************************************************************/
 
@@ -52,6 +52,9 @@ class APP_EXPORT QgsFeatureAction : public QAction
      */
     bool addFeature( const QgsAttributeMap& defaultAttributes = QgsAttributeMap() );
 
+  private slots:
+    void onFeatureSaved( const QgsFeature& feature );
+
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
 
@@ -60,7 +63,9 @@ class APP_EXPORT QgsFeatureAction : public QAction
     int mAction;
     int mIdx;
 
-    static QMap<QgsVectorLayer *, QgsAttributeMap> mLastUsedValues;
+    bool mFeatureSaved;
+
+    static QMap<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

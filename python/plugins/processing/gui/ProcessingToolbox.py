@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from processing import interface
+from qgis.utils import iface
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -189,7 +189,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             dlg = alg.getCustomParametersDialog()
             if not dlg:
                 dlg = ParametersDialog(alg)
-            canvas = interface.iface.mapCanvas()
+            canvas = iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
             dlg.exec_()

@@ -30,4 +30,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygonstoedgesandnodes', polygons, edges, nodes)
+	processing.runalg('saga:polygonstoedgesandnodes', polygons, edges, nodes)

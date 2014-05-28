@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:topographicwetnessindextwi', slope, area, trans, conv, method, twi)
+	processing.runalg('saga:topographicwetnessindextwi', slope, area, trans, conv, method, twi)
 
 	Available options for selection parameters:
 

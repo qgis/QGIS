@@ -39,4 +39,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygonshapeindices', shapes, index)
+	processing.runalg('saga:polygonshapeindices', shapes, index)

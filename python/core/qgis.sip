@@ -140,21 +140,34 @@ class QGis
       // These first two are useful for threads to alert their parent data providers
 
       //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = QgisEvent,
+      ProviderExtentCalcEvent,
 
       //! The row count has been calculated by a provider of a layer
       ProviderCountCalcEvent
     };
 
+    /** Old search radius in % of canvas width
+     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
     static const double DEFAULT_IDENTIFY_RADIUS;
 
+    /** Identify search radius in mm
+     *  @note added in 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
+    /** Default highlight color.  The transparency is expected to only be applied to polygon
+     *  fill. Lines and outlines are rendered opaque.
+     *  @note added in 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
+
+    /** Default highlight buffer in mm.
+     *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_BUFFER_MM;
+
+    /** Default highlight line/outline minimum width in mm.
+     *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 };
 

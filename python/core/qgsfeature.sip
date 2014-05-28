@@ -337,11 +337,15 @@ class QgsFeature
      *                        C++: Defaults to false
      *                        Python: Defaults to true
      *  @note added in 2.0
+     *
+     * TODO: QGIS3 - take reference, not pointer
      */
     void setFields( const QgsFields* fields, bool initAttributes = true );
 
-    /** Get associated field map. may be NULL
+    /** Get associated field map.
      *  @note added in 2.0
+     *
+     * TODO: QGIS 3 - return reference or value, not pointer
      */
     const QgsFields* fields() const;
 
