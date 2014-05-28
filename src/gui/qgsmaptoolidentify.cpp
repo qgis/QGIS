@@ -264,7 +264,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, QgsPoint point )
 {
-  if ( !layer )
+  if ( !layer || !layer->hasGeometryType() )
     return false;
 
   if ( layer->hasScaleBasedVisibility() &&
