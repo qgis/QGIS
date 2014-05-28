@@ -1741,6 +1741,11 @@ int QgsWMSProjectParser::nLayers() const
   return mProjectParser.numberOfLayers();
 }
 
+void QgsWMSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  mProjectParser.serviceCapabilities( parentElement, doc, "WMS", featureInfoFormatSIA2045() );
+}
+
 QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) const
 {
   QDomElement composerElem;

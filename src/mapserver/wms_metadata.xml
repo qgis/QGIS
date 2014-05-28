@@ -20,13 +20,13 @@
 				     </ContactPersonPrimary>
 				     <ContactAddress>
 					     <AddressType>postal</AddressType>
-					     <Address>Elestastr. 18</Address>
-					     <City>Bad Ragaz</City>
-					     <StateOrProvince>SG</StateOrProvince>
-					     <PostCode>7310</PostCode>
+					     <Address>Weberstrasse 5</Address>
+					     <City>Zürich</City>
+					     <StateOrProvince>ZH</StateOrProvince>
+					     <PostCode>8004</PostCode>
 					     <Country>SWITZERLAND</Country>
 				     </ContactAddress>
-				     <ContactVoiceTelephone>+41 43 377 08 21</ContactVoiceTelephone>
+				     <ContactVoiceTelephone></ContactVoiceTelephone>
 				     <ContactElectronicMailAddress>marco.hugentobler@sourcepole.ch</ContactElectronicMailAddress>
 			     </ContactInformation>
 		<!-- Fees or access constraints imposed. -->

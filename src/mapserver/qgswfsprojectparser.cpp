@@ -31,6 +31,9 @@ QgsWFSProjectParser::~QgsWFSProjectParser()
 
 void QgsWFSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  mProjectParser.serviceCapabilities( parentElement, doc, "WFS" );
+
+#if 0
   QDomElement serviceElem = doc.createElement( "Service" );
 
   QDomElement propertiesElem = mProjectParser.propertiesElem();
@@ -124,6 +127,7 @@ void QgsWFSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomD
     serviceElem.appendChild( wmsAccessConstraintsElem );
   }
   parentElement.appendChild( serviceElem );
+#endif //0
 }
 
 QString QgsWFSProjectParser::serviceUrl() const

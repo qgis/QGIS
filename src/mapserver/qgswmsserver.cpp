@@ -323,6 +323,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   wmsCapabilitiesElement.setAttribute( "version", version );
   doc.appendChild( wmsCapabilitiesElement );
 
+  //todo: add service capabilities
+  if ( mConfigParser )
+  {
+    mConfigParser->serviceCapabilities( wmsCapabilitiesElement, doc );
+  }
+
   //wms:Capability element
   QDomElement capabilityElement = doc.createElement( "Capability"/*wms:Capability*/ );
   wmsCapabilitiesElement.appendChild( capabilityElement );

@@ -115,6 +115,8 @@ class QgsWMSConfigParser
 
     virtual int nLayers() const = 0;
 
+    virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
 #if 0
     /**List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
     QMap<QString, QDomDocument*> mExternalGMLDatasets;

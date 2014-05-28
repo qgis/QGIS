@@ -340,6 +340,188 @@ bool QgsServerProjectParser::updateLegendDrawingOrder() const
   return legendElem().attribute( "updateDrawingOrder", "true" ).compare( "true", Qt::CaseInsensitive ) == 0;
 }
 
+void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 ) const
+{
+  QDomElement propertiesElement = propertiesElem();
+  if ( propertiesElement.isNull() )
+  {
+    QgsConfigParserUtils::fallbackServiceCapabilities( parentElement, doc );
+    return;
+  }
+  QDomElement serviceElem = doc.createElement( "Service" );
+
+  QDomElement serviceCapabilityElem = propertiesElement.firstChildElement( "WMSServiceCapabilities" );
+  if ( serviceCapabilityElem.isNull() || serviceCapabilityElem.text().compare( "true", Qt::CaseInsensitive ) != 0 )
+  {
+    QgsConfigParserUtils::fallbackServiceCapabilities( parentElement, doc );
+    return;
+  }
+
+  //Service name
+  QDomElement wmsNameElem = doc.createElement( "Name" );
+  QDomText wmsNameText = doc.createTextNode( service );
+  wmsNameElem.appendChild( wmsNameText );
+  serviceElem.appendChild( wmsNameElem );
+
+  //WMS title
+  QDomElement titleElem = propertiesElement.firstChildElement( "WMSServiceTitle" );
+  if ( !titleElem.isNull() )
+  {
+    QDomElement wmsTitleElem = doc.createElement( "Title" );
+    QDomText wmsTitleText = doc.createTextNode( titleElem.text() );
+    wmsTitleElem.appendChild( wmsTitleText );
+    serviceElem.appendChild( wmsTitleElem );
+  }
+
+  //WMS abstract
+  QDomElement abstractElem = propertiesElement.firstChildElement( "WMSServiceAbstract" );
+  if ( !abstractElem.isNull() )
+  {
+    QDomElement wmsAbstractElem = doc.createElement( "Abstract" );
+    QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
+    wmsAbstractElem.appendChild( wmsAbstractText );
+    serviceElem.appendChild( wmsAbstractElem );
+  }
+
+  //keyword list
+  QDomElement keywordListElem = propertiesElement.firstChildElement( "WMSKeywordList" );
+  if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
+  {
+    QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
+    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+    for ( int i = 0; i < keywordList.size(); ++i )
+    {
+      QDomElement keywordElem = doc.createElement( "Keyword" );
+      QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+      keywordElem.appendChild( keywordText );
+      if ( sia2045 )
+      {
+        keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+      }
+      wmsKeywordElem.appendChild( keywordElem );
+    }
+
+    if ( keywordList.size() > 0 )
+    {
+      serviceElem.appendChild( wmsKeywordElem );
+    }
+  }
+
+  //OnlineResource element is mandatory according to the WMS specification
+  QDomElement wmsOnlineResourceElem = propertiesElement.firstChildElement( "WMSOnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  onlineResourceElem.setAttribute( "xlink:type", "simple" );
+  if ( !wmsOnlineResourceElem.isNull() )
+  {
+    onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+  }
+
+  serviceElem.appendChild( onlineResourceElem );
+
+  //Contact information
+  QDomElement contactInfoElem = doc.createElement( "ContactInformation" );
+
+  //Contact person primary
+  QDomElement contactPersonPrimaryElem = doc.createElement( "ContactPersonPrimary" );
+
+  //Contact person
+  QDomElement contactPersonElem = propertiesElement.firstChildElement( "WMSContactPerson" );
+  QString contactPersonString;
+  if ( !contactPersonElem.isNull() )
+  {
+    contactPersonString = contactPersonElem.text();
+  }
+  QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
+  QDomText contactPersonText = doc.createTextNode( contactPersonString );
+  wmsContactPersonElem.appendChild( contactPersonText );
+  contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+
+
+  //Contact organisation
+  QDomElement contactOrganizationElem = propertiesElement.firstChildElement( "WMSContactOrganization" );
+  QString contactOrganizationString;
+  if ( !contactOrganizationElem.isNull() )
+  {
+    contactOrganizationString = contactOrganizationElem.text();
+  }
+  QDomElement wmsContactOrganizationElem = doc.createElement( "ContactOrganization" );
+  QDomText contactOrganizationText = doc.createTextNode( contactOrganizationString );
+  wmsContactOrganizationElem.appendChild( contactOrganizationText );
+  contactPersonPrimaryElem.appendChild( wmsContactOrganizationElem );
+  contactInfoElem.appendChild( contactPersonPrimaryElem );
+
+  //phone
+  QDomElement phoneElem = propertiesElement.firstChildElement( "WMSContactPhone" );
+  if ( !phoneElem.isNull() )
+  {
+    QDomElement wmsPhoneElem = doc.createElement( "ContactVoiceTelephone" );
+    QDomText wmsPhoneText = doc.createTextNode( phoneElem.text() );
+    wmsPhoneElem.appendChild( wmsPhoneText );
+    contactInfoElem.appendChild( wmsPhoneElem );
+  }
+
+  //mail
+  QDomElement mailElem = propertiesElement.firstChildElement( "WMSContactMail" );
+  if ( !mailElem.isNull() )
+  {
+    QDomElement wmsMailElem = doc.createElement( "ContactElectronicMailAddress" );
+    QDomText wmsMailText = doc.createTextNode( mailElem.text() );
+    wmsMailElem.appendChild( wmsMailText );
+    contactInfoElem.appendChild( wmsMailElem );
+  }
+
+  serviceElem.appendChild( contactInfoElem );
+
+  //Fees
+  QDomElement feesElem = propertiesElement.firstChildElement( "WMSFees" );
+  if ( !feesElem.isNull() )
+  {
+    QDomElement wmsFeesElem = doc.createElement( "Fees" );
+    QDomText wmsFeesText = doc.createTextNode( feesElem.text() );
+    wmsFeesElem.appendChild( wmsFeesText );
+    serviceElem.appendChild( wmsFeesElem );
+  }
+
+  //AccessConstraints
+  QDomElement accessConstraintsElem = propertiesElement.firstChildElement( "WMSAccessConstraints" );
+  if ( !accessConstraintsElem.isNull() )
+  {
+    QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
+    QDomText wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
+    wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
+    serviceElem.appendChild( wmsAccessConstraintsElem );
+  }
+
+  //max width, max height for WMS
+  if ( service.compare( "WMS", Qt::CaseInsensitive ) == 0 )
+  {
+    QString version = doc.documentElement().attribute( "version" );
+    if ( version != "1.1.1" )
+    {
+      //max width
+      QDomElement mwElem = propertiesElement.firstChildElement( "WMSMaxWidth" );
+      if ( !mwElem.isNull() )
+      {
+        QDomElement maxWidthElem = doc.createElement( "MaxWidth" );
+        QDomText maxWidthText = doc.createTextNode( mwElem.text() );
+        maxWidthElem.appendChild( maxWidthText );
+        serviceElem.appendChild( maxWidthElem );
+      }
+      //max height
+      QDomElement mhElem = propertiesElement.firstChildElement( "WMSMaxHeight" );
+      if ( !mhElem.isNull() )
+      {
+        QDomElement maxHeightElem = doc.createElement( "MaxHeight" );
+        QDomText maxHeightText = doc.createTextNode( mhElem.text() );
+        maxHeightElem.appendChild( maxHeightText );
+        serviceElem.appendChild( maxHeightElem );
+      }
+    }
+  }
+  parentElement.appendChild( serviceElem );
+}
+
 QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
 {
   if ( layerElem.isNull() )
