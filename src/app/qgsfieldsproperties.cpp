@@ -460,24 +460,6 @@ void QgsFieldsProperties::attributeDeleted( int idx )
   }
 }
 
-void QgsFieldsProperties::addAttribute()
-{
-  QgsAddAttrDialog dialog( mLayer, this );
-  if ( dialog.exec() == QDialog::Accepted )
-  {
-    mLayer->beginEditCommand( "Attribute added" );
-    if ( !addAttribute( dialog.field() ) )
-    {
-      mLayer->destroyEditCommand();
-      QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
-    }
-    else
-    {
-      mLayer->endEditCommand();
-    }
-  }
-}
-
 bool QgsFieldsProperties::addAttribute( const QgsField &field )
 {
   QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );

@@ -170,7 +170,6 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
 
-    void addAttribute();
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
