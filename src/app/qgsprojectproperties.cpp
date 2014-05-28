@@ -351,6 +351,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mMaxHeightLineEdit->setText( QString::number( maxHeight ) );
   }
 
+  // WMS imageQuality
+  int imageQuality = QgsProject::instance()->readNumEntry( "WMSImageQuality", "/", -1 );
+  if ( imageQuality != -1 )
+  {
+    mWMSImageQualitySpinBox->setValue( imageQuality );
+  }
+
   mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WFSUrl", "/", "" ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
   QStringList wfstUpdateLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Update" );
@@ -810,6 +817,17 @@ void QgsProjectProperties::apply()
   else
   {
     QgsProject::instance()->writeEntry( "WMSMaxHeight", "/", maxHeightText.toInt() );
+  }
+
+  // WMS Image quality
+  int imageQualityValue = mWMSImageQualitySpinBox->value();
+  if ( imageQualityValue == 0 )
+  {
+    QgsProject::instance()->removeEntry( "WMSImageQuality", "/" );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSImageQuality", "/", imageQualityValue );
   }
 
   QgsProject::instance()->writeEntry( "WFSUrl", "/", mWFSUrlLineEdit->text() );

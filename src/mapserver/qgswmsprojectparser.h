@@ -55,6 +55,7 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
 
     double maxWidth() const;
     double maxHeight() const;
+    double imageQuality() const;
 
     //printing
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const;

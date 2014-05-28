@@ -164,7 +164,7 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
   return result;
 }
 
-void QgsSOAPRequestHandler::sendGetMapResponse( const QString& service, QImage* img ) const
+void QgsSOAPRequestHandler::sendGetMapResponse( const QString& service, QImage* img) const
 {
   QgsMapServiceException ex( "Send error", "Error, could not send Image" );
   if ( service == "WMS" )

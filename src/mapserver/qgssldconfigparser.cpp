@@ -663,6 +663,15 @@ double QgsSLDConfigParser::maxHeight() const
   return -1;
 }
 
+double QgsSLDConfigParser::imageQuality() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->imageQuality();
+  }
+  return -1;
+}
+
 QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   if ( mFallbackParser )

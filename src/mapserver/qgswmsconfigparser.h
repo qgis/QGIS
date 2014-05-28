@@ -96,6 +96,7 @@ class QgsWMSConfigParser
 
     virtual double maxWidth() const = 0;
     virtual double maxHeight() const = 0;
+    virtual double imageQuality() const = 0;
 
     //printing
 

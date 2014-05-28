@@ -337,6 +337,21 @@ double QgsWMSProjectParser::maxHeight() const
   return maxHeight;
 }
 
+double QgsWMSProjectParser::imageQuality() const
+{
+  double imageQuality = -1;
+  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement imageQualityElem = propertiesElem.firstChildElement( "WMSImageQuality" );
+    if ( !imageQualityElem.isNull() )
+    {
+      imageQuality = imageQualityElem.text().toInt();
+    }
+  }
+  return imageQuality;
+}
+
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml
