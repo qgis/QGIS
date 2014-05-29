@@ -1336,15 +1336,11 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
 
     QPainter painter;
 
-    try
-    {
-      loadAtlasPredefinedScalesFromProject();
-      atlasMap->beginRender();
-    }
-    catch ( std::exception& e )
+    loadAtlasPredefinedScalesFromProject();
+    if ( ! atlasMap->beginRender() && !atlasMap->featureFilterErrorString().isEmpty() )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-                            e.what(),
+                            tr( "Feature filter parser error: %1" ).arg( atlasMap->featureFilterErrorString() ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
@@ -1371,14 +1367,10 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
         atlasMap->endRender();
         break;
       }
-      try
-      {
-        atlasMap->prepareForFeature( featureI );
-      }
-      catch ( std::runtime_error& e )
+      if ( !atlasMap->prepareForFeature( featureI ) )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
-                              e.what(),
+                              tr( "Atlas processing error" ),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
@@ -1491,15 +1483,12 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
 
     mComposition->beginPrint( mPrinter );
     QPainter painter( &mPrinter );
-    try
-    {
-      loadAtlasPredefinedScalesFromProject();
-      atlasMap->beginRender();
-    }
-    catch ( std::exception& e )
+
+    loadAtlasPredefinedScalesFromProject();
+    if ( ! atlasMap->beginRender() && !atlasMap->featureFilterErrorString().isEmpty() )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-                            e.what(),
+                            tr( "Feature filter parser error: %1" ).arg( atlasMap->featureFilterErrorString() ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
@@ -1518,20 +1507,15 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
         atlasMap->endRender();
         break;
       }
-      try
-      {
-        atlasMap->prepareForFeature( i );
-      }
-      catch ( std::runtime_error& e )
+      if ( !atlasMap->prepareForFeature( i ) )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
-                              e.what(),
+                              tr( "Atlas processing error" ),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
         return;
       }
-
 
       if ( i > 0 )
       {
@@ -1753,15 +1737,11 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( false );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    try
-    {
-      loadAtlasPredefinedScalesFromProject();
-      atlasMap->beginRender();
-    }
-    catch ( std::exception& e )
+    loadAtlasPredefinedScalesFromProject();
+    if ( ! atlasMap->beginRender() && !atlasMap->featureFilterErrorString().isEmpty() )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-                            e.what(),
+                            tr( "Feature filter parser error: %1" ).arg( atlasMap->featureFilterErrorString() ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
@@ -1781,14 +1761,10 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         atlasMap->endRender();
         break;
       }
-      try
-      {
-        atlasMap->prepareForFeature( feature );
-      }
-      catch ( std::runtime_error& e )
+      if ( ! atlasMap->prepareForFeature( feature ) )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
-                              e.what(),
+                              tr( "Atlas processing error" ),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
@@ -2021,15 +1997,11 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   int featureI = 0;
   if ( mode == QgsComposer::Atlas )
   {
-    try
-    {
-      loadAtlasPredefinedScalesFromProject();
-      atlasMap->beginRender();
-    }
-    catch ( std::exception& e )
+    loadAtlasPredefinedScalesFromProject();
+    if ( ! atlasMap->beginRender() && !atlasMap->featureFilterErrorString().isEmpty() )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-                            e.what(),
+                            tr( "Feature filter parser error: %1" ).arg( atlasMap->featureFilterErrorString() ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
@@ -2053,14 +2025,10 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         atlasMap->endRender();
         break;
       }
-      try
-      {
-        atlasMap->prepareForFeature( featureI );
-      }
-      catch ( std::runtime_error& e )
+      if ( !atlasMap->prepareForFeature( featureI ) )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
-                              e.what(),
+                              tr( "Atlas processing error" ),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );

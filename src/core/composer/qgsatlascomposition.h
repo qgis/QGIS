@@ -102,17 +102,27 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * atlas page.
      * @returns filename pattern
      * @see setFilenamePattern
+     * @see filenamePatternErrorString
      * @note This property has no effect when exporting to PDF if singleFile() is true
      */
     QString filenamePattern() const { return mFilenamePattern; }
 
     /**Sets the filename expression used for generating output filenames for each
      * atlas page.
+     * @returns true if filename expression could be successful set, false if expression is invalid
      * @param pattern expression to use for output filenames
      * @see filenamePattern
+     * @see filenamePatternErrorString
      * @note This method has no effect when exporting to PDF if singleFile() is true
      */
-    void setFilenamePattern( const QString& pattern );
+    bool setFilenamePattern( const QString& pattern );
+
+    /**Returns an error string from parsing the filename expression.
+     * @returns filename pattern parser error
+     * @see setFilenamePattern
+     * @see filenamePattern
+     */
+    QString filenamePatternErrorString() const { return mFilenameParserError; }
 
     /**Returns the coverage layer used for the atlas features
      * @returns atlas coverage layer
@@ -154,6 +164,13 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilter() const { return mFeatureFilter; }
     void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
 
+    /**Returns an error string from parsing the feature filter expression.
+     * @returns filename pattern parser error
+     * @see setFilenamePattern
+     * @see filenamePattern
+     */
+    QString featureFilterErrorString() const { return mFilterParserError; }
+
     QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
     void setSortKeyAttributeName( QString fieldName ) { mSortKeyAttributeName = fieldName; }
 
@@ -185,11 +202,15 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Returns the number of features in the coverage layer */
     int numFeatures() const;
 
-    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( int i );
+    /**Prepare the atlas map for the given feature. Sets the extent and context variables
+     * @returns true if feature was successfully prepared
+    */
+    bool prepareForFeature( int i );
 
-    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( QgsFeature * feat );
+    /**Prepare the atlas map for the given feature. Sets the extent and context variables
+     * @returns true if feature was successfully prepared
+    */
+    bool prepareForFeature( QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;
@@ -237,11 +258,15 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void featureChanged( QgsFeature* feature );
 
   private:
-    /**Updates the filename expression*/
-    void updateFilenameExpression();
+    /**Updates the filename expression.
+     * @returns true if expression was successfully parsed, false if expression is invalid
+     */
+    bool updateFilenameExpression();
 
-    /**Evaluates filename for current feature*/
-    void evalFeatureFilename();
+    /**Evaluates filename for current feature
+     * @returns true if feature filename was successfully evaluated
+    */
+    bool evalFeatureFilename();
 
     QgsComposition* mComposition;
 
@@ -260,6 +285,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     // current atlas feature number
     int mCurrentFeatureNo;
+
+    QString mFilenameParserError;
+    QString mFilterParserError;
 
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;

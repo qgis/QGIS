@@ -88,7 +88,7 @@ void QgsAtlasCompositionWidget::changeCoverageLayer( QgsMapLayer *layer )
   }
 }
 
-void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_textChanged( const QString& text )
+void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_editingFinished()
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
@@ -96,7 +96,16 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_textChanged( const 
     return;
   }
 
-  atlasMap->setFilenamePattern( text );
+  if ( ! atlasMap->setFilenamePattern( mAtlasFilenamePatternEdit->text() ) )
+  {
+    //expression could not be set
+    QMessageBox::warning( this
+                          , tr( "Could not evaluate filename pattern" )
+                          , tr( "Could not set filename pattern as '%1'.\nParser error:\n%2" )
+                          .arg( mAtlasFilenamePatternEdit->text() )
+                          .arg( atlasMap->filenamePatternErrorString() )
+                        );
+  }
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
