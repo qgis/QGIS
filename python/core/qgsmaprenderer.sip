@@ -134,6 +134,7 @@ class QgsMapRenderer : QObject
     ~QgsMapRenderer();
 
     //! starts rendering
+    //! @param painter painter to render to
     //! @param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
     void render( QPainter* painter, double* forceWidthScale = 0 );
 
