@@ -186,7 +186,7 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     QPointF pagePos() const;
 
     /** Updates the page relative position for the new paper size */
-    void updatePagePos( int newwidth, int newheight );
+    void updatePagePos( double newPageWidth, double newPageHeight );
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );

@@ -502,11 +502,12 @@ QPointF QgsComposerItem::pagePos() const
   return p;
 }
 
-void QgsComposerItem::updatePagePos( int /*newwidth*/, int newheight )
+void QgsComposerItem::updatePagePos( double newPageWidth, double newPageHeight )
 {
+  Q_UNUSED( newPageWidth )
   QPointF curPagePos = pagePos();
   int curPage = page() - 1;
-  setY( curPage * ( newheight + composition()->spaceBetweenPages() ) + curPagePos.y() );
+  setY( curPage * ( newPageHeight + composition()->spaceBetweenPages() ) + curPagePos.y() );
   emit sizeChanged();
 }
 
