@@ -172,8 +172,12 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   }
 
   //scene rect
+  QPointF pagepos = pagePos();
   composerItemElem.setAttribute( "x", QString::number( pos().x() ) );
   composerItemElem.setAttribute( "y", QString::number( pos().y() ) );
+  composerItemElem.setAttribute( "page", page() );
+  composerItemElem.setAttribute( "pagex", QString::number( pagepos.x() ) );
+  composerItemElem.setAttribute( "pagey", QString::number( pagepos.y() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
   composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
@@ -280,17 +284,28 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //position
-  double x, y, width, height;
-  bool xOk, yOk, widthOk, heightOk, positionModeOK;
+  int page;
+  double x, y, pagex, pagey, width, height;
+  bool xOk, yOk, pageOk, pagexOk, pageyOk, widthOk, heightOk, positionModeOK;
 
   x = itemElem.attribute( "x" ).toDouble( &xOk );
   y = itemElem.attribute( "y" ).toDouble( &yOk );
+  page = itemElem.attribute( "page" ).toInt( &pageOk );
+  pagex = itemElem.attribute( "pagex" ).toDouble( &pagexOk );
+  pagey = itemElem.attribute( "pagey" ).toDouble( &pageyOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
   mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
   if ( !positionModeOK )
   {
     mLastUsedPositionMode = UpperLeft;
+  }
+  if ( pageOk && pagexOk && pageyOk )
+  {
+    xOk = true;
+    yOk = true;
+    x = pagex;
+    y = ( page - 1 ) * ( mComposition->paperHeight() + composition()->spaceBetweenPages() ) + pagey;
   }
 
   if ( !xOk || !yOk || !widthOk || !heightOk )
