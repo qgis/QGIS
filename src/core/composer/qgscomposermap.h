@@ -104,6 +104,21 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Top
     };
 
+    /** Scaling modes used for the serial rendering (atlas)
+     */
+    enum AtlasScalingMode
+    {
+      Fixed,      /*< The current scale of the map is used for each feature of the atlas */
+      Predefined, /*< A scale is chosen from the predefined scales. The smallest scale from
+                    the list of scales where the atlas feature is fully visible is chosen.
+                    @see QgsAtlasComposition::setPredefinedScales.
+                    @note This mode is only valid for polygon or line atlas coverage layers
+                */
+      Auto        /*< The extent is adjusted so that each feature is fully visible.
+                    A margin is applied around the center @see setAtlasMargin
+                    @note This mode is only valid for polygon or line atlas coverage layers*/
+    };
+
     /** \brief Draw to paint device
         @param painter painter
         @param extent map extent
@@ -425,19 +440,64 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     */
     Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
-    /** Returns true if the map extent is set to follow the current atlas feature */
+    /**Returns whether the map extent is set to follow the current atlas feature.
+     * @returns true if map will follow the current atlas feature.
+     * @see setAtlasDriven
+     * @see atlasScalingMode
+    */
     bool atlasDriven() const { return mAtlasDriven; }
-    /** Set to true if the map extents should be set by the current atlas feature */
+
+    /**Sets whether the map extent will follow the current atlas feature.
+     * @param enabled set to true if the map extents should be set by the current atlas feature.
+     * @see atlasDriven
+     * @see setAtlasScalingMode
+    */
     void setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
 
-    /** Returns true if the map uses a fixed scale when in atlas mode */
-    bool atlasFixedScale() const { return mAtlasFixedScale; }
-    /** Set to true if the map should use a fixed scale when in atlas mode */
-    void setAtlasFixedScale( bool fixed ) { mAtlasFixedScale = fixed; }
+    /**Returns true if the map uses a fixed scale when in atlas mode
+     * @deprecated since 2.4 Use atlasScalingMode() instead
+    */
+    Q_DECL_DEPRECATED bool atlasFixedScale() const;
 
-    /** Returns the margin size (percentage) used when the map is in atlas mode */
+    /**Set to true if the map should use a fixed scale when in atlas mode
+     * @deprecated since 2.4 Use setAtlasScalingMode() instead
+    */
+    Q_DECL_DEPRECATED void setAtlasFixedScale( bool fixed );
+
+    /**Returns the current atlas scaling mode. This controls how the map's extents
+     * are calculated for the current atlas feature when an atlas composition
+     * is enabled.
+     * @returns the current scaling mode
+     * @note this parameter is only used if atlasDriven() is true
+     * @see setAtlasScalingMode
+     * @see atlasDriven
+    */
+    AtlasScalingMode atlasScalingMode() const { return mAtlasScalingMode; }
+
+    /**Sets the current atlas scaling mode. This controls how the map's extents
+     * are calculated for the current atlas feature when an atlas composition
+     * is enabled.
+     * @param mode atlas scaling mode to set
+     * @note this parameter is only used if atlasDriven() is true
+     * @see atlasScalingMode
+     * @see atlasDriven
+    */
+    void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
+
+    /**Returns the margin size (percentage) used when the map is in atlas mode.
+     * @returns margin size in percentage to leave around the atlas feature's extent
+     * @note this is only used if atlasScalingMode() is Auto.
+     * @see atlasScalingMode
+     * @see setAtlasMargin
+    */
     double atlasMargin() const { return mAtlasMargin; }
-    /** Sets the margin size (percentage) used when the map is in atlas mode */
+
+    /**Sets the margin size (percentage) used when the map is in atlas mode.
+     * @param margin size in percentage to leave around the atlas feature's extent
+     * @note this is only used if atlasScalingMode() is Auto.
+     * @see atlasScalingMode
+     * @see atlasMargin
+    */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
     /** Sets whether updates to the composer map are enabled. */
@@ -608,9 +668,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**True if map is being controlled by an atlas*/
     bool mAtlasDriven;
-    /**True if map uses a fixed scale when controlled by an atlas*/
-    bool mAtlasFixedScale;
-    /**Margin size for atlas driven extents (percentage of feature size)*/
+    /**Current atlas scaling mode*/
+    AtlasScalingMode mAtlasScalingMode;
+    /**Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode*/
     double mAtlasMargin;
 
     /**Returns a list of the layers to render for this map item*/

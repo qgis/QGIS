@@ -105,7 +105,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsMapUnitScale mapUnitScale() const;
 
   protected:
-
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
     bool prepareShape( QString name = QString() );

@@ -1,4 +1,4 @@
-%Module(name=qgis.gui,
+%Module(name=qgis._gui,
         version=0,
         keyword_arguments="Optional")
 
@@ -15,6 +15,8 @@
 %Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributedialog.sip
+%Include qgsattributeform.sip
+%Include qgsattributeforminterface.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip
@@ -75,6 +77,8 @@
 %Include qgsrasterpyramidsoptionswidget.sip
 %Include qgsrubberband.sip
 %Include qgsscalecombobox.sip
+%Include qgsscalerangewidget.sip
+%Include qgsscalevisibilitydialog.sip
 %Include qgssearchquerybuilder.sip
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
@@ -90,6 +94,7 @@
 %Include qgsoptionsdialogbase.sip
 %Include qgssvgannotationitem.sip
 %Include qgsextentgroupbox.sip
+%Include qgsprevieweffect.sip
 
 %Include attributetable/qgsattributetabledelegate.sip
 %Include attributetable/qgsattributetablefiltermodel.sip
@@ -117,6 +122,7 @@
 %Include symbology-ng/qgscptcitycolorrampv2dialog.sip
 %Include symbology-ng/qgsellipsesymbollayerv2widget.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2widget.sip
+%Include symbology-ng/qgsinvertedpolygonrendererwidget.sip
 %Include symbology-ng/qgslayerpropertieswidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip
@@ -144,3 +150,5 @@
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
+
+%Include layertree/qgslayertreeview.sip

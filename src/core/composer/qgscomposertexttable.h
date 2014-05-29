@@ -34,7 +34,7 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
      * @param labels list of strings to use for each column's header row
      * @see headerLabels
     */
-    void setHeaderLabels( const QStringList& labels ) { mHeaderLabels = labels; }
+    void setHeaderLabels( const QStringList& labels );
 
     /**Adds a row to the table
      * @param row list of strings to use for each cell's value in the newly added row
@@ -44,16 +44,28 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
     */
     void addRow( const QStringList& row ) { mRowText.append( row ); }
 
+    /**Writes properties specific to text tables
+     * @param elem an existing QDomElement in which to store the text table's properties.
+     * @param doc QDomDocument for the destination xml.
+     * @see readXML
+     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+
+    /**Reads the properties specific to a text table from xml.
+     * @param itemElem a QDomElement holding the text table's desired properties.
+     * @param doc QDomDocument for the source xml.
+     * @see writeXML
+     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    QMap<int, QString> headerLabels() const;
-
+    /**Queries the text table for text to show in the cells.
+     * @param attributeMaps list of QgsAttributeMaps where the cell text will be stored
+     * @returns true if attribute values were successfully set from table's text
+     * @note not available in python bindings
+     */
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
 
   private:
-    /**Column titles*/
-    QStringList mHeaderLabels;
     /**One stringlist per row*/
     QList< QStringList > mRowText;
 };

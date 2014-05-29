@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include <QPainter>
 #include <QSvgRenderer>
+#include <QVector2D>
 
 #include <cmath>
 
@@ -76,7 +77,6 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
 
   //draw arrow
   QPen arrowPen = mPen;
-  arrowPen.setCapStyle( Qt::FlatCap );
   arrowPen.setColor( mArrowColor );
   painter->setPen( arrowPen );
   painter->setBrush( QBrush( mArrowColor ) );
@@ -134,7 +134,9 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
   QBrush arrowBrush = p->brush();
   arrowBrush.setColor( mArrowColor );
   p->setBrush( arrowBrush );
-  drawArrowHead( p, mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y(), angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
+  QVector2D dir = QVector2D( mStopPoint - mStartPoint ).normalized();
+  QPointF stop = mStopPoint + ( dir * 0.5 * mArrowHeadWidth ).toPointF();
+  drawArrowHead( p, stop.x() - pos().x(), stop.y() - pos().y(), angle( mStartPoint, stop ), mArrowHeadWidth );
 }
 
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
@@ -199,27 +201,11 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     }
   }
 
-  //rotate image fix point for backtransform
-  QPointF fixPoint;
-  if ( type == StartMarker )
-  {
-    fixPoint.setX( 0 ); fixPoint.setY( arrowHeadHeight / 2.0 );
-  }
-  else
-  {
-    fixPoint.setX( 0 ); fixPoint.setY( -arrowHeadHeight / 2.0 );
-  }
-  QPointF rotatedFixPoint;
-  double angleRad = ang / 180 * M_PI;
-  rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
-  rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
-
-
   QPainter imagePainter( &markerImage );
   r.render( &imagePainter );
 
   p->save();
-  p->translate( canvasPoint.x() - rotatedFixPoint.x() , canvasPoint.y() - rotatedFixPoint.y() );
+  p->translate( canvasPoint.x() , canvasPoint.y() );
   p->rotate( ang );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
 
@@ -280,16 +266,18 @@ double QgsComposerArrow::computeMarkerMargin() const
   double margin = 0;
   if ( mMarkerMode == DefaultMarker )
   {
-    margin = mPen.widthF() / 2.0 + mArrowHeadWidth / 2.0;
+    margin = mPen.widthF() / std::sqrt( 2.0 ) + mArrowHeadWidth / 2.0;
   }
   else if ( mMarkerMode == NoMarker )
   {
-    margin = mPen.widthF() / 2.0;
+    margin = mPen.widthF() / std::sqrt( 2.0 );
   }
   else if ( mMarkerMode == SVGMarker )
   {
-    double maxArrowHeight = qMax( mStartArrowHeadHeight, mStopArrowHeadHeight );
-    margin = mPen.widthF() / 2 + qMax( mArrowHeadWidth / 2.0, maxArrowHeight / 2.0 );
+    double startMarkerMargin = std::sqrt( 0.25 * ( mStartArrowHeadHeight * mStartArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
+    double stopMarkerMargin = std::sqrt( 0.25 * ( mStopArrowHeadHeight * mStopArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
+    double markerMargin = qMax( startMarkerMargin, stopMarkerMargin );
+    margin = qMax( mPen.widthF() / std::sqrt( 2.0 ), markerMargin );
   }
   return margin;
 }

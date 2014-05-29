@@ -1120,7 +1120,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   }
   imgPainter.end();
 
-  //apply distance transform to image, uses the current color ramp to calculate final pixel colours
+  //apply distance transform to image, uses the current color ramp to calculate final pixel colors
   double * dtArray = distanceTransform( fillImage );
 
   //copy distance transform values back to QImage, shading by appropriate color ramp
@@ -2409,7 +2409,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   double dy = 0;
 
   // Add buffer based on bleed but keep precisely the height/width ratio (angle)
-  // thus we add integer multiplications of width and heigh covering the bleed
+  // thus we add integer multiplications of width and height covering the bleed
   int bufferMulti = qMax( qCeil( outputPixelBleed / width ), qCeil( outputPixelBleed / width ) );
 
   // Always buffer at least once so that center of line marker in upper right corner

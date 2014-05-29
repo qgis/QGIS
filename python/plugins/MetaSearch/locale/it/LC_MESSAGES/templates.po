@@ -1,0 +1,121 @@
+# 
+# Translators:
+# doktoreas, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: MetaSearch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-25 12:58-0500\n"
+"PO-Revision-Date: 2014-03-08 09:49+0000\n"
+"Last-Translator: doktoreas\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/MetaSearch/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Service Metadata"
+msgstr "Metadati del servizio"
+
+msgid "Service Identification"
+msgstr "Identificativo del servizio"
+
+msgid "Title"
+msgstr "Titolo"
+
+msgid "Abstract"
+msgstr "Riassunto"
+
+msgid "Keywords"
+msgstr "Parole chiave"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Version"
+msgstr "Versione"
+
+msgid "Fees"
+msgstr "Tariffe"
+
+msgid "Access Constraints"
+msgstr "Limitazioni di accesso"
+
+msgid "Service URL"
+msgstr "Indirizzo Web del servizio"
+
+msgid "Service Provider"
+msgstr "Fornitore del servizio"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Site"
+msgstr "Sito"
+
+msgid "Service Contact"
+msgstr "Recapito del servizio"
+
+msgid "Position"
+msgstr "Posizione"
+
+msgid "Role"
+msgstr "Ruolo"
+
+msgid "Address"
+msgstr "Indirizzo"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Phone"
+msgstr "Telefono"
+
+msgid "Fax"
+msgstr "Fax"
+
+msgid "Url"
+msgstr "Indirizzo Web"
+
+msgid "Hours of Service"
+msgstr "Orari di servizio"
+
+msgid "Contact Instructions"
+msgstr "Istruzioni di contatto"
+
+msgid "Record Metadata"
+msgstr "Metadati del record"
+
+msgid "Identifier"
+msgstr "Identificativo"
+
+msgid "Subjects"
+msgstr "Argomenti"
+
+msgid "Creator"
+msgstr "Creatore"
+
+msgid "Contributor"
+msgstr "Collaboratore"
+
+msgid "Publisher"
+msgstr "Editore"
+
+msgid "Modified"
+msgstr "Modificato"
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Format"
+msgstr "Formato"
+
+msgid "Rights"
+msgstr "Diritti"
+
+msgid "Bounding Box"
+msgstr "Estensione geografica"
+
+msgid "Access Link"
+msgstr "Link di accesso"

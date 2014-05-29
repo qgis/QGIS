@@ -58,6 +58,7 @@ from processing.outputs.OutputString import OutputString
 from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputFile import OutputFile
+from processing.outputs.OutputDirectory import OutputDirectory
 
 
 class ModelerParametersDialog(QtGui.QDialog):
@@ -130,7 +131,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             if output.hidden:
                 continue
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
-                          OutputHTML, OutputFile)):
+                          OutputHTML, OutputFile, OutputDirectory)):
                 label = QtGui.QLabel(output.description + '<'
                                      + output.__module__.split('.')[-1] + '>')
                 item = QLineEdit()

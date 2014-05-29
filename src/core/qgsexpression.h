@@ -127,6 +127,7 @@ class CORE_EXPORT QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
+    //! @note not available in python bindings
     inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
 
     //! Returns true if an error occurred when evaluating last input
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsExpression
 
     void setScale( double scale ) { mScale = scale; }
 
-    int scale() {return mScale; }
+    double scale() { return mScale; }
 
     //! Return the expression string that was given when created.
     const QString expression() const { return dump(); }

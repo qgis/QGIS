@@ -18,7 +18,7 @@
 datasets are supported.
 <h5 class="subsubsectionHead"><a 
  id="x112-6000004.9.3"></a>Detailed description</h5>
-<!--l. 4558--><p class="noindent" >This application allows to perform various segmentation algorithms on an multispectral image.Available
+<!--l. 4558--><p class="noindent" >This application allows performing various segmentation algorithms on an multispectral image.Available
 segmentation algorithms are two different versions of Mean-Shift segmentation algorithm (one being
 multi-threaded), simple pixel based connected components according to a user-defined criterion, and
 watershed from the gradient of the intensity (norm of spectral bands vector). The application has two
@@ -36,8 +36,8 @@ vector file or database. The input image is split into tiles (whose size can be 
 parameter), and each tile is loaded, segmented with the chosen algorithm, vectorized, and written
 into the output file or database. This piece-wise behavior ensure that memory will never get
 overloaded, and that images of any size can be processed. There are few more options in the vector
-mode. The simplify option allows to simplify the geometry (i.e. remove nodes in polygons)
-according to a user-defined tolerance. The stitch option allows to application to try to stitch
+mode. The simplify option allows simplifying the geometry (i.e. remove nodes in polygons)
+according to a user-defined tolerance. The stitch option allows applying to try to stitch
 together polygons corresponding to segmented region that may have been split by the tiling
 scheme.
 <h5 class="subsubsectionHead"><a 
@@ -486,7 +486,7 @@ Choice of processing mode, either raster or large-scale. Available choices are:
      <ul class="itemize1">
      <li class="itemize"><span 
 class="ptmb7t-">Tile-based large-scale segmentation with vector output</span>: In this mode, the application will output a
-     vector file or database, and process the input image piecewise. This allows to perform segmentation
+     vector file or database, and process the input image piecewise. This allows performing segmentation
      of very large images.
          <ul class="itemize2">
          <li class="itemize"><span 
@@ -494,7 +494,7 @@ class="ptmb7t-">Output vector file:  </span>The output vector file or database (
          by OGR)
          </li>
          <li class="itemize"><span 
-class="ptmb7t-">Writing mode for the output vector file:  </span>This allows to set the writing behaviour for
+class="ptmb7t-">Writing mode for the output vector file:  </span>This allows setting the writing behaviour for
          the output vector file. Please note that the actual behaviour depends on the file format.
          </li>
          <li class="itemize"><span 
@@ -515,7 +515,7 @@ class="ptmb7t-">Minimum object size:  </span>Objects whose size is below the min
          </li>
          <li class="itemize"><span 
 class="ptmb7t-">Simplify polygons:  </span>Simplify polygons according to a given tolerance (in pixel). This
-         option allows to reduce the size of the output file or database.
+         option allows reducing the size of the output file or database.
          </li>
          <li class="itemize"><span 
 class="ptmb7t-">Layer name:  </span>Name of the layer in the vector file or database (default is Layer).
@@ -1037,4 +1037,4 @@ number.
 <!--l. 4732-->
 <!--l. 4732--><p class="noindent" ><a 
  id="tailCookBooksu84.html"></a>  
- <script type="text/javascript"> var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www."); document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E")); </script> <script type="text/javascript"> try { var pageTracker = _gat._getTracker("UA-7072990-1"); pageTracker._trackPageview(); } catch(err) {}</script></body></html> 
+</body></html> 

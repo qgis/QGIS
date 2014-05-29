@@ -254,7 +254,14 @@ void QgsPaperItem::initialize()
   //(QGraphicsRectItem considers the pen width when calculating an item's scene rect)
   setPen( QPen( QBrush( Qt::NoBrush ), 4 ) );
 
-  //create a new QgsPaperGrid for this page, and add it to the composition
-  mPageGrid = new QgsPaperGrid( pos().x(), pos().y(), rect().width(), rect().height(), mComposition );
-  mComposition->addItem( mPageGrid );
+  if ( mComposition )
+  {
+    //create a new QgsPaperGrid for this page, and add it to the composition
+    mPageGrid = new QgsPaperGrid( pos().x(), pos().y(), rect().width(), rect().height(), mComposition );
+    mComposition->addItem( mPageGrid );
+
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }

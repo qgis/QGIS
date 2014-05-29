@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:analyticalhillshading', elevation, method, azimuth, declination, exaggeration, shade)
+	processing.runalg('saga:analyticalhillshading', elevation, method, azimuth, declination, exaggeration, shade)
 
 	Available options for selection parameters:
 

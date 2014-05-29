@@ -127,7 +127,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
             else:
                 return QGis.WKBUnknown
         except Exception, err:
-            print unicode(err)
+            pass
 
     def extractAsMulti(self, geom):
         if geom.type() == QGis.Point:

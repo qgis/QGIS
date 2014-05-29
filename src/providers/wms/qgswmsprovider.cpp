@@ -2481,8 +2481,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           xsdPart = 1;
         }
       }
+      QgsDebugMsg( QString( "jsonPart = %1 gmlPart = %2 xsdPart = %3" ).arg( jsonPart ).arg( gmlPart ).arg( xsdPart ) );
 
-      if ( jsonPart == -1 && gmlPart == -1 && xsdPart == -1 )
+      if ( gmlPart >= 0 )
       {
         QByteArray gmlByteArray = mIdentifyResultBodies.value( gmlPart );
         QgsDebugMsg( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );

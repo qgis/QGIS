@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:curvatureclassification', cplan, cprof, threshold, class)
+	processing.runalg('saga:curvatureclassification', cplan, cprof, threshold, class)

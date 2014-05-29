@@ -31,6 +31,9 @@ QgsWFSProjectParser::~QgsWFSProjectParser()
 
 void QgsWFSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  mProjectParser.serviceCapabilities( parentElement, doc, "WFS" );
+
+#if 0
   QDomElement serviceElem = doc.createElement( "Service" );
 
   QDomElement propertiesElem = mProjectParser.propertiesElem();
@@ -124,6 +127,7 @@ void QgsWFSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomD
     serviceElem.appendChild( wmsAccessConstraintsElem );
   }
   parentElement.appendChild( serviceElem );
+#endif //0
 }
 
 QString QgsWFSProjectParser::serviceUrl() const
@@ -172,7 +176,6 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      mProjectParser.addJoinLayersForElement( elem );
       QgsMapLayer *layer = mProjectParser.createLayerFromElement( elem );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
@@ -421,7 +424,6 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      mProjectParser.addJoinLayersForElement( elem );
       QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
@@ -553,6 +555,8 @@ QStringList QgsWFSProjectParser::wfsLayers() const
 
 QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aTypeName, bool useCache ) const
 {
+  Q_UNUSED( useCache );
+
   QList<QgsMapLayer*> layerList;
   const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
 
@@ -580,7 +584,6 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      mProjectParser.addJoinLayersForElement( elem, useCache );
       QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )

@@ -189,8 +189,24 @@ class QgsSymbolLayerV2Utils
     static QgsVectorColorRampV2* loadColorRamp( QDomElement& element ) /Factory/;
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
-    /**  parse color definition with format "rgb(0,0,0)" or "0,0,0" */
+    /**
+     * Attempts to parse a string as a color using a variety of common formats, including hex
+     * codes, rgb and rgba strings.
+     * @param colorStr string representing the color
+     * @returns parsed color
+     * @note added in 2.3
+     */
     static QColor parseColor( QString colorStr );
+
+    /**
+     * Attempts to parse a string as a color using a variety of common formats, including hex
+     * codes, rgb and rgba strings.
+     * @param colorStr string representing the color
+     * @param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
+     * @returns parsed color
+     * @note added in 2.3
+     */
+    static QColor parseColorWithAlpha( const QString colorStr, bool &containsAlpha );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
     static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );

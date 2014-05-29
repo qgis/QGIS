@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:soiltextureclassification', sand, silt, clay, texture, sum)
+	processing.runalg('saga:soiltextureclassification', sand, silt, clay, texture, sum)

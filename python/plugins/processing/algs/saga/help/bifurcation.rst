@@ -29,4 +29,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:bifurcation', iterations, nvalues, seed, range_min, range_max, step, table)
+	processing.runalg('saga:bifurcation', iterations, nvalues, seed, range_min, range_max, step, table)

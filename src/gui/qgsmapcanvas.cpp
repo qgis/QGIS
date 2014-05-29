@@ -163,6 +163,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mUseParallelRendering( false )
     , mDrawRenderingStats( false )
     , mCache( 0 )
+    , mPreviewEffect( 0 )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -226,6 +227,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   grabGesture( Qt::PinchGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
+
+  mPreviewEffect = new QgsPreviewEffect( this );
+  viewport()->setGraphicsEffect( mPreviewEffect );
 
   refresh();
 
@@ -380,6 +384,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Add check if vector layer when disconnecting from selectionChanged slot
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
+      if ( !currentLayer )
+        continue;
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
@@ -1606,6 +1612,46 @@ QPoint QgsMapCanvas::mouseLastXY()
   return mCanvasProperties->mouseLastXY;
 }
 
+void QgsMapCanvas::setPreviewModeEnabled( bool previewEnabled )
+{
+  if ( !mPreviewEffect )
+  {
+    return;
+  }
+
+  mPreviewEffect->setEnabled( previewEnabled );
+}
+
+bool QgsMapCanvas::previewModeEnabled() const
+{
+  if ( !mPreviewEffect )
+  {
+    return false;
+  }
+
+  return mPreviewEffect->isEnabled();
+}
+
+void QgsMapCanvas::setPreviewMode( QgsPreviewEffect::PreviewMode mode )
+{
+  if ( !mPreviewEffect )
+  {
+    return;
+  }
+
+  mPreviewEffect->setMode( mode );
+}
+
+QgsPreviewEffect::PreviewMode QgsMapCanvas::previewMode() const
+{
+  if ( !mPreviewEffect )
+  {
+    return QgsPreviewEffect::PreviewGrayscale;
+  }
+
+  return mPreviewEffect->mode();
+}
+
 void QgsMapCanvas::readProject( const QDomDocument & doc )
 {
   QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
@@ -1616,9 +1662,9 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     QgsMapSettings tmpSettings;
     tmpSettings.readXML( node );
     setMapUnits( tmpSettings.mapUnits() );
-    setExtent( tmpSettings.extent() );
     setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
+    setExtent( tmpSettings.extent() );
     // TODO: read only units, extent, projections, dest CRS
 
     clearExtentHistory(); // clear the extent history on project load

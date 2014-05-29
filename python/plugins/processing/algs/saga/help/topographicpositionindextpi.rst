@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:topographicpositionindextpi', dem, standard, radius_min, radius_max, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, tpi)
+	processing.runalg('saga:topographicpositionindextpi', dem, standard, radius_min, radius_max, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, tpi)
 
 	Available options for selection parameters:
 

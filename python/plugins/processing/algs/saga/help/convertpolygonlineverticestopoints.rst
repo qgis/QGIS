@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convertpolygonlineverticestopoints', shapes, points)
+	processing.runalg('saga:convertpolygonlineverticestopoints', shapes, points)

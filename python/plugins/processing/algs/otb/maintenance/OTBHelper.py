@@ -111,7 +111,7 @@ def get_parameters():
 
 def get_inverted_parameters():
     """
-    This function allows to map otb parameters with processing parameters.
+    This function allows mapping otb parameters with processing parameters.
     """
     parameters = { getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
     parameters_clone = copy.deepcopy(parameters)
@@ -180,7 +180,7 @@ def get_constructor_parameters_from_filename(py_file):
 
 def get_xml_description_from_application_name(our_app, criteria = None):
     """
-    creates an xml containing informations about the given our_app
+    creates an xml containing information about the given our_app
     """
     # creates the application to get the description
     # header

@@ -141,6 +141,22 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     ResizeMode resizeMode() const { return mResizeMode; }
 
+    /**Sets the picture's anchor point, which controls how it is placed
+     * within the picture item's frame.
+     * @param anchor anchor point for picture
+     * @note added in 2.3
+     * @see pictureAnchor
+     */
+    void setPictureAnchor( QgsComposerItem::ItemPositionMode anchor );
+
+    /**Returns the picture's current anchor, which controls how it is placed
+     * within the picture item's frame.
+     * @returns anchor point for picture
+     * @note added in 2.3
+     * @see setPictureAnchor
+     */
+    ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
+
     /**Returns whether the picture item is using an expression for the image source.
      * @returns true if the picture is using an expression for the source, false if
      * it is using a single static file path for the source.
@@ -275,6 +291,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     double mPictureHeight;
 
     ResizeMode mResizeMode;
+    QgsComposerItem::ItemPositionMode mPictureAnchor;
 
     QgsExpression* mPictureExpr;
 
@@ -286,6 +303,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /**sets up the picture item and connects to relevant signals*/
     void init();
+
+    /**Returns part of a raster image which will be shown, given current picture
+     * anchor settings
+    */
+    QRect clippedImageRect( double &boundRectWidthMM, double &boundRectHeightMM, QSize imageRectPixels );
 };
 
 #endif

@@ -1,0 +1,120 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: MetaSearch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-25 12:58-0500\n"
+"PO-Revision-Date: 2014-02-28 19:41+0000\n"
+"Last-Translator: rduivenvoorde <richard@duif.net>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/MetaSearch/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Service Metadata"
+msgstr ""
+
+msgid "Service Identification"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Abstract"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Fees"
+msgstr ""
+
+msgid "Access Constraints"
+msgstr ""
+
+msgid "Service URL"
+msgstr ""
+
+msgid "Service Provider"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Service Contact"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Fax"
+msgstr ""
+
+msgid "Url"
+msgstr ""
+
+msgid "Hours of Service"
+msgstr ""
+
+msgid "Contact Instructions"
+msgstr ""
+
+msgid "Record Metadata"
+msgstr ""
+
+msgid "Identifier"
+msgstr ""
+
+msgid "Subjects"
+msgstr ""
+
+msgid "Creator"
+msgstr ""
+
+msgid "Contributor"
+msgstr ""
+
+msgid "Publisher"
+msgstr ""
+
+msgid "Modified"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Rights"
+msgstr ""
+
+msgid "Bounding Box"
+msgstr ""
+
+msgid "Access Link"
+msgstr ""

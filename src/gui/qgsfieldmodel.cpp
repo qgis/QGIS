@@ -28,7 +28,7 @@ QgsFieldModel::QgsFieldModel( QObject *parent )
 {
 }
 
-QModelIndex QgsFieldModel::indexFromName( const QString fieldName )
+QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 {
   int r = mFields.indexFromName( fieldName );
   QModelIndex idx = index( r, 0 );
@@ -104,7 +104,7 @@ void QgsFieldModel::setAllowExpression( bool allowExpression )
   }
 }
 
-QModelIndex QgsFieldModel::setExpression( const QString expression )
+QModelIndex QgsFieldModel::setExpression( const QString &expression )
 {
   if ( !mAllowExpression )
     return QModelIndex();

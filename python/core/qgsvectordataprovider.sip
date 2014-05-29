@@ -14,38 +14,38 @@ class QgsVectorDataProvider : QgsDataProvider
     enum Capability
     {
       /** provider has no capabilities */
-      NoCapabilities =                     0,
+      NoCapabilities,
       /** allows adding features */
-      AddFeatures =                        1,
+      AddFeatures,
       /** allows deletion of features */
-      DeleteFeatures =               2,
+      DeleteFeatures,
       /** allows modification of attribute values */
-      ChangeAttributeValues =        4,
+      ChangeAttributeValues,
       /** allows addition of new attributes (fields) */
-      AddAttributes =                8,
+      AddAttributes,
       /** allows deletion of attributes (fields) */
-      DeleteAttributes =             16,
+      DeleteAttributes,
       /** DEPRECATED - do not use */
-      SaveAsShapefile =              32,
+      SaveAsShapefile,
       /** allows creation of spatial index */
-      CreateSpatialIndex =           64,
+      CreateSpatialIndex,
       /** fast access to features using their ID */
-      SelectAtId =                   128,
+      SelectAtId,
       /** allows modifications of geometries */
-      ChangeGeometries =             256,
+      ChangeGeometries,
       /** DEPRECATED - do not use */
-      SelectGeometryAtId =           512,
+      SelectGeometryAtId,
       /** DEPRECATED - do not use */
-      RandomSelectGeometryAtId =     1024,
+      RandomSelectGeometryAtId,
       /** DEPRECATED - do not use */
-      SequentialSelectGeometryAtId = 2048,
-      CreateAttributeIndex =         4096,
+      SequentialSelectGeometryAtId,
+      CreateAttributeIndex,
       /** allows user to select encoding */
-      SelectEncoding =               8192,
+      SelectEncoding,
       /** supports simplification of geometries on provider side according to a distance tolerance */
-      SimplifyGeometries =           32768,
+      SimplifyGeometries,
       /** supports topological simplification of geometries on provider side according to a distance tolerance */
-      SimplifyGeometriesWithTopologicalValidation = 65536,
+      SimplifyGeometriesWithTopologicalValidation,
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -320,7 +320,7 @@ class QgsVectorDataProvider : QgsDataProvider
 
     static QVariant convertValue( QVariant::Type type, QString value );
 
-protected:
+  protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
 

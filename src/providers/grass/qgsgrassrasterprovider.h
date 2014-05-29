@@ -22,7 +22,11 @@
 
 extern "C"
 {
+#include <grass/version.h>
 #include <grass/gis.h>
+#if GRASS_VERSION_MAJOR > 6
+#include <grass/raster.h>
+#endif
 }
 
 #include "qgscoordinatereferencesystem.h"

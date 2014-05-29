@@ -90,7 +90,7 @@ class QgsFields;
 
 
 /**
-Utility class for prividing GUI for data-defined rendering.
+Utility class for providing GUI for data-defined rendering.
 */
 class QgsRendererV2DataDefinedMenus : public QObject
 {

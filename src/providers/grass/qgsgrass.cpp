@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <setjmp.h>
+
 #include "qgsgrass.h"
 
 #include "qgslogger.h"
@@ -399,6 +401,8 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path( ms[i] );
 }
 
+jmp_buf QgsGrass::jumper;
+
 int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;
@@ -432,11 +436,25 @@ int QgsGrass::error_routine( const char *msg, int fatal )
 
   if ( fatal )
   {
-    // we have to throw an exception here, otherwise GRASS >= 6.3 will kill our process
-    throw QgsGrass::Exception( QString::fromUtf8( msg ) );
+    QgsDebugMsg( "fatal -> longjmp" );
+    // Exceptions cannot be thrown from here if GRASS lib is not compiled with -fexceptions
+    //throw QgsGrass::Exception( QString::fromUtf8( msg ) );
+    lastError = FATAL;
+
+#if (GRASS_VERSION_MAJOR == 7) && (GRASS_VERSION_MINOR == 0)
+    // G_fatal_error in GRASS 7.0.0beta1 always exists the second time it is called.
+    if ( QString( GRASS_VERSION_RELEASE_STRING ) == "0beta1" )
+    {
+      QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 and hopefully will be fixed in higher GRASS versions. Error message: %1" ).arg( msg ) );
+    }
+#endif
+
+    longjmp( QgsGrass::jumper, 1 );
   }
   else
+  {
     lastError = WARNING;
+  }
 
   return 1;
 }
@@ -797,6 +815,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectors( QString mapsetPath )
 QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
     QString location, QString mapset, QString mapName )
 {
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2 mapset = %3 mapName = %4" ).arg( gisdbase ).arg( location ).arg( mapset ).arg( mapName ) );
   QStringList list;
 
   // Set location
@@ -808,11 +827,15 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
   struct Map_info map;
   int level = -1;
 
-  try
+  // Vect_open_old_head GRASS is raising fatal error if topo exists but it is in different (older) version.
+  // It means that even we could open it on level one, it ends with exception,
+  // but we need level 2 anyway to get list of layers, so it does not matter, only the error message may be misleading.
+
+  G_TRY
   {
     level = Vect_open_old_head( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
   }
-  catch ( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception &e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
@@ -1376,11 +1399,11 @@ QgsCoordinateReferenceSystem GRASS_LIB_EXPORT QgsGrass::crsDirect( QString gisdb
   const char *oldlocale = setlocale( LC_NUMERIC, NULL );
   setlocale( LC_NUMERIC, "C" );
 
-  try
+  G_TRY
   {
     G_get_default_window( &cellhd );
   }
-  catch ( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception &e )
   {
     Q_UNUSED( e );
     setlocale( LC_NUMERIC, oldlocale );

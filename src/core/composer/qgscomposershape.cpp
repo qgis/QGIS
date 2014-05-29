@@ -30,6 +30,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
@@ -43,6 +50,13 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }
 
 QgsComposerShape::~QgsComposerShape()

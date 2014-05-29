@@ -77,12 +77,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     virtual void setFilteredFeatures( QgsFeatureIds ids );
 
+    QgsFeatureIds filteredFeatures();
+
     /**
      * Set the filter mode the filter will use.
      *
      * @param filterMode Sets the current mode of the filter
      */
     void setFilterMode( FilterMode filterMode );
+
+    FilterMode filterMode() { return mFilterMode; }
 
     /**
      * Returns the layer this filter acts on.

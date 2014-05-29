@@ -90,6 +90,12 @@ from PointsDisplacement import PointsDisplacement
 from ZonalStatistics import ZonalStatistics
 from PointsFromPolygons import PointsFromPolygons
 from PointsFromLines import PointsFromLines
+from RandomPointsExtent import RandomPointsExtent
+from RandomPointsLayer import RandomPointsLayer
+from RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
+from RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
+from RandomPointsAlongLines import RandomPointsAlongLines
+from PointsToPaths import PointsToPaths
 
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
@@ -119,8 +125,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(), RandomExtractWithinSubsets(),
-                        ExtractByLocation(), SpatialJoin(),
+                        SelectByLocation(), RandomExtract(),
+                        RandomExtractWithinSubsets(), ExtractByLocation(),
+                        SpatialJoin(),
                         # ------ mmqgisx ------
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),
@@ -141,7 +148,10 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         StatisticsByCategories(), ConcaveHull(), Polygonize(),
                         RasterLayerStatistics(), PointsDisplacement(),
                         ZonalStatistics(), PointsFromPolygons(),
-                        PointsFromLines(),
+                        PointsFromLines(), RandomPointsExtent(),
+                        RandomPointsLayer(), RandomPointsPolygonsFixed(),
+                        RandomPointsPolygonsVariable(),
+                        RandomPointsAlongLines(), PointsToPaths(),
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------

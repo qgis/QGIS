@@ -8,6 +8,7 @@ class QgsRendererRangeV2
     QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol /Transfer/, QString label );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
+    // default dtor is ok
     ~QgsRendererRangeV2();
 
     double lowerValue() const;
@@ -25,6 +26,10 @@ class QgsRendererRangeV2
     QString dump() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+
+  protected:
+    // for cpy+swap idiom
+    void swap( QgsRendererRangeV2 & other );
 };
 
 typedef QList<QgsRendererRangeV2> QgsRangeList;

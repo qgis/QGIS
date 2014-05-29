@@ -33,4 +33,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:multiresolutionindexofvalleybottomflatnessmrvbf', dem, t_slope, t_pctl_v, t_pctl_r, p_slope, p_pctl, update, classify, max_res, mrvbf, mrrtf)
+	processing.runalg('saga:multiresolutionindexofvalleybottomflatnessmrvbf', dem, t_slope, t_pctl_v, t_pctl_r, p_slope, p_pctl, update, classify, max_res, mrvbf, mrrtf)

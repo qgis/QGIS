@@ -131,6 +131,8 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     {
       static_cast<QgsGmlSchema*>( data )->characters( chars, len );
     }
+    // Add attribute or reset its type according to value of current feature
+    void addAttribute( const QString& name, const QString& value );
 
     //helper routines
 

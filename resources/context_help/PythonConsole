@@ -22,7 +22,7 @@
 				No matter if selected text contains the interpreter prompt (>>>, ...). Input area pane is the interactive 
 				python shell for input commands.<br>To access to the python file editor use the 
 				<label>Show editor</label> button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
 				for managing your code (comment and 
 				uncomment code, check syntax, share the code via codepad.org and much more).
 			</p>

@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:sinkdrainageroutedetection', elevation, threshold, thrsheight, sinkroute)
+	processing.runalg('saga:sinkdrainageroutedetection', elevation, threshold, thrsheight, sinkroute)

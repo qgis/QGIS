@@ -264,7 +264,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, QgsPoint point )
 {
-  if ( !layer )
+  if ( !layer || !layer->hasGeometryType() )
     return false;
 
   if ( layer->hasScaleBasedVisibility() &&
@@ -684,7 +684,7 @@ void QgsMapToolIdentify::handleMenuHover()
           hl->setColor( QColor( 255, 0, 0 ) );
           hl->setWidth( 2 );
           mRubberBands.append( hl );
-          connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+          connect( lIt.key(), SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
         }
       }
     }

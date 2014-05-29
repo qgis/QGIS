@@ -65,7 +65,7 @@ class QgsRenderContext
     //! Added in QGIS v1.5
     void setForceVectorOutput( bool force );
     //! Added in QGIS v1.4
-    void setLabelingEngine(QgsLabelingEngineInterface* iface);
+    void setLabelingEngine( QgsLabelingEngineInterface* iface );
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color );
 

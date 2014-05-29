@@ -118,6 +118,8 @@ class QgsServerProjectParser
 
     bool updateLegendDrawingOrder() const;
 
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 = false ) const;
+
   private:
 
     /**Content of project file*/

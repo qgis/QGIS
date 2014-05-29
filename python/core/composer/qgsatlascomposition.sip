@@ -21,18 +21,18 @@ public:
      * @see setEnabled
      */
     bool enabled() const;
-    
+
     /**Sets whether the atlas is enabled
      * @param enabled set to true to enable to atlas
      * @see enabled
-     */    
+     */
     void setEnabled( bool enabled );
 
     /**Returns the map used by the atlas
      * @deprecated Use QgsComposerMap::atlasDriven() instead
      */
     QgsComposerMap* composerMap() const /Deprecated/;
-    
+
     /**Sets the map used by the atlas
      * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
      */
@@ -43,19 +43,20 @@ public:
      * @see setHideCoverage
      */
     bool hideCoverage() const;
-    
+
     /**Sets whether the coverage layer should be hidden in map items in the composition
      * @param hide set to true to hide the coverage layer
      * @see hideCoverage
-     */    
+     */
     void setHideCoverage( bool hide );
 
     /**Returns whether the atlas map uses a fixed scale
-     * @deprecated Use QgsComposerMap::atlasFixedScale() instead
+     * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
      */
     bool fixedScale() const /Deprecated/;
+
     /**Sets whether the atlas map should use a fixed scale
-     * @deprecated Use QgsComposerMap::setAtlasFixedScale( bool ) instead
+     * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
      */
     void setFixedScale( bool fixed ) /Deprecated/;
 
@@ -63,26 +64,26 @@ public:
      * @deprecated Use QgsComposerMap::atlasMargin() instead
      */
     float margin() const /Deprecated/;
-    
+
     /**Sets the margin for the atlas map
      * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
      */
     void setMargin( float margin ) /Deprecated/;
 
-   /**Returns the filename expression used for generating output filenames for each
+    /**Returns the filename expression used for generating output filenames for each
      * atlas page.
      * @returns filename pattern
      * @see setFilenamePattern
      * @note This property has no effect when exporting to PDF if singleFile() is true
      */
     QString filenamePattern() const;
-    
+
     /**Sets the filename expression used for generating output filenames for each
      * atlas page.
      * @param pattern expression to use for output filenames
      * @see filenamePattern
      * @note This method has no effect when exporting to PDF if singleFile() is true
-     */    
+     */
     void setFilenamePattern( const QString& pattern );
 
     /**Returns the coverage layer used for the atlas features
@@ -90,11 +91,11 @@ public:
      * @see setCoverageLayer
      */
     QgsVectorLayer* coverageLayer() const;
-    
+
     /**Sets the coverage layer to use for the atlas features
      * @param layer vector coverage layer
      * @see coverageLayer
-     */    
+     */
     void setCoverageLayer( QgsVectorLayer* layer );
 
     /**Returns whether the atlas will be exported to a single file. This is only
@@ -104,13 +105,13 @@ public:
      * @note This property is only used for PDF exports.
      */
     bool singleFile() const;
-    
+
     /**Sets whether the atlas should be exported to a single file. This is only
      * applicable for PDF exports.
      * @param single set to true to export atlas to a single file.
      * @see singleFile
      * @note This method is only used for PDF exports.
-     */    
+     */
     void setSingleFile( bool single );
 
     bool sortFeatures() const;
@@ -130,6 +131,22 @@ public:
 
     int sortKeyAttributeIndex() const /Deprecated/;
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
+
+    /**Returns the current list of predefined scales for the atlas. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * @returns a vector of doubles representing predefined scales
+     * @see setPredefinedScales
+     * @see QgsComposerMap::atlasScalingMode
+    */
+    const QVector<double>& predefinedScales() const;
+
+    /**Sets the list of predefined scales for the atlas. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * @param scales a vector of doubles representing predefined scales
+     * @see predefinedScales
+     * @see QgsComposerMap::atlasScalingMode
+     */
+    void setPredefinedScales( const QVector<double>& scales );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
@@ -187,7 +204,7 @@ public:
 
     /**Is emitted when atlas rendering has ended*/
     void renderEnded();
-    
+
     /**Is emitted when the current atlas feature changes*/
     void featureChanged( QgsFeature* feature );
 

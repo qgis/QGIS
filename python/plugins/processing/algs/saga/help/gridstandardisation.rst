@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridstandardisation', input, stretch, output)
+	processing.runalg('saga:gridstandardisation', input, stretch, output)

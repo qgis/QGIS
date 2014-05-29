@@ -1,10 +1,10 @@
-SET(GDAL_SRCS 
-  qgsgdalproviderbase.cpp 
-  qgsgdalprovider.cpp 
-  qgsgdaldataitems.cpp 
+SET(GDAL_SRCS
+  qgsgdalproviderbase.cpp
+  qgsgdalprovider.cpp
+  qgsgdaldataitems.cpp
 )
-SET(GDAL_MOC_HDRS  
-  qgsgdalprovider.h 
+SET(GDAL_MOC_HDRS
+  qgsgdalprovider.h
 )
 
 INCLUDE_DIRECTORIES (

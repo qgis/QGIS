@@ -28,6 +28,8 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString path )
   QFileInfo fi( path );
   mName = fi.baseName();
   mIcon = QIcon( QgsApplication::getThemePixmap( "grass_location.png" ) );
+  // set Directory type so that when sorted it gets into dirs (after the dir it represents)
+  mType = QgsDataItem::Directory;
 }
 QgsGrassLocationItem::~QgsGrassLocationItem() {}
 
@@ -79,6 +81,8 @@ bool QgsGrassMapsetItem::isMapset( QString path )
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
+  QgsDebugMsg( "Entered" );
+
   QVector<QgsDataItem*> items;
 
   QStringList vectorNames = QgsGrass::vectors( mPath );

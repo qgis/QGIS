@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:runningaverage', input, field, count, output)
+	processing.runalg('saga:runningaverage', input, field, count, output)

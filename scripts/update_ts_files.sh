@@ -24,6 +24,9 @@
 set -e
 
 cleanup() {
+	if [ -f i18n/python_ts.tar ]; then
+		tar -xf i18n/python_ts.tar
+	fi
 	if [ -f i18n/qgis_ts.tar ]; then
 		echo Restoring excluded translations
 		tar -xf i18n/qgis_ts.tar
@@ -37,6 +40,7 @@ cleanup() {
 		i18n/qgis_*.ts.bak \
 		src/plugins/grass/grasslabels-i18n.cpp \
 		i18n/qgis_ts.tar \
+		i18n/python_ts.tar \
 		qgis_ts.pro
 	do
 		[ -f "$i" ] && rm "$i"
@@ -98,6 +102,7 @@ done
 
 trap cleanup EXIT
 
+tar --remove-file -cf i18n/python_ts.tar $(find python -name "*.ts")
 if [ -n "$exclude" -o -n "$add" ]; then
   echo Saving excluded translations
   tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude

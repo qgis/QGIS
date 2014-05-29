@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridvaluestopoints', grids, polygons, nodata, type, shapes)
+	processing.runalg('saga:gridvaluestopoints', grids, polygons, nodata, type, shapes)
 
 	Available options for selection parameters:
 

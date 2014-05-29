@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:radiusofvariancegrid', input, variance, radius, output, result)
+	processing.runalg('saga:radiusofvariancegrid', input, variance, radius, output, result)
 
 	Available options for selection parameters:
 

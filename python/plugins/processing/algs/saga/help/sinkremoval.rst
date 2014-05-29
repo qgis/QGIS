@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:sinkremoval', dem, sinkroute, method, threshold, thrsheight, dem_preproc)
+	processing.runalg('saga:sinkremoval', dem, sinkroute, method, threshold, thrsheight, dem_preproc)
 
 	Available options for selection parameters:
 

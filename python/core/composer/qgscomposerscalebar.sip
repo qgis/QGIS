@@ -91,7 +91,7 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /**@note: this method was added in version 1.9*/
     void setUnits( ScaleBarUnits u );
-    
+
     /** Returns the join style used for drawing lines in the scalebar
      * @returns Join style for lines
      * @note introduced in 2.3
@@ -176,4 +176,5 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /**Returns diagonal of composer map in selected units (map units / meters / feet / nautical miles)*/
     double mapWidth() const;
+
 };

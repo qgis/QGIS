@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:linedissolve', lines, field_1, field_2, field_3, all, dissolved)
+	processing.runalg('saga:linedissolve', lines, field_1, field_2, field_3, all, dissolved)
 
 	Available options for selection parameters:
 

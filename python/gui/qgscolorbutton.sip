@@ -111,4 +111,24 @@ class QgsColorButton: QPushButton
     void changeEvent( QEvent* e );
     void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
+
+    /**
+     * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
+     */
+    void mousePressEvent( QMouseEvent* e );
+
+    /**
+     * Reimplemented to allow dragging colors from button
+     */
+    void mouseMoveEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented to accept dragged colors
+     */
+    void dragEnterEvent( QDragEnterEvent * e ) ;
+
+    /**
+     * Reimplemented to accept dropped colors
+     */
+    void dropEvent( QDropEvent *e );
 };

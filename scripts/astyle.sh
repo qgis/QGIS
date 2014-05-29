@@ -59,6 +59,30 @@ $ARTISTIC_STYLE_OPTIONS \
 --unpad=paren"
 
 for f in "$@"; do
+	case "$f" in
+        src/app/gps/qwtpolar-*|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/sqlanywhere/sqlanyconnection/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+                echo $f skipped
+                continue
+                ;;
+
+        *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+                cmd="$ASTYLE $ARTISTIC_STYLE_OPTIONS"
+                ;;
+
+        *.ui|*.qgm|*.txt|*.t2t|*.sip|resources/context_help/*)
+                cmd=:
+                ;;
+
+        *.py)
+                cmd="perl -i.prepare -pe 's/[\r\t ]+$//;'"
+                ;;
+
+        *)
+                echo -ne "$f skipped $elcr"
+                continue
+                ;;
+        esac
+
 	if ! [ -f "$f" ]; then
 		echo "$f not found" >&2
 		continue
@@ -66,5 +90,5 @@ for f in "$@"; do
 
 	flip -ub "$f" 
 	#qgsloggermig.pl "$f"
-	$ASTYLE $ARTISTIC_STYLE_OPTIONS "$f"
+        eval "$cmd '$f'"
 done

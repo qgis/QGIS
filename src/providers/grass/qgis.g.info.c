@@ -17,7 +17,7 @@
  * MODULE:       qgis.g.info
  * AUTHOR(S):    Radim Blazek <radim.blazek gmail.com>
  *               using various GRASS modules
- * PURPOSE:      get informations about locations,mapsets,maps
+ * PURPOSE:      get information about locations, mapsets, maps
  * COPYRIGHT:    (C) 2010 by Radim Blazek
  *
  *               This program is free software under the GNU General Public
@@ -28,10 +28,33 @@
 #include <stdio.h>
 #include <string.h>
 #include <float.h>
+#include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
 #include <grass/gprojects.h>
+
+#if GRASS_VERSION_MAJOR >= 7
+#define G_allocate_c_raster_buf Rast_allocate_c_buf
+#define G_allocate_d_raster_buf Rast_allocate_d_buf
+#define G_close_cell Rast_close
+#define G_colors_count Rast_colors_count
+#define G_easting_to_col Rast_easting_to_col
+#define G_get_c_raster_row Rast_get_c_row
+#define G_get_cellhd Rast_get_cellhd
+#define G_get_d_raster_row Rast_get_d_row
+#define G_get_f_color_rule Rast_get_fp_color_rule
+#define G_get_fp_range_min_max Rast_get_fp_range_min_max
+#define G_get_raster_map_type Rast_get_map_type
+#define G_is_null_value Rast_is_null_value
+#define G_northing_to_row Rast_northing_to_row
+#define G_open_cell_old Rast_open_old
+#define G_raster_map_type Rast_map_type
+#define G_read_colors Rast_read_colors
+#define G_read_fp_range Rast_read_fp_range
+#define G_window_cols Rast_window_cols
+#define G_window_rows Rast_window_rows
+#endif
 
 int main( int argc, char **argv )
 {
@@ -131,7 +154,7 @@ int main( int argc, char **argv )
       G_fatal_error( "Not yet supported" );
     }
   }
-  // raster informations
+  // raster information
   else if ( strcmp( "info", info_opt->answer ) == 0 )
   {
     struct FPRange range;
@@ -226,21 +249,29 @@ int main( int argc, char **argv )
 
             if ( rast_type == CELL_TYPE )
             {
+#if GRASS_VERSION_MAJOR < 7
               if ( G_get_c_raster_row( fd, cell, row ) < 0 )
               {
                 G_fatal_error(( "Unable to read raster map <%s> row %d" ),
                               rast_opt->answer, row );
               }
+#else
+              G_get_c_raster_row( fd, cell, row );
+#endif
               val = cell[col];
               ptr = &( cell[col] );
             }
             else
             {
+#if GRASS_VERSION_MAJOR < 7
               if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
               {
                 G_fatal_error(( "Unable to read raster map <%s> row %d" ),
                               rast_opt->answer, row );
               }
+#else
+              G_get_d_raster_row( fd, dcell, row );
+#endif
               val = dcell[col];
               ptr = &( dcell[col] );
             }
@@ -312,19 +343,27 @@ int main( int argc, char **argv )
       {
         if ( rast_type == CELL_TYPE )
         {
+#if GRASS_VERSION_MAJOR < 7
           if ( G_get_c_raster_row( fd, cell, row ) < 0 )
           {
             G_fatal_error(( "Unable to read raster map <%s> row %d" ),
                           rast_opt->answer, row );
           }
+#else
+          G_get_c_raster_row( fd, cell, row );
+#endif
         }
         else
         {
+#if GRASS_VERSION_MAJOR < 7
           if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
           {
             G_fatal_error(( "Unable to read raster map <%s> row %d" ),
                           rast_opt->answer, row );
           }
+#else
+          G_get_d_raster_row( fd, dcell, row );
+#endif
         }
 
         for ( col = 0; col < ncols; col++ )

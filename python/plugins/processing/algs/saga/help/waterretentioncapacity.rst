@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:waterretentioncapacity', shapes, dem, output, retention)
+	processing.runalg('saga:waterretentioncapacity', shapes, dem, output, retention)

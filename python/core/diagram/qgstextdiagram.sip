@@ -20,7 +20,6 @@ class QgsTextDiagram: QgsDiagram
 
     QgsTextDiagram();
     ~QgsTextDiagram();
-
     virtual QgsDiagram* clone() const;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );

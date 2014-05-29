@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridvolume', grid, method, level)
+	processing.runalg('saga:gridvolume', grid, method, level)
 
 	Available options for selection parameters:
 

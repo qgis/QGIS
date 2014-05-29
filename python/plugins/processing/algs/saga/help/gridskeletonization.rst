@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridskeletonization', input, method, init_method, init_threshold, convergence, result, vector)
+	processing.runalg('saga:gridskeletonization', input, method, init_method, init_threshold, convergence, result, vector)
 
 	Available options for selection parameters:
 

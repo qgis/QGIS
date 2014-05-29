@@ -60,7 +60,6 @@ class CORE_EXPORT QgsSpatialIndex
     /** implement assignment operator */
     QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
 
-
     /* operations */
 
     /** add feature to index */

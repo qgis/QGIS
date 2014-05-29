@@ -304,7 +304,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
 } //end of draw method
 
-QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
+QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
   QgsRasterRenderer *renderer = mPipe.renderer();
@@ -1341,7 +1341,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   if ( mProviderKey == "wms" )
   {
     // >>> BACKWARD COMPATIBILITY < 1.9
-    // The old WMS URI format does not contain all the informations, we add them here.
+    // The old WMS URI format does not contain all the information, we add them here.
     if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
     {
       QgsDebugMsg( "Old WMS URI format detected -> adding params" );
@@ -1504,8 +1504,6 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
 
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->userNoDataValues( bandNo ).isEmpty() ) continue;
-
     QDomElement noDataRangeList = document.createElement( "noDataList" );
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );

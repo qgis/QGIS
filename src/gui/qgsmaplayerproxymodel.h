@@ -27,6 +27,7 @@ class QgsMapLayerModel;
 class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_FLAGS( Filters )
   public:
     enum Filter
     {
@@ -51,7 +52,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
      */
-    QgsMapLayerModel* sourceLayerModel() {return mModel;}
+    QgsMapLayerModel* sourceLayerModel() { return mModel; }
 
     /**
      * @brief setFilters set flags that affect how layers are filtered

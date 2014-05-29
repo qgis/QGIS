@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:thinplatesplinetin', shapes, field, target, regul, level, frame, output_extent, user_size, user_grid)
+	processing.runalg('saga:thinplatesplinetin', shapes, field, target, regul, level, frame, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

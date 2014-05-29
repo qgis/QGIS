@@ -12,13 +12,14 @@ class QgsMapUnitScale
 %TypeHeaderCode
 #include <qgsmapunitscale.h>
 %End
-public:
-  QgsMapUnitScale();
+  public:
+    QgsMapUnitScale();
+    QgsMapUnitScale( float _minScale, float _maxScale );
 
-  /** The minimum scale, or 0.0 if unset */
-  double minScale;
-  /** The maximum scale, or 0.0 if unset */
-  double maxScale;
+    /** The minimum scale, or 0.0 if unset */
+    double minScale;
+    /** The maximum scale, or 0.0 if unset */
+    double maxScale;
 
-  double computeMapUnitsPerPixel(const QgsRenderContext& c) const;
+    double computeMapUnitsPerPixel( const QgsRenderContext& c ) const;
 };

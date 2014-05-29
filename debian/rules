@@ -54,7 +54,15 @@ CMAKE_OPTS := \
 	-DMAPSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
-	-DWITH_GLOBE=TRUE
+	-DWITH_CUSTOM_WIDGETS=TRUE \
+	-DWITH_GLOBE=TRUE \
+	-DWITH_INTERNAL_HTTPLIB2=FALSE \
+	-DWITH_INTERNAL_JINJA2=FALSE \
+	-DWITH_INTERNAL_MARKUPSAFE=FALSE \
+	-DWITH_INTERNAL_PYGMENTS=FALSE \
+	-DWITH_INTERNAL_DATEUTIL=FALSE \
+	-DWITH_INTERNAL_PYTZ=FALSE \
+	-DWITH_INTERNAL_SIX=FALSE
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -87,7 +95,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie saucy trusty sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie saucy trusty sid sid-oracle"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -116,7 +124,7 @@ define gentemplate
 $(2): $(1)
 	sed -r \
 		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
-		-e '/^#/d' \
+		-e '/^#($|[^!])/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
@@ -165,21 +173,6 @@ endif
 override_dh_auto_install-arch:
 	dh_auto_install --arch
 
-	# remove unwanted files
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENCE
-
-	# Don't include a copy of the world.tif also included in osgearth-data
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
-
-	# remove extra license files
-	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
-
-	# Man pages are installed by dh_installman
-	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
-	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
-
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
@@ -226,6 +219,21 @@ override_dh_install:
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
 
 	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
+
+	# remove unwanted files
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENCE
+
+	# Don't include a copy of the world.tif also included in osgearth-data
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
+
+	# remove extra license files
+	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
+
+	# Man pages are installed by dh_installman
+	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
+	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
 
 	dh_install --autodest --list-missing
 

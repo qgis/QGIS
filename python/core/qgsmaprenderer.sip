@@ -85,6 +85,8 @@ struct QgsLayerCoordinateTransform
   int destDatumTransform;
 };
 
+// ### QGIS 3: remove QgsMapRenderer in favor of QgsMapRendererJob
+
 /** \ingroup core
  * A non GUI class for rendering a map layer set onto a QPainter.
  */
@@ -132,8 +134,9 @@ class QgsMapRenderer : QObject
     ~QgsMapRenderer();
 
     //! starts rendering
-    //! @ param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
-    void render( QPainter* painter );
+    //! @param painter painter to render to
+    //! @param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
+    void render( QPainter* painter, double* forceWidthScale = 0 );
 
     //! sets extent and checks whether suitable (returns false if not)
     bool setExtent( const QgsRectangle& extent );
@@ -264,24 +267,34 @@ class QgsMapRenderer : QObject
     //! Added in 1.9
     static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
-    //! bridge to QgsMapSettings
-    //! @note added in 2.4
-    const QgsMapSettings& mapSettings();
-
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();
 
     const QgsCoordinateTransform* transformation( const QgsMapLayer *layer ) const;
 
+    //! bridge to QgsMapSettings
+    //! @note added in 2.4
+    const QgsMapSettings& mapSettings();
+
   signals:
 
+    //! @deprecated in 2.4 - not emitted anymore
     void drawingProgress( int current, int total );
 
+    /** This signal is emitted when CRS transformation is enabled/disabled.
+     *  @param flag true if transformation is enabled.
+     *  @deprecated Use hasCrsTransformEnabledChanged( bool flag )
+     *              to avoid conflict with method of the same name). */
     void hasCrsTransformEnabled( bool flag ) /Deprecated/;
+
+    /** This signal is emitted when CRS transformation is enabled/disabled.
+     *  @param flag true if transformation is enabled.
+     *  @note Added in 2.4 */
     void hasCrsTransformEnabledChanged( bool flag );
 
     void destinationSrsChanged();
 
+    //! @deprecated in 2.4 - not emitted anymore
     void updateMap();
 
     void mapUnitsChanged();
@@ -289,12 +302,13 @@ class QgsMapRenderer : QObject
     //! emitted when layer's draw() returned false
     void drawError( QgsMapLayer* );
 
-    //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
-    void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
-
     //! emitted when the current extent gets changed
     //! @note added in 2.4
     void extentsChanged();
+
+    //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
+    void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
+
 
   public slots:
 

@@ -111,8 +111,10 @@ class CORE_EXPORT QgsDistanceArea
 
   protected:
     //! measures line distance, line points are extracted from WKB
+    // @note available in python bindings
     const unsigned char* measureLine( const unsigned char* feature, double* area, bool hasZptr = false );
     //! measures polygon area and perimeter, vertices are extracted from WKB
+    // @note available in python bindings
     const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false );
 
     /**

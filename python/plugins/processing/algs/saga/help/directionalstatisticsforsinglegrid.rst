@@ -43,7 +43,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:directionalstatisticsforsinglegrid', grid, points, direction, tolerance, maxdistance, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, mean, difmean, min, max, range, var, stddev, stddevlo, stddevhi, devmean, percent, points_out)
+	processing.runalg('saga:directionalstatisticsforsinglegrid', grid, points, direction, tolerance, maxdistance, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, mean, difmean, min, max, range, var, stddev, stddevlo, stddevhi, devmean, percent, points_out)
 
 	Available options for selection parameters:
 

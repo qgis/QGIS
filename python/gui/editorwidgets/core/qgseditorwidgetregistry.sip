@@ -23,10 +23,71 @@ class QgsEditorWidgetRegistry : QObject
 %End
 
   public:
+    /**
+     * This class is a singleton and has therefore to be accessed with this method instead
+     * of a constructor.
+     *
+     * @return
+     */
     static QgsEditorWidgetRegistry* instance();
-    void registerWidget( const QString& widgetType, QgsEditorWidgetFactory* widgetFactory /Transfer/ );
-    QgsEditorWidgetWrapper* create( const QString& widgetType, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor = NULL, QWidget* parent = NULL ) /Factory/;
+
+    /**
+     * Create an attribute editor widget wrapper of a given type for a given field.
+     * The editor may be NULL if you want the widget wrapper to create a default widget.
+     *
+     * @param widgetId  The id of the widget type to create an attribute editor for
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     * @param config    A configuration which should be used for the widget creation
+     * @param editor    An editor widget which will be used instead of an autocreated widget
+     * @param parent    The parent which will be used for the created wrapper and the created widget
+     *
+     * @return A new widget wrapper
+     */
+    QgsEditorWidgetWrapper* create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor = NULL, QWidget* parent = NULL ) /Factory/;
+
+    /**
+     * Creates a configuration widget
+     *
+     * @param widgetId  The id of the widget type to create a configuration widget for
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     * @param parent    The parent widget for the created widget
+     *
+     * @return A new configuration widget
+     */
     QgsEditorConfigWidget* createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) /Factory/;
 
-    const QMap<QString, QgsEditorWidgetFactory*> factories();
+    /**
+     * Get the human readable name for a widget type
+     *
+     * @param widgetId The widget type to get the name for
+     *
+     * @return A human readable name
+     */
+    QString name( const QString& widgetId );
+
+    /**
+     * Get access to all registered factories
+     *
+     * @return All ids and factories
+     */
+    const QMap<QString, QgsEditorWidgetFactory*>& factories();
+
+    /**
+     * Get a factory for the given widget type id.
+     *
+     * @return A factory or Null if not existent
+     */
+    QgsEditorWidgetFactory* factory( const QString& widgetId );
+
+    /**
+     * Register a new widget factory with the given id
+     *
+     * @param widgetId      The id which will be used later to refer to this widget type
+     * @param widgetFactory The factory which will create this widget type
+     *
+     * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
+     */
+    bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory /Transfer/ );
 };

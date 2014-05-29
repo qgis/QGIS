@@ -77,4 +77,3 @@ class QProgressDialog;
     /** create index */
     bool createSpatialIndex();
 };
-

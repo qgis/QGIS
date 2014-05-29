@@ -1,5 +1,5 @@
 ##[Example scripts]=group
-##Batch string replace via regex dictionnary=name
+##Batch string replace via regex dictionary=name
 ##input=string John has a blue car.
 ##ignore_case=boolean True
 ##verbose=boolean False

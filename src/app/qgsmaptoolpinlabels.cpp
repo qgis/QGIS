@@ -21,7 +21,6 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
-#include "qgslegend.h"
 #include "qgsvectorlayer.h"
 
 #include "qgsmaptoolselectutils.h"

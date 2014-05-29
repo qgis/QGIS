@@ -40,6 +40,7 @@ class QgsSymbolV2SelectorDialog : QDialog
     void addLayer();
     void removeLayer();
 
+    void saveSymbol();
     void lockLayer();
 
     void layerChanged();

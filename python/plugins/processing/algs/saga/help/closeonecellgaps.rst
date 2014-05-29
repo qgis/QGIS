@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:closeonecellgaps', input, result)
+	processing.runalg('saga:closeonecellgaps', input, result)

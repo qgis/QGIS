@@ -39,7 +39,7 @@ class QgsHighlight;
   after selecting a point, performs the identification:
   - for raster layers shows value of underlying pixel
   - for vector layers shows feature attributes within search radius
-    (allows to edit values when vector layer is in editing mode)
+    (allows editing values when vector layer is in editing mode)
 */
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {

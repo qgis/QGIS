@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:leastcostpaths', source, dem, values, points, line)
+	processing.runalg('saga:leastcostpaths', source, dem, values, points, line)

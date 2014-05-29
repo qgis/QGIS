@@ -20,7 +20,6 @@
 
 #include "qgsmaptoollabel.h"
 #include "qgsrectangle.h"
-#include "qgslegend.h"
 #include "qgscoordinatetransform.h"
 
 class QgsRubberBand;

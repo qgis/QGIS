@@ -35,7 +35,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:effectiveairflowheights', dem, dir, len, dir_const, oldver, maxdist, accel, pyramids, leefact, luvfact, dir_units, len_scale, afh)
+	processing.runalg('saga:effectiveairflowheights', dem, dir, len, dir_const, oldver, maxdist, accel, pyramids, leefact, luvfact, dir_units, len_scale, afh)
 
 	Available options for selection parameters:
 

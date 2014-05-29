@@ -17,4 +17,5 @@ class QgsBlendModeComboBox : QComboBox
 
   public slots:
     void updateModes();
+
 };

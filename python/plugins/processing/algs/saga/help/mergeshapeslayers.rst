@@ -30,4 +30,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:mergeshapeslayers', main, layers, out)
+	processing.runalg('saga:mergeshapeslayers', main, layers, out)

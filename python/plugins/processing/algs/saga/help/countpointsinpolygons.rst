@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:countpointsinpolygons', points, polygons)
+	processing.runalg('saga:countpointsinpolygons', points, polygons)

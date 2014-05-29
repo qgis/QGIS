@@ -49,7 +49,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
 
-  lblDataUri->setText( layer->name() );
+  lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
   txtSQL->setText( mOrigSubsetString );
 
   populateFields();

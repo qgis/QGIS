@@ -24,6 +24,7 @@ __copyright__ = '(C) 2007, Martin Dobias'
 __revision__ = '$Format:%H$'
 
 import sip
+
 try:
     apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
     for api in apis:

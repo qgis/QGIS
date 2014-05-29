@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:resampling', input, keep_type, target, scale_up_method, scale_down_method, output_extent, user_size, user_grid)
+	processing.runalg('saga:resampling', input, keep_type, target, scale_up_method, scale_down_method, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

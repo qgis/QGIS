@@ -20,7 +20,6 @@
 #include "qgsmaptooledit.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
-#include "qgslegend.h"
 
 #include <QPoint>
 #include <QList>

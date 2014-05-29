@@ -58,7 +58,7 @@ from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
 from processing.tools import dataobjects
-
+from qgis.utils import iface
 
 class AlgorithmExecutionDialog(QtGui.QDialog):
 
@@ -68,7 +68,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             (self.parameter, self.widget) = (param, widget)
 
     def __init__(self, alg, mainWidget):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint
+        QtGui.QDialog.__init__(self, iface.mainWindow(), QtCore.Qt.WindowSystemMenuHint
                                | QtCore.Qt.WindowTitleHint)
         self.executed = False
         self.mainWidget = mainWidget
@@ -122,7 +122,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             if html:
                 self.webView.setHtml(html)
             elif url:
-                print url
                 self.webView.load(url)
         except:
             self.webView.setHtml('<h2>Could not open help file :-( </h2>')
@@ -219,8 +218,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def accept(self):
         checkCRS = ProcessingConfig.getSetting(
                 ProcessingConfig.WARN_UNMATCHING_CRS)
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
@@ -234,7 +231,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     return
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.critical(self, 'Unable to execute algorithm', msg)
+                QMessageBox.warning(self, 'Unable to execute algorithm', msg)
                 return
             self.runButton.setEnabled(False)
             self.buttonBox.button(

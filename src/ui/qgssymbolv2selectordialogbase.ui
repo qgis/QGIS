@@ -152,7 +152,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Move down</string>
+          <string>Save symbol</string>
          </property>
          <property name="text">
           <string>Save</string>

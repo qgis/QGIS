@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:splitrgbbands', input, r, g, b)
+	processing.runalg('saga:splitrgbbands', input, r, g, b)

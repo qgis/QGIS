@@ -29,4 +29,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:variogramsurface', points, field, distcount, nskip, count, variance, covariance)
+	processing.runalg('saga:variogramsurface', points, field, distcount, nskip, count, variance, covariance)

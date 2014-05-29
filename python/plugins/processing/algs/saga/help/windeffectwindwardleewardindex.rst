@@ -35,7 +35,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:windeffectwindwardleewardindex', dem, dir, len, dir_const, oldver, maxdist, accel, pyramids, dir_units, len_scale, effect, luv, lee)
+	processing.runalg('saga:windeffectwindwardleewardindex', dem, dir, len, dir_const, oldver, maxdist, accel, pyramids, dir_units, len_scale, effect, luv, lee)
 
 	Available options for selection parameters:
 

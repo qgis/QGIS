@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:watershedsegmentation', grid, output, down, join, threshold, edge, bborders, segments, seeds, borders)
+	processing.runalg('saga:watershedsegmentation', grid, output, down, join, threshold, edge, bborders, segments, seeds, borders)
 
 	Available options for selection parameters:
 

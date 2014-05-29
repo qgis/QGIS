@@ -232,7 +232,14 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
       else
       {
-        return 2;
+        //If we have a single point, we still create a non-null box
+        double bufferDistance = 0.000001;
+        if ( L->crs().geographicFlag() )
+          bufferDistance = 0.00000001;
+        bBox.setXMinimum( bBox.xMinimum() - bufferDistance );
+        bBox.setXMaximum( bBox.xMaximum() + bufferDistance );
+        bBox.setYMinimum( bBox.yMinimum() - bufferDistance );
+        bBox.setYMaximum( bBox.yMaximum() + bufferDistance );
       }
     }
 
@@ -362,7 +369,14 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       }
       else
       {
-        return 2;
+        //If we have a single point, we still create a non-null box
+        double bufferDistance = 0.000001;
+        if ( L->crs().geographicFlag() )
+          bufferDistance = 0.00000001;
+        bBox.setXMinimum( bBox.xMinimum() - bufferDistance );
+        bBox.setXMaximum( bBox.xMaximum() + bufferDistance );
+        bBox.setYMinimum( bBox.yMinimum() - bufferDistance );
+        bBox.setYMaximum( bBox.yMaximum() + bufferDistance );
       }
     }
 

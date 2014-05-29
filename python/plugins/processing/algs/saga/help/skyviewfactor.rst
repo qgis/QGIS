@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:skyviewfactor', dem, maxradius, method, level_inc, ndirs, visible, svf, simple, terrain)
+	processing.runalg('saga:skyviewfactor', dem, maxradius, method, level_inc, ndirs, visible, svf, simple, terrain)
 
 	Available options for selection parameters:
 

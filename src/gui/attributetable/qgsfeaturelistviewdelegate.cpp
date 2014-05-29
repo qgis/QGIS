@@ -17,6 +17,7 @@ QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *lis
     : QItemDelegate( parent )
     , mFeatureSelectionModel( NULL )
     , mListModel( listModel )
+    , mCurrentFeatureEdited( false )
 {
 }
 
@@ -37,6 +38,11 @@ void QgsFeatureListViewDelegate::setFeatureSelectionModel( QgsFeatureSelectionMo
   mFeatureSelectionModel = featureSelectionModel;
 }
 
+void QgsFeatureListViewDelegate::setCurrentFeatureEdited( bool state )
+{
+  mCurrentFeatureEdited = state;
+}
+
 void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* editSelectionModel )
 {
   mEditSelectionModel = editSelectionModel;
@@ -52,7 +58,8 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 {
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
-  bool isEdited = mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
+
+  bool isEditSelection = mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
 
   // Icon layout options
   QStyleOptionViewItem iconOption;
@@ -76,7 +83,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QStyleOptionViewItem textOption;
   textOption.state |= QStyle::State_Enabled;
-  if ( isEdited )
+  if ( isEditSelection )
   {
     textOption.state |= QStyle::State_Selected;
   }
@@ -87,7 +94,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
     textOption.palette.setColor( QPalette::Text, Qt::darkGreen );
     textOption.palette.setColor( QPalette::HighlightedText, Qt::darkGreen );
   }
-  else if ( featInfo.isEdited || isEdited )
+  else if ( featInfo.isEdited || ( mCurrentFeatureEdited && isEditSelection ) )
   {
     textOption.font.setStyle( QFont::StyleItalic );
     textOption.palette.setColor( QPalette::Text, Qt::red );

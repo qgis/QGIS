@@ -31,7 +31,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:topographiccorrection', dem, original, azi, hgt, method, minnaert, maxcells, maxvalue, corrected)
+	processing.runalg('saga:topographiccorrection', dem, original, azi, hgt, method, minnaert, maxcells, maxvalue, corrected)
 
 	Available options for selection parameters:
 

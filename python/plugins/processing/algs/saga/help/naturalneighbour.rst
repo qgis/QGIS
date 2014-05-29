@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:naturalneighbour', shapes, field, target, sibson, output_extent, user_size, user_grid)
+	processing.runalg('saga:naturalneighbour', shapes, field, target, sibson, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

@@ -21,13 +21,16 @@
 
 #include <QModelIndex>
 
-class QgsLegend;
+class QgsLayerTreeGroup;
+class QgsLayerTreeNode;
+class QgsLayerTreeView;
 class QgsMapLayer;
 
 /** \ingroup gui
  * QgsLegendInterface
  * Abstract base class to make QgsLegend available to plugins.
  */
+Q_NOWARN_DEPRECATED_PUSH
 class QgsAppLegendInterface : public QgsLegendInterface
 {
     Q_OBJECT
@@ -35,7 +38,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
   public:
 
     /** Constructor */
-    explicit QgsAppLegendInterface( QgsLegend * legend );
+    explicit QgsAppLegendInterface( QgsLayerTreeView * layerTreeView );
 
     /** Destructor */
     ~QgsAppLegendInterface();
@@ -89,9 +92,6 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Move a layer to a group
     void moveLayer( QgsMapLayer *ml, int groupIndex );
 
-    //! Update an index
-    void updateIndex( QModelIndex oldIndex, QModelIndex newIndex );
-
     //! Collapse or expand a group
     virtual void setGroupExpanded( int groupIndex, bool expand );
 
@@ -107,11 +107,17 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! refresh layer symbology
     void refreshLayerSymbology( QgsMapLayer *ml );
 
-  private:
+  protected slots:
+    void onAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void onRemovedChildren();
 
+  private:
     //! Pointer to QgsLegend object
-    QgsLegend *mLegend;
-    QTreeWidgetItem *getItem( int itemIndex );
+    QgsLayerTreeView* mLayerTreeView;
+    QgsLayerTreeGroup* groupIndexToNode( int itemIndex );
+    int groupNodeToIndex( QgsLayerTreeGroup* group );
+    void setExpanded( QgsLayerTreeNode *node, bool expand );
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //QGSLEGENDAPPIFACE_H

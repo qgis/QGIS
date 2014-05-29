@@ -60,8 +60,8 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     //setters and getters
-    QgsComposerShape::Shape shapeType() const {return mShape;}
-    void setShapeType( QgsComposerShape::Shape s ) {mShape = s;}
+    QgsComposerShape::Shape shapeType() const { return mShape; }
+    void setShapeType( QgsComposerShape::Shape s ) { mShape = s; }
 
     /**Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );

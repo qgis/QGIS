@@ -128,7 +128,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
     QgsFeature f;
     f.setGeometry( mModifiedGeometry );
 
-    //add empty values for all fields (allows to insert attribute values via the feature form in the same session)
+    //add empty values for all fields (allows inserting attribute values via the feature form in the same session)
     QgsAttributes attrs( vlayer->pendingFields().count() );
     const QgsFields& fields = vlayer->pendingFields();
     for ( int idx = 0; idx < fields.count(); ++idx )

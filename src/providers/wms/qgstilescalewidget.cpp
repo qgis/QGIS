@@ -127,7 +127,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsTileScaleWidget *tws = new QgsTileScaleWidget( canvas );
   tws->setObjectName( "theTileScaleWidget" );
 
-  QObject *legend = mainWindow->findChild<QObject*>( "theMapLegend" );
+  QObject *legend = mainWindow->findChild<QObject*>( "theLayerTreeView" );
   if ( legend )
   {
     connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),

@@ -110,8 +110,11 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     /**Setup mPainterPath
       @param symbolName name of symbol
       @param context render context
-      @param f feature f to render (0 if no data defined rendering)*/
-    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f = 0 );
+      @param scaledWidth optional width
+      @param scaledHeight optional height
+      @param f optional feature to render (0 if no data defined rendering)
+     */
+    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth = 0, double* scaledHeight = 0, const QgsFeature* f = 0 );
 
     /**True if this symbol layer uses a data defined property*/
     bool hasDataDefinedProperty() const;

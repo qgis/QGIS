@@ -43,6 +43,8 @@ class QgsHighlight;
 class QgsMapCanvas;
 class QDockWidget;
 
+class QwtPlotCurve;
+
 /**
  *@author Gary E.Sherman
  */
@@ -64,9 +66,9 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
 {
   public:
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
-    QgsFields fields() const { return mFields; }
-    QgsFeature feature() const { return mFeature; }
-    QgsCoordinateReferenceSystem crs() { return mCrs; }
+    const QgsFields &fields() const { return mFields; }
+    const QgsFeature &feature() const { return mFeature; }
+    const QgsCoordinateReferenceSystem &crs() { return mCrs; }
 
   private:
     QgsFields mFields;
@@ -90,6 +92,19 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
 
   private:
     QgsIdentifyResultsWebView *mWebView;
+};
+
+class APP_EXPORT QgsIdentifyPlotCurve
+{
+  public:
+
+    QgsIdentifyPlotCurve() { mPlotCurve = 0; }
+    QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
+                          QwtPlot* plot, const QString &title = QString(), QColor color = QColor() ) ;
+    ~QgsIdentifyPlotCurve();
+
+  private:
+    QwtPlotCurve* mPlotCurve;
 };
 
 class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
@@ -154,6 +169,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void zoomToFeature();
     void copyAttributeValue();
     void copyFeature();
+    void toggleFeatureSelection();
     void copyFeatureAttributes();
     void copyGetFeatureInfoUrl();
     void highlightAll();
@@ -195,6 +211,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void mapLayerActionDestroyed();
 
   private:
+    QString representValue( QgsVectorLayer* vlayer, const QString& fieldName, const QVariant& value );
+
     enum ItemDataRole
     {
       GetFeatureInfoUrlRole = Qt::UserRole + 10
@@ -204,6 +222,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas;
     QList<QgsFeature> mFeatures;
+    QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
@@ -216,6 +235,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void layerProperties( QTreeWidgetItem *object );
     void disconnectLayer( QObject *object );
 
+    void saveWindowLocation();
+
     void setColumnText( int column, const QString & label );
     void expandColumnsToFit();
 
@@ -226,6 +247,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
     QDockWidget *mDock;
+
+    QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

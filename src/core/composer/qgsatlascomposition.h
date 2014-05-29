@@ -79,12 +79,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setHideCoverage( bool hide );
 
     /**Returns whether the atlas map uses a fixed scale
-     * @deprecated Use QgsComposerMap::atlasFixedScale() instead
+     * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
      */
     Q_DECL_DEPRECATED bool fixedScale() const;
 
     /**Sets whether the atlas map should use a fixed scale
-     * @deprecated Use QgsComposerMap::setAtlasFixedScale( bool ) instead
+     * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
      */
     Q_DECL_DEPRECATED void setFixedScale( bool fixed );
 
@@ -159,6 +159,22 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
     Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
+
+    /**Returns the current list of predefined scales for the atlas. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * @returns a vector of doubles representing predefined scales
+     * @see setPredefinedScales
+     * @see QgsComposerMap::atlasScalingMode
+    */
+    const QVector<double>& predefinedScales() const { return mPredefinedScales; }
+
+    /**Sets the list of predefined scales for the atlas. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * @param scales a vector of doubles representing predefined scales
+     * @see predefinedScales
+     * @see QgsComposerMap::atlasScalingMode
+     */
+    void setPredefinedScales( const QVector<double>& scales );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
@@ -274,6 +290,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //computes the extent of the current feature, in the crs of the specified map
     void computeExtent( QgsComposerMap *map );
+
+    //list of predefined scales
+    QVector<double> mPredefinedScales;
 };
 
 #endif

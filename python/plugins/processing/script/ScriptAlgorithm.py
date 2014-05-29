@@ -49,6 +49,7 @@ from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputString import OutputString
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputFile import OutputFile
+from processing.outputs.OutputDirectory import OutputDirectory
 from processing.outputs.OutputFactory import OutputFactory
 from processing.script.WrongScriptException import WrongScriptException
 
@@ -204,6 +205,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith('output file'):
             out = OutputFile()
+        elif tokens[1].lower().strip().startswith('output directory'):
+            out = OutputDirectory()
         elif tokens[1].lower().strip().startswith('output number'):
             out = OutputNumber()
         elif tokens[1].lower().strip().startswith('output string'):

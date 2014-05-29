@@ -1442,9 +1442,9 @@ bool QgsGeometry::deleteVertex( int atVertex )
   }
 
   QgsConstWkbPtr srcPtr( mGeometry );
-  char endianess;
+  char endianness;
   QGis::WkbType wkbType;
-  srcPtr >> endianess >> wkbType;
+  srcPtr >> endianness >> wkbType;
 
   bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
 
@@ -1454,7 +1454,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
   unsigned char *dstBuffer = new unsigned char[mGeometrySize - ps];
   QgsWkbPtr dstPtr( dstBuffer );
-  dstPtr << endianess << wkbType;
+  dstPtr << endianness << wkbType;
 
   bool deleted = false;
   switch ( wkbType )
@@ -1527,8 +1527,8 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
-        srcPtr >> endianess >> wkbType;
-        dstPtr << endianess << wkbType;
+        srcPtr >> endianness >> wkbType;
+        dstPtr << endianness << wkbType;
         deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, false, linenr == nLines - 1 );
       }
 
@@ -1545,8 +1545,8 @@ bool QgsGeometry::deleteVertex( int atVertex )
       for ( int polynr = 0, pointIndex = 0; polynr < nPolys; ++polynr )
       {
         int nRings;
-        srcPtr >> endianess >> wkbType >> nRings;
-        dstPtr << endianess << wkbType << nRings;
+        srcPtr >> endianness >> wkbType >> nRings;
+        dstPtr << endianness << wkbType << nRings;
 
         for ( int ringnr = 0; ringnr < nRings; ++ringnr )
           deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, polynr == nPolys - 1 && ringnr == nRings - 1 );
@@ -1638,9 +1638,9 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
 
   QgsConstWkbPtr srcPtr( mGeometry );
-  char endianess;
+  char endianness;
   QGis::WkbType wkbType;
-  srcPtr >> endianess >> wkbType;
+  srcPtr >> endianness >> wkbType;
 
   bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
 
@@ -1650,7 +1650,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 
   unsigned char *dstBuffer = new unsigned char[mGeometrySize + ps];
   QgsWkbPtr dstPtr( dstBuffer );
-  dstPtr << endianess << wkbType;
+  dstPtr << endianness << wkbType;
 
   bool inserted = false;
   switch ( wkbType )
@@ -1698,7 +1698,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
           dstPtr += len;
         }
 
-        dstPtr << endianess << ( hasZValue ? QGis::WKBPoint25D : QGis::WKBPoint ) << x << y;
+        dstPtr << endianness << ( hasZValue ? QGis::WKBPoint25D : QGis::WKBPoint ) << x << y;
         if ( hasZValue )
           dstPtr << 0.0;
 
@@ -1721,8 +1721,8 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
-        srcPtr >> endianess >> wkbType;
-        dstPtr << endianess << wkbType;
+        srcPtr >> endianness >> wkbType;
+        dstPtr << endianness << wkbType;
         inserted |= insertVertex( srcPtr, dstPtr, beforeVertex, x, y, hasZValue, pointIndex, false );
       }
       break;
@@ -1738,8 +1738,8 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
       for ( int polynr = 0, pointIndex = 0; polynr < nPolys; ++polynr )
       {
         int nRings;
-        srcPtr >> endianess >> wkbType >> nRings;
-        dstPtr << endianess << wkbType << nRings;
+        srcPtr >> endianness >> wkbType >> nRings;
+        dstPtr << endianness << wkbType << nRings;
 
         for ( int ringnr = 0; ringnr < nRings; ++ringnr )
           inserted |= insertVertex( srcPtr, dstPtr, beforeVertex, x, y, hasZValue, pointIndex, true );
@@ -2878,14 +2878,27 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     return 7;
 
   //make sure splitLine is valid
-  if ( splitLine.size() < 2 )
+  if (( type() == QGis::Line    && splitLine.size() < 1 ) ||
+      ( type() == QGis::Polygon && splitLine.size() < 2 ) )
     return 1;
 
   newGeometries.clear();
 
   try
   {
-    GEOSGeometry *splitLineGeos = createGeosLineString( splitLine.toVector() );
+    GEOSGeometry* splitLineGeos;
+    if ( splitLine.size() > 1 )
+    {
+      splitLineGeos = createGeosLineString( splitLine.toVector() );
+    }
+    else if ( splitLine.size() == 1 )
+    {
+      splitLineGeos = createGeosPoint( splitLine.at( 0 ) );
+    }
+    else
+    {
+      return 1;
+    }
     if ( !GEOSisValid( splitLineGeos ) || !GEOSisSimple( splitLineGeos ) )
     {
       GEOSGeom_destroy( splitLineGeos );
@@ -4549,6 +4562,51 @@ void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QgsCoordinateTransfo
 
 }
 
+GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
+{
+  int type = GEOSGeomTypeId( mGeos );
+  QgsMultiPolyline multiLine;
+
+  if ( type == GEOS_MULTILINESTRING )
+    multiLine = asMultiPolyline();
+  else if ( type == GEOS_LINESTRING )
+    multiLine = QgsMultiPolyline() << asPolyline();
+  else
+    return 0;
+
+  QgsPoint splitPoint = fromGeosGeom( GEOSsplitPoint )->asPoint();
+
+  QgsMultiPolyline lines;
+  QgsPolyline line;
+  QgsPolyline newline;
+
+  //For each part
+  for ( int i = 0; i < multiLine.size() ; ++i )
+  {
+    line = multiLine[i];
+    newline = QgsPolyline();
+    newline.append( line[0] );
+    //For each segment
+    for ( int j = 1; j < line.size() - 1 ; ++j )
+    {
+      newline.append( line[j] );
+      if ( line[j] == splitPoint )
+      {
+        lines.append( newline );
+        newline = QgsPolyline();
+        newline.append( line[j] );
+      }
+    }
+    newline.append( line.last() );
+    lines.append( newline );
+  }
+  QgsGeometry* splitLines = fromMultiPolyline( lines );
+  GEOSGeometry* splitGeom = GEOSGeom_clone( splitLines->asGeos() );
+
+  return splitGeom;
+
+}
+
 int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries )
 {
   if ( !splitLine )
@@ -4569,7 +4627,17 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
   if ( linearIntersect > 0 )
     return 3;
 
-  GEOSGeometry* splitGeom = GEOSDifference( mGeos, splitLine );
+  int splitGeomType = GEOSGeomTypeId( splitLine );
+
+  GEOSGeometry* splitGeom;
+  if ( splitGeomType == GEOS_POINT )
+  {
+    splitGeom = linePointDifference( splitLine );
+  }
+  else
+  {
+    splitGeom = GEOSDifference( mGeos, splitLine );
+  }
   QVector<GEOSGeometry*> lineGeoms;
 
   int splitType = GEOSGeomTypeId( splitGeom );

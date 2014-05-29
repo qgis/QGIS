@@ -922,7 +922,7 @@ void QgsComposerLegendWidget::updateLegend()
 
 
     //and also group info
-    QgsAppLegendInterface legendIface( app->legend() );
+    QgsAppLegendInterface legendIface( app->layerTreeView() );
     QList< GroupLayerInfo > groupInfo = legendIface.groupLayerRelationship();
     mLegend->model()->setLayerSetAndGroups( layerIdList, groupInfo );
     mLegend->endCommand();

@@ -36,4 +36,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:simulation', dem, fuel, windspd, winddir, m1h, m10h, m100h, mherb, mwood, ignition, updateview, time, flame, intensity)
+	processing.runalg('saga:simulation', dem, fuel, windspd, winddir, m1h, m10h, m100h, mherb, mwood, ignition, updateview, time, flame, intensity)

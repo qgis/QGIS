@@ -42,7 +42,7 @@ TARGET_LINK_LIBRARIES (wfsprovider
 
 ########################################################
 # Install
-                
+
 INSTALL(TARGETS wfsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

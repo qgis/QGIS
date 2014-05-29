@@ -29,4 +29,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:profilesfromlines', dem, values, lines, name, split, profile, profiles)
+	processing.runalg('saga:profilesfromlines', dem, values, lines, name, split, profile, profiles)

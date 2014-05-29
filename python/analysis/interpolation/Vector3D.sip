@@ -13,7 +13,7 @@ class Vector3D
     Vector3D( const Vector3D& v );
     /**Destructor*/
     ~Vector3D();
-    //Vector3D& operator=( const Vector3D& v );
+    // Vector3D& operator=( const Vector3D& v );
     bool operator==( const Vector3D& v );
     bool operator!=( const Vector3D& v );
     /**Returns the x-component of the vector*/

@@ -39,7 +39,7 @@ class OpenViewerAction(ToolboxAction):
         self.group = 'Visualization'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/tool.png')
+        return QtGui.QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')
 
     def execute(self):
         f = os.path.join(FusionUtils.FusionPath(), 'pdq.exe')

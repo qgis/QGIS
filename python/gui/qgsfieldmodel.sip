@@ -12,14 +12,14 @@ class QgsFieldModel : QAbstractItemModel
 %End
 
   public:
-    enum FieldRoles {
-      /* SIP does not accept any arithmetic" */
-      FieldNameRole = 33,  /* return field name if index corresponds to a field */
-      FieldIndexRole = 34, /* return field index if index corresponds to a field */
-      ExpressionRole = 35, /* return field name or expression */
-      IsExpressionRole = 36, /* return if index corresponds to an expression */
-      ExpressionValidityRole = 37, /* return if expression is valid or not */
-      FieldTypeRole = 38 /* return the field type (if a field, return QVariant if expression) */
+    enum FieldRoles
+    {
+      FieldNameRole,  /* return field name if index corresponds to a field */
+      FieldIndexRole, /* return field index if index corresponds to a field */
+      ExpressionRole, /* return field name or expression */
+      IsExpressionRole, /* return if index corresponds to an expression */
+      ExpressionValidityRole, /* return if expression is valid or not */
+      FieldTypeRole /* return the field type (if a field, return QVariant if expression) */
     };
 
     /**
@@ -28,7 +28,7 @@ class QgsFieldModel : QAbstractItemModel
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );
 
     //! return the index corresponding to a given fieldName
-    QModelIndex indexFromName( QString fieldName );
+    QModelIndex indexFromName( const QString &fieldName );
 
     //! returns the currently used layer
     void setAllowExpression( bool allowExpression );
@@ -38,7 +38,7 @@ class QgsFieldModel : QAbstractItemModel
      * @brief setExpression sets a single expression to be added after the fields at the end of the model
      * @return the model index of the newly added expression
      */
-    QModelIndex setExpression( QString expression );
+    QModelIndex setExpression( const QString &expression );
 
     //! remove expressions from the model
     void removeExpression();
@@ -60,5 +60,4 @@ class QgsFieldModel : QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent ) const;
     QVariant data( const QModelIndex &index, int role ) const;
-
 };

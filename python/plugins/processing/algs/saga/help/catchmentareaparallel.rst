@@ -42,7 +42,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:catchmentareaparallel', elevation, sinkroute, weight, material, target, step, method, dolinear, linearthrs, linearthrs_grid, chdir_grid, convergence, carea, cheight, cslope, accu_tot, accu_left, accu_right, caspect, flwpath)
+	processing.runalg('saga:catchmentareaparallel', elevation, sinkroute, weight, material, target, step, method, dolinear, linearthrs, linearthrs_grid, chdir_grid, convergence, carea, cheight, cslope, accu_tot, accu_left, accu_right, caspect, flwpath)
 
 	Available options for selection parameters:
 

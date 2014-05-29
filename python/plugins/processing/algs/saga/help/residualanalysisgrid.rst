@@ -36,7 +36,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:residualanalysisgrid', grid, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, mean, diff, stddev, range, min, max, devmean, percent)
+	processing.runalg('saga:residualanalysisgrid', grid, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, mean, diff, stddev, range, min, max, devmean, percent)
 
 	Available options for selection parameters:
 

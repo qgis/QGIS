@@ -12,13 +12,13 @@ class QgsFieldProxyModel : QSortFilterProxyModel
   public:
     enum Filter
     {
-      String = 1,
-      Int = 2,
-      LongLong = 4,
-      Double = 8,
-      Numeric = 14,
-      Date = 16,
-      All = 31
+      String,
+      Int,
+      LongLong,
+      Double,
+      Numeric,
+      Date,
+      All
     };
     typedef QFlags<QgsFieldProxyModel::Filter> Filters;
 
@@ -37,7 +37,7 @@ class QgsFieldProxyModel : QSortFilterProxyModel
      * @note added in 2.3
      */
     QgsFieldProxyModel* setFilters( Filters filters );
-    const Filters& filters() const ;
+    const Filters& filters() const;
 
     // QSortFilterProxyModel interface
   public:

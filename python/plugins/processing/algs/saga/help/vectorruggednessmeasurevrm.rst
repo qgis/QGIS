@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:vectorruggednessmeasurevrm', dem, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, vrm)
+	processing.runalg('saga:vectorruggednessmeasurevrm', dem, radius, distance_weighting_weighting, distance_weighting_idw_power, distance_weighting_idw_offset, distance_weighting_bandwidth, vrm)
 
 	Available options for selection parameters:
 

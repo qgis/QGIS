@@ -36,7 +36,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:randomfield', nx, ny, cellsize, xmin, ymin, method, range_min, range_max, mean, stddev, output)
+	processing.runalg('saga:randomfield', nx, ny, cellsize, xmin, ymin, method, range_min, range_max, mean, stddev, output)
 
 	Available options for selection parameters:
 

@@ -146,6 +146,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_GRASS=TRUE ^
+	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
 	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
@@ -162,6 +163,12 @@ cmake %CMAKE_OPT% ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
+        -D WITH_INTERNAL_JINJA2=FALSE ^
+        -D WITH_INTERNAL_MARKUPSAFE=FALSE ^
+        -D WITH_INTERNAL_PYGMENTS=FALSE ^
+        -D WITH_INTERNAL_DATEUTIL=FALSE ^
+        -D WITH_INTERNAL_PYTZ=FALSE ^
+        -D WITH_INTERNAL_SIX=FALSE ^
 	%SRCDIR%
 if errorlevel 1 (echo cmake failed & goto error)
 
@@ -224,6 +231,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
 	apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
 	apps/qt4/plugins/sqldrivers/qsqlspatialite.dll ^
+	apps/qt4/plugins/designer/qgis_customwidgets.dll ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat
 if errorlevel 1 (echo tar failed & goto error)

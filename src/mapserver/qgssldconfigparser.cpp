@@ -718,6 +718,18 @@ int QgsSLDConfigParser::nLayers() const
   return 0;
 }
 
+void QgsSLDConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->serviceCapabilities( parentElement, doc );
+  }
+  else
+  {
+    QgsConfigParserUtils::fallbackServiceCapabilities( parentElement, doc );
+  }
+}
+
 QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& layerName ) const
 {
   QList<QDomElement> resultList;

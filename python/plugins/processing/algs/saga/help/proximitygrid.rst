@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:proximitygrid', features, distance, direction, allocation)
+	processing.runalg('saga:proximitygrid', features, distance, direction, allocation)

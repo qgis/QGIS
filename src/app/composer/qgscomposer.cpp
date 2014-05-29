@@ -57,6 +57,7 @@
 #include "qgsgeometry.h"
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsprevieweffect.h"
 #include "ui_qgssvgexportoptions.h"
 
 #include <QCloseEvent>
@@ -260,10 +261,49 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionSelectNextBelow );
   editMenu->addAction( mActionSelectNextAbove );
 
+  mActionPreviewModeOff = new QAction( tr( "Normal" ), this );
+  mActionPreviewModeOff->setStatusTip( tr( "Normal" ) );
+  mActionPreviewModeOff->setCheckable( true );
+  mActionPreviewModeOff->setChecked( true );
+  connect( mActionPreviewModeOff, SIGNAL( triggered() ), this, SLOT( disablePreviewMode() ) );
+  mActionPreviewModeGrayscale = new QAction( tr( "Simulate Photocopy (Grayscale)" ), this );
+  mActionPreviewModeGrayscale->setStatusTip( tr( "Simulate photocopy (grayscale)" ) );
+  mActionPreviewModeGrayscale->setCheckable( true );
+  connect( mActionPreviewModeGrayscale, SIGNAL( triggered() ), this, SLOT( activateGrayscalePreview() ) );
+  mActionPreviewModeMono = new QAction( tr( "Simulate Fax (Mono)" ), this );
+  mActionPreviewModeMono->setStatusTip( tr( "Simulate fax (mono)" ) );
+  mActionPreviewModeMono->setCheckable( true );
+  connect( mActionPreviewModeMono, SIGNAL( triggered() ), this, SLOT( activateMonoPreview() ) );
+  mActionPreviewProtanope = new QAction( tr( "Simulate Color Blindness (Protanope)" ), this );
+  mActionPreviewProtanope->setStatusTip( tr( "Simulate color blindness (Protanope)" ) );
+  mActionPreviewProtanope->setCheckable( true );
+  connect( mActionPreviewProtanope, SIGNAL( triggered() ), this, SLOT( activateProtanopePreview() ) );
+  mActionPreviewDeuteranope = new QAction( tr( "Simulate Color Blindness (Deuteranope)" ), this );
+  mActionPreviewDeuteranope->setStatusTip( tr( "Simulate color blindness (Deuteranope)" ) );
+  mActionPreviewDeuteranope->setCheckable( true );
+  connect( mActionPreviewDeuteranope, SIGNAL( triggered() ), this, SLOT( activateDeuteranopePreview() ) );
+
+  QActionGroup* mPreviewGroup = new QActionGroup( this );
+  mPreviewGroup->setExclusive( true );
+  mActionPreviewModeOff->setActionGroup( mPreviewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
+  mActionPreviewModeMono->setActionGroup( mPreviewGroup );
+  mActionPreviewProtanope->setActionGroup( mPreviewGroup );
+  mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
+
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   //Ctrl+= should also trigger zoom in
   QShortcut* ctrlEquals = new QShortcut( QKeySequence( "Ctrl+=" ), this );
   connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
+
+  QMenu *previewMenu = viewMenu->addMenu( "Preview" );
+  previewMenu->addAction( mActionPreviewModeOff );
+  previewMenu->addAction( mActionPreviewModeGrayscale );
+  previewMenu->addAction( mActionPreviewModeMono );
+  previewMenu->addAction( mActionPreviewProtanope );
+  previewMenu->addAction( mActionPreviewDeuteranope );
+
+  viewMenu->addSeparator();
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
   viewMenu->addAction( mActionZoomAll );
@@ -574,7 +614,7 @@ void QgsComposer::setupTheme()
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
   mActionZoomActual->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ) );
-  mActionMouseZoom->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
+  mActionMouseZoom->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToArea.svg" ) );
   mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
@@ -889,6 +929,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
 
   if ( checked )
   {
+    loadAtlasPredefinedScalesFromProject();
     atlasMap->firstFeature();
     emit( atlasPreviewFeatureChanged() );
   }
@@ -908,6 +949,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->nextFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -920,6 +962,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->prevFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -932,6 +975,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->firstFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -944,6 +988,7 @@ void QgsComposer::on_mActionAtlasLast_triggered()
     return;
   }
 
+  loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
   emit( atlasPreviewFeatureChanged() );
 }
@@ -1101,6 +1146,60 @@ void QgsComposer::on_mActionAtlasSettings_triggered()
   mAtlasDock->raise();
 }
 
+void QgsComposer::disablePreviewMode()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewModeEnabled( false );
+}
+
+void QgsComposer::activateGrayscalePreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
+  mView->setPreviewModeEnabled( true );
+}
+
+void QgsComposer::activateMonoPreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
+  mView->setPreviewModeEnabled( true );
+}
+
+void QgsComposer::activateProtanopePreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+  mView->setPreviewModeEnabled( true );
+}
+
+void QgsComposer::activateDeuteranopePreview()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+  mView->setPreviewModeEnabled( true );
+}
+
 void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
 {
   QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
@@ -1239,6 +1338,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
 
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -1393,6 +1493,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     QPainter painter( &mPrinter );
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -1654,6 +1755,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -1921,6 +2023,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   {
     try
     {
+      loadAtlasPredefinedScalesFromProject();
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
@@ -2216,7 +2319,12 @@ void QgsComposer::on_mActionSaveProject_triggered()
 
 void QgsComposer::on_mActionNewComposer_triggered()
 {
-  mQgis->actionNewPrintComposer()->trigger();
+  QString title = mQgis->uniqueComposerTitle( this, true );
+  if ( title.isNull() )
+  {
+    return;
+  }
+  mQgis->createNewComposer( title );
 }
 
 void QgsComposer::on_mActionDuplicateComposer_triggered()
@@ -3369,5 +3477,35 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
   }
+}
+
+void QgsComposer::loadAtlasPredefinedScalesFromProject()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+  QgsAtlasComposition& atlasMap = mComposition->atlasComposition();
+  QVector<double> pScales;
+  // first look at project's scales
+  QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+  bool hasProjectScales( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
+  if ( !hasProjectScales || scales.isEmpty() )
+  {
+    // default to global map tool scales
+    QSettings settings;
+    QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
+    scales = scalesStr.split( "," );
+  }
+
+  for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+  {
+    QStringList parts( scaleIt->split( ':' ) );
+    if ( parts.size() == 2 )
+    {
+      pScales.push_back( parts[1].toDouble() );
+    }
+  }
+  atlasMap.setPredefinedScales( pScales );
 }
 

@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET (SACONN_SRCS 
+SET (SACONN_SRCS
     sqlanystatement.cpp
     sqlanyconnection.cpp
     sacapi/sacapidll.c
@@ -22,7 +22,7 @@ ENDIF (WIN32)
 # Build
 
 INCLUDE_DIRECTORIES(
-     ../../../core 
+     ../../../core
 )
 
 ADD_LIBRARY (qgissqlanyconnection SHARED ${SACONN_SRCS})

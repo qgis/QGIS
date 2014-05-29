@@ -1,0 +1,121 @@
+# 
+# Translators:
+# macho <werner.macho@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: MetaSearch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-25 12:58-0500\n"
+"PO-Revision-Date: 2014-03-08 12:25+0000\n"
+"Last-Translator: macho <werner.macho@gmail.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/MetaSearch/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Service Metadata"
+msgstr "Service Metadaten"
+
+msgid "Service Identification"
+msgstr "Service Identifikation"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Abstract"
+msgstr "Abstrakt"
+
+msgid "Keywords"
+msgstr "Stichwörter"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Fees"
+msgstr "Gebühren"
+
+msgid "Access Constraints"
+msgstr "Zugriffsbeschränkungen"
+
+msgid "Service URL"
+msgstr "Service URL"
+
+msgid "Service Provider"
+msgstr "Service Anbieter"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Site"
+msgstr "Standort"
+
+msgid "Service Contact"
+msgstr "Service Kontakt"
+
+msgid "Position"
+msgstr "Position"
+
+msgid "Role"
+msgstr "Rolle"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Fax"
+msgstr "Fax"
+
+msgid "Url"
+msgstr "URL"
+
+msgid "Hours of Service"
+msgstr "Service-Zeiten"
+
+msgid "Contact Instructions"
+msgstr "Kontakt Anleitung"
+
+msgid "Record Metadata"
+msgstr "Metadaten Aufzeichnung"
+
+msgid "Identifier"
+msgstr "Identifikator"
+
+msgid "Subjects"
+msgstr "Themen"
+
+msgid "Creator"
+msgstr "Urheber"
+
+msgid "Contributor"
+msgstr "Anbieter"
+
+msgid "Publisher"
+msgstr "Veröffentlicher"
+
+msgid "Modified"
+msgstr "Verändert"
+
+msgid "Language"
+msgstr "Sprache"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Rights"
+msgstr "Rechte"
+
+msgid "Bounding Box"
+msgstr "Bounding Box"
+
+msgid "Access Link"
+msgstr "Zugriffsadresse"

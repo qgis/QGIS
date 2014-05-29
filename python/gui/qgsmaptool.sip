@@ -106,15 +106,24 @@ class QgsMapTool : QObject
     //! returns pointer to the tool's map canvas
     QgsMapCanvas* canvas();
 
-    /** return the tool name
-    * @note added in 2.3
-    */
+    //! Emit map tool changed with the old tool
+    //! @note added in 2.3
     QString toolName();
 
+    /** Get search radius in mm. Used by identify, tip etc.
+     *  The values is currently set in identify tool options (move somewhere else?)
+     *  and defaults to QGis::DEFAULT_SEARCH_RADIUS_MM.
+     *  @note added in 2.3 */
     static double searchRadiusMM();
 
+    /** Get search radius in map units for given context. Used by identify, tip etc.
+     *  The values is calculated from searchRadiusMM().
+     *  @note added in 2.3 */
     static double searchRadiusMU( const QgsRenderContext& context );
 
+    /** Get search radius in map units for given canvas. Used by identify, tip etc.
+     *  The values is calculated from searchRadiusMM().
+     *  @note added in 2.3 */
     static double searchRadiusMU( QgsMapCanvas * canvas );
 
   signals:

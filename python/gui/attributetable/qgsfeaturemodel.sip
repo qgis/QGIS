@@ -6,4 +6,3 @@ class QgsFeatureModel
   public:
     virtual QModelIndex fidToIndex( QgsFeatureId fid ) = 0;
 };
-

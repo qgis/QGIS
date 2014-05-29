@@ -1,9 +1,9 @@
-SET(OWS_SRCS 
-  qgsowsprovider.cpp 
-  qgsowsdataitems.cpp 
+SET(OWS_SRCS
+  qgsowsprovider.cpp
+  qgsowsdataitems.cpp
 )
-SET(OWS_MOC_HDRS  
-  qgsowsprovider.h 
+SET(OWS_MOC_HDRS
+  qgsowsprovider.h
   qgsowsdataitems.h
 )
 

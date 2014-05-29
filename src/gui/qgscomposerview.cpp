@@ -61,6 +61,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowF
     , mMousePanning( false )
     , mKeyPanning( false )
     , mMovingItemContent( false )
+    , mPreviewEffect( 0 )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -69,6 +70,9 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowF
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
   setFrameShape( QFrame::NoFrame );
+
+  mPreviewEffect = new QgsPreviewEffect( this );
+  viewport()->setGraphicsEffect( mPreviewEffect );
 }
 
 void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
@@ -1499,6 +1503,26 @@ void QgsComposerView::setZoomLevel( double zoomLevel )
   updateRulers();
   update();
   emit zoomLevelChanged();
+}
+
+void QgsComposerView::setPreviewModeEnabled( bool enabled )
+{
+  if ( !mPreviewEffect )
+  {
+    return;
+  }
+
+  mPreviewEffect->setEnabled( enabled );
+}
+
+void QgsComposerView::setPreviewMode( QgsPreviewEffect::PreviewMode mode )
+{
+  if ( !mPreviewEffect )
+  {
+    return;
+  }
+
+  mPreviewEffect->setMode( mode );
 }
 
 void QgsComposerView::paintEvent( QPaintEvent* event )

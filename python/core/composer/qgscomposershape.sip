@@ -55,7 +55,11 @@ class QgsComposerShape: QgsComposerItem
     /**Controls whether the shape should be drawn using a QgsFillSymbolV2.
      * Note: Added in v2.1 */
     void setUseSymbolV2( bool useSymbolV2 );
-    
+
+    /**Depending on the symbol style, the bounding rectangle can be larger than the shape
+    @note this function was added in version 2.3*/
+    QRectF boundingRect() const;
+
     /**Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
      * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
     */
@@ -69,6 +73,7 @@ class QgsComposerShape: QgsComposerItem
     /**reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
      * rather than the item's pen */
     virtual double estimatedFrameBleed() const;
+
   public slots:
     /**Should be called after the shape's symbol is changed. Redraws the shape and recalculates
      * its selection bounds.

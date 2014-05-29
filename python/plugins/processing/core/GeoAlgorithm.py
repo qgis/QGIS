@@ -358,10 +358,12 @@ class GeoAlgorithm:
                         if p is not None:
                             self.crs = p.crs()
                             return
-        qgis = dataobjects.interface.iface
-        if qgis is None:
-          return
-        self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
+        try:
+            from qgis.utils import iface
+            self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
+        except:
+            pass
+
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

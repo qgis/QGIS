@@ -33,7 +33,7 @@ from processing.ui.ui_widgetNumberInput import Ui_widgetNumberInput
 class NumberInputPanel(QWidget, Ui_widgetNumberInput):
 
     def __init__(self, number, minimum, maximum, isInteger):
-        QDialog.__init__(self)
+        QWidget.__init__(self)
         self.setupUi(self)
 
         self.isInteger = isInteger

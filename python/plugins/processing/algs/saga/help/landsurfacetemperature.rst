@@ -30,4 +30,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:landsurfacetemperature', dem, swr, lai, z_reference, t_reference, t_gradient, c_factor, lst)
+	processing.runalg('saga:landsurfacetemperature', dem, swr, lai, z_reference, t_reference, t_gradient, c_factor, lst)

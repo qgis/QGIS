@@ -51,7 +51,6 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     QStringList mSvgFiles;
 };
 
-
 class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 {
   public:

@@ -38,6 +38,7 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ) :
     mPictureRotation( 0 ),
     mRotationMap( 0 ),
     mResizeMode( QgsComposerPicture::Zoom ),
+    mPictureAnchor( UpperLeft ),
     mPictureExpr( 0 )
 {
   mPictureWidth = rect().width();
@@ -50,6 +51,7 @@ QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( 0 ),
     mPictureRotation( 0 ),
     mRotationMap( 0 ),
     mResizeMode( QgsComposerPicture::Zoom ),
+    mPictureAnchor( UpperLeft ),
     mPictureExpr( 0 )
 {
   mPictureHeight = rect().height();
@@ -60,12 +62,8 @@ void QgsComposerPicture::init()
 {
   //connect some signals
 
-  //connect to atlas toggling on/off and coverage layer changes
-  //to update the picture source expression
-  connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updatePictureExpression() ) );
-  connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updatePictureExpression() ) );
-
   //connect to atlas feature changing
+  //to update the picture source expression
   connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshPicture() ) );
 
   //connect to composer print resolution changing
@@ -90,40 +88,99 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
   //int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
 
+  //picture resizing
   if ( mMode != Unknown )
   {
     double boundRectWidthMM;
     double boundRectHeightMM;
-    double imageRectWidthMM;
-    double imageRectHeightMM;
+    QRect imageRect;
     if ( mResizeMode == QgsComposerPicture::Zoom || mResizeMode == QgsComposerPicture::ZoomResizeFrame )
     {
       boundRectWidthMM = mPictureWidth;
       boundRectHeightMM = mPictureHeight;
-      imageRectWidthMM = mImage.width();
-      imageRectHeightMM = mImage.height();
+      imageRect = QRect( 0, 0, mImage.width(), mImage.height() );
     }
     else if ( mResizeMode == QgsComposerPicture::Stretch )
     {
       boundRectWidthMM = rect().width();
       boundRectHeightMM = rect().height();
-      imageRectWidthMM = mImage.width();
-      imageRectHeightMM = mImage.height();
+      imageRect = QRect( 0, 0, mImage.width(), mImage.height() );
+    }
+    else if ( mResizeMode == QgsComposerPicture::Clip )
+    {
+      boundRectWidthMM = rect().width();
+      boundRectHeightMM = rect().height();
+      int imageRectWidthPixels = mImage.width();
+      int imageRectHeightPixels = mImage.height();
+      imageRect = clippedImageRect( boundRectWidthMM, boundRectHeightMM ,
+                                    QSize( imageRectWidthPixels, imageRectHeightPixels ) );
     }
     else
     {
       boundRectWidthMM = rect().width();
       boundRectHeightMM = rect().height();
-      imageRectWidthMM = rect().width() * mComposition->printResolution() / 25.4;
-      imageRectHeightMM = rect().height() * mComposition->printResolution() / 25.4;
+      imageRect = QRect( 0, 0, rect().width() * mComposition->printResolution() / 25.4,
+                         rect().height() * mComposition->printResolution() / 25.4 );
     }
     painter->save();
 
+    //zoom mode - calculate anchor point and rotation
     if ( mResizeMode == Zoom )
     {
-      painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-      painter->rotate( mPictureRotation );
-      painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
+      //TODO - allow placement modes with rotation set. for now, setting a rotation
+      //always places picture in center of frame
+      if ( mPictureRotation != 0 )
+      {
+        painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
+        painter->rotate( mPictureRotation );
+        painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
+      }
+      else
+      {
+        //shift painter to edge/middle of frame depending on placement
+        double diffX = rect().width() - boundRectWidthMM;
+        double diffY = rect().height() - boundRectHeightMM;
+
+        double dX = 0;
+        double dY = 0;
+        switch ( mPictureAnchor )
+        {
+          case UpperLeft:
+          case MiddleLeft:
+          case LowerLeft:
+            //nothing to do
+            break;
+          case UpperMiddle:
+          case Middle:
+          case LowerMiddle:
+            dX = diffX / 2.0;
+            break;
+          case UpperRight:
+          case MiddleRight:
+          case LowerRight:
+            dX = diffX;
+            break;
+        }
+        switch ( mPictureAnchor )
+        {
+          case UpperLeft:
+          case UpperMiddle:
+          case UpperRight:
+            //nothing to do
+            break;
+          case MiddleLeft:
+          case Middle:
+          case MiddleRight:
+            dY = diffY / 2.0;
+            break;
+          case LowerLeft:
+          case LowerMiddle:
+          case LowerRight:
+            dY = diffY;
+            break;
+        }
+        painter->translate( dX, dY );
+      }
     }
 
     if ( mMode == SVG )
@@ -132,7 +189,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     }
     else if ( mMode == RASTER )
     {
-      painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, QRectF( 0, 0, imageRectWidthMM, imageRectHeightMM ) );
+      painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, imageRect );
     }
 
     painter->restore();
@@ -144,6 +201,64 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   {
     drawSelectionBoxes( painter );
   }
+}
+
+QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &boundRectHeightMM, QSize imageRectPixels )
+{
+  int boundRectWidthPixels = boundRectWidthMM * mComposition->printResolution() / 25.4;
+  int boundRectHeightPixels = boundRectHeightMM * mComposition->printResolution() / 25.4;
+
+  //update boundRectWidth/Height so that they exactly match pixel bounds
+  boundRectWidthMM = boundRectWidthPixels * 25.4 / mComposition->printResolution();
+  boundRectHeightMM = boundRectHeightPixels * 25.4 / mComposition->printResolution();
+
+  //calculate part of image which fits in bounds
+  int leftClip = 0;
+  int topClip = 0;
+
+  //calculate left crop
+  switch ( mPictureAnchor )
+  {
+    case UpperLeft:
+    case MiddleLeft:
+    case LowerLeft:
+      leftClip = 0;
+      break;
+    case UpperMiddle:
+    case Middle:
+    case LowerMiddle:
+      leftClip = ( imageRectPixels.width() - boundRectWidthPixels ) / 2;
+      break;
+    case UpperRight:
+    case MiddleRight:
+    case LowerRight:
+      leftClip =  imageRectPixels.width() - boundRectWidthPixels;
+      break;
+  }
+
+  //calculate top crop
+  switch ( mPictureAnchor )
+  {
+    case UpperLeft:
+    case UpperMiddle:
+    case UpperRight:
+      topClip = 0;
+      break;
+    case MiddleLeft:
+    case Middle:
+    case MiddleRight:
+      topClip = ( imageRectPixels.height() - boundRectHeightPixels ) / 2;
+      break;
+    case LowerLeft:
+    case LowerMiddle:
+    case LowerRight:
+      topClip = imageRectPixels.height() - boundRectHeightPixels;
+      break;
+  }
+
+
+  return QRect( leftClip, topClip, boundRectWidthPixels, boundRectHeightPixels );
+
 }
 
 void QgsComposerPicture::setPictureFile( const QString& path )
@@ -238,40 +353,43 @@ void QgsComposerPicture::refreshPicture()
 
 void QgsComposerPicture::loadPicture( const QFile& file )
 {
-  if ( !file.exists() )
+  if ( !file.exists()
+       || ( mUseSourceExpression && mPictureExpr->hasEvalError() ) )
   {
     mMode = Unknown;
   }
-
-  QFileInfo sourceFileInfo( file );
-  QString sourceFileSuffix = sourceFileInfo.suffix();
-  if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
-  {
-    //try to open svg
-    mSVG.load( file.fileName() );
-    if ( mSVG.isValid() )
-    {
-      mMode = SVG;
-      QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
-      mDefaultSvgSize.setWidth( viewBox.width() );
-      mDefaultSvgSize.setHeight( viewBox.height() );
-    }
-    else
-    {
-      mMode = Unknown;
-    }
-  }
   else
   {
-    //try to open raster with QImageReader
-    QImageReader imageReader( file.fileName() );
-    if ( imageReader.read( &mImage ) )
+    QFileInfo sourceFileInfo( file );
+    QString sourceFileSuffix = sourceFileInfo.suffix();
+    if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
     {
-      mMode = RASTER;
+      //try to open svg
+      mSVG.load( file.fileName() );
+      if ( mSVG.isValid() )
+      {
+        mMode = SVG;
+        QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+        mDefaultSvgSize.setWidth( viewBox.width() );
+        mDefaultSvgSize.setHeight( viewBox.height() );
+      }
+      else
+      {
+        mMode = Unknown;
+      }
     }
     else
     {
-      mMode = Unknown;
+      //try to open raster with QImageReader
+      QImageReader imageReader( file.fileName() );
+      if ( imageReader.read( &mImage ) )
+      {
+        mMode = RASTER;
+      }
+      else
+      {
+        mMode = Unknown;
+      }
     }
   }
 
@@ -279,6 +397,22 @@ void QgsComposerPicture::loadPicture( const QFile& file )
   {
     recalculateSize();
   }
+  else if ( !( file.fileName().isEmpty() ) || ( mUseSourceExpression && mPictureExpr && mPictureExpr->hasEvalError() ) )
+  {
+    //trying to load an invalid file or bad expression, show cross picture
+    mMode = SVG;
+    QString badFile = QString( ":/images/composer/missing_image.svg" );
+    mSVG.load( badFile );
+    if ( mSVG.isValid() )
+    {
+      mMode = SVG;
+      QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+      mDefaultSvgSize.setWidth( viewBox.width() );
+      mDefaultSvgSize.setHeight( viewBox.height() );
+      recalculateSize();
+    }
+  }
+
   emit itemChanged();
 }
 
@@ -525,6 +659,8 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( "resizeMode", QString::number(( int )mResizeMode ) );
+  composerPictureElem.setAttribute( "anchorPoint", QString::number(( int )mPictureAnchor ) );
+
   if ( mUseSourceExpression )
   {
     composerPictureElem.setAttribute( "useExpression", "true" );
@@ -561,6 +697,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mPictureWidth = itemElem.attribute( "pictureWidth", "10" ).toDouble();
   mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
+  mPictureAnchor = QgsComposerItem::ItemPositionMode( itemElem.attribute( "anchorPoint", QString( QgsComposerItem::UpperLeft ) ).toInt() );
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
@@ -594,8 +731,6 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   QString fileName = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
   mSourceFile.setFileName( fileName );
 
-  refreshPicture();
-
   //picture rotation
   if ( itemElem.attribute( "pictureRotation", "0" ).toDouble() != 0 )
   {
@@ -619,6 +754,8 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
     QObject::connect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
   }
 
+  refreshPicture();
+
   emit itemChanged();
   return true;
 }
@@ -633,6 +770,12 @@ int QgsComposerPicture::rotationMap() const
   {
     return mRotationMap->id();
   }
+}
+
+void QgsComposerPicture::setPictureAnchor( QgsComposerItem::ItemPositionMode anchor )
+{
+  mPictureAnchor = anchor;
+  update();
 }
 
 bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& height ) const

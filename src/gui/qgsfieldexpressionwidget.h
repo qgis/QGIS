@@ -41,6 +41,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
+    Q_FLAGS( QgsFieldProxyModel::Filters )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setLayer( QgsMapLayer* layer );
 
     //! sets the current field or expression in the widget
-    void setField( const QString fieldName );
+    void setField( const QString &fieldName );
 
   protected slots:
     //! open the expression dialog to edit the current or add a new expression
