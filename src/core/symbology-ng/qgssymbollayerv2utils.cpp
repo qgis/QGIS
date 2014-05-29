@@ -3179,6 +3179,62 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
   return QPointF( cx, cy );
 }
 
+QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
+{
+  QPointF centroid = QgsSymbolLayerV2Utils::polygonCentroid( points );
+
+  // check if centroid inside in polygon
+  if ( !QgsSymbolLayerV2Utils::pointInPolygon( points, centroid ) )
+  {
+    unsigned int i, pointCount = points.count();
+
+    QgsPolyline polyline( pointCount );
+    for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPoint( points[i].x(), points[i].y() );
+
+    QgsGeometry* geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
+    if ( geom )
+    {
+      QgsGeometry* pointOnSurfaceGeom = geom->pointOnSurface();
+
+      if ( pointOnSurfaceGeom )
+      {
+        QgsPoint point = pointOnSurfaceGeom->asPoint();
+        delete pointOnSurfaceGeom;
+        delete geom;
+
+        return QPointF( point.x(), point.y() );
+      }
+      delete geom;
+    }
+  }
+  return centroid;
+}
+
+bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPointF &point )
+{
+  bool inside = false;
+
+  double x = point.x();
+  double y = point.y();
+
+  for ( int i = 0, j = points.count() - 1; i < points.count(); i++ )
+  {
+    const QPointF& p1 = points[i];
+    const QPointF& p2 = points[j];
+
+    if ( p1.x() == x && p1.y() == y )
+      return true;
+
+    if ( ( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
+    {
+      if ( p1.x() + ( y - p1.y() ) / ( p2.y() - p1.y() )*( p2.x() - p1.x() ) <= x )
+        inside = !inside;
+    }
+
+    j = i;
+  }
+  return inside;
+}
 
 QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
 {

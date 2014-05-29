@@ -101,6 +101,7 @@ namespace pal
       bool active;
       bool toLabel;
       bool displayAll;
+      bool centroidInside;
 
       Units label_unit;
 
@@ -290,6 +291,9 @@ namespace pal
 
       void setUpsidedownLabels( UpsideDownLabels ud ) { upsidedownLabels = ud; }
       UpsideDownLabels getUpsidedownLabels() const { return upsidedownLabels; }
+
+      void setCentroidInside( bool forceInside ) { centroidInside = forceInside; }
+      bool getCentroidInside() const { return centroidInside; }
 
       /**
        * \brief register a feature in the layer

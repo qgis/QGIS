@@ -1344,7 +1344,7 @@ namespace pal
             case P_POINT:
             case P_POINT_OVER:
               double cx, cy;
-              mapShape->getCentroid( cx, cy );
+              mapShape->getCentroid( cx, cy, f->layer->getCentroidInside() );
               if ( f->layer->getArrangement() == P_POINT_OVER )
                 nbp = setPositionOverPoint( cx, cy, scale, lPos, delta, angle );
               else

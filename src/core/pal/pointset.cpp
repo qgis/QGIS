@@ -956,7 +956,7 @@ namespace pal
 
 
 
-  void PointSet::getCentroid( double &px, double &py )
+  void PointSet::getCentroid( double &px, double &py, bool forceInside )
   {
     // for explanation see this page:
     // http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
@@ -983,6 +983,35 @@ namespace pal
     {
       px = cx / ( 3 * A ) + x[0];
       py = cy / ( 3 * A ) + y[0];
+    }
+
+    // check if centroid inside in polygon
+    if ( forceInside && !isPointInPolygon( nbPoints, x, y, px, py ) )
+    {
+      GEOSCoordSequence *coord = GEOSCoordSeq_create( nbPoints, 2 );
+
+      for ( int i = 0; i < nbPoints; ++i )
+      {
+        GEOSCoordSeq_setX( coord, i, x[i] );
+        GEOSCoordSeq_setY( coord, i, y[i] );
+      }
+
+      GEOSGeometry *geom = GEOSGeom_createPolygon( GEOSGeom_createLinearRing( coord ), 0, 0 );
+
+      if ( geom )
+      {
+        GEOSGeometry *pointGeom = GEOSPointOnSurface( geom );
+
+        if ( pointGeom )
+        {
+          const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq( pointGeom );
+          GEOSCoordSeq_getX( coordSeq, 0, &px );
+          GEOSCoordSeq_getY( coordSeq, 0, &py );
+
+          GEOSGeom_destroy( pointGeom );
+        }
+        GEOSGeom_destroy( geom );
+      }
     }
   }
 
