@@ -30,6 +30,7 @@
 #include "qgserror.h"
 #include "qgsrectangle.h"
 #include "qgsmaprenderer.h"
+#include "qgsobjectcustomproperties.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -217,17 +218,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
 
-    /** Returns the layer as a layer definition document
+    /** Returns the given layer as a layer definition document
         Layer definitions store the data source as well as styling and custom properties.
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    QDomDocument asLayerDefinition( );
+    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers );
 
     /** Creates a new layer from a layer defininition document
     */
-    static QgsMapLayer* fromLayerDefinition( QDomDocument& document );
-    static QgsMapLayer* fromLayerDefinitionFile( const QString qlrfile );
+    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
+    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
@@ -368,6 +369,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return pointer to layer's undo stack */
     QUndoStack *undoStack();
 
+    /* Layer legendUrl information */
+    void setLegendUrl( const QString& legendUrl ) { mLegendUrl = legendUrl; }
+    const QString& legendUrl() const { return mLegendUrl; }
+    void setLegendUrlFormat( const QString& legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
+    const QString& legendUrlFormat() const { return mLegendUrlFormat; }
+
     /** @deprecated since 2.4 - returns NULL */
     Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
     /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
@@ -435,6 +442,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
     void blendModeChanged( const QPainter::CompositionMode &blendMode );
+
+    /** Signal emitted when renderer is changed */
+    void rendererChanged();
 
   protected:
     /** Set the extent */
@@ -507,6 +517,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mMetadataUrlType;
     QString mMetadataUrlFormat;
 
+    /**WMS legend*/
+    QString mLegendUrl;
+    QString mLegendUrlFormat;
+
     /** \brief Error */
     QgsError mError;
 
@@ -543,8 +557,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Collection of undoable operations for this layer. **/
     QUndoStack mUndoStack;
 
-    QMap<QString, QVariant> mCustomProperties;
-
+    //! Layer's persistent storage of additional properties (may be used by plugins)
+    QgsObjectCustomProperties mCustomProperties;
 };
 
 #endif

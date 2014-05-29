@@ -25,7 +25,7 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsdistancearea.h"
 
-class QgsAttributeDialog;
+class QgsAttributeForm;
 class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
@@ -69,7 +69,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param parent  The parent widget
      */
     explicit QgsDualView( QWidget* parent = 0 );
-    virtual ~QgsDualView();
 
     /**
      * Has to be called to initialize the dual view.
@@ -95,6 +94,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param filterMode
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
+
+    QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
 
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
@@ -127,6 +128,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setFilteredFeatures( QgsFeatureIds filteredFeatures );
 
+    QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
+
     /**
      * Returns the model which has the information about all features (not only filtered)
      *
@@ -144,9 +147,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void columnBoxInit();
 
-    virtual void hideEvent( QHideEvent * );
-    virtual void focusOutEvent( QFocusEvent * );
-
   public slots:
     /**
      * @brief Set the current edit selection in the {@link AttributeEditor} mode.
@@ -163,12 +163,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     bool saveEditChanges();
 
-    /**
-     * Update the shown feature if an attribute changed
-     */
-    void reloadAttribute( const int& attribute );
-
-
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
@@ -182,6 +176,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void filterChanged();
 
   private slots:
+
+    void on_mFeatureList_aboutToChangeEditSelection( bool& ok );
+
     /**
      * Changes the currently visible feature within the attribute editor
      *
@@ -193,37 +190,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewColumnChanged( QObject* previewAction );
 
-    void editingToggled();
-
     void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
     void previewExpressionChanged( const QString expression );
 
     /**
-     * If an attribute on this layer is deleted, remove the field also for open
-     * attribute dialogs.
-     * (as long as the attribute dialog is not able to handle this problem)
-     *
-     * @param attribute The attribute being deleted
+     * Will be called whenever the currently shown feature form changes.
+     * Will forward this signal to the feature list to visually represent
+     * that there has been an edit event.
      */
-    void attributeDeleted( int attribute );
-
-    /**
-     * If an attribute on this layer is added, add the field also for open
-     * attribute dialogs.
-     * (as long as the attribute dialog is not able to handle this problem)
-     *
-     * @param attribute The attribute being added
-     */
-    void attributeAdded( int attribute );
-
-    /**
-     * Gets called when a feature is deleted.
-     * So it can be removed from the feature form if required.
-     *
-     * @param fid The feature being deleted
-     */
-    void featureDeleted( QgsFeatureId fid );
+    void featureFormAttributeChanged();
 
     /**
      * Will be called periodically, when loading layers from slow data providers.
@@ -247,7 +223,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QgsFeatureListModel* mFeatureListModel;
-    QgsAttributeDialog* mAttributeDialog;
+    QgsAttributeForm* mAttributeForm;
     QgsCachedFeatureIterator* mFeatureCache;
     QSignalMapper* mPreviewActionMapper;
     QMenu* mPreviewColumnsMenu;

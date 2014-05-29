@@ -12,11 +12,6 @@ class QgsAttributeEditorContext
   public:
     QgsAttributeEditorContext();
 
-    QWidget* proxyWidget( QgsVectorLayer* vl, int fieldIdx );
-    //! @note not available in python bindings
-    // void addProxyWidgets( QgsVectorLayer* vl, QMap<int, QWidget*> proxyWidgets );
-    void addProxyWidget( QgsVectorLayer* vl, int idx, QWidget* widget );
-
     void setDistanceArea( const QgsDistanceArea& distanceArea );
     const QgsDistanceArea& distanceArea();
 

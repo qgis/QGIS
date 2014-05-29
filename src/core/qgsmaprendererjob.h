@@ -100,8 +100,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     static bool reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
 
+    //! @note not available in python bindings
     LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
 
+    //! @note not available in python bindings
     void cleanupJobs( LayerRenderJobs& jobs );
 
     static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
@@ -243,6 +245,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual bool isActive() const;
     virtual QgsLabelingResults* takeLabelingResults();
 
+    //! @note not available in python bindings
     const LayerRenderJobs& jobs() const { return mLayerJobs; }
 
   protected slots:

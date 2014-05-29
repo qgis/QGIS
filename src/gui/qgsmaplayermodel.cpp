@@ -28,7 +28,7 @@ QgsMapLayerModel::QgsMapLayerModel( QList<QgsMapLayer *> layers, QObject *parent
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( removeLayers( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( layers );
 }
 
@@ -38,7 +38,7 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
     , mItemCheckable( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addLayers( QList<QgsMapLayer*> ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( QgsMapLayerRegistry::instance()->mapLayers().values() );
 }
 

@@ -8,7 +8,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
     ~QgsSingleBandColorDataRenderer();
     QgsRasterInterface * clone() const /Factory/;
 
-    static QgsRasterRenderer *create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
     bool setInput( QgsRasterInterface* input );
 

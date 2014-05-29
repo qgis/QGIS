@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4 import QtGui
-from processing import interface
+from qgis.utils import iface
 from qgis.gui import *
 
 
@@ -35,17 +35,17 @@ class MessageBarProgress:
 
     def __init__(self):
         self.progressMessageBar = \
-            interface.iface.messageBar().createMessage('Executing algorithm')
+            iface.messageBar().createMessage('Executing algorithm')
         self.progress = QtGui.QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
-        interface.iface.messageBar().pushWidget(self.progressMessageBar,
-                interface.iface.messageBar().INFO)
+        iface.messageBar().pushWidget(self.progressMessageBar,
+                                      iface.messageBar().INFO)
 
     def error(self, msg):
-        interface.iface.messageBar().clearWidgets()
-        interface.iface.messageBar().pushMessage("Error", msg,
+        iface.messageBar().clearWidgets()
+        iface.messageBar().pushMessage("Error", msg,
                                                   level = QgsMessageBar.CRITICAL,
                                                   duration = 3)
 
@@ -68,4 +68,4 @@ class MessageBarProgress:
         pass
 
     def close(self):
-        interface.iface.messageBar().clearWidgets()
+        iface.messageBar().clearWidgets()

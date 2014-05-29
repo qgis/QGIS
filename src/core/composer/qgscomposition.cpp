@@ -181,6 +181,18 @@ void QgsComposition::updateBounds()
   setSceneRect( compositionBounds() );
 }
 
+void QgsComposition::refreshItems()
+{
+  emit refreshItemsTriggered();
+}
+
+void QgsComposition::setSelectedItem( QgsComposerItem *item )
+{
+  clearSelection();
+  item->setSelected( true );
+  emit selectedItemChanged( item );
+}
+
 QRectF QgsComposition::compositionBounds() const
 {
   //start with an empty rectangle
@@ -277,6 +289,7 @@ void QgsComposition::createDefaultPageStyleSymbol()
   properties.insert( "color", "white" );
   properties.insert( "style", "solid" );
   properties.insert( "style_border", "no" );
+  properties.insert( "joinstyle", "miter" );
   mPageStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 }
 
@@ -506,6 +519,11 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) 
   return 0;
 }
 
+void QgsComposition::setPrintResolution( int dpi )
+{
+  mPrintResolution = dpi;
+  emit printResolutionChanged();
+}
 
 void QgsComposition::setUseAdvancedEffects( bool effectsEnabled )
 {
@@ -867,6 +885,12 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
     QgsComposerMap* newMap = new QgsComposerMap( this );
+
+    if ( mapsToRestore )
+    {
+      newMap->setUpdatesEnabled( false );
+    }
+
     newMap->readXML( currentComposerMapElem, doc );
     newMap->assignFreeId();
 
@@ -874,6 +898,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       mapsToRestore->insert( newMap, ( int )( newMap->previewMode() ) );
       newMap->setPreviewMode( QgsComposerMap::Rectangle );
+      newMap->setUpdatesEnabled( true );
     }
     addComposerMap( newMap, false );
     newMap->setZValue( newMap->zValue() + zOrderOffset );
@@ -1168,12 +1193,19 @@ void QgsComposition::raiseItem( QgsComposerItem* item )
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   if ( it.findNext( item ) )
   {
-    if ( it.hasNext() )
+    it.remove();
+    while ( it.hasNext() )
     {
-      it.remove();
+      //search through item z list to find next item which is present in the scene
+      //(deleted items still exist in the z list so that they can be restored to their correct stacking order,
+      //but since they are not in the scene they should be ignored here)
       it.next();
-      it.insert( item );
+      if ( it.value() && it.value()->scene() )
+      {
+        break;
+      }
     }
+    it.insert( item );
   }
 }
 
@@ -1266,13 +1298,19 @@ void QgsComposition::lowerItem( QgsComposerItem* item )
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   if ( it.findNext( item ) )
   {
-    it.previous();
-    if ( it.hasPrevious() )
+    it.remove();
+    while ( it.hasPrevious() )
     {
-      it.remove();
+      //search through item z list to find previous item which is present in the scene
+      //(deleted items still exist in the z list so that they can be restored to their correct stacking order,
+      //but since they are not in the scene they should be ignored here)
       it.previous();
-      it.insert( item );
+      if ( it.value() && it.value()->scene() )
+      {
+        break;
+      }
     }
+    it.insert( item );
   }
 }
 
@@ -2578,3 +2616,4 @@ double QgsComposition::relativePosition( double position, double beforeMin, doub
   //return linearly scaled position
   return m * position + c;
 }
+

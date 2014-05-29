@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswcsserver.h"
-#include "qgsconfigparser.h"
+#include "qgswcsprojectparser.h"
 #include "qgscrscache.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 
+#include <QTemporaryFile>
 #include <QUrl>
 
 #ifndef Q_WS_WIN
@@ -36,9 +37,8 @@ static const QString WCS_NAMESPACE = "http://www.opengis.net/wcs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 
-QgsWCSServer::QgsWCSServer( QMap<QString, QString> parameters )
-    : mParameterMap( parameters )
-    , mConfigParser( 0 )
+QgsWCSServer::QgsWCSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWCSProjectParser* pp,
+                            QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, rh ), mConfigParser( pp )
 {
 }
 
@@ -46,14 +46,79 @@ QgsWCSServer::~QgsWCSServer()
 {
 }
 
-QgsWCSServer::QgsWCSServer()
+QgsWCSServer::QgsWCSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
 {
+}
+
+void QgsWCSServer::executeRequest()
+{
+  //request type
+  QString request = mParameters.value( "REQUEST" );
+  if ( request.isEmpty() )
+  {
+    //do some error handling
+    QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+    mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+    return;
+  }
+
+  if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
+  {
+    QDomDocument capabilitiesDocument;
+    try
+    {
+      capabilitiesDocument = getCapabilities();
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+      return;
+    }
+    QgsDebugMsg( "sending GetCapabilities response" );
+    mRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+    return;
+  }
+  else if ( request.compare( "DescribeCoverage", Qt::CaseInsensitive ) == 0 )
+  {
+    QDomDocument describeDocument;
+    try
+    {
+      describeDocument = describeCoverage();
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+      return;
+    }
+    QgsDebugMsg( "sending GetCapabilities response" );
+    mRequestHandler->sendGetCapabilitiesResponse( describeDocument );
+    return;
+  }
+  else if ( request.compare( "GetCoverage", Qt::CaseInsensitive ) == 0 )
+  {
+    QByteArray* coverageOutput;
+    try
+    {
+      coverageOutput = getCoverage();
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->sendServiceException( ex );
+      return;
+    }
+    if ( coverageOutput )
+    {
+      mRequestHandler->sendGetCoverageResponse( coverageOutput );
+    }
+    return;
+  }
 }
 
 QDomDocument QgsWCSServer::getCapabilities()
 {
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
+
   //wcs:WCS_Capabilities element
   QDomElement wcsCapabilitiesElement = doc.createElement( "WCS_Capabilities"/*wcs:WCS_Capabilities*/ );
   wcsCapabilitiesElement.setAttribute( "xmlns", WCS_NAMESPACE );
@@ -139,6 +204,7 @@ QDomDocument QgsWCSServer::describeCoverage()
 {
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
+
   //wcs:WCS_Capabilities element
   QDomElement coveDescElement = doc.createElement( "CoverageDescription"/*wcs:CoverageDescription*/ );
   coveDescElement.setAttribute( "xmlns", WCS_NAMESPACE );
@@ -153,15 +219,15 @@ QDomDocument QgsWCSServer::describeCoverage()
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
-  QMap<QString, QString>::const_iterator cove_name_it = mParameterMap.find( "COVERAGE" );
-  if ( cove_name_it != mParameterMap.end() )
+  QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "COVERAGE" );
+  if ( cove_name_it != mParameters.end() )
   {
     coveName = cove_name_it.value();
   }
   if ( coveName == "" )
   {
-    QMap<QString, QString>::const_iterator cove_name_it = mParameterMap.find( "IDENTIFIER" );
-    if ( cove_name_it != mParameterMap.end() )
+    QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "IDENTIFIER" );
+    if ( cove_name_it != mParameters.end() )
     {
       coveName = cove_name_it.value();
     }
@@ -181,15 +247,15 @@ QByteArray* QgsWCSServer::getCoverage()
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
-  QMap<QString, QString>::const_iterator cove_name_it = mParameterMap.find( "COVERAGE" );
-  if ( cove_name_it != mParameterMap.end() )
+  QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "COVERAGE" );
+  if ( cove_name_it != mParameters.end() )
   {
     coveName = cove_name_it.value();
   }
   if ( coveName == "" )
   {
-    QMap<QString, QString>::const_iterator cove_name_it = mParameterMap.find( "IDENTIFIER" );
-    if ( cove_name_it != mParameterMap.end() )
+    QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "IDENTIFIER" );
+    if ( cove_name_it != mParameters.end() )
     {
       coveName = cove_name_it.value();
     }
@@ -216,8 +282,8 @@ QByteArray* QgsWCSServer::getCoverage()
   QString crs = "";
 
   // read BBOX
-  QMap<QString, QString>::const_iterator bbIt = mParameterMap.find( "BBOX" );
-  if ( bbIt == mParameterMap.end() )
+  QMap<QString, QString>::const_iterator bbIt = mParameters.find( "BBOX" );
+  if ( bbIt == mParameters.end() )
   {
     minx = 0; miny = 0; maxx = 0; maxy = 0;
   }
@@ -240,11 +306,11 @@ QByteArray* QgsWCSServer::getCoverage()
   }
 
   // read WIDTH
-  width = mParameterMap.value( "WIDTH", "0" ).toInt( &conversionSuccess );
+  width = mParameters.value( "WIDTH", "0" ).toInt( &conversionSuccess );
   if ( !conversionSuccess )
     width = 0;
   // read HEIGHT
-  height = mParameterMap.value( "HEIGHT", "0" ).toInt( &conversionSuccess );
+  height = mParameters.value( "HEIGHT", "0" ).toInt( &conversionSuccess );
   if ( !conversionSuccess )
   {
     height = 0;
@@ -255,7 +321,7 @@ QByteArray* QgsWCSServer::getCoverage()
     mErrors << QString( "The WIDTH and HEIGHT are mandatory and have to be integer" );
   }
 
-  crs = mParameterMap.value( "CRS", "" );
+  crs = mParameters.value( "CRS", "" );
   if ( crs == "" )
   {
     mErrors << QString( "The CRS is mandatory" );
@@ -281,7 +347,7 @@ QByteArray* QgsWCSServer::getCoverage()
   {
     // RESPONSE_CRS
     QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
-    crs = mParameterMap.value( "RESPONSE_CRS", "" );
+    crs = mParameters.value( "RESPONSE_CRS", "" );
     if ( crs != "" )
     {
       responseCRS = QgsCRSCache::instance()->crsByAuthId( crs );

@@ -291,6 +291,10 @@ class CORE_EXPORT QgsRasterBlock
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
 
+    /** apply band scale and offset to raster block values
+     * @@note added in 2.3 */
+    void applyScaleOffset( double scale, double offset );
+
     /** \brief Get error */
     QgsError error() const { return mError; }
 

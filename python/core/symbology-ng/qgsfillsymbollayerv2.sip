@@ -12,7 +12,7 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
                                 double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                               );
-                              
+
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
@@ -61,7 +61,7 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     double borderWidth() const;
     void setBorderWidth( double borderWidth );
-    
+
     Qt::PenJoinStyle penJoinStyle() const;
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
@@ -71,11 +71,20 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setBorderWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit borderWidthUnit() const;
 
+    void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& borderWidthMapUnitScale() const;
+
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& offsetMapUnitScale() const;
+
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     double estimateMaxBleed() const;
 
@@ -89,9 +98,8 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
 %End
-
   public:
-  
+
     enum GradientColorType
     {
       SimpleTwoColor,
@@ -200,6 +208,15 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& offsetMapUnitScale() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale );
+    QgsMapUnitScale mapUnitScale() const;
+
 };
 
 class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
@@ -207,21 +224,17 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
 %End
-
   public:
-  
+
     enum ShapeburstColorType
     {
       SimpleTwoColor,
       ColorRamp
     };
 
-    QgsShapeburstFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
-                                    QColor color2 = Qt::white,
+    QgsShapeburstFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR, QColor color2 = Qt::white,
                                     ShapeburstColorType colorType = SimpleTwoColor,
-                                    int blurRadius = 0,
-                                    bool useWholeShape = true,
-                                    double maxDistance = 5 );
+                                    int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
 
     virtual ~QgsShapeburstFillSymbolLayerV2();
 
@@ -306,6 +319,9 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     QgsSymbolV2::OutputUnit distanceUnit() const;
 
+    void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
+    const QgsMapUnitScale& distanceMapUnitScale() const;
+
     /**Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
      * @param colorType color type to use for shapeburst fill
@@ -356,7 +372,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see colorType
     */
     QColor color2() const;
-    
+
     /**Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
      * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
@@ -369,7 +385,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see setIgnoreRings
     */
-    double ignoreRings() const;    
+    double ignoreRings() const;
 
     /**Sets the offset for the shapeburst fill.
      * @param offset QPointF indicating the horizontal/vertical offset amount
@@ -401,6 +417,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& offsetMapUnitScale() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale );
+    QgsMapUnitScale mapUnitScale() const;
 };
 
 /**Base class for polygon renderers generating texture images*/
@@ -420,6 +444,15 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     virtual double estimateMaxBleed() const;
 
@@ -473,11 +506,20 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     void setPatternWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit patternWidthUnit() const;
 
+    void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& patternWidthMapUnitScale() const;
+
     void setSvgOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit svgOutlineWidthUnit() const;
 
+    void setSvgOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& svgOutlineWidthMapUnitScale() const;
+
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale );
+    QgsMapUnitScale mapUnitScale() const;
 
   protected:
     void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
@@ -526,14 +568,26 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit distanceUnit() const;
 
+    void setDistanceMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& distanceMapUnitScale() const;
+
     void setLineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit lineWidthUnit() const;
+
+    void setLineWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& lineWidthMapUnitScale() const;
 
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& offsetMapUnitScale() const;
+
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     bool setSubSymbol( QgsSymbolV2* symbol );
     QgsSymbolV2* subSymbol();
@@ -585,17 +639,32 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     void setDistanceXUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit distanceXUnit() const;
 
+    void setDistanceXMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& distanceXMapUnitScale() const;
+
     void setDistanceYUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit distanceYUnit() const;
+
+    void setDistanceYMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& distanceYMapUnitScale() const;
 
     void setDisplacementXUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit displacementXUnit() const;
 
+    void setDisplacementXMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& displacementXMapUnitScale() const;
+
     void setDisplacementYUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit displacementYUnit() const;
 
+    void setDisplacementYMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& displacementYMapUnitScale() const;
+
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale );
+    QgsMapUnitScale mapUnitScale() const;
 
     virtual QSet<QString> usedAttributes() const;
 
@@ -641,6 +710,9 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale(const QgsMapUnitScale &scale);
+    QgsMapUnitScale mapUnitScale() const;
 
     virtual QSet<QString> usedAttributes() const;
 };

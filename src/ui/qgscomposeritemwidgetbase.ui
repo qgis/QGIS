@@ -14,7 +14,16 @@
    <string>Global Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -264,12 +273,13 @@
       <bool>true</bool>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <property name="labelAlignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
+      <item row="0" column="0" colspan="2">
+       <widget class="QgsColorButton" name="mFrameColorButton">
+        <property name="text">
+         <string>Color...</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="mOutlineWidthLabel">
         <property name="text">
@@ -286,12 +296,15 @@
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QgsColorButton" name="mFrameColorButton">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Color...</string>
+         <string>Join style</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsPenJoinStyleComboBox" name="mFrameJoinStyleCombo"/>
       </item>
      </layout>
     </widget>
@@ -448,6 +461,11 @@
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

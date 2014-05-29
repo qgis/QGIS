@@ -76,13 +76,13 @@ class QgsExpressionItem : public QStandardItem
       mType = itemType;
     }
 
-    QString getExpressionText() { return mExpressionText;  }
+    QString getExpressionText() { return mExpressionText; }
 
     /** Get the help text that is associated with this expression item.
       *
       * @return The help text.
       */
-    QString getHelpText() {  return mHelpText;  }
+    QString getHelpText() {  return mHelpText; }
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.

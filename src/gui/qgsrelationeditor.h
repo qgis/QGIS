@@ -28,13 +28,11 @@ class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-class QgsRelationEditorWidget : public QgsCollapsibleGroupBox, private Ui::QgsRelationEditorWidgetBase
+class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox, private Ui::QgsRelationEditorWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsRelationEditorWidget( const QgsRelation& relation, const QgsFeature& feature, QgsAttributeEditorContext context, QWidget* parent = NULL );
-
     static QgsRelationEditorWidget* createRelationEditor( const QgsRelation& relation, const QgsFeature& feature, QgsAttributeEditorContext context, QWidget* parent = NULL );
 
   private slots:
@@ -49,6 +47,16 @@ class QgsRelationEditorWidget : public QgsCollapsibleGroupBox, private Ui::QgsRe
     void on_mToggleEditingButton_toggled( bool state );
 
   private:
+    /**
+     * You should use the static method createRelationEditor
+     *
+     * @param relation
+     * @param feature
+     * @param context
+     * @param parent
+     */
+    QgsRelationEditorWidget( const QgsRelation& relation, const QgsFeature& feature, QgsAttributeEditorContext context, QWidget* parent = NULL );
+
     QgsDualView* mDualView;
     QgsGenericFeatureSelectionManager* mFeatureSelectionMgr;
     QgsAttributeEditorContext mEditorContext;

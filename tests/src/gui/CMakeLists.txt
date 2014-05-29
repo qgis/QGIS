@@ -117,7 +117,7 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 #QT4_WRAP_CPP(rendererv2gui_MOC_SRCS ${rendererv2gui_HDRS})
 #ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
-ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
+#ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 ADD_QGIS_TEST(projectionissues testprojectionissues.cpp)
 ADD_QGIS_TEST(scalecombobox testqgsscalecombobox.cpp)
 ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp )

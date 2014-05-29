@@ -72,6 +72,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void addLayer();
     void removeLayer();
 
+    void saveSymbol();
     void lockLayer();
 
     void layerChanged();

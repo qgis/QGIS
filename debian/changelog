@@ -5,8 +5,10 @@ qgis (2.3.0) UNRELEASED; urgency=medium
   * add dependency on libqt4-sql-sqlite to qgis-provider
   * merge debian packageing changes
   * merge distribution specific file templates into one file template
+  * include metasearch plugins and add it's dependencies
+  * include custom widgets
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 06 Apr 2014 00:30:34 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 19 May 2014 16:50:23 +0200
 
 qgis (2.2.0) unstable; urgency=medium
 

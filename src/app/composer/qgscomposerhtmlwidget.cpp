@@ -60,6 +60,8 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mUrlLineEdit->blockSignals( block );
   mFileToolButton->blockSignals( block );
   mResizeModeComboBox->blockSignals( block );
+  mUseSmartBreaksCheckBox->blockSignals( block );
+  mMaxDistanceSpinBox->blockSignals( block );
 }
 
 void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
@@ -87,7 +89,7 @@ void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
   QSettings s;
   QString lastDir = s.value( "/UI/lastHtmlDir", "" ).toString();
-  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html)" );
+  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html *.htm);;All files (*.*)" );
   if ( !file.isEmpty() )
   {
     QUrl url = QUrl::fromLocalFile( file );
@@ -112,6 +114,69 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
     mHtml->setResizeMode(( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
     composition->endMultiFrameCommand();
   }
+
+  mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
+}
+
+void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_toggled( bool checked )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "Use smart breaks changed" ) );
+    mHtml->setUseSmartBreaks( checked );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
+}
+
+void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->setMaxBreakDistance( val );
+}
+
+void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  mHtml->loadHtml();
+}
+
+void QgsComposerHtmlWidget::on_mAddFramePushButton_clicked()
+{
+  if ( !mHtml || !mFrame )
+  {
+    return;
+  }
+
+  //create a new frame based on the current frame
+  QPointF pos = mFrame->pos();
+  //shift new frame so that it sits 10 units below current frame
+  pos.ry() += mFrame->rect().height() + 10;
+
+  QgsComposerFrame * newFrame = mHtml->createNewFrame( mFrame, pos, mFrame->rect().size() );
+  mHtml->recalculateFrameSizes();
+
+  //set new frame as selection
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    composition->setSelectedItem( newFrame );
+  }
 }
 
 void QgsComposerHtmlWidget::setGuiElementValues()
@@ -124,7 +189,9 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   blockSignals( true );
   mUrlLineEdit->setText( mHtml->url().toString() );
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mHtml->resizeMode() ) );
+  mUseSmartBreaksCheckBox->setChecked( mHtml->useSmartBreaks() );
+  mMaxDistanceSpinBox->setValue( mHtml->maxBreakDistance() );
+
+  mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
   blockSignals( false );
 }
-
-

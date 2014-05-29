@@ -12,14 +12,15 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
   public:
     enum Filter
     {
-      NoFilter = 1,
-      RasterLayer = 2,
-      NoGeometry = 4,
-      PointLayer = 8,
-      LineLayer = 16,
-      PolygonLayer = 32,
-      HasGeometry = 56,
-      VectorLayer = 60
+      RasterLayer,
+      NoGeometry,
+      PointLayer,
+      LineLayer,
+      PolygonLayer,
+      HasGeometry,
+      VectorLayer,
+      PluginLayer,
+      All
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
 
@@ -32,7 +33,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
      */
-    QgsMapLayerModel* sourceLayerModel() ;
+    QgsMapLayerModel* sourceLayerModel();
 
     /**
      * @brief setFilters set flags that affect how layers are filtered
@@ -40,7 +41,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
      * @note added in 2.3
      */
     QgsMapLayerProxyModel* setFilters( Filters filters );
-    const Filters& filters() const ;
+    const Filters& filters() const;
 
     // QSortFilterProxyModel interface
   public:

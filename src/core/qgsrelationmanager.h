@@ -50,8 +50,6 @@ class CORE_EXPORT QgsRelationManager : public QObject
   signals:
     void relationsLoaded();
 
-  public slots:
-
   private slots:
     void readProject( const QDomDocument &doc );
     void writeProject( QDomDocument &doc );

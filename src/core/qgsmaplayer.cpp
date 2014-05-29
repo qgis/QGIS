@@ -376,6 +376,14 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     mDataUrlFormat = dataUrlElem.attribute( "format", "" );
   }
 
+  //legendUrl
+  QDomElement legendUrlElem = layerElement.firstChildElement( "legendUrl" );
+  if ( !legendUrlElem.isNull() )
+  {
+    mLegendUrl = legendUrlElem.text();
+    mLegendUrlFormat = legendUrlElem.attribute( "format", "" );
+  }
+
   //attribution
   QDomElement attribElem = layerElement.firstChildElement( "attribution" );
   if ( !attribElem.isNull() )
@@ -518,6 +526,17 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     layerElement.appendChild( layerDataUrl );
   }
 
+  // layer legendUrl
+  QString aLegendUrl = legendUrl();
+  if ( !aLegendUrl.isEmpty() )
+  {
+    QDomElement layerLegendUrl = document.createElement( "legendUrl" ) ;
+    QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
+    layerLegendUrl.appendChild( layerLegendUrlText );
+    layerLegendUrl.setAttribute( "format", legendUrlFormat() );
+    layerElement.appendChild( layerLegendUrl );
+  }
+
   // layer attribution
   QString aAttribution = attribution();
   if ( !aAttribution.isEmpty() )
@@ -577,61 +596,69 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
 } // bool QgsMapLayer::writeXML
 
-QDomDocument QgsMapLayer::asLayerDefinition()
+QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers )
 {
   QDomDocument doc( "qgis-layer-definition" );
-  QDomElement maplayer = doc.createElement( "maplayer" );
-  this->writeLayerXML( maplayer, doc );
-  maplayer.removeChild( maplayer.firstChildElement( "id" ) );
-  doc.appendChild( maplayer );
+  QDomElement layerselm = doc.createElement( "maplayers" );
+  foreach ( QgsMapLayer* layer, layers )
+  {
+    QDomElement layerelm = doc.createElement( "maplayer" );
+    layer->writeLayerXML( layerelm, doc );
+    layerelm.removeChild( layerelm.firstChildElement( "id" ) );
+    layerselm.appendChild( layerelm );
+  }
+  doc.appendChild( layerselm );
   return doc;
 }
 
-QgsMapLayer* QgsMapLayer::fromLayerDefinition( QDomDocument& document )
+QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 {
-  QDomNode layernode = document.elementsByTagName( "maplayer" ).at( 0 );
-  QDomElement layerElem = layernode.toElement();
-
-  QString type = layerElem.attribute( "type" );
-  QgsDebugMsg( type );
-  QgsMapLayer *layer = NULL;
-
-  if ( type == "vector" )
+  QList<QgsMapLayer*> layers;
+  QDomNodeList layernodes = document.elementsByTagName( "maplayer" );
+  for ( int i = 0; i < layernodes.size(); ++i )
   {
-    layer = new QgsVectorLayer;
-  }
-  else if ( type == "raster" )
-  {
-    layer = new QgsRasterLayer;
-  }
-  else if ( type == "plugin" )
-  {
-    QString typeName = layerElem.attribute( "name" );
-    layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
-  }
+    QDomNode layernode = layernodes.at( i );
+    QDomElement layerElem = layernode.toElement();
 
-  bool ok = layer->readLayerXML( layerElem );
-  if ( ok )
-    return layer;
+    QString type = layerElem.attribute( "type" );
+    QgsDebugMsg( type );
+    QgsMapLayer *layer = NULL;
 
-  delete layer;
-  return 0;
+    if ( type == "vector" )
+    {
+      layer = new QgsVectorLayer;
+    }
+    else if ( type == "raster" )
+    {
+      layer = new QgsRasterLayer;
+    }
+    else if ( type == "plugin" )
+    {
+      QString typeName = layerElem.attribute( "name" );
+      layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+    }
+
+    bool ok = layer->readLayerXML( layerElem );
+    if ( ok )
+      layers << layer;
+  }
+  return layers;
 }
 
-QgsMapLayer* QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
+QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
 {
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( "Can't open file" );
-    return 0;
+    return QList<QgsMapLayer*>();
   }
 
   QDomDocument doc;
   if ( !doc.setContent( &file ) )
   {
     QgsDebugMsg( "Can't set content" );
-    return 0;
+    return QList<QgsMapLayer*>();
   }
 
   return QgsMapLayer::fromLayerDefinition( doc );
@@ -646,6 +673,17 @@ bool QgsMapLayer::writeXml( QDomNode & layer_node, QDomDocument & document )
 
   return true;
 } // void QgsMapLayer::writeXml
+
+
+void QgsMapLayer::readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith )
+{
+  mCustomProperties.readXml( layerNode, keyStartsWith );
+}
+
+void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const
+{
+  mCustomProperties.writeXml( layerNode, doc );
+}
 
 
 
@@ -1308,7 +1346,7 @@ QUndoStack* QgsMapLayer::undoStack()
 
 void QgsMapLayer::setCustomProperty( const QString& key, const QVariant& value )
 {
-  mCustomProperties[key] = value;
+  mCustomProperties.setValue( key, value );
 }
 
 QVariant QgsMapLayer::customProperty( const QString& value, const QVariant& defaultValue ) const
@@ -1321,76 +1359,7 @@ void QgsMapLayer::removeCustomProperty( const QString& key )
   mCustomProperties.remove( key );
 }
 
-void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith )
-{
-  QDomNode propsNode = layerNode.namedItem( "customproperties" );
-  if ( propsNode.isNull() ) // no properties stored...
-    return;
 
-  if ( !keyStartsWith.isEmpty() )
-  {
-    //remove old keys
-    QStringList keysToRemove;
-    QMap<QString, QVariant>::const_iterator pIt = mCustomProperties.constBegin();
-    for ( ; pIt != mCustomProperties.constEnd(); ++pIt )
-    {
-      if ( pIt.key().startsWith( keyStartsWith ) )
-      {
-        keysToRemove.push_back( pIt.key() );
-      }
-    }
-
-    QStringList::const_iterator sIt = keysToRemove.constBegin();
-    for ( ; sIt != keysToRemove.constEnd(); ++sIt )
-    {
-      mCustomProperties.remove( *sIt );
-    }
-  }
-  else
-  {
-    mCustomProperties.clear();
-  }
-
-  QDomNodeList nodes = propsNode.childNodes();
-
-  for ( int i = 0; i < nodes.size(); i++ )
-  {
-    QDomNode propNode = nodes.at( i );
-    if ( propNode.isNull() || propNode.nodeName() != "property" )
-      continue;
-    QDomElement propElement = propNode.toElement();
-
-    QString key = propElement.attribute( "key" );
-    if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
-    {
-      QString value = propElement.attribute( "value" );
-      mCustomProperties[key] = QVariant( value );
-    }
-  }
-
-}
-
-void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const
-{
-  //remove already existing <customproperties> tags
-  QDomNodeList propertyList = layerNode.toElement().elementsByTagName( "customproperties" );
-  for ( int i = 0; i < propertyList.size(); ++i )
-  {
-    layerNode.removeChild( propertyList.at( i ) );
-  }
-
-  QDomElement propsElement = doc.createElement( "customproperties" );
-
-  for ( QMap<QString, QVariant>::const_iterator it = mCustomProperties.constBegin(); it != mCustomProperties.constEnd(); ++it )
-  {
-    QDomElement propElement = doc.createElement( "property" );
-    propElement.setAttribute( "key", it.key() );
-    propElement.setAttribute( "value", it.value().toString() );
-    propsElement.appendChild( propElement );
-  }
-
-  layerNode.appendChild( propsElement );
-}
 
 bool QgsMapLayer::isEditable() const
 {

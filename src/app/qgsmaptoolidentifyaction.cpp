@@ -113,16 +113,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   }
   else
   {
-    QSettings mySettings;
-    bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
-    if ( !myDockFlag )
-    {
-      resultsDialog()->hide();
-    }
-    else
-    {
-      resultsDialog()->clear();
-    }
+    resultsDialog()->clear();
     QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
 }

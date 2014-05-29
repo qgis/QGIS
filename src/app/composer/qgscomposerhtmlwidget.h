@@ -31,6 +31,11 @@ class QgsComposerHtmlWidget: public QWidget, private Ui::QgsComposerHtmlWidgetBa
     void on_mUrlLineEdit_editingFinished();
     void on_mFileToolButton_clicked();
     void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void on_mUseSmartBreaksCheckBox_toggled( bool checked );
+    void on_mMaxDistanceSpinBox_valueChanged( double val );
+
+    void on_mReloadPushButton_clicked();
+    void on_mAddFramePushButton_clicked();
 
     /**Sets the GUI elements to the values of mHtmlItem*/
     void setGuiElementValues();

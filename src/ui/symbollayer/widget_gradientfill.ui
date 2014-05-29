@@ -23,7 +23,16 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="0" column="0">
@@ -405,18 +414,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -434,6 +432,12 @@
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorRampComboBox</class>

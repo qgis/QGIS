@@ -1,0 +1,12 @@
+<h3>ymax function</h3>
+Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+<h4>Syntax</h4>
+<pre>ymax(geom)</pre>
+
+<h4>Arguments</h4>
+geom &rarr; a geometry
+
+<h4>Example</h4>
+<pre> ymax($geometry) &rarr; returns maximum y coordinate of $geometry</pre>
+

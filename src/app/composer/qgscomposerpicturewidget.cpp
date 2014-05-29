@@ -21,6 +21,7 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
+#include "qgsexpressionbuilderdialog.h"
 #include <QDoubleValidator>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -51,6 +52,8 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
+  connect( mPictureExpressionLineEdit, SIGNAL( editingFinished() ), this, SLOT( setPictureExpression() ) );
+
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -107,12 +110,6 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
     //check if file exists
     QFileInfo fileInfo( filePath );
 
-    if ( !fileInfo.exists() || !fileInfo.isReadable() )
-    {
-      QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
-      return;
-    }
-
     mPicture->beginCommand( tr( "Picture changed" ) );
     mPicture->setPictureFile( filePath );
     mPicture->update();
@@ -120,6 +117,37 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
   }
 }
 
+void QgsComposerPictureWidget::on_mPictureExpressionButton_clicked()
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  QgsVectorLayer* vl = 0;
+  QgsComposition* composition = mPicture->composition();
+
+  if ( composition )
+  {
+    QgsAtlasComposition* atlasMap = &composition->atlasComposition();
+    if ( atlasMap )
+    {
+      vl = atlasMap->coverageLayer();
+    }
+  }
+
+  QgsExpressionBuilderDialog exprDlg( vl, mPictureExpressionLineEdit->text(), this );
+  exprDlg.setWindowTitle( tr( "Expression based image path" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      mPictureExpressionLineEdit->setText( expression );
+      setPictureExpression();
+    }
+  }
+}
 
 void QgsComposerPictureWidget::on_mPictureRotationSpinBox_valueChanged( double d )
 {
@@ -196,6 +224,90 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
   QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
   userDirList.removeOne( directoryToRemove );
   s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
+}
+
+void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture resize mode changed" ) );
+  mPicture->setResizeMode(( QgsComposerPicture::ResizeMode )index );
+  mPicture->endCommand();
+
+  //disable picture rotation for non-zoom modes
+  mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
+
+  //disable anchor point control for certain zoom modes
+  if ( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
+       mPicture->resizeMode() == QgsComposerPicture::Clip )
+  {
+    mAnchorPointComboBox->setEnabled( true );
+  }
+  else
+  {
+    mAnchorPointComboBox->setEnabled( false );
+  }
+}
+
+void QgsComposerPictureWidget::on_mAnchorPointComboBox_currentIndexChanged( int index )
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture placement changed" ) );
+  mPicture->setPictureAnchor(( QgsComposerItem::ItemPositionMode )index );
+  mPicture->endCommand();
+}
+
+void QgsComposerPictureWidget::on_mRadioPath_clicked()
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture source changed" ) );
+  mPicture->setUsePictureExpression( false );
+  mPicture->endCommand();
+
+  mPictureLineEdit->setEnabled( true );
+  mPictureBrowseButton->setEnabled( true );
+  mPictureExpressionLineEdit->setEnabled( false );
+  mPictureExpressionButton->setEnabled( false );
+}
+
+void QgsComposerPictureWidget::on_mRadioExpression_clicked()
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture source changed" ) );
+  mPicture->setUsePictureExpression( true );
+  mPicture->endCommand();
+
+  mPictureLineEdit->setEnabled( false );
+  mPictureBrowseButton->setEnabled( false );
+  mPictureExpressionLineEdit->setEnabled( true );
+  mPictureExpressionButton->setEnabled( true );
+}
+
+void QgsComposerPictureWidget::setPictureExpression()
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  mPicture->beginCommand( tr( "Picture source expression" ) );
+  mPicture->setPictureExpression( mPictureExpressionLineEdit->text() );
+  mPicture->endCommand();
 }
 
 void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged( int state )
@@ -326,9 +438,13 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureLineEdit->blockSignals( true );
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
+    mResizeModeComboBox->blockSignals( true );
+    mAnchorPointComboBox->blockSignals( true );
+    mRadioPath->blockSignals( true );
+    mRadioExpression->blockSignals( true );
+    mPictureExpressionLineEdit->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
-//    QRectF pictureRect = mPicture->rect();
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
     refreshMapComboBox();
@@ -352,11 +468,40 @@ void QgsComposerPictureWidget::setGuiElementValues()
       mComposerMapComboBox->setEnabled( false );
     }
 
+    mResizeModeComboBox->setCurrentIndex(( int )mPicture->resizeMode() );
+    //disable picture rotation for non-zoom modes
+    mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom );
+
+    mAnchorPointComboBox->setCurrentIndex(( int )mPicture->pictureAnchor() );
+    //disable anchor point control for certain zoom modes
+    if ( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
+         mPicture->resizeMode() == QgsComposerPicture::Clip )
+    {
+      mAnchorPointComboBox->setEnabled( true );
+    }
+    else
+    {
+      mAnchorPointComboBox->setEnabled( false );
+    }
+
+    mRadioPath->setChecked( !( mPicture->usePictureExpression() ) );
+    mRadioExpression->setChecked( mPicture->usePictureExpression() );
+    mPictureLineEdit->setEnabled( !( mPicture->usePictureExpression() ) );
+    mPictureBrowseButton->setEnabled( !( mPicture->usePictureExpression() ) );
+    mPictureExpressionLineEdit->setEnabled( mPicture->usePictureExpression() );
+    mPictureExpressionButton->setEnabled( mPicture->usePictureExpression() );
+
+    mPictureExpressionLineEdit->setText( mPicture->pictureExpression() );
 
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
+    mResizeModeComboBox->blockSignals( false );
+    mAnchorPointComboBox->blockSignals( false );
+    mRadioPath->blockSignals( false );
+    mRadioExpression->blockSignals( false );
+    mPictureExpressionLineEdit->blockSignals( false );
   }
 }
 

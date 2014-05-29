@@ -1,0 +1,122 @@
+<root>
+  <key>OrthoRectification-utm</key>
+  <exec>otbcli_OrthoRectification</exec>
+  <longname>OrthoRectification (utm)</longname>
+  <group>Geometry</group>
+  <description>This application allows ortho-rectifying optical images from supported sensors.
+</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>io.in</key>
+    <name>Input Image</name>
+    <description>The input image to ortho-rectify</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>io.out</key>
+    <name>Output Image</name>
+    <description>The ortho-rectified output image</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>map</key>
+    <name>Output Cartographic Map Projection</name>
+    <description>Parameters of the output map projection to be used.</description>
+    <options>
+      <choices>
+        <choice>utm</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>map.utm.zone</key>
+    <name>Zone number</name>
+    <description>The zone number ranges from 1 to 60 and allows defining the transverse mercator projection (along with the hemisphere)</description>
+    <minValue />
+    <maxValue />
+    <default>31</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>map.utm.northhem</key>
+    <name>Northern Hemisphere</name>
+    <description>The transverse mercator projections are defined by their zone number as well as the hemisphere. Activate this parameter if your image is in the northern hemisphere.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>outputs.mode</key>
+    <name>Parameters estimation modes</name>
+    <description />
+    <options>
+      <choices>
+        <choice>autosize</choice>
+        <choice>autospacing</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>outputs.default</key>
+    <name>Default pixel value</name>
+    <description>Default value to write when outside of input image.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>interpolator</key>
+    <name>Interpolation</name>
+    <description>This group of parameters allows defining how the input image will be interpolated during resampling.</description>
+    <options>
+      <choices>
+        <choice>bco</choice>
+        <choice>nn</choice>
+        <choice>linear</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Radius">ParameterNumber</parameter_type>
+    <key>interpolator.bco.radius</key>
+    <name>Radius for bicubic interpolation</name>
+    <description>This parameter allows controlling the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artefacts.</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>opt.ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>This allows setting the maximum amount of RAM available for processing. As the writing task is time consuming, it is better to write large pieces of data, which can be achieved by increasing this parameter (pay attention to your system capabilities)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>opt.gridspacing</key>
+    <name>Resampling grid spacing</name>
+    <description>Resampling is done according to a coordinate mapping deformation grid, whose pixel size is set by this parameter, and expressed in the coordinate system of the output image The closer to the output spacing this parameter is, the more precise will be the ortho-rectified image,but increasing this parameter will reduce processing time.</description>
+    <minValue />
+    <maxValue />
+    <default>4</default>
+  </parameter>
+</root>

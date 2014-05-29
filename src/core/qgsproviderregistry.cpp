@@ -47,8 +47,8 @@ typedef QString protocolDrivers_t();
 
 QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
 {
-  static QgsProviderRegistry mInstance( pluginPath );
-  return &mInstance;
+  static QgsProviderRegistry* sInstance( new QgsProviderRegistry( pluginPath ) );
+  return sInstance;
 } // QgsProviderRegistry::instance
 
 

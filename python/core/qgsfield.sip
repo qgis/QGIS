@@ -156,17 +156,7 @@ class QgsFields
     bool exists( int i ) const;
 
     //! Get field at particular index (must be in range 0..N-1)
-    //inline const QgsField& operator[]( int i ) const;
-    //! Get field at particular index (must be in range 0..N-1)
-    //! Look up field's index from name - case insensitive
-    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
-    //! @note added in 2.4
-    int fieldNameIndex( const QString& fieldName ) const;
-
-    //! Utility function to get list of attribute indexes
-    //! @note added in 2.4
-    QgsAttributeList allAttributesList() const;
-
+    // inline const QgsField& operator[]( int i ) const;
     QgsField& operator[](int i) /Factory/;
 %MethodCode
   SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
@@ -190,6 +180,15 @@ class QgsFields
 
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const;
+
+    //! Look up field's index from name - case insensitive
+    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! @note added in 2.4
+    int fieldNameIndex( const QString& fieldName ) const;
+
+    //! Utility function to get list of attribute indexes
+    //! @note added in 2.4
+    QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances
     QList<QgsField> toList() const;
@@ -215,6 +214,4 @@ void __setitem__(int key, const QgsField& field);
     (*sipCpp)[idx] = *a1;
 %End
 
-
 };
-

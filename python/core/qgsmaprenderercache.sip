@@ -36,4 +36,11 @@ class QgsMapRendererCache : QObject
     //! remove layer from the cache
     void clearCacheImage( QString layerId );
 
+  protected slots:
+    //! remove layer (that emitted the signal) from the cache
+    void layerRequestedRepaint();
+
+  protected:
+    //! invalidate cache contents (without locking)
+    void clearInternal();
 };

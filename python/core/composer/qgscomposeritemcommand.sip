@@ -90,7 +90,8 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       //item
       ItemOutlineWidth,
       ItemMove,
-      ItemRotation
+      ItemRotation,
+      ItemTransparency
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );

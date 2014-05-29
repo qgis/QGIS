@@ -37,6 +37,9 @@ class QgsMapCanvasMap : QgsMapCanvasItem
     virtual void paint( QPainter * painter );
 
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    void refresh() /Deprecated/;
+
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void resize( QSize size ) /Deprecated/;
 
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
@@ -48,7 +51,7 @@ class QgsMapCanvasMap : QgsMapCanvasItem
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void setBackgroundColor( const QColor& color ) /Deprecated/;
 
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
     void setPanningOffset( const QPoint& point ) /Deprecated/;
 
     //! @deprecated in 2.4

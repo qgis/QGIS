@@ -62,9 +62,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
 
     QString name() const;
 
-
   private:
-
     QgsVectorLayer *mVectorLayer;
 
     int mDirectionFieldId;

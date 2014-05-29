@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 #include "qgsconfigcache.h"
-#include "qgslogger.h"
-#include "qgsmslayercache.h"
-#include "qgsprojectfiletransform.h"
-#include "qgsprojectparser.h"
-#include "qgssldparser.h"
-#include <QCoreApplication>
+#include "qgsmessagelog.h"
+#include "qgswcsprojectparser.h"
+#include "qgswfsprojectparser.h"
+#include "qgswmsprojectparser.h"
+#include "qgssldconfigparser.h"
 
+#include <QFile>
 
 QgsConfigCache* QgsConfigCache::instance()
 {
@@ -37,107 +37,118 @@ QgsConfigCache::QgsConfigCache()
 
 QgsConfigCache::~QgsConfigCache()
 {
-  foreach ( QgsConfigParser *parser, mCachedConfigurations.values() )
-  {
-    delete parser;
-  }
 }
 
-QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
+QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
 {
-  QCoreApplication::processEvents(); //check for updates from file system watcher
-  QgsConfigParser* p = mCachedConfigurations.value( filePath, 0 );
-
+  QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
   if ( p )
   {
-    QgsDebugMsg( "Return configuration from cache" );
-  }
-  else
-  {
-    QgsDebugMsg( "Create new configuration" );
-    p = insertConfiguration( filePath );
+    return p;
   }
 
-  if ( p )
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
   {
-    //there could be more layers in a project than allowed by the cache per default
-    QgsMSLayerCache::instance()->setProjectMaxLayers( p->numberOfLayers() );
+    return 0;
   }
-
+  p = new QgsWCSProjectParser( doc, filePath );
+  mWCSConfigCache.insert( filePath, p );
+  mFileSystemWatcher.addPath( filePath );
   return p;
 }
 
-QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
+QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
 {
-  if ( mCachedConfigurations.size() > 40 )
+  QgsWFSProjectParser* p = mWFSConfigCache.object( filePath );
+  if ( p )
   {
-    //remove a cache entry to avoid memory problems
-    QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-    if ( configIt != mCachedConfigurations.end() )
-    {
-      mFileSystemWatcher.removePath( configIt.key() );
-      delete configIt.value();
-      mCachedConfigurations.erase( configIt );
-    }
+    return p;
   }
 
-  //first open file
-  QFile* configFile = new QFile( filePath );
-  if ( !configFile->exists() || !configFile->open( QIODevice::ReadOnly ) )
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
   {
-    QgsDebugMsg( "File unreadable: " + filePath );
-    delete configFile;
+    return 0;
+  }
+
+  p = new QgsWFSProjectParser( doc, filePath );
+  mWFSConfigCache.insert( filePath, p );
+  mFileSystemWatcher.addPath( filePath );
+  return p;
+}
+
+QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap )
+{
+  QgsWMSConfigParser* p = mWMSConfigCache.object( filePath );
+  if ( p )
+  {
+    return p;
+  }
+
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
+  {
+    return 0;
+  }
+
+  //sld or QGIS project file?
+  //is it an sld document or a qgis project file?
+  QDomElement documentElem = doc->documentElement();
+  if ( documentElem.tagName() == "StyledLayerDescriptor" )
+  {
+    p = new QgsSLDConfigParser( doc, parameterMap );
+  }
+  else
+  {
+    p = new QgsWMSProjectParser( doc, filePath );
+  }
+
+  int numberOfLayers = p->nLayers();
+  if ( numberOfLayers > 100 )
+  {
+    mWMSConfigCache.setMaxCost( numberOfLayers );
+  }
+
+  mWMSConfigCache.insert( filePath, p );
+  mFileSystemWatcher.addPath( filePath );
+  return p;
+}
+
+QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
+{
+  //first open file
+  QFile configFile( filePath );
+  if ( !configFile.exists() )
+  {
+    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", "Server", QgsMessageLog::CRITICAL );
+    return 0;
+  }
+
+  if ( !configFile.open( QIODevice::ReadOnly ) )
+  {
+    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", "Server", QgsMessageLog::CRITICAL );
     return 0;
   }
 
   //then create xml document
-  QDomDocument* configDoc = new QDomDocument();
+  QDomDocument* xmlDoc = new QDomDocument();
   QString errorMsg;
   int line, column;
-  if ( !configDoc->setContent( configFile, true, &errorMsg, &line, &column ) )
+  if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
   {
-    QgsDebugMsg( QString( "Parse error %1 at row %2, column %3 in %4 " )
-                 .arg( errorMsg ).arg( line ).arg( column ).arg( filePath ) );
-    delete configFile;
-    delete configDoc;
+    QgsMessageLog::logMessage( "Error parsing file '" + filePath +
+                               QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
+    delete xmlDoc;
     return 0;
   }
-
-  //is it an sld document or a qgis project file?
-  QDomElement documentElem = configDoc->documentElement();
-  QgsConfigParser* configParser = 0;
-  if ( documentElem.tagName() == "StyledLayerDescriptor" )
-  {
-    configParser = new QgsSLDParser( configDoc );
-  }
-  else if ( documentElem.tagName() == "qgis" )
-  {
-    //convert project file to current version first
-    QgsProjectFileTransform pt( *configDoc, QgsProjectVersion( documentElem.attribute( "version" ) ) );
-    pt.updateRevision( QgsProjectVersion( QGis::QGIS_VERSION ) );
-    configParser = new QgsProjectParser( configDoc, filePath );
-  }
-  else
-  {
-    QgsDebugMsg( "SLD or qgis expected in " + filePath );
-    delete configDoc;
-    return 0;
-  }
-
-  mCachedConfigurations.insert( filePath, configParser );
-  mFileSystemWatcher.addPath( filePath );
-  delete configFile;
-  return configParser;
+  return xmlDoc;
 }
 
 void QgsConfigCache::removeChangedEntry( const QString& path )
 {
-  QgsDebugMsg( "Remove config cache entry because file changed" );
-  QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.find( path );
-  if ( configIt != mCachedConfigurations.end() )
-  {
-    delete configIt.value();
-    mCachedConfigurations.erase( configIt );
-  }
+  mWMSConfigCache.remove( path );
+  mWFSConfigCache.remove( path );
+  mWCSConfigCache.remove( path );
   mFileSystemWatcher.removePath( path );
 }

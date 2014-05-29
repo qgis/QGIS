@@ -1865,7 +1865,7 @@ int main(int argc, char *argv[])
 
 		// check for unprocessed excludes
 		for (size_t ix = 0; ix < g_excludeHitsVector.size(); ix++)
-			if (g_excludeHitsVector[ix] == false)
+			if (!g_excludeHitsVector[ix])
 				error("Unmatched exclude", g_excludeVector[ix].c_str());
 
 		// check if files were found (probably an input error if not)

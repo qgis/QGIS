@@ -28,6 +28,7 @@
 
 #include "qgsattributedialog.h"
 #include "qgsvectorlayer.h" //QgsFeatureIds
+#include "qgsfieldmodel.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -184,16 +185,22 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void columnBoxInit();
 
+    void openExpressionBuilder();
+
+    void updateFieldFromExpression();
+
   private:
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
     QDockWidget* mDock;
+    QgsDistanceArea* myDa;
 
     QMenu* mFilterColumnsMenu;
     QSignalMapper* mFilterActionMapper;
 
     QgsVectorLayer* mLayer;
+    QgsFieldModel* mFieldModel;
 };
 
 #endif

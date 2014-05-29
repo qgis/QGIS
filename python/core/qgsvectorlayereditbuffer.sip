@@ -106,4 +106,25 @@ class QgsVectorLayerEditBuffer : QObject
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
+  protected:
+
+    void updateFields( QgsFields& fields );
+
+    /** Update feature with uncommited geometry updates */
+    void updateFeatureGeometry( QgsFeature &f );
+
+    /** Update feature with uncommited attribute updates */
+    void updateChangedAttributes( QgsFeature &f );
+
+    /** update added and changed features after addition of an attribute */
+    void handleAttributeAdded( int index );
+
+    /** update added and changed features after removal of an attribute */
+    void handleAttributeDeleted( int index );
+
+
+    /** Updates an index in an attribute map to a new value (for updates of changed attributes) */
+    void updateAttributeMapIndex( QgsAttributeMap& attrs, int index, int offset ) const;
+
+    void updateLayerFields();
 };

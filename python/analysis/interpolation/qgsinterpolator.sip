@@ -36,6 +36,9 @@ class QgsInterpolator
        @return 0 in case of success*/
     virtual int interpolatePoint( double x, double y, double& result ) = 0;
 
+    // @note not available in python bindings
+    // const QList<LayerData>& layerData() const;
+
   protected:
     /**Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory

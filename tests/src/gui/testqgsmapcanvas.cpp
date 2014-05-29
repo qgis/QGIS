@@ -33,7 +33,9 @@ void TestQgsMapCanvas::cleanupTestCase()
 
 void TestQgsMapCanvas::testMapRendererInteraction()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsMapRenderer* mr = mCanvas->mapRenderer();
+  Q_NOWARN_DEPRECATED_POP
 
   // CRS transforms
 

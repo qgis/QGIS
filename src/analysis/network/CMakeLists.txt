@@ -21,19 +21,19 @@ QT4_WRAP_CPP(QGIS_NETWORK_ANALYSIS_MOC_SRCS ${QGIS_NETWORK_ANALYSIS_MOC_HDRS})
 
 # install headers
 
-SET(QGIS_NETWORK_ANALYSIS_HDRS 
-  qgsgraph.h 
-  qgsgraphbuilderintr.h 
-  qgsgraphbuilder.h 
-  qgsarcproperter.h 
-  qgsdistancearcproperter.h 
-  qgsgraphdirector.h 
-  qgslinevectorlayerdirector.h 
+SET(QGIS_NETWORK_ANALYSIS_HDRS
+  qgsgraph.h
+  qgsgraphbuilderintr.h
+  qgsgraphbuilder.h
+  qgsarcproperter.h
+  qgsdistancearcproperter.h
+  qgsgraphdirector.h
+  qgslinevectorlayerdirector.h
   qgsgraphanalyzer.h
 )
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}../../core/
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}

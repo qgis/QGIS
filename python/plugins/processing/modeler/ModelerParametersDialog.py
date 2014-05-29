@@ -58,6 +58,7 @@ from processing.outputs.OutputString import OutputString
 from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputFile import OutputFile
+from processing.outputs.OutputDirectory import OutputDirectory
 
 
 class ModelerParametersDialog(QtGui.QDialog):
@@ -130,7 +131,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             if output.hidden:
                 continue
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
-                          OutputHTML, OutputFile)):
+                          OutputHTML, OutputFile, OutputDirectory)):
                 label = QtGui.QLabel(output.description + '<'
                                      + output.__module__.split('.')[-1] + '>')
                 item = QLineEdit()
@@ -164,21 +165,25 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, 'Parameters')
         self.webView = QtWebKit.QWebView()
+
         html = None
+        url = None
         try:
-            if self.alg.helpFile():
-                helpFile = self.alg.helpFile()
+            isText, help = self.alg.help()
+            if help is not None:
+                if isText:
+                    html = help;
+                else:
+                    url = QtCore.QUrl(help)
             else:
-                html = \
-                    '<h2>Sorry, no help is available for this algorithm.</h2>'
+                html = '<h2>Sorry, no help is available for this \
+                        algorithm.</h2>'
         except WrongHelpFileException, e:
-            html = e.msg
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+            html = e.args[0]
         try:
             if html:
                 self.webView.setHtml(html)
-            else:
-                url = QtCore.QUrl(helpFile)
+            elif url:
                 self.webView.load(url)
         except:
             self.webView.setHtml('<h2>Could not open help file :-( </h2>')

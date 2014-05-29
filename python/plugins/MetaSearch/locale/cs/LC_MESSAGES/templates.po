@@ -1,0 +1,121 @@
+# 
+# Translators:
+# jachym <jachym.cepicky@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: MetaSearch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-25 12:58-0500\n"
+"PO-Revision-Date: 2014-03-07 22:04+0000\n"
+"Last-Translator: jachym <jachym.cepicky@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/MetaSearch/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgid "Service Metadata"
+msgstr "Metadata služby"
+
+msgid "Service Identification"
+msgstr "Identifikace služby"
+
+msgid "Title"
+msgstr "Nadpis"
+
+msgid "Abstract"
+msgstr "Abstrakt"
+
+msgid "Keywords"
+msgstr "Klíčová slova"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Version"
+msgstr "Verze"
+
+msgid "Fees"
+msgstr "Poplatky"
+
+msgid "Access Constraints"
+msgstr "Omezení veřejného přístupu"
+
+msgid "Service URL"
+msgstr "Odkaz"
+
+msgid "Service Provider"
+msgstr "Poskytovatel služby"
+
+msgid "Name"
+msgstr "Jméno"
+
+msgid "Site"
+msgstr "Domovská stránka"
+
+msgid "Service Contact"
+msgstr "Zodpovědná organizace"
+
+msgid "Position"
+msgstr "Pozice"
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Address"
+msgstr "Adresa"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Fax"
+msgstr "Fax"
+
+msgid "Url"
+msgstr "Url"
+
+msgid "Hours of Service"
+msgstr "Úřední hodiny"
+
+msgid "Contact Instructions"
+msgstr "Další instrukce ke kontaktu"
+
+msgid "Record Metadata"
+msgstr "Metadatový záznam"
+
+msgid "Identifier"
+msgstr "Identifikátor"
+
+msgid "Subjects"
+msgstr "Předměty"
+
+msgid "Creator"
+msgstr "Tvůrce"
+
+msgid "Contributor"
+msgstr "Přispěvatel"
+
+msgid "Publisher"
+msgstr "Publikující"
+
+msgid "Modified"
+msgstr "Změněno"
+
+msgid "Language"
+msgstr "Jazyk"
+
+msgid "Format"
+msgstr "Formát"
+
+msgid "Rights"
+msgstr "Práva"
+
+msgid "Bounding Box"
+msgstr "Geografické ohraničení"
+
+msgid "Access Link"
+msgstr "Odkaz"

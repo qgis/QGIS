@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposertexttable.h"
+#include "qgscomposertablecolumn.h"
 
 QgsComposerTextTable::QgsComposerTextTable( QgsComposition* c ): QgsComposerTable( c )
 {
@@ -25,6 +26,28 @@ QgsComposerTextTable::QgsComposerTextTable( QgsComposition* c ): QgsComposerTabl
 QgsComposerTextTable::~QgsComposerTextTable()
 {
 
+}
+
+void QgsComposerTextTable::setHeaderLabels( const QStringList& labels )
+{
+  //update existing column headings, or add new columns if required
+  QStringList::const_iterator labelIt = labels.constBegin();
+  int idx = 0;
+  for ( ; labelIt != labels.constEnd(); ++labelIt )
+  {
+    QgsComposerTableColumn* col;
+    if ( idx < mColumns.count() )
+    {
+      col = mColumns.at( idx );
+    }
+    else
+    {
+      col = new QgsComposerTableColumn;
+      mColumns.append( col );
+    }
+    col->setHeading(( *labelIt ) );
+    idx++;
+  }
 }
 
 bool QgsComposerTextTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
@@ -42,36 +65,22 @@ bool QgsComposerTextTable::readXML( const QDomElement& itemElem, const QDomDocum
   return tableReadXML( itemElem, doc );
 }
 
-bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
+bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps )
 {
-  attributes.clear();
+  attributeMaps.clear();
 
   QList< QStringList >::const_iterator rowIt = mRowText.constBegin();
   QStringList currentStringList;
   for ( ; rowIt != mRowText.constEnd(); ++rowIt )
   {
     currentStringList = *rowIt;
-    QVector<QVariant> vec;
+
+    attributeMaps.push_back( QgsAttributeMap() );
     for ( int i = 0; i < currentStringList.size(); ++i )
     {
-      vec.append( QVariant( currentStringList.at( i ) ) );
+      attributeMaps.last().insert( i, QVariant( currentStringList.at( i ) ) );
     }
-    attributes.append( vec );
   }
+
   return true;
 }
-
-QMap<int, QString> QgsComposerTextTable::getHeaderLabels() const
-{
-  QMap<int, QString> header;
-  QStringList::const_iterator it = mHeaderLabels.constBegin();
-  int index = 0;
-  for ( ; it != mHeaderLabels.constEnd(); ++it )
-  {
-    header.insert( index, *it );
-    ++index;
-  }
-  return header;
-}
-
-

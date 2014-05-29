@@ -1,0 +1,58 @@
+<root>
+  <key>ExtractROI-fit</key>
+  <exec>otbcli_ExtractROI</exec>
+  <longname>ExtractROI (fit)</longname>
+  <group>Image Manipulation</group>
+  <description>Extract a ROI defined by the user.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>mode</key>
+    <name>Extraction mode</name>
+    <description />
+    <options>
+      <choices>
+        <choice>fit</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>mode.fit.ref</key>
+    <name>Reference image</name>
+    <description>Reference image to define the ROI</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>mode.fit.elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  </root>

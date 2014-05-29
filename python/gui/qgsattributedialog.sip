@@ -42,6 +42,10 @@ class QgsAttributeDialog : QObject
      */
     void restoreGeometry();
 
+    /**
+     * @brief setHighlight
+     * @param h The highlight. Ownership is taken.
+     */
     void setHighlight( QgsHighlight *h );
 
     QDialog *dialog();
@@ -55,11 +59,28 @@ class QgsAttributeDialog : QObject
      */
     bool editable();
 
+    /**
+     * Toggles the form mode between edit feature and add feature.
+     * If set to true, the dialog will be editable even with an invalid feature.
+     * If set to true, the dialog will add a new feature when the form is accepted.
+     *
+     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     */
+    void setIsAddDialog( bool isAddDialog );
+
+    /**
+     * Sets the edit command message (Undo) that will be used when the dialog is accepted
+     *
+     * @param message The message
+     */
+    void setEditCommandMessage( const QString& message );
+
   public slots:
     void accept();
 
     int exec();
     void show();
 
-    void dialogDestroyed();
+  protected:
+    bool eventFilter( QObject *obj, QEvent *e );
 };

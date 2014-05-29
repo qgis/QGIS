@@ -48,6 +48,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry", QByteArray(), type=QByteArray))
 
     self.editSql.setFocus()
+    self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
     self.editSql.initCompleter(self.db)
 
     # allow to copy results
@@ -125,6 +126,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
   def clearSql(self):
     self.editSql.clear()
+    self.editSql.setFocus()
 
   def executeSql(self):
     sql = self.editSql.text()

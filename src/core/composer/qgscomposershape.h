@@ -60,8 +60,8 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     //setters and getters
-    QgsComposerShape::Shape shapeType() const {return mShape;}
-    void setShapeType( QgsComposerShape::Shape s ) {mShape = s;}
+    QgsComposerShape::Shape shapeType() const { return mShape; }
+    void setShapeType( QgsComposerShape::Shape s ) { mShape = s; }
 
     /**Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );
@@ -83,6 +83,11 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /**Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/
     QRectF boundingRect() const;
+
+    /**Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
+     * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
+    */
+    void setSceneRect( const QRectF& rectangle );
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */

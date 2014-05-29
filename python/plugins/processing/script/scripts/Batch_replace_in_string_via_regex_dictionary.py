@@ -1,5 +1,5 @@
-##[3liz]=group
-##Batch string replace via regex dictionnary=name
+##[Example scripts]=group
+##Batch string replace via regex dictionary=name
 ##input=string John has a blue car.
 ##ignore_case=boolean True
 ##verbose=boolean False
@@ -34,7 +34,7 @@ if d and isinstance(d, dict):
         r = re.compile(k, reOption)
         output = r.sub(v, output)
 else:
-    progress.setText('ERROR - Replace dict does not represent a dictionnary. String not changed !' )
+    progress.setText('ERROR - Replace dict does not represent a dictionary. String not changed!' )
 
 if verbose:
     progress.setText('OUTPUT = \n%s\n' % output)

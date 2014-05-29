@@ -107,6 +107,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     QgsFeatureIds currentEditSelection();
 
+    /**
+     * Sets if the currently shown form has received any edit events so far.
+     *
+     * @param state The state
+     */
+    void setCurrentFeatureEdited( bool state );
+
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
@@ -127,6 +134,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     void displayExpressionChanged( const QString expression );
 
+    void aboutToChangeEditSelection( bool& ok );
+
   public slots:
     /**
      * Set the feature(s) to be edited
@@ -134,6 +143,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param fids  A list of features to be edited
      */
     void setEditSelection( const QgsFeatureIds &fids );
+
+    /**
+     * Set the feature(s) to be edited
+     *
+     * @param index The selection to set
+     * @param command selection update mode
+     */
+    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
 
     /**
      * Select all currently visible features

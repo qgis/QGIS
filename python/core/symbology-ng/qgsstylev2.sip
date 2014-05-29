@@ -1,4 +1,4 @@
-class QgsStyleV2
+class QgsStyleV2 : QObject
 {
 %TypeHeaderCode
 #include <qgsstylev2.h>
@@ -253,6 +253,9 @@ class QgsStyleV2
 
     //! Imports the symbols and colorramps into the default style database from the given XML file
     bool importXML( QString filename );
+
+  signals:
+    void symbolSaved( QString name, QgsSymbolV2* symbol );
 
   protected:
     //! convenience function to open the DB and return a sqlite3 object

@@ -52,13 +52,13 @@ for feat in feats:
     geom = feat.geometry()
     rect = geom.boundingBox()
 
-    # Recalculate paper width and heigh if not given
+    # Recalculate paper width and height if not given
     if not image_width_mm and scale > 0:
         image_width_mm = rect.width() * 1000 / scale
     if not image_height_mm and scale > 0:
         image_height_mm = rect.height() * 1000 / scale
 
-    # Calculate image size in Pixel
+    # Calculate image size in pixel
     inch2mm = 25.4
     image_width_pixel = int(image_width_mm * dpi / inch2mm)
     image_height_pixel = int(image_height_mm * dpi / inch2mm)

@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -10,7 +11,6 @@ SET(QGIS_APP_SRCS
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
   qgsattributetypedialog.cpp
-  qgsattributetypeloaddialog.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
@@ -129,13 +129,7 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
-  legend/qgslegendgroup.cpp
-  legend/qgslegend.cpp
   legend/qgsapplegendinterface.cpp
-  legend/qgslegenditem.cpp
-  legend/qgslegendlayer.cpp
-  legend/qgslegendsymbologyitem.cpp
-  legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -169,7 +163,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsannotationwidget.h
   qgsattributeactiondialog.h
   qgsattributetypedialog.h
-  qgsattributetypeloaddialog.h
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
@@ -272,10 +265,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  legend/qgslegend.h
   legend/qgsapplegendinterface.h
-  legend/qgslegendlayer.h
-  legend/qgslayerorder.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -406,9 +396,19 @@ ENDIF (WIN32)
 
 IF(PEDANTIC)
   # disable deprecation warnings
-  IF(NOT MSVC)
-    SET_SOURCE_FILES_PROPERTIES(qgisappinterface.cpp PROPERTIES COMPILE_FLAGS -Wno-deprecated)
-  ENDIF(NOT MSVC)
+  IF(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(
+        qgisappinterface.cpp
+        ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
+	PROPERTIES COMPILE_FLAGS "/wd4996"
+    )
+  ELSE(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(
+        qgisappinterface.cpp
+        ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
+        PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations"
+    )
+  ENDIF(MSVC)
 ENDIF(PEDANTIC)
 
 INCLUDE_DIRECTORIES(
@@ -418,11 +418,22 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ../analysis/raster ../analysis/openstreetmap
+  ../analysis/raster
+  ../analysis/openstreetmap
   ../core
   ../core/gps
-  ../core/composer ../core/dxf ../core/raster ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster ../gui/editorwidgets ../gui/editorwidgets/core
+  ../core/composer
+  ../core/dxf
+  ../core/layertree
+  ../core/raster
+  ../core/symbology-ng
+  ../gui
+  ../gui/symbology-ng
+  ../gui/attributetable
+  ../gui/raster
+  ../gui/editorwidgets
+  ../gui/editorwidgets/core
+  ../gui/layertree
   ../plugins
   ../python
   gps
@@ -497,18 +508,6 @@ ENDIF(APPLE)
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
-
-# disable deprecation warnings for classes re-exporting deprecated methods
-IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(
-    ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
-    PROPERTIES COMPILE_FLAGS "-wd4996")
-ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(
-    ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
-    PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
-ENDIF(MSVC)
-
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QWT_LIBRARY}

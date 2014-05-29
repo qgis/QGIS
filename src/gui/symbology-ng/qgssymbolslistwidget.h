@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbolslistwidget.h
-    ---------------------
-    begin                : June 2012
-    copyright            : (C) 2012 by Arunmozhi
-    email                : aruntheguy at gmail.com
+ qgssymbolslistwidget.h
+ ---------------------
+ begin                : June 2012
+ copyright            : (C) 2012 by Arunmozhi
+ email                : aruntheguy at gmail.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -39,7 +39,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
-    void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
+    void symbolAddedToStyle( QString name, QgsSymbolV2* symbol );
+    void on_mSymbolUnitWidget_changed( );
     void on_mTransparencySlider_valueChanged( int value );
 
     void on_groupsCombo_currentIndexChanged( int index );
@@ -67,4 +68,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H
+
+
 

@@ -760,7 +760,7 @@ void QgsSpatialQueryDialog::apply()
 void QgsSpatialQueryDialog::visibleResult( bool show )
 {
   blockSignals( true );
-  if ( show == false )
+  if ( !show )
   {
     mRubberSelectId->reset();
   }

@@ -1,7 +1,6 @@
 /***************************************************************************
                               qgs_map_serv.cpp
- A server application supporting WMS/SLD syntax for HTTP GET and Orchestra
-map service syntax for SOAP/HTTP POST
+ A server application supporting WMS / WFS / WCS
                               -------------------
   begin                : July 04, 2006
   copyright            : (C) 2006 by Marco Hugentobler & Ionut Iosifescu Enescu
@@ -32,15 +31,16 @@ map service syntax for SOAP/HTTP POST
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
-#include "qgsprojectparser.h"
-#include "qgssldparser.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsserverlogger.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
 #include <QImage>
 #include <QSettings>
 #include <QDateTime>
+#include <QScopedPointer>
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
@@ -50,9 +50,7 @@ map service syntax for SOAP/HTTP POST
 
 void dummyMessageHandler( QtMsgType type, const char *msg )
 {
-  Q_UNUSED( type );
-  Q_UNUSED( msg );
-#ifdef QGSMSDEBUG
+#if 0 //def QGSMSDEBUG
   QString output;
 
   switch ( type )
@@ -76,69 +74,78 @@ void dummyMessageHandler( QtMsgType type, const char *msg )
 
   if ( type == QtFatalMsg )
     abort();
+#else
+  Q_UNUSED( type );
+  Q_UNUSED( msg );
 #endif
 }
 
 void printRequestInfos()
 {
-#ifdef QGSMSDEBUG
-  //print out some infos about the request
-  QgsDebugMsg( "************************new request**********************" );
-  QgsDebugMsg( QDateTime::currentDateTime().toString( "yyyy-MM-dd hh:mm:ss" ) );
-
+  QgsMessageLog::logMessage( "********************new request***************", "Server", QgsMessageLog::INFO );
   if ( getenv( "REMOTE_ADDR" ) != NULL )
   {
-    QgsDebugMsg( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ) );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_HOST" ) != NULL )
   {
-    QgsDebugMsg( "remote host: " + QString( getenv( "REMOTE_HOST" ) ) );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_USER" ) != NULL )
   {
-    QgsDebugMsg( "remote user: " + QString( getenv( "REMOTE_USER" ) ) );
+    QgsMessageLog::logMessage( "remote user: " + QString( getenv( "REMOTE_USER" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_IDENT" ) != NULL )
   {
-    QgsDebugMsg( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ) );
+    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "CONTENT_TYPE" ) != NULL )
   {
-    QgsDebugMsg( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ) );
+    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "AUTH_TYPE" ) != NULL )
   {
-    QgsDebugMsg( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ) );
+    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "HTTP_USER_AGENT" ) != NULL )
   {
-    QgsDebugMsg( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ) );
+    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "HTTP_PROXY" ) != NULL )
   {
-    QgsDebugMsg( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ) );
+    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "HTTPS_PROXY" ) != NULL )
   {
-    QgsDebugMsg( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ) );
+    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "NO_PROXY" ) != NULL )
   {
-    QgsDebugMsg( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ) );
+    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), "Server", QgsMessageLog::INFO );
+  }
+}
+
+void printRequestParameters( const QMap< QString, QString>& parameterMap, int logLevel )
+{
+  if ( logLevel > 0 )
+  {
+    return;
   }
 
-#endif //QGSMSDEBUG
+  QMap< QString, QString>::const_iterator pIt = parameterMap.constBegin();
+  for ( ; pIt != parameterMap.constEnd(); ++pIt )
+  {
+    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), "Server", QgsMessageLog::INFO );
+  }
 }
 
 QFileInfo defaultProjectFile()
 {
   QDir currentDir;
-  QgsDebugMsg( "current directory: " + currentDir.absolutePath() );
   fprintf( FCGI_stderr, "current directory: %s\n", currentDir.absolutePath().toUtf8().constData() );
   QStringList nameFilterList;
   nameFilterList << "*.qgs";
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
-  QgsDebugMsg( "Project files found:" );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
     QgsDebugMsg( projectFiles.at( x ).absoluteFilePath() );
@@ -167,13 +174,88 @@ int fcgi_accept()
 #endif
 }
 
+void setupNetworkAccessManager()
+{
+  QSettings settings;
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
+  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  cache->setCacheDirectory( cacheDirectory );
+  cache->setMaximumCacheSize( cacheSize );
+  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
+  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
+  nam->setCache( cache );
+}
+
+QgsRequestHandler* createRequestHandler()
+{
+  QgsRequestHandler* requestHandler = 0;
+  char* requestMethod = getenv( "REQUEST_METHOD" );
+  if ( requestMethod != NULL )
+  {
+    if ( strcmp( requestMethod, "POST" ) == 0 )
+    {
+      //requestHandler = new QgsSOAPRequestHandler();
+      requestHandler = new QgsPostRequestHandler();
+    }
+    else
+    {
+      requestHandler = new QgsGetRequestHandler();
+    }
+  }
+  else
+  {
+    requestHandler = new QgsGetRequestHandler();
+  }
+  return requestHandler;
+}
+
+QString configPath( const QString& defaultConfigPath, const QMap<QString, QString>& parameters )
+{
+  QString cfPath( defaultConfigPath );
+  QString projectFile = getenv( "QGIS_PROJECT_FILE" );
+  if ( !projectFile.isEmpty() )
+  {
+    cfPath = projectFile;
+  }
+  else
+  {
+    QMap<QString, QString>::const_iterator paramIt = parameters.find( "MAP" );
+    if ( paramIt == parameters.constEnd() )
+    {
+      QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigPath ) );
+    }
+    else
+    {
+      cfPath = paramIt.value();
+    }
+  }
+  return cfPath;
+}
+
+
 int main( int argc, char * argv[] )
 {
 #ifndef _MSC_VER
   qInstallMsgHandler( dummyMessageHandler );
 #endif
 
+  QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
+  if ( !optionsPath.isEmpty() )
+  {
+    QgsDebugMsg( "Options PATH: " + optionsPath );
+    QSettings::setDefaultFormat( QSettings::IniFormat );
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
+  }
+
   QgsApplication qgsapp( argc, argv, getenv( "DISPLAY" ) );
+
+  QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
+  QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
+  QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
   //Default prefix path may be altered by environment variable
   QgsApplication::init();
@@ -188,22 +270,7 @@ int main( int argc, char * argv[] )
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
 
-  QSettings settings;
-
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-  QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
-
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
-  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
-  cache->setCacheDirectory( cacheDirectory );
-  cache->setMaximumCacheSize( cacheSize );
-  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
-  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
-
-  nam->setCache( cache );
-
+  setupNetworkAccessManager();
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   // Instantiate the plugin directory so that providers are loaded
@@ -212,12 +279,11 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "Plugin  PATH: " + QgsApplication::pluginPath() );
   QgsDebugMsg( "PkgData PATH: " + QgsApplication::pkgDataPath() );
   QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
+  QgsDebugMsg( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ) );
 
   QgsDebugMsg( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
-  //create config cache and search for config files in the current directory.
-  //These configurations are used if no mapfile parameter is present in the request
   QString defaultConfigFilePath;
   QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory
   if ( projectFileInfo.exists() )
@@ -238,556 +304,102 @@ int main( int argc, char * argv[] )
   QgsCapabilitiesCache capabilitiesCache;
 
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
-  QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
+  QScopedPointer< QgsMapRenderer > theMapRenderer( new QgsMapRenderer );
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef QGSMSDEBUG
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
+  int logLevel = QgsServerLogger::instance()->logLevel();
+  QTime time; //used for measuring request time if loglevel < 1
 
-  //for( int i = 0; i < 2; ++i )
   while ( fcgi_accept() >= 0 )
   {
-    printRequestInfos(); //print request infos if in debug mode
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    qgsapp.processEvents();
 
-    //use QgsGetRequestHandler in case of HTTP GET and QgsSOAPRequestHandler in case of HTTP POST
-    QgsRequestHandler* theRequestHandler = 0;
-    char* requestMethod = getenv( "REQUEST_METHOD" );
-    if ( requestMethod != NULL )
+    if ( logLevel < 1 )
     {
-      if ( strcmp( requestMethod, "POST" ) == 0 )
-      {
-        //QgsDebugMsg( "Creating QgsSOAPRequestHandler" );
-        //theRequestHandler = new QgsSOAPRequestHandler();
-        theRequestHandler = new QgsPostRequestHandler();
-      }
-      else
-      {
-        QgsDebugMsg( "Creating QgsGetRequestHandler" );
-        theRequestHandler = new QgsGetRequestHandler();
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "Creating QgsGetRequestHandler" );
-      theRequestHandler = new QgsGetRequestHandler();
+      time.start();
+      printRequestInfos();
     }
 
+    //Request handler
+    QScopedPointer<QgsRequestHandler> theRequestHandler( createRequestHandler() );
     QMap<QString, QString> parameterMap;
-
     try
     {
       parameterMap = theRequestHandler->parseInput();
     }
     catch ( QgsMapServiceException& e )
     {
-      QgsDebugMsg( "An exception was thrown during input parsing" );
+      QgsMessageLog::logMessage( "Parse input exception: " + e.message(), "Server", QgsMessageLog::CRITICAL );
       theRequestHandler->sendServiceException( e );
       continue;
     }
 
+    printRequestParameters( parameterMap, logLevel );
     QMap<QString, QString>::const_iterator paramIt;
 
-    //set admin config file to wms server object
-    QString configFilePath( defaultConfigFilePath );
+    //Config file path
+    QString configFilePath = configPath( defaultConfigFilePath, parameterMap );
 
-    QString projectFile = getenv( "QGIS_PROJECT_FILE" );
-    if ( !projectFile.isEmpty() )
-    {
-      configFilePath = projectFile;
-    }
-    else
-    {
-      paramIt = parameterMap.find( "MAP" );
-      if ( paramIt == parameterMap.constEnd() )
-      {
-        QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
-      }
-      else
-      {
-        configFilePath = paramIt.value();
-      }
-    }
-
-    QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
-    if ( !adminConfigParser )
-    {
-      QgsDebugMsg( "parse error on config file " + configFilePath );
-      theRequestHandler->sendServiceException( QgsMapServiceException( "", "Configuration file problem : perhaps you left off the .qgs extension?" ) );
-      continue;
-    }
-
-    //sld parser might need information about request parameters
-    adminConfigParser->setParameterMap( parameterMap );
-
-    //request to WMS?
+    //Service parameter
     QString serviceString;
     paramIt = parameterMap.find( "SERVICE" );
     if ( paramIt == parameterMap.constEnd() )
     {
-#ifndef QGISDEBUG
-      serviceString = parameterMap.value( "SERVICE", "WMS" );
-#else
-      QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
+      QgsMessageLog::logMessage( "Exception: SERVICE parameter is missing", "Server", QgsMessageLog::CRITICAL );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
-      delete theRequestHandler;
       continue;
-#endif
     }
     else
     {
       serviceString = paramIt.value();
     }
 
-    QgsWMSServer* theServer = 0;
     if ( serviceString == "WCS" )
     {
-      delete theServer;
-      QgsWCSServer* theServer = 0;
-      try
+      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
+      if ( !p )
       {
-        theServer = new QgsWCSServer( parameterMap );
-      }
-      catch ( const QgsMapServiceException &e ) //admin.sld may be invalid
-      {
-        theRequestHandler->sendServiceException( e );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
         continue;
       }
-
-      theServer->setAdminConfigParser( adminConfigParser );
-
-
-      //request type
-      QString request = parameterMap.value( "REQUEST" );
-      if ( request.isEmpty() )
-      {
-        //do some error handling
-        QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
-        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-
-      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
-      {
-        QDomDocument capabilitiesDocument;
-        try
-        {
-          capabilitiesDocument = theServer->getCapabilities();
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        QgsDebugMsg( "sending GetCapabilities response" );
-        theRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-      else if ( request.compare( "DescribeCoverage", Qt::CaseInsensitive ) == 0 )
-      {
-        QDomDocument describeDocument;
-        try
-        {
-          describeDocument = theServer->describeCoverage();
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        QgsDebugMsg( "sending GetCapabilities response" );
-        theRequestHandler->sendGetCapabilitiesResponse( describeDocument );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-      else if ( request.compare( "GetCoverage", Qt::CaseInsensitive ) == 0 )
-      {
-        QByteArray* coverageOutput;
-        try
-        {
-          coverageOutput = theServer->getCoverage();
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        if ( coverageOutput )
-        {
-          theRequestHandler->sendGetCoverageResponse( coverageOutput );
-        }
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
+      QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.take() );
+      wcsServer.executeRequest();
     }
     else if ( serviceString == "WFS" )
     {
-      delete theServer;
-      QgsWFSServer* theServer = 0;
-      try
+      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
+      if ( !p )
       {
-        theServer = new QgsWFSServer( parameterMap );
-      }
-      catch ( const QgsMapServiceException &e ) //admin.sld may be invalid
-      {
-        theRequestHandler->sendServiceException( e );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
         continue;
       }
-
-      theServer->setAdminConfigParser( adminConfigParser );
-
-
-      //request type
-      QString request = parameterMap.value( "REQUEST" );
-      if ( request.isEmpty() )
+      QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.take() );
+      wfsServer.executeRequest();
+    }
+    else    //WMS else
+    {
+      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
+      if ( !p )
       {
-        //do some error handling
-        QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
-        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
-        delete theRequestHandler;
-        delete theServer;
+        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
         continue;
       }
-
-      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
-      {
-        QDomDocument capabilitiesDocument;
-        try
-        {
-          capabilitiesDocument = theServer->getCapabilities();
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        QgsDebugMsg( "sending GetCapabilities response" );
-        theRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-      else if ( request.compare( "DescribeFeatureType", Qt::CaseInsensitive ) == 0 )
-      {
-        QDomDocument describeDocument;
-        try
-        {
-          describeDocument = theServer->describeFeatureType();
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        QgsDebugMsg( "sending GetCapabilities response" );
-        theRequestHandler->sendGetCapabilitiesResponse( describeDocument );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-      else if ( request.compare( "GetFeature", Qt::CaseInsensitive ) == 0 )
-      {
-        //output format for GetFeature
-        QString outputFormat = parameterMap.value( "OUTPUTFORMAT" );
-        try
-        {
-          theServer->getFeature( *theRequestHandler, outputFormat );
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-        }
-
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-      else if ( request.compare( "Transaction", Qt::CaseInsensitive ) == 0 )
-      {
-        QDomDocument transactionDocument;
-        try
-        {
-          transactionDocument = theServer->transaction( parameterMap.value( "REQUEST_BODY" ) );
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        QgsDebugMsg( "sending Transaction response" );
-        theRequestHandler->sendGetCapabilitiesResponse( transactionDocument );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-
-      return 0;
+      //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
+      QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.take(), theMapRenderer.data(), &capabilitiesCache );
+      wmsServer.executeRequest();
     }
 
-    try
+    if ( logLevel < 1 )
     {
-      theServer = new QgsWMSServer( parameterMap, theMapRenderer );
-    }
-    catch ( const QgsMapServiceException &e ) //admin.sld may be invalid
-    {
-      theRequestHandler->sendServiceException( e );
-      continue;
-    }
-
-    adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
-    theServer->setAdminConfigParser( adminConfigParser );
-
-
-    //request type
-    QString request = parameterMap.value( "REQUEST" );
-    if ( request.isEmpty() )
-    {
-      //do some error handling
-      QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
-      theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-
-    QString version = parameterMap.value( "VERSION", "1.3.0" );
-    bool getProjectSettings = ( request.compare( "GetProjectSettings", Qt::CaseInsensitive ) == 0 );
-    if ( getProjectSettings )
-    {
-      version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
-    }
-
-    if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 || getProjectSettings )
-    {
-      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
-      if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
-      {
-        QgsDebugMsg( "Capabilities document not found in cache" );
-        QDomDocument doc;
-        try
-        {
-          doc = theServer->getCapabilities( version, getProjectSettings );
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-        capabilitiesCache.insertCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version, &doc );
-        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
-      }
-      else
-      {
-        QgsDebugMsg( "Found capabilities document in cache" );
-      }
-
-      if ( capabilitiesDocument )
-      {
-        theRequestHandler->sendGetCapabilitiesResponse( *capabilitiesDocument );
-      }
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetMap", Qt::CaseInsensitive ) == 0 )
-    {
-      QImage* result = 0;
-      try
-      {
-        result = theServer->getMap();
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        QgsDebugMsg( "Caught exception during GetMap request" );
-        theRequestHandler->sendServiceException( ex );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-
-      if ( result )
-      {
-        QgsDebugMsg( "Sending GetMap response" );
-        theRequestHandler->sendGetMapResponse( serviceString, result );
-        QgsDebugMsg( "Response sent" );
-      }
-      else
-      {
-        //do some error handling
-        QgsDebugMsg( "result image is 0" );
-      }
-      delete result;
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetFeatureInfo", Qt::CaseInsensitive ) == 0 )
-    {
-      QDomDocument featureInfoDoc;
-      try
-      {
-        if ( theServer->getFeatureInfo( featureInfoDoc, version ) != 0 )
-        {
-          delete theRequestHandler;
-          delete theServer;
-          continue;
-        }
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        theRequestHandler->sendServiceException( ex );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
-      }
-
-      QString infoFormat = parameterMap.value( "INFO_FORMAT" );
-      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetContext", Qt::CaseInsensitive ) == 0 )
-    {
-      try
-      {
-        QDomDocument doc = theServer->getContext();
-        theRequestHandler->sendGetStyleResponse( doc );
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        theRequestHandler->sendServiceException( ex );
-      }
-
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 ) // GetStyle for compatibility with earlier QGIS versions
-    {
-      try
-      {
-        QDomDocument doc = theServer->getStyle();
-        theRequestHandler->sendGetStyleResponse( doc );
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        theRequestHandler->sendServiceException( ex );
-      }
-
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 )
-    {
-      // GetStyles is only defined for WMS1.1.1/SLD1.0
-      if ( version != "1.1.1" )
-      {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles method is only available in WMS version 1.1.1" ) );
-      }
-      else
-      {
-        try
-        {
-          QDomDocument doc = theServer->getStyles();
-          theRequestHandler->sendGetStyleResponse( doc );
-        }
-        catch ( QgsMapServiceException& ex )
-        {
-          theRequestHandler->sendServiceException( ex );
-        }
-      }
-
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 ||
-              request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 )
-      // GetLegendGraphics for compatibility with earlier QGIS versions
-    {
-      QImage* result = 0;
-      try
-      {
-        result = theServer->getLegendGraphics();
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        QgsDebugMsg( "Caught exception during GetLegendGraphic request" );
-        theRequestHandler->sendServiceException( ex );
-      }
-
-      if ( result )
-      {
-        QgsDebugMsg( "Sending GetLegendGraphic response" );
-        //sending is the same for GetMap and GetLegendGraphic
-        theRequestHandler->sendGetMapResponse( serviceString, result );
-        QgsDebugMsg( "Response sent" );
-      }
-      else
-      {
-        //do some error handling
-        QgsDebugMsg( "result image is 0" );
-      }
-      delete result;
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
-    {
-      QByteArray* printOutput = 0;
-      try
-      {
-        printOutput = theServer->getPrint( theRequestHandler->format() );
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        theRequestHandler->sendServiceException( ex );
-      }
-
-      if ( printOutput )
-      {
-        theRequestHandler->sendGetPrintResponse( printOutput );
-      }
-      delete printOutput;
-      delete theRequestHandler;
-      delete theServer;
-      continue;
-    }
-    else//unknown request
-    {
-      QgsMapServiceException e( "OperationNotSupported", "Operation " + request + " not supported" );
-      theRequestHandler->sendServiceException( e );
-      delete theRequestHandler;
-      delete theServer;
+      QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
     }
   }
 
-  delete theMapRenderer;
-  QgsDebugMsg( "************* all done ***************" );
   return 0;
 }
 

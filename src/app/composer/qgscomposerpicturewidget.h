@@ -30,6 +30,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     Q_OBJECT
 
   public:
+
     QgsComposerPictureWidget( QgsComposerPicture* picture );
     ~QgsComposerPictureWidget();
 
@@ -39,12 +40,18 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
   public slots:
     void on_mPictureBrowseButton_clicked();
     void on_mPictureLineEdit_editingFinished();
+    void on_mPictureExpressionButton_clicked();
     void on_mPictureRotationSpinBox_valueChanged( double d );
     void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
     void on_mAddDirectoryButton_clicked();
     void on_mRemoveDirectoryButton_clicked();
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
     void on_mComposerMapComboBox_activated( const QString & text );
+    void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void on_mAnchorPointComboBox_currentIndexChanged( int index );
+    void on_mRadioPath_clicked();
+    void on_mRadioExpression_clicked();
+    void setPictureExpression();
 
   protected:
     void showEvent( QShowEvent * event );

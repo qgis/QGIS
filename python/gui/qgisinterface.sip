@@ -32,6 +32,8 @@ class QgisInterface : QObject
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
+    virtual QgsLayerTreeView* layerTreeView() = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
@@ -161,6 +163,10 @@ class QgisInterface : QObject
 
     //! Add toolbar with specified name
     virtual QToolBar *addToolBar( QString name ) = 0 /Factory/;
+
+    //! Add a toolbar
+    //! @note added in 2.3
+    virtual void addToolBar( QToolBar* toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
@@ -322,7 +328,7 @@ class QgisInterface : QObject
      * An item can be inserted before any existing action.
      */
 
-    //! Menus
+    // Menus
     virtual QMenu *fileMenu() = 0 /Deprecated/;
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;

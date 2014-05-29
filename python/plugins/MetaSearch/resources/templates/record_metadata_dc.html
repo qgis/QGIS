@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+    <head>
+        <meta charset="utf-8"/>
+        <title>{{ gettext('Record Metadata') }}</title>
+        <style type="text/css">
+            body, h3 {
+                background-color: #ffffff;
+                font-family: arial, verdana, sans-serif;
+                text-align: left;
+                float: left;
+            }
+            header {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h3>{{ gettext('Record Metadata') }} (<a href="{{ obj.xml_url }}">{{ gettext('View XML') }}</a>)</h3>
+        </header>
+        <section id="record-metadata">
+            <table>
+                <tr>
+                    <td>{{ gettext('Identifier') }}</td>
+                    <td>{{ obj.identifier }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Title') }}</td>
+                    <td>{{ obj.title }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Abstract') }}</td>
+                    <td>{{ obj.abstract }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Subjects') }}</td>
+                    <td>{{ obj.subjects|join(',') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Creator') }}</td>
+                    <td>{{ obj.creator }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Contributor') }}</td>
+                    <td>{{ obj.contributor}}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Publisher') }}</td>
+                    <td>{{ obj.publisher}}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Contributor') }}</td>
+                    <td>{{ obj.contributor}}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Modified') }}</td>
+                    <td>{{ obj.modified }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Language') }}</td>
+                    <td>{{ obj.language }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Format') }}</td>
+                    <td>{{ obj.format }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Rights') }}</td>
+                    <td>{{ obj.rights|join(',') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Bounding Box') }}</td>
+                    <td>{{ [obj.bbox.minx, obj.bbox.miny, obj.bbox.maxx, obj.bbox.maxy]|join(',') }}</td>
+                </tr>
+            </table>
+        </section>
+        <section id="links">
+            <h4>Links</h4>
+            <ul>
+            {% for link in obj.references %}
+                <li><a href="{{ link['url'] }}">{{ link['scheme'] if link['scheme'] not in [None, 'None', ''] else gettext('Access Link') }}</a></li>
+            {% endfor %}
+            {% for link in obj.uris %}
+                <li><a href="{{ link['url'] }}">{{ link['protocol'] if link['protocol'] not in [None, 'None', ''] else gettext('Access Link') }}</a></li>
+            {% endfor %}
+            </ul>
+        </section>
+    </body>
+</html>

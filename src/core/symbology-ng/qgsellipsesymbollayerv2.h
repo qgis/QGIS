@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsellipsesymbollayerv2.h
-    ---------------------
-    begin                : June 2011
-    copyright            : (C) 2011 by Marco Hugentobler
-    email                : marco dot hugentobler at sourcepole dot ch
+ qgsellipsesymbollayerv2.h
+ ---------------------
+ begin                : June 2011
+ copyright            : (C) 2011 by Marco Hugentobler
+ email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -66,26 +66,41 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolWidthUnit = unit; }
     QgsSymbolV2::OutputUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
+    void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
+
     void setSymbolHeightUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolHeightUnit = unit; }
     QgsSymbolV2::OutputUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
+
+    void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolHeightMapUnitScale = scale; }
+    const QgsMapUnitScale& symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
 
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
 
   private:
     QString mSymbolName;
     double mSymbolWidth;
     QgsSymbolV2::OutputUnit mSymbolWidthUnit;
+    QgsMapUnitScale mSymbolWidthMapUnitScale;
     double mSymbolHeight;
     QgsSymbolV2::OutputUnit mSymbolHeightUnit;
+    QgsMapUnitScale mSymbolHeightMapUnitScale;
     QColor mFillColor;
     QColor mOutlineColor;
     Qt::PenStyle mOutlineStyle;
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
+    QgsMapUnitScale mOutlineWidthMapUnitScale;
 
     QPainterPath mPainterPath;
 
@@ -95,11 +110,16 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     /**Setup mPainterPath
       @param symbolName name of symbol
       @param context render context
-      @param f feature f to render (0 if no data defined rendering)*/
-    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f = 0 );
+      @param scaledWidth optional width
+      @param scaledHeight optional height
+      @param f optional feature to render (0 if no data defined rendering)
+     */
+    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth = 0, double* scaledHeight = 0, const QgsFeature* f = 0 );
 
     /**True if this symbol layer uses a data defined property*/
     bool hasDataDefinedProperty() const;
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2_H
+
+

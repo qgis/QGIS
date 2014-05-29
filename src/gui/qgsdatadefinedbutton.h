@@ -34,6 +34,7 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 {
     Q_OBJECT
+    Q_PROPERTY( QString usageInfo READ usageInfo WRITE setUsageInfo )
 
   public:
     enum DataType

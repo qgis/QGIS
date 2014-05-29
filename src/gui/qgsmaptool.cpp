@@ -98,7 +98,16 @@ void QgsMapTool::deactivate()
 
 void QgsMapTool::setAction( QAction* action )
 {
+  if ( mAction )
+    disconnect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
   mAction = action;
+  connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+}
+
+void QgsMapTool::actionDestroyed()
+{
+  if ( mAction == sender() )
+    mAction = 0;
 }
 
 QAction* QgsMapTool::action()

@@ -17,13 +17,10 @@ SET ( qgis_mapserv_SRCS
   qgis_map_serv.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgsconfigparser.cpp
-  qgsprojectparser.cpp
-  qgshttprequesthandler.cpp 
+  qgshttprequesthandler.cpp
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
-  qgssldparser.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
@@ -35,18 +32,26 @@ SET ( qgis_mapserv_SRCS
   qgslogicalfilter.cpp
   qgsspatialfilter.cpp
   qgsftptransaction.cpp
-  qgsmslayerbuilder.cpp 
+  qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
   qgsinterpolationlayerbuilder.cpp
   qgsremoteowsbuilder.cpp
   qgshostedrdsbuilder.cpp
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
+  qgsserverlogger.cpp
   qgsmsutils.cpp
+  qgswcsprojectparser.cpp
+  qgswfsprojectparser.cpp
+  qgswmsconfigparser.cpp
+  qgswmsprojectparser.cpp
+  qgsserverprojectparser.cpp
+  qgssldconfigparser.cpp
+  qgsconfigparserutils.cpp
   )
 
-# SET (qgis_mapserv_UIS 
-# none used 
+# SET (qgis_mapserv_UIS
+# none used
 # )
 
 SET (qgis_mapserv_MOC_HDRS
@@ -54,10 +59,11 @@ SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsmslayercache.h
+  qgsserverlogger.h
 )
 
-SET (qgis_mapserv_RCCS 
-  # not used 
+SET (qgis_mapserv_RCCS
+  # not used
   #qgis_mapserv.qrc
   )
 
@@ -72,9 +78,9 @@ SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
 QT4_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
 
 ADD_EXECUTABLE(qgis_mapserv.fcgi
-  ${qgis_mapserv_SRCS} 
-  ${qgis_mapserv_MOC_SRCS} 
-  ${qgis_mapserv_RCC_SRCS} 
+  ${qgis_mapserv_SRCS}
+  ${qgis_mapserv_MOC_SRCS}
+  ${qgis_mapserv_RCC_SRCS}
   ${qgis_mapserv_UIS_H}
   ${qgis_mapserv_TESTRCC_SRCS}
   )
@@ -102,7 +108,7 @@ IF (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
-  qgis_core 
+  qgis_core
   qgis_analysis
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
@@ -114,12 +120,12 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
 # Install
 
 INSTALL(CODE "MESSAGE(\"Installing mapserver...\")")
-INSTALL(TARGETS 
-  qgis_mapserv.fcgi 
+INSTALL(TARGETS
+  qgis_mapserv.fcgi
   DESTINATION ${QGIS_CGIBIN_DIR}
   )
 INSTALL(FILES
-  admin.sld 
+  admin.sld
   wms_metadata.xml
   DESTINATION ${QGIS_CGIBIN_DIR}
   )

@@ -30,7 +30,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 import processing
-from processing import interface
+from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -46,18 +46,18 @@ from processing.modeler.ModelerAlgorithmProvider import \
         ModelerAlgorithmProvider
 from processing.modeler.ModelerOnlyAlgorithmProvider import \
         ModelerOnlyAlgorithmProvider
-from processing.algs.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
-from processing.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.lidar.LidarToolsAlgorithmProvider import \
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
+from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from processing.algs.lidar.LidarToolsAlgorithmProvider import \
         LidarToolsAlgorithmProvider
-from processing.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
-from processing.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from processing.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from processing.admintools.AdminToolsAlgorithmProvider import \
+from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from processing.algs.admintools.AdminToolsAlgorithmProvider import \
         AdminToolsAlgorithmProvider
 from processing.tools import dataobjects
 
@@ -90,7 +90,7 @@ class Processing:
         try:
             provider.initializeSettings()
             Processing.providers.append(provider)
-            ProcessingConfig.loadSettings()
+            ProcessingConfig.readSettings()
             if updateList:
                 Processing.updateAlgsList()
         except:
@@ -110,7 +110,7 @@ class Processing:
         try:
             provider.unload()
             Processing.providers.remove(provider)
-            ProcessingConfig.loadSettings()
+            ProcessingConfig.readSettings()
             Processing.updateAlgsList()
         except:
             # This try catch block is here to avoid problems if the
@@ -128,13 +128,6 @@ class Processing:
                 return provider
         return Processing.modeler
 
-    @staticmethod
-    def getInterface():
-        return interface.iface
-
-    @staticmethod
-    def setInterface(iface):
-        pass
 
     @staticmethod
     def initialize():
@@ -157,7 +150,7 @@ class Processing:
         AlgorithmDecorator.loadClassification()
         ProcessingLog.startLogging()
         ProcessingConfig.initialize()
-        ProcessingConfig.loadSettings()
+        ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
         Processing.loadFromProviders()
 
@@ -351,8 +344,8 @@ class Processing:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         progress = SilentProgress()
-        if interface.iface is not None :
-          progress = MessageBarProgress()
+        if iface is not None :
+            progress = MessageBarProgress()
         ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
         if onFinish is not None and ret:
             onFinish(alg, progress)

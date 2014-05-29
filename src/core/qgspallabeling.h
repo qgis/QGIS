@@ -2,9 +2,9 @@
   qgspallabeling.h
   Smart labeling for vector layers
   -------------------
-         begin                : June 2009
-         copyright            : (C) Martin Dobias
-         email                : wonder dot sk at gmail dot com
+   begin                : June 2009
+   copyright            : (C) Martin Dobias
+   email                : wonder dot sk at gmail dot com
 
  ***************************************************************************
  *                                                                         *
@@ -56,6 +56,7 @@ class QgsFeature;
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgsmapunitscale.h"
 
 class QgsPalGeometry;
 class QgsVectorLayer;
@@ -253,6 +254,8 @@ class CORE_EXPORT QgsPalLayerSettings
       Hali = 11, //horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //data defined rotation
+      RepeatDistance = 84,
+      RepeatDistanceUnit = 85,
 
       // rendering
       ScaleVisibility = 23,
@@ -265,7 +268,6 @@ class CORE_EXPORT QgsPalLayerSettings
       Show = 15,
       AlwaysShow = 20
     };
-
 
     // whether to label this layer
     bool enabled;
@@ -285,6 +287,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QFont textFont;
     QString textNamedStyle;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    QgsMapUnitScale fontSizeMapUnitScale; // scale range for map units for font size
     QColor textColor;
     int textTransp;
     QPainter::CompositionMode blendMode;
@@ -314,6 +317,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool bufferDraw;
     double bufferSize; // buffer size
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
+    QgsMapUnitScale bufferSizeMapUnitScale; // scale range for map units for buffer size
     QColor bufferColor;
     bool bufferNoFill; //set interior of buffer to 100% transparent
     int bufferTransp;
@@ -328,18 +332,22 @@ class CORE_EXPORT QgsPalLayerSettings
     SizeType shapeSizeType;
     QPointF shapeSize;
     SizeUnit shapeSizeUnits;
+    QgsMapUnitScale shapeSizeMapUnitScale;
     RotationType shapeRotationType;
     double shapeRotation;
     QPointF shapeOffset;
     SizeUnit shapeOffsetUnits;
+    QgsMapUnitScale shapeOffsetMapUnitScale;
     QPointF shapeRadii;
     SizeUnit shapeRadiiUnits;
+    QgsMapUnitScale shapeRadiiMapUnitScale;
     int shapeTransparency;
     QPainter::CompositionMode shapeBlendMode;
     QColor shapeFillColor;
     QColor shapeBorderColor;
     double shapeBorderWidth;
     SizeUnit shapeBorderWidthUnits;
+    QgsMapUnitScale shapeBorderWidthMapUnitScale;
     Qt::PenJoinStyle shapeJoinStyle;
 
     //-- drop shadow
@@ -349,9 +357,11 @@ class CORE_EXPORT QgsPalLayerSettings
     int shadowOffsetAngle;
     double shadowOffsetDist;
     SizeUnit shadowOffsetUnits;
+    QgsMapUnitScale shadowOffsetMapUnitScale;
     bool shadowOffsetGlobal;
     double shadowRadius;
     SizeUnit shadowRadiusUnits;
+    QgsMapUnitScale shadowRadiusMapUnitScale;
     bool shadowRadiusAlphaOnly;
     int shadowTransparency;
     int shadowScale;
@@ -366,6 +376,11 @@ class CORE_EXPORT QgsPalLayerSettings
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
+    QgsMapUnitScale distMapUnitScale;
+
+    double repeatDistance;
+    SizeUnit repeatDistanceUnit;
+    QgsMapUnitScale repeatDistanceMapUnitScale;
 
     // offset labels of point/centroid features default to center
     // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
@@ -374,6 +389,7 @@ class CORE_EXPORT QgsPalLayerSettings
     double xOffset; // offset from point in mm or map units
     double yOffset; // offset from point in mm or map units
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
+    QgsMapUnitScale labelOffsetMapUnitScale;
     double angleOffset; // rotation applied to offset labels
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
 
@@ -471,19 +487,21 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param c rendercontext
      * @param unit SizeUnit enum value of size
      * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
      * @return font pixel size
      */
-    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false ) const;
+    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * @param size size to convert
      * @param c rendercontext
      * @param unit SizeUnit enum value of size
      * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
      * @return size that will render, as double
      * @note added in 1.9, as a better precision replacement for sizeToPixel
      */
-    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false ) const;
+    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     /** Map of data defined enum to names and old-style indecies
      * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
@@ -584,6 +602,8 @@ class CORE_EXPORT QgsLabelComponent
         , mDpiRatio( 1.0 )
     {}
 
+    // methods
+
     const QString& text() { return mText; }
     void setText( const QString& text ) { mText = text; }
 
@@ -657,7 +677,6 @@ class CORE_EXPORT QgsLabelComponent
 };
 
 
-
 /**
  * Class that stores computed placement from labeling engine.
  * @note added in 2.4
@@ -681,7 +700,7 @@ class CORE_EXPORT QgsLabelingResults
     friend class QgsPalLabeling;
 };
 
-
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
@@ -752,6 +771,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
+
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
@@ -838,5 +858,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     QgsLabelingResults* mResults;
 };
+Q_NOWARN_DEPRECATED_POP
+
 
 #endif // QGSPALLABELING_H

@@ -22,30 +22,6 @@ set -e
 export elcr="$(tput el)$(tput cr)"
 
 find python src tests -type f -print | while read f; do
-	case "$f" in
-        src/app/gps/qwtpolar-*|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
-                echo $f skipped
-                continue
-                ;;
-
-        *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
-                cmd=astyle.sh
-                ;;
-
-        *.ui|*.qgm|*.txt|*.t2t|*.sip|resources/context_help/*)
-                cmd="flip -ub"
-                ;;
-
-	*.py)
-                cmd="perl -i.prepare -pe 's/[\r\t ]+$//;'"
-		;;
-
-        *)
-                echo -ne "$f skipped $elcr"
-                continue
-                ;;
-        esac
-
         if [ -f "$f.astyle" ]; then
 		# reformat backup
                 cp "$f.astyle" "$f"
@@ -56,8 +32,8 @@ find python src tests -type f -print | while read f; do
                 touch -r "$f" "$f.astyle"
         fi
 
-  	echo -ne "Reformating $f $elcr"
-	eval "$cmd '$f'"
+	echo -ne "Reformatting $f $elcr"
+	astyle.sh "$f"
 done
 
 echo

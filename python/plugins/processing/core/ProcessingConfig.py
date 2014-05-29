@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from PyQt4 import QtGui
+from PyQt4 import QtGui,QtCore
 from processing.tools.system import *
 
 
@@ -129,6 +129,7 @@ class ProcessingConfig:
 
     @staticmethod
     def getSettings():
+        '''Return settings as a dict with group names as keys and lists of settings as values'''
         settings = {}
         for setting in ProcessingConfig.settings.values():
             if not setting.group in settings:
@@ -139,39 +140,20 @@ class ProcessingConfig:
             group.append(setting)
         return settings
 
-    @staticmethod
-    def configFile():
-        return os.path.join(userFolder(), 'processing.conf')
 
     @staticmethod
-    def loadSettings():
-        if not os.path.isfile(ProcessingConfig.configFile()):
-            return
-        lines = open(ProcessingConfig.configFile())
-        line = lines.readline().strip('\n')
-        while line != '':
-            tokens = line.split('=')
-            if tokens[0] in ProcessingConfig.settings.keys():
-                setting = ProcessingConfig.settings[tokens[0]]
-                if isinstance(setting.value, bool):
-                    setting.value = tokens[1].strip('\n\r ') == str(True)
-                else:
-                    setting.value = tokens[1].strip('\n\r ')
-                ProcessingConfig.addSetting(setting)
-            line = lines.readline().strip('\n')
-        lines.close()
-
-    @staticmethod
-    def saveSettings():
-        fout = open(ProcessingConfig.configFile(), 'w')
+    def readSettings():
         for setting in ProcessingConfig.settings.values():
-            fout.write(str(setting) + '\n')
-        fout.close()
+            setting.read()
+
 
     @staticmethod
     def getSetting(name):
         if name in ProcessingConfig.settings.keys():
-            return ProcessingConfig.settings[name].value
+            v = ProcessingConfig.settings[name].value
+            if isinstance(v, QtCore.QPyNullVariant):
+                v = None
+            return v
         else:
             return None
 
@@ -179,20 +161,36 @@ class ProcessingConfig:
     def setSettingValue(name, value):
         if name in ProcessingConfig.settings.keys():
             ProcessingConfig.settings[name].value = value
-            ProcessingConfig.saveSettings()
+            ProcessingConfig.settings[name].save()
 
 
 class Setting:
     """A simple config parameter that will appear on the config dialog.
     """
+    STRING = 0
+    FILE = 1
+    FOLDER = 2
 
-    def __init__(self, group, name, description, default, hidden=False):
+    def __init__(self, group, name, description, default, hidden=False, valuetype = None):
         self.group = group
         self.name = name
+        self.qname = "Processing/Configuration/" + self.name
         self.description = description
         self.default = default
         self.value = default
         self.hidden = hidden
+        self.valuetype = valuetype
+
+    def read(self):
+        qsettings = QSettings()
+        value = qsettings.value(self.qname, None)
+        if value is not None:
+            if isinstance(self.value, bool):
+                value = str(value).lower() == str(True).lower()
+            self.value = value
+
+    def save(self):
+        QSettings().setValue(self.qname, self.value)
 
     def __str__(self):
         return self.name + '=' + str(self.value)

@@ -57,6 +57,8 @@ class QgsDualView : QStackedWidget
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
+    QgsAttributeTableFilterModel::FilterMode filterMode();
+
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
      *
@@ -87,6 +89,8 @@ class QgsDualView : QStackedWidget
      *
      */
     void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+
+    QgsFeatureIds filteredFeatures();
 
     /**
      * Returns the model which has the information about all features (not only filtered)
@@ -123,12 +127,6 @@ class QgsDualView : QStackedWidget
      *         validation logic.
      */
     bool saveEditChanges();
-
-    /**
-     * Update the shown feature if an attribute changed
-     */
-    void reloadAttribute( const int& attribute );
-
 
   signals:
     /**

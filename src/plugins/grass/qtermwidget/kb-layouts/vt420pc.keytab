@@ -21,7 +21,7 @@ keyboard "DEC VT420 Terminal"
 
 # --------------------------------------------------------------
 #
-# This configuration table allows to customize the
+# This configuration table allows customizing the
 # meaning of the keys.
 #
 # The syntax is that each entry has the form : 

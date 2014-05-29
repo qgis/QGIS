@@ -153,6 +153,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! emit signal to clear previous message
     void messageDiscarded();
 
+  private slots:
+    //! clear pointer when action is destroyed
+    void actionDestroyed();
+
   protected:
 
     //! constructor takes map canvas as a parameter

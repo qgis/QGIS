@@ -44,6 +44,7 @@ class ParameterMultipleInput(ParameterDataObject):
     TYPE_VECTOR_LINE = 1
     TYPE_VECTOR_POLYGON = 2
     TYPE_RASTER = 3
+    TYPE_FILE = 4
 
     def __init__(self, name='', description='', datatype=-1, optional=False):
         ParameterDataObject.__init__(self, name, description)
@@ -120,6 +121,8 @@ class ParameterMultipleInput(ParameterDataObject):
                     filename = dataobjects.exportRasterLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
             return self.exported
+        elif self.datatype == ParameterMultipleInput.TYPE_FILE:
+            return self.value
         else:
             for layerfile in layers:
                 layer = dataobjects.getObjectFromUri(layerfile, False)
@@ -139,6 +142,8 @@ class ParameterMultipleInput(ParameterDataObject):
                     if layer.name() == s:
                         return unicode(layer.dataProvider().dataSourceUri())
                 return s
+        if self.datatype == ParameterMultipleInput.TYPE_FILE:
+            return unicode(value)
         else:
             if isinstance(value, QgsVectorLayer):
                 return unicode(value.source())
@@ -153,6 +158,8 @@ class ParameterMultipleInput(ParameterDataObject):
     def getFileFilter(self):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
             exts = dataobjects.getSupportedOutputRasterLayerExtensions()
+        elif self.datatype == ParameterMultipleInput.TYPE_FILE:
+            return "All files (*.*)"
         else:
             exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
@@ -172,5 +179,7 @@ class ParameterMultipleInput(ParameterDataObject):
     def getAsScriptCode(self):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
             return '##' + self.name + '=multiple raster'
+        if self.datatype == ParameterMultipleInput.TYPE_FILE:
+            return '##' + self.name + '=multiple file'
         else:
             return '##' + self.name + '=multiple vector'

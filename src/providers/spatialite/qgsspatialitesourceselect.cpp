@@ -156,7 +156,7 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
 
   // trying to connect to SpatiaLite DB
   QgsSpatiaLiteConnection conn( subKey );
-  if ( conn.updateStatistics() == true )
+  if ( conn.updateStatistics() )
   {
     QMessageBox::information( this, tr( "Update Statistics" ),
                               tr( "Internal statistics successfully updated for: %1" ).arg( subKey ) );

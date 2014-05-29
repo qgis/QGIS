@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>409</width>
-    <height>370</height>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>407</width>
-        <height>348</height>
+        <height>360</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -63,12 +63,6 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="mUrlLabel">
             <property name="text">
@@ -93,6 +87,13 @@
             </item>
            </layout>
           </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QPushButton" name="mReloadPushButton">
+            <property name="text">
+             <string>Refresh HTML</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mResizeModeLabel">
             <property name="text">
@@ -105,6 +106,54 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="mResizeModeComboBox"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="mAddFramePushButton">
+            <property name="text">
+             <string>Add Frame</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mUseSmartBreaksCheckBox">
+         <property name="title">
+          <string>Use smart page breaks</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mLabelMaxDistance">
+            <property name="text">
+             <string>Maximum distance</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="mMaxDistanceSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

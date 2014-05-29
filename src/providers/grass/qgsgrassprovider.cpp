@@ -50,11 +50,16 @@
 
 extern "C"
 {
+#include <grass/version.h>
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
-#include <grass/version.h>
+#else
+#include <grass/vector.h>
+#define BOUND_BOX bound_box
+#endif
 }
 
 #ifdef _MSC_VER
@@ -794,13 +799,13 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
 
   // Do we have topology and cidx (level2)
   int level = 2;
-  try
+  G_TRY
   {
     Vect_set_open_level( 2 );
     Vect_open_old_head( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
     Vect_close( map.map );
   }
-  catch ( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception &e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( e.what() ) );
@@ -818,12 +823,12 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   }
 
   // Open vector
-  try
+  G_TRY
   {
     Vect_set_open_level( level );
     Vect_open_old( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
   }
-  catch ( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception &e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
@@ -832,7 +837,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
 
   if ( level == 1 )
   {
-    try
+    G_TRY
     {
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
@@ -841,7 +846,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
       Vect_build( map.map, stderr );
 #endif
     }
-    catch ( QgsGrass::Exception &e )
+    G_CATCH( QgsGrass::Exception &e )
     {
       Q_UNUSED( e );
       QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( e.what() ) );
@@ -886,12 +891,12 @@ void QgsGrassProvider::updateMap( int mapId )
   map->lastAttributesModified = di.lastModified();
 
   // Reopen vector
-  try
+  G_TRY
   {
     Vect_set_open_level( 2 );
     Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
   }
-  catch ( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception &e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );

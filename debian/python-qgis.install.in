@@ -1,5 +1,8 @@
 usr/lib/python*/*-packages/qgis/*.py
 usr/lib/python*/*-packages/qgis/*.so
-#wheezy saucy trusty#usr/lib/python*/*-packages/pyspatialite/*.py
-#wheezy saucy trusty#usr/lib/python*/*-packages/pyspatialite/*.so
-usr/lib/libqgispython.so.{QGIS_ABI}
+usr/lib/python*/*-packages/qgis/core/*
+usr/lib/python*/*-packages/qgis/gui/*
+usr/lib/python*/*-packages/qgis/analysis/*
+usr/lib/python*/*-packages/qgis/networkanalysis/*
+#wheezy saucy#usr/lib/python*/*-packages/pyspatialite/*.py
+#wheezy saucy#usr/lib/python*/*-packages/pyspatialite/*.so

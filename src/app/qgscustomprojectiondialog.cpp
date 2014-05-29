@@ -408,7 +408,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   for ( size_t i = 0; i < customCRSids.size(); ++i )
   {
     CRS.createFromProj4( customCRSparameters[i] );
-    if ( CRS.isValid() == false )
+    if ( !CRS.isValid() )
     {
       QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                                 tr( "The proj4 definition of '%1' is not valid." ).arg( customCRSnames[i] ) );

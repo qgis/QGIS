@@ -30,6 +30,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
@@ -43,6 +50,13 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }
 
 QgsComposerShape::~QgsComposerShape()
@@ -81,6 +95,7 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( "style_border", "solid" );
   properties.insert( "color_border", "black" );
   properties.insert( "width_border", "0.3" );
+  properties.insert( "joinstyle", "miter" );
   mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 
   mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
@@ -347,4 +362,12 @@ void QgsComposerShape::updateBoundingRect()
     prepareGeometryChange();
     mCurrentRectangle = rectangle;
   }
+}
+
+void QgsComposerShape::setSceneRect( const QRectF& rectangle )
+{
+  // Reimplemented from QgsComposerItem as we need to call updateBoundingRect after the shape's size changes
+  QgsComposerItem::setSceneRect( rectangle );
+  updateBoundingRect();
+  update();
 }

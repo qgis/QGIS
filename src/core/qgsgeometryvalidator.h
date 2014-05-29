@@ -21,7 +21,7 @@ email                : jef at norbit dot de
 
 class CORE_EXPORT QgsGeometryValidator : public QThread
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     //! Constructor

@@ -26,6 +26,6 @@ class ParametricLine
     //virtual bool intersects(ParametricLine* pal);
     virtual void remove( int i ) = 0;
     //! @note not available in python binding
-    //virtual void setControlPoly( QVector<Point3D*>* cp ) = 0;
+    // virtual void setControlPoly( QVector<Point3D*>* cp ) = 0;
     virtual void setParent( ParametricLine* paral ) = 0;
 };

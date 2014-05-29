@@ -23,7 +23,16 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="0" column="0">
@@ -69,18 +78,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mDistanceUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -116,18 +114,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -146,6 +133,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

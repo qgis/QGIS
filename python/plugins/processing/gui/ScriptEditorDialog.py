@@ -34,13 +34,13 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import *
 
 from qgis.core import *
+from qgis.utils import iface
 
-from processing import interface
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.modeler.Providers import Providers
-from processing.r.RAlgorithm import RAlgorithm
-from processing.r.RUtils import RUtils
+from processing.algs.r.RAlgorithm import RAlgorithm
+from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
@@ -52,6 +52,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
+
+    hasChanged = False
 
     def __init__(self, algType, alg):
         QDialog.__init__(self)
@@ -86,6 +88,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.btnPaste.clicked.connect(self.editor.paste)
         self.btnUndo.clicked.connect(self.editor.undo)
         self.btnRedo.clicked.connect(self.editor.redo)
+        self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
         self.alg = alg
         self.algType = algType
@@ -99,14 +102,16 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.update = False
         self.help = None
 
+        self.setHasChanged(False)
+
         self.editor.setLexerType(self.algType)
 
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
-                alg = ScriptAlgorithm(None, unicode(self.editor.toPlainText()))
+                alg = ScriptAlgorithm(None, unicode(self.editor.text()))
             elif self.algType == self.SCRIPT_R:
-                alg = RAlgorithm(None, unicode(self.editor.toPlainText()))
+                alg = RAlgorithm(None, unicode(self.editor.text()))
         else:
             alg = self.alg
 
@@ -165,10 +170,13 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                 pickle.dump(self.help, f)
                 f.close()
                 self.help = None
-            QMessageBox.information(self, self.tr('Script saving'),
-                                    self.tr('Script was correctly saved.'))
+            self.setHasChanged(False)
         else:
             self.filename = None
+
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+        self.btnSave.setEnabled(hasChanged)
 
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
@@ -182,7 +190,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         if not dlg:
             dlg = ParametersDialog(alg)
 
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
 
         dlg.show()

@@ -36,6 +36,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsrulebasedrendererv2.cpp
+  symbology-ng/qgsinvertedpolygonrenderer.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgscptcityarchive.cpp
   symbology-ng/qgsstylev2.cpp
@@ -51,6 +52,12 @@ SET(QGIS_CORE_SRCS
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
 
+  layertree/qgslayertreegroup.cpp
+  layertree/qgslayertreelayer.cpp
+  layertree/qgslayertreenode.cpp
+  layertree/qgslayertreeregistrybridge.cpp
+  layertree/qgslayertreeutils.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
@@ -62,6 +69,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp.cpp
   qgscontexthelp_texts.cpp
   qgscoordinatetransform.cpp
+  qgscredentials.cpp
   qgscrscache.cpp
   qgsdatadefined.cpp
   qgsdatasourceuri.cpp
@@ -80,26 +88,27 @@ SET(QGIS_CORE_SRCS
   qgsfontutils.cpp
   qgsgeometry.cpp
   qgsgeometrycache.cpp
-  qgsgeometryvalidator.cpp
   qgsgeometrysimplifier.cpp
-  qgssimplifymethod.cpp
+  qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
   qgslabelsearchtree.cpp
+  qgslegacyhelpers.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
+  qgssimplifymethod.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
   qgsnetworkreplyparser.cpp
-  qgscredentials.cpp
+  qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
   qgsowsconnection.cpp
@@ -154,7 +163,9 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposertable.cpp
+  composer/qgscomposertablecolumn.cpp  
   composer/qgscomposerattributetable.cpp
+  composer/qgscomposerattributetablemodel.cpp
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
@@ -351,6 +362,9 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposerattributetablemodel.h  
+  composer/qgscomposertable.h  
+  composer/qgscomposertablecolumn.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
   composer/qgscomposereffect.h
@@ -368,6 +382,12 @@ SET(QGIS_CORE_MOC_HDRS
 
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
+  symbology-ng/qgsstylev2.h
+
+  layertree/qgslayertreegroup.h
+  layertree/qgslayertreelayer.h
+  layertree/qgslayertreenode.h
+  layertree/qgslayertreeregistrybridge.h
 )
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
@@ -385,9 +405,11 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
-IF(UNIX)
+IF(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4996" )
+ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
-ENDIF(UNIX)
+ENDIF(MSVC)
 
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
@@ -405,6 +427,7 @@ SET(QGIS_CORE_HDRS
   qgsclipper.h
   qgscontexthelp.h
   qgscoordinatetransform.h
+  qgscredentials.h
   qgsdatadefined.h
   qgsdatasourceuri.h
   qgsdataitem.h
@@ -433,10 +456,11 @@ SET(QGIS_CORE_HDRS
   qgsmaprenderer.h
   qgsmapsettings.h
   qgsmaptopixel.h
+  qgsmapunitscale.h
   qgsmessageoutput.h
   qgsmimedatautils.h
   qgsnetworkreplyparser.h
-  qgscredentials.h
+  qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
   qgsowsconnection.h
@@ -480,6 +504,7 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsvectorlayerjoinbuffer.h
   qgslabelsearchtree.h
+  qgslegacyhelpers.h
   qgssimplifymethod.h
   qgsvectorsimplifymethod.h
 
@@ -497,6 +522,7 @@ SET(QGIS_CORE_HDRS
   composer/qgsaddremovemultiframecommand.h
   composer/qgsdoubleboxscalebarstyle.h
   composer/qgscomposertable.h
+  composer/qgscomposertablecolumn.h
   composer/qgspaperitem.h
   composer/qgsticksscalebarstyle.h
   composer/qgscomposerlegendstyle.h
@@ -560,6 +586,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsrendererv2registry.h
   symbology-ng/qgsrulebasedrendererv2.h
   symbology-ng/qgssinglesymbolrendererv2.h
+  symbology-ng/qgsinvertedpolygonrenderer.h
   symbology-ng/qgsstylev2.h
   symbology-ng/qgssvgcache.h
   symbology-ng/qgssymbollayerv2.h
@@ -570,6 +597,13 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorcolorrampv2.h
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgsvectorfieldsymbollayer.h
+
+  layertree/qgslayertree.h
+  layertree/qgslayertreegroup.h
+  layertree/qgslayertreelayer.h
+  layertree/qgslayertreenode.h
+  layertree/qgslayertreeregistrybridge.h
+  layertree/qgslayertreeutils.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
@@ -583,6 +617,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   composer
   dxf
+  layertree
   pal
   raster
   renderer

@@ -627,7 +627,7 @@ class TestQgsExpression: public QObject
     {
       QgsPolyline polyline, polygon_ring;
       polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
-      polygon_ring << QgsPoint( 1, 1 ) << QgsPoint( 6, 1 ) << QgsPoint( 6, 6 ) << QgsPoint( 1, 6 ) << QgsPoint( 1, 1 );
+      polygon_ring << QgsPoint( 2, 1 ) << QgsPoint( 10, 1 ) << QgsPoint( 10, 6 ) << QgsPoint( 2, 6 ) << QgsPoint( 2, 1 );
       QgsPolygon polygon;
       polygon << polygon_ring;
       QgsFeature fPolygon, fPolyline;
@@ -636,7 +636,7 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp1( "$area" );
       QVariant vArea = exp1.evaluate( &fPolygon );
-      QCOMPARE( vArea.toDouble(), 25. );
+      QCOMPARE( vArea.toDouble(), 40. );
 
       QgsExpression exp2( "$length" );
       QVariant vLength = exp2.evaluate( &fPolyline );
@@ -644,7 +644,31 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp3( "$perimeter" );
       QVariant vPerimeter = exp3.evaluate( &fPolygon );
-      QCOMPARE( vPerimeter.toDouble(), 20. );
+      QCOMPARE( vPerimeter.toDouble(), 26. );
+
+      QgsExpression exp4( "bounds_width($geometry)" );
+      QVariant vBoundsWidth = exp4.evaluate( &fPolygon );
+      QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
+
+      QgsExpression exp5( "bounds_height($geometry)" );
+      QVariant vBoundsHeight = exp5.evaluate( &fPolygon );
+      QCOMPARE( vBoundsHeight.toDouble(), 5.0 );
+
+      QgsExpression exp6( "xmin($geometry)" );
+      QVariant vXMin = exp6.evaluate( &fPolygon );
+      QCOMPARE( vXMin.toDouble(), 2.0 );
+
+      QgsExpression exp7( "xmax($geometry)" );
+      QVariant vXMax = exp7.evaluate( &fPolygon );
+      QCOMPARE( vXMax.toDouble(), 10.0 );
+
+      QgsExpression exp8( "ymin($geometry)" );
+      QVariant vYMin = exp8.evaluate( &fPolygon );
+      QCOMPARE( vYMin.toDouble(), 1.0 );
+
+      QgsExpression exp9( "ymax($geometry)" );
+      QVariant vYMax = exp9.evaluate( &fPolygon );
+      QCOMPARE( vYMax.toDouble(), 6.0 );
     }
 
     void eval_geometry_constructor_data()
@@ -803,6 +827,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "convexHull simple" ) << "convexHull( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->convexHull();
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "convexHull multi" ) << "convexHull( geomFromWKT('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,0 1,1 1,1 0,0 0))" );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "bounds" ) << "bounds( $geometry )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromRect( geom->boundingBox() );
     }
 
     void eval_geometry_method()

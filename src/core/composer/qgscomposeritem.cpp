@@ -56,6 +56,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
+    , mFrameJoinStyle( Qt::MiterJoin )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
@@ -63,6 +64,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mCurrentExportLayer( -1 )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
 {
@@ -79,6 +81,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
+    , mFrameJoinStyle( Qt::MiterJoin )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
@@ -86,6 +89,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mCurrentExportLayer( -1 )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
 {
@@ -100,7 +104,7 @@ void QgsComposerItem::init( bool manageZValue )
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidthF( 0.3 );
-  defaultPen.setJoinStyle( Qt::MiterJoin );
+  defaultPen.setJoinStyle( mFrameJoinStyle );
   setPen( defaultPen );
   //let z-Value be managed by composition
   if ( mComposition && manageZValue )
@@ -175,6 +179,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
+  composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mFrameJoinStyle ) );
   composerItemElem.setAttribute( "itemRotation",  QString::number( mItemRotation ) );
   composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
@@ -229,10 +234,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //rotation
-  if ( itemElem.attribute( "itemRotation", "0" ).toDouble() != 0 )
-  {
-    setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
-  }
+  setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
 
   //uuid
   mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
@@ -315,11 +317,13 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
     penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
     penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    mFrameJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "frameJoinStyle", "miter" ) );
+
     if ( redOk && greenOk && blueOk && alphaOk && widthOk )
     {
       QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
       framePen.setWidthF( penWidth );
-      framePen.setJoinStyle( Qt::MiterJoin );
+      framePen.setJoinStyle( mFrameJoinStyle );
       setPen( framePen );
     }
   }
@@ -366,6 +370,21 @@ void QgsComposerItem::setFrameOutlineWidth( double outlineWidth )
     return;
   }
   itemPen.setWidthF( outlineWidth );
+  setPen( itemPen );
+  emit frameChanged();
+}
+
+void QgsComposerItem::setFrameJoinStyle( Qt::PenJoinStyle style )
+{
+  if ( mFrameJoinStyle == style )
+  {
+    //no change
+    return;
+  }
+  mFrameJoinStyle = style;
+
+  QPen itemPen = pen();
+  itemPen.setJoinStyle( mFrameJoinStyle );
   setPen( itemPen );
   emit frameChanged();
 }
@@ -600,7 +619,7 @@ void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& 
   p->restore();
 }
 
-void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
+void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -611,7 +630,7 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignment | valignment | Qt::TextWordWrap, text );
+  p->drawText( scaledRect, halignment | valignment | flags, text );
   p->restore();
 }
 void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const

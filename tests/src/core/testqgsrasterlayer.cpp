@@ -32,6 +32,7 @@
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
 #include <qgsrasterpyramid.h>
+#include <qgsrasteridentifyresult.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
@@ -66,6 +67,7 @@ class TestQgsRasterLayer: public QObject
     void landsatBasic875Qml();
     void checkDimensions();
     void checkStats();
+    void checkScaleOffset();
     void buildExternalOverviews();
     void registry();
     void transparency();
@@ -346,6 +348,87 @@ void TestQgsRasterLayer::checkStats()
   QVERIFY( fabs( myStatistics.stdDev - stdDev )
            < 0.0000000000000001 );
   mReport += "<p>Passed</p>";
+}
+
+// test scale_factor and offset - uses netcdf file which may not be supported
+// see http://hub.qgis.org/issues/8417
+void TestQgsRasterLayer::checkScaleOffset()
+{
+  mReport += "<h2>Check Stats with scale/offset</h2>\n";
+
+  QFileInfo myRasterFileInfo( mTestDataDir + "scaleoffset.tif" );
+  QgsRasterLayer * myRasterLayer;
+  myRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+                                      myRasterFileInfo.completeBaseName() );
+  QVERIFY( myRasterLayer );
+  if ( ! myRasterLayer->isValid() )
+  {
+    qDebug() << QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
+    mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
+    delete myRasterLayer;
+    QVERIFY( false );
+  }
+
+  QFile::remove( myRasterFileInfo.filePath() + ".aux.xml" ); // remove cached stats
+  QgsRasterBandStats myStatistics = myRasterLayer->dataProvider()->bandStatistics( 1,
+                                    QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                                    QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
+  mReport += QString( "raster min: %1 max: %2 mean: %3" ).arg( myStatistics.minimumValue ).arg( myStatistics.maximumValue ).arg( myStatistics.mean );
+  QVERIFY( myRasterLayer->width() == 10 );
+  QVERIFY( myRasterLayer->height() == 10 );
+  //QVERIFY( myStatistics.elementCount == 100 );
+  double minVal = 0.0;
+  mReport += QString( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( fabs( myStatistics.minimumValue - minVal ) );
+  double maxVal = 9.0;
+  mReport += QString( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( fabs( myStatistics.maximumValue - maxVal ) );
+  double meanVal = 4.5;
+  mReport += QString( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( fabs( myStatistics.mean - meanVal ) );
+  QVERIFY( fabs( myStatistics.minimumValue - minVal ) < 0.0000001 );
+  QVERIFY( fabs( myStatistics.maximumValue - maxVal ) < 0.0000001 );
+  QVERIFY( fabs( myStatistics.mean - meanVal ) < 0.0000001 );
+
+  double stdDev = 2.87228615;
+  // TODO: verify why GDAL stdDev is so different from generic (2.88675)
+  mReport += QString( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( fabs( myStatistics.stdDev - stdDev ) );
+  QVERIFY( fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
+
+  QgsRasterDataProvider* myProvider = myRasterLayer->dataProvider();
+  QgsPoint myPoint( 1535030, 5083350 );
+  QgsRectangle myRect( 1535030 - 5, 5083350 - 5, 1535030 + 5, 5083350 + 5 );
+  QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, QgsRaster::IdentifyFormatValue, myRect, 1, 1 );
+
+  if ( identifyResult.isValid() )
+  {
+    QMap<int, QVariant> values = identifyResult.results();
+    foreach ( int bandNo, values.keys() )
+    {
+      QString valueString;
+      if ( values.value( bandNo ).isNull() )
+      {
+        valueString = tr( "no data" );
+        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ) ).arg( valueString );
+        delete myRasterLayer;
+        QVERIFY( false );
+      }
+      else
+      {
+        double expected = 0.99995432;
+        double value = values.value( bandNo ).toDouble();
+        valueString = QgsRasterBlock::printValue( value );
+        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ) ).arg( valueString );
+        mReport += QString( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( fabs( value - expected ) );
+        QVERIFY( fabs( value - expected ) < 0.0000001 );
+      }
+    }
+  }
+  else
+  {
+    delete myRasterLayer;
+    QVERIFY( false );
+  }
+
+  mReport += "<p>Passed</p>";
+  delete myRasterLayer;
 }
 
 void TestQgsRasterLayer::buildExternalOverviews()

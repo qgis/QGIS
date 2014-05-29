@@ -178,7 +178,7 @@ void TestVectorLayerCache::testCacheAttrActions()
   mPointsLayer->commitChanges();
 
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
-  QVERIFY( false == f.attribute( "newAttr" ).isValid() );
+  QVERIFY( !f.attribute( "newAttr" ).isValid() );
 }
 
 void TestVectorLayerCache::testFeatureActions()
@@ -204,7 +204,7 @@ void TestVectorLayerCache::testFeatureActions()
   mPointsLayer->startEditing();
   QVERIFY( mPointsLayer->deleteFeature( fid ) );
 
-  QVERIFY( false == mVectorLayerCache->featureAtId( fid, f ) );
+  QVERIFY( !mVectorLayerCache->featureAtId( fid, f ) );
   mPointsLayer->rollBack();
 }
 

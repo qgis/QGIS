@@ -29,7 +29,7 @@
 class QToolButton;
 class QScrollArea;
 
-class QgsGroupBoxCollapseButton: public QToolButton
+class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
 {
     Q_OBJECT
 
@@ -74,6 +74,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     Q_PROPERTY( bool collapsed READ isCollapsed WRITE setCollapsed USER true )
     Q_PROPERTY( QString syncGroup READ syncGroup WRITE setSyncGroup )
+    Q_PROPERTY( bool scrollOnExpand READ scrollOnExpand WRITE setScrollOnExpand )
 
   public:
     QgsCollapsibleGroupBoxBasic( QWidget *parent = 0 );
@@ -89,6 +90,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
+
+    bool scrollOnExpand() {return mScrollOnExpand;}
 
   signals:
     /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
@@ -150,6 +153,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     Q_PROPERTY( bool saveCollapsedState READ saveCollapsedState WRITE setSaveCollapsedState )
     Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState )
     Q_PROPERTY( QString syncGroup READ syncGroup WRITE setSyncGroup )
+    Q_PROPERTY( bool scrollOnExpand READ scrollOnExpand WRITE setScrollOnExpand )
 
   public:
     QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );

@@ -127,18 +127,18 @@ QT4_ADD_RESOURCES(GRASS_PLUGIN_RCC_SRCS ${GRASS_PLUGIN_RCCS})
 ########################################################
 # build lib
 
-ADD_LIBRARY (grassplugin MODULE 
-  ${GRASS_PLUGIN_SRCS} 
-  ${GRASS_PLUGIN_MOC_SRCS} 
-  ${GRASS_PLUGIN_UIS_H} 
+ADD_LIBRARY (grassplugin MODULE
+  ${GRASS_PLUGIN_SRCS}
+  ${GRASS_PLUGIN_MOC_SRCS}
+  ${GRASS_PLUGIN_UIS_H}
   ${GRASS_PLUGIN_RCC_SRCS}
   )
 
 INCLUDE_DIRECTORIES(
      ..
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core 
-     ../../core/raster 
+     ../../core
+     ../../core/raster
      ../../gui
      ../../providers/grass
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
@@ -185,7 +185,7 @@ INSTALL (FILES ${GMLS}
 INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)
 
-INSTALL(TARGETS qgis.g.browser 
+INSTALL(TARGETS qgis.g.browser
         RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/bin
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )

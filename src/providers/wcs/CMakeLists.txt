@@ -1,16 +1,16 @@
 
-SET (WCS_SRCS      
-  ../gdal/qgsgdalproviderbase.cpp 
-  qgswcsprovider.cpp 
-  qgswcscapabilities.cpp 
-  qgswcssourceselect.cpp 
-  qgswcsdataitems.cpp 
+SET (WCS_SRCS
+  ../gdal/qgsgdalproviderbase.cpp
+  qgswcsprovider.cpp
+  qgswcscapabilities.cpp
+  qgswcssourceselect.cpp
+  qgswcsdataitems.cpp
 )
 
-SET (WCS_MOC_HDRS  
-  qgswcsprovider.h 
-  qgswcscapabilities.h 
-  qgswcssourceselect.h 
+SET (WCS_MOC_HDRS
+  qgswcsprovider.h
+  qgswcscapabilities.h
+  qgswcssourceselect.h
   qgswcsdataitems.h
 )
 
@@ -31,4 +31,4 @@ TARGET_LINK_LIBRARIES(wcsprovider
 
 INSTALL (TARGETS wcsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}) 
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

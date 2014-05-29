@@ -52,6 +52,8 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     ~QgsQueryBuilder();
 
+    void showEvent( QShowEvent *event );
+
   public slots:
     void accept();
     void reject();

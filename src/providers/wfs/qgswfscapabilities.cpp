@@ -134,10 +134,26 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
 
   //add a wfs layer to the map
   uri += "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString + filterString;
+
+  //add authorization information
+  if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
+  {
+    uri += "&username=" + mUri.param( "username" );
+    uri += "&password=" + mUri.param( "password" );
+  }
   QgsDebugMsg( uri );
   return uri;
 }
 
+void QgsWFSCapabilities::setAuthorization( QNetworkRequest &request ) const
+{
+  QgsDebugMsg( "entered" );
+  if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
+  {
+    QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
+  }
+}
 
 void QgsWFSCapabilities::requestCapabilities()
 {
@@ -145,6 +161,7 @@ void QgsWFSCapabilities::requestCapabilities()
   mErrorMessage.clear();
 
   QNetworkRequest request( uriGetCapabilities() );
+  setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
@@ -171,6 +188,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   {
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     QNetworkRequest request( redirect.toUrl() );
+    setAuthorization( request );
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

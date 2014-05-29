@@ -29,6 +29,7 @@
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
+#include <QThreadPool>
 
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
@@ -61,6 +62,11 @@ QString ABISYM( QgsApplication::mCfgIntDir );
 #endif
 QString ABISYM( QgsApplication::mBuildOutputPath );
 QStringList ABISYM( QgsApplication::mGdalSkipList );
+int ABISYM( QgsApplication::mMaxThreads );
+
+const char* QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
+const char* QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
+const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS2";
 
 /*!
   \class QgsApplication
@@ -181,6 +187,11 @@ void QgsApplication::init( QString customConfigPath )
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
+
+  // set max. thread count to -1
+  // this should be read from QSettings but we don't know where they are at this point
+  // so we read actual value in main.cpp
+  ABISYM( mMaxThreads ) = -1;
 }
 
 QgsApplication::~QgsApplication()
@@ -595,6 +606,8 @@ void QgsApplication::initQgis()
 void QgsApplication::exitQgis()
 {
   delete QgsMapLayerRegistry::instance();
+
+  delete QgsProviderRegistry::instance();
 }
 
 QString QgsApplication::showSettings()
@@ -1014,4 +1027,24 @@ bool QgsApplication::createDB( QString *errorMessage )
   return true;
 }
 
+void QgsApplication::setMaxThreads( int maxThreads )
+{
+  QgsDebugMsg( QString( "maxThreads: %1" ).arg( maxThreads ) );
+
+  // make sure value is between 1 and #cores, if not set to -1 (use #cores)
+  // 0 could be used to disable any parallel processing
+  if ( maxThreads < 1 || maxThreads > QThread::idealThreadCount() )
+    maxThreads = -1;
+
+  // save value
+  ABISYM( mMaxThreads ) = maxThreads;
+
+  // if -1 use #cores
+  if ( maxThreads == -1 )
+    maxThreads = QThread::idealThreadCount();
+
+  // set max thread count in QThreadPool
+  QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
+  QgsDebugMsg( QString( "set QThreadPool max thread count to %d" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+}
 

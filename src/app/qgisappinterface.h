@@ -32,6 +32,7 @@ class QgisApp;
  * Only those functions "exposed" by QgisInterface can be called from within a
  * plugin.
  */
+Q_NOWARN_DEPRECATED_PUSH
 class APP_EXPORT QgisAppInterface : public QgisInterface
 {
     Q_OBJECT
@@ -47,6 +48,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLegendInterface* legendInterface();
 
     QgsPluginManagerInterface* pluginManagerInterface();
+
+    QgsLayerTreeView* layerTreeView();
 
     /* Exposed functions */
 
@@ -145,6 +148,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! Add toolbar with specified name
     QToolBar* addToolBar( QString name );
+
+    //! Add a toolbar
+    //! @note added in 2.3
+    void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea );
 
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -502,5 +509,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //#define QGISAPPINTERFACE_H

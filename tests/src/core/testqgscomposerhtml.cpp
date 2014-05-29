@@ -32,6 +32,7 @@ class TestQgsComposerHtml: public QObject
     void cleanup();// will be called after every testfunction.
     void table(); //test if rendering of the composition with composr map is correct
     void tableMultiFrame(); //tests multiframe capabilities of composer html
+    void htmlMultiFrameSmarkBreak(); //tests smart page breaks in html multi frame
   private:
     QgsComposition* mComposition;
     QgsMapSettings mMapSettings;
@@ -91,6 +92,7 @@ void TestQgsComposerHtml::tableMultiFrame()
   QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+  htmlItem->setUseSmartBreaks( false );
 
   //page1
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );
@@ -103,6 +105,32 @@ void TestQgsComposerHtml::tableMultiFrame()
   result = checker2.testComposition( mReport, 1 ) && result;
   //page 3
   QgsCompositionChecker checker3( "composerhtml_multiframe3", mComposition );
+  result = checker3.testComposition( mReport, 2 ) && result;
+
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QVERIFY( result );
+}
+
+void TestQgsComposerHtml::htmlMultiFrameSmarkBreak()
+{
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
+  htmlItem->addFrame( htmlFrame );
+  htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+  htmlItem->setUseSmartBreaks( true );
+
+  //page1
+  htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );
+  htmlItem->frame( 0 )->setFrameEnabled( true );
+  QgsCompositionChecker checker1( "composerhtml_smartbreaks1", mComposition );
+  bool result = checker1.testComposition( mReport );
+
+  //page2
+  QgsCompositionChecker checker2( "composerhtml_smartbreaks2", mComposition );
+  result = checker2.testComposition( mReport, 1 ) && result;
+  //page 3
+  QgsCompositionChecker checker3( "composerhtml_smartbreaks3", mComposition );
   result = checker3.testComposition( mReport, 2 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );

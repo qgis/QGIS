@@ -16,22 +16,25 @@
 
 #include "qgsfield.h"
 
-/*
-QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,
-                   QString comment)
-    :mName(nam), mType(typ), mLength(len), mPrecision(prec), mNumeric(num),
-     mComment(comment)
+#include <QSettings>
+
+#if 0
+QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
+                    QString comment )
+    : mName( nam ), mType( typ ), mLength( len ), mPrecision( prec ), mNumeric( num )
+    , mComment( comment )
 {
   // This function used to lower case the field name since some stores
   // use upper case (eg. shapefiles), but that caused problems with
   // attribute actions getting confused between uppercase and
   // lowercase versions of the attribute names, so just leave the
   // names how they are now.
-}*/
+}
+#endif
 
 QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
-    : mName( name ), mType( type ), mTypeName( typeName ),
-    mLength( len ), mPrecision( prec ), mComment( comment )
+    : mName( name ), mType( type ), mTypeName( typeName )
+    , mLength( len ), mPrecision( prec ), mComment( comment )
 {
 }
 
@@ -113,16 +116,16 @@ void QgsField::setComment( const QString & comment )
 
 QString QgsField::displayString( const QVariant& v ) const
 {
-  switch ( mType )
+  if ( v.isNull() )
   {
-    case QVariant::Double:
-      if ( mPrecision > 0 )
-      {
-        return QString::number( v.toDouble(), 'f', mPrecision );
-      }
-    default:
-      return v.toString();
+    QSettings settings;
+    return settings.value( "qgis/nullValue", "NULL" ).toString();
   }
+
+  if ( mType == QVariant::Double && mPrecision > 0 )
+    return QString::number( v.toDouble(), 'f', mPrecision );
+
+  return v.toString();
 }
 
 

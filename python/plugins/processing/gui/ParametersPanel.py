@@ -46,8 +46,7 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
-from processing.gui.MultipleExternalInputPanel import MultipleExternalInputPanel
-
+from processing.gui.MultipleFileInputPanel import MultipleFileInputPanel
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTable import ParameterTable
@@ -62,8 +61,6 @@ from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterMultipleExternalInput import ParameterMultipleExternalInput
-
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputTable import OutputTable
 from processing.outputs.OutputVector import OutputVector
@@ -282,18 +279,19 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterFile):
             item = FileSelectionPanel(param.isFolder)
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                options = dataobjects.getRasterLayers()
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = dataobjects.getVectorLayers()
+            if param.datatype == ParameterMultipleInput.TYPE_FILE:
+                item = MultipleFileInputPanel()
             else:
-                options = dataobjects.getVectorLayers([param.datatype])
-            opts = []
-            for opt in options:
-                opts.append(self.getExtendedLayerName(opt))
-            item = MultipleInputPanel(opts)
-        elif isinstance(param, ParameterMultipleExternalInput):
-            item = MultipleExternalInputPanel()
+                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                    options = dataobjects.getRasterLayers()
+                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                    options = dataobjects.getVectorLayers()
+                else:
+                    options = dataobjects.getVectorLayers([param.datatype])
+                opts = []
+                for opt in options:
+                    opts.append(self.getExtendedLayerName(opt))
+                item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.min, param.max,
                                     param.isInteger)
@@ -356,7 +354,7 @@ class ParametersPanel(QtGui.QWidget):
     def setTableContent(self):
         params = [parm for parm in self.alg.parameters if not parm.hidden]
         outputs = [output for output in self.alg.outputs if not output.hidden]
-        numParams = len(parms)
+        numParams = len(params)
         numOutputs = len(outputs)
         self.tableWidget.setRowCount(numParams + numOutputs)
 

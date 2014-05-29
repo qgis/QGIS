@@ -16,6 +16,8 @@ class QgsQueryBuilder : QDialog
 
     ~QgsQueryBuilder();
 
+    void showEvent( QShowEvent *event );
+
   public slots:
     void accept();
     void reject();

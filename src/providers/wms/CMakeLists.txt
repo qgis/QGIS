@@ -1,17 +1,17 @@
-SET (WMS_SRCS      
+SET (WMS_SRCS
   qgswmscapabilities.cpp
-  qgswmsprovider.cpp 
-  qgswmssourceselect.cpp 
-  qgswmsconnection.cpp 
+  qgswmsprovider.cpp
+  qgswmssourceselect.cpp
+  qgswmsconnection.cpp
   qgswmsdataitems.cpp
   qgstilescalewidget.cpp
   qgswmtsdimensions.cpp
 )
-SET (WMS_MOC_HDRS  
+SET (WMS_MOC_HDRS
   qgswmscapabilities.h
-  qgswmsprovider.h 
-  qgswmssourceselect.h 
-  qgswmsconnection.h 
+  qgswmsprovider.h
+  qgswmssourceselect.h
+  qgswmsconnection.h
   qgswmsdataitems.h
   qgstilescalewidget.h
   qgswmtsdimensions.h
@@ -37,4 +37,4 @@ TARGET_LINK_LIBRARIES(wmsprovider
 
 INSTALL (TARGETS wmsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}) 
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

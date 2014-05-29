@@ -368,7 +368,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   // setup user interface
   setupUi( this );
 
-  populateColumns();
+  mExpressionWidget->setLayer( mLayer );
 
   cboCategorizedColorRamp->populate( mStyle );
   int randomIndex = cboCategorizedColorRamp->findText( tr( "Random colors" ) );
@@ -399,7 +399,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
 
-  connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
+  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
 
   connect( viewCategories, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( categoriesDoubleClicked( const QModelIndex & ) ) );
   connect( viewCategories, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
@@ -410,7 +410,6 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnDeleteAllCategories, SIGNAL( clicked() ), this, SLOT( deleteAllCategories() ) );
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
 
-  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( setExpression() ) );
   // update GUI from renderer
   updateUiFromRenderer();
 
@@ -440,17 +439,11 @@ void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
   //mModel->setRenderer ( mRenderer ); // necessary?
 
   // set column
-  disconnect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
+  disconnect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
   QString attrName = mRenderer->classAttribute();
-  mOldClassificationAttribute = attrName;
-  int idx = cboCategorizedColumn->findText( attrName, Qt::MatchExactly );
-  if ( idx == -1 )
-  {
-    cboCategorizedColumn->addItem( attrName );
-    idx = cboCategorizedColumn->count() - 1;
-  }
-  cboCategorizedColumn->setCurrentIndex( idx );
-  connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
+  mExpressionWidget->setField( attrName );
+  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
+
 
   // set source symbol
   if ( mRenderer->sourceSymbol() )
@@ -537,19 +530,9 @@ void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 {
 }
 
-void QgsCategorizedSymbolRendererV2Widget::populateColumns()
+void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( QString field )
 {
-  cboCategorizedColumn->clear();
-  const QgsFields& flds = mLayer->pendingFields();
-  for ( int idx = 0; idx < flds.count(); ++idx )
-  {
-    cboCategorizedColumn->addItem( flds[idx].name() );
-  }
-}
-
-void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged()
-{
-  mRenderer->setClassAttribute( cboCategorizedColumn->currentText() );
+  mRenderer->setClassAttribute( field );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModelIndex & idx )
@@ -617,7 +600,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 
 void QgsCategorizedSymbolRendererV2Widget::addCategories()
 {
-  QString attrName = cboCategorizedColumn->currentText();
+  QString attrName = mExpressionWidget->currentField();
   int idx = mLayer->fieldNameIndex( attrName );
   QList<QVariant> unique_vals;
   if ( idx == -1 )
@@ -780,22 +763,6 @@ void QgsCategorizedSymbolRendererV2Widget::deleteCategories()
 void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
 {
   mModel->removeAllRows();
-}
-
-void QgsCategorizedSymbolRendererV2Widget::setExpression()
-{
-  QgsExpressionBuilderDialog dlg( mLayer, cboCategorizedColumn->currentText(), this );
-  dlg.setWindowTitle( "Set column expression" );
-  if ( dlg.exec() )
-  {
-    QString expression = dlg.expressionText();
-    if ( !expression.isEmpty() )
-    {
-      cboCategorizedColumn->addItem( expression );
-      cboCategorizedColumn->setCurrentIndex( cboCategorizedColumn->count() - 1 );
-    }
-  }
-
 }
 
 void QgsCategorizedSymbolRendererV2Widget::addCategory()

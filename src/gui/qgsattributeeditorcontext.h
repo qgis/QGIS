@@ -54,7 +54,6 @@ class GUI_EXPORT QgsAttributeEditorContext
      */
     void adjustForLayer( QgsVectorLayer* layer );
 
-
   private:
     QgsVectorLayerTools* mVectorLayerTools;
 

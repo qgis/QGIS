@@ -111,11 +111,19 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
     coverageLayer = mComposerShape->composition()->atlasComposition().coverageLayer();
   }
 
-  QgsSymbolV2SelectorDialog d( mComposerShape->shapeStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
+  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerShape->shapeStyleSymbol()->clone() );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
 
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposerShape->beginCommand( tr( "Shape style changed" ) );
+    mComposerShape->setShapeStyleSymbol( newSymbol );
     updateShapeStyle();
+    mComposerShape->endCommand();
+  }
+  else
+  {
+    delete newSymbol;
   }
 }
 

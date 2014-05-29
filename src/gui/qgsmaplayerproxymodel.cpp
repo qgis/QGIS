@@ -20,7 +20,7 @@
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
-    , mFilters( NoFilter )
+    , mFilters( All )
     , mModel( new QgsMapLayerModel( this ) )
 {
   setSourceModel( mModel );
@@ -34,7 +34,7 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( NoFilter ) )
+  if ( mFilters.testFlag( All ) )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
@@ -44,7 +44,8 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
 
   // layer type
   if (( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayer::RasterLayer ) ||
-      ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) )
+      ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) ||
+      ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayer::PluginLayer ) )
     return true;
 
   // geometry type

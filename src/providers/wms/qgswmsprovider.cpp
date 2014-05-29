@@ -426,6 +426,19 @@ void QgsWmsProvider::setQueryItem( QUrl &url, QString item, QString value )
   url.addQueryItem( item, value );
 }
 
+void QgsWmsProvider::setFormatQueryItem( QUrl &url )
+{
+  url.removeQueryItem( "FORMAT" );
+  if ( mSettings.mImageMimeType.contains( "+" ) )
+  {
+    QString format( mSettings.mImageMimeType );
+    format.replace( "+", "%2b" );
+    url.addEncodedQueryItem( "FORMAT", format.toUtf8() );
+  }
+  else
+    setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
+}
+
 QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight )
 {
   QgsDebugMsg( "Entering." );
@@ -509,7 +522,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
     setQueryItem( url, "LAYERS", layers );
     setQueryItem( url, "STYLES", styles );
-    setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
+    setFormatQueryItem( url );
 
     if ( mDpi != -1 )
     {
@@ -673,7 +686,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         setQueryItem( url, "HEIGHT", QString::number( tm->tileHeight ) );
         setQueryItem( url, "LAYERS", mSettings.mActiveSubLayers.join( "," ) );
         setQueryItem( url, "STYLES", mSettings.mActiveSubStyles.join( "," ) );
-        setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
+        setFormatQueryItem( url );
+
         setQueryItem( url, crsKey, mImageCrs );
 
         if ( mSettings.mTiled )
@@ -2192,7 +2206,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       setQueryItem( requestUrl, "HEIGHT", QString::number( theHeight ) );
       setQueryItem( requestUrl, "LAYERS", *layers );
       setQueryItem( requestUrl, "STYLES", *styles );
-      setQueryItem( requestUrl, "FORMAT", mSettings.mImageMimeType );
+      setFormatQueryItem( requestUrl );
       setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
       setQueryItem( requestUrl, "INFO_FORMAT", format );
 
@@ -2467,8 +2481,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           xsdPart = 1;
         }
       }
+      QgsDebugMsg( QString( "jsonPart = %1 gmlPart = %2 xsdPart = %3" ).arg( jsonPart ).arg( gmlPart ).arg( xsdPart ) );
 
-      if ( jsonPart == -1 && gmlPart == -1 && xsdPart == -1 )
+      if ( gmlPart >= 0 )
       {
         QByteArray gmlByteArray = mIdentifyResultBodies.value( gmlPart );
         QgsDebugMsg( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
@@ -2897,6 +2912,14 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
     formats << t1;
   }
 
+  if ( supportedFormats.contains( "svg" ) )
+  {
+    QgsWmsSupportedFormat s1 = { "image/svg", "SVG" };
+    QgsWmsSupportedFormat s2 = { "image/svgz", "SVG" };
+    QgsWmsSupportedFormat s3 = { "image/svg+xml", "SVG" };
+    formats << s1 << s2 << s3;
+  }
+
   return formats;
 }
 
@@ -2954,7 +2977,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
   if ( !url.hasQueryItem( "REQUEST" ) )
     setQueryItem( url, "REQUEST", "GetLegendGraphic" );
   if ( !url.hasQueryItem( "FORMAT" ) )
-    setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
+    setFormatQueryItem( url );
   if ( !url.hasQueryItem( "LAYER" ) )
     setQueryItem( url, "LAYER", mSettings.mActiveSubLayers[0] );
   if ( !url.hasQueryItem( "STYLE" ) )

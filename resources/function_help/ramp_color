@@ -12,7 +12,7 @@ Returns a string representing a color from a color ramp.
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     ramp_color('Spectral',0.3) &rarr; '#fdbe73'</p>
+     ramp_color('Spectral',0.3) &rarr; '253,190,115,255'</p>
 
 <p><h4>Note:</h4>
 The color ramps available vary between QGIS installations.  This function

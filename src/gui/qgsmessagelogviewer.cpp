@@ -144,6 +144,7 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
     w->setGridStyle( Qt::DotLine );
     w->setEditTriggers( QAbstractItemView::NoEditTriggers );
     w->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+    w->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
     w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << tr( "Level" ) );
     tabWidget->addTab( w, tag );
 

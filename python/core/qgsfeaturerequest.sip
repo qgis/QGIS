@@ -93,13 +93,12 @@ class QgsAbstractFeatureSource
 %TypeHeaderCode
 #include <qgsfeaturerequest.h>
 %End
+  public:
+    virtual ~QgsAbstractFeatureSource();
 
-public:
-  virtual ~QgsAbstractFeatureSource();
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
-
-protected:
-  void iteratorOpened( QgsAbstractFeatureIterator* it );
-  void iteratorClosed( QgsAbstractFeatureIterator* it );
+  protected:
+    void iteratorOpened( QgsAbstractFeatureIterator* it );
+    void iteratorClosed( QgsAbstractFeatureIterator* it );
 };

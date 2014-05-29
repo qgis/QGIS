@@ -39,6 +39,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mScaleLineEdit_editingFinished();
     void on_mMapRotationSpinBox_valueChanged( double value );
     void on_mSetToMapCanvasExtentButton_clicked();
+    void on_mViewExtentInCanvasButton_clicked();
     void on_mUpdatePreviewButton_clicked();
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
@@ -90,12 +91,12 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor );
     void on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor );
 
-    void atlasToggled( bool checked );
     void on_mAtlasMarginRadio_toggled( bool checked );
 
     void on_mAtlasCheckBox_toggled( bool checked );
     void on_mAtlasMarginSpinBox_valueChanged( int value );
     void on_mAtlasFixedScaleRadio_toggled( bool checked );
+    void on_mAtlasPredefinedScaleRadio_toggled( bool checked );
 
   protected:
     void showEvent( QShowEvent * event );
@@ -143,11 +144,14 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     /**Enables/disables grid frame related controls*/
     void toggleFrameControls( bool frameEnabled );
 
-    /**Enables or disables the atlas margin radio depending on the atlas coverage layer type*/
-    void toggleAtlasMarginByLayerType();
+    /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
+    void toggleAtlasScalingOptionsByLayerType();
 
     /**Recalculates the bounds for an atlas map when atlas properties change*/
     void updateMapForAtlas();
+
+    /**Is there some predefined scales, globally or as project's options ?*/
+    bool hasPredefinedScales() const;
 
 };
 

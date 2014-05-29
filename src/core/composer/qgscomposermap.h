@@ -104,6 +104,21 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Top
     };
 
+    /** Scaling modes used for the serial rendering (atlas)
+     */
+    enum AtlasScalingMode
+    {
+      Fixed,      /*< The current scale of the map is used for each feature of the atlas */
+      Predefined, /*< A scale is chosen from the predefined scales. The smallest scale from
+                    the list of scales where the atlas feature is fully visible is chosen.
+                    @see QgsAtlasComposition::setPredefinedScales.
+                    @note This mode is only valid for polygon or line atlas coverage layers
+                */
+      Auto        /*< The extent is adjusted so that each feature is fully visible.
+                    A margin is applied around the center @see setAtlasMargin
+                    @note This mode is only valid for polygon or line atlas coverage layers*/
+    };
+
     /** \brief Draw to paint device
         @param painter painter
         @param extent map extent
@@ -347,11 +362,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       way the map is drawn within the item
      * @deprecated Use setMapRotation( double rotation ) instead
      */
-    void setRotation( double r );
+    Q_DECL_DEPRECATED void setRotation( double r );
+
     /**Returns the rotation used for drawing the map within the composer item
      * @deprecated Use mapRotation() instead
      */
-    double rotation() const { return mMapRotation;};
+    Q_DECL_DEPRECATED double rotation() const { return mMapRotation;};
 
     /**Sets rotation for the map - this does not affect the composer item shape, only the
       way the map is drawn within the item
@@ -412,32 +428,90 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
-    /** Returns true if the map extent is set to follow the current atlas feature */
+    /**Returns whether the map extent is set to follow the current atlas feature.
+     * @returns true if map will follow the current atlas feature.
+     * @see setAtlasDriven
+     * @see atlasScalingMode
+    */
     bool atlasDriven() const { return mAtlasDriven; }
-    /** Set to true if the map extents should be set by the current atlas feature */
+
+    /**Sets whether the map extent will follow the current atlas feature.
+     * @param enabled set to true if the map extents should be set by the current atlas feature.
+     * @see atlasDriven
+     * @see setAtlasScalingMode
+    */
     void setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
 
-    /** Returns true if the map uses a fixed scale when in atlas mode */
-    bool atlasFixedScale() const { return mAtlasFixedScale; }
-    /** Set to true if the map should use a fixed scale when in atlas mode */
-    void setAtlasFixedScale( bool fixed ) { mAtlasFixedScale = fixed; }
+    /**Returns true if the map uses a fixed scale when in atlas mode
+     * @deprecated since 2.4 Use atlasScalingMode() instead
+    */
+    Q_DECL_DEPRECATED bool atlasFixedScale() const;
 
-    /** Returns the margin size (percentage) used when the map is in atlas mode */
+    /**Set to true if the map should use a fixed scale when in atlas mode
+     * @deprecated since 2.4 Use setAtlasScalingMode() instead
+    */
+    Q_DECL_DEPRECATED void setAtlasFixedScale( bool fixed );
+
+    /**Returns the current atlas scaling mode. This controls how the map's extents
+     * are calculated for the current atlas feature when an atlas composition
+     * is enabled.
+     * @returns the current scaling mode
+     * @note this parameter is only used if atlasDriven() is true
+     * @see setAtlasScalingMode
+     * @see atlasDriven
+    */
+    AtlasScalingMode atlasScalingMode() const { return mAtlasScalingMode; }
+
+    /**Sets the current atlas scaling mode. This controls how the map's extents
+     * are calculated for the current atlas feature when an atlas composition
+     * is enabled.
+     * @param mode atlas scaling mode to set
+     * @note this parameter is only used if atlasDriven() is true
+     * @see atlasScalingMode
+     * @see atlasDriven
+    */
+    void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
+
+    /**Returns the margin size (percentage) used when the map is in atlas mode.
+     * @returns margin size in percentage to leave around the atlas feature's extent
+     * @note this is only used if atlasScalingMode() is Auto.
+     * @see atlasScalingMode
+     * @see setAtlasMargin
+    */
     double atlasMargin() const { return mAtlasMargin; }
-    /** Sets the margin size (percentage) used when the map is in atlas mode */
+
+    /**Sets the margin size (percentage) used when the map is in atlas mode.
+     * @param margin size in percentage to leave around the atlas feature's extent
+     * @note this is only used if atlasScalingMode() is Auto.
+     * @see atlasScalingMode
+     * @see atlasMargin
+    */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
+
+    /** Sets whether updates to the composer map are enabled. */
+    void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
+
+    /** Returns whether updates to the composer map are enabled. */
+    bool updatesEnabled() const { return mUpdatesEnabled; }
+
+    /**Get the number of layers that this item requires for exporting as layers
+     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
+     * @note this method was added in version 2.4
+    */
+    int numberExportLayers() const;
 
   signals:
     void extentChanged();
@@ -518,6 +592,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Centering mode for overview */
     bool mOverviewCentered;
 
+    /** Whether updates to the map are enabled */
+    bool mUpdatesEnabled;
+
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
 
@@ -591,13 +668,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**True if map is being controlled by an atlas*/
     bool mAtlasDriven;
-    /**True if map uses a fixed scale when controlled by an atlas*/
-    bool mAtlasFixedScale;
-    /**Margin size for atlas driven extents (percentage of feature size)*/
+    /**Current atlas scaling mode*/
+    AtlasScalingMode mAtlasScalingMode;
+    /**Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode*/
     double mAtlasMargin;
 
     /**Returns a list of the layers to render for this map item*/
-    QStringList layersToRender();
+    QStringList layersToRender() const;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
@@ -656,6 +733,19 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 
+    enum PartType
+    {
+      Background,
+      Layer,
+      Grid,
+      OverviewMapExtent,
+      Frame,
+      SelectionBoxes
+    };
+
+    /**Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer*/
+    bool shouldDrawPart( PartType part ) const;
 };
 
 #endif
+

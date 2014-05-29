@@ -42,6 +42,9 @@ class QgsSymbolLayerV2Utils
     static QString encodePoint( QPointF point );
     static QPointF decodePoint( QString str );
 
+    static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
+    static QgsMapUnitScale decodeMapUnitScale( const QString& str );
+
     static QString encodeRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeRealVector( const QString& s );
 
@@ -58,7 +61,7 @@ class QgsSymbolLayerV2Utils
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static void drawStippledBackround( QPainter* painter, QRect rect );
@@ -148,7 +151,7 @@ class QgsSymbolLayerV2Utils
                                        double offset = 0.0,
                                        const QVector<qreal>* dashPattern = 0 );
     /**Create ogr feature style string for brush
-        @param fillColr fill color*/
+     @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, QString rotationFunc );
@@ -186,13 +189,29 @@ class QgsSymbolLayerV2Utils
     static QgsVectorColorRampV2* loadColorRamp( QDomElement& element ) /Factory/;
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
-    /**  parse color definition with format "rgb(0,0,0)" or "0,0,0" */
+    /**
+     * Attempts to parse a string as a color using a variety of common formats, including hex
+     * codes, rgb and rgba strings.
+     * @param colorStr string representing the color
+     * @returns parsed color
+     * @note added in 2.3
+     */
     static QColor parseColor( QString colorStr );
 
+    /**
+     * Attempts to parse a string as a color using a variety of common formats, including hex
+     * codes, rgb and rgba strings.
+     * @param colorStr string representing the color
+     * @param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
+     * @returns parsed color
+     * @note added in 2.3
+     */
+    static QColor parseColorWithAlpha( const QString colorStr, bool &containsAlpha );
+
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 

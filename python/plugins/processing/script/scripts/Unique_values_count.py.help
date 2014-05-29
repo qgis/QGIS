@@ -1,0 +1,49 @@
+(dp0
+S'result'
+p1
+VHtml file that will have the table with unique cell values and their counts.
+p2
+sS'ALG_DESC'
+p3
+VThis script will count unique values in a raster. Multiband rasters are accepted.
+p4
+sS'ALG_CREATOR'
+p5
+VYury Ryabov\u000ariabovvv at gmail dot com\u000a2013\u000aGPLv3
+p6
+sS'output_file'
+p7
+VProvide path to html file that will be created to represent calculation results.
+p8
+sS'unique_cells_count'
+p9
+V
+p10
+sS'round_to_ndigits'
+p11
+VIf you want values in raster to be rounded and 'round floats' parameter was modified, raster values will be rounded to ndigits after decimal point. Here you enter that ndigits value. Negative values in this dield are accepted and cell values will be rounded to ndigits before decimal point. NOTE that value in this field won't affect calculations if 'round floats' option is set to 'no'. 
+p12
+sS'round_values_to_ndigits'
+p13
+VOptional. If you want values in raster to be rounded before counting, enter ndigits value here. Negative values in this field are accepted and cell values will be rounded to ndigits before decimal point.
+p14
+sS'ALG_HELP_CREATOR'
+p15
+VYury Ryabov\u000ariabovvv at gmail dot com\u000a2013\u000a
+p16
+sS'round_to_digit'
+p17
+g10
+sS'input'
+p18
+VSingle- or multiband GDAL-supported raster. 
+p19
+sS'round_floats'
+p20
+V 
+p21
+sS'round_values'
+p22
+VIf you want to count values rounded to the certain digit - just modify this string (to 'yes'  or whatever you like).
+p23
+s.

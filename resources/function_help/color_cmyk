@@ -14,4 +14,4 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     color_cmyk(100,50,0,10) &rarr; '#0073e6'</p>
+     color_cmyk(100,50,0,10) &rarr; '0,115,230'</p>

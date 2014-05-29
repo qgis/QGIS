@@ -31,7 +31,7 @@ from PyQt4.QtGui import *
 
 from processing.gui.ContextAction import ContextAction
 
-from processing.r.RAlgorithm import RAlgorithm
+from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 
@@ -57,4 +57,7 @@ class DeleteScriptAction(ContextAction):
                 QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
-            self.toolbox.updateTree()
+            if self.scriptType == self.SCRIPT_PYTHON:
+                self.toolbox.updateProvider('script')
+            elif self.scriptType == self.SCRIPT_R:
+                self.toolbox.updateProvider('r')

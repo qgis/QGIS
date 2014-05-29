@@ -22,7 +22,6 @@
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgshighlight.h"
-#include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
@@ -100,19 +99,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     cmbStyle->addItem( style );
   }
 
-  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
-  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
-  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
-  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
-
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   QSettings settings;
 
-  int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
-  cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
-  cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
   double identifyValue = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   if ( identifyValue <= 0.0 )
@@ -483,7 +474,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   // set if base unit of measure tool should be changed
   bool baseUnit = settings.value( "qgis/measure/keepbaseunit", false ).toBool();
-  if ( baseUnit == true )
+  if ( baseUnit )
   {
     mKeepBaseUnitCheckBox->setChecked( true );
   }
@@ -556,6 +547,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
   chkParallelRendering->setChecked( settings.value( "/qgis/parallel_rendering", false ).toBool() );
   spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
+  chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
+  spinMaxThreads->setEnabled( chkMaxThreads->isChecked() );
+  spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
+  spinMaxThreads->setValue( QgsApplication::maxThreads() );
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
@@ -576,7 +571,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
   cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
-  cbxIdentifyResultsDocked->setChecked( settings.value( "/qgis/dockIdentifyResults", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
@@ -632,9 +626,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   pbnCanvasColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   // set the default color for the measure tool
-  myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
+  myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
+  myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
+  myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
@@ -837,11 +831,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mOffsetQuadSegSpinBox->setValue( settings.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( settings.value( "/qgis/digitizing/offset_miter_limit", 5.0 ).toDouble() );
 
-
-#ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
-  groupBox_5->setEnabled( false );
-#endif //Q_WS_MAC
-
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
@@ -867,6 +856,14 @@ void QgsOptions::setCurrentPage( QString pageWidgetName )
       return;
     }
   }
+}
+
+void QgsOptions::on_mProxyTypeComboBox_currentIndexChanged( int idx )
+{
+  leProxyHost->setEnabled( idx != 0 );
+  leProxyPort->setEnabled( idx != 0 );
+  leProxyUser->setEnabled( idx != 0 );
+  leProxyPassword->setEnabled( idx != 0 );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -1043,8 +1040,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/WMSSearchUrl", leWmsSearch->text() );
 
   //general settings
-  settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
-  settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
   settings.setValue( "/Map/searchRadiusMM", spinBoxIdentifyValue->value() );
   settings.setValue( "/Map/highlight/color", mIdentifyHighlightColorButton->color().name() );
   settings.setValue( "/Map/highlight/colorAlpha", mIdentifyHighlightColorButton->color().alpha() );
@@ -1068,7 +1063,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/scanZipInBrowser2",
                      cmbScanZipInBrowser->itemData( cmbScanZipInBrowser->currentIndex() ).toString() );
   settings.setValue( "/qgis/ignoreShapeEncoding", cbxIgnoreShapeEncoding->isChecked() );
-  settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
@@ -1081,6 +1075,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/parallel_rendering", chkParallelRendering->isChecked() );
+  int maxThreads = chkMaxThreads->isChecked() ? spinMaxThreads->value() : -1;
+  QgsApplication::setMaxThreads( maxThreads );
+  settings.setValue( "/qgis/max_threads", maxThreads );
+
   settings.setValue( "/qgis/map_update_interval", spinMapUpdateInterval->value() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
@@ -1339,14 +1337,14 @@ void QgsOptions::saveOptions()
        || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
        || legendLayersCapitalise != capitaliseCheckBox->isChecked() )
   {
-    QgisApp::instance()->legend()->updateLegendItemStyles();
+    // TODO[MD] QgisApp::instance()->legend()->updateLegendItemStyles();
   }
 
   // refresh symbology for any legend items, only if needed
   if ( showLegendClassifiers != cbxLegendClassifiers->isChecked()
        || createRasterLegendIcons != cbxCreateRasterLegendIcons->isChecked() )
   {
-    QgisApp::instance()->legend()->updateLegendItemSymbologies();
+    // TODO[MD] QgisApp::instance()->legend()->updateLegendItemSymbologies();
   }
 
   // save app stylesheet last (in case reset becomes necessary)
@@ -1731,53 +1729,6 @@ void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
   }
 }
 
-#if 0
-void QgsOptions::loadGdalDriverList()
-{
-  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
-  GDALDriverH myGdalDriver; // current driver
-  QString myGdalDriverDescription;
-  QStringList myDrivers;
-  for ( int i = 0; i < GDALGetDriverCount(); ++i )
-  {
-    myGdalDriver = GDALGetDriver( i );
-
-    Q_CHECK_PTR( myGdalDriver );
-
-    if ( !myGdalDriver )
-    {
-      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
-      continue;
-    }
-    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
-    myDrivers << myGdalDriverDescription;
-  }
-  // add the skipped drivers to the list too in case their drivers are
-  // already unloaded...may result in false positive if underlying
-  // sys config has changed and that driver no longer exists...
-  myDrivers.append( mySkippedDrivers );
-  myDrivers.removeDuplicates();
-  myDrivers.sort();
-
-  QStringListIterator myIterator( myDrivers );
-
-  while ( myIterator.hasNext() )
-  {
-    QString myName = myIterator.next();
-    QListWidgetItem * mypItem = new QListWidgetItem( myName );
-    if ( mySkippedDrivers.contains( myName ) )
-    {
-      mypItem->setCheckState( Qt::Unchecked );
-    }
-    else
-    {
-      mypItem->setCheckState( Qt::Checked );
-    }
-    lstGdalDrivers->addItem( mypItem );
-  }
-}
-#endif
-
 void QgsOptions::loadGdalDriverList()
 {
   QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
@@ -1806,6 +1757,16 @@ void QgsOptions::loadGdalDriverList()
       QgsLogger::warning( "unable to get driver " + QString::number( i ) );
       continue;
     }
+
+    // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
+    // TODO add same UI for vector drivers
+#ifdef GDAL_COMPUTE_VERSION
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, NULL ) ) != "YES" )
+      continue;
+#endif
+#endif
+
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
 

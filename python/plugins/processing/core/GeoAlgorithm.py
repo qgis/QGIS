@@ -45,7 +45,7 @@ from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputTable import OutputTable
 from processing.outputs.OutputHTML import OutputHTML
-from processing.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
 from processing.tools.system import *
 
@@ -73,7 +73,7 @@ class GeoAlgorithm:
         self.showInModeler = True
         #if true, will show only loaded layers in parameters dialog.
         #Also, if True, the algorithm does not run on the modeler
-		#or batch ptocessing interface
+        #or batch ptocessing interface
         self.allowOnlyOpenedLayers = False
 
         # False if it should not be run a a batch process
@@ -108,14 +108,15 @@ class GeoAlgorithm:
     def getDefaultIcon():
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
 
-    def helpFile(self):
-        """Returns the path to the help file with the description of
-        this algorithm.
+    def help(self):
+        """Returns the help with the description of this algorithm.
+        It returns a tuple boolean, string. IF the boolean value is true, it means that
+        the string contains the actual description. If false, it is an url or path to a file
+        where the description is stored
 
-        It should be an HTML file. Returns None if there is no help
-        file available.
+        Returns None if there is no help file available.
         """
-        return None
+        return False, None
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.
@@ -231,7 +232,7 @@ class GeoAlgorithm:
         self.runHookScript(scriptFile, progress)
 
     def runHookScript(self, filename, progress):
-        if not os.path.exists(filename):
+        if filename is None or not os.path.exists(filename):
             return
         try:
             script = 'import processing\n'
@@ -357,10 +358,12 @@ class GeoAlgorithm:
                         if p is not None:
                             self.crs = p.crs()
                             return
-        qgis = dataobjects.interface.iface
-        if qgis is None:
-          return
-        self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
+        try:
+            from qgis.utils import iface
+            self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
+        except:
+            pass
+
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

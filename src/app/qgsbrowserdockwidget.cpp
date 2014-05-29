@@ -228,7 +228,6 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       // accept anything else
       return true;
     }
-
 };
 QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
@@ -307,7 +306,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
-    // find root favourites item
+    // expand root favourites item
     for ( int i = 0; i < mModel->rowCount(); i++ )
     {
       QModelIndex index = mModel->index( i, 0 );

@@ -22,6 +22,9 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
+   <property name="margin">
+    <number>3</number>
+   </property>
    <item row="0" column="0">
     <widget class="QTextEdit" name="textEdit">
      <property name="sizePolicy">

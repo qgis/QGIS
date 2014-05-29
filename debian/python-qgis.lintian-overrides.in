@@ -1,2 +1,3 @@
+python-qgis: hardening-no-fortify-functions
 python-qgis: package-name-doesnt-match-sonames
 python-qgis: no-symbols-control-file

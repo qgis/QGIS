@@ -116,7 +116,7 @@ namespace pal
   /**
    *  \brief Pal main class.
    *
-   *  A pal object will contains layers and global informations such as which search method
+   *  A pal object will contains layers and global information such as which search method
    *  will be used, the map resolution (dpi) ....
    *
    *  \author Maxence Laurent <maxence _dot_ laurent _at_ heig-vd _dot_ ch>

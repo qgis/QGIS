@@ -90,7 +90,7 @@ class ParameterTable(ParameterDataObject):
             self.exported = self.value
         return self.exported
 
-    def getFileFilter(self, alg):
+    def getFileFilter(self):
         exts = ['csv', 'dbf']
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'

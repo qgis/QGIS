@@ -37,7 +37,7 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
-from processing.gui.Help2Html import Help2Html
+from processing.gui.Help2Html import  getHtmlFromHelpFile
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.parameters.ParameterFactory import ParameterFactory
@@ -176,40 +176,42 @@ class ModelerAlgorithm(GeoAlgorithm):
                                     # parsing this
                                     pass
                         for param in alg.parameters:
-                            line = lines.readline().strip('\n').strip('\r')
-                            if line == str(None):
-                                algParams[param.name] = None
-                            else:
-                                tokens = line.split('|')
-                                algParams[param.name] = \
-                                    AlgorithmAndParameter(int(tokens[0]),
-                                        tokens[1])
+                            if not param.hidden:
+                                line = lines.readline().strip('\n').strip('\r')
+                                if line == str(None):
+                                    algParams[param.name] = None
+                                else:
+                                    tokens = line.split('|')
+                                    algParams[param.name] = \
+                                        AlgorithmAndParameter(int(tokens[0]),
+                                            tokens[1])
                         outputPos = {}
                         for out in alg.outputs:
-                            line = lines.readline().strip('\n').strip('\r')
-                            if str(None) != line:
-                                if '|' in line:
-                                    tokens = line.split('|')
-                                    name = tokens[0]
-                                    tokens = tokens[1].split(',')
-                                    outputPos[out.name] = QtCore.QPointF(
-                                            float(tokens[0]), float(tokens[1]))
-                                else:
-                                    name = line
-                                    outputPos[out.name] = None
-                                algOutputs[out.name] = name
+                            if not out.hidden:
+                                line = lines.readline().strip('\n').strip('\r')
+                                if str(None) != line:
+                                    if '|' in line:
+                                        tokens = line.split('|')
+                                        name = tokens[0]
+                                        tokens = tokens[1].split(',')
+                                        outputPos[out.name] = QtCore.QPointF(
+                                                float(tokens[0]), float(tokens[1]))
+                                    else:
+                                        name = line
+                                        outputPos[out.name] = None
+                                    algOutputs[out.name] = name
 
-                                # We add the output to the algorithm,
-                                # with a name indicating where it comes
-                                # from that guarantees that the name is
-                                # unique
-                                output = copy.deepcopy(out)
-                                output.description = name
-                                output.name = self.getSafeNameForOutput(iAlg,
-                                        output)
-                                self.addOutput(output)
-                            else:
-                                algOutputs[out.name] = None
+                                    # We add the output to the algorithm,
+                                    # with a name indicating where it comes
+                                    # from that guarantees that the name is
+                                    # unique
+                                    output = copy.deepcopy(out)
+                                    output.description = name
+                                    output.name = self.getSafeNameForOutput(iAlg,
+                                            output)
+                                    self.addOutput(output)
+                                else:
+                                    algOutputs[out.name] = None
                         self.outputPos.append(outputPos)
                         self.algOutputs.append(algOutputs)
                         self.algParameters.append(algParams)
@@ -462,23 +464,24 @@ class ModelerAlgorithm(GeoAlgorithm):
             pt = self.algPos[i]
             s += str(pt.x()) + ',' + str(pt.y()) + '\n'
             if len(self.dependencies[i]) != 0:
-                s += ','.join([str(index) for index in self.dependencies[i]]) \
-                    + '\n'
+                s += ','.join([str(index) for index in self.dependencies[i]]) + '\n'
             else:
                 s += str(None) + '\n'
             for param in alg.parameters:
-                value = self.algParameters[i][param.name]
-                if value:
-                    s += value.serialize() + '\n'
-                else:
-                    s += str(None) + '\n'
+                if not param.hidden:
+                    value = self.algParameters[i][param.name]
+                    if value:
+                        s += value.serialize() + '\n'
+                    else:
+                        s += str(None) + '\n'
             for out in alg.outputs:
-                value = self.algOutputs[i][out.name]
-                s += unicode(value)
-                if value is not None:
-                    pt = self.outputPos[i][out.name]
-                    s += '|' + str(pt.x()) + ',' + str(pt.y())
-                s += '\n'
+                if not out.hidden:
+                    value = self.algOutputs[i][out.name]
+                    s += unicode(value)
+                    if value is not None:
+                        pt = self.outputPos[i][out.name]
+                        s += '|' + str(pt.x()) + ',' + str(pt.y())
+                    s += '\n'
 
         return s
 
@@ -489,28 +492,29 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def prepareAlgorithm(self, alg, iAlg):
         for param in alg.parameters:
-            aap = self.algParameters[iAlg][param.name]
-            if aap is None:
-                if isinstance(param, ParameterExtent):
-                    value = self.getMinCoveringExtent()
-                    if not param.setValue(value):
-                        raise GeoAlgorithmExecutionException('Wrong value: '
-                                + str(value))
-                else:
-                    param.setValue(None)
-                continue
-            if isinstance(param, ParameterMultipleInput):
-                value = self.getValueFromAlgorithmAndParameter(aap)
-                tokens = value.split(';')
-                layerslist = []
-                for token in tokens:
-                    (i, paramname) = token.split('|')
-                    aap = AlgorithmAndParameter(int(i), paramname)
+            if not param.hidden:
+                aap = self.algParameters[iAlg][param.name]
+                if aap is None:
+                    if isinstance(param, ParameterExtent):
+                        value = self.getMinCoveringExtent()
+                        if not param.setValue(value):
+                            raise GeoAlgorithmExecutionException('Wrong value: '
+                                    + str(value))
+                    else:
+                        param.setValue(None)
+                    continue
+                if isinstance(param, ParameterMultipleInput):
                     value = self.getValueFromAlgorithmAndParameter(aap)
-                    layerslist.append(str(value))
-                value = ';'.join(layerslist)
-            else:
-                value = self.getValueFromAlgorithmAndParameter(aap)
+                    tokens = value.split(';')
+                    layerslist = []
+                    for token in tokens:
+                        (i, paramname) = token.split('|')
+                        aap = AlgorithmAndParameter(int(i), paramname)
+                        value = self.getValueFromAlgorithmAndParameter(aap)
+                        layerslist.append(str(value))
+                    value = ';'.join(layerslist)
+                else:
+                    value = self.getValueFromAlgorithmAndParameter(aap)
 
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
@@ -519,12 +523,13 @@ class ModelerAlgorithm(GeoAlgorithm):
                     raise GeoAlgorithmExecutionException('Wrong value: '
                             + str(value))
         for out in alg.outputs:
-            val = self.algOutputs[iAlg][out.name]
-            if val:
-                name = self.getSafeNameForOutput(iAlg, out)
-                out.value = self.getOutputFromName(name).value
-            else:
-                out.value = None
+            if not out.hidden:
+                val = self.algOutputs[iAlg][out.name]
+                if val:
+                    name = self.getSafeNameForOutput(iAlg, out)
+                    out.value = self.getOutputFromName(name).value
+                else:
+                    out.value = None
 
     def getMinCoveringExtent(self):
         first = True
@@ -573,9 +578,8 @@ class ModelerAlgorithm(GeoAlgorithm):
             return None
         if float(aap.alg) \
                 == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
-            for key in self.paramValues.keys():
-                if aap.param == key:
-                    return self.paramValues[key]
+            if aap.param in self.paramValues.keys():
+                return self.paramValues[aap.param]
             for param in self.parameters:
                 if aap.param == param.name:
                     return param.value
@@ -736,13 +740,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         if self.modelerdialog:
             self.modelerdialog.repaintModel()
 
-    def helpFile(self):
+    def help(self):
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
-            h2h = Help2Html()
-            return h2h.getHtmlFile(self, helpfile)
+            return True, getHtmlFromHelpFile(self, helpfile)
         else:
-            return None
+            return False, None
 
 
 class AlgorithmAndParameter:

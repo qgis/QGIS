@@ -41,4 +41,4 @@ class EditModelAction(ContextAction):
         dlg = ModelerDialog(self.alg.getCopy())
         dlg.exec_()
         if dlg.update:
-            self.updateToolbox()
+            self.toolbox.updateProvider('model')

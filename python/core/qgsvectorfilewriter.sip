@@ -221,6 +221,6 @@ class QgsVectorFileWriter
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
   protected:
-
+    //! @note not available in python bindings
     // OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
 };

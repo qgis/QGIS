@@ -28,7 +28,7 @@ class QgsOgcUtils
     /** Exports the geometry to GML2 or GML3
         @return QDomElement
      */
-    static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString Format );
+    static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format );
 
     /** Exports the geometry to GML2
         @return QDomElement

@@ -54,12 +54,11 @@ from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterMultipleExternalInput import ParameterMultipleExternalInput
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
 from processing.tools import dataobjects
-
+from qgis.utils import iface
 
 class AlgorithmExecutionDialog(QtGui.QDialog):
 
@@ -69,7 +68,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             (self.parameter, self.widget) = (param, widget)
 
     def __init__(self, alg, mainWidget):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint
+        QtGui.QDialog.__init__(self, iface.mainWindow(), QtCore.Qt.WindowSystemMenuHint
                                | QtCore.Qt.WindowTitleHint)
         self.executed = False
         self.mainWidget = mainWidget
@@ -106,20 +105,23 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                              'help.css'))
         self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
+        url = None
         try:
-            if self.alg.helpFile():
-                helpFile = self.alg.helpFile()
+            isText, help = self.alg.help()
+            if help is not None:
+                if isText:
+                    html = help;
+                else:
+                    url = QtCore.QUrl(help)
             else:
                 html = '<h2>Sorry, no help is available for this \
                         algorithm.</h2>'
         except WrongHelpFileException, e:
-            html = e.msg
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+            html = e.args[0]
         try:
             if html:
                 self.webView.setHtml(html)
-            else:
-                url = QtCore.QUrl(helpFile)
+            elif url:
                 self.webView.load(url)
         except:
             self.webView.setHtml('<h2>Could not open help file :-( </h2>')
@@ -194,17 +196,14 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 return param.setValue(None)
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = dataobjects.getVectorLayers()
+            if param.datatype == ParameterMultipleInput.TYPE_FILE:
+                return param.setValue(widget.selectedoptions)
             else:
-                options = dataobjects.getRasterLayers()
-            value = []
-            for index in widget.selectedoptions:
-                value.append(options[index])
-            return param.setValue(value)
-        elif isinstance(param, ParameterMultipleExternalInput):
-            value = widget.selectedoptions
-            return param.setValue(value)
+                if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                    options = dataobjects.getVectorLayers()
+                else:
+                    options = dataobjects.getRasterLayers()
+                return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):
             return param.setValue(widget.getValue())
@@ -219,8 +218,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def accept(self):
         checkCRS = ProcessingConfig.getSetting(
                 ProcessingConfig.WARN_UNMATCHING_CRS)
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
@@ -234,7 +231,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     return
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.critical(self, 'Unable to execute algorithm', msg)
+                QMessageBox.warning(self, 'Unable to execute algorithm', msg)
                 return
             self.runButton.setEnabled(False)
             self.buttonBox.button(

@@ -37,12 +37,17 @@ class QgsMapLayerModel : QAbstractItemModel
      */
     QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
     //! returns if the items can be checked or not
-    bool itemsCheckable() ;
+    bool itemsCheckable();
 
     /**
      * @brief indexFromLayer returns the model index for a given layer
      */
     QModelIndex indexFromLayer( QgsMapLayer* layer );
+
+
+  protected slots:
+    void removeLayers( const QStringList layerIds );
+    void addLayers( QList<QgsMapLayer*> layers );
 
     // QAbstractItemModel interface
   public:

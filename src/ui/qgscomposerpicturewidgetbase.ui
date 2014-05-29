@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>312</width>
+    <width>315</width>
     <height>572</height>
    </rect>
   </property>
@@ -52,8 +52,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>310</width>
-        <height>549</height>
+        <width>297</width>
+        <height>589</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -68,16 +68,13 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QRadioButton" name="mRadioPath">
               <property name="text">
                <string>Path</string>
-              </property>
-              <property name="buddy">
-               <cstring>mPictureLineEdit</cstring>
               </property>
              </widget>
             </item>
@@ -94,7 +91,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>150</width>
+                <width>30</width>
                 <height>32767</height>
                </size>
               </property>
@@ -104,6 +101,136 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Image source</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Placement</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Resize mode</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QComboBox" name="mResizeModeComboBox">
+            <item>
+             <property name="text">
+              <string>Zoom</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Stretch</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Clip</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Zoom and resize frame</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Resize frame to image size</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QRadioButton" name="mRadioExpression">
+              <property name="text">
+               <string>Expression</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mPictureExpressionLineEdit"/>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mPictureExpressionButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <widget class="QComboBox" name="mAnchorPointComboBox">
+            <item>
+             <property name="text">
+              <string>Top left</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Top center</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Top right</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Middle left</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Middle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Middle right</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Bottom left</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Bottom center</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Bottom right</string>
+             </property>
+            </item>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -211,7 +338,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
          <property name="title">
           <string>Image rotation</string>
          </property>
@@ -262,7 +389,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -272,6 +399,8 @@
   <tabstop>mPictureBrowseButton</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

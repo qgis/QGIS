@@ -16,9 +16,12 @@
 #ifndef QGSGRASS_H
 #define QGSGRASS_H
 
+#include <setjmp.h>
+
 // GRASS header files
 extern "C"
 {
+#include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/form.h>
 }
@@ -34,12 +37,24 @@ extern "C"
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
 
+// Make the release string because it may be for example 0beta1
+#define STR(x) #x
+#define EXPAND(x) STR(x)
+#define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
+
+#define G_TRY try { if( !setjmp( QgsGrass::jumper ) )
+// Ready for > 7.0.beta1
+//#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
+#define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
+
 /*!
    Methods for C library initialization and error handling.
 */
 class QgsGrass
 {
   public:
+    static jmp_buf jumper; // used to get back from fatal error
+
     // This does not work (gcc/Linux), such exception cannot be caught
     // so I have enabled the old version, if you are able to fix it, please
     // check first if it realy works, i.e. can be caught!
@@ -93,9 +108,12 @@ class QgsGrass
     static GRASS_LIB_EXPORT void setMapset( QString gisdbase, QString location, QString mapset );
 
     //! Error codes returned by error()
-    enum GERROR { OK, /*!< OK. No error. */
-                  WARNING /*!< Warning, non fatal error. Should be printed by application. */
-              };
+    enum GERROR
+    {
+      OK, /*!< OK. No error. */
+      WARNING, /*!< Warning, non fatal error. Should be printed by application. */
+      FATAL /*!< Fatal error */
+    };
 
     //! Map type
     enum MapType { None, Raster, Vector, Region };

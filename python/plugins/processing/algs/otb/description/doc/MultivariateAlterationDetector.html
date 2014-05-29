@@ -1,0 +1,21 @@
+<html><head>
+<style type="text/css">
+dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; text-align: left; font-weight: bold; color: green; } dt:after { content: ":"; } dd { margin: 0 0 0 220px; padding: 0 0 0.5em 0; }
+</style>
+</head><body><h1>MultivariateAlterationDetector</h1><h2>Brief Description</h2>Multivariate Alteration Detector<h2>Tags</h2>Feature Extraction<h2>Long Description</h2>This application detects change between two given images.<h2>Parameters</h2><ul><li><b>[param] -in1</b> &lt;string&gt; Image which describe initial state of the scene.. Mandatory: True. Default Value: &quot;&quot;</li><li><b>[param] -in2</b> &lt;string&gt; Image which describe scene after perturbations.. Mandatory: True. Default Value: &quot;&quot;</li><li><b>[param] -out</b> &lt;string&gt; Image of detected changes.. Mandatory: True. Default Value: &quot;&quot;</li><li><b>[param] -ram</b> &lt;int32&gt; Available memory for processing (in MB). Mandatory: False. Default Value: &quot;128&quot;</li></ul><h2>Limitations</h2>None<h2>Authors</h2>OTB-Team<h2>See Also</h2> This filter implements the Multivariate Alteration Detector, based  on the following work: 
+ A. A. Nielsen and K. Conradsen, Multivariate alteration detection (mad) in multispectral, bi-temporal image data: a new approach to change detection studies, Remote Sens. Environ., vol. 64, pp. 1-19, (1998) 
+ 
+ Multivariate Alteration Detector takes two images as inputs and  produce a set of N change maps as a VectorImage (where N is the  maximum of number of bands in first and second image) with the  following properties: 
+ - Change maps are differences of a pair of linear combinations of  bands from image 1 and bands from image 2 chosen to maximize the  correlation. 
+ - Each change map is orthogonal to the others. 
+ 
+ This is a statistical method which can handle different modalities  and even different bands and number of bands between images. 
+ 
+ If numbers of bands in image 1 and 2 are equal, then change maps  are sorted by increasing correlation. If number of bands is  different, the change maps are sorted by decreasing correlation. 
+ 
+ The GetV1() and GetV2() methods allow to retrieve the linear  combinations used to generate the Mad change maps as a vnl_matrix of  double, and the GetRho() method allows retrieving the correlation  associated to each Mad change maps as a vnl_vector. 
+ 
+ This filter has been implemented from the Matlab code kindly made  available by the authors here: 
+ http://www2.imm.dtu.dk/~aa/software.html 
+ 
+ Both cases (same and different number of bands) have been validated  by comparing the output image to the output produced by the Matlab  code, and the reference images for testing have been generated from  the Matlab code using Octave.<h2>Example of use</h2><ul><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">in1: Spot5-Gloucester-before.tif</p></li><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">in2: Spot5-Gloucester-after.tif</p></li><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">out: detectedChangeImage.tif</p></li></ul></body></html>

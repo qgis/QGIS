@@ -37,7 +37,7 @@ class QgsAtlasCompositionWidget:
   public slots:
     void on_mUseAtlasCheckBox_stateChanged( int state );
     void changeCoverageLayer( QgsMapLayer* layer );
-    void on_mAtlasFilenamePatternEdit_textChanged( const QString& text );
+    void on_mAtlasFilenamePatternEdit_editingFinished();
     void on_mAtlasFilenameExpressionButton_clicked();
     void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );

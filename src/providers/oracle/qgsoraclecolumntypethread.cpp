@@ -37,15 +37,16 @@ void QgsOracleColumnTypeThread::stop()
 
 void QgsOracleColumnTypeThread::run()
 {
+  mStopped = false;
+
   QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
   QgsOracleConn *conn = QgsOracleConn::connectDb( uri.connectionInfo() );
   if ( !conn )
   {
     QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
+    mStopped = true;
     return;
   }
-
-  mStopped = false;
 
   emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
@@ -83,6 +84,10 @@ void QgsOracleColumnTypeThread::run()
     // Now tell the layer list dialog box...
     emit setLayerType( layerProperty );
   }
+
+  // store the list for later use (cache)
+  if ( !mStopped )
+    mLayerProperties = layerProperties;
 
   emit progress( 0, 0 );
   emit progressMessage( tr( "Table retrieval finished." ) );

@@ -90,8 +90,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   int col = 0;
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( mVectorLayer->editType( idx ) == QgsVectorLayer::Hidden ||
-         mVectorLayer->editType( idx ) == QgsVectorLayer::Immutable )
+    if ( mVectorLayer->editorWidgetV2( idx ) == "Hidden" ||
+         mVectorLayer->editorWidgetV2( idx ) == "Immutable" )
       continue;
 
     mTableWidget->setColumnCount( col + 1 );

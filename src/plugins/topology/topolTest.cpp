@@ -315,7 +315,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
     QgsPoint p = pointIt->first;
     QgsFeatureId k = pointIt->second;
 
-    int repetitions = endVerticesMap.count( p );
+    size_t repetitions = endVerticesMap.count( p );
 
     //QgsGeometry* extentPoly =
     if ( repetitions == 1 )
@@ -359,21 +359,21 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
   int i = 0;
   ErrorList errorList;
 
-  QList<int>* duplicateIds = new QList<int>();
+  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
 
   QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
-  QMap<int, FeatureLayer>::Iterator it;
-  QMap<int, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
+  QMap<QgsFeatureId, FeatureLayer>::Iterator it;
+  QMap<QgsFeatureId, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
   for ( it = mFeatureMap2.begin(); it != FeatureListEnd; ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    int currentId = it->feature.id();
+    QgsFeatureId currentId = it->feature.id();
 
     if ( duplicateIds->contains( currentId ) )
     {
@@ -469,7 +469,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     return errorList;
   }
 
-  QList<int>* duplicateIds = new QList<int>();
+  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
 
   QgsSpatialIndex* index;
   index = mLayerIndexes[layer1->id()];
@@ -480,14 +480,14 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     return errorList;
   }
 
-  QMap<int, FeatureLayer>::Iterator it;
-  QMap<int, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
+  QMap<QgsFeatureId, FeatureLayer>::Iterator it;
+  QMap<QgsFeatureId, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
   for ( it = mFeatureMap2.begin(); it != FeatureListEnd; ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    int currentId = it->feature.id();
+    QgsFeatureId currentId = it->feature.id();
 
     if ( duplicateIds->contains( currentId ) )
     {
@@ -500,7 +500,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
 
     QgsGeometry* g1 = it->feature.geometry();
 
-    if ( g1->isGeosValid() == false )
+    if ( !g1->isGeosValid() )
     {
       qDebug() << "invalid geometry(g1) found..skipping.." << it->feature.id();
       continue;
@@ -538,7 +538,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         continue;
       }
 
-      if ( g2->isGeosValid() == false )
+      if ( !g2->isGeosValid() )
       {
         QgsMessageLog::logMessage( tr( "Skipping invalid second geometry of feature %1 in overlaps test." ).arg( it->feature.id() ), tr( "Topology plugin" ) );
         continue;
@@ -551,8 +551,6 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         duplicate = true;
         duplicateIds->append( mFeatureMap2[*cit].feature.id() );
       }
-
-
 
       if ( duplicate )
       {
@@ -633,7 +631,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       continue;
     }
 
-    if ( g1->isGeosValid() == false )
+    if ( !g1->isGeosValid() )
     {
       qDebug() << "invalid geometry found..skipping.." << it->feature.id();
       continue;
@@ -812,7 +810,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
     QgsPoint p = pointIt->first;
     QgsFeatureId k = pointIt->second;
 
-    int repetitions = endVerticesMap.count( p );
+    size_t repetitions = endVerticesMap.count( p );
 
     if ( repetitions == 2 )
     {

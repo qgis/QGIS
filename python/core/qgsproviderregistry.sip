@@ -102,4 +102,3 @@ class QgsProviderRegistry
     /** ctor private since instance() creates it */
     QgsProviderRegistry( QString pluginPath );
 }; // class QgsProviderRegistry
-

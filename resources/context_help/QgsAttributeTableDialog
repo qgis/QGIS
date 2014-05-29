@@ -46,6 +46,6 @@ To edit values, you first have to switch the layer to editing mode. To switch to
 <a name="FieldCalc">
 <h4>Field Calculator</h4>
 </a>
-The <label>Field Calculator</label> button in the attribute table allows to perform calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.<br>
+The <label>Field Calculator</label> button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.<br>
 The results can be written to a new attribute column or it can be used to update values in an already existing column.<br>
 The vector layer needs to be in editing mode, before you can click on the <label>Field calculator</label> icon to open the dialog.

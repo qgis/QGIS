@@ -29,7 +29,7 @@ test_qgspallabeling_tests
     placed in a specific test subclass. Tests are separated into logical
     groupings for labeling: `single point`, `single line`, `single polygon`,
     `multi-feature`, `placement`. Most label styling tests that are not
-    feature-dependant are associated with `single point`.
+    feature-dependent are associated with `single point`.
 
     Almost all tests produce many images for comparison to controls. To keep
     the proliferation of control images to a minimum, several options can be

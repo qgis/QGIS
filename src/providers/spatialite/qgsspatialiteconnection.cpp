@@ -86,7 +86,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   recentVersion = true;
 #endif
 
-  if ( ret == LayoutCurrent && recentVersion == false )
+  if ( ret == LayoutCurrent && !recentVersion )
   {
     // obsolete library version
     mErrorMsg = tr( "obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)" );

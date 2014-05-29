@@ -9,6 +9,7 @@ SET(ORACLE_SRCS
   qgsoracledataitems.cpp
   qgsoraclesourceselect.cpp
   qgsoraclenewconnection.cpp
+  qgsoracletablecache.cpp
   qgsoracletablemodel.cpp
   qgsoraclecolumntypethread.cpp
   qgsoraclefeatureiterator.cpp
@@ -49,7 +50,7 @@ TARGET_LINK_LIBRARIES (oracleprovider
 
 ########################################################
 # Install
-                
+
 INSTALL(TARGETS oracleprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

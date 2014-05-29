@@ -1594,7 +1594,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
 
   while ( true )
   {
-    bool swapped = false;//flag which allows to exit the loop
+    bool swapped = false;//flag which allows exiting the loop
     bool* control = new bool[mHalfEdge.count()];//controlarray
 
     for ( int i = 0; i <= mHalfEdge.count() - 1; i++ )

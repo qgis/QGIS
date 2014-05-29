@@ -197,6 +197,30 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     virtual void setFrameOutlineWidth( double outlineWidth );
 
+    /** Returns the frame's outline width. Only used if hasFrame is true.
+     * @returns Frame outline width
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameOutlineWidth
+     */
+    double frameOutlineWidth() const { return pen().widthF(); }
+
+    /** Returns the join style used for drawing the item's frame
+     * @returns Join style for outline frame
+     * @note introduced in 2.3
+     * @see hasFrame
+     * @see setFrameJoinStyle
+     */
+    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+    /** Sets join style used when drawing the item's frame
+     * @param style Join style for outline frame
+     * @returns nothing
+     * @note introduced in 2.3
+     * @see setFrameEnabled
+     * @see frameJoinStyle
+     */
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
+
     /** Returns the estimated amount the item's frame bleeds outside the item's
      *  actual rectangle. For instance, if the item has a 2mm frame outline, then
      *  1mm of this frame is drawn outside the item's rect. In this case the
@@ -228,7 +252,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @note introduced in 2.0
      * @see hasBackground
      */
-    void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
+    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
 
     /** Gets the background color for this item
      * @returns background color
@@ -244,20 +268,20 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void setBackgroundColor( const QColor& backgroundColor );
 
     /** Returns the item's composition blending mode */
-    QPainter::CompositionMode blendMode() const {return mBlendMode;}
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /** Sets the item's composition blending mode*/
     void setBlendMode( QPainter::CompositionMode blendMode );
 
     /** Returns the item's transparency */
-    int transparency() const {return mTransparency;}
+    int transparency() const { return mTransparency; }
     /** Sets the item's transparency */
     void setTransparency( int transparency );
 
     /** Returns true if effects (eg blend modes) are enabled for the item
      * @note introduced in 2.0
     */
-    bool effectsEnabled() const {return mEffectsEnabled;}
+    bool effectsEnabled() const { return mEffectsEnabled; }
     /** Sets whether effects (eg blend modes) are enabled for the item
      * @note introduced in 2.0
     */
@@ -267,7 +291,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
 
-    const QgsComposition* composition() const {return mComposition;}
+    const QgsComposition* composition() const { return mComposition; }
     QgsComposition* composition() {return mComposition;}
 
     virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
@@ -289,8 +313,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      to work around the Qt font bug)*/
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
-    /**Like the above, but with a rectangle for multiline text*/
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop ) const;
+    /**Like the above, but with a rectangle for multiline text
+     * @param p painter to use
+     * @param rect rectangle to draw into
+     * @param text text to draw
+     * @param font font to use
+     * @param halignment optional horizontal alignment
+     * @param valignment optional vertical alignment
+     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+    */
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
     /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
@@ -317,17 +349,17 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Returns position lock for mouse drags (true means locked)
     @note this method was added in version 1.2*/
-    bool positionLock() const {return mItemPositionLocked;}
+    bool positionLock() const { return mItemPositionLocked; }
 
     /**Returns the rotation for the composer item
     @note this method was added in version 2.1*/
-    double itemRotation() const {return mItemRotation;}
+    double itemRotation() const { return mItemRotation; }
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
      *             instead
      */
-    double rotation() const {return mItemRotation;}
+    Q_DECL_DEPRECATED double rotation() const { return mItemRotation; }
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -344,6 +376,19 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const { return mUuid; }
+
+    /**Get the number of layers that this item requires for exporting as layers
+     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
+     * @note this method was added in version 2.4
+    */
+    virtual int numberExportLayers() const { return 0; }
+
+    /**Sets the current layer to draw for exporting
+     * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
+     * @note this method was added in version 2.4
+    */
+    virtual void setCurrentExportLayer( int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
   public slots:
     /**Sets the item rotation
@@ -382,6 +427,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool mBackground;
     /**Background color*/
     QColor mBackgroundColor;
+    /**Frame join style*/
+    Qt::PenJoinStyle mFrameJoinStyle;
 
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
@@ -404,6 +451,11 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**The item's position mode
     @note: this member was added in version 2.0*/
     ItemPositionMode mLastUsedPositionMode;
+
+    /**The layer that needs to be exported
+    @note: if -1, all layers are to be exported
+    @note: this member was added in version 2.4*/
+    int mCurrentExportLayer;
 
     /**Draw selection boxes around item*/
     virtual void drawSelectionBoxes( QPainter* p );
@@ -441,7 +493,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
 
     /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
      * a specified amount
@@ -457,7 +509,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
     void sizeChangedByRotation( double& width, double& height, double rotation );
@@ -465,7 +517,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height );
+    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise
