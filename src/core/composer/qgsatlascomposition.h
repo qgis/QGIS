@@ -286,9 +286,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     // current atlas feature number
     int mCurrentFeatureNo;
 
-    QString mFilenameParserError;
-    QString mFilterParserError;
-
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
 
@@ -312,6 +309,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     // bounding box of the current feature transformed into map crs
     QgsRectangle mTransformedFeatureBounds;
+
+    QString mFilenameParserError;
+    QString mFilterParserError;
 
     //forces all atlas enabled maps to redraw
     void updateAtlasMaps();
