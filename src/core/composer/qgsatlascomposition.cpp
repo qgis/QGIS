@@ -451,7 +451,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
       break;
   }
 
-  if ( map->atlasScalingMode() == QgsComposerMap::Fixed  || isPointLayer  )
+  if ( map->atlasScalingMode() == QgsComposerMap::Fixed || isPointLayer )
   {
     // only translate, keep the original scale (i.e. width x height)
 
@@ -683,7 +683,7 @@ void QgsAtlasComposition::updateFilenameExpression()
 
   const QgsFields& fields = mCoverageLayer->pendingFields();
 
-  if ( !mSingleFile && mFilenamePattern.size() > 0 )
+  if ( mFilenamePattern.size() > 0 )
   {
     mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
     // expression used to evaluate each filename
@@ -708,7 +708,7 @@ void QgsAtlasComposition::updateFilenameExpression()
 void QgsAtlasComposition::evalFeatureFilename()
 {
   //generate filename for current atlas feature
-  if ( !mSingleFile && mFilenamePattern.size() > 0 )
+  if ( mFilenamePattern.size() > 0 )
   {
     QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
     if ( mFilenameExpr->hasEvalError() )
