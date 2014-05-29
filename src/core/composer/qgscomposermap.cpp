@@ -699,6 +699,7 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
 {
   if ( mAtlasFeatureExtent == extent )
   {
+    emit preparedForAtlas();
     return;
   }
 
