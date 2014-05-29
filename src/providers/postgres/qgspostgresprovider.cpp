@@ -1111,7 +1111,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
     else
     {
       // have a primary key or unique index
-      int indrelid = res.PQgetvalue( 0, 0 ).toInt();
+      QString indrelid = res.PQgetvalue( 0, 0 );
       sql = QString( "SELECT attname FROM pg_index,pg_attribute WHERE indexrelid=%1 AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey)" ).arg( indrelid );
 
       QgsDebugMsg( "Retrieving key columns: " + sql );
