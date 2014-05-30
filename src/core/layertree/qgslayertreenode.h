@@ -130,11 +130,10 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void readCommonXML( QDomElement& element );
     void writeCommonXML( QDomElement& element );
 
-    // the child must not be in any tree yet!
-    void insertChildren( int index, QList<QgsLayerTreeNode*> nodes );
-    void insertChild( int index, QgsLayerTreeNode* node );
-    void removeChildAt( int i );
-    void removeChildrenRange( int from, int count );
+    //! Low-level insertion of children to the node. The children must not have any parent yet!
+    void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );
+    //! Low-level removal of children from the node.
+    void removeChildrenPrivate( int from, int count );
 
 
   protected:
