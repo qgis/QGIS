@@ -423,7 +423,13 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
 void QgsComposerItemWidget::setPages()
 {
-  mPageSpinBox->setMaximum( mItem->composition()->numPages() );
+  int maxPages = mItem->composition()->numPages();
+  if ( maxPages < mPageSpinBox->value() )
+  {
+    double h = ( mItem->composition()->paperHeight() + mItem->composition()->spaceBetweenPages() );
+    mYLineEdit->setText( QString::number( mYLineEdit->text().toDouble( ) + ( mPageSpinBox->value() - maxPages ) * h ) );
+  }
+  mPageSpinBox->setMaximum( maxPages );
 }
 
 void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
