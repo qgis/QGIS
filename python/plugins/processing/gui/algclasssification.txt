@@ -170,8 +170,6 @@ saga:analyticalhierarchyprocess,USE_ORIGINAL_NAME,Raster/Miscellaneous
 saga:basicterrainanalysis,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:bsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:burnstreamnetworkintodem,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:catchmentareaflowtracing,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:catchmentareamassfluxmethod,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:catchmentareaparallel,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:catchmentarearecursive,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:cellbalance,USE_ORIGINAL_NAME,Domain specific/Hydrology
@@ -224,10 +222,7 @@ saga:effectiveairflowheights,USE_ORIGINAL_NAME,Domain specific/Terrain analysis 
 saga:enumeratetablefield,USE_ORIGINAL_NAME,Vector/Table tools
 saga:fillgapsinrecords,USE_ORIGINAL_NAME,Vector/Table tools
 saga:fillsinks,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:fillsinkswangliu,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:fillsinksxxlwangliu,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:filterclumps,Remove small pixel clumps (to no-data),Raster/General tools
-saga:fireriskanalysis,USE_ORIGINAL_NAME,Domain specific/Miscellaneous
 saga:fitnpointstoshape,USE_ORIGINAL_NAME,Vector/Points
 saga:flatdetection,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:flowpathlength,USE_ORIGINAL_NAME,Domain specific/Hydrology
