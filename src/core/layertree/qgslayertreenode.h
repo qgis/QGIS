@@ -50,6 +50,12 @@ class QDomElement;
  * used by third party plugins. Custom properties are stored also in the project
  * file. The storage is not efficient for large amount of data.
  *
+ * Custom properties that have already been used within QGIS:
+ * - "overview" - whether to show a layer in overview
+ * - "showFeatureCount" - whether to show feature counts in layer tree (vector only)
+ * - "embedded" - whether the node comes from an external project
+ * - "embedded_project" - path to the external project (embedded root node only)
+ *
  * @see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
  * @note added in 2.4
  */
