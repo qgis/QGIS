@@ -38,6 +38,7 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
     XMAX = 'XMAX'
     YMIN = 'YMIN'
     YMAX = 'YMAX'
+    EXTENT = 'EXTENT'
 
     def defineCharacteristics(self):
         self.showInModeler = True
