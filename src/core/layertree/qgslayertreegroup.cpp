@@ -259,13 +259,13 @@ void QgsLayerTreeGroup::setVisible( Qt::CheckState state )
   }
 }
 
-QStringList QgsLayerTreeGroup::childLayerIds() const
+QStringList QgsLayerTreeGroup::findLayerIds() const
 {
   QStringList lst;
   foreach ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
-      lst << QgsLayerTree::toGroup( child )->childLayerIds();
+      lst << QgsLayerTree::toGroup( child )->findLayerIds();
     else if ( QgsLayerTree::isLayer( child ) )
       lst << QgsLayerTree::toLayer( child )->layerId();
   }
