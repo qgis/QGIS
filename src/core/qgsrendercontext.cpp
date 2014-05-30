@@ -33,7 +33,7 @@ QgsRenderContext::QgsRenderContext()
     mLabelingEngine( NULL ),
     mUseRenderingOptimization( true )
 {
-
+    mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()
@@ -48,6 +48,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setDrawEditingInformation( mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setForceVectorOutput( mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setUseAdvancedEffects( mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
+  ctx.setUseRenderingOptimization( mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
   ctx.setCoordinateTransform( 0 );
   ctx.setSelectionColor( mapSettings.selectionColor() );
   ctx.setRasterScaleFactor( 1.0 );

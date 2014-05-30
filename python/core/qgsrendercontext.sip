@@ -72,4 +72,8 @@ class QgsRenderContext
     /**Returns true if the rendering optimization (geometry simplification) can be executed*/
     bool useRenderingOptimization() const;
     void setUseRenderingOptimization( bool enabled );
+
+    //! Added in QGIS v2.4
+    const QgsVectorSimplifyMethod& vectorSimplifyMethod() const;
+    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod );
 };

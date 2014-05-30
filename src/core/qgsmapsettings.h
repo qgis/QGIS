@@ -60,7 +60,8 @@ class CORE_EXPORT QgsMapSettings
       DrawEditingInfo    = 0x02,
       ForceVectorOutput  = 0x04,
       UseAdvancedEffects = 0x08,
-      DrawLabeling       = 0x10
+      DrawLabeling       = 0x10,
+      UseRenderingOptimization = 0x20,
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )

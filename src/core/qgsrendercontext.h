@@ -23,6 +23,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
+#include "qgsvectorsimplifymethod.h"
 
 class QPainter;
 
@@ -104,6 +105,10 @@ class CORE_EXPORT QgsRenderContext
     bool useRenderingOptimization() const { return mUseRenderingOptimization; }
     void setUseRenderingOptimization( bool enabled ) { mUseRenderingOptimization = enabled; }
 
+    //! Added in QGIS v2.4
+    const QgsVectorSimplifyMethod& vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
+    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
+
   private:
 
     /**Painter for rendering operations*/
@@ -145,6 +150,9 @@ class CORE_EXPORT QgsRenderContext
 
     /**True if the rendering optimization (geometry simplification) can be executed*/
     bool mUseRenderingOptimization;
+
+    /**Simplification object which holds the information about how to simplify the features for fast rendering */
+    QgsVectorSimplifyMethod mVectorSimplifyMethod;
 };
 
 #endif
