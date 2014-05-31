@@ -2780,7 +2780,7 @@ bool QgsPostgresProvider::convertField( QgsField &field , const QMap<QString, QV
 {
   //determine field type to use for strings
   QString stringFieldType = "varchar";
-  if ( options->contains( "dropStringConstraints" ) && options->value( "dropStringConstraints" ).toBool() )
+  if ( options && options->value( "dropStringConstraints", false ).toBool() )
   {
     //drop string length constraints by using PostgreSQL text type for strings
     stringFieldType = "text";
@@ -2970,7 +2970,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         throw PGException( result );
     }
 
-    if ( options->contains( "lowercaseFieldNames" ) && options->value( "lowercaseFieldNames" ).toBool() )
+    if ( options && options->value( "lowercaseFieldNames", false ).toBool() )
     {
       //convert primary key name to lowercase
       //this must happen after determining the field type of the primary key
@@ -3065,7 +3065,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         continue;
       }
 
-      if ( options->contains( "lowercaseFieldNames" ) && options->value( "lowercaseFieldNames" ).toBool() )
+      if ( options && options->value( "lowercaseFieldNames", false ).toBool() )
       {
         //convert field name to lowercase
         fld.setName( fld.name().toLower() );
