@@ -64,6 +64,7 @@ struct QgsPostgresLayerProperty
   QList<int>                    srids;
   unsigned int                  nSpCols;
   QString                       sql;
+  bool                          force2d;
 
 
   // TODO: rename this !
@@ -113,7 +114,7 @@ struct QgsPostgresLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
+    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
            .arg( schemaName )
            .arg( tableName )
            .arg( geometryColName )
@@ -121,7 +122,8 @@ struct QgsPostgresLayerProperty
            .arg( sridString )
            .arg( pkCols.join( "|" ) )
            .arg( sql )
-           .arg( nSpCols );
+           .arg( nSpCols )
+           .arg( force2d ? "yes" : "no" );
   }
 #endif
 };
