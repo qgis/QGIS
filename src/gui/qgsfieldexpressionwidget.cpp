@@ -38,7 +38,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mButton = new QToolButton( this );
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionEditorOpen.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
 
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
