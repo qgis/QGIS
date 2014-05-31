@@ -306,18 +306,18 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
              .arg( geom );
     }
 
-    if ( !simplifyMethod.forceLocalOptimization() &&
+    if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
          mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
          QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown
                                            ? mSource->mRequestedGeomType
                                            : mSource->mDetectedGeomType ) ) != QGis::WKBPoint )
     {
       geom = QString( "%1(%2,%3)" )
-             .arg( mRequest.simplifyMethod().methodType().methodType() == QgsSimplifyMethod::OptimizeForRendering
+             .arg( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering
                    ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
                        : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" ) )
                  .arg( geom )
-                 .arg( simplifyMethod.tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+                 .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
     }
 
     geom = QString( "%1(%2,'%3')" )
