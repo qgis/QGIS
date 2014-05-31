@@ -25,11 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
 import re
 import codecs
 import datetime
-from PyQt4 import QtGui
 from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 
