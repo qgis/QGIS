@@ -16,6 +16,7 @@
 #include "qgstexteditwidget.h"
 
 #include "qgsfield.h"
+#include "qgsfieldvalidator.h"
 
 #include <QSettings>
 
@@ -91,7 +92,10 @@ void QgsTextEditWidget::initWidget( QWidget* editor )
     connect( mPlainTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
 
   if ( mLineEdit )
+  {
+    mLineEdit->setValidator( new QgsFieldValidator( mLineEdit, field() ) );
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+  }
 }
 
 void QgsTextEditWidget::setValue( const QVariant& value )
