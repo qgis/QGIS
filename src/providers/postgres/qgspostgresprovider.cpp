@@ -1825,7 +1825,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
 
       //send DELETE statement and do error handling
       QgsPostgresResult result = mConnectionRW->PQexec( sql );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
 
       mShared->removeFid( *it );
@@ -2036,7 +2036,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
       QgsPostgresResult result = mConnectionRW->PQexec( sql );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
 
       // update feature id map if key was changed
@@ -2165,7 +2165,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     QgsDebugMsg( "updating: " + update );
 
     result = mConnectionRW->PQprepare( "updatefeatures", update, 2, NULL );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
     {
       QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
                    .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( update ) );
@@ -2203,13 +2203,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       appendPkParams( iter.key(), params );
 
       result = mConnectionRW->PQexecPrepared( "updatefeatures", params );
-      int expected_status = ( mSpatialColType == sctTopoGeometry ) ? PGRES_TUPLES_OK : PGRES_COMMAND_OK;
-      if ( result.PQresultStatus() != expected_status )
-      {
-        QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'updatefeatures' returning %1 != expected %2" )
-                     .arg( result.PQresultStatus() ).arg( expected_status ) );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
-      }
 
       if ( mSpatialColType == sctTopoGeometry )
       {
@@ -2695,6 +2690,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.geometryColType = sctNone;
+    layerProperty.force2d         = false;
 
     QString delim = "";
 
@@ -2762,7 +2758,8 @@ bool QgsPostgresProvider::getGeometryDetails()
   // store whether the geometry includes measure value
   if ( detectedType == "POINTM" || detectedType == "MULTIPOINTM" ||
        detectedType == "LINESTRINGM" || detectedType == "MULTILINESTRINGM" ||
-       detectedType == "POLYGONM" || detectedType == "MULTIPOLYGONM" )
+       detectedType == "POLYGONM" || detectedType == "MULTIPOLYGONM" ||
+       mForce2d )
   {
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
