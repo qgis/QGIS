@@ -192,7 +192,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   }
   else
   {
-    value = attrs[mAttrNum];
+    value = attrs.value(mAttrNum);
   }
 
   // find the right symbol for the category
