@@ -28,14 +28,15 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.core.GeoAlgorithm import GeoAlgorithm
 
 
-class GdalAlgorithm(ScriptAlgorithm):
-    """Just a ScriptAlgorithm that automatically takes its icon
-    filename for the script filename.
-    """
-
+class GdalAlgorithm(GeoAlgorithm):
+    
     def getIcon(self):
-        filename = os.path.basename(self.descriptionFile[:-2] + 'png')
-        filepath = os.path.dirname(__file__) + '/icons/' + filename
-        return QtGui.QIcon(filepath)
+        return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
+
+class GdalScriptAlgorithm(ScriptAlgorithm):
+    
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')

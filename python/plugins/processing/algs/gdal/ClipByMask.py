@@ -30,7 +30,7 @@ from PyQt4 import QtGui
 from osgeo import gdal
 from qgis.core import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
@@ -42,7 +42,7 @@ from processing.outputs.OutputRaster import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class ClipByMask(GeoAlgorithm):
+class ClipByMask(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -51,10 +51,6 @@ class ClipByMask(GeoAlgorithm):
     ALPHA_BAND = 'ALPHA_BAND'
     KEEP_RESOLUTION = 'KEEP_RESOLUTION'
     EXTRA = 'EXTRA'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/raster-clip.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Clip raster by mask layer'

@@ -25,28 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.outputs.OutputRaster import OutputRaster
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class nearblack(GeoAlgorithm):
+class nearblack(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NEAR = 'NEAR'
     WHITE = 'WHITE'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/nearblack.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Near black'
