@@ -11,6 +11,11 @@ gdalogr:rgbtopct,RGB to PCT,Images/Image Manipulation
 gdalogr:sieve,Remove small pixel clumps (nearest neighbour),Raster/Edition
 gdalogr:translate,Export raster layer,Raster/General tools
 gdalogr:warpreproject,Reproject raster layer,Raster/General tools
+gdalogr:slope,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+gdalogr:aspect,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+gdalogr:hillshade,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
+gdalogr:polygonize,Vectorize raster layer,Raster - vector/Raster -> Vector
+gdalogr:rasterize,Rasterize vector layer,Raster - vector/Vector -> Raster
 otb:bandmath,USE_ORIGINAL_NAME,Images/Miscellaneous
 otb:binarymorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering
 otb:bundletoperfectsensor,USE_ORIGINAL_NAME,Images/Geometry
@@ -157,7 +162,6 @@ saga:aggregate,USE_ORIGINAL_NAME,Raster/Edition
 saga:aggregatepointobservations,USE_ORIGINAL_NAME,Vector/Points
 saga:aggregationindex,USE_ORIGINAL_NAME,Raster/Miscellaneous
 saga:analyticalhierarchyprocess,USE_ORIGINAL_NAME,Raster/Miscellaneous
-saga:analyticalhillshading,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
 saga:basicterrainanalysis,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:bsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:burnstreamnetworkintodem,USE_ORIGINAL_NAME,Domain specific/Hydrology
@@ -345,13 +349,11 @@ saga:runningaverage,USE_ORIGINAL_NAME,Vector/Table tools
 saga:sagawetnessindex,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:separatepointsbydirection,USE_ORIGINAL_NAME,Vector/Points
 saga:shapesbuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:shapestogrid,Rasterize vector layer,Raster - vector/Vector -> Raster
 saga:simplefilter,USE_ORIGINAL_NAME,Raster/Filters
 saga:simulation,Fire spreading simulation,Domain specific/Miscellaneous
 saga:sinkdrainageroutedetection,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:sinkremoval,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:skyviewfactor,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:slopeaspectcurvature,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:slopelength,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:sortgrid,USE_ORIGINAL_NAME,Raster/General tools
 saga:spatialpointpatternanalysis,USE_ORIGINAL_NAME,Vector/Points
@@ -385,7 +387,6 @@ saga:upslopearea,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:userdefinedfilter,USE_ORIGINAL_NAME,Raster/Filters
 saga:variogramcloud,USE_ORIGINAL_NAME,Domain specific/Geostatistics
 saga:variogramsurface,USE_ORIGINAL_NAME,Domain specific/Geostatistics
-saga:vectorisinggridclasses,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:vectorruggednessmeasurevrm,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:vegetationindexdistancebased,USE_ORIGINAL_NAME,Images/Image analysis
 saga:vegetationindexslopebased,USE_ORIGINAL_NAME,Images/Image analysis
