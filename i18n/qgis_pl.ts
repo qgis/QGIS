@@ -38813,7 +38813,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3859"/>
         <source>Repeat</source>
-        <translation type="unfinished">powtórzone</translation>
+        <translation type="unfinished">Powtórzenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5228"/>
@@ -39407,13 +39407,13 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="598"/>
         <source>Double-click to view legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Dwuklik, aby wyświetlić legendę</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="620"/>
         <source>following %1 items
 not displayed</source>
-        <translation type="unfinished">następujące %1 obiekty
+        <translation>następujące %1 obiekty
 nie będą wyświetlane</translation>
     </message>
 </context>
@@ -40562,7 +40562,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="64"/>
         <source>Delete ring can only be used in a polygon layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuwanie pierścieni jest możliwe tylko z warstw poligonowych</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="107"/>
@@ -40854,7 +40854,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="365"/>
         <source>could not snap to a segment on the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>nie udało się przyciągnąć do segmentu bieżącej warstwy.</translation>
     </message>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="698"/>
@@ -41180,17 +41180,17 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="14"/>
         <source>Adjust map unit scales</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dostosuj skale mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="24"/>
         <source>Maximum scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala największa:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="31"/>
         <source>Minimum scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala najmniejsza:</translation>
     </message>
 </context>
 <context>
@@ -41421,7 +41421,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1518"/>
         <source>Offset along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesunięcie względem linii</translation>
     </message>
 </context>
 <context>
@@ -41778,7 +41778,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="309"/>
         <source>Show non-spatial tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż tabele nieprzestrzenne</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="315"/>
@@ -45876,12 +45876,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1636"/>
         <source>Render layers in parallel using many CPU cores</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykorzystuj wiele rdzeni CPU</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
         <source>Max cores to use:</source>
-        <translation type="unfinished"></translation>
+        <translation>ale nie więcej niż</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3161"/>
@@ -46039,12 +46039,12 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1048"/>
         <source>QSettings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1074"/>
         <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywróć domyślne ustawienia interfejsu graficznego</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1090"/>
@@ -48584,27 +48584,27 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="33"/>
         <source>Picture size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar obrazu</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="39"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="53"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="73"/>
         <source>Specify the size of the preview. If you leave it set to 0, an optimal size will be estimated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdefiniuj rozmiar podglądu. Wartość 0 oznacza automatyczne dostosowanie.</translation>
     </message>
 </context>
 <context>
@@ -51889,29 +51889,29 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="35"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="51"/>
         <source>Editable</source>
-        <translation type="unfinished">Edytowalne</translation>
+        <translation>Edytowalne</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="36"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="52"/>
         <source>Slider</source>
-        <translation type="unfinished">Suwak</translation>
+        <translation>Suwak</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="37"/>
         <source>Dial</source>
-        <translation type="unfinished">Pokrętło</translation>
+        <translation>Pokrętło</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="42"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="57"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished">Aktualne minimum dla tej wartości wynosi %1, zaś maksimum %2.</translation>
+        <translation>Aktualne minimum dla tej wartości wynosi %1, zaś maksimum %2.</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="63"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished">Atrybut nie jest typu całkowitego ani rzeczywistego, dlatego zakres nie ma zastosowania.</translation>
+        <translation>Atrybut nie jest typu całkowitego ani rzeczywistego, dlatego zakres nie ma zastosowania.</translation>
     </message>
 </context>
 <context>
@@ -51919,32 +51919,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="20"/>
         <source>Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished">Umożliwia zdefiniowanie wartości z określonego zakresu. Widżet edycji może być suwakiem lub obrotowy.</translation>
+        <translation>Umożliwia zdefiniowanie wartości z określonego zakresu. Widżet edycji może być suwakiem lub obrotowy.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="117"/>
         <source>Step</source>
-        <translation type="unfinished">Krok</translation>
+        <translation>Krok</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="124"/>
         <source>Maximum</source>
-        <translation type="unfinished">Maksimum</translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="131"/>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="140"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished">Lokalne minimum/maksimum = 0/0</translation>
+        <translation>Lokalne minimum/maksimum = 0/0</translation>
     </message>
 </context>
 <context>
@@ -52417,17 +52417,17 @@ Wybierz klawisz pomocy, aby wyświetlić opcje dla tego formatu.</translation>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="170"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="178"/>
         <source>Draw as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Rysuj jako linie</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="184"/>
         <source>Draw as lines (only int layers)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rysuj jako linie (tylko dla wartości całkowitych)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="190"/>
@@ -53793,7 +53793,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1802"/>
         <source>MetadataUrl</source>
-        <translation>MetadataUrl</translation>
+        <translation>Metadane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1823"/>
@@ -53803,22 +53803,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1893"/>
         <source>LegendUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1928"/>
         <source>image/png</source>
-        <translation type="unfinished"></translation>
+        <translation>image/png</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1933"/>
         <source>image/jpeg</source>
-        <translation type="unfinished"></translation>
+        <translation>image/jpeg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1938"/>
         <source>image/jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>image/jpg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1957"/>
@@ -56377,29 +56377,31 @@ od średniej +/-</translation>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="30"/>
         <source>Minimum
 (exclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum
+(bez podanej)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="33"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation type="unfinished">Minimalna skala, czyli mająca największy dzielnik. Mapa w tej skali nie będzie już wyświetlana.</translation>
+        <translation>Minimalna skala, czyli mająca największy dzielnik. Mapa w tej skali nie będzie już wyświetlana.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="35"/>
         <source>Maximum
 (inclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum
+(włącznie)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="38"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation type="unfinished">Maksymalna skala, czyli mająca najmniejszy dzielnik. Mapa w tej skali będzie wyświetlana.</translation>
+        <translation>Maksymalna skala, czyli mająca najmniejszy dzielnik. Mapa w tej skali będzie wyświetlana.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="101"/>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="103"/>
         <source>current</source>
-        <translation type="unfinished"></translation>
+        <translation>bieżący</translation>
     </message>
 </context>
 <context>
@@ -56407,7 +56409,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/gui/qgsscalevisibilitydialog.cpp" line="37"/>
         <source>Scale visibility </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Widoczność zależna od skali</translation>
     </message>
 </context>
 <context>
@@ -56676,12 +56678,12 @@ Komunikat błędu:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1320"/>
         <source>Use whole shape</source>
-        <translation type="unfinished">Wykorzystaj cały kształt</translation>
+        <translation>Wykorzystaj cały kształt</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1321"/>
         <source>Maximum distance</source>
-        <translation type="unfinished">Maksymalna odległość</translation>
+        <translation>Maksymalna odległość</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1322"/>
@@ -60112,27 +60114,27 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="492"/>
         <source>Symbol name</source>
-        <translation type="unfinished">Nazwa symbolu</translation>
+        <translation>Nazwa symbolu</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
         <source>Please enter name for the symbol:</source>
-        <translation type="unfinished">Podaj nazwę symbolu:</translation>
+        <translation>Podaj nazwę symbolu:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
         <source>New symbol</source>
-        <translation type="unfinished">Nowy symbol</translation>
+        <translation>Nowy symbol</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="500"/>
         <source>Save symbol</source>
-        <translation type="unfinished">Zapsz symbol</translation>
+        <translation>Zapisz symbol</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="501"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished">Symbol o nazwie &apos;%1&apos; już istnieje. Nadpisać go?</translation>
+        <translation>Symbol o nazwie &apos;%1&apos; już istnieje. Nadpisać go?</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -60997,17 +60999,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="23"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation type="unfinished">Użytkownik może wybrać jedną z wartości już będących atrybutem. Jeśli element jest edytowalny, dostępny będzie wiersz edycji z autouzupełnianiem, lub lista rozwijana w innym przypadku.</translation>
+        <translation>Użytkownik może wybrać jedną z wartości już będących atrybutem. Jeśli element jest edytowalny, dostępny będzie wiersz edycji z autouzupełnianiem, lub lista rozwijana w innym przypadku.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="33"/>
         <source>Editable</source>
-        <translation type="unfinished">Edytowalne</translation>
+        <translation>Edytowalne</translation>
     </message>
 </context>
 <context>
@@ -61043,37 +61045,37 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="20"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation type="unfinished">Lista rozwijana z predefiniowanymi elementami. Wartość jest zapamiętana w atrybucie, opis pokazywany jest w liście rozwijanej.</translation>
+        <translation>Lista rozwijana z predefiniowanymi elementami. Wartość jest zapamiętana w atrybucie, opis pokazywany jest w liście rozwijanej.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="30"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished">Wczytaj dane z warstwy</translation>
+        <translation>Wczytaj dane z warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="37"/>
         <source>Load Data from CSV file</source>
-        <translation type="unfinished">Wczytaj dane z pliku CSV</translation>
+        <translation>Wczytaj dane z pliku CSV</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="58"/>
         <source>Value</source>
-        <translation type="unfinished">Wartość</translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="63"/>
         <source>Description</source>
-        <translation type="unfinished">Opis</translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="71"/>
         <source>Remove Selected</source>
-        <translation type="unfinished">Usuń zaznaczone</translation>
+        <translation>Usuń zaznaczone</translation>
     </message>
 </context>
 <context>
@@ -61081,52 +61083,52 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="23"/>
         <source>Select layer, key column and value column</source>
-        <translation type="unfinished">Wybierz warstwę, klucz oraz wartość</translation>
+        <translation>Wybierz warstwę, klucz oraz wartość</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="30"/>
         <source>Layer</source>
-        <translation type="unfinished">Warstwa</translation>
+        <translation>Warstwa</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="43"/>
         <source>Key column</source>
-        <translation type="unfinished">Kolumna z kluczem</translation>
+        <translation>Kolumna z kluczem</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="56"/>
         <source>Value column</source>
-        <translation type="unfinished">Kolumna wartości</translation>
+        <translation>Kolumna wartości</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="72"/>
         <source>Allow null value</source>
-        <translation type="unfinished">NULL jest dopuszczalne</translation>
+        <translation>NULL jest dopuszczalne</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="82"/>
         <source>Order by value</source>
-        <translation type="unfinished">Sortuj wartościami</translation>
+        <translation>Sortuj wartościami</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="92"/>
         <source>Allow multiple selections</source>
-        <translation type="unfinished">Wielokrotny wybór</translation>
+        <translation>Wielokrotny wybór</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="99"/>
         <source>Filter expression</source>
-        <translation type="unfinished">Filtruj wyrażenie</translation>
+        <translation>Filtruj wyrażenie</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="112"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -61134,7 +61136,7 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluerelationwidget.cpp" line="106"/>
         <source>(no selection)</source>
-        <translation type="unfinished">(brak wyboru)</translation>
+        <translation>(brak wyboru)</translation>
     </message>
 </context>
 <context>
