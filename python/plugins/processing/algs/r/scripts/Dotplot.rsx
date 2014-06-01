@@ -1,4 +1,5 @@
 ##Vector processing=group
-##Layer = raster
+##Layer = vector
 ##showplots
-hist(as.matrix(Layer),main="Histogram",xlab="Layer")
+##Field=Field Layer
+dotchart(Layer[[Field]],main=paste("Dotplot of",Field),xlab=paste(Field),ylab="Observation number")
