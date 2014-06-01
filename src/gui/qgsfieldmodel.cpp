@@ -109,6 +109,10 @@ QModelIndex QgsFieldModel::setExpression( const QString &expression )
   if ( !mAllowExpression )
     return QModelIndex();
 
+  QModelIndex idx = indexFromName( expression );
+  if ( idx.isValid() )
+    return idx;
+
   beginResetModel();
   mExpression = QList<QString>() << expression;
   endResetModel();
