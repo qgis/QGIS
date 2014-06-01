@@ -104,7 +104,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     ~QgsComposition();
 
-    /**Changes size of paper item*/
+    /**Changes size of paper item. Also moves all items so that they retain
+     * their same relative position to the top left corner of their current page.
+    */
     void setPaperSize( double width, double height );
 
     /**Returns height of paper item*/
