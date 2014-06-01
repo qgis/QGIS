@@ -175,7 +175,7 @@ class QgsProject : QObject
       keys would be the familiar QSettings-like '/' delimited entries, implying
       a hierarchy of keys and corresponding values
 
-      @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
+      @note The key string must be valid xml tag names in order to be saved to the file.
     */
     //@{
     //! @note available in python bindings as writeEntryBool
@@ -192,8 +192,6 @@ class QgsProject : QObject
         keys would be the familiar QSettings-like '/' delimited entries,
         implying a hierarchy of keys and corresponding values
 
-
-        @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
     QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0 ) const;
