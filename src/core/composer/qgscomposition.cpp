@@ -220,6 +220,17 @@ QRectF QgsComposition::compositionBounds() const
 
 void QgsComposition::setPaperSize( double width, double height )
 {
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    if ( composerItem )
+    {
+      composerItem->updatePagePos( width, height );
+    }
+  }
+
   mPageWidth = width;
   mPageHeight = height;
   double currentY = 0;
