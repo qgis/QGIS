@@ -377,8 +377,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   if ( !mConn->openCursor( mCursorName, query ) )
   {
     // reloading the fields might help next time around
-    rewind();
     // TODO how to cleanly force reload of fields?  P->loadFields();
+    close();
     return false;
   }
 
