@@ -1,4 +1,4 @@
-##Vector processing=group##showplots
+##Vector processing=group
 ##showplots
 ##Layer=vector
 ##Field=Field Layer
