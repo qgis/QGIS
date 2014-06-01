@@ -30,7 +30,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsfilter.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgssymbolv2.h"
