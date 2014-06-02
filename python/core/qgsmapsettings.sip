@@ -38,6 +38,22 @@ class QgsMapSettings
 
     void setSelectionColor( const QColor& color );
     QColor selectionColor() const;
+    
+    /**Sets whether vector selections should be shown in the rendered map
+     * @param showSelection set to true if selections should be shown
+     * @see showSelection
+     * @see setSelectionColor
+     * @note Added in QGIS v2.4
+    */
+    void setShowSelection( const bool showSelection );
+
+    /**Returns true if vector selections should be shown in the rendered map
+     * @returns true if selections should be shown
+     * @see setShowSelection
+     * @see selectionColor
+     * @note Added in QGIS v2.4
+    */
+    bool showSelection() const;   
 
     enum Flag
     {

@@ -231,7 +231,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         break;
       }
 
-      bool sel = mSelectedFeatureIds.contains( fet.id() );
+      bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature
