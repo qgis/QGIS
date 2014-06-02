@@ -3135,7 +3135,6 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
   }
 
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
-  statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   // draw the map
   mMapCanvas->freeze( false );
@@ -7529,7 +7528,6 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
       QList<QgsMapLayer *> myList;
       myList << layer;
       QgsMapLayerRegistry::instance()->addMapLayers( myList );
-      statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
     }
   }
   else
@@ -7574,8 +7572,6 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
     // add it to the mapcanvas collection
     // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
-
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
   }
   else
   {
@@ -9213,8 +9209,6 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
     // draw the map
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
-    //update status
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
     // Let render() do its own cursor management
     //    QApplication::restoreOverrideCursor();
   }
@@ -9336,7 +9330,6 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
     }
   }
 
-  statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 
