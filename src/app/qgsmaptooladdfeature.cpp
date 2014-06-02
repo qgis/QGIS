@@ -47,11 +47,6 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
 
 void QgsMapToolAddFeature::activate()
 {
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( vlayer && vlayer->geometryType() == QGis::NoGeometry )
   {

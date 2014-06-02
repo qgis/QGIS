@@ -363,15 +363,15 @@ class QgsMapCanvas : QGraphicsView
     //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
     void renderComplete( QPainter * );
 
+    // ### QGIS 3: renamte to mapRefreshFinished()
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
-    void mapCanvasRefreshed() /Deprecated/;
+    void mapCanvasRefreshed();
 
+    // ### QGIS 3: rename to mapRefreshStarted()
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
-    void renderStarting() /Deprecated/;
+    void renderStarting();
 
     //! Emitted when a new set of layers has been received
     void layersChanged();

@@ -1670,6 +1670,10 @@ void QgisApp::createStatusBar()
   mProgressBar->setWhatsThis( tr( "Progress bar that displays the status "
                                   "of rendering layers and other time-intensive operations" ) );
   statusBar()->addPermanentWidget( mProgressBar, 1 );
+
+  connect( mMapCanvas, SIGNAL( renderStarting() ), this, SLOT( canvasRefreshStarted() ) );
+  connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( canvasRefreshFinished() ) );
+
   // Bumped the font up one point size since 8 was too
   // small on some platforms. A point size of 9 still provides
   // plenty of display space on 1024x768 resolutions
@@ -3196,11 +3200,6 @@ void QgisApp::addMssqlLayer()
 void QgisApp::addOracleLayer()
 {
 #ifdef HAVE_ORACLE
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // show the Oracle dialog
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "oracle", this ) );
   if ( !dbs )
@@ -5730,10 +5729,6 @@ void QgisApp::addRing()
 
 void QgisApp::fillRing()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   mMapCanvas->setMapTool( mMapTools.mFillRing );
 }
 
@@ -6145,6 +6140,16 @@ void QgisApp::refreshMapCanvas()
   mMapCanvas->clearCache();
   //then refresh
   mMapCanvas->refresh();
+}
+
+void QgisApp::canvasRefreshStarted()
+{
+  showProgress( -1, 0 ); // trick to make progress bar show busy indicator
+}
+
+void QgisApp::canvasRefreshFinished()
+{
+  showProgress( 0, 0 ); // stop the busy indicator
 }
 
 void QgisApp::toggleMapTips()
@@ -8342,6 +8347,23 @@ void QgisApp::showProgress( int theProgress, int theTotalSteps )
     }
     mProgressBar->setMaximum( theTotalSteps );
     mProgressBar->setValue( theProgress );
+
+    if ( mProgressBar->maximum() == 0 )
+    {
+      // for busy indicator (when minimum equals to maximum) the oxygen Qt style (used in KDE)
+      // has some issues and does not start busy indicator animation. This is an ugly fix
+      // that forces creation of a temporary progress bar that somehow resumes the animations.
+      // Caution: looking at the code below may introduce mild pain in stomach.
+      if ( strcmp( QApplication::style()->metaObject()->className(), "Oxygen::Style" ) == 0 )
+      {
+        QProgressBar pb;
+        pb.setAttribute( Qt::WA_DontShowOnScreen ); // no visual annoyance
+        pb.setMaximum( 0 );
+        pb.show();
+        qApp->processEvents();
+      }
+    }
+
   }
 }
 

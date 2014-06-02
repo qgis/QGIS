@@ -635,6 +635,8 @@ void QgsMapCanvas::refreshMap()
   mJob->start();
 
   mMapUpdateTimer.start();
+
+  emit renderStarting();
 }
 
 
@@ -695,6 +697,8 @@ void QgsMapCanvas::rendererJobFinished()
   // so the class is still valid when the execution returns to the class
   mJob->deleteLater();
   mJob = 0;
+
+  emit mapCanvasRefreshed();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
