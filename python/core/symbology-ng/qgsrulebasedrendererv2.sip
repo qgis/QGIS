@@ -11,7 +11,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
   public:
     // TODO: use QVarLengthArray instead of QList
 
-    enum FeatureFlags { FeatIsSelected = 1, FeatDrawMarkers = 2 };
+    enum FeatureFlags { FeatIsSelected, FeatDrawMarkers, };
 
     // feature for rendering: QgsFeature and some flags
     struct FeatureToRender

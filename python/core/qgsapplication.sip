@@ -230,8 +230,8 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     /** constants for endian-ness */
     enum endian_t
     {
-      XDR = 0,  // network, or big-endian, byte order
-      NDR = 1   // little-endian byte order
+      XDR, // network, or big-endian, byte order
+      NDR, // little-endian byte order
     };
 
     //! Returns whether this machine uses big or little endian

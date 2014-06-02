@@ -103,10 +103,10 @@ class QgsPalLayerSettings
 
     enum LinePlacementFlags
     {
-      OnLine    = 1,
-      AboveLine = 2,
-      BelowLine = 4,
-      MapOrientation = 8
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
     };
 
     enum QuadrantPosition
@@ -138,14 +138,14 @@ class QgsPalLayerSettings
 
     enum MultiLineAlign
     {
-      MultiLeft = 0,
+      MultiLeft,
       MultiCenter,
       MultiRight
     };
 
     enum ShapeType
     {
-      ShapeRectangle = 0,
+      ShapeRectangle,
       ShapeSquare,
       ShapeEllipse,
       ShapeCircle,
@@ -154,14 +154,14 @@ class QgsPalLayerSettings
 
     enum SizeType
     {
-      SizeBuffer = 0,
+      SizeBuffer,
       SizeFixed,
       SizePercent
     };
 
     enum RotationType
     {
-      RotationSync = 0,
+      RotationSync,
       RotationOffset,
       RotationFixed
     };
@@ -169,7 +169,7 @@ class QgsPalLayerSettings
     /** Units used for option sizes, before being converted to rendered sizes */
     enum SizeUnit
     {
-      Points = 0,
+      Points,
       MM,
       MapUnits,
       Percent
@@ -177,7 +177,7 @@ class QgsPalLayerSettings
 
     enum ShadowType
     {
-      ShadowLowest = 0,
+      ShadowLowest,
       ShadowText,
       ShadowBuffer,
       ShadowShape

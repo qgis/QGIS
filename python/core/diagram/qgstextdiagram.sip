@@ -7,14 +7,14 @@ class QgsTextDiagram: QgsDiagram
   public:
     enum Shape
     {
-      Circle = 0,
+      Circle,
       Rectangle,
       Triangle
     };
 
     enum Orientation
     {
-      Horizontal = 0,
+      Horizontal,
       Vertical
     };
 

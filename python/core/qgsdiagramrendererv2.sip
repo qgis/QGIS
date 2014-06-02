@@ -17,10 +17,10 @@ struct QgsDiagramLayerSettings
 
     enum LinePlacementFlags
     {
-      OnLine    = 1,
-      AboveLine = 2,
-      BelowLine = 4,
-      MapOrientation = 8
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
     };
 
     QgsDiagramLayerSettings();

@@ -17,10 +17,10 @@ class QgsVectorSimplifyMethod
     /** Simplification flags for fast rendering of features */
     enum SimplifyHint
     {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+      NoSimplification,           //!< No simplification can be applied
+      GeometrySimplification,     //!< The geometries can be simplified using the current map2pixel context state
+      AntialiasingSimplification, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification,         //!< All simplification hints can be applied ( Geometry + AA-disabling )
     };
     typedef QFlags<QgsVectorSimplifyMethod::SimplifyHint> SimplifyHints;
 

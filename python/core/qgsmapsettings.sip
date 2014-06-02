@@ -38,7 +38,7 @@ class QgsMapSettings
 
     void setSelectionColor( const QColor& color );
     QColor selectionColor() const;
-    
+
     /**Sets whether vector selections should be shown in the rendered map
      * @param showSelection set to true if selections should be shown
      * @see showSelection
@@ -53,16 +53,16 @@ class QgsMapSettings
      * @see selectionColor
      * @note Added in QGIS v2.4
     */
-    bool showSelection() const;   
+    bool showSelection() const;
 
     enum Flag
     {
-      Antialiasing       = 0x01,
-      DrawEditingInfo    = 0x02,
-      ForceVectorOutput  = 0x04,
-      UseAdvancedEffects = 0x08,
-      DrawLabeling       = 0x10,
-      UseRenderingOptimization = 0x20
+      Antialiasing,
+      DrawEditingInfo,
+      ForceVectorOutput,
+      UseAdvancedEffects,
+      DrawLabeling,
+      UseRenderingOptimization,
       // TODO: ignore scale-based visibility (overview)
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;

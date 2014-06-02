@@ -23,19 +23,19 @@ class QgsComposerView : QGraphicsView
     /**Current tool*/
     enum Tool
     {
-      Select = 0,      // Select/Move item
-      AddArrow,         //add arrow
+      Select,          // Select/Move item
+      AddArrow,        // add arrow
       AddHtml,
       AddMap,          // add new map
-      AddLegend, // add vector legend
+      AddLegend,       // add vector legend
       AddLabel,        // add label
       AddScalebar,     // add scalebar
-      AddPicture,       // add raster/vector picture
+      AddPicture,      // add raster/vector picture
       AddRectangle,
       AddEllipse,
       AddTriangle,
-      AddTable, //add attribute table
-      MoveItemContent, //move content of item (e.g. content of map)
+      AddTable,        // add attribute table
+      MoveItemContent, // move content of item (e.g. content of map)
       Pan,
       Zoom
     };

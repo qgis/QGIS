@@ -15,7 +15,7 @@ class QgsComposition : QGraphicsScene
     /** \brief Plot type */
     enum PlotStyle
     {
-      Preview = 0, // Use cache etc
+      Preview,     // Use cache etc
       Print,       // Render well
       Postscript   // Fonts need different scaling!
     };

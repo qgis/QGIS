@@ -22,27 +22,27 @@ class QgsComposerMap : QgsComposerItem
     /** \brief Preview style  */
     enum PreviewMode
     {
-      Cache = 0,   // Use raster cache
+      Cache,       // Use raster cache
       Render,      // Render the map
       Rectangle    // Display only rectangle
     };
 
     enum GridStyle
     {
-      Solid = 0, //solid lines
+      Solid, //solid lines
       Cross //only draw line crossings
     };
 
     enum GridAnnotationPosition
     {
-      InsideMapFrame = 0,
+      InsideMapFrame,
       OutsideMapFrame,
       Disabled
     };
 
     enum GridAnnotationDirection
     {
-      Horizontal = 0,
+      Horizontal,
       Vertical,
       HorizontalAndVertical,
       BoundaryDirection
@@ -50,15 +50,15 @@ class QgsComposerMap : QgsComposerItem
 
     enum GridAnnotationFormat
     {
-      Decimal = 0,
+      Decimal,
       DegreeMinute,
       DegreeMinuteSecond
     };
 
     enum GridFrameStyle
     {
-      NoGridFrame = 0,
-      Zebra //black / white pattern
+      NoGridFrame,
+      Zebra // black/white pattern
     };
 
     /**Enum for different frame borders*/
