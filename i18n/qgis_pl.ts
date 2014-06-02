@@ -64625,12 +64625,12 @@ Odpowiedź:
     <message>
         <location filename="../src/gui/editorwidgets/qgswebviewwidget.cpp" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgswebviewwidget.cpp" line="132"/>
         <source>Select a file</source>
-        <translation type="unfinished">Wybierz plik</translation>
+        <translation>Wybierz plik</translation>
     </message>
 </context>
 <context>
@@ -64638,17 +64638,17 @@ Odpowiedź:
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="27"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="41"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość</translation>
     </message>
 </context>
 <context>
@@ -65220,7 +65220,11 @@ Odpowiedź:
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można pobrać WCS Service Exception: %1, wiersz %2, kolumna %3
+
+Odpowiedź:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1674"/>
@@ -65240,12 +65244,12 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1794"/>
         <source>Identifier</source>
-        <translation type="unfinished">Identyfikator</translation>
+        <translation>Identyfikator</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1796"/>
         <source>Tile mode</source>
-        <translation type="unfinished">Tryb kafli</translation>
+        <translation>Tryb kafli</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1805"/>
@@ -65260,7 +65264,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1813"/>
         <source>Invalid tile mode</source>
-        <translation type="unfinished">Nieprawidłowy tryb kafli</translation>
+        <translation>Nieprawidłowy tryb kafli</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1836"/>
@@ -65275,7 +65279,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1906"/>
         <source>Selected tile matrix set </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz zakres kafli</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1907"/>
@@ -65295,83 +65299,87 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1910"/>
         <source>Matrix size</source>
-        <translation type="unfinished">Rozmiar macierzy</translation>
+        <translation>Rozmiar macierzy</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1911"/>
         <source>Matrix extent [mu]</source>
-        <translation type="unfinished">Zasięg macierzy [mu]</translation>
+        <translation>Zasięg macierzy [mu]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
         <source>Bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Granice</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1913"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1913"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1914"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Góra</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1914"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Lewa</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Dół</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Prawa</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1945"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1971"/>
         <source>%n missing row(s)</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n brakujących wierszy</numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1946"/>
         <source>Layer&apos;s upper bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Górna granica warstwy: %1</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1958"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1984"/>
         <source>%n missing column(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>brakująca kolumna</numerusform>
+            <numerusform>brakujące %n kolumny</numerusform>
+            <numerusform>brakujących %n kolumn</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1959"/>
         <source>Layer&apos;s left bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lewa granica warstwy: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1972"/>
         <source>Layer&apos;s lower bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolna granica warstwy: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1985"/>
         <source>Layer&apos;s right bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Prawa granica warstwy: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2050"/>
@@ -65871,7 +65879,7 @@ Przyczyna: %2</translation>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/recorddialog.ui" line="14"/>
         <source>Record Metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz metadane</translation>
     </message>
 </context>
 <context>
