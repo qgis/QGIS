@@ -1,4 +1,4 @@
-##[Example scripts]aster processing=group
+##[Example scripts]=group
 ##input=raster
 ##round_values_to_ndigits=number 3
 ##output_file=output html

@@ -40,6 +40,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
     ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
+    ALG_VERSION = 'ALG_VERSION'
 
     def __init__(self, alg):
         QDialog.__init__(self)
@@ -116,6 +117,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         self.tree.addTopLevelItem(item)
         item = TreeDescriptionItem('Algorithm help written by',
                                    self.ALG_HELP_CREATOR)
+        self.tree.addTopLevelItem(item)
+        item = TreeDescriptionItem('Algorithm version',
+                                   self.ALG_VERSION)
         self.tree.addTopLevelItem(item)
 
     def changeItem(self):

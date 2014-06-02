@@ -33,6 +33,7 @@ import json
 ALG_DESC = 'ALG_DESC'
 ALG_CREATOR = 'ALG_CREATOR'
 ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
+ALG_VERSION = 'ALG_VERSION'
 
 exps = [(r"\*(.*?)\*", r"<i>\1</i>"),
         ("``(.*?)``", r'<FONT FACE="courier">\1</FONT>'),
@@ -56,7 +57,6 @@ def getHtmlFromRstFile(rst):
 def getHtmlFromHelpFile(alg, helpFile):
     if not os.path.exists(helpFile):
         return None
-    alg = alg
     with open(helpFile) as f:    
         descriptions = json.load(f)
     s = '<html><body><h2>Algorithm description</h2>\n'
@@ -72,6 +72,7 @@ def getHtmlFromHelpFile(alg, helpFile):
     s += '<br>'
     s += '<p align="right">Algorithm author: ' + getDescription(ALG_CREATOR, descriptions) + '</p>'
     s += '<p align="right">Help author: ' + getDescription(ALG_HELP_CREATOR, descriptions) + '</p>'
+    s += '<p align="right">Algorithm version: ' + getDescription(ALG_VERSION, descriptions) + '</p>'
     s += '</body></html>'
     return s
 
@@ -80,3 +81,4 @@ def getDescription(name, descriptions):
         return descriptions[name].replace("\n", "<br>")
     else:
         return ''
+
