@@ -338,7 +338,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   for ( int i = 0; i < ( hasTopology() ? 3 : 2 ); i++ )
   {
-    QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
+    QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName, dimName;
     QgsPostgresGeometryColumnType columnType = sctGeometry;
 
     if ( i == 0 )
@@ -348,6 +348,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       columnName = "l.f_geometry_column";
       typeName   = "upper(l.type)";
       sridName   = "l.srid";
+      dimName    = "l.coord_dimension";
       gtableName = "geometry_columns";
       columnType = sctGeometry;
     }
@@ -358,6 +359,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       columnName = "l.f_geography_column";
       typeName   = "upper(l.type)";
       sridName   = "l.srid";
+      dimName    = "2";
       gtableName = "geography_columns";
       columnType = sctGeography;
     }
@@ -373,21 +375,22 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    "WHEN l.feature_type = 4 THEN 'GEOMETRYCOLLECTION' "
                    "END AS type";
       sridName   = "(SELECT srid FROM topology.topology t WHERE l.topology_id=t.id)";
+      dimName    = "2";
       gtableName = "topology.layer";
       columnType = sctTopoGeometry;
     }
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
-    sql = QString( "SELECT %1,%2,%3,%4,%5,c.relkind"
-                   " FROM %6 l,pg_class c,pg_namespace n"
+    sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind"
+                   " FROM %7 l,pg_class c,pg_namespace n"
                    " WHERE c.relname=%1"
                    " AND %2=n.nspname"
                    " AND n.oid=c.relnamespace"
                    " AND has_schema_privilege(n.nspname,'usage')"
                    " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
                  )
-          .arg( tableName ).arg( schemaName ).arg( columnName ).arg( typeName ).arg( sridName ).arg( gtableName );
+          .arg( tableName ).arg( schemaName ).arg( columnName ).arg( typeName ).arg( sridName ).arg( dimName ).arg( gtableName );
 
     if ( searchPublicOnly )
       sql += " AND n.nspname='public'";
@@ -409,7 +412,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString column = result.PQgetvalue( idx, 2 );
       QString type = result.PQgetvalue( idx, 3 );
       QString ssrid = result.PQgetvalue( idx, 4 );
-      QString relkind = result.PQgetvalue( idx, 5 );
+      int dim = result.PQgetvalue( idx, 5 ).toInt();
+      QString relkind = result.PQgetvalue( idx, 6 );
       bool isView = relkind == "v" || relkind == "m";
 
       int srid = ssrid.isEmpty() ? INT_MIN : ssrid.toInt();
@@ -419,12 +423,13 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         srid = INT_MIN;
       }
 
-      QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7" )
+      QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
                    .arg( gtableName )
                    .arg( schemaName ).arg( tableName ).arg( column )
                    .arg( type )
                    .arg( srid )
-                   .arg( relkind ) );
+                   .arg( relkind )
+                   .arg( dim ) );
 
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -433,6 +438,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
+      layerProperty.force2d = dim == 4;
       addColumnInfo( layerProperty, schemaName, tableName, isView );
 
       if ( isView && layerProperty.pkCols.empty() )

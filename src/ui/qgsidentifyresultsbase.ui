@@ -66,6 +66,12 @@
        </property>
        <item>
         <widget class="QTableWidget" name="tblResults">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
          <column>
           <property name="text">
            <string>Layer</string>

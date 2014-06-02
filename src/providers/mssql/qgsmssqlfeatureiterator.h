@@ -106,17 +106,11 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // Field index of FID column
     long mFidCol;
 
-    // Field index of geometry column
-    long mGeometryCol;
-
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
 
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
-
-    // Return True of the geometry column was found when parsing the columns.
-    bool isSpatial() { return mGeometryCol > -1; }
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

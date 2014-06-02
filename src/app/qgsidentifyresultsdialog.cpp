@@ -486,15 +486,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   // table
   int j = tblResults->rowCount();
-  // insert empty row to separate layers
-  if ( j > 0 && tblResults->item( j - 1, 0 ) &&
-       tblResults->item( j - 1, 0 )->data( Qt::UserRole + 1 ).toString() != vlayer->id() )
-  {
-    tblResults->setRowCount( j + 1 );
-    tblResults->setRowHeight( j, 2 );
-    j++;
-  }
-
   for ( int i = 0; i < attrs.count(); ++i )
   {
     if ( i >= fields.count() )
@@ -542,7 +533,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     tblResults->resizeRowToContents( j );
     j++;
   }
-  tblResults->resizeColumnToContents( 1 );
+  //tblResults->resizeColumnToContents( 1 );
 
   highlightFeature( featItem );
 }
@@ -760,14 +751,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   // table
   int i = 0;
   int j = tblResults->rowCount();
-  // insert empty row to separate layers
-  if ( j > 0 && tblResults->item( j - 1, 0 ) &&
-       tblResults->item( j - 1, 0 )->data( Qt::UserRole + 1 ).toString() != layer->id() )
-  {
-    j++;
-    tblResults->setRowCount( j + 1 );
-    tblResults->setRowHeight( j - 1, 2 );
-  }
   tblResults->setRowCount( j + attributes.count() );
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
@@ -785,7 +768,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
     j++; i++;
   }
-  tblResults->resizeColumnToContents( 1 );
+  //tblResults->resizeColumnToContents( 1 );
 
   // graph
   if ( attributes.count() > 0 )

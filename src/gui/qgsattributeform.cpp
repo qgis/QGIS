@@ -321,7 +321,7 @@ void QgsAttributeForm::init()
     QTabWidget* tabWidget = new QTabWidget( this );
     layout()->addWidget( tabWidget );
 
-    Q_FOREACH( const QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
+    Q_FOREACH( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
     {
       QWidget* tabPage = new QWidget( tabWidget );
 
@@ -330,6 +330,8 @@ void QgsAttributeForm::init()
 
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
+        QgsAttributeEditorContainer* containerDef = dynamic_cast<QgsAttributeEditorContainer*>( widgDef );
+        containerDef->setIsGroupBox( false ); // Toplevel widgets are tabs not groupboxes
         QString dummy1;
         bool dummy2;
         tabPageLayout->addWidget( createWidgetFromDef( widgDef, tabPage, mLayer, mContext, dummy1, dummy2 ) );

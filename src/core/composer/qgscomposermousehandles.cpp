@@ -439,6 +439,17 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   bool nearLowerBorder = false;
   bool nearUpperBorder = false;
 
+  bool withinWidth = false;
+  bool withinHeight = false;
+  if ( itemCoordPos.x() >= 0 && itemCoordPos.x() <= rect().width() )
+  {
+    withinWidth = true;
+  }
+  if ( itemCoordPos.y() >= 0 && itemCoordPos.y() <= rect().height() )
+  {
+    withinHeight = true;
+  }
+
   double borderTolerance = rectHandlerBorderTolerance();
 
   if ( itemCoordPos.x() >= 0 && itemCoordPos.x() < borderTolerance )
@@ -474,19 +485,19 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   {
     return QgsComposerMouseHandles::ResizeRightDown;
   }
-  else if ( nearLeftBorder )
+  else if ( nearLeftBorder && withinHeight )
   {
     return QgsComposerMouseHandles::ResizeLeft;
   }
-  else if ( nearRightBorder )
+  else if ( nearRightBorder && withinHeight )
   {
     return QgsComposerMouseHandles::ResizeRight;
   }
-  else if ( nearUpperBorder )
+  else if ( nearUpperBorder && withinWidth )
   {
     return QgsComposerMouseHandles::ResizeUp;
   }
-  else if ( nearLowerBorder )
+  else if ( nearLowerBorder && withinWidth )
   {
     return QgsComposerMouseHandles::ResizeDown;
   }

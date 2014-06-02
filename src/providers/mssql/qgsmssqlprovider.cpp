@@ -282,7 +282,8 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
             sqlTypeName.startsWith( "varchar", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "nvarchar", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "text", Qt::CaseInsensitive ) ||
-            sqlTypeName.startsWith( "ntext", Qt::CaseInsensitive ) )
+            sqlTypeName.startsWith( "ntext", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "uniqueidentifier", Qt::CaseInsensitive ) )
   {
     type = QVariant::String;
   }
@@ -321,6 +322,8 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
   else
   {
     QgsDebugMsg( QString( "Unknown field type: %1" ).arg( sqlTypeName ) );
+    // Everything else just dumped as a string.
+    type = QVariant::String;
   }
 
   return type;
@@ -446,6 +449,10 @@ void QgsMssqlProvider::loadFields()
           return;
         }
       }
+      QString error = QString( "No primary key could be found on table %1" ).arg( mTableName );
+      QgsDebugMsg( error );
+      mValid = false;
+      setLastError( error );
     }
   }
 }

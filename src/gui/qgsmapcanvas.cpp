@@ -206,6 +206,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
            this, SLOT( writeProject( QDomDocument & ) ) );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
+  mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
   // class that will sync most of the changes between canvas and (legacy) map renderer
   // it is parented to map canvas, will be deleted automatically
@@ -634,6 +635,8 @@ void QgsMapCanvas::refreshMap()
   mJob->start();
 
   mMapUpdateTimer.start();
+
+  emit renderStarting();
 }
 
 
@@ -694,6 +697,8 @@ void QgsMapCanvas::rendererJobFinished()
   // so the class is still valid when the execution returns to the class
   mJob->deleteLater();
   mJob = 0;
+
+  emit mapCanvasRefreshed();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()

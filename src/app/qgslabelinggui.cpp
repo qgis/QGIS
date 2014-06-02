@@ -259,6 +259,7 @@ void QgsLabelingGui::init()
 
   // populate placement options
   mCentroidRadioWhole->setChecked( lyr.centroidWhole );
+  mCentroidInsideCheckBox->setChecked( lyr.centroidInside );
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -545,6 +546,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   QWidget* curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
+  lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
   if (( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
       || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {

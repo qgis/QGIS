@@ -168,7 +168,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas* canvas )
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
 {
   QList<QgsMapLayer*> layers;
-  foreach ( QString layerId, mView->currentGroupNode()->childLayerIds() )
+  foreach ( QString layerId, mView->currentGroupNode()->findLayerIds() )
     layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );

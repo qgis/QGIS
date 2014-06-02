@@ -72,7 +72,7 @@ void QgsLayerTreeGroup::insertChildNode( int index, QgsLayerTreeNode* node )
 void QgsLayerTreeGroup::insertChildNodes( int index, QList<QgsLayerTreeNode*> nodes )
 {
   // low-level insert
-  insertChildren( index, nodes );
+  insertChildrenPrivate( index, nodes );
 
   updateVisibilityFromChildren();
 }
@@ -86,7 +86,7 @@ void QgsLayerTreeGroup::removeChildNode( QgsLayerTreeNode *node )
 {
   int i = mChildren.indexOf( node );
   if ( i >= 0 )
-    removeChildAt( i );
+    removeChildren( i, 1 );
 }
 
 void QgsLayerTreeGroup::removeLayer( QgsMapLayer* layer )
@@ -98,7 +98,7 @@ void QgsLayerTreeGroup::removeLayer( QgsMapLayer* layer )
       QgsLayerTreeLayer* childLayer = QgsLayerTree::toLayer( child );
       if ( childLayer->layer() == layer )
       {
-        removeChildAt( mChildren.indexOf( child ) );
+        removeChildren( mChildren.indexOf( child ), 1 );
         break;
       }
     }
@@ -107,7 +107,7 @@ void QgsLayerTreeGroup::removeLayer( QgsMapLayer* layer )
 
 void QgsLayerTreeGroup::removeChildren( int from, int count )
 {
-  removeChildrenRange( from, count );
+  removeChildrenPrivate( from, count );
 
   updateVisibilityFromChildren();
 }
@@ -259,13 +259,13 @@ void QgsLayerTreeGroup::setVisible( Qt::CheckState state )
   }
 }
 
-QStringList QgsLayerTreeGroup::childLayerIds() const
+QStringList QgsLayerTreeGroup::findLayerIds() const
 {
   QStringList lst;
   foreach ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
-      lst << QgsLayerTree::toGroup( child )->childLayerIds();
+      lst << QgsLayerTree::toGroup( child )->findLayerIds();
     else if ( QgsLayerTree::isLayer( child ) )
       lst << QgsLayerTree::toLayer( child )->layerId();
   }

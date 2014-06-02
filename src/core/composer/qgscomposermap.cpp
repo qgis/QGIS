@@ -185,6 +185,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setOutputDpi( dpi );
   jobMapSettings.setMapUnits( ms.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
+  jobMapSettings.setShowSelection( false );
 
   //set layers to render
   QStringList theLayerSet = layersToRender();
@@ -201,13 +202,13 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
-  /* TODO[MD] fix after merge
+
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
     //if outputing composer, disable optimisations like layer simplification
-    theRendererContext->setUseRenderingOptimization( false );
-  }*/
+    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+  }
 
   //update $map variable. Use QgsComposerItem's id since that is user-definable
   QgsExpression::setSpecialColumn( "$map", QgsComposerItem::id() );

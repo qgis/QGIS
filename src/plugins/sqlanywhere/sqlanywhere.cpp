@@ -165,8 +165,6 @@ void SqlAnywhere::addSqlAnywhereLayer()
     }
 
     QApplication::restoreOverrideCursor();
-
-    (( QMainWindow * ) mQGisIface->mainWindow() )->statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
   }
 
   delete dbs;

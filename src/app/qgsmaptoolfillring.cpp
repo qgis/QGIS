@@ -167,6 +167,7 @@ void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
         else
         {
           QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, ft, false, NULL, true );
+          dialog->setIsAddDialog( true );
           if ( dialog->exec() )
           {
             res = vlayer->addFeature( *ft );

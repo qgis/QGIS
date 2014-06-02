@@ -179,6 +179,32 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y );
 
+    /**Gets the page the item is currently on.
+     * @returns page number for item
+     * @see pagePos
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    int page() const;
+
+    /**Returns the item's position relative to its current page.
+     * @returns position relative to the page's top left corner.
+     * @see page
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    QPointF pagePos() const;
+
+    /**Moves the item so that it retains its relative position on the page
+     * when the paper size changes.
+     * @param newPageWidth new width of the page in mm
+     * @param newPageHeight new height of the page in mm
+     * @see page
+     * @see pagePos
+     * @note this method was added in version 2.4
+    */
+    void updatePagePos( double newPageWidth, double newPageHeight );
+
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 

@@ -1019,6 +1019,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! refresh map canvas
     void refreshMapCanvas();
 
+    //! start "busy" progress bar
+    void canvasRefreshStarted();
+    //! stop "busy" progress bar
+    void canvasRefreshFinished();
+
     /** Dialog for verification of action on many edits
      * @note added in 1.9 */
     bool verifyEditsActionDialog( const QString& act, const QString& upon );

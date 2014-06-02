@@ -156,7 +156,9 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
 bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
   // setup simplification of geometries to fetch
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) &&
+       simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification &&
+       !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
 
@@ -279,43 +281,51 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 {
   mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !mSource->mGeometryColumn.isNull();
 
+#if 0
   // TODO: check that all field indexes exist
-  //if ( !hasAllFields )
-  //{
-  //  rewind();
-  //  return false;
-  //}
-
-
-  const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
-
-  QString query = "SELECT ", delim = "";
-
-  bool isPointLayer = QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown ? mSource->mRequestedGeomType : mSource->mDetectedGeomType ) ) == QGis::WKBPoint;
-  if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !isPointLayer )
+  if ( !hasAllFields )
   {
-    QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
-                                   ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
-                                       : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
-
-    double tolerance = simplifyMethod.tolerance() * 0.8; //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
-
-    query += QString( "%1(%5(%2%3,%6),'%4')" )
-             .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-             .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-             .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
-             .arg( QgsPostgresProvider::endianString() )
-             .arg( simplifyFunctionName )
-             .arg( tolerance );
-    delim = ",";
+    rewind();
+    return false;
   }
-  else if ( mFetchGeometry )
+#endif
+
+  QString query( "SELECT " ), delim( "" );
+
+  if ( mFetchGeometry )
   {
-    query += QString( "%1(%2%3,'%4')" )
-             .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-             .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-             .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
-             .arg( QgsPostgresProvider::endianString() );
+    QString geom = QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn );
+
+    if ( mSource->mSpatialColType == sctGeography )
+      geom += "::geometry";
+
+    if ( mSource->mForce2d )
+    {
+      geom = QString( "%1(%2)" )
+             .arg( mConn->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
+             .arg( geom );
+    }
+
+    if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
+         mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
+         QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown
+                                           ? mSource->mRequestedGeomType
+                                           : mSource->mDetectedGeomType ) ) != QGis::WKBPoint )
+    {
+      geom = QString( "%1(%2,%3)" )
+             .arg( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering
+                   ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
+                       : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" ) )
+                 .arg( geom )
+                 .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+    }
+
+    geom = QString( "%1(%2,'%3')" )
+           .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+           .arg( geom )
+           .arg( QgsPostgresProvider::endianString() );
+
+    query += delim + geom;
     delim = ",";
   }
 
@@ -367,8 +377,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   if ( !mConn->openCursor( mCursorName, query ) )
   {
     // reloading the fields might help next time around
-    rewind();
     // TODO how to cleanly force reload of fields?  P->loadFields();
+    close();
     return false;
   }
 
@@ -539,6 +549,7 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
     , mSpatialColType( p->mSpatialColType )
     , mRequestedSrid( p->mRequestedSrid )
     , mDetectedSrid( p->mDetectedSrid )
+    , mForce2d( p->mForce2d )
     , mRequestedGeomType( p->mRequestedGeomType )
     , mDetectedGeomType( p->mDetectedGeomType )
     , mPrimaryKeyType( p->mPrimaryKeyType )

@@ -54,13 +54,30 @@ class CORE_EXPORT QgsMapSettings
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
     QColor selectionColor() const { return mSelectionColor; }
 
+    /**Sets whether vector selections should be shown in the rendered map
+     * @param showSelection set to true if selections should be shown
+     * @see showSelection
+     * @see setSelectionColor
+     * @note Added in QGIS v2.4
+    */
+    void setShowSelection( const bool showSelection ) { mShowSelection = showSelection; }
+
+    /**Returns true if vector selections should be shown in the rendered map
+     * @returns true if selections should be shown
+     * @see setShowSelection
+     * @see selectionColor
+     * @note Added in QGIS v2.4
+    */
+    bool showSelection() const { return mShowSelection; }
+
     enum Flag
     {
       Antialiasing       = 0x01,
       DrawEditingInfo    = 0x02,
       ForceVectorOutput  = 0x04,
       UseAdvancedEffects = 0x08,
-      DrawLabeling       = 0x10
+      DrawLabeling       = 0x10,
+      UseRenderingOptimization = 0x20,
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -145,6 +162,8 @@ class CORE_EXPORT QgsMapSettings
 
     QColor mBackgroundColor;
     QColor mSelectionColor;
+    /**Whether selection should be shown in the map*/
+    bool mShowSelection;
 
     Flags mFlags;
 

@@ -133,8 +133,34 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
+    /**Gets the page the item is currently on.
+     * @returns page number for item
+     * @see pagePos
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    int page() const;
+
+    /**Returns the item's position relative to its current page.
+     * @returns position relative to the page's top left corner.
+     * @see page
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    QPointF pagePos() const;
+
+    /**Moves the item so that it retains its relative position on the page
+     * when the paper size changes.
+     * @param newPageWidth new width of the page in mm
+     * @param newPageHeight new height of the page in mm
+     * @see page
+     * @see pagePos
+     * @note this method was added in version 2.4
+    */
+    void updatePagePos( double newPageWidth, double newPageHeight );
+
     /**Moves the item to a new position (in canvas coordinates)*/
-    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 
     /**Sets item position and width / height in one go
       @param x item position x
@@ -143,9 +169,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @param height item height
       @param itemPoint item position mode
       @param posIncludesFrame set to true if the position and size arguments include the item's frame border
-
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.

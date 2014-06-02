@@ -16,6 +16,8 @@
 #include "qgstexteditwidget.h"
 
 #include "qgsfield.h"
+#include "qgsfieldvalidator.h"
+#include "qgsfilterlineedit.h"
 
 #include <QSettings>
 
@@ -74,7 +76,7 @@ QWidget* QgsTextEditWidget::createWidget( QWidget* parent )
   }
   else
   {
-    return new QLineEdit( parent );
+    return new QgsFilterLineEdit( parent );
   }
 }
 
@@ -91,7 +93,18 @@ void QgsTextEditWidget::initWidget( QWidget* editor )
     connect( mPlainTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
 
   if ( mLineEdit )
+  {
+    mLineEdit->setValidator( new QgsFieldValidator( mLineEdit, field() ) );
+
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    if ( fle && !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+    {
+      QSettings settings;
+      fle->setNullValue( settings.value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+  }
 }
 
 void QgsTextEditWidget::setValue( const QVariant& value )
