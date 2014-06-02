@@ -298,7 +298,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
   }
 
 // attempting to load the VectorLayersList
-  list = gaiaGetVectorLayersList( handle, NULL, NULL, GAIA_VECTORS_LIST_FAST );
+  list = gaiaGetVectorLayersList( handle, NULL, NULL, GAIA_VECTORS_LIST_OPTIMISTIC );
   if ( list != NULL )
   {
     gaiaVectorLayerPtr lyr = list->First;
