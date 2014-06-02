@@ -449,6 +449,10 @@ void QgsMssqlProvider::loadFields()
           return;
         }
       }
+      QString error = QString( "No primary key could be found on table %1" ).arg( mTableName );
+      QgsDebugMsg( error );
+      mValid = false;
+      setLastError( error );
     }
   }
 }
