@@ -41,7 +41,7 @@ void QgsHandleBadLayersHandler::handleBadLayers( QList<QDomNode> layers, QDomDoc
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Handle Bad layers" ),
+      tr( "Handle bad layers" ),
       tr( "%1 of %2 bad layers were not fixable." )
       .arg( layers.size() - dialog->layerCount() )
       .arg( layers.size() ),
