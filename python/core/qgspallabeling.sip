@@ -606,6 +606,10 @@ class QgsLabelComponent
  */
 class QgsLabelingResults
 {
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
   public:
     QgsLabelingResults();
     ~QgsLabelingResults();

@@ -297,14 +297,12 @@ class CORE_EXPORT QgsProject : public QObject
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
       @note: added in version 1.8
-      @note not available in python bindings
      */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
-     * @note not available in python bindings
      */
     QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
 
@@ -335,12 +333,11 @@ class CORE_EXPORT QgsProject : public QObject
 
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
-     * @note not available in python bindings
      */
     QgsLayerTreeGroup* layerTreeRoot() const;
 
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
-     * @note not available in python bindings
+     * @note added in 2.4
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
