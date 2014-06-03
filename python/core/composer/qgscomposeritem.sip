@@ -405,8 +405,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
-    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    /**Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontDescentMillimeters( const QFont& font ) const;
+    
+    /**Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
+     * Font height equals the font ascent+descent+1 (for baseline).
+     * @note Added in version 2.4
+    */
+    double fontHeightMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
