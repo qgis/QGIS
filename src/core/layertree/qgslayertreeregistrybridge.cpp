@@ -47,10 +47,11 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
   if ( !mEnabled )
     return;
 
+  int i = 0;
   foreach ( QgsMapLayer* layer, layers )
   {
     // add new layer to the top
-    QgsLayerTreeLayer* nodeLayer = mInsertionPointGroup->insertLayer( mInsertionPointIndex, layer );
+    QgsLayerTreeLayer* nodeLayer = mInsertionPointGroup->insertLayer( mInsertionPointIndex + i++, layer );
 
     // check whether the layer is marked as embedded
     QString projectFile = QgsProject::instance()->layerIsEmbedded( nodeLayer->layerId() );
