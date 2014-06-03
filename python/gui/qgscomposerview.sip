@@ -89,8 +89,11 @@ class QgsComposerView : QGraphicsView
     QgsComposerView::Tool currentTool() const;
     void setCurrentTool( QgsComposerView::Tool t );
 
-    /**Sets composition (derived from QGraphicsScene)*/
+    /**Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+     * be set BEFORE adding any items to the composition.
+    */
     void setComposition( QgsComposition* c /KeepReference/ );
+    
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
@@ -158,4 +161,7 @@ class QgsComposerView : QGraphicsView
     void composerViewShow( QgsComposerView* );
     /**Emitted before composerview is hidden*/
     void composerViewHide( QgsComposerView* );
+    
+    /**Emitted when the composition is set for the view*/
+    void compositionSet( QgsComposition* );    
 };

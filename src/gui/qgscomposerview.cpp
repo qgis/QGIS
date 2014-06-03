@@ -1574,6 +1574,9 @@ void QgsComposerView::setComposition( QgsComposition* c )
   {
     mVerticalRuler->setComposition( c );
   }
+
+  //emit compositionSet, so that composer windows can update for the new composition
+  emit compositionSet( c );
 }
 
 QgsComposition* QgsComposerView::composition()
