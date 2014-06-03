@@ -2029,8 +2029,12 @@ void QgisApp::setupConnections()
            this, SLOT( legendLayerSelectionChanged() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( markDirty() ) );
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
+           this, SLOT( updateNewLayerInsertionPoint() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( markDirty() ) );
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
+           this, SLOT( updateNewLayerInsertionPoint() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ),
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ),
@@ -2303,7 +2307,7 @@ void QgisApp::initLayerTreeView()
 
   connect( mLayerTreeView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( layerTreeViewDoubleClicked( QModelIndex ) ) );
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( activeLayerChanged( QgsMapLayer* ) ) );
-  connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( layerTreeViewCurrentChanged( QModelIndex, QModelIndex ) ) );
+  connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( updateNewLayerInsertionPoint() ) );
 
   mLayerTreeDock->setWidget( mLayerTreeView );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
@@ -2326,13 +2330,12 @@ void QgisApp::initLayerTreeView()
 }
 
 
-void QgisApp::layerTreeViewCurrentChanged( const QModelIndex& current, const QModelIndex& previous )
+void QgisApp::updateNewLayerInsertionPoint()
 {
-  Q_UNUSED( previous );
-
   // defaults
   QgsLayerTreeGroup* parentGroup = mLayerTreeView->layerTreeModel()->rootGroup();
   int index = 0;
+  QModelIndex current = mLayerTreeView->currentIndex();
 
   if ( current.isValid() )
   {
