@@ -25,7 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import tempfile
 
 try:
     from osgeo import gdal, ogr, osr

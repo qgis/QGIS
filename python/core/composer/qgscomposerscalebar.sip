@@ -13,7 +13,7 @@ class QgsComposerScaleBar: QgsComposerItem
     /**Added in version 1.8*/
     enum Alignment
     {
-      Left = 0,
+      Left,
       Middle,
       Right
     };
@@ -21,7 +21,7 @@ class QgsComposerScaleBar: QgsComposerItem
     /**Added in version 1.9*/
     enum ScaleBarUnits
     {
-      MapUnits = 0,
+      MapUnits,
       Meters,
       Feet,
       NauticalMiles

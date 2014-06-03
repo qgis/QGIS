@@ -88,7 +88,7 @@ public:
      * @note This method has no effect when exporting to PDF if singleFile() is true
      */
     bool setFilenamePattern( const QString& pattern );
-    
+
     /**Returns an error string from parsing the filename expression.
      * @returns filename pattern parser error
      * @see setFilenamePattern
@@ -135,7 +135,7 @@ public:
 
     QString featureFilter() const;
     void setFeatureFilter( const QString& expression );
-    
+
     /**Returns an error string from parsing the feature filter expression.
      * @returns filename pattern parser error
      * @see setFilenamePattern

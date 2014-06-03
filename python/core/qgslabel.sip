@@ -14,7 +14,7 @@ class QgsLabel
     /* Fields */
     enum LabelField
     {
-      Text = 0,
+      Text,
       Family,
       Size,
       SizeType,

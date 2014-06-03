@@ -23,7 +23,7 @@ class QgsDxfExport
   public:
     enum SymbologyExport
     {
-      NoSymbology = 0, //export only data
+      NoSymbology, //export only data
       FeatureSymbology, //Keeps the number of features and export symbology per feature (using the first symbol level)
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };

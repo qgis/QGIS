@@ -155,7 +155,7 @@ class QgsVectorLayer : QgsMapLayer
     {
       SuppressDefault, // use the application-wide setting
       SuppressOn,
-      SuppressOff = 2
+      SuppressOff,
     };
 
     struct RangeData

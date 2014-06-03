@@ -16,10 +16,10 @@ class QgsComposerLegendStyle
     };
     enum Side // margin side
     {
-      Top = 0,
-      Bottom = 1,
-      Left = 2,
-      Right = 3
+      Top,
+      Bottom,
+      Left,
+      Right,
     };
     QgsComposerLegendStyle();
     ~QgsComposerLegendStyle();

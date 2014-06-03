@@ -25,11 +25,10 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import os
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -40,14 +39,11 @@ from processing.tools.system import *
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class gdal2xyz(GeoAlgorithm):
+class gdal2xyz(GdalAlgorithm):
 
     INPUT = 'INPUT'
     BAND = 'BAND'
     OUTPUT = 'OUTPUT'
-
-    #def getIcon(self):
-    #   return QIcon(os.path.dirname(__file__) + "/icons/gdal2xyz.png")
 
     def defineCharacteristics(self):
         self.name = 'gdal2xyz'

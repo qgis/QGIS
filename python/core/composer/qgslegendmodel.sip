@@ -11,7 +11,7 @@ class QgsLegendModel : QStandardItemModel
 
     enum ItemType
     {
-      GroupItem = 0,
+      GroupItem,
       LayerItem,
       ClassificationItem
     };

@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -37,7 +37,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import *
 
 
-class GridAverage(GeoAlgorithm):
+class GridAverage(GdalAlgorithm):
 
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
@@ -47,10 +47,6 @@ class GridAverage(GeoAlgorithm):
     ANGLE = 'ANGLE'
     NODATA = 'NODATA'
     OUTPUT = 'OUTPUT'
-
-    #def getIcon(self):
-    #    filepath = os.path.dirname(__file__) + '/icons/dem.png'
-    #    return QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Grid (Moving average)'

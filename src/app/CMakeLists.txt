@@ -196,6 +196,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsloadstylefromdbdialog.h
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
+  qgsapplayertreeviewmenuprovider.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h

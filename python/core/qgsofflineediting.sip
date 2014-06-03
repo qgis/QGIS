@@ -11,7 +11,7 @@ class QgsOfflineEditing : QObject
   public:
     enum ProgressMode
     {
-      CopyFeatures = 0,
+      CopyFeatures,
       ProcessFeatures,
       AddFields,
       AddFeatures,

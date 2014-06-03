@@ -42,7 +42,7 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
   public:
     enum Context
     {
-      Unknown = 0,
+      Unknown,
       //composer label
       ComposerLabelSetText,
       ComposerLabelSetId,

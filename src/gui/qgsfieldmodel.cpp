@@ -162,7 +162,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   if ( !mLayer )
     return QVariant();
 
-  int exprIdx = index.internalId() - mFields.count();
+  qint64 exprIdx = index.internalId() - mFields.count();
 
   switch ( role )
   {

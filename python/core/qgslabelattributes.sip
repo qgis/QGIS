@@ -16,7 +16,7 @@ public:
     /* Units type */
     enum Units
     {
-      MapUnits = 0,
+      MapUnits,
       PointUnits
     };
 

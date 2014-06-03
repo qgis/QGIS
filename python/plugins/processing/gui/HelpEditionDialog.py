@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -26,11 +27,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import pickle
+import json
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
+from processing.core.ProcessingLog import ProcessingLog
 
 
 class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
@@ -38,6 +40,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
     ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
+    ALG_VERSION = 'ALG_VERSION'
 
     def __init__(self, alg):
         QDialog.__init__(self)
@@ -49,8 +52,13 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         if self.alg.descriptionFile is not None:
             helpfile = alg.descriptionFile + '.help'
             if os.path.exists(helpfile):
-                f = open(helpfile, 'rb')
-                self.descriptions = pickle.load(f)
+                try:
+                    with open(helpfile) as f:    
+                        self.descriptions = json.load(f)
+                except Exception, e:
+                    print e
+                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open gelp file: " + helpfile)                                        
+                
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:
             self.text.setText(self.descriptions[self.ALG_DESC])
@@ -67,17 +75,15 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
         if self.alg.descriptionFile is not None:
             try:
-                f = open(self.alg.descriptionFile + '.help', 'wb')
-                pickle.dump(self.descriptions, f)
-                f.close()
+                with open(self.alg.descriptionFile + '.help', 'w') as f:
+                    json.dump(self.descriptions, f)                
             except Exception, e:
                 QMessageBox.warning(self, 'Error saving help file',
-                                    'Help file could not be saved. Check that \
-                                    you have permission to modify the help \
-                                    file. You might not have permission if \
-                                    you are editing an example model or \
-                                    script, since they are stored on the \
-                                    installation folder')
+                                    'Help file could not be saved.\n'
+                                    'Check that you have permission to modify the help\n'
+                                    'file. You might not have permission if you are \n'
+                                    'editing an example model or script, since they \n'
+                                    'are stored on the installation folder')
 
         QDialog.accept(self)
 
@@ -111,6 +117,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         self.tree.addTopLevelItem(item)
         item = TreeDescriptionItem('Algorithm help written by',
                                    self.ALG_HELP_CREATOR)
+        self.tree.addTopLevelItem(item)
+        item = TreeDescriptionItem('Algorithm version',
+                                   self.ALG_VERSION)
         self.tree.addTopLevelItem(item)
 
     def changeItem(self):

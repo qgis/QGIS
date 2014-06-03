@@ -26,9 +26,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4.QtGui import *
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -37,16 +35,12 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import *
 
 
-class tpi(GeoAlgorithm):
+class tpi(GdalAlgorithm):
 
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
     OUTPUT = 'OUTPUT'
-
-    #def getIcon(self):
-    #    filepath = os.path.dirname(__file__) + '/icons/dem.png'
-    #    return QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'TPI (Topographic Position Index)'

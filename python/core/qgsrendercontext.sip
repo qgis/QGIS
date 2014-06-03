@@ -49,7 +49,7 @@ class QgsRenderContext
 
     //! Added in QGIS v2.0
     QColor selectionColor() const;
-    
+
     /**Returns true if vector selections should be shown in the rendered map
      * @returns true if selections should be shown
      * @see setShowSelection
@@ -76,7 +76,7 @@ class QgsRenderContext
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color );
-    
+
     /**Sets whether vector selections should be shown in the rendered map
      * @param showSelection set to true if selections should be shown
      * @see showSelection

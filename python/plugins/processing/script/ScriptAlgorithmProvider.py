@@ -38,7 +38,7 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
-
+from processing.gui.GetScriptsAndModels import GetScriptsAction
 import processing.resources_rc
 
 
@@ -48,7 +48,8 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.actions.extend([CreateNewScriptAction('Create new script',
                             CreateNewScriptAction.SCRIPT_PYTHON),
-                            AddScriptFromFileAction()])
+                            AddScriptFromFileAction(),
+                            GetScriptsAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]

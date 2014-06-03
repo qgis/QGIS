@@ -59,8 +59,8 @@ class QgsDataItem : QObject
 
     enum Capability
     {
-      NoCapabilities =          0,
-      SetCrs         =          1 //Can set CRS on layer or group of layers
+      NoCapabilities,
+      SetCrs //Can set CRS on layer or group of layers
     };
 
     // This will _write_ selected crs in data source
