@@ -254,10 +254,10 @@ void QgsComposerLabel::setFont( const QFont& f )
 void QgsComposerLabel::adjustSizeToText()
 {
   double textWidth = textWidthMillimeters( mFont, displayText() );
-  double fontAscent = fontAscentMillimeters( mFont );
+  double fontHeight = fontHeightMillimeters( mFont );
 
   double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  double height = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
+  double height = fontHeight + 2 * mMargin + 2 * pen().widthF();
 
   //keep alignment point constant
   double xShift = 0;
