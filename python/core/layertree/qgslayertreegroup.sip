@@ -15,9 +15,9 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     QString name() const;
     void setName( const QString& n );
 
-    QgsLayerTreeGroup* addGroup( const QString& name ) /Factory/;
-    QgsLayerTreeLayer* insertLayer( int index, QgsMapLayer* layer ) /Factory/;
-    QgsLayerTreeLayer* addLayer( QgsMapLayer* layer ) /Factory/;
+    QgsLayerTreeGroup* addGroup( const QString& name );
+    QgsLayerTreeLayer* insertLayer( int index, QgsMapLayer* layer );
+    QgsLayerTreeLayer* addLayer( QgsMapLayer* layer );
 
     void insertChildNodes( int index, QList<QgsLayerTreeNode*> nodes /Transfer/ );
     void insertChildNode( int index, QgsLayerTreeNode* node /Transfer/ );
