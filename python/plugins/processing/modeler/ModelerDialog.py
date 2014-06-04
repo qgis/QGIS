@@ -309,7 +309,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             # for the first time, we do it here.
             if self.help:
                 with open(self.descriptionFile + '.help', 'w') as f:
-                    json.dump(self.help, f) 
+                    json.dump(self.help, f)
                 self.help = None
             QMessageBox.information(self, self.tr('Model saved'),
                                     self.tr('Model was correctly saved.'))
@@ -508,7 +508,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
-        text = str(self.searchBox.text())
+        text = unicode(self.searchBox.text())
         allAlgs = ModelerUtils.getAlgorithms()
         for providerName in allAlgs.keys():
             groups = {}
