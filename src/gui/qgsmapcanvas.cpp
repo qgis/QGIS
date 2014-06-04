@@ -89,6 +89,7 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
     : QObject( canvas )
     , mCanvas( canvas )
     , mRenderer( renderer )
+    , mSyncingExtent( false )
 {
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( onExtentC2R() ) );
   connect( mRenderer, SIGNAL( extentsChanged() ), this, SLOT( onExtentR2C() ) );
@@ -109,12 +110,24 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
 
 void QgsMapCanvasRendererSync::onExtentC2R()
 {
+  // protection against possible bounce back
+  if ( mSyncingExtent )
+    return;
+
+  mSyncingExtent = true;
   mRenderer->setExtent( mCanvas->mapSettings().extent() );
+  mSyncingExtent = false;
 }
 
 void QgsMapCanvasRendererSync::onExtentR2C()
 {
+  // protection against possible bounce back
+  if ( mSyncingExtent )
+    return;
+
+  mSyncingExtent = true;
   mCanvas->setExtent( mRenderer->extent() );
+  mSyncingExtent = false;
 }
 
 void QgsMapCanvasRendererSync::onMapUnitsC2R()

@@ -662,6 +662,8 @@ class QgsMapCanvasRendererSync : public QObject
   protected:
     QgsMapCanvas* mCanvas;
     QgsMapRenderer* mRenderer;
+
+    bool mSyncingExtent;
 };
 
 
