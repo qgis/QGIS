@@ -229,6 +229,18 @@ namespace pal
       //int getId();
 
       /**
+       * \brief return the feature
+       * \return the feature
+       */
+      Feature* getFeature() { return f; }
+
+      /**
+       * \brief return the geometry
+       * \return the geometry
+       */
+      const GEOSGeometry* getGeometry() const { return the_geom; }
+
+      /**
        * \brief return the layer that feature belongs to
        * \return the layer of the feature
        */
