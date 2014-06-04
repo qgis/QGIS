@@ -1397,6 +1397,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in 1.7 */
     void createJoinCaches();
 
+    /** update the cache of a join pointing to a given (or any) layer*/
+    bool updateJoinCache(QString joinDestLayer="");
+
+    /** refresh the cache of the joins pointing to this layer*/
+    bool refreshJointLayersCache();
+
     /**Returns unique values for column
       @param index column index for attribute
       @param uniqueValues out: result list
