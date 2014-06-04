@@ -150,7 +150,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
         @param geom the geometry to modify
         @param lineGeom the line geometry to which the feature is referenced
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
-    void createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
+    bool createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
     QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
     const unsigned char* locateBetweenWkbString( const unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
     const unsigned char* locateAlongWkbString( const unsigned char* ptr, QgsMultiPoint& result, double measure );
