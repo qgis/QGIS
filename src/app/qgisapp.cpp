@@ -3335,6 +3335,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   QgsProject* prj = QgsProject::instance();
   prj->clear();
 
+  prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( "/qgis/new_layers_visible", true ).toBool() );
+
   mLayerTreeCanvasBridge->clear();
 
   //set the color for selections
@@ -7234,6 +7236,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
   {
     // set the theme if it changed
     setTheme( optionsDialog->theme() );
+
+    QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( mySettings.value( "/qgis/new_layers_visible", true ).toBool() );
 
     mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing" ).toBool() );
 

@@ -22,6 +22,9 @@ class QgsLayerTreeRegistryBridge : QObject
     void setEnabled( bool enabled );
     bool isEnabled() const;
 
+    void setNewLayersVisible( bool enabled );
+    bool newLayersVisible() const;
+
     //! Set where the new layers should be inserted - can be used to follow current selection.
     //! By default it is root group with zero index.
     void setLayerInsertionPoint( QgsLayerTreeGroup* parentGroup, int index );

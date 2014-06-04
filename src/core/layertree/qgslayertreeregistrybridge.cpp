@@ -26,6 +26,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
     : QObject( parent )
     , mRoot( root )
     , mEnabled( true )
+    , mNewLayersVisible( true )
     , mInsertionPointGroup( root )
     , mInsertionPointIndex( 0 )
 {
@@ -50,8 +51,11 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
   int i = 0;
   foreach ( QgsMapLayer* layer, layers )
   {
+    QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layer );
+    nodeLayer->setVisible( mNewLayersVisible ? Qt::Checked : Qt::Unchecked );
+
     // add new layer to the top
-    QgsLayerTreeLayer* nodeLayer = mInsertionPointGroup->insertLayer( mInsertionPointIndex + i++, layer );
+    mInsertionPointGroup->insertChildNode( mInsertionPointIndex + i++, nodeLayer );
 
     // check whether the layer is marked as embedded
     QString projectFile = QgsProject::instance()->layerIsEmbedded( nodeLayer->layerId() );
