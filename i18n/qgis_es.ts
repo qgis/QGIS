@@ -2986,6 +2986,17 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
 </context>
 <context>
+    <name>DlgGetScriptsAndModels</name>
+    <message>
+        <source>Get scripts and models</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DlgHelpEdition</name>
     <message>
         <source>Help editor</source>
@@ -4961,7 +4972,7 @@ en línea cuando se pulsa el botón Ayuda del diálogo de la herramienta.</trans
     </message>
     <message>
         <source>Hillshade</source>
-        <translation>Mapa de Sombras(Hillshade)</translation>
+        <translation>Mapa de Sombras (Hillshade)</translation>
     </message>
     <message>
         <source>Slope</source>
@@ -7602,19 +7613,19 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular fotocopia (escala de grises)</translation>
     </message>
     <message>
         <source>Simulate Fax (Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular fax (mono)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (Protanope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular falta de color (protanope)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (Deuteranope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular falta de color (deuteranope)</translation>
     </message>
 </context>
 <context>
@@ -16483,15 +16494,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Expand All</source>
-        <translation type="unfinished">&amp;Expandir todo</translation>
+        <translation>&amp;Expandir todo</translation>
     </message>
     <message>
         <source>&amp;Collapse All</source>
-        <translation type="unfinished">&amp;Comprimir todo</translation>
+        <translation>&amp;Comprimir todo</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina&amp;r</translation>
     </message>
 </context>
 <context>
@@ -16611,15 +16622,15 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Atlas filter eval error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de evaluación de filtro de Atlas: %1</translation>
     </message>
     <message>
         <source>Composer</source>
-        <translation type="unfinished">Diseñador</translation>
+        <translation>Diseñador</translation>
     </message>
     <message>
         <source>Atlas filename evaluation error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de evaluación de nombre de archivo de Atlas: %1</translation>
     </message>
 </context>
 <context>
@@ -16646,13 +16657,15 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Could not evaluate filename pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo evaluar el patrón de nombre de archivo</translation>
     </message>
     <message>
         <source>Could not set filename pattern as &apos;%1&apos;.
 Parser error:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo establecer el patrón de nombre de archivo como &apos;%1&apos;.
+Error del analizador:
+%2</translation>
     </message>
 </context>
 <context>
@@ -17014,6 +17027,10 @@ Parser error:
     <message>
         <source>Attributes - %1</source>
         <translation type="obsolete">Atributos - %1</translation>
+    </message>
+    <message>
+        <source>Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17615,7 +17632,7 @@ Parser error:
     </message>
     <message>
         <source>[update field expression]</source>
-        <translation type="unfinished"></translation>
+        <translation>[expresión de actualización de campo]</translation>
     </message>
 </context>
 <context>
@@ -19116,23 +19133,23 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular fotocopia (escala de grises)</translation>
     </message>
     <message>
         <source>Simulate Fax (Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular fax (mono)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (Protanope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular falta de color (protanope)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (Deuteranope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular falta de color (deuteranope)</translation>
     </message>
     <message>
         <source>Feature filter parser error: %1</source>
-        <translation type="unfinished">Error del analizador de filtros de objetos espaciales: %1</translation>
+        <translation>Error del analizador de filtros de objetos espaciales: %1</translation>
     </message>
 </context>
 <context>
@@ -20342,6 +20359,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Join style</source>
         <translation>Estilo de unión</translation>
+    </message>
+    <message>
+        <source>Page</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32137,7 +32158,7 @@ en la línea %2 columna %3</translation>
     <name>QgsHandleBadLayersHandler</name>
     <message>
         <source>Handle Bad layers</source>
-        <translation>Manejo de capas incorrectas</translation>
+        <translation type="obsolete">Manejo de capas incorrectas</translation>
     </message>
     <message>
         <source>%1 of %2 bad layers were not not fixable.</source>
@@ -32146,6 +32167,10 @@ en la línea %2 columna %3</translation>
     <message>
         <source>%1 of %2 bad layers were not fixable.</source>
         <translation>%1 de %2 capas incorrectas no fueron corregibles.</translation>
+    </message>
+    <message>
+        <source>Handle bad layers</source>
+        <translation type="unfinished">Manejo de capas incorrectas</translation>
     </message>
 </context>
 <context>
@@ -34398,6 +34423,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Repeat</source>
         <translation>Repetir</translation>
     </message>
+    <message>
+        <source>Force point inside polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerPropertiesWidget</name>
@@ -35958,7 +35987,7 @@ no se muestran</translation>
     <name>QgsMapUnitScaleDialog</name>
     <message>
         <source>Adjust map unit scales</source>
-        <translation>Ajustar escalas de unidades de mapa</translation>
+        <translation type="obsolete">Ajustar escalas de unidades de mapa</translation>
     </message>
     <message>
         <source>Maximum scale:</source>
@@ -35967,6 +35996,14 @@ no se muestran</translation>
     <message>
         <source>Minimum scale:</source>
         <translation>Escala mínima:</translation>
+    </message>
+    <message>
+        <source>Adjust scaling range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale only within the following map unit scale range:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52474,7 +52511,7 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Save symbol</source>
-        <translation type="unfinished">Guardar símbolo</translation>
+        <translation>Guardar símbolo</translation>
     </message>
 </context>
 <context>
@@ -53115,6 +53152,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Form</source>
         <translation>Formulario</translation>
+    </message>
+    <message>
+        <source>Adjust scaling range</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -57075,60 +57116,60 @@ La respuesta fue:
     </message>
     <message>
         <source>Layer&apos;s upper bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Límite superior de la capa: %1</translation>
     </message>
     <message numerus="yes">
         <source>%n missing column(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Falta una columna</numerusform>
+            <numerusform>Faltan %n columnas</numerusform>
         </translation>
     </message>
     <message>
         <source>Layer&apos;s left bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Límite izquierdo de la capa: %1</translation>
     </message>
     <message>
         <source>Layer&apos;s lower bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Límite inferior de la capa: %1</translation>
     </message>
     <message>
         <source>Layer&apos;s right bound: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Límite derecho de la capa: %1</translation>
     </message>
 </context>
 <context>
     <name>QgsWmsTiledImageDownloadHandler</name>
     <message>
         <source>Tile request error</source>
-        <translation type="unfinished">Error de solicitud de tesela</translation>
+        <translation>Error de solicitud de tesela</translation>
     </message>
     <message>
         <source>Status: %1
 Reason phrase: %2</source>
-        <translation type="unfinished">Estado: %1
+        <translation>Estado: %1
 Frase de motivo: %2</translation>
     </message>
     <message>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Error en la solicitud de tesela (Titulo:%1; Error:%2; URL: %3)</translation>
+        <translation>Error en la solicitud de tesela (Titulo:%1; Error:%2; URL: %3)</translation>
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation type="unfinished">Error en la solicitud de tesela (Estado:%1; Tipo de contenido:%2; Longitud:%3; URL: %4)</translation>
+        <translation>Error en la solicitud de tesela (Estado:%1; Tipo de contenido:%2; Longitud:%3; URL: %4)</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished">La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
+        <translation>La imagen devuelta está defectuosa [Tipo de contenido: %1; URL: %2]</translation>
     </message>
     <message numerus="yes">
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>1 solicitud de teselas en segundo plano</numerusform>
             <numerusform>%n solicitudes de teselas en segundo plano</numerusform>
         </translation>
@@ -57136,7 +57177,7 @@ Frase de motivo: %2</translation>
     <message numerus="yes">
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, 1 éxito de cacheado</numerusform>
             <numerusform>, %n éxitos de cacheado</numerusform>
         </translation>
@@ -57144,7 +57185,7 @@ Frase de motivo: %2</translation>
     <message numerus="yes">
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>, 1 falta de cacheado.</numerusform>
             <numerusform>, %n faltas de cacheado.</numerusform>
         </translation>
@@ -57152,22 +57193,22 @@ Frase de motivo: %2</translation>
     <message numerus="yes">
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
-            <numerusform>, 1 error. </numerusform>
+        <translation>
+            <numerusform>, 1 error.</numerusform>
             <numerusform>, %n errores.</numerusform>
         </translation>
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">No más de 100 errores de solicitud de registro. </translation>
+        <translation>No se registran más de 100 errores de solicitud.</translation>
     </message>
     <message>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished">Error de reintentos máximos en la solicitud de teselas. Fallaron %1 solicitudes para la tesela %2 de tileRequest %3 (URL: %4)</translation>
+        <translation>Máximo de reintentos erróneos en la solicitud de teselas. Fallaron %1 solicitudes para la tesela %2 de tileRequest %3 (URL: %4)</translation>
     </message>
     <message>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished">repetir tileRequest %1 tesela %2 (reintento %3)</translation>
+        <translation>repetir tileRequest %1 tesela %2 (reintento %3)</translation>
     </message>
 </context>
 <context>
@@ -57308,7 +57349,7 @@ Frase de motivo: %2</translation>
     <name>RecordDialog</name>
     <message>
         <source>Record Metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrar metadatos</translation>
     </message>
 </context>
 <context>
@@ -58531,11 +58572,11 @@ sobre SEXTANTE</translation>
     </message>
     <message>
         <source>Symbols in group</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbolos en grupo</translation>
     </message>
     <message>
         <source>Open Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir biblioteca</translation>
     </message>
 </context>
 <context>
@@ -58739,6 +58780,10 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Change</source>
         <translation type="obsolete">Cambiar</translation>
+    </message>
+    <message>
+        <source>Force point inside polygon</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -59164,7 +59209,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Offset along line</source>
-        <translation type="unfinished">Desplazamiento a lo largo de línea</translation>
+        <translation>Desplazamiento a lo largo de línea</translation>
     </message>
 </context>
 <context>
@@ -59285,35 +59330,35 @@ Would you like to add the new layer to the TOC?</source>
     <name>WidgetShapeburstFill</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulario</translation>
+        <translation>Formulario</translation>
     </message>
     <message>
         <source>Gradient colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores de gradiente</translation>
     </message>
     <message>
         <source>Two color</source>
-        <translation type="unfinished">Dos colores</translation>
+        <translation>Dos colores</translation>
     </message>
     <message>
         <source>Color ramp</source>
-        <translation type="unfinished">Rampa de color</translation>
+        <translation>Rampa de color</translation>
     </message>
     <message>
         <source>Shading style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo de sombreado</translation>
     </message>
     <message>
         <source>Shade whole shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Sombrear la forma completa</translation>
     </message>
     <message>
         <source>Ignore rings in polygons while shading</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorar anillos en polígonos al sombrear</translation>
     </message>
     <message>
         <source>Shade to a set distance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sombrear a una distancia dada:</translation>
     </message>
     <message>
         <source>Millimeter</source>
@@ -59329,11 +59374,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Desplazamiento X, Y</translation>
+        <translation>Desplazamiento X, Y</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
-        <translation type="unfinished">Propiedades definidas por datos...</translation>
+        <translation>Propiedades definidas por datos...</translation>
     </message>
 </context>
 <context>
@@ -59396,7 +59441,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Join style</source>
-        <translation type="unfinished">Estilo de unión</translation>
+        <translation>Estilo de unión</translation>
     </message>
 </context>
 <context>
@@ -59762,15 +59807,15 @@ Would you like to add the new layer to the TOC?</source>
     <name>XMLDialog</name>
     <message>
         <source>XML Request / Response</source>
-        <translation type="unfinished"></translation>
+        <translation>Solicitud / Respuesta XML</translation>
     </message>
     <message>
         <source>Request</source>
-        <translation type="unfinished"></translation>
+        <translation>Solicitud</translation>
     </message>
     <message>
         <source>Response</source>
-        <translation type="unfinished"></translation>
+        <translation>Respuesta</translation>
     </message>
 </context>
 <context>
@@ -66791,7 +66836,181 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función format_date()&lt;/h3&gt;
+Da formato de cadena personalizado a un tipo fecha o cadena. Usa cadenas de formato de hora de Qt. Vea &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;cadena&apos;, &apos;cadena_de_formato&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena. Cadena Fecha/Hora/FechaHora.
+&lt;br&gt;
+&lt;code&gt;cadena_de_formato&lt;/code&gt; - es una cadena. Plantilla de cadena usada para dar formato a la cadena.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;el día como número sin cero delante (1 a 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;el día como número con cero delante (01 a 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;el nombre abreviado del día localizado (ej.: &apos;Lun&apos; a &apos;Dom&apos;). Usa &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;el nombre completo del día localizado (ej.: &apos;Lunes&apos; a &apos;Domingo&apos;). Usa &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;el mes como número sin cero delante (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;el mes como número con cero delante (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;el nombre abreviado del mes localizado (ej.: &apos;Ene&apos; a &apos;Dic&apos;). Usa &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;el nombre completo del mes localizado (ej.: &apos;Enero&apos; a &apos;Diciembre&apos;). Usa &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;el año con dos dígitos (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;el año con cuatro dígitos&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Estas expresiones se pueden usar para la parte horaria de la cadena de formato:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;la hora sin cero delante (0 a 23 o 1 a 12 si se muestra AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;la hora con cero delante (00 a 23 o 01 a 12 si se muestra AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;la hora sin cero delante (0 a 23, incluso si se muestra AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;la hora con cero delante (00 a 23, incluso si se muestra AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;los minutos sin cero delante (0 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;los minutos con cero delante (00 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;los segundos sin cero delante (0 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;los segundos con cero delante (00 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;los milisegundos sin cero delante (0 a 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;los milisegundos con cero delante (000 a 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP o A&lt;/td&gt;
+
+      &lt;td&gt;interpretar como hora AM/PM. &lt;i&gt;AP&lt;/i&gt; debe ser &quot;AM&quot; o &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap o a&lt;/td&gt;
+
+      &lt;td&gt;Interpretar como hora AM/PM. &lt;i&gt;ap&lt;/i&gt; debe ser &quot;am&quot; o &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
@@ -67689,7 +67908,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función hour()&lt;/h3&gt;
+Extrae la hora de una fechahora u hora o el número de horas
+de un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;hour(fechahora)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;fecha&lt;/code&gt; - es fechahora u hora. La fecha de la que extraer la hora.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - es Intervalo. El intervalo del que devolver el número de horas.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
@@ -70827,19 +71066,19 @@ geom &amp;rarr; a geometry
     <name>parent</name>
     <message>
         <source>Cannot parse XML file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede analizar el archivo XML: %s</translation>
     </message>
     <message>
         <source>Cannot open file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede abrir el archivo: %s</translation>
     </message>
     <message>
         <source>Invalid CSW connections XML.</source>
-        <translation type="unfinished"></translation>
+        <translation>XML de conexiones CSW no válido.</translation>
     </message>
     <message>
         <source>Loading Connections</source>
-        <translation type="unfinished">Cargando conexiones</translation>
+        <translation>Cargando conexiones</translation>
     </message>
 </context>
 <context>
@@ -71082,11 +71321,11 @@ geom &amp;rarr; a geometry
     <name>widgetOutputSelect</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulario</translation>
+        <translation>Formulario</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>
