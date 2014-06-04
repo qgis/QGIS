@@ -7864,7 +7864,7 @@ Agisce su tutti i vettori editabili attivi al momento
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="36"/>
         <source>Set global</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni globali</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui" line="46"/>
@@ -8048,8 +8048,7 @@ Agisce su tutti i vettori editabili attivi al momento
     </message>
     <message>
         <source>No services/connections defined. To get started with MetaSearch, create a new connection by clicking &apos;New&apos; or click &apos;Add default services&apos;.</source>
-        <translatorcomment>manca un pezzo</translatorcomment>
-        <translation type="unfinished">ggiungi servizi predefiniti&apos;.</translation>
+        <translation>Servizi e connessioni non impostate. Per iniziare con MetaSearch, crea una nuova connessione cliccando &apos;Nuovo&apos; o &apos;Aggiungi servizi predefiniti&apos;.</translation>
     </message>
     <message>
         <source>New Catalogue service</source>
@@ -12160,7 +12159,8 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="47"/>
         <source>Shapeburst fill</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>nn trovo un termine tecnico per tradurre Shapeburst</translatorcomment>
+        <translation>Riempimento shapeburst</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="49"/>
@@ -20095,7 +20095,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="212"/>
         <source>Item frame join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile di giunzione cornice dell&apos;oggetto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="237"/>
@@ -20115,7 +20115,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="422"/>
         <source>Item blend mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di fusione oggetto cambiata</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="432"/>
@@ -22280,12 +22280,13 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="629"/>
         <source>Scalebar line join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile di giunzione linea della barra di scala  </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="642"/>
         <source>Scalebar line cap style</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>cap come si traduce?</translatorcomment>
+        <translation>Stile demarcazione linea della barra di scala</translation>
     </message>
     <message>
         <source>Scalebar n segments</source>
@@ -22715,13 +22716,13 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="414"/>
         <source>Table feature filter toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro tabella degli elementi selezionato</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="427"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="448"/>
         <source>Table feature filter modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro tabella degli attibuti modificato</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="441"/>
@@ -22731,7 +22732,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="463"/>
         <source>Table header alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Allineamento intestazione tabella modificato</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="481"/>
@@ -22846,7 +22847,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="92"/>
         <source>Refresh table data</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricarica la tabella dati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="129"/>
@@ -22906,7 +22907,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="270"/>
         <source>Follow column alignment</source>
-        <translation type="unfinished">Allineamento della colonna seguente</translation>
+        <translation>Allineamento della colonna successiva</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="275"/>
@@ -24696,7 +24697,7 @@ ed il file attuale è [%3]</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulo</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="35"/>
@@ -24706,7 +24707,7 @@ ed il file attuale è [%3]</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="72"/>
         <source>Field format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato del campo</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="85"/>
@@ -24737,12 +24738,13 @@ ed il file attuale è [%3]</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="148"/>
         <source>Widget display</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizzazione widget</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="177"/>
         <source>calendar popup</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>popup come si traduce?</translatorcomment>
+        <translation>calendarietto</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="194"/>
@@ -28007,7 +28009,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsfieldexpressionwidget.cpp" line="27"/>
         <source>Expression dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Finestra dell&apos;espressione</translation>
     </message>
 </context>
 <context>
@@ -28130,7 +28132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="637"/>
         <source>Slider range</source>
-        <translation>Intervallo slider</translation>
+        <translation>Intervallo del cursore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="638"/>
@@ -34344,7 +34346,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="71"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="76"/>
@@ -34448,7 +34450,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="297"/>
         <source>Top down, stop at first</source>
-        <translation type="unfinished">Il primo attivo</translation>
+        <translation>Il primo attivo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="298"/>
@@ -34508,7 +34510,7 @@ In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi 
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="945"/>
         <source>Toggle feature selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverti selezione elementi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="948"/>
@@ -38012,7 +38014,7 @@ non visualizzati</translation>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="365"/>
         <source>could not snap to a segment on the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>impossibile agganciarsi ad un segmento nel layer corrente.</translation>
     </message>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="698"/>
@@ -38328,7 +38330,7 @@ non visualizzati</translation>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="14"/>
         <source>Adjust map unit scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiusta le unità di scala della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="24"/>
@@ -38570,7 +38572,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1518"/>
         <source>Offset along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset lungo la linea</translation>
     </message>
 </context>
 <context>
@@ -41788,7 +41790,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="102"/>
         <source>Identify highlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore di evidenziazione dell&apos;elemento identificato</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="180"/>
@@ -43179,12 +43181,12 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1636"/>
         <source>Render layers in parallel using many CPU cores</source>
-        <translation type="unfinished"></translation>
+        <translation>Disegna i layer in parallelo usando più processori della CPU</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1650"/>
         <source>Max cores to use:</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero massimo di processori da usare:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3161"/>
@@ -43255,12 +43257,12 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1074"/>
         <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina le impostazioni dell&apos;interfaccia utente, per ripristinare QGIS alla sua visualizzazione predefinita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1677"/>
         <source>Map update interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallo di aggiornamento della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1684"/>
@@ -43280,12 +43282,12 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2641"/>
         <source>Highlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore di evidenziazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2666"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The color used to highlight identified feature. The alpha channel is only used for polygons fill, lines and outlines are fully opaque.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il colore usato per evidenziare le geometrie identificate. Il canale alfa è utilizzato solamente per il riempimento dei poligoni, linee e contorni sono completamente opachi.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il colore usato per evidenziare le geometrie identificate. Il canale alfa è utilizzato solamente per il riempimento dei poligoni, linee e contorni sono completamente opachi.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2679"/>
@@ -46740,7 +46742,7 @@ metterei &quot;questa&quot; al posto di &quot;vostra&quot; (ght)
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1172"/>
         <source>Sending vote to the plugin repository failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallito l&apos;invio del voto al repository del plugin.</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -49153,7 +49155,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="36"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="52"/>
         <source>Slider</source>
-        <translation type="unfinished">Slider</translation>
+        <translation>Cursore</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="37"/>
@@ -49182,7 +49184,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="20"/>
         <source>Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation>Permette di definire un numero di valori per un intervallo specifico. Il widget di modica può utilizzare uno slider o uno spin box.</translation>
+        <translation>Permette di definire un numero di valori per un intervallo specifico. Il widget di modica può utilizzare un cursore o uno spin box.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="117"/>
@@ -49694,12 +49696,12 @@ Clicca sul pulsante di aiuto per avere opzioni di creazione valide per questo fo
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="178"/>
         <source>Draw as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Disegna come linee</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="184"/>
         <source>Draw as lines (only int layers)</source>
-        <translation type="unfinished"></translation>
+        <translation>Disegna come linee (solo layer int)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="190"/>
@@ -52219,7 +52221,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="35"/>
         <source>Expression Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Costruttore di espressioni</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="65"/>
@@ -53187,7 +53189,8 @@ deviazione standard ×</translation>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="30"/>
         <source>Minimum
 (exclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimo
+(esclusivo)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="33"/>
@@ -53198,7 +53201,8 @@ deviazione standard ×</translation>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="35"/>
         <source>Maximum
 (inclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Massimo
+(inclusivo)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="38"/>
@@ -53483,7 +53487,7 @@ L´errore era:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1320"/>
         <source>Use whole shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa l&apos;intera forma</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1321"/>
@@ -53493,7 +53497,7 @@ L´errore era:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1322"/>
         <source>Ignore rings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignora gli anelli</translation>
     </message>
 </context>
 <context>
@@ -55873,17 +55877,17 @@ QGIS requires that the relation has an integer column no larger than 32 bits con
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1527"/>
         <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
-        <translation type="unfinished"></translation>
+        <translation>La colonna %1 non è limitata ad un singolo SR, come richiesto da QGIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1820"/>
         <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Poiché QGIS supporta solo dati planari, il fornitore di dati SQL Anywhere trasformerà i dati alla proiezione planare compatibile (SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1837"/>
         <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Poiché QGIS supporta solo i dati planari e non è stato trovato alcuna proiezione planare compatibile, il fornitore di dati SQL Anywhere tenterà di trasformare i dati a planare WGS 84 (SRID=%1).</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
@@ -56660,12 +56664,12 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="22"/>
         <source>Export map layers as svg groups (may affect label placement)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta layer come gruppi SVG (puo&apos; influenzare il posizionamento dell&apos;etichetta)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="35"/>
         <source>Render text as outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Disegna testo come contorno</translation>
     </message>
 </context>
 <context>
@@ -57797,7 +57801,7 @@ L&apos;errore è: %2</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="30"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="43"/>
@@ -59083,17 +59087,17 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="470"/>
         <source>A widget to define the scale visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Widget per definire la scala di visibilità</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="473"/>
         <source>A widget to define the scale visibility.</source>
-        <translation type="unfinished"></translation>
+        <translation>Widget per definire la scala di visibilità.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1132"/>
         <source>Memory cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Cache di memoria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1292"/>
@@ -60113,17 +60117,17 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="67"/>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisi del WMS URI non riuscita</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="97"/>
         <source>Failed to download capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile scaricare le capacità</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="104"/>
         <source>Failed to parse capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile analizzare le capacità</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="210"/>
@@ -60213,19 +60217,19 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="446"/>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisi del WMS URI non riuscita</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="463"/>
         <source>Failed to download capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile scaricare le capacità:</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
         <source>Failed to parse capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile analizzare le capacità:</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
@@ -61342,13 +61346,13 @@ ho provato a aggiungerla.. (ght)
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="353"/>
         <source>Number of tile layers must be one</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation type="unfinished">Numero del layer delle piastrelle deve essere uno</translation>
+        <translation>Numero del layer delle piastrelle deve essere uno</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="360"/>
         <source>Tile layer not found</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation type="unfinished">Layer delle piastrelle non trovato</translation>
+        <translation>Layer delle piastrelle non trovato</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="416"/>
@@ -61533,7 +61537,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
         <source>Bounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Confini</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1913"/>
@@ -61548,7 +61552,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1914"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>In alto</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1914"/>
@@ -61558,7 +61562,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>In basso</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
@@ -64268,7 +64272,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="110"/>
         <source>Offset along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset lungo la linea</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="147"/>
