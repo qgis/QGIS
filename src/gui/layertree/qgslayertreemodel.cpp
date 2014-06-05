@@ -511,6 +511,9 @@ void QgsLayerTreeModel::nodeLayerLoaded()
 
 void QgsLayerTreeModel::layerRendererChanged()
 {
+  if ( !testFlag( ShowSymbology ) )
+    return;
+
   QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
   if ( !layer )
     return;
@@ -543,8 +546,6 @@ void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
   {
     qDeleteAll( mSymbologyNodes[nodeLayer] );
     mSymbologyNodes.remove( nodeLayer );
-
-    disconnect( nodeLayer->layer(), SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ) );
   }
 }
 
@@ -566,9 +567,6 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
   {
     addSymbologyToPluginLayer( nodeL );
   }
-
-  // be ready for any subsequent changes of the renderer
-  connect( nodeL->layer(), SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ) );
 }
 
 
@@ -689,6 +687,8 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   }
 
   QgsMapLayer* layer = nodeLayer->layer();
+  connect( layer, SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ), Qt::UniqueConnection );
+
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     // using unique connection because there may be temporarily more nodes for a layer than just one
