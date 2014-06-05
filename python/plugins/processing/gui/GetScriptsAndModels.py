@@ -164,18 +164,13 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
             return self.notinstalledItem
         else:
             helpFile = os.path.join(self.folder, filename + ".help")
-            if not os.path.exists(helpFile):
-                currentVersion = 1
-            else:
-                with open(helpFile) as f:
+            try:
+                with open(helpFile) as f:                        
                     helpContent = json.load(f)
-                    try:
-                        currentVersion = float(helpContent[Help2Html.ALG_VERSION])
-                    except:
-                        currentVersion = 1
-            print filename, currentVersion, version
-            if version > currentVersion:
-                print version - currentVersion
+                    currentVersion = float(helpContent[Help2Html.ALG_VERSION])
+            except:
+                currentVersion = 1            
+            if version > currentVersion:            
                 return self.toupdateItem
             else:
                 return self.uptodateItem
