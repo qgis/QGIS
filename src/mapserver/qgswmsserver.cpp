@@ -155,7 +155,7 @@ void QgsWMSServer::executeRequest()
     if ( result )
     {
       QgsDebugMsg( "Sending GetMap response" );
-      mRequestHandler->sendGetMapResponse( "WMS", result );
+      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -254,7 +254,7 @@ void QgsWMSServer::executeRequest()
     {
       QgsDebugMsg( "Sending GetLegendGraphic response" );
       //sending is the same for GetMap and GetLegendGraphic
-      mRequestHandler->sendGetMapResponse( "WMS", result );
+      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -1010,12 +1010,13 @@ QImage* QgsWMSServer::getMap()
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
-  QgsDebugMsg( "clearing filters" );
+  // QgsDebugMsg( "clearing filters" );
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 
-#ifdef QGISDEBUG
-  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
-#endif
+  //#ifdef QGISDEBUG
+  //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
+  //#endif
+
   return theImage;
 }
 
@@ -2979,4 +2980,24 @@ QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer
     }
   }
   return attributeVal;
+}
+
+int QgsWMSServer::getImageQuality( ) const
+{
+
+  // First taken from QGIS project
+  int imageQuality = mConfigParser->imageQuality();
+
+  // Then checks if a parameter is given, if so use it instead
+  if ( mParameters.contains( "IMAGE_QUALITY" ) )
+  {
+    bool conversionSuccess;
+    int imageQualityParameter;
+    imageQualityParameter = mParameters[ "IMAGE_QUALITY" ].toInt( &conversionSuccess );
+    if ( conversionSuccess )
+    {
+      imageQuality = imageQualityParameter;
+    }
+  }
+  return imageQuality;
 }

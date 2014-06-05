@@ -35,7 +35,7 @@ class QgsRequestHandler
     /**Parses the input and creates a request neutral Parameter/Value map*/
     virtual QMap<QString, QString> parseInput() = 0;
     /**Sends the map image back to the client*/
-    virtual void sendGetMapResponse( const QString& service, QImage* img ) const = 0;
+    virtual void sendGetMapResponse( const QString& service, QImage* img, int imageQuality ) const = 0;
     virtual void sendGetCapabilitiesResponse( const QDomDocument& doc ) const = 0;
     virtual void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const = 0;
     virtual void sendServiceException( const QgsMapServiceException& ex ) const = 0;

@@ -33,7 +33,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     QgsHttpRequestHandler();
     ~QgsHttpRequestHandler();
 
-    virtual void sendGetMapResponse( const QString& service, QImage* img ) const;
+    virtual void sendGetMapResponse( const QString& service, QImage* img, int imageQuality ) const;
     virtual void sendGetCapabilitiesResponse( const QDomDocument& doc ) const;
     virtual void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
     virtual void sendServiceException( const QgsMapServiceException& ex ) const;

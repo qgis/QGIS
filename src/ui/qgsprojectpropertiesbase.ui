@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>827</width>
-    <height>759</height>
+    <width>857</width>
+    <height>830</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -211,8 +211,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>708</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -766,8 +766,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>708</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -816,8 +816,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>708</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -888,8 +888,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>708</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1256,8 +1256,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>637</width>
-                <height>1535</height>
+                <width>667</width>
+                <height>1570</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1415,6 +1415,112 @@
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
+                  <item row="0" column="1" colspan="2">
+                   <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
+                    <property name="title">
+                     <string>CRS restrictions</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <property name="collapsed" stdset="0">
+                     <bool>false</bool>
+                    </property>
+                    <property name="saveCollapsedState" stdset="0">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_5">
+                     <item row="1" column="0">
+                      <widget class="QToolButton" name="pbnWMSAddSRS">
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0" colspan="4">
+                      <widget class="QListWidget" name="mWMSList"/>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                       <property name="text">
+                        <string>Used</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QToolButton" name="pbnWMSRemoveSRS">
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
+                    <property name="title">
+                     <string>Exclude composers</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <property name="collapsed" stdset="0">
+                     <bool>false</bool>
+                    </property>
+                    <property name="saveCollapsedState" stdset="0">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_10">
+                     <item row="0" column="0" colspan="3">
+                      <widget class="QListWidget" name="mComposerListWidget"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QToolButton" name="mAddWMSComposerButton">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QToolButton" name="mRemoveWMSComposerButton">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <spacer name="horizontalSpacer_2">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
                   <item row="2" column="0" colspan="3">
                    <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
                     <property name="text">
@@ -1481,7 +1587,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="3" column="0" colspan="3">
+                  <item row="4" column="0" colspan="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="mWMSUrlLabel">
@@ -1495,7 +1601,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="4" column="0" colspan="3">
+                  <item row="5" column="0" colspan="3">
                    <layout class="QGridLayout" name="gridLayout_3">
                     <item row="1" column="1">
                      <widget class="QLabel" name="mMaxWidthLabel">
@@ -1651,111 +1757,32 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="0" column="1" colspan="2">
-                   <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
-                    <property name="title">
-                     <string>CRS restrictions</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_5">
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="pbnWMSAddSRS">
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0" colspan="4">
-                      <widget class="QListWidget" name="mWMSList"/>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                       <property name="text">
-                        <string>Used</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="pbnWMSRemoveSRS">
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
-                    <property name="title">
-                     <string>Exclude composers</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_10">
-                     <item row="0" column="0" colspan="3">
-                      <widget class="QListWidget" name="mComposerListWidget"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="mAddWMSComposerButton">
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="mRemoveWMSComposerButton">
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <spacer name="horizontalSpacer_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
+                  <item row="6" column="0" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_10">
+                    <item>
+                     <widget class="QLabel" name="mWMSImageQualityLabel">
+                      <property name="text">
+                       <string>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mWMSImageQualitySpinBox">
+                      <property name="minimum">
+                       <number>10</number>
+                      </property>
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>5</number>
+                      </property>
+                      <property name="value">
+                       <number>90</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -1944,8 +1971,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>708</height>
+                <width>166</width>
+                <height>114</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2051,6 +2078,98 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>cbxAbsolutePath</tabstop>
+  <tabstop>pbnSelectionColor</tabstop>
+  <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>titleEdit</tabstop>
+  <tabstop>leSemiMajor</tabstop>
+  <tabstop>leSemiMinor</tabstop>
+  <tabstop>cmbEllipsoid</tabstop>
+  <tabstop>radDegrees</tabstop>
+  <tabstop>radNMiles</tabstop>
+  <tabstop>radFeet</tabstop>
+  <tabstop>radMeters</tabstop>
+  <tabstop>radD</tabstop>
+  <tabstop>radDM</tabstop>
+  <tabstop>radDMS</tabstop>
+  <tabstop>spinBoxDP</tabstop>
+  <tabstop>radManual</tabstop>
+  <tabstop>radAutomatic</tabstop>
+  <tabstop>grpProjectScales</tabstop>
+  <tabstop>lstScales</tabstop>
+  <tabstop>pbnAddScale</tabstop>
+  <tabstop>pbnRemoveScale</tabstop>
+  <tabstop>pbnImportScales</tabstop>
+  <tabstop>pbnExportScales</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>cbxProjectionEnabled</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>twIdentifyLayers</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>pbtnStyleMarker</tabstop>
+  <tabstop>pbtnStyleLine</tabstop>
+  <tabstop>cboStyleFill</tabstop>
+  <tabstop>cboStyleMarker</tabstop>
+  <tabstop>pbtnStyleFill</tabstop>
+  <tabstop>cboStyleLine</tabstop>
+  <tabstop>cboStyleColorRamp</tabstop>
+  <tabstop>pbtnStyleColorRamp</tabstop>
+  <tabstop>mTransparencySlider</tabstop>
+  <tabstop>mTransparencySpinBox</tabstop>
+  <tabstop>cbxStyleRandomColors</tabstop>
+  <tabstop>pbtnStyleManager</tabstop>
+  <tabstop>scrollArea_5</tabstop>
+  <tabstop>grpOWSServiceCapabilities</tabstop>
+  <tabstop>mWMSTitle</tabstop>
+  <tabstop>mWMSContactOrganization</tabstop>
+  <tabstop>mWMSOnlineResourceLineEdit</tabstop>
+  <tabstop>mWMSContactPerson</tabstop>
+  <tabstop>mWMSContactMail</tabstop>
+  <tabstop>mWMSContactPhone</tabstop>
+  <tabstop>mWMSAbstract</tabstop>
+  <tabstop>mWMSFees</tabstop>
+  <tabstop>mWMSAccessConstraints</tabstop>
+  <tabstop>mWMSKeywordList</tabstop>
+  <tabstop>mWMSComposerGroupBox</tabstop>
+  <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mAddWMSComposerButton</tabstop>
+  <tabstop>mRemoveWMSComposerButton</tabstop>
+  <tabstop>mAddWktGeometryCheckBox</tabstop>
+  <tabstop>mLayerRestrictionsGroupBox</tabstop>
+  <tabstop>mLayerRestrictionsListWidget</tabstop>
+  <tabstop>mAddLayerRestrictionButton</tabstop>
+  <tabstop>mRemoveLayerRestrictionButton</tabstop>
+  <tabstop>mWMSUrlLineEdit</tabstop>
+  <tabstop>mMaxHeightLineEdit</tabstop>
+  <tabstop>mMaxWidthLineEdit</tabstop>
+  <tabstop>mWMSImageQualitySpinBox</tabstop>
+  <tabstop>grpWMSExt</tabstop>
+  <tabstop>mWMSExtMinX</tabstop>
+  <tabstop>mWMSExtMinY</tabstop>
+  <tabstop>mWMSExtMaxX</tabstop>
+  <tabstop>mWMSExtMaxY</tabstop>
+  <tabstop>pbnWMSExtCanvas</tabstop>
+  <tabstop>grpWMSList</tabstop>
+  <tabstop>pbnWMSAddSRS</tabstop>
+  <tabstop>mWMSList</tabstop>
+  <tabstop>pbnWMSSetUsedSRS</tabstop>
+  <tabstop>pbnWMSRemoveSRS</tabstop>
+  <tabstop>twWFSLayers</tabstop>
+  <tabstop>pbnWFSLayersUnselectAll</tabstop>
+  <tabstop>pbnWFSLayersSelectAll</tabstop>
+  <tabstop>mWFSUrlLineEdit</tabstop>
+  <tabstop>twWCSLayers</tabstop>
+  <tabstop>pbnWCSLayersUnselectAll</tabstop>
+  <tabstop>pbnWCSLayersSelectAll</tabstop>
+  <tabstop>mWCSUrlLineEdit</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>grpPythonMacros</tabstop>
+  <tabstop>ptePythonMacros</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
