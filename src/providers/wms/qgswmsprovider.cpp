@@ -240,7 +240,7 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
       {
         const QgsWmsLegendUrlProperty &l = s.legendUrl[k];
 
-        if ( l.format != mImageMimeType )
+        if ( l.format != mSettings.mImageMimeType )
           continue;
 
         url = l.onlineResource.xlinkHref;

@@ -406,11 +406,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QMap<QString, bool> mActiveSubLayerVisibility;
 
     /**
-     * MIME type of the image encoding used from the WMS server
-     */
-    QString mImageMimeType;
-
-    /**
      * WMS CRS type of the image CRS used from the WMS server
      */
     QString mImageCrs;
