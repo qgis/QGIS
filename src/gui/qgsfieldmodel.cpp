@@ -232,10 +232,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return mExpression[exprIdx];
       }
-      QgsField field = mFields[index.internalId()];
-      const QMap< QString, QString > aliases = mLayer->attributeAliases();
-      QString alias = aliases.value( field.name(), field.name() );
-      return alias;
+      return mLayer->attributeDisplayName( index.internalId() );
     }
 
     case Qt::ForegroundRole:
