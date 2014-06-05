@@ -1112,7 +1112,7 @@ QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 
 QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  if ( mGdalDataType.size() == 0 ) return QGis::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return QGis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
