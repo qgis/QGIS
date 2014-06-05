@@ -128,6 +128,8 @@ class ScriptAlgorithm(GeoAlgorithm):
         if '|' in line:
             self.processDescriptionParameterLine(line)
             return
+        if line == "nomodeler":
+            self.showInModeler = False
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
