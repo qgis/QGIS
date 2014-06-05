@@ -27,6 +27,9 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDatumTransformDialog();
 
+    //! @note added in 2.4
+    void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId );
+
     QList< int > selectedDatumTransform();
 
     bool rememberSelection() const;
@@ -36,12 +39,15 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
 
   private:
     QgsDatumTransformDialog();
+    void updateTitle();
     bool gridShiftTransformation( const QString& itemText ) const;
     /**Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
     bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
     void load();
 
     const QList< QList< int > > &mDt;
+    QString mLayerName;
+    QString mSrcCRSauthId, mDestCRSauthId;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H

@@ -6,6 +6,7 @@
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatumtransformstore.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
@@ -95,6 +96,9 @@ class CORE_EXPORT QgsMapSettings
 
     // -- utility functions --
 
+    const QgsDatumTransformStore& datumTransformStore() const { return mDatumTransformStore; }
+    QgsDatumTransformStore& datumTransformStore() { return mDatumTransformStore; }
+
     const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
 
     /**
@@ -137,6 +141,12 @@ class CORE_EXPORT QgsMapSettings
      */
     QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const;
 
+    /**
+     * @brief Return coordinate transform from layer's CRS to destination CRS
+     * @param layer
+     * @return transform - may be null if the transform is not needed
+     */
+    const QgsCoordinateTransform* layerTransfrom( QgsMapLayer *layer ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
@@ -159,6 +169,7 @@ class CORE_EXPORT QgsMapSettings
 
     bool mProjectionsEnabled;
     QgsCoordinateReferenceSystem mDestCRS;
+    QgsDatumTransformStore mDatumTransformStore;
 
     QColor mBackgroundColor;
     QColor mSelectionColor;
@@ -178,10 +189,7 @@ class CORE_EXPORT QgsMapSettings
     QgsScaleCalculator mScaleCalculator;
     QgsMapToPixel mMapToPixel;
 
-
     void updateDerived();
-
-    const QgsCoordinateTransform* coordTransform( QgsMapLayer *layer ) const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

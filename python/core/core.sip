@@ -25,6 +25,7 @@
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
+%Include qgsdatumtransformstore.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
 %Include qgseditorwidgetconfig.sip

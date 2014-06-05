@@ -25,12 +25,13 @@
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mDt( dt )
+    , mLayerName( layerName )
 {
   setupUi( this );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
-  setWindowTitle( tr( "Select datum transformations for layer" ) + " " + layerName );
+  updateTitle();
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/DatumTransformDialog/geometry" ).toByteArray() );
@@ -134,6 +135,13 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId )
+{
+  mSrcCRSauthId = srcCRSauthId;
+  mDestCRSauthId = destCRSauthId;
+  updateTitle();
+}
+
 QList< int > QgsDatumTransformDialog::selectedDatumTransform()
 {
   QList<int> list;
@@ -215,4 +223,12 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
 void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
 {
   load();
+}
+
+void QgsDatumTransformDialog::updateTitle()
+{
+  QString title = tr( "Select datum transformations for layer" ) + " " + mLayerName;
+  if ( !mSrcCRSauthId.isEmpty() && !mDestCRSauthId.isEmpty() )
+    title += QString( " (%1 -> %2)" ).arg( mSrcCRSauthId ).arg( mDestCRSauthId );
+  setWindowTitle( title );
 }

@@ -201,8 +201,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setFocusPolicy( Qt::StrongFocus );
 
   mMapRenderer = new QgsMapRenderer;
-  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( const QgsMapLayer*, const QString&, const QString& ) ),
-           this, SLOT( getDatumTransformInfo( const QgsMapLayer*, const QString& , const QString& ) ) );
 
   mResizeTimer = new QTimer( this );
   mResizeTimer->setSingleShot( true );
@@ -423,6 +421,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       }
     }
 
+    updateDatumTransformEntries();
+
     QgsDebugMsg( "Layers have changed, refreshing" );
     emit layersChanged();
 
@@ -509,6 +509,8 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   }
 
   mSettings.setDestinationCrs( crs );
+
+  updateDatumTransformEntries();
 
   emit destinationCrsChanged();
 }
@@ -1551,6 +1553,22 @@ void QgsMapCanvas::connectNotify( const char * signal )
 } //connectNotify
 
 
+void QgsMapCanvas::updateDatumTransformEntries()
+{
+  QString destAuthId = mSettings.destinationCrs().authid();
+  foreach ( QString layerID, mSettings.layers() )
+  {
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    if ( !layer )
+      continue;
+
+    // if there are more options, ask the user which datum transform to use
+    if ( !mSettings.datumTransformStore().hasEntryForLayer( layer ) )
+      getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
+  }
+}
+
+
 
 QgsMapTool* QgsMapCanvas::mapTool()
 {
@@ -1683,7 +1701,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
     setExtent( tmpSettings.extent() );
-    // TODO: read only units, extent, projections, dest CRS
+    mSettings.datumTransformStore() = tmpSettings.datumTransformStore();
 
     clearExtentHistory(); // clear the extent history on project load
   }
@@ -1727,6 +1745,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
   if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
   {
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
     return;
   }
@@ -1737,6 +1756,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
   {
     // just use the default transform
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
     return;
   }
@@ -1750,7 +1770,8 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
   //if several possibilities:  present dialog
   QgsDatumTransformDialog d( ml->name(), dt );
-  if ( mMapRenderer && ( d.exec() == QDialog::Accepted ) )
+  d.setDatumTransformInfo( srcCRS.authid(), destCRS.authid() );
+  if ( d.exec() == QDialog::Accepted )
   {
     int srcTransform = -1;
     int destTransform = -1;
@@ -1763,6 +1784,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     {
       destTransform = t.at( 1 );
     }
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
     if ( d.rememberSelection() )
     {
@@ -1772,6 +1794,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   }
   else
   {
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
   }
 }

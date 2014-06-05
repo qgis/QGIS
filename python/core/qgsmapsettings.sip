@@ -80,6 +80,9 @@ class QgsMapSettings
 
     // -- utility functions --
 
+    //const QgsDatumTransformStore& datumTransformStore() const;
+    QgsDatumTransformStore& datumTransformStore();
+
     const QgsMapToPixel& mapToPixel() const;
 
     /**
@@ -122,6 +125,12 @@ class QgsMapSettings
      */
     QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const;
 
+    /**
+     * @brief Return coordinate transform from layer's CRS to destination CRS
+     * @param layer
+     * @return transform - may be null if the transform is not needed
+     */
+    const QgsCoordinateTransform* layerTransfrom( QgsMapLayer *layer ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;

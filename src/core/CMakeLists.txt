@@ -74,6 +74,7 @@ SET(QGIS_CORE_SRCS
   qgsdatadefined.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
+  qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
@@ -431,6 +432,7 @@ SET(QGIS_CORE_HDRS
   qgsdatadefined.h
   qgsdatasourceuri.h
   qgsdataitem.h
+  qgsdatumtransformstore.h
   qgsdistancearea.h
   qgscsexception.h
   qgseditorwidgetconfig.h

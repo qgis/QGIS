@@ -547,6 +547,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     void connectNotify( const char * signal );
 
+    //! Make sure the datum transform store is properly populated
+    void updateDatumTransformEntries();
+
   private:
     /// this class is non-copyable
     /**
@@ -620,7 +623,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Optionally use cache with rendered map layers for the current map settings
     QgsMapRendererCache* mCache;
-
 
     QTimer *mResizeTimer;
 
