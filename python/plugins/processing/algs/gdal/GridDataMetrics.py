@@ -53,6 +53,9 @@ class GridDataMetrics(GdalAlgorithm):
     DATA_METRICS = ['Minimum', 'Maximum', 'Range', 'Count', 'Average distance',
                     'Average distance between points']
 
+    def commandLineName(self):
+        return "gdalogr:griddatametrics"
+    
     def defineCharacteristics(self):
         self.name = 'Grid (Data metrics)'
         self.group = '[GDAL] Analysis'

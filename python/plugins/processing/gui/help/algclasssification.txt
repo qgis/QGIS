@@ -15,7 +15,12 @@ gdalogr:slope,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphome
 gdalogr:aspect,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 gdalogr:hillshade,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
 gdalogr:polygonize,Vectorize raster layer,Raster - vector/Raster -> Vector
-gdalogr:rasterize,Rasterize vector layer,Raster - vector/Vector -> Raster
+gdalogr:gridrasterize,Rasterize vector layer,Raster - vector/Vector -> Raster
+gdalogr:gridnearestneighbor, Interpolate (Nearest Neighbor),Raster - vector/Vector -> Raster
+gdalogr:griddatametrics, Interpolate (Data metrics),Raster - vector/Vector -> Raster
+gdalogr:gridinvdist, Interpolate (Inverse distance weighting),Raster - vector/Vector -> Raster
+gdalogr:gridaverage, Interpolate (Average),Raster - vector/Vector -> Raster
+gdalogr:contour, Contour lines,Raster - vector/Raster -> Vector
 otb:bandmath,USE_ORIGINAL_NAME,Images/Miscellaneous
 otb:binarymorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering
 otb:bundletoperfectsensor,USE_ORIGINAL_NAME,Images/Geometry
@@ -185,7 +190,6 @@ saga:closeonecellgaps,USE_ORIGINAL_NAME,Raster/General tools
 saga:clusteranalysis,USE_ORIGINAL_NAME,Vector/General tools
 saga:clusteranalysisforgrids,USE_ORIGINAL_NAME,Raster/Analysis
 saga:combinegrids,USE_ORIGINAL_NAME,Raster/General tools
-saga:contourlinesfromgrid,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:convergenceindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:convergenceindexsearchradius,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:convertdatastoragetype,USE_ORIGINAL_NAME,Raster/General tools
@@ -205,7 +209,7 @@ saga:creategraticule,Create graticule from extent,Vector/Creation
 saga:croptodata,USE_ORIGINAL_NAME,Raster/General tools
 saga:crossclassificationandtabulation,USE_ORIGINAL_NAME,Raster/General tools
 saga:crossprofiles,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:cubicsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:cubicsplineapproximation, Interpolate (Cubic spline),Raster - vector/Vector -> Raster
 saga:curvatureclassification,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:cutshapeslayer,USE_ORIGINAL_NAME,Vector/Overlay
 saga:dailytohourlypet,USE_ORIGINAL_NAME,Domain specific/Miscellaneous
@@ -267,7 +271,6 @@ saga:gridvaluestopoints,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:gridvaluestopointsrandomly,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:gridvolume,USE_ORIGINAL_NAME,Raster/Miscellaneous
 saga:hypsometry,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:inversedistanceweighted,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
 saga:invertdatanodata,USE_ORIGINAL_NAME,Raster/General tools
 saga:kerneldensityestimation,USE_ORIGINAL_NAME,Raster/Statistics
 saga:lakeflood,USE_ORIGINAL_NAME,Raster/Miscellaneous
@@ -287,7 +290,7 @@ saga:mergeshapeslayers,USE_ORIGINAL_NAME,Vector/General tools
 saga:mergerasterlayers,USE_ORIGINAL_NAME,Raster/General tools
 saga:metricconversions,USE_ORIGINAL_NAME,Raster/Edition
 saga:minimumdistanceanalysis,USE_ORIGINAL_NAME,Vector/Points
-saga:modifedquadraticshepard,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:modifedquadraticshepard,Interpolate (Modified quadratic shepard),Raster - vector/Vector -> Raster
 saga:morphologicalfilter,USE_ORIGINAL_NAME,Raster/Filters
 saga:morphometricprotectionindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:multibandvariation,USE_ORIGINAL_NAME,Raster/Analysis
@@ -297,8 +300,7 @@ saga:multilevelbsplineinterpolationfromgrid,USE_ORIGINAL_NAME,Raster - vector/Ve
 saga:multipleregressionanalysisgridgrids,USE_ORIGINAL_NAME,Raster/Statistics
 saga:multipleregressionanalysispointsgrid,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
 saga:multiresolutionindexofvalleybottomflatnessmrvbf,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:naturalneighbour,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:nearestneighbour,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:naturalneighbour, Interpolate (Natural neighbor),Raster - vector/Vector -> Raster
 saga:orderedweightedaveragingowa,USE_ORIGINAL_NAME,Raster/Analysis
 saga:ordinarykriging,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
 saga:ordinarykrigingglobal,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster

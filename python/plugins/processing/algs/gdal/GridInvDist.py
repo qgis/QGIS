@@ -51,6 +51,9 @@ class GridInvDist(GdalAlgorithm):
     NODATA = 'NODATA'
     OUTPUT = 'OUTPUT'
 
+    def commandLineName(self):
+        return "gdalogr:gridinvdist"
+    
     def defineCharacteristics(self):
         self.name = 'Grid (Inverse distance to a power)'
         self.group = '[GDAL] Analysis'
