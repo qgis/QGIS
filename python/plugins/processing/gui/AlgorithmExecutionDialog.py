@@ -101,9 +101,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.logText.readOnly = True
         self.tabWidget.addTab(self.logText, 'Log')
         self.webView = QtWebKit.QWebView()
-        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), 'help',
-                             'help.css'))
-        self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
         url = None
         try:
