@@ -339,24 +339,12 @@ double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSym
 
 QColor QgsSimpleFillSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
-  if ( mBrushStyle == Qt::NoBrush )
+  QgsExpression* colorBorderExpression = expression( "color_border" );
+  if ( colorBorderExpression )
   {
-    QgsExpression* colorBorderExpression = expression( "color_border" );
-    if ( colorBorderExpression )
-    {
-      return QgsSymbolLayerV2Utils::decodeColor( colorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
-    }
-    return mBorderColor;
+    return QgsSymbolLayerV2Utils::decodeColor( colorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
-  else
-  {
-    QgsExpression* colorExpression = expression( "color" );
-    if ( colorExpression )
-    {
-      return QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
-    }
-    return mColor;
-  }
+  return mBorderColor;
 }
 
 Qt::PenStyle QgsSimpleFillSymbolLayerV2::dxfPenStyle() const
