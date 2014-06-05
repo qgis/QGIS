@@ -185,7 +185,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                     found = True
                     break
             if found:
-                param = ParameterTableField(tokens[0], tokens[0], field)
+                param = ParameterTableField(tokens[0], desc, field)
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
@@ -207,6 +207,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith('output file'):
             out = OutputFile()
+            subtokens = tokens[1].split(' ')
+            if len(subtokens > 2):
+                out.ext = subtokens[2] 
         elif tokens[1].lower().strip().startswith('output directory'):
             out = OutputDirectory()
         elif tokens[1].lower().strip().startswith('output number'):
@@ -218,7 +221,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addParameter(param)
         elif out is not None:
             out.name = tokens[0]
-            out.description = tokens[0]
+            out.description = desc
             self.addOutput(out)
         else:
             raise WrongScriptException('Could not load script:'
