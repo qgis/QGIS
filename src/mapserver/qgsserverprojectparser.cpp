@@ -649,9 +649,14 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
         displayField = vLayer->attributeDisplayName( idx );
       }
       QDomElement attributeElem = doc.createElement( "Attribute" );
-      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( idx ) );
+      attributeElem.setAttribute( "name", field.name() );
       attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
       attributeElem.setAttribute( "typeName", field.typeName() );
+      QString alias = vLayer->attributeAlias( idx );
+      if ( !alias.isEmpty() )
+      {
+        attributeElem.setAttribute( "alias", alias );
+      }
 
       //edit type to text
       attributeElem.setAttribute( "editType", vLayer->editorWidgetV2( idx ) );

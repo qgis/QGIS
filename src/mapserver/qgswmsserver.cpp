@@ -2869,12 +2869,18 @@ QDomElement QgsWMSServer::createFeatureGML(
     }
   }
 
-  //read all attribute values from the feature
+  //read all allowed attribute values from the feature
+  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
   QgsAttributes featureAttributes = feat->attributes();
   const QgsFields* fields = feat->fields();
   for ( int i = 0; i < fields->count(); ++i )
   {
     QString attributeName = fields->at( i ).name();
+    //skip attribute if it is explicitly excluded from WMS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
     QString fieldTextString = featureAttributes[i].toString();
     if ( layer )
