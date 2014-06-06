@@ -74174,7 +74174,22 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_hsl()&lt;/h3&gt;
+Zwraca tekst reprezentujący kolor w modelu Hue-Saturation-Lightness (barwa, nasycenie, światło)
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; barwa kolory, liczba całkowita z zakresu 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; procent nasycenia, liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; procent światła, liczba całkowita z zakresu 0-100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="617"/>
@@ -74191,7 +74206,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja xmax&lt;/h3&gt;
+Zwraca największą wartość współrzędnej x obiektu geometrycznego podaną w jego układzie współrzędnych.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;xmax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; xmax($geometry) &amp;rarr; zwraca największą współrzędną x $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="668"/>
@@ -74208,7 +74235,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja bounds&lt;/h3&gt;
+Zwraca geometrię reprezentująca prostokąt ograniczający zadany obiekt geometryczny. Współrzędne podane są w układzie współrzędnych zadanej geometrii. 
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;bounds(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; bounds($geometry) &amp;rarr; zwraca prostokąt ograniczający $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="875"/>
@@ -74225,7 +74264,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja ymax&lt;/h3&gt;
+Zwraca największą wartość współrzędnej y obiektu geometrycznego podaną w jego układzie współrzędnych.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;ymax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; ymax($geometry) &amp;rarr; zwraca największą współrzędną y $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1032"/>
@@ -74476,7 +74527,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja ymin&lt;/h3&gt;
+Zwraca najmniejszą wartość współrzędnej y obiektu geometrycznego podaną w jego układzie współrzędnych.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;ymin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; ymin($geometry) &amp;rarr; zwraca najmniejszą współrzędną y $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1722"/>
@@ -74549,7 +74612,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja xmin&lt;/h3&gt;
+Zwraca najmniejszą wartość współrzędnej x obiektu geometrycznego podaną w jego układzie współrzędnych.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;xmin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; xmin($geometry) &amp;rarr; zwraca najmniejszą współrzędną x $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="2078"/>
@@ -76577,7 +76652,19 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja geomFromGML&lt;/h3&gt;
+Zwraca geometrię zapisaną w formacie GML
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;geomFromGML(tekst)&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+tekst &amp;rarr; reprezentacja geometrii w formacie GML
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; zwraca geometrię&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="2024"/>
@@ -76595,7 +76682,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja combine&lt;/h3&gt;
+Zwraca kombinację geometrii a oraz geometrii b.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;combine(a, b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometria a
+b &amp;rarr; geometria b
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="828"/>
@@ -76613,7 +76713,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja intersects&lt;/h3&gt;
+Zwraca 1, jeśli zadane geometrie przecinają się (współdzielą dowolny obszar przestrzeni), zaś 0 w przeciwnym przypadku.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;intersects( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometria
+b &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; zwraca 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; zwraca 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1382"/>
@@ -76637,7 +76750,26 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja clamp()&lt;/h3&gt;
+Ogranicza dane wejściowe do określonego zakresu.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;input&lt;/i&gt;,&lt;i&gt;maksimum&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; najmniejsza dopuszczalna wartość &lt;i&gt;input&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  input&lt;/i&gt; &amp;rarr; wartość, która zostanei ograniczona do zakresu określonego przez &lt;i&gt;minimum&lt;/i&gt; i &lt;i&gt;maksimum&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  maksimum&lt;/i&gt; &amp;rarr; największa dopuszczalna wartość &lt;i&gt;input&lt;/i&gt;.&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;input&lt;/i&gt; mieści się w zadanym 1-10, więc nie zostanie zmieniona)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;input&lt;/i&gt; jest mniejsze niż minimum (1), więc funkcja zwróci 1)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; jest większe niż maksimum (10), więc funkcja zwróci 10)&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="842"/>
@@ -76695,7 +76827,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;wyrażenie IS&lt;/h3&gt;
+        <translation>&lt;h3&gt;wyrażenie IS&lt;/h3&gt;
 Zwraca 1 jeśli a jest takie samo jak b.
 
 &lt;h4&gt;Składnia&lt;/h4&gt;
@@ -76704,14 +76836,13 @@ Zwraca 1 jeśli a jest takie samo jak b.
 &lt;h4&gt;Argumenty&lt;/h4&gt;
 Brak
 
-&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;h4&gt;Przykłady&lt;/h4&gt;
 &lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; zwraca 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; zwraca 0 &lt;/pre&gt;
 &lt;pre&gt; 4 IS 4      &amp;rarr; zwraca 1 &lt;/pre&gt;
 &lt;pre&gt; 4 IS 2+2    &amp;rarr; zwraca 1 &lt;/pre&gt;
 &lt;pre&gt; 4 IS 2      &amp;rarr; zwraca 0 &lt;/pre&gt;
-&lt;pre&gt; 4 IS 2      &amp;rarr; zwraca 0 &lt;/pre&gt;
-&lt;pre&gt; $geometry IS NULL  &amp;rarr; zwraca 0, jeśli twoja geometria nie jest NULL&lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; zwraca 0, jeśli geometria nie jest NULL&lt;/pre&gt;
 
 </translation>
     </message>
