@@ -91,7 +91,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     }
     mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 1, 0.01, true );*/
 
-    QStringList textList = text.split( "\n" );
+    QStringList textList = text.split( tmpLyr.wrapChar );
     double textHeight = label->getHeight() / textList.size();
     QFontMetricsF fm( tmpLyr.textFont );
     double textAscent = textHeight * fm.ascent() / fm.height();
