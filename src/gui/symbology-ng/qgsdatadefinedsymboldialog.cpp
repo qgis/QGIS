@@ -33,6 +33,8 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefined
 
     // expression
     QgsFieldExpressionWidget* few = new QgsFieldExpressionWidget( this );
+    few->setMaximumWidth( 350 );
+    few->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     few->setLayer( const_cast<QgsVectorLayer*>( vl ) );
     few->setField( entryIt->initialValue );
     mTreeWidget->setItemWidget( item, 1, few );
