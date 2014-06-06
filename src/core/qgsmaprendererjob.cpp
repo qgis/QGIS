@@ -409,7 +409,8 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
     if ( settings.hasCrsTransformEnabled() )
     {
       ct = settings.layerTransfrom( ml );
-      reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+      if ( ct )
+         reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
     }
 
     renderContext.setCoordinateTransform( ct );
@@ -572,7 +573,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     if ( mSettings.hasCrsTransformEnabled() )
     {
       ct = mSettings.layerTransfrom( ml );
-      reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+      if ( ct )
+      {
+        reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+      }
       QgsDebugMsg( "extent: " + r1.toString() );
       if ( !r1.isFinite() || !r2.isFinite() )
       {
