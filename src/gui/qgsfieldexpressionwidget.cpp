@@ -195,6 +195,18 @@ void QgsFieldExpressionWidget::currentFieldChanged( int i /* =0 */ )
 
   bool isExpression, isValid;
   QString fieldName = currentField( &isExpression, &isValid );
+
+  // display tooltip if widget is shorter than expression
+  QFontMetrics metrics( mCombo->lineEdit()->font() );
+  if ( metrics.width( fieldName ) > mCombo->lineEdit()->width() )
+  {
+    mCombo->setToolTip( fieldName );
+  }
+  else
+  {
+    mCombo->setToolTip( "" );
+  }
+
   emit fieldChanged( fieldName );
   emit fieldChanged( fieldName, isValid );
 }
