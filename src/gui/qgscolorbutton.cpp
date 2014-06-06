@@ -25,6 +25,7 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QClipboard>
+#include <QDrag>
 
 /*!
   \class QgsColorButton
@@ -117,7 +118,7 @@ QMimeData * QgsColorButton::createColorMimeData() const
 bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resultColor )
 {
   //attempt to read color data directly from mime
-  QColor mimeColor = qVariantValue<QColor>( mimeData->colorData() );
+  QColor mimeColor = mimeData->colorData().value<QColor>();
   if ( mimeColor.isValid() )
   {
     if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
