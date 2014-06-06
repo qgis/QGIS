@@ -40,7 +40,7 @@ If when calculating the value of a given cell, a no-data value appears in any of
 Parameters
 ----------
 
-- ``Grids[MultipleInput]``: The grids to use. They can be refered in the formula using letters (``a, b, c...``), or the letter ``g`` followed by the index number (``g1, g2, g3...``). The order for this naming is the same order as they appear in the selection window.
+- ``Grids[MultipleInput]``: The grids to use. They can be refered in the formula using letters (``a, b, c...``). The order for this naming is the same order as they appear in the selection window.
 - ``Formula[String]``: The formula to use, which can use any of the expressions listeed above. 
 
 Outputs
@@ -53,7 +53,7 @@ Example
 
 You can for instance use the Grid Calculator module to flag 0 cells with -1:
 
-``ifelse(eq(g1,0), (-1), g2)``
+``ifelse(eq(a,0), (-1), b)``
 
 The formula reads like "if the cell is equal to zero, then write -1 else write the current value to the output grid".
 
