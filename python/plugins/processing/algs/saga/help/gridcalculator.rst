@@ -48,6 +48,15 @@ Outputs
 
 - ``Result[Raster]``: The resulting layer.
 
+Example
+-------
+
+You can for instance use the Grid Calculator module to flag 0 cells with -1:
+
+ifelse(eq(g1,0), (-1), g2)
+
+The formula reads like "if the cell is equal to zero, then write -1 else write the current value to the output grid".
+
 See also
 ---------
 
