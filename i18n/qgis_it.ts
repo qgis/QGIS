@@ -2254,7 +2254,7 @@ Questo può provocare risultati inattesi.</translation>
         <source>There were %d vertices in original dataset which
 were reduced to %d vertices after simplification</source>
         <translatorcomment>proporrei &quot;I %d vertici del dataset originale......&quot; (gc)</translatorcomment>
-        <translation>C&apos;erano %d vertici nel dataset originale
+        <translation>C&apos;erano %d vertici nei dati originali
 sono stati ridotti a %d vertici dopo la semplificazione</translation>
     </message>
     <message>
@@ -4351,7 +4351,7 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Select where to save the TileIndex output</source>
-        <translation>Scegli dove salvare l&apos;output dell&apos;indice delle tiles</translation>
+        <translation>Scegli dove salvare l&apos;output dell&apos;indice delle mattonelle</translation>
     </message>
     <message>
         <source>Error retrieving the extent</source>
@@ -5386,9 +5386,9 @@ utile per l&apos;uso direttamente con Imagine, ArcGIS, GDAL.</translation>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation>Per esporre un set di dati monobanda con una tabella di colori come set di dati con 3 (RGB) o 4 (RGBA) bande. 
-Utile per i driver di output come JPEG, JPEG2000, MrSID, ECW che non supportano set di dati indicizzati per colore. 
-Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un set di dati con una tabella colore che contiene solo livelli di grigio ad un set di dati indicizzati sul grigio.</translation>
+        <translation>Per esporre dati monobanda con una tabella di colori come set di dati con 3 (RGB) o 4 (RGBA) bande. 
+Utile per i driver di output come JPEG, JPEG2000, MrSID, ECW che non supportano dati indicizzati per colore. 
+Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere dati con una tabella colore che contiene solo livelli di grigio a dati indicizzati sul grigio.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
@@ -5569,7 +5569,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="14"/>
         <source>Raster tile index</source>
-        <translation>Indice delle tiles raster</translation>
+        <translation>Indice delle mattonelle raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="22"/>
@@ -5584,7 +5584,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="49"/>
         <source>Tile index field</source>
-        <translation>Campo delle tiles raster</translation>
+        <translation>Campo delle mattonelle raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="59"/>
@@ -7240,12 +7240,12 @@ Agisce su tutti i vettori editabili
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1866"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation>Stira e taglia l&apos;istogramma all&apos;intero dataset</translation>
+        <translation>Stira e taglia l&apos;istogramma all&apos;intero raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1869"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
-        <translation>Stira e taglia l&apos;istogramma locale all&apos;intero dataset, limiti predefiniti e valori stimati.</translation>
+        <translation>Stira e taglia l&apos;istogramma locale all&apos;intero raster, limiti predefiniti e valori stimati.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1881"/>
@@ -7497,7 +7497,7 @@ Agisce su tutti i vettori editabili attivi al momento
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1614"/>
         <source>Stretch Histogram to Full Dataset</source>
-        <translation>Stira l&apos;istogramma all&apos;intero dataset</translation>
+        <translation>Stira l&apos;istogramma all&apos;intero raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1637"/>
@@ -13715,7 +13715,7 @@ La risposta è stata:
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="390"/>
         <source>Unable to reset statement</source>
-        <translation>Impossibile resettare l&apos;istruzione</translation>
+        <translation>Impossibile reimpostare l&apos;istruzione</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="435"/>
@@ -23911,7 +23911,7 @@ Errore: %5</translation>
         <source>You can download a more complete set of cpt-city gradients by installing the &quot;Color Ramp Manager&quot; plugin (you must enable Experimental plugins in the plugin manager).
 
 </source>
-        <translation>Puoi scaricare un set più completo di gradienti ctp-city installando il plugin &quot;Color Ramp Manager&quot; (devi abilitare i plugins sperimentali dal plugin manager).
+        <translation>Puoi scaricare un insieme più completo di gradienti ctp-city installando il plugin &quot;Color Ramp Manager&quot; (devi abilitare i plugins sperimentali dal plugin manager).
 
 </translation>
     </message>
@@ -29615,7 +29615,7 @@ Scegli un file valido.</translation>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="241"/>
         <source>Dataset Description</source>
-        <translation>Descrizione del set di dati</translation>
+        <translation>Descrizione dell&apos;insieme di dati</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="262"/>
@@ -37372,7 +37372,7 @@ non visualizzati</translation>
         <location filename="../src/core/qgsmaplayer.cpp" line="1079"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="1257"/>
         <source>The directory containing your dataset needs to be writable!</source>
-        <translation>La cartella che contiene il set di dati deve essere scrivibile!</translation>
+        <translation>La cartella che contiene i dati deve essere scrivibile!</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="1093"/>
@@ -40820,7 +40820,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="311"/>
         <source>Tile size</source>
-        <translation>Dimensione tile</translation>
+        <translation>Dimensione mattonella</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="324"/>
@@ -40894,7 +40894,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="436"/>
         <source>Tilesets</source>
-        <translation>Set di tile</translation>
+        <translation>Gruppo di mattonelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="466"/>
@@ -41552,7 +41552,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="166"/>
         <source>Dataset</source>
-        <translation>Set di dati</translation>
+        <translation>Dati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="186"/>
@@ -51534,7 +51534,7 @@ p, li { white-space: pre-wrap; }
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Crea Formato Virtuale GDAL composto da dataset 
+        <translation>Crea Formato Virtuale GDAL composto da dati 
 multipli con larghezza e altezza massima specificate sotto.</translation>
     </message>
     <message>
@@ -54143,8 +54143,9 @@ concordo (ght)
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
         <source>The smart group name field is empty. Kindly provide a name</source>
-        <translatorcomment>Smart group l&apos;ho inteso come nome e non come attributo, ma non so se è corretto. (rospus)</translatorcomment>
-        <translation>Il campo nome del gruppo smart è vuoto. Fornire un nome </translation>
+        <translatorcomment>Smart group l&apos;ho inteso come nome e non come attributo, ma non so se è corretto. (rospus)
+Cambiato in intelligente (pcav)</translatorcomment>
+        <translation>Il campo nome del gruppo intelligente è vuoto. Fornire un nome </translation>
     </message>
 </context>
 <context>
@@ -54154,14 +54155,14 @@ concordo (ght)
         <source>Smart Group Editor</source>
         <translatorcomment>però cosi non è chiaro... ght
 #dubbio#</translatorcomment>
-        <translation>Editor gruppo smart</translation>
+        <translation>Editor del gruppo intelligente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui" line="20"/>
         <source>Smart Group Name</source>
         <translatorcomment>idem come sopra
 #dubbio#</translatorcomment>
-        <translation>Nome gruppo smart</translation>
+        <translation>Nome gruppo intelligente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui" line="30"/>
@@ -56222,7 +56223,7 @@ Sovrascrivere?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="105"/>
         <source>Edit Smart Group</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Modifica gruppo smart</translation>
+        <translation>Modifica gruppo intelligente</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="188"/>
@@ -56353,8 +56354,8 @@ Scegliere un gruppo definito dall&apos;utente. </translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="894"/>
         <source>Creation of nested smart groups are not allowed
 Select the &apos;Smart Group&apos; to create a new group.</source>
-        <translation>Non è possibile creare gruppi smart annidati.
-Scegliere la voce &quot;Gruppo smart&quot; per creare un nuovo gruppo.</translation>
+        <translation>Non è possibile creare gruppi intelligenti annidati.
+Scegliere la voce &quot;Gruppo intelligente&quot; per creare un nuovo gruppo.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="919"/>
@@ -56373,7 +56374,7 @@ Kindly select a group or smart group you might want to delete.</source>
         <translatorcomment>non so come tradurre &quot;smart&quot; e non va bene l&apos;ultima parte (gc)
 #dubbio#</translatorcomment>
         <translation>Impossibile cancellare categorie di sistema.
-Seleziona un gruppo o un gruppo smart che potete cancellare.</translation>
+Seleziona un gruppo o un gruppo intelligente che potete cancellare.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="991"/>
@@ -56436,7 +56437,7 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1342"/>
         <source>You have not selected a Smart Group. Kindly select a Smart Group to edit.</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Non è stato selezionato nessun Gruppo Smart. Scegliere un Gruppo Smart da modificare.</translation>
+        <translation>Non hai selezionato nessun gruppo intelligente. Scegline uno da modificare.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1360"/>
@@ -56447,7 +56448,7 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1361"/>
         <source>There was some error while editing the smart group.</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>C&apos;è stato qualche errore durante la modifica del gruppo smart.</translation>
+        <translation>C&apos;è stato qualche errore durante la modifica del gruppo intelligente.</translation>
     </message>
     <message>
         <source>Color ramp name</source>
@@ -57142,7 +57143,7 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/providers/wms/qgstilescalewidget.cpp" line="142"/>
         <source>Tile scale</source>
-        <translation>Scala delle tiles</translation>
+        <translation>Scala delle mattonelle</translation>
     </message>
 </context>
 <context>
@@ -60246,12 +60247,12 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="909"/>
         <source>Select layer(s) or a tileset</source>
-        <translation>Seleziona il/i layer o un set di tile</translation>
+        <translation>Seleziona il/i layer o un insieme di mattonelle</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="914"/>
         <source>Select either layer(s) or a tileset</source>
-        <translation>Seleziona il/i layer o un set di tile</translation>
+        <translation>Seleziona il/i layer o un insieme di mattonelle</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="926"/>
@@ -60280,7 +60281,7 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="947"/>
         <source>Tileset selected</source>
-        <translation>Set di tile selezionato</translation>
+        <translation>Insieme di mattonelle selezionato</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1070"/>
@@ -60407,7 +60408,7 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="236"/>
         <source>Tile size</source>
-        <translation>Dimensione tile</translation>
+        <translation>Dimensione mattonella</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
@@ -60459,7 +60460,7 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="332"/>
         <source>Tilesets</source>
-        <translation>Set di tile</translation>
+        <translation>Gruppo di mattonelle</translation>
     </message>
     <message>
         <source>Styles</source>
@@ -60477,7 +60478,7 @@ Usato il termine &quot;descrizione&quot;, forse più attinente (rospus)</transla
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="374"/>
         <source>Tileset</source>
-        <translation>Gruppo di tiles</translation>
+        <translation>Gruppo di mattonelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="379"/>
@@ -61865,7 +61866,7 @@ La risposta è stata:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1870"/>
         <source>Available Tilesets</source>
-        <translation>Gruppi di tiles disponibili</translation>
+        <translation>Gruppi di mattonelle disponibili</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2050"/>
@@ -61973,8 +61974,8 @@ La risposta è stata:
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
-            <numerusform>%n tile richiesta in background</numerusform>
-            <numerusform>%n tile richieste in background</numerusform>
+            <numerusform>%n mattonella richiesta in background</numerusform>
+            <numerusform>%n mattonelle richieste in background</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -62133,7 +62134,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1783"/>
         <source>Tileset Properties</source>
-        <translation>Proprietà del set di tile</translation>
+        <translation>Proprietà del gruppo di mattonelle</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1544"/>
@@ -62177,7 +62178,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3420"/>
         <source>Tile request error</source>
-        <translation>Errore di richiesta tile</translation>
+        <translation>Errore di richiesta mattonelle</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3420"/>
@@ -62216,8 +62217,8 @@ Motivo: %2</translation>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
-            <numerusform>%n tile richiesta in background</numerusform>
-            <numerusform>%n tile richieste in background</numerusform>
+            <numerusform>%n mattonella richiesta in background</numerusform>
+            <numerusform>%n mattonelle richieste in background</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -67207,7 +67208,7 @@ The connections you define will be remembered for further use and available to c
 </source>
         <translation>&lt;h3&gt;Aggiungi tabelle SpatiaLite&lt;/h3&gt;
 Per definire una nuova connessione, clic sul pulsante &lt;label&gt;Nuovo&lt;/label&gt; e usare il file browser per puntare al proprio database SpatiaLite, che corrisponde ad un file con estensione &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
-Le connessioni definite vengono memorizzate per utilizzi futuri e sono disponibili nel dropdown menu.
+Le connessioni definite vengono memorizzate per utilizzi futuri e sono disponibili nel menu a tendina.
 </translation>
     </message>
     <message>
@@ -67336,7 +67337,7 @@ Disegna una etichetta di copyrigth con informazioni associate.&lt;br/&gt;
 &lt;li&gt;Assicurarsi di avere caricato il plugin.
 &lt;li&gt;Clic su &lt;label&gt;Plugin &gt; Decorazioni &gt; Etichetta copyright&lt;/label&gt; oppure clic sul pulsante &lt;label&gt;Etichetta copyright&lt;/label&gt; dalla barra degli strumenti.
 &lt;li&gt;Scrivere il testo da inserire sulla mappa. Si può usare anche testo in HTML.
-&lt;li&gt;Scegliere una posizione per l&apos;etichetta dal drop-down menu &lt;label&gt;In basso a destra&lt;/label&gt;.
+&lt;li&gt;Scegliere una posizione per l&apos;etichetta dal menu a tendina &lt;label&gt;In basso a destra&lt;/label&gt;.
 &lt;li&gt;Assicurarsi che sia spuntato &lt;label&gt;Abilita etichetta di copyright&lt;/label&gt;.
 &lt;li&gt;Clic su &lt;label&gt;OK&lt;/label&gt;.
 &lt;/ol&gt;
@@ -70075,7 +70076,7 @@ For support send a mail to scala@itc.cnr.it
 *.File DXF in input: percorso al file DXF da convertire
 *.File SHP in output: nome dello shapefile da creare
 *.Tipo di file SHP in output: specifica il tipo di shape file in output
-*.Checkbox per esportazione etichette di testo: se attivato viene creato un layer shp di punti,   e la tabella dbf associata conterra&apos; informazioni relative ai campi &quot;TESTO&quot; trovati nel file DXF, e le stringhe di testo.
+*.Checkbox per esportazione etichette di testo: se attivato viene creato un layer shp di punti,   e la tabella dbf associata conterrà informazioni relative ai campi &quot;TESTO&quot; trovati nel file DXF, e le stringhe di testo.
 
 ---
 Sviluppato da Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
@@ -70255,7 +70256,7 @@ Per supporto inviare una mail a scala@itc.cnr.it</translation>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
         <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-        <translation>Scegli l&apos;interrogazione predefinita che vuoi utilizzare dalla lista di drop down contenente le interrogazioni del file caricato dall&apos;icona Apri File. Per eseguire l&apos;interrogazione si deve fare clic sulla scheda Interrogazione SQL. L&apos;interrogazione viene automaticamente inserita nella finestra di interrogazione.</translation>
+        <translation>Scegli l&apos;interrogazione predefinita che vuoi utilizzare dalla lista a tendina contenente le interrogazioni del file caricato dall&apos;icona Apri File. Per eseguire l&apos;interrogazione si deve fare clic sulla scheda Interrogazione SQL. L&apos;interrogazione viene automaticamente inserita nella finestra di interrogazione.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
@@ -70321,7 +70322,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation>Scegli il tipo di database dalla lista dei database supportati nel menu di drop down.</translation>
+        <translation>Scegli il tipo di database dalla lista dei database supportati nel menu a tendina.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
@@ -70547,12 +70548,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation>Utilizza la lista drop down per selezionare il campo contenente il percorso della cartella dell´immagine.Può essere un percorso assoluto o relativo.</translation>
+        <translation>Utilizza la lista a tendina per scegliere il campo contenente il percorso della cartella dell´immagine. Può essere un percorso assoluto o relativo.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation>Se selezionato il percorso dell´immagine sarà definito dai valori presenti nel campo selezionato nella drop down list &quot;Attributo con Percorso Immagine&quot;del &quot;Percorso Base&quot; definito qui.</translation>
+        <translation>Se selezionato il percorso dell´immagine sarà definito dai valori presenti nel campo selezionato nel menu a tendina &quot;Attributo con percorso immagine&quot; del &quot;Percorso base&quot; definito qui.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
@@ -70578,12 +70579,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation>Se selezionato una freccia punterà nella direzione contenuta nei valori del campo scelto dalla lista drop down a destra. Nella finestra QGIS il punto sarà visualizzato in alto per questa immagine.</translation>
+        <translation>Se scelto, una freccia punterà nella direzione contenuta nei valori del campo scelto dalla lista a tendina a destra. Nella finestra QGIS il punto sarà visualizzato in alto per questa immagine.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation>Utilizza la lista drop down per scegliere il campo con l&apos;immagine della bussola di riferimento. Questo riferimento solitamente si riferisce alla direzione della fotocamera nel punto dove la foto è stata scattata. </translation>
+        <translation>Utilizza la lista a tendina per scegliere il campo con l&apos;immagine della bussola di riferimento. Questo riferimento solitamente si riferisce alla direzione della fotocamera nel punto dove la foto è stata scattata. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
@@ -70608,7 +70609,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation>Usa la lista drop-down per scegliere il campo che contiene l&apos;offset della bussola. Questo permette di compensare la declinazione (aggiustare i riferimenti collezionati dal nord magnetico al nord reale). Le declinazioni ad Est devono avere valori positivi, mentre quelle a ovest negativi. </translation>
+        <translation>Usa la lista a tendina per scegliere il campo che contiene l&apos;offset della bussola. Questo permette di compensare la declinazione (aggiustare i riferimenti collezionati dal nord magnetico al nord reale). Le declinazioni ad est devono avere valori positivi, mentre quelle a ovest negativi. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
