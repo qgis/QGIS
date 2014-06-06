@@ -585,7 +585,8 @@ void QgsDxfExport::writeEntities()
 
     bool labelLayer = ( labelEngine.prepareLayer( vl, attributes, ctx ) != 0 );
 
-    if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology && renderer->usingSymbolLevels() )
+    if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology && ( renderer->capabilities() & QgsFeatureRendererV2::SymbolLevels ) &&
+         renderer->usingSymbolLevels() )
     {
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
@@ -652,7 +653,6 @@ void QgsDxfExport::writeEntities()
   }
 
   labelEngine.drawLabeling( ctx );
-
   endSection();
 }
 
