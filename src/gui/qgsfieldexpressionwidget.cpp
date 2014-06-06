@@ -50,7 +50,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
   connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
-  connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged( int ) ) );
+  connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged() ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 }
 
@@ -187,10 +187,8 @@ void QgsFieldExpressionWidget::changeEvent( QEvent* event )
   }
 }
 
-void QgsFieldExpressionWidget::currentFieldChanged( int i /* =0 */ )
+void QgsFieldExpressionWidget::currentFieldChanged()
 {
-  Q_UNUSED( i );
-
   updateLineEditStyle();
 
   bool isExpression, isValid;
