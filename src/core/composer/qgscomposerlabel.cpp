@@ -78,7 +78,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   drawBackground( painter );
   painter->save();
 
-  double penWidth = pen().widthF();
+  double penWidth = hasFrame() ? pen().widthF() : 0;
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   QString textToDraw = displayText();
@@ -256,8 +256,10 @@ void QgsComposerLabel::adjustSizeToText()
   double textWidth = textWidthMillimeters( mFont, displayText() );
   double fontHeight = fontHeightMillimeters( mFont );
 
-  double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  double height = fontHeight + 2 * mMargin + 2 * pen().widthF();
+  double penWidth = hasFrame() ? pen().widthF() : 0;
+
+  double width = textWidth + 2 * mMargin + 2 * penWidth + 1;
+  double height = fontHeight + 2 * mMargin + 2 * penWidth;
 
   //keep alignment point constant
   double xShift = 0;
