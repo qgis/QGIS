@@ -242,14 +242,8 @@ class QgsComposition : QGraphicsScene
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
       @param doc xml document
-      @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
-      @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
-      @param pos item position. Optional, take position from xml if 0
-      @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
-      @note not available in python bindings
      */
-    // void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
-    //                      bool addUndoCommands = false, QPointF* pos = 0, bool pasteInPlace = false );
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
