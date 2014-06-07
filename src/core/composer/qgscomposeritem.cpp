@@ -749,6 +749,13 @@ double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
 }
 
+double QgsComposerItem::fontHeightMillimeters( const QFont& font ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
+}
+
 double QgsComposerItem::pixelFontSize( double pointSize ) const
 {
   return ( pointSize * 0.3527 );
