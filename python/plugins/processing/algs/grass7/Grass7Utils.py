@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import stat
 import shutil
-import traceback
 import subprocess
 from qgis.core import QgsApplication
 from PyQt4.QtCore import *
@@ -387,7 +386,6 @@ class Grass7Utils:
                     configured in your system.\nPlease install it before \
                     running GRASS GIS 7 algorithms.'
         except:
-            s = traceback.format_exc()
             return 'Error while checking GRASS GIS 7 installation. GRASS GIS 7 might not \
                 be correctly configured.\n' + s
 

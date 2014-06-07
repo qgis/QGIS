@@ -31,8 +31,6 @@ from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
-from processing.modeler.SaveAsPythonScriptAction import \
-        SaveAsPythonScriptAction
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
@@ -48,8 +46,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
-        self.contextMenuActions = [EditModelAction(), DeleteModelAction(),
-                                   SaveAsPythonScriptAction()]
+        self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -75,8 +72,6 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         folder = ModelerUtils.modelsFolder()
         self.loadFromFolder(folder)
-        folder = os.path.join(os.path.dirname(__file__), 'models')
-        self.loadFromFolder(folder)
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
@@ -84,14 +79,13 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
                 if descriptionFile.endswith('model'):
-                    try:
-                        alg = ModelerAlgorithm()
+                    try:                    
                         fullpath = os.path.join(path, descriptionFile)
-                        alg.openModel(fullpath)
-                        if alg.name.strip() != '':
+                        alg = ModelerAlgorithm.fromJsonFile(fullpath)
+                        if alg:
                             alg.provider = self
                             self.algs.append(alg)
                     except WrongModelException, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not load model ' + descriptionFile + '\n'
-                                + e.msg)
+	                            'Could not load model ' + descriptionFile + '\n'
+	                            + e.msg)

@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-import json
+from processing.modeler.WrongModelException import WrongModelException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,21 +27,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import codecs
+import json
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, Input
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerScene import ModelerScene
-from processing.modeler.Providers import Providers
+from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import *
 
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
@@ -50,11 +49,14 @@ from processing.ui.ui_DlgModeler import Ui_DlgModeler
 class ModelerDialog(QDialog, Ui_DlgModeler):
 
     USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
+    CANVAS_SIZE = 4000
 
     def __init__(self, alg=None):
         QDialog.__init__(self)
 
         self.setupUi(self)
+        
+        self.zoom = 1
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
@@ -62,7 +64,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
-        self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
+        self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
+                
         self.view.setScene(self.scene)
         self.view.setAcceptDrops(True)
         self.view.ensureVisible(0, 0, 10, 10)
@@ -77,11 +80,11 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             if event.mimeData().hasText():
                 text = event.mimeData().text()
                 if text in ModelerParameterDefinitionDialog.paramTypes:
-                    self.addInputOfType(text)
+                    self.addInputOfType(text, event.pos())
                 else:
                     alg = ModelerUtils.getAlgorithm(text);
                     if alg is not None:
-                        self._addAlgorithm(alg)
+                        self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
             else:
                 event.ignore()
@@ -92,9 +95,33 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             else:
                 event.ignore()
 
+        def _wheelEvent(event):
+            self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse);
+            factor = 1.05
+            if event.delta() > 0:
+                factor = 1/factor
+            self.view.scale(factor, factor)
+            self.view.centerOn(event.pos().x(), event.pos().y())
+            self.repaintModel()
+            
+        def _enterEvent(e):         
+            QGraphicsView.enterEvent(self.view, e)  
+            self.view.viewport().setCursor(Qt.ArrowCursor)
+        def _mousePressEvent(e):
+            QGraphicsView.mousePressEvent(self.view, e)           
+            self.view.viewport().setCursor(Qt.ArrowCursor)
+        def _mouseReleaseEvent(e): 
+            QGraphicsView.mouseReleaseEvent(self.view, e)          
+            self.view.viewport().setCursor(Qt.ArrowCursor)            
+                
+        self.view.setDragMode(QGraphicsView.ScrollHandDrag);
         self.view.dragEnterEvent = _dragEnterEvent
         self.view.dropEvent = _dropEvent
         self.view.dragMoveEvent = _dragMoveEvent
+        self.view.wheelEvent = _wheelEvent
+        self.view.enterEvent = _enterEvent
+        self.view.mousePressEvent = _mousePressEvent
+        self.view.mouseReleaseEvent = _mouseReleaseEvent
 
 
         def _mimeDataInput(items):
@@ -147,7 +174,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.inputsTree.doubleClicked.connect(self.addInput)
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
-        self.scene.changed.connect(self.changeModel)
 
         self.btnOpen.clicked.connect(self.openModel)
         self.btnSave.clicked.connect(self.save)
@@ -164,6 +190,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
         else:
             self.alg = ModelerAlgorithm()
+            self.alg.modelerdialog = self
 
         self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
@@ -173,9 +200,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.update = False
 
         self.hasChanged = False
-
-    def changeModel(self):
-        self.hasChanged = True
 
     def closeEvent(self, evt):
         if self.hasChanged:
@@ -193,42 +217,22 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             evt.accept()
 
     def editHelp(self):
-        dlg = HelpEditionDialog(self.alg)
+        dlg = HelpEditionDialog(self.alg.getCopy())
         dlg.exec_()
 
-        # We store the description string in case there were not
-        # saved because there was no filename defined yet
-        if self.alg.descriptionFile is None and dlg.descriptions:
-            self.help = dlg.descriptions
-
     def runModel(self):
-        # TODO: enable alg cloning without saving to file
         if len(self.alg.algs) == 0:
             QMessageBox.warning(self, self.tr('Empty model'),
                     self.tr("Model doesn't contains any algorithms and/or "
                             "parameters and can't be executed"))
             return
 
-        if self.alg.descriptionFile is None:
-            self.alg.descriptionFile = getTempFilename('model')
-            text = self.alg.serialize()
-            fout = open(self.alg.descriptionFile, 'w')
-            fout.write(text)
-            fout.close()
-            self.alg.provider = Providers.providers['model']
-            alg = self.alg.getCopy()
-            dlg = ParametersDialog(alg)
-            dlg.exec_()
-            self.alg.descriptionFile = None
-            alg.descriptionFile = None
-        else:
-            self.save()
-            if self.alg.provider is None:
-                # Might happen if model is opened from modeler dialog
-                self.alg.provider = Providers.providers['model']
-            alg = self.alg.getCopy()
-            dlg = ParametersDialog(alg)
-            dlg.exec_()
+        if self.alg.provider is None:
+            # Might happen if model is opened from modeler dialog
+            self.alg.provider = ModelerUtils.providers['model']
+        alg = self.alg.getCopy()
+        dlg = ParametersDialog(alg)
+        dlg.exec_()
 
     def save(self):
         self.saveModel(False)
@@ -269,9 +273,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                     self.tr('Please enter group and model names before saving'
                     ))
             return
-        self.alg.setPositions(self.scene.getParameterPositions(),
-                              self.scene.getAlgorithmPositions(),
-                              self.scene.getOutputPositions())
         self.alg.name = unicode(self.textName.text())
         self.alg.group = unicode(self.textGroup.text())
         if self.alg.descriptionFile is not None and not saveAs:
@@ -286,7 +287,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                     filename += '.model'
                 self.alg.descriptionFile = filename
         if filename:
-            text = self.alg.serialize()
+            text = self.alg.toJson()
             try:
                 fout = codecs.open(filename, 'w', encoding='utf-8')
             except:
@@ -303,14 +304,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 return
             fout.write(text)
             fout.close()
-            self.update = True
-
-            # If help strings were defined before saving the model
-            # for the first time, we do it here.
-            if self.help:
-                with open(self.descriptionFile + '.help', 'w') as f:
-                    json.dump(self.help, f)
-                self.help = None
+            self.update = True           
             QMessageBox.information(self, self.tr('Model saved'),
                                     self.tr('Model was correctly saved.'))
 
@@ -322,21 +316,32 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                            self.tr('Processing models (*.model)')))
         if filename:
             try:
-                alg = ModelerAlgorithm()
-                alg.openModel(filename)
+                alg = ModelerAlgorithm.fromJsonFile(filename)
                 self.alg = alg
                 self.alg.setModelerView(self)
                 self.textGroup.setText(alg.group)
                 self.textName.setText(alg.name)
                 self.repaintModel()
-                if self.scene.getLastAlgorithmItem():
-                    self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                #===============================================================
+                # if self.scene.getLastAlgorithmItem():
+                #     self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                #===============================================================
                 self.view.centerOn(0, 0)
                 self.hasChanged = False
             except WrongModelException, e:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            'Could not load model ' + filename + '\n'
+                            + e.msg)
                 QMessageBox.critical(self, self.tr('Could not open model'),
                         self.tr('The selected model could not be loaded.\n'
-                                'Wrong line: %s') % e.msg)
+                                 'See the log for more information.'))
+            except Exception, e:                
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            'Could not load model ' + filename + '\n'
+                            + e.args[0])
+                QMessageBox.critical(self, self.tr('Could not open model'),
+                        self.tr('The selected model could not be loaded.\n'
+                                 'See the log for more information.'))
 
     def repaintModel(self):
         self.scene = ModelerScene()
@@ -349,27 +354,41 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def addInput(self):
         item = self.inputsTree.currentItem()
         paramType = str(item.text(0))
-        self.addInputOfType(paramType)
+        self.addInputOfType(paramType)        
 
-    def addInputOfType(self, paramType):
+    def addInputOfType(self, paramType, pos=None):
         if paramType in ModelerParameterDefinitionDialog.paramTypes:
             dlg = ModelerParameterDefinitionDialog(self.alg, paramType)
             dlg.exec_()
             if dlg.param is not None:
-                self.alg.setPositions(self.scene.getParameterPositions(),
-                                      self.scene.getAlgorithmPositions(),
-                                      self.scene.getOutputPositions())
-                self.alg.addParameter(dlg.param)
+                if pos is None:
+                    pos = self.getPositionForParameterItem()
+                if isinstance(pos, QPoint):
+                    pos =  QPointF(pos)                     
+                self.alg.addParameter(Input(dlg.param, pos))
                 self.repaintModel()
-                self.view.ensureVisible(self.scene.getLastParameterItem())
+                #self.view.ensureVisible(self.scene.getLastParameterItem())
                 self.hasChanged = True
+                
+    def getPositionForParameterItem(self):
+        MARGIN = 20
+        BOX_WIDTH = 200
+        BOX_HEIGHT = 80
+        if self.alg.inputs:
+            maxX = max([i.pos.x() for i in self.alg.inputs.values()])
+            newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
+        else:
+            newX = MARGIN + BOX_WIDTH / 2
+        return QPointF(newX, MARGIN + BOX_HEIGHT / 2)                
 
     def fillInputsTree(self):
+        icon = QIcon(os.path.dirname(__file__) + '/../images/input.png')
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
         for paramType in ModelerParameterDefinitionDialog.paramTypes:
             paramItem = QTreeWidgetItem()
             paramItem.setText(0, paramType)
+            paramItem.setIcon(0, icon)
             paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
             parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
@@ -379,23 +398,44 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = ModelerUtils.getAlgorithm(item.alg.commandLineName())
-            self._addAlgorithm(alg)
+            self._addAlgorithm(alg.getCopy())
 
-    def _addAlgorithm(self, alg):
-            alg = alg.getCopy()
+    def _addAlgorithm(self, alg, pos=None):
             dlg = alg.getCustomModelerParametersDialog(self.alg)
             if not dlg:
                 dlg = ModelerParametersDialog(alg, self.alg)
             dlg.exec_()
-            if dlg.params is not None:
-                self.alg.setPositions(self.scene.getParameterPositions(),
-                                      self.scene.getAlgorithmPositions(),
-                                      self.scene.getOutputPositions())
-                self.alg.addAlgorithm(alg, dlg.params, dlg.values,
-                                      dlg.outputs, dlg.dependencies)
+            if dlg.alg is not None:
+                if pos is None:
+                    dlg.alg.pos = self.getPositionForAlgorithmItem()
+                else:
+                    dlg.alg.pos = pos    
+                if isinstance(dlg.alg.pos, QPoint):
+                    dlg.alg.pos =  QPointF(pos)         
+                from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
+                for i, out in enumerate(dlg.alg.outputs):
+                    dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
+                            * ModelerGraphicItem.BOX_HEIGHT)
+                self.alg.addAlgorithm(dlg.alg)
                 self.repaintModel()
-                self.view.ensureVisible(self.scene.getLastAlgorithmItem())
-                self.hasChanged = False
+                #self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                self.hasChanged = True
+                
+    def getPositionForAlgorithmItem(self):
+        MARGIN = 20
+        BOX_WIDTH = 200
+        BOX_HEIGHT = 80
+        if self.alg.algs:
+            maxX = max([alg.pos.x() for alg in self.alg.algs.values()])
+            maxY = max([alg.pos.y() for alg in self.alg.algs.values()])
+            newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
+                       - BOX_HEIGHT)
+        else:
+            newX = MARGIN + BOX_WIDTH / 2
+            newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
+        return QPointF(newX, newY)
+                
 
     def fillAlgorithmTree(self):
         settings = QSettings()
@@ -416,14 +456,14 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         groups = {}
-        allAlgs = ModelerUtils.getAlgorithms()
+        allAlgs = ModelerUtils.allAlgs
         for providerName in allAlgs.keys():
             provider = allAlgs[providerName]
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             if providerName in providersToExclude \
-                    or len(Providers.providers[providerName].actions) != 0:
+                    or len(ModelerUtils.providers[providerName].actions) != 0:
                 continue
             algs = provider.values()
 
@@ -494,9 +534,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
                 providerItem.setText(0,
-                        Providers.providers[providerName].getDescription())
+                        ModelerUtils.providers[providerName].getDescription())
                 providerItem.setIcon(0,
-                        Providers.providers[providerName].getIcon())
+                        ModelerUtils.providers[providerName].getIcon())
                 providerItem.setToolTip(0, providerItem.text(0))
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
@@ -509,7 +549,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
-        allAlgs = ModelerUtils.getAlgorithms()
+        allAlgs = ModelerUtils.allAlgs
         for providerName in allAlgs.keys():
             groups = {}
             provider = allAlgs[providerName]
@@ -533,11 +573,11 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
                 providerItem.setText(0,
-                        Providers.providers[providerName].getDescription())
+                        ModelerUtils.providers[providerName].getDescription())
                 providerItem.setToolTip(0,
-                        Providers.providers[providerName].getDescription())
+                        ModelerUtils.providers[providerName].getDescription())
                 providerItem.setIcon(0,
-                        Providers.providers[providerName].getIcon())
+                        ModelerUtils.providers[providerName].getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.modeler.ModelerUtils import ModelerUtils
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -41,7 +42,6 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.UnthreadedAlgorithmExecutor import \
         UnthreadedAlgorithmExecutor
-from processing.modeler.Providers import Providers
 from processing.modeler.ModelerAlgorithmProvider import \
         ModelerAlgorithmProvider
 from processing.modeler.ModelerOnlyAlgorithmProvider import \
@@ -119,8 +119,7 @@ class Processing:
 
     @staticmethod
     def getProviderFromName(name):
-        """Returns the provider with the given name.
-        """
+        """Returns the provider with the given name."""
         for provider in Processing.providers:
             if provider.getName() == name:
                 return provider
@@ -139,8 +138,9 @@ class Processing:
         Processing.addProvider(SagaAlgorithmProvider())
         Processing.addProvider(GrassAlgorithmProvider())
         Processing.addProvider(Grass7AlgorithmProvider())
-        Processing.addProvider(ScriptAlgorithmProvider())
+        Processing.addProvider(ScriptAlgorithmProvider())        
         Processing.addProvider(TauDEMAlgorithmProvider())
+        Processing.addProvider(ModelerAlgorithmProvider())
         Processing.modeler.initializeSettings()
 
         # And initialize
@@ -173,7 +173,8 @@ class Processing:
 
     @staticmethod
     def addAlgListListener(listener):
-        """Listener should implement a algsListHasChanged() method.
+        """
+        Listener should implement a algsListHasChanged() method.
 
         Whenever the list of algorithms changes, that method will be
         called for all registered listeners.
@@ -196,33 +197,11 @@ class Processing:
                 algs[alg.commandLineName()] = alg
             Processing.algs[provider.getName()] = algs
 
-        # This is a special provider, since it depends on others.
-        # TODO: Fix circular imports, so this provider can be
-        # incorporated as a normal one.
-        provider = Processing.modeler
-        provider.setAlgsList(Processing.algs)
-        provider.loadAlgorithms()
-        providerAlgs = provider.algs
-        algs = {}
-        for alg in providerAlgs:
-            algs[alg.commandLineName()] = alg
-        Processing.algs[provider.getName()] = algs
-
-        # And we do it again, in case there are models containing
-        # models.
-        # TODO: Improve this
-        provider.setAlgsList(Processing.algs)
-        provider.loadAlgorithms()
-        providerAlgs = provider.algs
-        algs = {}
-        for alg in providerAlgs:
-            algs[alg.commandLineName()] = alg
-        Processing.algs[provider.getName()] = algs
         provs = {}
         for provider in Processing.providers:
             provs[provider.getName()] = provider
-        provs[Processing.modeler.getName()] = Processing.modeler
-        Providers.providers = provs
+        ModelerUtils.allAlgs = Processing.algs
+        ModelerUtils.providers = provs
 
     @staticmethod
     def loadActions():
@@ -232,11 +211,7 @@ class Processing:
             for action in providerActions:
                 actions.append(action)
             Processing.actions[provider.getName()] = actions
-
-        provider = Processing.modeler
-        actions = list()
-        for action in provider.actions:
-            actions.append(action)
+       
         Processing.actions[provider.getName()] = actions
 
     @staticmethod
@@ -246,11 +221,6 @@ class Processing:
             providerActions = provider.contextMenuActions
             for action in providerActions:
                 Processing.contextMenuActions.append(action)
-
-        provider = Processing.modeler
-        providerActions = provider.contextMenuActions
-        for action in providerActions:
-            Processing.contextMenuActions.append(action)
 
     @staticmethod
     def getAlgorithm(name):
@@ -269,8 +239,7 @@ class Processing:
 
     @staticmethod
     def getObject(uri):
-        """Returns the QGIS object identified by the given URI.
-        """
+        """Returns the QGIS object identified by the given URI."""
         return dataobjects.getObjectFromUri(uri)
 
     @staticmethod

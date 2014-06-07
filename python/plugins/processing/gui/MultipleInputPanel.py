@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
 

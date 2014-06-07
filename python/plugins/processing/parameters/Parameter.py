@@ -68,3 +68,8 @@ class Parameter:
 
     def parameterName(self):
         return self.__module__.split('.')[-1]
+    
+    def todict(self):        
+        return self.__dict__
+    
+
