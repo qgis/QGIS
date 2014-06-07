@@ -697,7 +697,8 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mPictureWidth = itemElem.attribute( "pictureWidth", "10" ).toDouble();
   mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
-  mPictureAnchor = QgsComposerItem::ItemPositionMode( itemElem.attribute( "anchorPoint", QString( QgsComposerItem::UpperLeft ) ).toInt() );
+  //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
+  mPictureAnchor = ( QgsComposerItem::ItemPositionMode ) itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
