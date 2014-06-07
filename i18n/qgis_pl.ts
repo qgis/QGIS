@@ -74297,7 +74297,22 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_rgb()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w postaci jego składowych Red, Green, Blue (czerwony, zielony, niebieski)
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; składowa czerwona jako liczba całkowita z zakresu 0-255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; składowa zielona jako liczba całkowita z zakresu 0-255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; składowa niebieska jako liczba całkowita z zakresu 0-255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1066"/>
@@ -74319,7 +74334,23 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_cmyk()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w postaci jego składowych Cyan, Magenta, Yellow, Black (cyjan, magenta, żółty, czarny).
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; składowa cyjan jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; składowa magenta jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; składowa żółta jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; składowa czarna jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1188"/>
@@ -74344,7 +74375,25 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja ramp_color()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru z palety.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; nazwa palety kolorów, np. &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; pozycja koloru w palecie jako liczba rzeczywista z zakresu 0-1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;253,190,115,255&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;uwaga:&lt;/h4&gt;
+Palety kolorów mogą różnić się dla różnych wersji QGIS.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1334"/>
@@ -74373,7 +74422,22 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_hsv()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w postaci Hue, Saturation, Value (barwa, nasycenie, wartość)
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; składowa barwy jako liczba całkowita z zakresu 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; składowa nasycenia jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; składowa wartości jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1691"/>
@@ -74709,7 +74773,24 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_cmyka()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w postaci składowych Cyan, Magenta, Yellow, Black, Alpha (cyjan, magenta, żółty, czarny, przezroczystość)
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;cyan, magenta, yellow, black, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; składowa cyjan jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; składowa magenta jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; składowa żółta jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; składowa czarna jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; składowa przezroczystość jako liczba całkowita z zakresu 0 (całkowicie przezroczyste) do 100 (całkowicie nieprzezroczyste).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="2058"/>
@@ -75344,7 +75425,23 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_hsla()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w postaci Hue, Saturation, Lightness, Alpha (barwa, nasycenie, jasność, przezroczystość).
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; składowa barwy jako liczba całkowita z zakresu 0-360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; składowa nasycenia jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; składowa jasności jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; składowa przezroczystość jako liczba całkowita z zakresu 0 (całkowicie przezroczyste) do 255 (całkowicie nieprzezroczyste).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="741"/>
@@ -75868,7 +75965,23 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja color_hsva()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w postaci składowych Hue, Saturation, Value, Alpha (barwa, nasycenie, wartość, przezroczystość).
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; składowa barwy jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; składowa nasycenia jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; składowa wartości jako liczba całkowita z zakresu 0-100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; składowa przezroczystość jako liczba całkowita z zakresu 0 (całkowicie przezroczyste) do 255 (całkowicie nieprzezroczyste).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
@@ -76543,7 +76656,23 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja wordwrap()&lt;/h3&gt;
+Zwraca tekst podzielony na wiersze według określonej (minimalnej/maksymalnej) liczby znaków.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; tekst podlegający konwersji.&lt;br&gt;
+&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; liczba.  Jeśli jest liczbą dodatnią oznacza maksymalną liczbę znaków do przeniesienia;  jeśli ujemną, oznacza minimalną liczbę znaków do przeniesienia.&lt;br&gt;
+&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; test.  Znak powodujący przejście do nowego wiersza (&lt;u&gt;opcjonalnie&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1157"/>
