@@ -274,6 +274,10 @@ void QgsComposerAttributeTable::setDisplayAttributes( const QSet<int>& attr, boo
     for ( ; attIt != attr.constEnd(); ++attIt )
     {
       int attrIdx = ( *attIt );
+      if ( !fields.exists( attrIdx ) )
+      {
+        continue;
+      }
       QString currentAlias = mVectorLayer->attributeDisplayName( attrIdx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
       col->setAttribute( fields[attrIdx].name() );
