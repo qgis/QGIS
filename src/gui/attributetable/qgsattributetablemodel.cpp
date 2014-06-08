@@ -247,6 +247,8 @@ void QgsAttributeTableModel::loadAttributes()
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( layer()->editorWidgetV2( idx ) );
+    if ( !widgetFactory || !layer() )
+      continue;
 
     mWidgetFactories.append( widgetFactory );
     mWidgetConfigs.append( layer()->editorWidgetV2Config( idx ) );
