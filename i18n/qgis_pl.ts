@@ -16677,7 +16677,7 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7422"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
-        <translation type="unfinished"></translation>
+        <translation>http://qgis.org/en/site/forusers/commercial_support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9740"/>
@@ -18939,7 +18939,7 @@ Nazwa motywu:	%4
         <location filename="../src/ui/qgsattributetabledialog.ui" line="516"/>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="536"/>
         <source>mMainViewButtonGroup</source>
-        <translation type="unfinished">mMainViewButtonGroup</translation>
+        <translation>mMainViewButtonGroup</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="632"/>
@@ -74457,7 +74457,22 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $atlasgeometry&lt;/h3&gt;
+Zwraca geometrię bieżącego obiektu w atlasie.
+Może zostać wykorzystane przy wyświetlaniu geometrii atlasu opartym na wyrażeniach.
+Przykładowo, aby wyświetlić tylko te geometrie innych warstw, które przecinają geometrie 
+obiektów w atlasie.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1707"/>
@@ -74476,7 +74491,22 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $atlasfeatureid&lt;/h3&gt;
+Zwraca ID kolejnych obiektów atlasu.
+Umożliwia to iterację i operacje oparte na regułach,
+ na przykład wyświetlenie lub ukrycie obiektów w oparciu 
+o ich identyfikatory.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1812"/>
@@ -74493,7 +74523,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja bounds_width&lt;/h3&gt;
+Zwraca szerokość prostokąta ograniczającego geometrii. Obliczenia są prowdzone w układzie współrzędnych geometrii.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;bounds_width(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; bounds_width($geometry) &amp;rarr; zwraca szerokość prostokąta ograniczającego $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1880"/>
@@ -74543,7 +74585,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja bounds_height&lt;/h3&gt;
+Zwraca wysokość prostokąta ograniczającego geometrii. Obliczenia są prowdzone w układzie współrzędnych geometrii.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;bounds_height(geom)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+geom &amp;rarr; geometria
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;bounds_height($geometry) &amp;rarr; zwraca wysokość prostokąta ograniczającego $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1942"/>
@@ -74874,7 +74928,34 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja scale_exp()&lt;/h3&gt;
+Przekształca zadaną wartość wejściową w zadanym zakresie na zakres wynikowy używając funkcji wykładniczej. 
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     scale_exp(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; wartość w zadanym zakresie.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; określa zadany zakres &lt;i&gt;wartości wejściowej&lt;/i&gt;, minimalny i maksymalny.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; określa zakres wynikowy, minimalny i maksymalny.&lt;br&gt;
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; dodatnia wartość (większa od 0) wykładnika.Duże wartości powodują powolny wzrost wartości wynikowej 
+zwiększający się w miarę zbliżania do maksimum. Małe wartości (mniejsze niż 1) powodują szybki wzrost wartości wynikowej, zmniejszający 
+się w miarę zbliżania do maksimum.&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;b&gt;Wykładnik równy 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Wykładnik równy 0.5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+     
+     </translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
@@ -74898,7 +74979,26 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja coalesce()&lt;/h3&gt;
+Zwraca pierwsze wystąpienie wartości różnej od NULL na liście wyrażeń.
+&lt;br&gt;
+Funkcja przyjmuje dowolną liczbę argumentów.
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;expression&lt;/code&gt; - dowolne poprawne wyrażenie lub wartość, niezależnie od typu.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; wartość fieldA jeśli nie jest równa -NULL; 
+ w przeciwnym przypadku wartość &quot;fallbackField&quot; lub tekst &apos;ERROR&apos; jeśli obydwa są równe NULL&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="2038"/>
@@ -74922,7 +75022,26 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja scale_linear()&lt;/h3&gt;
+Przekształca zadaną wartość wejściową w zadanym zakresie na zakres wynikowy używając funkcji liniowej. 
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr;  wartość w zadanym zakresie.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; określa zadany zakres &lt;i&gt;wartości wejściowej&lt;/i&gt;, minimalny i maksymalny.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; określa zakres wynikowy, minimalny i maksymalny.&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(na przykład do przeskalowania zakresu 0-1 do miary kątowej 0-360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(na przykład do przeskalowania populacji z zakresu 1000-10000 do rozmiaru czcionki 9-20)&lt;/i&gt;&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="529"/>
@@ -75086,7 +75205,34 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;wyrażenie CASE&lt;/h3&gt;
+Wyrażenie warunkowe służące do porównania z  wieloma wartościami.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result2&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] oznacza elementy opcjonalne
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - Wyrażenie warunkowe podlegające porównaniu. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; -Jeśli wynikiem &lt;i&gt;condition&lt;/i&gt; jest równe True, przetwarzany i zwracany jest &lt;i&gt;result&lt;/i&gt;. &lt;br&gt;
+&lt;i&gt;  ELSE result2&lt;/i&gt; - Jeśłi żadne ze wcześniejszych wyrażeń nie jest równe True,  przetwarzany i zwracany jest &lt;i&gt;result2&lt;/i&gt; . &lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1838"/>
@@ -75749,7 +75895,180 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja format_date()&lt;/h3&gt;
+Formatuje dane typu daty lub ciągu tekstu na zadany format tekstowy. Wykorzystywana jest składnia Qt &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - tekst. W formacie Date/Time/DateTime.&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - tekst. Ciąg znaków szablonu określający formatowanie.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Wyrażenie&lt;/th&gt;
+
+        &lt;th&gt;Wynik&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;dzień w postaci liczby bez wiodących zer (1-31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;dzień w postaci liczby z wiodącymi zerami  (01-31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;skrócona nazwa dnia (np. &apos;Mon&apos; - &apos;Sun&apos;). Wykorzystuje &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;pełna nazwa dnia (np. &apos;Monday&apos; - &apos;Sunday&apos;). Wykorzystuje &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;miesiąc w postaci liczby bez wiodących zer (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;miesiąc w postaci liczby z wiodącymi zerami (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;skrócona nazwa miesiąca (np. &apos;Jan&apos; - &apos;Dec&apos;). Wykorzystuje &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;pełna nazwa miesiąca (np. &apos;January&apos; - &apos;December&apos;). Wykorzystuje &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;rok w zapisie dwucyfrowym (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;rok w zapisie czterocyfrowym&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Wyrażenia do formatowania czasu:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Wyrażenie&lt;/th&gt;
+
+        &lt;th&gt;Wynik&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;godzina bez wiodących zer (0-23 lub 1-12 przy zapisie AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;godzina z wiodącymi zerami (00-23 lub 01-12 przy zapisie AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;godzina bez wiodących zer (0-23, nawet przy zapisie AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;godzina z wiodącymi zerami (00-23, nawet przy zapisie AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;minuta bez wiodących zer (0-59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;minuta z wiodącymi zerami (0-59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;sekunda bez wiodących zer (0-59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;sekunda z wiodącymi zerami (0-59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;milisekunda bez wiodących zer (0-999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;milisekunda z wiodącymi zerami (000-999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP lub A&lt;/td&gt;
+
+      &lt;td&gt;Rozumiane jako zapis czasu AM/PM. &lt;i&gt;AP&lt;/i&gt; musi być równe &quot;AM&quot; lub &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap lub a&lt;/td&gt;
+
+      &lt;td&gt;Rozumiane jako zapis czasu AM/PM. &lt;i&gt;ap&lt;/i&gt;musi być równe &quot;am&quot; lub &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1353"/>
