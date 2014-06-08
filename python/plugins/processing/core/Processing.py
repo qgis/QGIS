@@ -38,7 +38,7 @@ from processing.core.SilentProgress import SilentProgress
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.UnthreadedAlgorithmExecutor import \
         UnthreadedAlgorithmExecutor
 from processing.modeler.Providers import Providers
@@ -275,8 +275,7 @@ class Processing:
 
     @staticmethod
     def runandload(name, *args):
-        Processing.runAlgorithm(name, Postprocessing.handleAlgorithmResults,
-                                *args)
+        Processing.runAlgorithm(name, handleAlgorithmResults, *args)
 
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args):
