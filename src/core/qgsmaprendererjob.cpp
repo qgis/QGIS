@@ -736,7 +736,7 @@ void QgsMapRendererParallelJob::start()
 
   mLayerJobs = prepareJobs( 0, mLabelingEngine );
 
-  qDebug( "QThreadPool max thread count is %d", QThreadPool::globalInstance()->maxThreadCount() );
+  QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
   // start async job
 
