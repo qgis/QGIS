@@ -33,7 +33,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
 from processing.parameters.ParameterString import ParameterString
-import postgis_utils
+from processing.algs.qgis import postgis_utils
 
 
 class PostGISExecuteSQL(GeoAlgorithm):
@@ -41,11 +41,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/postgis.png')
-
     def processAlgorithm(self, progress):
-
         connection = self.getParameterValue(self.DATABASE)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
@@ -74,6 +70,6 @@ class PostGISExecuteSQL(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = 'PostGIS execute SQL'
-        self.group = 'PostGIS management tools'
+        self.group = 'Database'
         self.addParameter(ParameterString(self.DATABASE, 'Database'))
         self.addParameter(ParameterString(self.SQL, 'SQL query', '', True))

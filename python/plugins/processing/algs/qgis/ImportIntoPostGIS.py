@@ -38,7 +38,7 @@ from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.tools import dataobjects
-import postgis_utils
+from processing.algs.qgis import postgis_utils
 
 
 class ImportIntoPostGIS(GeoAlgorithm):
@@ -53,9 +53,6 @@ class ImportIntoPostGIS(GeoAlgorithm):
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
     DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
     PRIMARY_KEY = 'PRIMARY_KEY'
-
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/postgis.png')
 
     def processAlgorithm(self, progress):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
@@ -135,7 +132,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = 'Import into PostGIS'
-        self.group = 'PostGIS management tools'
+        self.group = 'Database'
         self.addParameter(ParameterVector(self.INPUT, 'Layer to import'))
 
         self.DB_CONNECTIONS = self.dbConnectionNames()
