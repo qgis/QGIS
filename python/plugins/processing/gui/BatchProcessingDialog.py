@@ -29,7 +29,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.ProcessingResults import ProcessingResults
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
@@ -203,7 +203,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if UnthreadedAlgorithmExecutor.runalg(alg, self) \
                 and not self.canceled:
                 if self.load[i]:
-                    Postprocessing.handleAlgorithmResults(alg, self, False)
+                    handleAlgorithmResults(alg, self, False)
             else:
                 QApplication.restoreOverrideCursor()
                 return

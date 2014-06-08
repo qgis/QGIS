@@ -37,7 +37,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.WrongHelpFileException import WrongHelpFileException
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.UnthreadedAlgorithmExecutor import \
         UnthreadedAlgorithmExecutor
 from processing.parameters.ParameterRaster import ParameterRaster
@@ -283,7 +283,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         keepOpen = ProcessingConfig.getSetting(
                 ProcessingConfig.KEEP_DIALOG_OPEN)
         if self.iterateParam is None:
-            Postprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
+            handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
         self.setInfo('Algorithm %s finished' % self.alg.name)
         QApplication.restoreOverrideCursor()
