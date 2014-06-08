@@ -127,10 +127,8 @@ class GeoAlgorithm:
         print filename     
         try:
             html = getHtmlFromRstFile(filename)
-            print html
             return True, html
         except:
-            print "error"
             return False, None
         
 
