@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import inspect
 import os.path
 import traceback
 import copy
@@ -32,6 +33,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from qgis.core import *
 
+from processing.gui.Help2Html import getHtmlFromRstFile
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
@@ -112,11 +114,25 @@ class GeoAlgorithm:
         """Returns the help with the description of this algorithm.
         It returns a tuple boolean, string. IF the boolean value is true, it means that
         the string contains the actual description. If false, it is an url or path to a file
-        where the description is stored
+        where the description is stored.
 
         Returns None if there is no help file available.
+        
+        The default implementation looks for an rst file in a help folder under the folder 
+        where the algorithm is located.
+        The name of the file is the name console name of the algorithm, without the namespace part
         """
-        return False, None
+        name = self.commandLineName().split(':')[1].lower()
+        filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')   
+        print filename     
+        try:
+            html = getHtmlFromRstFile(filename)
+            print html
+            return True, html
+        except:
+            print "error"
+            return False, None
+        
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.

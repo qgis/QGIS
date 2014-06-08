@@ -45,7 +45,7 @@ exps = [(r"\*(.*?)\*", r"<i>\1</i>"),
 
 def getHtmlFromRstFile(rst):
     if not os.path.exists(rst):
-        return ''
+        return None
     with open(rst) as f:
         lines = f.readlines()
     s = "".join(lines)
