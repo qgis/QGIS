@@ -161,20 +161,22 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
   mFeature.initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
+    QVariant v;
+
     if ( defaultAttributes.contains( idx ) )
     {
-      QgsDebugMsg( QString( "Using specified default %1 for %2" ).arg( defaultAttributes.value( idx ).toString() ).arg( idx ) );
-      mFeature.setAttribute( idx, defaultAttributes.value( idx ) );
+      v = defaultAttributes.value( idx );
     }
     else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
     {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-      mFeature.setAttribute( idx, sLastUsedValues[ mLayer ][idx] );
+      v = sLastUsedValues[ mLayer ][idx];
     }
     else
     {
-      mFeature.setAttribute( idx, provider->defaultValue( idx ) );
+      v = provider->defaultValue( idx );
     }
+
+    mFeature.setAttribute( idx, v );
   }
 
   // show the dialog to enter attribute values
