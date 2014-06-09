@@ -1477,7 +1477,12 @@ QString QgsProject::readPath( QString src ) const
   QString vsiPrefix = qgsVsiPrefix( src );
   if ( ! vsiPrefix.isEmpty() )
   {
-    src.remove( 0, vsiPrefix.size() );
+    // unfortunately qgsVsiPrefix returns prefix also for files like "/x/y/z.gz"
+    // so we need to check if we really have the prefix
+    if ( src.startsWith( "/vsi", Qt::CaseInsensitive ) )
+      src.remove( 0, vsiPrefix.size() );
+    else
+      vsiPrefix.clear();
   }
 
   // relative path should always start with ./ or ../
