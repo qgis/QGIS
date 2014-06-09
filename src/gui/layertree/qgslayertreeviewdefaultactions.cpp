@@ -199,7 +199,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     QgsRectangle layerExtent = layer->extent();
 
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
-    if ( vlayer && vLayer->geometryType() == QGis::NoGeometry )
+    if ( vLayer && vLayer->geometryType() == QGis::NoGeometry )
       continue;
 
     if ( layerExtent.isEmpty() && layer->type() == QgsMapLayer::VectorLayer )
