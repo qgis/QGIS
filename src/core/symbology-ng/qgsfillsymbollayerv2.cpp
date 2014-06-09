@@ -723,7 +723,7 @@ void QgsGradientFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   mSelBrush = QBrush( selColor );
 
   //update mBrush to use a gradient fill with specified properties
-  prepareExpressions( context.fields() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -999,7 +999,7 @@ void QgsShapeburstFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
 
-  prepareExpressions( context.fields() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsShapeburstFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -1799,7 +1799,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 
   if ( mOutline )
   {
-    mOutline->startRender( context.renderContext() );
+    mOutline->startRender( context.renderContext(), context.fields() );
   }
 
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
@@ -2531,7 +2531,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   lineRenderContext.setMapToPixel( mtp );
   lineRenderContext.setForceVectorOutput( false );
 
-  fillLineSymbol->startRender( lineRenderContext );
+  fillLineSymbol->startRender( lineRenderContext, context.fields() );
 
   QVector<QPolygonF> polygons;
   polygons.append( QPolygonF() << p1 << p2 );
@@ -2577,7 +2577,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
 
   if ( mFillLineSymbol )
   {
-    mFillLineSymbol->startRender( context.renderContext() );
+    mFillLineSymbol->startRender( context.renderContext(), context.fields() );
   }
 
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
@@ -2947,6 +2947,7 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContex
 
     //marker rendering needs context for drawing on patternImage
     QgsRenderContext pointRenderContext;
+    pointRenderContext.setRendererScale( context.renderContext().rendererScale() );
     pointRenderContext.setPainter( &p );
     pointRenderContext.setRasterScaleFactor( 1.0 );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
@@ -2954,7 +2955,7 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContex
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
 
-    mMarkerSymbol->startRender( pointRenderContext );
+    mMarkerSymbol->startRender( pointRenderContext, context.fields() );
 
     //render corner points
     mMarkerSymbol->renderPoint( QPointF( 0, 0 ), context.feature(), pointRenderContext );
@@ -2995,7 +2996,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
 
   if ( mOutline )
   {
-    mOutline->startRender( context.renderContext() );
+    mOutline->startRender( context.renderContext(), context.fields() );
   }
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
@@ -3188,7 +3189,7 @@ void QgsCentroidFillSymbolLayerV2::setColor( const QColor& color )
 void QgsCentroidFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mMarker->setAlpha( context.alpha() );
-  mMarker->startRender( context.renderContext() );
+  mMarker->startRender( context.renderContext(), context.fields() );
 }
 
 void QgsCentroidFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
