@@ -2305,6 +2305,8 @@ void QgisApp::initLayerTreeView()
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
 
+  setupLayerTreeViewFromSettings();
+
   connect( mLayerTreeView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( layerTreeViewDoubleClicked( QModelIndex ) ) );
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( activeLayerChanged( QgsMapLayer* ) ) );
   connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( updateNewLayerInsertionPoint() ) );
@@ -2327,6 +2329,13 @@ void QgisApp::initLayerTreeView()
   mLayerOrderDock->setWidget( mMapLayerOrder );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
   mLayerOrderDock->hide();
+}
+
+void QgisApp::setupLayerTreeViewFromSettings()
+{
+  QSettings s;
+
+  mLayerTreeView->layerTreeModel()->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( "/qgis/createRasterLegendIcons", false ).toBool() );
 }
 
 
@@ -7238,6 +7247,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
     setTheme( optionsDialog->theme() );
 
     QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( mySettings.value( "/qgis/new_layers_visible", true ).toBool() );
+
+    setupLayerTreeViewFromSettings();
 
     mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing" ).toBool() );
 

@@ -1338,6 +1338,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Removes annotation items in the canvas*/
     void removeAnnotationItems();
 
+    //! Configure layer tree view according to the user options from QSettings
+    void setupLayerTreeViewFromSettings();
+
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );
     /// QgisApp aren't copyable

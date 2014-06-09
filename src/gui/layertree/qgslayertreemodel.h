@@ -89,6 +89,7 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     {
       // display flags
       ShowSymbology             = 0x0001,  //!< Add symbology items for layer nodes
+      ShowRasterPreviewIcon     = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
 
       // behavioral flags
       AllowNodeReorder          = 0x1000,  //!< Allow reordering with drag'n'drop

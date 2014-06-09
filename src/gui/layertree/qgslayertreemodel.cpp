@@ -189,7 +189,15 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
       if ( layer->type() == QgsMapLayer::RasterLayer )
-        return QgsLayerItem::iconRaster();
+      {
+        if ( testFlag( ShowRasterPreviewIcon ) )
+        {
+          QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
+          return QIcon( rlayer->previewAsPixmap( QSize( 32, 32 ) ) );
+        }
+        else
+          return QgsLayerItem::iconRaster();
+      }
       else if ( layer->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
