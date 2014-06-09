@@ -223,6 +223,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
         QgsField field = mFields[index.internalId()];
         return ( int )field.type();
       }
+      return QVariant();
     }
 
     case Qt::DisplayRole:
@@ -232,7 +233,14 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return mExpression[exprIdx];
       }
-      return mLayer->attributeDisplayName( index.internalId() );
+      else if ( role == Qt::EditRole )
+      {
+        return mFields[index.internalId()].name();
+      }
+      else
+      {
+        return mLayer->attributeDisplayName( index.internalId() );
+      }
     }
 
     case Qt::ForegroundRole:
