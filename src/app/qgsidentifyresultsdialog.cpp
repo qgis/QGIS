@@ -300,6 +300,9 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
 
+  tabWidget->removeTab( 1 );
+  tabWidget->removeTab( 1 );
+
   // graph
   mPlot->setVisible( false );
   mPlot->setAutoFillBackground( false );
@@ -652,6 +655,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
 
+  if ( tabWidget->indexOf( tableTab ) < 0 )
+  {
+    tabWidget->addTab( tableTab, tr( "Table" ) );
+    tabWidget->addTab( plotTab, tr( "Graph" ) );
+  }
+
   if ( layItem == 0 )
   {
     layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
@@ -885,7 +894,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   QgsDebugMsg( "Entered" );
 
   // only handle context menu event if showing tree widget
-  if ( tabWidget->currentIndex() != 0 )
+  if ( tabWidget->currentWidget() != treeTab )
     return;
 
   QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
@@ -1030,16 +1039,6 @@ void QgsIdentifyResultsDialog::expandColumnsToFit()
   lstResults->resizeColumnToContents( 1 );
 }
 
-void QgsIdentifyResultsDialog::clearHighlights()
-{
-  foreach ( QgsHighlight *h, mHighlights )
-  {
-    delete h;
-  }
-
-  mHighlights.clear();
-}
-
 void QgsIdentifyResultsDialog::clear()
 {
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
@@ -1053,6 +1052,9 @@ void QgsIdentifyResultsDialog::clear()
   tblResults->clearContents();
   tblResults->setRowCount( 0 );
 
+  tabWidget->removeTab( 1 );
+  tabWidget->removeTab( 1 );
+
   mPlot->setVisible( false );
   foreach ( QgsIdentifyPlotCurve *curve, mPlotCurves )
     delete curve;
@@ -1063,14 +1065,22 @@ void QgsIdentifyResultsDialog::clear()
   mPrintToolButton->setDisabled( true );
 }
 
+void QgsIdentifyResultsDialog::clearHighlights()
+{
+  foreach ( QgsHighlight *h, mHighlights )
+  {
+    delete h;
+  }
+
+  mHighlights.clear();
+}
+
 void QgsIdentifyResultsDialog::activate()
 {
-#if 0
-  foreach ( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsHighlight *h, mHighlights )
   {
-    rb->show();
+    h->show();
   }
-#endif
 
   if ( lstResults->topLevelItemCount() > 0 )
   {
@@ -1081,12 +1091,10 @@ void QgsIdentifyResultsDialog::activate()
 
 void QgsIdentifyResultsDialog::deactivate()
 {
-#if 0
-  foreach ( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsHighlight *h, mHighlights )
   {
-    rb->hide();
+    h->hide();
   }
-#endif
 }
 
 void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
