@@ -22075,7 +22075,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="123"/>
         <source>Use smart page breaks</source>
-        <translation type="unfinished">Cwany podział na strony</translation>
+        <translation>Cwany podział na strony</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="138"/>
@@ -22129,7 +22129,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="212"/>
         <source>Item frame join style</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono ramkę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="237"/>
@@ -23556,7 +23556,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="254"/>
         <source>View extent in map canvas</source>
-        <translation type="unfinished">Ustaw do aktualnego widoku mapy</translation>
+        <translation>Ustaw do aktualnego widoku mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="264"/>
@@ -23581,7 +23581,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="321"/>
         <source>Use one of the predefined scales of the project where the atlas feature best fits.</source>
-        <translation type="unfinished"></translation>
+        <translation>Użycie jednej (najlepszej) ze zdefiniowanych skal projektu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="324"/>
@@ -26244,7 +26244,7 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/gui/layertree/qgscustomlayerorderwidget.cpp" line="191"/>
         <source>Control rendering order</source>
-        <translation type="unfinished">Kolejność warstw</translation>
+        <translation>Zachowaj kolejność warstw</translation>
     </message>
 </context>
 <context>
@@ -26869,12 +26869,12 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="126"/>
         <source>&apos;feature&apos;|&apos;viewport&apos;</source>
-        <translation type="unfinished">&apos;obiekt&apos;|&apos;widok&apos;</translation>
+        <translation>&apos;obiekt&apos;|&apos;widok&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="131"/>
         <source>&apos;pad&apos;|&apos;repeat&apos;|&apos;reflect&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;dopasuj&apos;|&apos;powtórz&apos;|&apos;odbij&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="136"/>
@@ -28109,7 +28109,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="695"/>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished">^.. wyrażenie wymaga grup przechwytywania</translation>
+        <translation>^.. wyrażenie wymaga grup przechwytywania</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="706"/>
@@ -29498,12 +29498,12 @@ Błąd:
         <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="158"/>
         <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="219"/>
         <source>Unknown attribute editor widget &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany atrybut widżetu edycji: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/core/qgseditorwidgetregistry.cpp" line="192"/>
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się zapisanie nieznanego typu widżetu edycji &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -40398,7 +40398,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="104"/>
         <source>Coordinate transform error. Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd transformacji współrzędnych. Nie powiodła się transformacja punktu do układu współrzędnych warstwy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="174"/>
@@ -41180,7 +41180,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="14"/>
         <source>Adjust map unit scales</source>
-        <translation type="unfinished">Dostosuj skale mapy</translation>
+        <translation>Dostosuj skale mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="24"/>
@@ -44785,7 +44785,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="102"/>
         <source>Identify highlight color</source>
-        <translation type="unfinished">Kolor wskazywanych obiektów</translation>
+        <translation>Kolor wskazywanych obiektów</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="180"/>
@@ -48182,7 +48182,7 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="293"/>
         <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
-        <translation type="unfinished">Nie sprawdzaj typu dla kolumn GEOMETRY</translation>
+        <translation>Nie sprawdzaj typu dla kolumn GEOMETRY</translation>
     </message>
     <message>
         <source>Allow geometryless tables</source>
@@ -50806,7 +50806,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1170"/>
         <source>Select restricted layers and groups</source>
-        <translation type="unfinished">Wybierz (restricted) warstwy i grupy</translation>
+        <translation type="unfinished">Wybierz warstwy i grupy z ograniczeniami</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1244"/>
@@ -51605,7 +51605,7 @@ Z tego powodu wybór odwzorowania nie będzie działał...</translation>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="52"/>
         <source>Set provider filter on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw filtr źródła danych na %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="205"/>
@@ -56409,7 +56409,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/gui/qgsscalevisibilitydialog.cpp" line="37"/>
         <source>Scale visibility </source>
-        <translation type="unfinished">Widoczność zależna od skali</translation>
+        <translation>Widoczność zależna od skali</translation>
     </message>
 </context>
 <context>
@@ -62502,7 +62502,7 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1132"/>
         <source>Memory cache</source>
-        <translation type="unfinished">Bufor pamięci</translation>
+        <translation>Bufor pamięci</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1250"/>
@@ -64678,7 +64678,7 @@ Odpowiedź:
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1930"/>
         <source>empty of capabilities: %1</source>
         <translatorcomment>puste?</translatorcomment>
-        <translation type="unfinished">brak Capabilities: %1</translation>
+        <translation>brak Capabilities: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1936"/>
