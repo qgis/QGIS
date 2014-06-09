@@ -36,6 +36,7 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
 
   public slots:
     void on_mHideDeprecatedCheckBox_stateChanged( int state );
+    void on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
 
   private:
     QgsDatumTransformDialog();

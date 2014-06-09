@@ -480,6 +480,8 @@ void QgsMapCanvas::setCrsTransformEnabled( bool enabled )
 
   mSettings.setCrsTransformEnabled( enabled );
 
+  updateDatumTransformEntries();
+
   refresh();
 
   emit hasCrsTransformEnabledChanged( enabled );
@@ -1555,11 +1557,18 @@ void QgsMapCanvas::connectNotify( const char * signal )
 
 void QgsMapCanvas::updateDatumTransformEntries()
 {
+  if ( !mSettings.hasCrsTransformEnabled() )
+    return;
+
   QString destAuthId = mSettings.destinationCrs().authid();
   foreach ( QString layerID, mSettings.layers() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( !layer )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vl && vl->geometryType() == QGis::NoGeometry )
       continue;
 
     // if there are more options, ask the user which datum transform to use

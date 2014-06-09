@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>237</height>
+    <width>547</width>
+    <height>285</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Select datum transformations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="3" column="0" colspan="2">
     <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
      <column>
       <property name="text">
@@ -33,7 +33,7 @@
      </column>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="6" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="mRememberSelectionCheckBox">
@@ -65,12 +65,80 @@
     </layout>
    </item>
    <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Destination CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="mLabelSrcCrs">
+     <property name="text">
+      <string notr="true">Source CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="mLabelDstCrs">
+     <property name="text">
+      <string notr="true">Destination CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Source CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="mLabelLayer">
+     <property name="text">
+      <string notr="true">layer name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="mLabelDstDescription">
+     <property name="text">
+      <string notr="true">Description</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mLabelSrcDescription">
+     <property name="text">
+      <string notr="true">Description</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

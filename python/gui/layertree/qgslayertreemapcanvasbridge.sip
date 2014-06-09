@@ -57,4 +57,17 @@ class QgsLayerTreeMapCanvasBridge : QObject
     void hasCustomLayerOrderChanged( bool );
     void customLayerOrderChanged( const QStringList& order );
 
+  protected:
+
+    void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
+
+    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers );
+
+    void deferredSetCanvasLayers();
+
+  protected slots:
+    void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void nodeRemovedChildren();
+    void nodeVisibilityChanged();
+    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, QString key );
 };

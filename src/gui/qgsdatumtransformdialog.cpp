@@ -38,6 +38,9 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, cons
   mHideDeprecatedCheckBox->setChecked( settings.value( "/Windows/DatumTransformDialog/hideDeprecated", false ).toBool() );
   mRememberSelectionCheckBox->setChecked( settings.value( "/Windows/DatumTransformDialog/rememberSelection", false ).toBool() );
 
+  mLabelSrcDescription->setText( "" );
+  mLabelDstDescription->setText( "" );
+
   for ( int i = 0; i < 2; i++ )
   {
     mDatumTransformTreeWidget->setColumnWidth( i, settings.value( QString( "/Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTreeWidget->columnWidth( i ) ).toInt() );
@@ -225,10 +228,18 @@ void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
   load();
 }
 
+void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+{
+  mLabelSrcDescription->setText( current->toolTip( 0 ) );
+  mLabelDstDescription->setText( current->toolTip( 1 ) );
+}
+
 void QgsDatumTransformDialog::updateTitle()
 {
-  QString title = tr( "Select datum transformations for layer" ) + " " + mLayerName;
-  if ( !mSrcCRSauthId.isEmpty() && !mDestCRSauthId.isEmpty() )
-    title += QString( " (%1 -> %2)" ).arg( mSrcCRSauthId ).arg( mDestCRSauthId );
-  setWindowTitle( title );
+  mLabelLayer->setText( mLayerName );
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( mSrcCRSauthId );
+  mLabelSrcCrs->setText( QString( "%1 - %2" ).arg( mSrcCRSauthId ).arg( crs.isValid() ? crs.description() : tr( "unknown" ) ) );
+  crs.createFromString( mDestCRSauthId );
+  mLabelDstCrs->setText( QString( "%1 - %2" ).arg( mDestCRSauthId ).arg( crs.isValid() ? crs.description() : tr( "unknown" ) ) );
 }
