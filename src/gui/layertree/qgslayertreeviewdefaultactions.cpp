@@ -200,6 +200,9 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
 
     QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( layer );
 
+    if ( vLayer->geometryType() == QGis::NoGeometry )
+      continue;
+
     if ( layerExtent.isEmpty() && layer->type() == QgsMapLayer::VectorLayer )
     {
       qobject_cast<QgsVectorLayer*>( layer )->updateExtents();
@@ -216,7 +219,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
       extent.combineExtentWith( &layerExtent );
   }
 
-  if ( extent.isEmpty() )
+  if ( extent.isNull() )
     return;
 
   // Increase bounding box with 5%, so that layer is a bit inside the borders

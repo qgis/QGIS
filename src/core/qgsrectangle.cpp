@@ -194,6 +194,11 @@ bool QgsRectangle::isEmpty() const
   return xmax <= xmin || ymax <= ymin;
 }
 
+bool QgsRectangle::isNull() const
+{
+  return xmin == 0 && xmax == 0 && ymin == 0 && ymax == 0;
+}
+
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =

@@ -430,7 +430,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
       QgsDebugMsg( "Updating extent using " + lyr->name() );
       QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
 
-      if ( lyr->extent().isEmpty() )
+      if ( lyr->extent().isNull() )
       {
         it++;
         continue;
