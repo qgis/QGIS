@@ -349,10 +349,11 @@ void QgsAttributeForm::init()
   if ( !formWidget )
   {
     formWidget = new QWidget( this );
-    QFormLayout* formLayout = new QFormLayout( formWidget );
-    formWidget->setLayout( formLayout );
+    QGridLayout* gridLayout = new QGridLayout( formWidget );
+    formWidget->setLayout( gridLayout );
     layout()->addWidget( formWidget );
 
+    int row = 0;
     Q_FOREACH( const QgsField& field, mLayer->pendingFields().toList() )
     {
       int idx = mLayer->fieldNameIndex( field.name() );
@@ -361,17 +362,25 @@ void QgsAttributeForm::init()
 
       const QString widgetType = mLayer->editorWidgetV2( idx );
       const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
+      bool labelOnTop = mLayer->labelOnTop( idx );
 
       // This will also create the widget
+      QWidget *l = new QLabel( fieldName );
       QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, 0, this, mContext );
+      QWidget *w = eww ? eww->widget() : new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
+
       if ( eww )
-      {
         mWidgets.append( eww );
-        formLayout->addRow( new QLabel( fieldName ), eww->widget() );
+
+      if ( labelOnTop )
+      {
+        gridLayout->addWidget( l, row++, 0, 1, 2 );
+        gridLayout->addWidget( w, row++, 0, 1, 2 );
       }
       else
       {
-        formLayout->addRow( new QLabel( fieldName ), new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) ) );
+        gridLayout->addWidget( l, row, 0 );
+        gridLayout->addWidget( w, row++, 1 );
       }
     }
 
@@ -379,7 +388,7 @@ void QgsAttributeForm::init()
     {
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, 0, this );
       rww->setContext( mContext );
-      formLayout->addRow( rww->widget() );
+      gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
       mWidgets.append( rww );
     }
   }
@@ -472,7 +481,7 @@ void QgsAttributeForm::initPython()
   }
 }
 
-QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context, QString& labelText, bool& labelOnTop )
+QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context, QString &labelText, bool &labelOnTop )
 {
   QWidget *newWidget = 0;
 
@@ -548,7 +557,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement*
         bool labelOnTop;
         QWidget* editor = createWidgetFromDef( childDef, myContainer, vl, context, labelText, labelOnTop );
 
-        if ( labelText == QString::null )
+        if ( labelText.isNull() )
         {
           gbLayout->addWidget( editor, index, 0, 1, 2 );
         }
