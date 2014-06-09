@@ -107,9 +107,10 @@ void QgsTextEditWidget::initWidget( QWidget* editor )
 void QgsTextEditWidget::setValue( const QVariant& value )
 {
   QString v;
-  if ( value.isNull() && !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+  if ( value.isNull() )
   {
-    v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+    if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+      v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
   }
   else
     v = value.toString();
