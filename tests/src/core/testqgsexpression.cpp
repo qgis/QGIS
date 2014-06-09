@@ -882,18 +882,31 @@ class TestQgsExpression: public QObject
       QgsExpression::unsetSpecialColumn( "$var1" );
     }
 
-    void expression_from_expression()
+    void expression_from_expression_data()
     {
-      {
-        QgsExpression e( "my_column" );
-        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
-      }
-      {
-        QgsExpression e( "\"my column\"" );
-        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
-      }
+      QTest::addColumn<QString>( "string" );
+      QTest::newRow( "column ref" ) << "my_column";
+      QTest::newRow( "column ref with space" ) << "\"my column\"";
+      QTest::newRow( "string literal" ) << "'hello'";
+      QTest::newRow( "string with quote" ) << "'hel''lo'";
     }
 
+    void expression_from_expression()
+    {
+      QFETCH( QString, string );
+
+      QgsExpression e( string );
+      QVERIFY( !e.hasParserError() );
+      qDebug() << e.expression();
+      QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+    }
+
+    void quote_string()
+    {
+      QCOMPARE( QgsExpression::quotedString( "hello\nworld" ), QString( "'hello\\nworld'" ) );
+      QCOMPARE( QgsExpression::quotedString( "hello\tworld" ), QString( "'hello\\tworld'" ) );
+      QCOMPARE( QgsExpression::quotedString( "hello\\world" ), QString( "'hello\\\\world'" ) );
+    }
 
 };
 
