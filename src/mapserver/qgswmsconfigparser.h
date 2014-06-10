@@ -74,8 +74,8 @@ class QgsWMSConfigParser
     /**Draw text annotation items from the QGIS projectfile*/
     virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const = 0;
 
-    //todo: fixme
-    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) { Q_UNUSED( lbl ); } //= 0;
+    /**Load PAL engine settings from the QGIS projectfile*/
+    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const = 0;
 
     virtual QString serviceUrl() const = 0;
 
