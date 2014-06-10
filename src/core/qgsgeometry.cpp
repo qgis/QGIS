@@ -6396,3 +6396,23 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
       return 0;
   }
 }
+
+namespace QgsGeometryAlgorithms
+{
+
+QgsGeometry* unaryUnion( const QList<QgsGeometry*>& geometryList )
+{
+  QList<GEOSGeometry*> geoms;
+  foreach( QgsGeometry* g, geometryList )
+  {
+    // const cast: it is ok here, since the pointers will only be used to be stored
+    // in a list for a call to union
+    geoms.append( const_cast<GEOSGeometry*>(g->asGeos()) );
+  }
+  GEOSGeometry* unioned = _makeUnion( geoms );
+  QgsGeometry *ret = new QgsGeometry();
+  ret->fromGeos( unioned );
+  return ret;
+}
+
+}// QgsGeometryAlgorithms

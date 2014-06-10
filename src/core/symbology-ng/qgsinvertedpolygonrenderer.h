@@ -130,8 +130,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** Structure where the reversed geometry is built during renderFeature */
     struct CombinedFeature
     {
-      QgsMultiPolygon multiPolygon; //< the final combined geometry
-      QgsFeature feature;           //< one feature (for attriute-based rendering)
+      QList<QgsGeometry*> geometries; //< list of geometries
+      QgsFeature feature;             //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
     /** where features are stored, based on the index of their symbol category @see mSymbolCategories */
