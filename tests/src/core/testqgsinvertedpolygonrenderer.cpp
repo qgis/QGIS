@@ -173,7 +173,7 @@ bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, 1000 ); // allow some mismatched pixels
   mReport += myChecker.report();
   return myResultFlag;
 }
