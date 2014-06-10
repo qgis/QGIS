@@ -69,7 +69,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
     return;
   }
 
-  mFeaturesCategoryMap.clear();
+  mFeaturesCategories.clear();
   mFeatureDecorations.clear();
   mFields = fields;
 
@@ -177,11 +177,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     // store the first feature
     cFeat.feature = feature;
     mSymbolCategories.insert( catId, mSymbolCategories.count() );
-    mFeaturesCategoryMap.append( cFeat );
+    mFeaturesCategories.append( cFeat );
   }
 
   // update the geometry
-  CombinedFeature& cFeat = mFeaturesCategoryMap[ mSymbolCategories[catId] ];
+  CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
   QgsMultiPolygon multi;
   QgsGeometry* geom = feature.geometry();
   if ( !geom )
@@ -265,7 +265,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     return;
   }
 
-  for ( FeatureCategoryMap::iterator cit = mFeaturesCategoryMap.begin(); cit != mFeaturesCategoryMap.end(); ++cit )
+  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
   {
     QgsFeature feat( cit->feature );
     if ( !mPreprocessingEnabled )
@@ -293,7 +293,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   // warning: when sub renderers have more than one possible symbols,
   // there is no way to choose a correct one, because there is no attribute here
   // in that case, nothing will be rendered
-  if ( mFeaturesCategoryMap.isEmpty() )
+  if ( mFeaturesCategories.isEmpty() )
   {
     // empty feature with default attributes
     QgsFeature feat( mFields );
