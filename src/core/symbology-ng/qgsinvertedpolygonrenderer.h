@@ -108,6 +108,16 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      */
     const QgsFeatureRendererV2* embeddedRenderer() const;
 
+    /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
+    bool preprocessingEnabled() const { return mPreprocessingEnabled; }
+    /**
+        @param enabled enables or disables the preprocessing.
+        When enabled, geometries will be merged with an union before being rendered.
+        It allows to fix some rendering artefacts (when rendering overlapping polygons for instance).
+        This will involve some CPU-demanding computations and is thus disabled by default.
+    */
+    void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
+
   private:
     /** Private copy constructor. @see clone() */
     QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& );
@@ -123,15 +133,18 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
       QgsMultiPolygon multiPolygon; //< the final combined geometry
       QgsFeature feature;           //< one feature (for attriute-based rendering)
     };
-    typedef QMap< QByteArray, CombinedFeature > FeatureCategoryMap;
-    /** where features are stored, based on their symbol category */
+    typedef QVector<CombinedFeature> FeatureCategoryMap;
+    /** where features are stored, based on the index of their symbol category @see mSymbolCategories */
     FeatureCategoryMap mFeaturesCategoryMap;
+
+    /** maps a category to an index */
+    QMap<QByteArray, int> mSymbolCategories;
 
     /** the polygon used as exterior ring that covers the current extent */
     QgsPolygon mExtentPolygon;
 
-    /** the current coordinate transform (or null) */
-    const QgsCoordinateTransform* mTransform;
+    /** the context used for rendering */
+    QgsRenderContext mContext;
 
     /** fields of each feature*/
     QgsFields mFields;
@@ -149,6 +162,9 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
           feature( a_feature ), selected( a_selected ), drawMarkers( a_drawMarkers ), layer( a_layer ) {}
     };
     QList<FeatureDecoration> mFeatureDecorations;
+
+    /** whether to preprocess (merge) geometries before rendering*/
+    bool mPreprocessingEnabled;
 };
 
 
