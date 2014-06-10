@@ -183,11 +183,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  QgsGeometry* geom = feature.geometry();
-  if ( !geom )
+  if ( !feature.geometry() )
   {
     return false;
   }
+  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.geometry() ) );
 
   const QgsCoordinateTransform* xform = context.coordinateTransform();
   if ( xform )
@@ -206,7 +206,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     else
     {
       // other features: combine them (union)
-      QgsGeometry* combined = cFeat.feature.geometry()->combine( geom );
+      QgsGeometry* combined = cFeat.feature.geometry()->combine( geom.data() );
       if ( combined && combined->isGeosValid() )
       {
         cFeat.feature.setGeometry( combined );
