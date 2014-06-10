@@ -182,7 +182,6 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  QgsMultiPolygon multi;
   QgsGeometry* geom = feature.geometry();
   if ( !geom )
   {
@@ -193,17 +192,6 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   if ( xform )
   {
     geom->transform( *xform );
-  }
-
-  if (( geom->wkbType() == QGis::WKBPolygon ) ||
-      ( geom->wkbType() == QGis::WKBPolygon25D ) )
-  {
-    multi.append( geom->asPolygon() );
-  }
-  else if (( geom->wkbType() == QGis::WKBMultiPolygon ) ||
-           ( geom->wkbType() == QGis::WKBMultiPolygon25D ) )
-  {
-    multi = geom->asMultiPolygon();
   }
 
   if ( mPreprocessingEnabled )
@@ -236,6 +224,18 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     //
     // No validity check is done, on purpose, it will be very slow and painting
     // operations do not need geometries to be valid
+
+    QgsMultiPolygon multi;
+    if (( geom->wkbType() == QGis::WKBPolygon ) ||
+        ( geom->wkbType() == QGis::WKBPolygon25D ) )
+    {
+      multi.append( geom->asPolygon() );
+    }
+    else if (( geom->wkbType() == QGis::WKBMultiPolygon ) ||
+             ( geom->wkbType() == QGis::WKBMultiPolygon25D ) )
+    {
+      multi = geom->asMultiPolygon();
+    }
 
     for ( int i = 0; i < multi.size(); i++ )
     {
