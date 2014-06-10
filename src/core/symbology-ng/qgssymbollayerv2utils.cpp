@@ -682,8 +682,7 @@ static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
 }
 #endif
 
-
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType geometryType )
 {
   QList<QPolygonF> resultLine;
 
@@ -701,19 +700,16 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 
   unsigned int i, pointCount = polyline.count();
 
-  bool isaLinearRing = false;
-  if ( polyline[0].x() == polyline[ pointCount - 1 ].x() && polyline[0].y() == polyline[ pointCount - 1 ].y() ) isaLinearRing = true;
-
   QgsPolyline tempPolyline( pointCount );
   QPointF* tempPtr = polyline.data();
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry* tempGeometry = isaLinearRing ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry * tempGeometry = ( geometryType == QGis::Polygon ) ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
   {
     const GEOSGeometry* geosGeom = tempGeometry->asGeos();
-    GEOSGeometry* offsetGeom = isaLinearRing ? GEOSBuffer( geosGeom, -dist, 8 /*quadSegments*/ ) : GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+    GEOSGeometry* offsetGeom = ( geometryType == QGis::Polygon ) ? GEOSBuffer( geosGeom, -dist, 8 /*quadSegments*/ ) : GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
 
     if ( offsetGeom )
     {
@@ -802,6 +798,21 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
   return resultLine;
 
 #endif
+}
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
+{
+  QGis::GeometryType geometryType = QGis::Point;
+  int pointCount = polyline.count();
+
+  if ( pointCount > 3 && polyline[ 0 ].x() == polyline[ pointCount - 1 ].x() && polyline[ 0 ].y() == polyline[ pointCount - 1 ].y() )
+  {
+    geometryType = QGis::Polygon;
+  }
+  else if ( pointCount > 1 )
+  {
+    geometryType = QGis::Line; 
+  }
+  return offsetLine( polyline, dist, geometryType );
 }
 
 /////
