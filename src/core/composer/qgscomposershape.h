@@ -80,6 +80,15 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
      * Note: Added in v2.1 */
     void setUseSymbolV2( bool useSymbolV2 );
 
+    /**Depending on the symbol style, the bounding rectangle can be larger than the shape
+    @note this function was added in version 2.3*/
+    QRectF boundingRect() const;
+
+    /**Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
+     * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
+    */
+    void setSceneRect( const QRectF& rectangle );
+
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
     virtual void drawFrame( QPainter* p );
@@ -104,6 +113,9 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     bool mUseSymbolV2;
 
     QgsFillSymbolV2* mShapeStyleSymbol;
+    double mMaxSymbolBleed;
+    /**Current bounding rectangle of shape*/
+    QRectF mCurrentRectangle;
 
     /* draws the custom shape */
     void drawShape( QPainter* p );
@@ -116,6 +128,9 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+
+    /**Updates the bounding rect of this item*/
+    void updateBoundingRect();
 };
 
 #endif // QGSCOMPOSERSHAPEITEM_H

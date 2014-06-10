@@ -27,8 +27,31 @@
 #include "qgsvectorlayer.h"
 #include "qgswfsfeatureiterator.h"
 
+#include <QNetworkRequest>
+
 class QgsRectangle;
 class QgsSpatialIndex;
+
+// TODO: merge with QgsWmsAuthorization?
+struct QgsWFSAuthorization
+{
+  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+
+  //! set authorization header
+  void setAuthorization( QNetworkRequest &request ) const
+  {
+    if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+    }
+  }
+
+  //! Username for basic http authentication
+  QString mUserName;
+
+  //! Password for basic http authentication
+  QString mPassword;
+};
 
 /**A provider reading features from a WFS server*/
 class QgsWFSProvider: public QgsVectorDataProvider
@@ -129,6 +152,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
     bool mNetworkRequestFinished;
     friend class QgsWFSFeatureIterator;
     QSet< QgsWFSFeatureIterator * > mActiveIterators;
+    
+    //! http authorization details
+    QgsWFSAuthorization mAuth;
 
   protected:
     /**Thematic attributes*/

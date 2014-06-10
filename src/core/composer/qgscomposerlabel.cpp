@@ -18,6 +18,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
 #include "qgsexpression.h"
+#include "qgsnetworkaccessmanager.h"
+
 #include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
@@ -78,7 +80,8 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   {
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
 
-    QWebPage* webPage = new QWebPage();
+    QWebPage *webPage = new QWebPage();
+    webPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
     //Setup event loop and timeout for rendering html
     QEventLoop loop;

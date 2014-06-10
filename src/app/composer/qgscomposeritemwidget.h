@@ -80,7 +80,10 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mItemRotationSpinBox_valueChanged( double val );
 
     void setValuesForGuiElements();
+    //sets the values for all position related (x, y, width, height) elements
     void setValuesForGuiPositionElements();
+    //sets the values for all non-position related elements
+    void setValuesForGuiNonPositionElements();
 
   private:
     QgsComposerItemWidget();
