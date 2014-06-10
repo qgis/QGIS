@@ -155,6 +155,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
   public slots:
     /** Remove results */
     void clear();
+    void clearTabs();
 
     void show();
 

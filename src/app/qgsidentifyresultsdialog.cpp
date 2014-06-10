@@ -1041,6 +1041,7 @@ void QgsIdentifyResultsDialog::expandColumnsToFit()
 
 void QgsIdentifyResultsDialog::clear()
 {
+  QgsDebugMsg( "Entered" );
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     disconnectLayer( lstResults->topLevelItem( i )->data( 0, Qt::UserRole ).value<QObject *>() );
@@ -1052,9 +1053,6 @@ void QgsIdentifyResultsDialog::clear()
   tblResults->clearContents();
   tblResults->setRowCount( 0 );
 
-  tabWidget->removeTab( 1 );
-  tabWidget->removeTab( 1 );
-
   mPlot->setVisible( false );
   foreach ( QgsIdentifyPlotCurve *curve, mPlotCurves )
     delete curve;
@@ -1063,6 +1061,12 @@ void QgsIdentifyResultsDialog::clear()
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
   mPrintToolButton->setDisabled( true );
+}
+
+void QgsIdentifyResultsDialog::clearTabs()
+{
+  tabWidget->removeTab( 1 );
+  tabWidget->removeTab( 1 );
 }
 
 void QgsIdentifyResultsDialog::clearHighlights()
