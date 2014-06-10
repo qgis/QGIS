@@ -29,7 +29,8 @@ QgsRendererV2Widget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* l
 QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
 {
-  if ( !layer ) {
+  if ( !layer )
+  {
     return;
   }
 
@@ -66,7 +67,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   else
   {
     // an existing inverted renderer
-    mRenderer.reset( static_cast<QgsInvertedPolygonRenderer*>(renderer) );
+    mRenderer.reset( static_cast<QgsInvertedPolygonRenderer*>( renderer ) );
     mMergePolygonsCheckBox->blockSignals( true );
     mMergePolygonsCheckBox->setCheckState( mRenderer->preprocessingEnabled() ? Qt::Checked : Qt::Unchecked );
     mMergePolygonsCheckBox->blockSignals( false );
@@ -81,7 +82,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   for ( ; it != rendererList.constEnd(); ++it, ++idx )
   {
     if (( *it != "invertedPolygonRenderer" ) && //< an inverted renderer cannot contain another inverted renderer
-        ( *it != "pointDisplacement" ))         //< an inverted renderer can only contain a polygon renderer
+        ( *it != "pointDisplacement" ) )        //< an inverted renderer can only contain a polygon renderer
     {
       QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );
@@ -123,9 +124,10 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererId );
   if ( m )
   {
-    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>(mRenderer->embeddedRenderer())->clone() ) );
+    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>( mRenderer->embeddedRenderer() )->clone() ) );
 
-    if ( mLayout->count() > 2 ) {
+    if ( mLayout->count() > 2 )
+    {
       // remove the current renderer widget
       mLayout->takeAt( 2 );
     }
