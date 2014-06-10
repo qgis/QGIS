@@ -69,6 +69,9 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
     return;
   }
 
+  // first call start render on the sub renderer
+  mSubRenderer->startRender( context, fields );
+
   mFeaturesCategories.clear();
   mFeatureDecorations.clear();
   mFields = fields;
@@ -114,8 +117,6 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
 
   mExtentPolygon.clear();
   mExtentPolygon.append( exteriorRing );
-
-  mSubRenderer->startRender( mContext, fields );
 }
 
 bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
