@@ -1116,16 +1116,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scal
   {
     if ( rule.isEmpty() || range.label() == rule )
     {
-      QgsSymbolV2* symbol;
-      if ( !mRotation.data() && !mSizeScale.data() )
-      {
-        symbol = range.symbol();
-      }
-      else
-      {
-        symbol = mTempSymbols[range.symbol()];
-      }
-      lst << qMakePair( range.label(), symbol );
+      lst << qMakePair( range.label(), range.symbol() );
     }
   }
   return lst;
