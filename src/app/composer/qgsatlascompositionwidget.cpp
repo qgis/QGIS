@@ -312,7 +312,7 @@ void QgsAtlasCompositionWidget::updateGuiElements()
 
   mAtlasSingleFileCheckBox->setCheckState( atlasMap->singleFile() ? Qt::Checked : Qt::Unchecked );
   mAtlasFilenamePatternEdit->setEnabled( !atlasMap->singleFile() );
-  mAtlasFilenameExpressionButton->setEnabled( atlasMap->singleFile() );
+  mAtlasFilenameExpressionButton->setEnabled( !atlasMap->singleFile() );
 
   mAtlasSortFeatureCheckBox->setCheckState( atlasMap->sortFeatures() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureDirectionButton->setEnabled( atlasMap->sortFeatures() );
