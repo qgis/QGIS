@@ -999,6 +999,11 @@ QImage* QgsWMSServer::getMap()
 
   applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
+  if ( mConfigParser )
+  {
+    mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
+  }
+
   mMapRenderer->render( &thePainter );
   if ( mConfigParser )
   {

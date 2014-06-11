@@ -533,8 +533,9 @@ void QgsSLDConfigParser::drawOverlays( QPainter *, int , int, int ) const
   //todo: fixme
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * )
+void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
 {
+  Q_UNUSED ( lbl );
   //needs to be here?
 }
 

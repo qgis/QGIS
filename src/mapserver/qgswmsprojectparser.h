@@ -98,6 +98,9 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
     /**Draw text annotation items from the QGIS projectfile*/
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
+    /**Load PAL engine settings from projectfile*/
+    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const;
+
     int nLayers() const;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
