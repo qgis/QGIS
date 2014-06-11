@@ -1914,11 +1914,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
+  if ( !geom->asGeos() )
+    return;  // there is something really wrong with the geometry
+
   // fix invalid polygons
   if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
   {
-    const GEOSGeometry* geos = geom->asGeos();
-    if ( geos ) geom->fromGeos( GEOSBuffer( geos, 0, 0 ) );
+    geom->fromGeos( GEOSBuffer( geom->asGeos(), 0, 0 ) );
   }
 
   // CLIP the geometry if it is bigger than the extent
