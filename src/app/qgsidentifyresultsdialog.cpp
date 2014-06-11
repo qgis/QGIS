@@ -1088,7 +1088,6 @@ void QgsIdentifyResultsDialog::activate()
 
   if ( lstResults->topLevelItemCount() > 0 )
   {
-    show();
     raise();
   }
 }
