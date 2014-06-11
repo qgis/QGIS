@@ -503,10 +503,24 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct
         extent.setXMinimum( -splitCoord );
         extent.setXMaximum( splitCoord );
       }
+
+      // TODO: the above rule still does not help if using a projection that covers the whole
+      // world. E.g. with EPSG:3857 the longitude spectrum -180 to +180 is mapped to approx.
+      // -2e7 to +2e7. Converting extent from -5e7 to +5e7 is transformed as -90 to +90,
+      // but in fact the extent should cover the whole world.
     }
     else // can't cross 180
     {
-      extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+      if ( ct->destCRS().geographicFlag() &&
+           ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
+             extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
+        // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.
+        // E.g. longitude -200 to +160 would be understood as +40 to +160 due to periodicity.
+        // We could try to clamp coords to (-180,180) for lon resp. (-90,90) for lat,
+        // but this seems like a safer choice.
+        extent = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
+      else
+        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
   catch ( QgsCsException &cse )
