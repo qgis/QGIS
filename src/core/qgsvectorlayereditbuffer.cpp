@@ -327,7 +327,24 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       const QgsField& newField = newFields[i];
       if ( attributeChangesOk && oldField != newField )
       {
-        commitErrors << tr( "ERROR: field with index %1 is not the same!" ).arg( i );
+        commitErrors
+        << tr( "ERROR: field with index %1 is not the same!" ).arg( i )
+        << tr( "Provider: %1" ).arg( L->providerType() )
+        << tr( "Storage: %1" ).arg( L->storageType() )
+        << QString( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+        .arg( tr( "expected field" ) )
+        .arg( oldField.name() )
+        .arg( QVariant::typeToName( oldField.type() ) )
+        .arg( oldField.typeName() )
+        .arg( oldField.length() )
+        .arg( oldField.precision() )
+        << QString( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+        .arg( tr( "retrieved field" ) )
+        .arg( newField.name() )
+        .arg( QVariant::typeToName( newField.type() ) )
+        .arg( newField.typeName() )
+        .arg( newField.length() )
+        .arg( newField.precision() );
         attributeChangesOk = false;   // don't try attribute updates - they'll fail.
       }
     }
