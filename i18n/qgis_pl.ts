@@ -68882,8 +68882,8 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Właściwości projektu&lt;/h3&gt;
-To okno umożliwia zdefiniowanie wielu parametrów związanych z &lt;label&gt;Projektem&lt;/label&gt;. Projekt to lista warstw wraz z ich ustawieniami zapisana na dysku jako plik. W projekcie nie są zapisywane same warstwy, a jedynie sposób ich wyświetlenia.&lt;p&gt;
+        <translation>&lt;h3&gt;Właściwości projektu&lt;/h3&gt;
+To okno umożliwia zdefiniowanie wielu parametrów związanych z &lt;label&gt;Projektem&lt;/label&gt;. Projekt to lista warstw wraz z ich ustawieniami, zapisana na dysku jako plik. W projekcie nie są zapisywane same warstwy, a jedynie sposób ich wyświetlania.&lt;p&gt;
 &lt;b&gt;Zakładki&lt;/b&gt;&lt;br/&gt;
 &lt;a href=&quot;#general&quot;&gt;Ogólne&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#crs&quot;&gt;Układ współrzędnych (CRS)&lt;/a&gt;&lt;br/&gt;
@@ -68891,7 +68891,6 @@ To okno umożliwia zdefiniowanie wielu parametrów związanych z &lt;label&gt;Pr
 &lt;a href=&quot;#style&quot;&gt;Style&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#ows&quot;&gt;Serwer OWS&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#makra&quot;&gt;Makra&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#relations&quot;&gt;Relacje&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;general&quot;&gt;
 &lt;h4&gt;Zakładka Ogólne&lt;/h4&gt;&lt;/a&gt;
@@ -68899,33 +68898,30 @@ To okno umożliwia zdefiniowanie wielu parametrów związanych z &lt;label&gt;Pr
 &lt;tr&gt;&lt;td&gt;Tytuł projektu&lt;/td&gt;&lt;td&gt;Opisowy tytuł projektu. Będzie on wyświetlany na pasku tytułowym okna QGIS&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Kolor obiektów wybranych&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wybrane obiekty będą wyświetlane na mapie za pomocą tego koloru.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Kolor tła&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Kolor płótna mapy.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Zapisz ścieżki&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wybór zapisu absolutnych bądź relatywnych ścieżek.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Jednostki mapy&lt;/td&gt;&lt;td&gt;Zadeklaruj jednostki mapy odpowiednie dla warstw wyświetlanych w projekcie&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Dokładność&lt;/td&gt;&lt;td&gt;Użyj ustawień użytkownika, aby określić dokładność wyświetlania na pasku stanu. Wraz z ruchem kursora po obszarze mapy, jego współrzędne są aktualizowane i wyświetlane zgodnie z przyjętą dokładnością. Automatyczne (domyślne) ustawienia oznaczają domyślną dokładność bazującą na jednostkach mapy.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Digitalizacja&lt;/td&gt;&lt;td&gt;Opcja &lt;label&gt;Włącz edycję topologiczną&lt;/label&gt; umożliwia rysowanie wspólnej granicy dla poligonów. Edytowanie węzła wspólnej granicy skutkuje zmianą obrysu obydwu poligonów.&lt;p&gt;
-Aby uniknąć wektoryzowania wszystkich węzłów wspólnej granicy wybierz &lt;label&gt;Unikaj przecinania się nowych poligonów...&lt;/label&gt;. W oknie dialogowym zaznacz odpowiednie warstwy, do których nowy poligon ma być dopasowany. Narysuj poligon z zakładką na istniejących poligonach, zostanie on docięty automatycznie.&lt;p&gt;
-&lt;label&gt;Opcje przyciągania...&lt;/label&gt; pozwalają na ustawienie tolerancji przyciągania w pikselach lub jednostkach mapy a także trybu &lt;label&gt;do wierzchołka&lt;/label&gt;, &lt;label&gt;do segmentu&lt;/label&gt;,&lt;label&gt;do wierzchołka i segmentu&lt;/label&gt; dla każdej warstwy oddzielnie.&lt;/td&gt;
-&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Zapisz ścieżki&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wybór zapisu absolutnych bądź względnych ścieżek.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Jednostki obszaru mapy&lt;/td&gt;&lt;td&gt;Jednostki wykorzystane do wyświetlania warstw w projekcie&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Dokładność&lt;/td&gt;&lt;td&gt;Użyj ustawień użytkownika, aby określić liczbę cyfr po przecinku do wyświetlania na pasku stanu. Wraz z ruchem kursora po obszarze mapy, jego współrzędne są aktualizowane i wyświetlane zgodnie z przyjętą dokładnością. Automatyczne (domyślne) ustawienia oznaczają domyślną dokładność bazującą na jednostkach mapy.&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;crs&quot;&gt;&lt;/a&gt;&lt;h4&gt;Zakładka Układ współrzędnych (CRS)&lt;/h4&gt;
 Umożliwia zdefiniowanie układu współrzędnych dla bieżącego projektu oraz transformację układu w locie. Nie musisz zapisywać projektu, aby określić i włączyć transformację w locie.&lt;p&gt;
 Aby użyć transformacji w locie, kliknij na &lt;label&gt;Transformuj układ współrzędnych w locie&lt;/label&gt;. Następnie wybierz układ współrzędnych projektu (obszaru mapy) z listy układów współrzędnych.
-&lt;p&gt;
-Możesz odszukać układ współrzędnych podając jego kod PostGIS SRID, EPSG lub QGIS SRSRID i klikając na klawisz &lt;label&gt;Znajdź&lt;/label&gt;.
-Ostatnio używane układy współrzędnych będą wyświetlone w górnej części okna.
 
 &lt;a name=&quot;layers&quot;&gt;&lt;h4&gt;Zakładka Warstwy&lt;/h4&gt;&lt;/a&gt;
-
+&lt;p&gt;
+Umożliwia zdefiniowanie, które z warstw będą podlegały przeszukiwaniu.
+&lt;/p&gt;
 &lt;a name=&quot;style&quot;&gt;&lt;h4&gt;Zakładka Style&lt;/h4&gt;&lt;/a&gt;
-
+&lt;p&gt;
+Umożliwia zdefiniowanie wybranych symboli jako domyślnych dla poszczególnych rodzajów danych. 
+&lt;/p&gt;
 &lt;a name=&quot;ows&quot;&gt;&lt;h4&gt;Zakładka Serwer OWS&lt;/h4&gt;&lt;/a&gt;
-
+&lt;p&gt;
+OGC Web Services
+&lt;/p&gt;
 &lt;a name=&quot;makra&quot;&gt;&lt;h4&gt;Zakładka Makra&lt;/h4&gt;&lt;/a&gt;
-
-&lt;a name=&quot;relations&quot;&gt;&lt;h4&gt;Zakładka Relacje&lt;/h4&gt;&lt;/a&gt;
-
-</translation>
+&lt;p&gt;
+Umożliwia uruchomienie skryptów Pythona związanych z podstawowymi operacjami na projekcie - odczyt, zapis, zamknięcie.
+&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Export a QGIS Project to MapServer Map File&lt;/h3&gt;
@@ -69387,7 +69383,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Dodaj tabelę PostGIS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Dodaj tabelę PostGIS&lt;/h3&gt;
 Okno dialogowe pozwalające na dodanie warstw PostGIS (tabel z kolumną geometrii) do okna mapy QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Połączenia z PostgreSQL&lt;/a&gt;&lt;br/&gt;
