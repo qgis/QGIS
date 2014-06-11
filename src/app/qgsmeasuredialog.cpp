@@ -43,12 +43,6 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
-  // Set one cell row where to update current distance
-  // If measuring area, the table doesn't get shown
-  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( QString::number( 0, 'f', 1 ) ) );
-  item->setTextAlignment( 0, Qt::AlignRight );
-  mTable->addTopLevelItem( item );
-
   updateSettings();
 }
 
@@ -97,37 +91,24 @@ void QgsMeasureDialog::restart()
 }
 
 
-void QgsMeasureDialog::mousePress( QgsPoint &point )
-{
-  show();
-  raise();
-  if ( ! mTool->done() )
-  {
-    mouseMove( point );
-  }
-}
-
 void QgsMeasureDialog::mouseMove( QgsPoint &point )
 {
-  Q_UNUSED( point );
-
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
-  if ( mMeasureArea && mTool->points().size() > 2 )
+  if ( mMeasureArea && mTool->points().size() >= 2 )
   {
-    double area = mDa.measurePolygon( mTool->points() );
+    QList<QgsPoint> tmpPoints = mTool->points();
+    tmpPoints.append( point );
+    double area = mDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area ) );
   }
-  else if ( !mMeasureArea && mTool->points().size() > 1 )
+  else if ( !mMeasureArea && mTool->points().size() >= 1 )
   {
-    int last = mTool->points().size() - 1;
-    QgsPoint p1 = mTool->points()[last];
-    QgsPoint p2 = mTool->points()[last-1];
+    QgsPoint p1( mTool->points().last() ), p2( point );
     double d = mDa.measureLine( p1, p2 );
 
-    mTotal = mDa.measureLine( mTool->points() );
-    editTotal->setText( formatDistance( mTotal ) );
+    editTotal->setText( formatDistance( mTotal + d ) );
 
     QGis::UnitType displayUnits;
     // Meters or feet?
@@ -150,12 +131,20 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
     double area = mDa.measurePolygon( mTool->points() );
     editTotal->setText( formatArea( area ) );
   }
-  else if ( !mMeasureArea && numPoints > 1 )
+  else if ( !mMeasureArea && numPoints >= 1 )
   {
-    QTreeWidgetItem * item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
-    item->setTextAlignment( 0, Qt::AlignRight );
-    mTable->addTopLevelItem( item );
-    mTable->scrollToItem( item );
+      if ( !mTool->done() )
+      {
+        QTreeWidgetItem * item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
+        item->setTextAlignment( 0, Qt::AlignRight );
+        mTable->addTopLevelItem( item );
+        mTable->scrollToItem( item );
+      }
+      if ( numPoints > 1)
+      {
+        mTotal = mDa.measureLine( mTool->points() );
+        editTotal->setText( formatDistance( mTotal ) );
+      }
   }
   QgsDebugMsg( "Exiting" );
 }
