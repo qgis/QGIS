@@ -528,15 +528,20 @@ bool QgsSLDConfigParser::featureInfoFormatSIA2045() const
   return false;
 }
 
-void QgsSLDConfigParser::drawOverlays( QPainter *, int , int, int ) const
+void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
 {
-  //todo: fixme
+  if ( mFallbackParser )
+  {
+    mFallbackParser->drawOverlays( p, dpi, width, height );
+  }
 }
 
 void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
 {
-  Q_UNUSED ( lbl );
-  //needs to be here?
+  if ( mFallbackParser )
+  {
+    mFallbackParser->loadLabelSettings( lbl );
+  }
 }
 
 QString QgsSLDConfigParser::serviceUrl() const

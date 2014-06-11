@@ -999,11 +999,6 @@ QImage* QgsWMSServer::getMap()
 
   applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
-  if ( mConfigParser )
-  {
-    mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
-  }
-
   mMapRenderer->render( &thePainter );
   if ( mConfigParser )
   {
@@ -1389,6 +1384,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
 #endif
   mMapRenderer->setLayerSet( layerIdList );
+
+  //load label settings
+  if ( mConfigParser )
+  {
+    mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
+  }
 
   return theImage;
 }
