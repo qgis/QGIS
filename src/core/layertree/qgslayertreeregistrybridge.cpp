@@ -25,6 +25,7 @@
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QObject *parent )
     : QObject( parent )
     , mRoot( root )
+    , mRegistryRemovingLayers( false )
     , mEnabled( true )
     , mNewLayersVisible( true )
     , mInsertionPointGroup( root )
@@ -74,12 +75,18 @@ void QgsLayerTreeRegistryBridge::layersWillBeRemoved( QStringList layerIds )
   if ( !mEnabled )
     return;
 
+  // when we start removing child nodes, the bridge would try to remove those layers from
+  // the registry _again_ in groupRemovedChildren() - this prevents it
+  mRegistryRemovingLayers = true;
+
   foreach ( QString layerId, layerIds )
   {
     QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
     if ( nodeLayer )
       qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
   }
+
+  mRegistryRemovingLayers = false;
 }
 
 
@@ -101,6 +108,9 @@ static void _collectLayerIdsInGroup( QgsLayerTreeGroup* group, int indexFrom, in
 
 void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
 {
+  if ( mRegistryRemovingLayers )
+    return; // do not try to remove those layers again
+
   Q_ASSERT( mLayerIdsForRemoval.isEmpty() );
 
   Q_ASSERT( QgsLayerTree::isGroup( node ) );
@@ -111,6 +121,9 @@ void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode* node
 
 void QgsLayerTreeRegistryBridge::groupRemovedChildren()
 {
+  if ( mRegistryRemovingLayers )
+    return; // do not try to remove those layers again
+
   // remove only those that really do not exist in the tree
   // (ignores layers that were dragged'n'dropped: 1. drop new 2. remove old)
   QStringList toRemove;
