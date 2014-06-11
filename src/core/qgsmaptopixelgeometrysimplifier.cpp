@@ -247,10 +247,17 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
     // Fix the topology of the geometry
     if ( numTargetPoints <= ( isaLinearRing ? 2 : 1 ) )
     {
+      unsigned char* targetTempWkb = targetWkb;
+      int targetWkbTempSize = targetWkbSize;
+
       sourceWkb = sourcePrevWkb;
       targetWkb = targetPrevWkb;
       targetWkbSize = targetWkbPrevSize;
-      return generalizeWkbGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, QgsRectangle( xmin, ymin, xmax, ymax ), writeHeader );
+      bool isok = generalizeWkbGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, QgsRectangle( xmin, ymin, xmax, ymax ), writeHeader );
+      if ( isok ) return true;
+
+      targetWkb = targetTempWkb;
+      targetWkbSize = targetWkbTempSize;
     }
     if ( isaLinearRing )
     {
