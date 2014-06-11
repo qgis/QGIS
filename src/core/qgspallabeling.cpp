@@ -852,7 +852,14 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
+  {
+    // for polygons the "over point" (over centroid) placement is better than the default
+    // "around point" (around centroid) which is more suitable for points
+    if ( layer->geometryType() == QGis::Polygon )
+      placement = OverPoint;
+
     return; // there's no information available
+  }
 
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
