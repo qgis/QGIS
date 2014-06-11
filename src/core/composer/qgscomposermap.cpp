@@ -781,7 +781,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
 {
   double currentScaleDenominator = scale();
 
-  if ( scaleDenominator == currentScaleDenominator )
+  if ( scaleDenominator == currentScaleDenominator || scaleDenominator == 0 )
   {
     return;
   }
