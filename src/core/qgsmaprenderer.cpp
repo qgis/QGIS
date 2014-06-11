@@ -657,7 +657,7 @@ bool QgsMapRenderer::hasCrsTransformEnabled() const
   return mProjectionsEnabled;
 }
 
-void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo )
+void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo, bool transformExtent )
 {
   QgsDebugMsg( "* Setting destCRS : = " + crs.toProj4() );
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
@@ -668,7 +668,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs,
       mLayerCoordinateTransformInfo.clear();
     }
     QgsRectangle rect;
-    if ( !mExtent.isEmpty() )
+    if ( transformExtent && !mExtent.isEmpty() )
     {
       QgsCoordinateTransform transform( *mDestCRS, crs );
       rect = transform.transformBoundingBox( mExtent );

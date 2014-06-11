@@ -152,7 +152,7 @@ void QgsMapCanvasRendererSync::onCrsTransformR2C()
 
 void QgsMapCanvasRendererSync::onDestCrsC2R()
 {
-  mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
+  mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs(), true, false );
 }
 
 void QgsMapCanvasRendererSync::onDestCrsR2C()
