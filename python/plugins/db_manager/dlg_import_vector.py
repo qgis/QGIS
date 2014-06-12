@@ -273,7 +273,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 				geom = self.outUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
 				geom = geom if geom != "" else self.default_geom
 			else:
-				geom = ""
+				geom = None
 
 			# get output params, update output URI
 			self.outUri.setDataSource( schema, table, geom, "", pk )
