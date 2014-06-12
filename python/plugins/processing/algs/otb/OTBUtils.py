@@ -29,7 +29,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import glob
 from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +38,6 @@ import logging
 import xml.etree.ElementTree as ET
 import traceback
 import qgis.core
-import PyQt4.QtGui
 
 
 class OTBUtils:
@@ -50,58 +48,65 @@ class OTBUtils:
     OTB_GEOID_FILE = "OTB_GEOID_FILE"
 
     @staticmethod
-    def otbPath():
-        folder = ProcessingConfig.getSetting(OTBUtils.OTB_FOLDER)
-        if folder == None:
-            folder = ""
-            #try to configure the path automatically
-            if isMac():
-                testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
-                if os.path.exists(os.path.join(testfolder, "otbcli")):
-                    folder = testfolder
-                else:
-                    testfolder = "/usr/local/bin"
-                    if os.path.exists(os.path.join(testfolder, "otbcli")):
-                        folder = testfolder
-            elif isWindows():
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
-                testfolder = os.path.dirname(testfolder)
-                testfolder = os.path.join(testfolder,  "bin")
-                path = os.path.join(testfolder, "otbcli.bat")
-                if os.path.exists(path):
-                    folder = testfolder
+    def findOtbPath():
+        folder = None
+        #try to configure the path automatically
+        if isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            if os.path.exists(os.path.join(testfolder, "otbcli")):
+                folder = testfolder
             else:
-                testfolder = "/usr/bin"
+                testfolder = "/usr/local/bin"
                 if os.path.exists(os.path.join(testfolder, "otbcli")):
                     folder = testfolder
+        elif isWindows():
+            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 
+                                      os.pardir, "bin")
+            if os.path.exists(os.path.join(testfolder, "otbcli.bat")):
+                folder = testfolder
+        else:
+            testfolder = "/usr/bin"
+            if os.path.exists(os.path.join(testfolder, "otbcli")):
+                folder = testfolder
+        return folder
+
+    @staticmethod
+    def otbPath():        
+        folder = OTBUtils.findOtbPath()
+        if folder is None:
+            folder = ProcessingConfig.getSetting(OTBUtils.OTB_FOLDER)
+        return folder
+    
+    @staticmethod
+    def findOtbLibPath():
+        folder = None
+        #try to configure the path automatically
+        if isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "lib/otb/applications")
+            if os.path.exists(testfolder):
+                folder = testfolder
+            else:
+                testfolder = "/usr/local/lib/otb/applications"
+                if os.path.exists(testfolder):
+                    folder = testfolder
+        elif isWindows():
+            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), "orfeotoolbox", "applications")
+            if os.path.exists(testfolder):
+                folder = testfolder
+        else:
+            testfolder = "/usr/lib/otb/applications"
+            if os.path.exists(testfolder):
+                folder = testfolder
         return folder
 
     @staticmethod
     def otbLibPath():
-        folder = ProcessingConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
-        if folder == None:
-            folder =""
-            #try to configure the path automatically
-            if isMac():
-                testfolder = os.path.join(str(QgsApplication.prefixPath()), "lib/otb/applications")
-                if os.path.exists(testfolder):
-                    folder = testfolder
-                else:
-                    testfolder = "/usr/local/lib/otb/applications"
-                    if os.path.exists(testfolder):
-                        folder = testfolder
-            elif isWindows():
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
-                testfolder = os.path.join(testfolder,  "orfeotoolbox")
-                testfolder = os.path.join(testfolder,  "applications")
-                if os.path.exists(testfolder):
-                    folder = testfolder
-            else:
-                testfolder = "/usr/lib/otb/applications"
-                if os.path.exists(testfolder):
-                    folder = testfolder
+        folder = OTBUtils.findOtbLibPath()
+        if folder is None:
+            folder = ProcessingConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
         return folder
-
+        
+    
     @staticmethod
     def otbSRTMPath():
         folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)

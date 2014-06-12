@@ -177,7 +177,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                     'Unsupported file format')
 
         # 2: Set parameters and outputs
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        saga208 = SagaUtils.isSaga208()
         if isWindows() or isMac() or not saga208:
             command = self.undecoratedGroup + ' "' + self.cmdname + '"'
         else:
@@ -351,7 +351,7 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        saga208 = SagaUtils.isSaga208()
         if saga208:
             if isWindows() or isMac():
                 return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
