@@ -248,6 +248,11 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo('<b>Algorithm %s starting...</b>' % self.alg.name)
+            # make sure the log tab is visible before executing the algorithm
+            try:
+                self.repaint()
+            except:
+                pass
             if self.iterateParam:
                 if UnthreadedAlgorithmExecutor.runalgIterating(self.alg,
                         self.iterateParam, self):

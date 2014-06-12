@@ -200,6 +200,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         for (i, alg) in enumerate(self.algs):
             self.setBaseText('Processing algorithm ' + str(i + 1) + '/'
                              + str(len(self.algs)) + '...')
+            # make sure the log tab is visible before executing the algorithm
+            try:
+                self.repaint()
+            except:
+                pass
             if UnthreadedAlgorithmExecutor.runalg(alg, self) \
                 and not self.canceled:
                 if self.load[i]:

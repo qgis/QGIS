@@ -239,7 +239,7 @@ class RAlgorithm(GeoAlgorithm):
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
             f = open(htmlfilename, 'w')
-            f.write('<img src="' + self.plotsFilename + '"/>')
+            f.write('<html><img src="' + self.plotsFilename + '"/></html>')
             f.close()
         if self.showConsoleOutput:
             htmlfilename = self.getOutputValue(RAlgorithm.R_CONSOLE_OUTPUT)
