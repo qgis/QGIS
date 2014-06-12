@@ -142,7 +142,7 @@ for my $i (<i18n/qgis_*.ts>) {
 	$maxn = $n unless defined $maxn;
 
 	if( $n>$maxn ) {
-		print STDERR "$i: more translation than others. ($n>$maxn)\n";
+		print STDERR "$i: more translations than others. ($n>$maxn)\n";
 		$maxn = $n;
 	}
 
