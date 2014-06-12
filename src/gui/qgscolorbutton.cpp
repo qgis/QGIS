@@ -46,6 +46,25 @@ QString QgsColorButton::fullPath( const QString &path )
 }
 #endif
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+QString QgsColorButton::fullPath( const QString &path )
+{
+  TCHAR buf[MAX_PATH];
+  int len = GetLongPathName( path.toUtf8().constData(), buf, MAX_PATH );
+
+  if ( len == 0 || len > MAX_PATH )
+  {
+    QgsDebugMsg( QString( "GetLongPathName('%1') failed with %2: %3" )
+                 .arg( path ).arg( len ).arg( GetLastError() ) );
+    return path;
+  }
+
+  QString res = QString::fromUtf8( buf );
+  return res;
+}
+#endif
+
 /*!
   \class QgsColorButton
 
