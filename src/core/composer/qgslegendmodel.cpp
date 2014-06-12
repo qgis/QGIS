@@ -195,7 +195,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
       {
         currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
       }
-      currentSymbolItem->setSymbolV2( symbolIt->second );
+      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
       layerItem->setChild( row, 0, currentSymbolItem );
       currentSymbolItem->setText( symbolIt->first );
     }

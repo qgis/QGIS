@@ -262,6 +262,7 @@ void QgsWMSServer::executeRequest()
       //do some error handling
       QgsDebugMsg( "result image is 0" );
     }
+    delete result;
   }
   //GetPrint
   else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
