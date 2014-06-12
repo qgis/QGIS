@@ -5187,9 +5187,7 @@ int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeome
     return -1;
   }
 
-  double bufferDistance = 0.00001;
-  if ( geomInDegrees( line2 ) ) //use more accurate tolerance for degrees
-    bufferDistance = 0.00000001;
+  double bufferDistance = pow( 1.0L, geomDigits( line2 )-11 );
 
   GEOSGeometry* bufferGeom = GEOSBuffer( line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
@@ -5219,9 +5217,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   if ( !point || !line )
     return -1;
 
-  double bufferDistance = 0.000001;
-  if ( geomInDegrees( line ) )
-    bufferDistance = 0.00000001;
+  double bufferDistance = pow( 1.0L, geomDigits( line )-11 );
 
   GEOSGeometry* lineBuffer = GEOSBuffer( line, bufferDistance, 8 );
   if ( !lineBuffer )
@@ -5235,39 +5231,43 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   return contained;
 }
 
-bool QgsGeometry::geomInDegrees( const GEOSGeometry* geom )
+int QgsGeometry::geomDigits( const GEOSGeometry* geom )
 {
   GEOSGeometry* bbox = GEOSEnvelope( geom );
   if ( !bbox )
-    return false;
+    return -1;
 
   const GEOSGeometry* bBoxRing = GEOSGetExteriorRing( bbox );
   if ( !bBoxRing )
-    return false;
+    return -1;
 
   const GEOSCoordSequence* bBoxCoordSeq = GEOSGeom_getCoordSeq( bBoxRing );
 
   if ( !bBoxCoordSeq )
-    return false;
+    return -1;
 
   unsigned int nCoords = 0;
   if ( !GEOSCoordSeq_getSize( bBoxCoordSeq, &nCoords ) )
-    return false;
+    return -1;
 
-  double x, y;
-  for ( unsigned int i = 0; i < ( nCoords - 1 ); ++i )
+  int maxDigits = -1;
+  for ( unsigned int i = 0; i < nCoords - 1; ++i )
   {
-    GEOSCoordSeq_getX( bBoxCoordSeq, i, &x );
-    if ( x > 180 || x < -180 )
-      return false;
+    double t;
+    GEOSCoordSeq_getX( bBoxCoordSeq, i, &t );
 
-    GEOSCoordSeq_getY( bBoxCoordSeq, i, &y );
-    if ( y > 90 || y < -90 )
-      return false;
+    int digits;
+    digits = ceil( log10( fabs( t ) ) );
+    if( digits > maxDigits )
+      maxDigits = digits;
 
+    GEOSCoordSeq_getY( bBoxCoordSeq, i, &t );
+    digits = ceil( log10( fabs( t ) ) );
+    if( digits > maxDigits )
+      maxDigits = digits;
   }
 
-  return true;
+  return maxDigits;
 }
 
 int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
