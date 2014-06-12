@@ -144,12 +144,12 @@ class ImportIntoPostGIS(GeoAlgorithm):
                           ))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY, 'Primary key field',
                           self.INPUT, optional=True))
-        self.addParameter(ParameterString(self.GEOMETRY_COLUMN, 'Geometry column', 'the_geom'
+        self.addParameter(ParameterString(self.GEOMETRY_COLUMN, 'Geometry column', 'geom'
                           ))
         self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite', True))
         self.addParameter(ParameterBoolean(self.CREATEINDEX,
                           'Create spatial index', True))
         self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
-                          'Convert field names to lowercase', False))
+                          'Convert field names to lowercase', True))
         self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
                           'Drop length constraints on character fields', False))
