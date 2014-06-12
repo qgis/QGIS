@@ -54,7 +54,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual ~QgsMssqlProvider();
 
-    static QSqlDatabase GetDatabase( QString driver, QString host, QString database, QString username, QString password );
+    static QSqlDatabase GetDatabase( QString service, QString host, QString database, QString username, QString password );
 
     virtual QgsAbstractFeatureSource* featureSource() const;
 
@@ -300,7 +300,6 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     // server access
     QString mService;
-    QString mDriver;
     QString mDatabaseName;
     QString mHost;
 
@@ -320,6 +319,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     static QGis::WkbType getWkbType( QString geometryType, int dim );
 
     friend class QgsMssqlFeatureSource;
+
+    static int sConnectionId;
 };
 
 #endif // QGSMSSQLPROVIDER_H

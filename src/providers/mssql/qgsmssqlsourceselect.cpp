@@ -429,6 +429,7 @@ void QgsMssqlSourceSelect::populateConnectionList()
 // Slot for performing action when the Add button is clicked
 void QgsMssqlSourceSelect::addTables()
 {
+  QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
   foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
@@ -494,12 +495,18 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
-  mConnInfo =  "dbname='" + database + "' host=" + host + " user='" + username + "' password='" + password + "'";
+  mConnInfo =  "dbname='" + database + "'";
+  if ( !host.isEmpty() )
+    mConnInfo += " host=" + host + "'";
+  if ( !username.isEmpty() )
+    mConnInfo += " user='" + username + "'";
+  if ( !password.isEmpty() )
+    mConnInfo += " password='" + password + "'";
   if ( !service.isEmpty() )
     mConnInfo += " service='" + service + "'";
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service,
-                    host, database, username, password );
+  QgsDebugMsg( "GetDatabase" );
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service, host, database, username, password );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {

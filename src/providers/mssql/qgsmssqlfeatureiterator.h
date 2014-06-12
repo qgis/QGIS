@@ -55,7 +55,6 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 
     // server access
     QString mService;
-    QString mDriver;
     QString mDatabaseName;
     QString mHost;
 
@@ -82,10 +81,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close();
 
   protected:
-
     void BuildStatement( const QgsFeatureRequest& request );
-
-    QSqlDatabase GetDatabase( QString driver, QString host, QString database, QString username, QString password );
 
   private:
     //! fetch next feature, return true on success

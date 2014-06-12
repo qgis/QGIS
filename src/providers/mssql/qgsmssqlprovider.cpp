@@ -51,6 +51,7 @@
 
 static const QString TEXT_PROVIDER_KEY = "mssql";
 static const QString TEXT_PROVIDER_DESCRIPTION = "MSSQL spatial data provider";
+int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -81,7 +82,7 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
   mSqlWhereClause = anUri.sql();
 
-  mDatabase = QgsMssqlProvider::GetDatabase( mDriver, mHost, mDatabaseName, mUserName, mPassword );
+  mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
 
   if ( !OpenDatabase( mDatabase ) )
   {
@@ -199,7 +200,7 @@ bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
-QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QString database, QString username, QString password )
+QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QString database, QString username, QString password )
 {
   QSqlDatabase db;
   QString connectionName;
@@ -207,23 +208,21 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
   // create a separate database connection for each feature source
   QgsDebugMsg( "Creating a separate database connection" );
 
-  if ( driver.isEmpty() )
+  if ( service.isEmpty() )
   {
-    if ( host.isEmpty() )
-    {
-      QgsDebugMsg( "QgsMssqlProvider host name not specified" );
-      return db;
-    }
+    if ( !host.isEmpty() )
+      connectionName = host + ".";
 
     if ( database.isEmpty() )
     {
       QgsDebugMsg( "QgsMssqlProvider database name not specified" );
       return db;
     }
-    connectionName = host + "." + database;
+
+    connectionName += QString( "%1.%2" ).arg( database ).arg( sConnectionId++ );
   }
   else
-    connectionName = driver;
+    connectionName = service;
 
   if ( !QSqlDatabase::contains( connectionName ) )
     db = QSqlDatabase::addDatabase( "QODBC", connectionName );
@@ -232,10 +231,10 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
 
   db.setHostName( host );
   QString connectionString = "";
-  if ( !driver.isEmpty() )
+  if ( !service.isEmpty() )
   {
     // driver was specified explicitly
-    connectionString = driver;
+    connectionString = service;
   }
   else
   {
@@ -1505,8 +1504,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   QgsDataSourceURI dsUri( uri );
 
   // connect to database
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( dsUri.service(),
-                    dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {

@@ -35,7 +35,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source,
   BuildStatement( request );
 
   // connect to the database
-  mDatabase = GetDatabase( mSource->mDriver, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+  mDatabase = QgsMssqlProvider::GetDatabase( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
 
   if ( !mDatabase.open() )
   {
@@ -63,7 +63,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // build sql statement
   mStatement = QString( "SELECT " );
 
-  mStatement += QString("[%1]").arg( mSource->mFidColName );
+  mStatement += QString( "[%1]" ).arg( mSource->mFidColName );
   mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
   mAttributesToFetch.append( mFidCol );
 
@@ -74,7 +74,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     if ( mSource->mFidColName == fieldname )
       continue;
 
-    mStatement += QString(",[%1]").arg( fieldname );
+    mStatement += QString( ",[%1]" ).arg( fieldname );
 
     mAttributesToFetch.append( i );
   }
@@ -82,7 +82,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // get geometry col
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && mSource->isSpatial() )
   {
-    mStatement += QString(",[%1]").arg( mSource->mGeometryColName );
+    mStatement += QString( ",[%1]" ).arg( mSource->mGeometryColName );
   }
 
   mStatement += QString( "FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
@@ -235,78 +235,6 @@ bool QgsMssqlFeatureIterator::close()
   return true;
 }
 
-QSqlDatabase QgsMssqlFeatureIterator::GetDatabase( QString driver, QString host, QString database, QString username, QString password )
-{
-  QSqlDatabase db;
-  QString connectionName;
-
-  // create a separate database connection for each feature source
-  QgsDebugMsg( "Creating a separate database connection" );
-  QString id;
-
-  // QString::sprintf adds 0x prefix
-  id.sprintf( "%p", this );
-
-  if ( driver.isEmpty() )
-  {
-    if ( host.isEmpty() )
-    {
-      QgsDebugMsg( "QgsMssqlProvider host name not specified" );
-      return db;
-    }
-
-    if ( database.isEmpty() )
-    {
-      QgsDebugMsg( "QgsMssqlProvider database name not specified" );
-      return db;
-    }
-    connectionName = host + "." + database + "." + id;
-  }
-  else
-    connectionName = driver;
-
-  if ( !QSqlDatabase::contains( connectionName ) )
-    db = QSqlDatabase::addDatabase( "QODBC", connectionName );
-  else
-    db = QSqlDatabase::database( connectionName );
-
-  db.setHostName( host );
-  QString connectionString = "";
-  if ( !driver.isEmpty() )
-  {
-    // driver was specified explicitly
-    connectionString = driver;
-  }
-  else
-  {
-#ifdef WIN32
-    connectionString = "driver={SQL Server}";
-#else
-    connectionString = "driver={FreeTDS};port=1433";
-#endif
-  }
-
-  if ( !host.isEmpty() )
-    connectionString += ";server=" + host;
-
-  if ( !database.isEmpty() )
-    connectionString += ";database=" + database;
-
-  if ( password.isEmpty() )
-    connectionString += ";trusted_connection=yes";
-  else
-    connectionString += ";uid=" + username + ";pwd=" + password;
-
-  if ( !username.isEmpty() )
-    db.setUserName( username );
-
-  if ( !password.isEmpty() )
-    db.setPassword( password );
-
-  db.setDatabaseName( connectionString );
-  return db;
-}
-
 ///////////////
 
 QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider* p )
@@ -317,6 +245,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider* p )
     , mSchemaName( p->mSchemaName )
     , mTableName( p->mTableName )
     , mUserName( p->mUserName )
+    , mPassword( p->mPassword )
     , mService( p->mService )
     , mDatabaseName( p->mDatabaseName )
     , mHost( p->mHost )
