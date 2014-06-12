@@ -1491,7 +1491,7 @@ QGis::WkbType QgsMssqlProvider::getWkbType( QString geometryType, int dim )
 
 QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
@@ -1541,25 +1541,25 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   {
     int index = 0;
     QString pk = primaryKey = "qgs_fid";
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      if ( fldIt.value().name() == primaryKey )
+      if ( fields[i].name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-        fldIt = fields.begin();
+        i = 0;
       }
     }
   }
   else
   {
     // search for the passed field
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      if ( fldIt.value().name() == primaryKey )
+      if ( fields[i].name() == primaryKey )
       {
         // found, get the field type
-        QgsField fld = fldIt.value();
+        QgsField fld = fields[i];
         if ( convertField( fld ) )
         {
           primaryKeyType = fld.typeName();
@@ -1688,12 +1688,12 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      QgsField fld = fldIt.value();
+      QgsField fld = fields[i];
       if ( fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( fldIt.key(), 0 );
+        oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), 0 );
         continue;
       }
 
@@ -1714,7 +1714,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fldIt.key(), offset++ );
+        oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
@@ -1782,7 +1782,7 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,

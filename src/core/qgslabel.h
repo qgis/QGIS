@@ -41,7 +41,6 @@ class QgsLabelAttributes;
 
 typedef QList<int> QgsAttributeList;
 
-typedef QMap<int, QgsField> QgsFieldMap;
 class QgsFields;
 
 /** \ingroup core

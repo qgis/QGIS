@@ -3440,10 +3440,10 @@ QString QgsVectorLayer::metadata()
   myMetadata += "</th>";
 
   //get info for each field by looping through them
-  const QgsFieldMap& myFields = pendingFields();
-  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  const QgsFields& myFields = pendingFields();
+  for ( int i = 0, n = myFields.size(); i < n; ++i )
   {
-    const QgsField& myField = *it;
+    const QgsField& myField = fields[i];
 
     myMetadata += "<tr><td>";
     myMetadata += myField.name();
