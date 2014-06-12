@@ -1611,7 +1611,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Grid Spacing</source>
-        <translation>Separación de rejilla</translation>
+        <translation>Separación de cuadrícula</translation>
     </message>
     <message>
         <source>Use this point spacing</source>
@@ -2989,11 +2989,11 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <name>DlgGetScriptsAndModels</name>
     <message>
         <source>Get scripts and models</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtener scritps y modelos</translation>
     </message>
     <message>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>about:blank</translation>
     </message>
 </context>
 <context>
@@ -4161,7 +4161,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation>Seleccionar el archivo de entrada para la rejilla</translation>
+        <translation>Seleccionar el archivo de entrada para la cuadrícula</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
@@ -4425,7 +4425,7 @@ Desactive la opción &quot;Usar extensión de la intersección&quot; para obtene
     </message>
     <message>
         <source>[select levels]</source>
-        <translation>[seleccionar niveles]</translation>
+        <translation type="obsolete">[seleccionar niveles]</translation>
     </message>
     <message>
         <source>{0} not created.</source>
@@ -7321,11 +7321,11 @@ Ctl (Cmd) incrementa cada 15 grados.</translation>
     </message>
     <message>
         <source>&amp;Grid</source>
-        <translation>&amp;Rejilla</translation>
+        <translation>Cuad&amp;rícula</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation>Rejilla</translation>
+        <translation>Cuadrícula</translation>
     </message>
     <message>
         <source>Pin/Unpin Labels</source>
@@ -17030,7 +17030,7 @@ Error del analizador:
     </message>
     <message>
         <source>Feature Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributos del objeto espacial</translation>
     </message>
 </context>
 <context>
@@ -20362,7 +20362,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Página</translation>
     </message>
 </context>
 <context>
@@ -21175,7 +21175,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid checkbox toggled</source>
-        <translation>Casilla de verificación de rejilla conmutada</translation>
+        <translation>Casilla de verificación de cuadrícula conmutada</translation>
     </message>
     <message>
         <source>Grid interval changed</source>
@@ -21366,7 +21366,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid &amp;type</source>
-        <translation>&amp;Tipo de rejilla</translation>
+        <translation>&amp;Tipo de cuadrícula</translation>
     </message>
     <message>
         <source>Interval X</source>
@@ -23190,7 +23190,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid</source>
-        <translation>Rejilla</translation>
+        <translation>Cuadrícula</translation>
     </message>
 </context>
 <context>
@@ -24263,11 +24263,15 @@ y el archivo actual es [%3]</translation>
     <name>QgsDatumTransformDialog</name>
     <message>
         <source>Select datum transformations for layer</source>
-        <translation>Seleccionar transformaciones de dátum para la capa</translation>
+        <translation type="obsolete">Seleccionar transformaciones de dátum para la capa</translation>
     </message>
     <message>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
         <translation>No se ha encontrado el archivo &apos;%1&apos; en el directorio &apos;%2&apos;</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished">desconocido</translation>
     </message>
 </context>
 <context>
@@ -24291,6 +24295,18 @@ y el archivo actual es [%3]</translation>
     <message>
         <source>Hide deprecated</source>
         <translation>Ocultar obsoletos</translation>
+    </message>
+    <message>
+        <source>Destination CRS</source>
+        <translation type="unfinished">SRC de destino</translation>
+    </message>
+    <message>
+        <source>Source CRS</source>
+        <translation type="unfinished">SRC de origen</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Capa</translation>
     </message>
 </context>
 <context>
@@ -24545,7 +24561,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enable grid</source>
-        <translation>Activar grilla</translation>
+        <translation>Activar cuadrícula</translation>
     </message>
     <message>
         <source>Interval X</source>
@@ -24557,7 +24573,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Grid type</source>
-        <translation>Tipo de rejilla</translation>
+        <translation>Tipo de cuadrícula</translation>
     </message>
     <message>
         <source>Line symbol</source>
@@ -32170,7 +32186,7 @@ en la línea %2 columna %3</translation>
     </message>
     <message>
         <source>Handle bad layers</source>
-        <translation type="unfinished">Manejo de capas incorrectas</translation>
+        <translation>Manejar capas incorrectas</translation>
     </message>
 </context>
 <context>
@@ -32645,6 +32661,14 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Toggle feature selection</source>
         <translation>Alternar selección de objetos espaciales</translation>
     </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">Tabla</translation>
+    </message>
+    <message>
+        <source>Graph</source>
+        <translation type="unfinished">Grafo</translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResultsWebView</name>
@@ -32834,6 +32858,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>Sub renderer:</source>
         <translation>Sub renderizador:</translation>
+    </message>
+    <message>
+        <source>Merge polygons before rendering (slow)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34425,7 +34453,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Force point inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Forzar puntos dentro de polígono</translation>
     </message>
 </context>
 <context>
@@ -35999,11 +36027,11 @@ no se muestran</translation>
     </message>
     <message>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar intervalo de escalado</translation>
     </message>
     <message>
         <source>Scale only within the following map unit scale range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar sólo dentro del intervalo de unidades de mapa siguientes:</translation>
     </message>
 </context>
 <context>
@@ -45099,6 +45127,10 @@ Proceed?</source>
         <source>WCS capabilities</source>
         <translation>Capacidades WCS</translation>
     </message>
+    <message>
+        <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -53155,7 +53187,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar intervalo de escalado</translation>
     </message>
 </context>
 <context>
@@ -53204,6 +53236,13 @@ El error fue: %2</translation>
     <message>
         <source>Remove Selected</source>
         <translation>Eliminar lo seleccionado</translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueRelationConfigDlg</name>
+    <message>
+        <source>Edit filter expression</source>
+        <translation type="unfinished">Editar expresión de filtrado</translation>
     </message>
 </context>
 <context>
@@ -53881,6 +53920,22 @@ El error fue: %2</translation>
   Provider errors:</source>
         <translation>
   Errores del proveedor:</translation>
+    </message>
+    <message>
+        <source>Provider: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Storage: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>expected field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>retrieved field</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -58783,7 +58838,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Force point inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Forzar puntos dentro de polígono</translation>
     </message>
 </context>
 <context>
@@ -68014,7 +68069,34 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función scale_exp()&lt;/h3&gt;
+Transforma un valor dado de un dominio de entrada a un intervalo de salida usando una curva exponencial. Esta función se puede usar para facilitar valores dentro o fuera 
+del intervalo de salida dado.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     exp_escala(&lt;i&gt;valor&lt;/i&gt;,&lt;i&gt;dominio_min&lt;/i&gt;,&lt;i&gt;dominio_max&lt;/i&gt;,&lt;i&gt;intervalo_min&lt;/i&gt;,&lt;i&gt;intervalo_max&lt;/i&gt;,&lt;i&gt;exponente&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; es un valor en el dominio de entrada. La función devolverá un valor escalado correspondiente en el intervalo de salida.&lt;br&gt;
+&lt;i&gt;  dominio_min, dominio_max&lt;/i&gt; &amp;rarr; especifica el dominio de entrada y los valores menor y mayor que el &lt;i&gt;valor&lt;/i&gt; de entrada debería tomar.&lt;br&gt;
+&lt;i&gt;  intervalo_min, intervalo_max&lt;/i&gt; &amp;rarr; especifica el intervalor de salida y los valores menor y mayor que debería resultar de la función.&lt;br&gt;
+&lt;i&gt;  exponente&lt;/i&gt; &amp;rarr; un valor positivo (mayor que 0), que determina la forma en que los valores de entrada son mapeados al intervalo de salida. Exponentes grandes harán que los valores de salida comiencen lentamente, antes de acelerar a medida que los valores de entrada se aproximan al dominio máximo. Exponentes más pequeños (menores de 1) harán que los valores de salida comiencen rápidamente pero se ralenticen a medida que se aproxima el dominio máximo.&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;b&gt;Acelerando, usando un exponente de 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Ralentizando, usando un exponente de 0.5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+     
+     
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
@@ -68076,7 +68158,21 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función regexp_match()&lt;/h3&gt;
+Devuelve verdadero si cualquier parte de la cadena coincide con la expresión regular proporcionada.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     regexp_match(&lt;i&gt;cadena,expresión regular&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a probar contra la expresión regular.&lt;br&gt;
+&lt;i&gt;  expresión regular&lt;/i&gt; &amp;rarr; es una cadena. La expresión regular contra la que probar. La barra invertida debe escaparse dos veces (ej &quot;&amp;#92;&amp;#92;s&quot; para coincidir con un caracter espacio). No se admiten expresiones regulares non-greedy.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
@@ -68095,7 +68191,22 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función regexp_replace()&lt;/h3&gt;
+Devuelve una cadena con la expresión regular proporcionada sustituida.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;cadena,expresión regular,después&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena inicial.&lt;br&gt;
+&lt;i&gt;  The start string&lt;/i&gt; &amp;rarr; es una cadena. La The start string a remplazar. La barra invertida debe escaparse dos veces (ej &quot;&amp;#92;&amp;#92;s&quot; para coincidir con un caracter espacio). No se admiten expresiones regulares non-greedy.&lt;br&gt;
+&lt;i&gt;  después&lt;/i&gt; &amp;rarr; es una cadena. La cadena que remplazará cualquier coincidencia de la expresión regular proporcionada. Los grupos capturados se pueden insertar en la cadena de remplazo usando &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
@@ -68113,7 +68224,21 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función regexp_substr()&lt;/h3&gt;
+Devuelve la porción de una cadena que coincide con una expresión regular proporcionada.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;cadena,expresión regular&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena de entrada.&lt;br&gt;
+&lt;i&gt;  expresión regular&lt;/i&gt; &amp;rarr; es una cadena. La expresión regular con la que coincidir. La barra invertida debe escaparse dos veces (ej &quot;&amp;#92;&amp;#92;s&quot; para coincidir con un caracter espacio). No se admiten expresiones regulares non-greedy.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
@@ -68368,7 +68493,18 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función geomToWKT&lt;/h3&gt;
+Devuelve la representación en Texto Bien Conocido (WKT) de la geometría sin metadatos SRID.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+a &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;crosses function&lt;/h3&gt;
@@ -68385,7 +68521,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función crosses()&lt;/h3&gt;
+Devuelva 1 si las geometrías proporcionadas tienen alguno, pero no todos, de sus puntos interiores en común.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+geometry &amp;rarr; geometría
+geometry &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; devuelve 1&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; devuelve 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;AND logical operator&lt;/h3&gt;
@@ -68402,7 +68551,20 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;operador lógico AND&lt;/h3&gt;
+Devuelve 1 cuando se cumplen las condiciones a y b.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt; condición a AND condición b &lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; devuelve 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; devuelve 0 &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
@@ -68418,7 +68580,19 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función convexHull()&lt;/h3&gt;
+Devuelve la envolvente convexa de una geometría. Representa la geometría convexa mínima que engloba todas las geometrías del conjunto.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;convexHull( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+a &amp;rarr; geometría
+a &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; devuelve POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$map function&lt;/h3&gt;
@@ -68438,7 +68612,22 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $map&lt;/h3&gt;
+Devuelve la ID del elemento del mapa actual si el mapa se está dibujando en una composición o &quot;canvas&quot; si el mapa está siendo dibujado en la ventana principal de QGIS.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$map&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;$map &amp;rarr; &quot;overview_map&quot; (dentro de un elemento de diseñador)&lt;br /&gt;
+$map &amp;rarr; &quot;canvas&quot; (dentro de la ventana principal de QGIS)&lt;/pre&gt;
+
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;combine function&lt;/h3&gt;
@@ -69572,7 +69761,7 @@ geom &amp;rarr; a geometry
     </message>
     <message>
         <source>Create grid in current region</source>
-        <translation>Crear rejilla en la región actual</translation>
+        <translation>Crear cuadrícula en la región actual</translation>
     </message>
     <message>
         <source>Create new GRASS location and transfer data into it</source>

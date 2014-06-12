@@ -2430,6 +2430,17 @@ were reduced to %d vertices after simplification</source>
     </message>
 </context>
 <context>
+    <name>DlgGetScriptsAndModels</name>
+    <message>
+        <source>Get scripts and models</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DlgHelpEdition</name>
     <message>
         <source>Help editor</source>
@@ -3565,10 +3576,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>[select levels]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6711,6 +6718,22 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Set Scale Visibility of Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Photocopy (Grayscale)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Fax (Mono)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Color Blindness (Protanope)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Color Blindness (Deuteranope)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12115,6 +12138,10 @@ Response was:
         <source>SQLite/SpatiaLite</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Inverted polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -14235,6 +14262,20 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">
             </translation>
     </message>
+    <message>
+        <source>&amp;Expand All</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
+    <message>
+        <source>&amp;Collapse All</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished">យក​ចេញ</translation>
+    </message>
 </context>
 <context>
     <name>QgsApplication</name>
@@ -14304,22 +14345,22 @@ User DB Path:	%9
     <name>QgsAtlasComposition</name>
     <message>
         <source>Filename parsing error: %1</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
         <source>Feature filter parser error: %1</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
         <source>Feature filter eval error: %1</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
         <source>Filename eval error: %1</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -14328,6 +14369,18 @@ User DB Path:	%9
     </message>
     <message>
         <source>Atlas feature %1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Atlas filter eval error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer</source>
+        <translation type="unfinished">កម្មវិធី​តែង</translation>
+    </message>
+    <message>
+        <source>Atlas filename evaluation error: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14354,6 +14407,16 @@ User DB Path:	%9
     </message>
     <message>
         <source>No matching atlas features found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not evaluate filename pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not set filename pattern as &apos;%1&apos;.
+Parser error:
+%2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14767,6 +14830,10 @@ User DB Path:	%9
         <source>Attributes - %1</source>
         <translation type="obsolete">
             </translation>
+    </message>
+    <message>
+        <source>Feature Attributes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15313,10 +15380,6 @@ User DB Path:	%9
         <translation type="unfinished">=</translation>
     </message>
     <message>
-        <source>update expression...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Update All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15333,6 +15396,10 @@ User DB Path:	%9
 %1</source>
         <translation type="unfinished">
             </translation>
+    </message>
+    <message>
+        <source>[update field expression]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16801,6 +16868,27 @@ Please try a lower resolution or a smaller papersize</source>
         <source>There was an error in SVG output for SVG layer </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Simulate Photocopy (Grayscale)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Fax (Mono)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Color Blindness (Protanope)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate Color Blindness (Deuteranope)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature filter parser error: %1</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -18090,6 +18178,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Join style</source>
         <translation type="unfinished">
             </translation>
+    </message>
+    <message>
+        <source>Page</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22172,12 +22264,12 @@ and current file is [%3]</source>
 <context>
     <name>QgsDatumTransformDialog</name>
     <message>
-        <source>Select datum transformations for layer</source>
+        <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <source>unknown</source>
+        <translation type="unfinished">មិន​ស្គាល់</translation>
     </message>
 </context>
 <context>
@@ -22201,6 +22293,19 @@ and current file is [%3]</source>
     <message>
         <source>Hide deprecated</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">
+            </translation>
     </message>
 </context>
 <context>
@@ -30202,12 +30307,13 @@ at line %2 column %3</source>
 <context>
     <name>QgsHandleBadLayersHandler</name>
     <message>
-        <source>Handle Bad layers</source>
+        <source>%1 of %2 bad layers were not fixable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 of %2 bad layers were not fixable.</source>
-        <translation type="unfinished"></translation>
+        <source>Handle bad layers</source>
+        <translation type="unfinished">
+            </translation>
     </message>
 </context>
 <context>
@@ -30643,6 +30749,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Toggle feature selection</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">តារាង</translation>
+    </message>
+    <message>
+        <source>Graph</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResultsWebView</name>
@@ -30839,6 +30953,29 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>&amp;Interpolation</source>
         <translation type="unfinished">
             </translation>
+    </message>
+</context>
+<context>
+    <name>QgsInvertedPolygonRendererWidget</name>
+    <message>
+        <source>The inverted polygon renderer only applies to polygon and multipolygon layers. 
+&apos;%1&apos; is not a polygon layer and then cannot be displayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsInvertedPolygonRendererWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">សំណុំ​បែបបទ</translation>
+    </message>
+    <message>
+        <source>Sub renderer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge polygons before rendering (slow)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32519,6 +32656,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Repeat</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Force point inside polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerPropertiesWidget</name>
@@ -33147,7 +33288,7 @@ not displayed</source>
     </message>
     <message>
         <source>Feature added</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -33886,15 +34027,19 @@ not displayed</source>
 <context>
     <name>QgsMapUnitScaleDialog</name>
     <message>
-        <source>Adjust map unit scales</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Maximum scale:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Minimum scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust scaling range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale only within the following map unit scale range:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -43113,6 +43258,10 @@ Proceed?</source>
         <source>WCS capabilities</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -49947,6 +50096,11 @@ There was a problem with your symbol database.</source>
         <source>Save</source>
         <translation type="unfinished">រក្សាទុក</translation>
     </message>
+    <message>
+        <source>Save symbol</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
 </context>
 <context>
     <name>QgsSymbolsListWidget</name>
@@ -50659,6 +50813,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Form</source>
         <translation type="unfinished">សំណុំ​បែបបទ</translation>
     </message>
+    <message>
+        <source>Adjust scaling range</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsValueMapConfigDlg</name>
@@ -50709,6 +50867,14 @@ Error was:%2</source>
     </message>
     <message>
         <source>Remove Selected</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
+</context>
+<context>
+    <name>QgsValueRelationConfigDlg</name>
+    <message>
+        <source>Edit filter expression</source>
         <translation type="unfinished">
             </translation>
     </message>
@@ -51437,6 +51603,22 @@ Error was:%2</source>
             </numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Provider: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Storage: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>expected field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>retrieved field</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55737,6 +55919,10 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Form</source>
         <translation>សំណុំ​បែបបទ</translation>
+    </message>
+    <message>
+        <source>Force point inside polygon</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
