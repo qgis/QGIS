@@ -220,6 +220,7 @@ QRectF QgsComposition::compositionBounds() const
 
 void QgsComposition::setPaperSize( double width, double height )
 {
+  //update item positions
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
@@ -228,6 +229,28 @@ void QgsComposition::setPaperSize( double width, double height )
     if ( composerItem )
     {
       composerItem->updatePagePos( width, height );
+    }
+  }
+  //update guide positions and size
+  QList< QGraphicsLineItem* >* guides = snapLines();
+  QList< QGraphicsLineItem* >::iterator guideIt = guides->begin();
+  double totalHeight = ( height + spaceBetweenPages() ) * ( numPages() - 1 ) + height;
+  for ( ; guideIt != guides->end(); ++guideIt )
+  {
+    QLineF line = ( *guideIt )->line();
+    if ( line.dx() == 0 )
+    {
+      //vertical line, change height of line
+      ( *guideIt )->setLine( line.x1(), 0, line.x1(), totalHeight );
+    }
+    else
+    {
+      //horizontal line
+      //move to new vertical position and change width of line
+      QPointF curPagePos = positionOnPage( line.p1() );
+      int curPage = pageNumberForPoint( line.p1() ) - 1;
+      double newY = curPage * ( height + spaceBetweenPages() ) + curPagePos.y();
+      ( *guideIt )->setLine( 0, newY, width, newY );
     }
   }
 
@@ -272,6 +295,20 @@ void QgsComposition::setNumPages( int pages )
     {
       delete mPages.last();
       mPages.removeLast();
+    }
+  }
+
+  //update vertical guide height
+  QList< QGraphicsLineItem* >* guides = snapLines();
+  QList< QGraphicsLineItem* >::iterator guideIt = guides->begin();
+  double totalHeight = ( mPageHeight + spaceBetweenPages() ) * ( pages - 1 ) + mPageHeight;
+  for ( ; guideIt != guides->end(); ++guideIt )
+  {
+    QLineF line = ( *guideIt )->line();
+    if ( line.dx() == 0 )
+    {
+      //vertical line, change height of line
+      ( *guideIt )->setLine( line.x1(), 0, line.x1(), totalHeight );
     }
   }
 
