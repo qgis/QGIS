@@ -56401,7 +56401,7 @@ od średniej +/-</translation>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="101"/>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="103"/>
         <source>current</source>
-        <translation>bieżący</translation>
+        <translation>bieżąca</translation>
     </message>
 </context>
 <context>
@@ -69557,7 +69557,72 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;Właściwości warstwy wektorowej&lt;/h3&gt;
+Dostępne są następujące zakładki:
+&lt;p&gt;
+&lt;a href=&quot;#general&quot;&gt;Ogólne&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Styl&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#labels&quot;&gt;Etykiety&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Pola&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#render&quot;&gt;Renderowanie&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#display&quot;&gt;Wyświetl&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Akcje&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#join&quot;&gt;Złączenia&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Wykresy&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#metadata&quot;&gt;Metadane&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;&lt;h4&gt;Ogólne&lt;/h4&gt;&lt;/a&gt;
+Umożliwia zdefiniowanie wyświetlanej nazwy warstwy, jej układu współrzędnych oraz określenia przedziałów skalowych dla których będzie widoczna.
+
+&lt;a name=&quot;symbology&quot;&gt;&lt;h4&gt;Styl&lt;/h4&gt;&lt;/a&gt;
+W tej zakładce można szczegółowo zdefiniować sposób wyświetlania obiektów zapisanych na warstwie.
+
+&lt;h5&gt;Typ legendy&lt;/h5&gt;
+W pierwszej kolejności należy wybrać jeden z dostępnych sposobów podziału obiektów (wyświetlany na samej górze). 
+QGIS udostępnia kilka typów wyświetlania:
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Symbol pojedynczy&lt;/label&gt; - domyślny styl, który jest jednakowy dla wszystkich obiektów na warstwie.
+&lt;li&gt;&lt;label&gt;Wartośc unikalna&lt;/label&gt; - okiekty są klasyfikowane na podstawie unikalnych wartości z zadanego atrybutu.
+&lt;li&gt;&lt;label&gt;Symbol stopniowy&lt;/label&gt; - obiekty są klasyfikowane na podstawie wartości numerycznych z zadanego atrybutu.
+&lt;li&gt;&lt;label&gt;Oparta na regułach&lt;/label&gt; - umożliwia budowanie reguł logicznych stanowiących podstawę podziału obiektów na kategorie.
+&lt;li&gt;&lt;label&gt;Rozsunięcie punktów&lt;/label&gt; - jedynie dla warstw punktowych
+&lt;/ul&gt;
+
+&lt;h5&gt;Ponowne wykorzystanie zdefiniowanych stylizacji&lt;/h5&gt;
+Aby wykorzystać raz zdefiniowaną stylizację w innej warstwie lub w innym projekcie, należy skorzystać z klawiszy znajdujących się w dolnej części okna. Są to klawisze widoczne niezależnie od wybranej zakładki. 
+Styl może być zapisywany w formacie QGIS (*.qml), lub w formacie SLD.
+&lt;label&gt;Zapisz jako domyślny spowoduje przypisanie danego stylu do warstwy, nawet jeśli będzie wczytywana w innym projekcie.
+
+&lt;a name=&quot;labels&quot;&gt;&lt;h4&gt;Etykiety&lt;/h4&gt;&lt;/a&gt;
+Umożliwia wstawianie na mapach opisów (etykiet) przy obiektach.&lt;br/&gt;
+Aby uruchomić tę operację należy włączyć opcję &lt;label&gt;Etykietuj tę warstwę z &lt;/label&gt; i wybrać pole zawierające tekst do wyświetlenia. W lewej części okna do wyboru jest wiele parametrów regulujących sposób wyświetlania etykiet.
+
+&lt;a name=&quot;attributes&quot;&gt;&lt;h4&gt;Pola&lt;/h4&gt;&lt;/a&gt;
+Umożliwa edycję tabeli atrybutów związanej z wartwą. Aby rozpocząć zmiany należy przełączyć ikoną warstwę w tryb edycji. Możliwe wtedy staje się dodawanie nowych pól (atrybutów) i usuwanie już istniejących.
+
+&lt;a name=&quot;render&quot;&gt;&lt;h4&gt;Renderowanie&lt;/h4&gt;&lt;/a&gt;
+Zawiera opcje związane z optymalizacją sposobu wyświetlanie obiektów.
+
+
+&lt;a name=&quot;display&quot;&gt;&lt;h4&gt;Wyświetl&lt;/h4&gt;&lt;/a&gt;
+Pozwala zdefiniować jakie dane będą się pojawiały na mapie w trybie interaktywnym po najechaniu kursorem na danych obiekt. Do prawidłowego działania wymaga wyboru ikony &lt;label&gt;Podpowiedzi na mapie&lt;/label&gt; podczas pracy z mapą.
+
+&lt;a name=&quot;actions&quot;&gt;&lt;h4&gt;Akcje&lt;/h4&gt;&lt;/a&gt;
+QGIS umożliwia wykonanie zdefiniowanych operacji na podstawie atrybutów obiektów. Może to być na przykład uruchomienie dowolnego programu z parametrami pochodzącymi z tabeli atrybutów warstwy.
+Akcje mogą być zapisane w postaci wyrażeń zawartych w znaczniku &lt;code&gt;[%&lt;/code&gt; oraz &lt;code&gt;%]&lt;/code&gt;.
+Wybierz &lt;label&gt; Dodaj domyślne akcje&lt;/label&gt;, aby zobaczyć przykładowe sposoby definiowania akcji.
+
+
+&lt;a name=&quot;join&quot;&gt;&lt;h4&gt;Złączenia&lt;/h4&gt;&lt;/a&gt;
+Operacja złączania służy do tworzenia połączeń pomiędzy atrybutami obiektów zapisanymi na różnych warstwach. Jedną z takich warstw może być na przykład warstwa zawierająca same atrybuty, bez części geometrycznej. Daje to możliwość łatwego i nieinwazyjnego rozbudowywania tabeli atrybutów dowolnej warstwy.
+
+&lt;a name=&quot;diagram&quot;&gt;&lt;h4&gt;Wykresy&lt;/h4&gt;&lt;/a&gt;
+Umożliwia umieszczanie na mapach wykresów związanych z danymi zapisanymi w tabeli atrybutów.
+
+&lt;a name=&quot;metadata&quot;&gt;&lt;h4&gt;Metadane&lt;/h4&gt;&lt;/a&gt;
+Zawiera podstawowe informacje opisujące warstwę wektorową. Dostarcza wielu ważnych danych, takich jak na przykład informacji jakie operacje są możliwe dla warstwy.
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="199"/>
