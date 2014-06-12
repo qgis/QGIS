@@ -47,9 +47,6 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Mose move
     void mouseMove( QgsPoint &point );
 
-    //! Mouse press
-    void mousePress( QgsPoint &point );
-
   public slots:
     //! Reject
     void on_buttonBox_rejected( void );
