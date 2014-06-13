@@ -57,7 +57,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
                         self.descriptions = json.load(f)
                 except Exception, e:
                     print e
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open gelp file: " + helpfile)
+                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open help file: " + helpfile)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:

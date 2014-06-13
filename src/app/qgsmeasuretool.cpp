@@ -160,7 +160,7 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
     mDialog->restart();
   }
 
-  if ( e->button() == Qt::RightButton ) // if we clicked the rigth button we stop measuring
+  if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
   {
     mDone = true;
   }
