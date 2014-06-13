@@ -7245,6 +7245,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
   QSettings mySettings;
   QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
 
+  bool oldCapitalise = mySettings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool();
+
   QgsOptions *optionsDialog = new QgsOptions( parent );
   if ( !currentPage.isEmpty() )
   {
@@ -7271,6 +7273,13 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
     mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false ).toBool() );
 
     mMapCanvas->setMapUpdateInterval( mySettings.value( "/qgis/map_update_interval", 250 ).toInt() );
+
+    if ( oldCapitalise != mySettings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() )
+    {
+      // if the layer capitalization has changed, we need to update all layer names
+      foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+        layer->setLayerName( layer->originalName() );
+    }
 
     //update any open compositions so they reflect new composer settings
     //we have to push the changes to the compositions here, because compositions
