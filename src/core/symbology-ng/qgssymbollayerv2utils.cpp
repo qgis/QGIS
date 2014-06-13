@@ -708,12 +708,12 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
   QgsGeometry * tempGeometry = ( geometryType == QGis::Polygon ) ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
   {
-    const GEOSGeometry* geosGeom = tempGeometry->asGeos();
-    GEOSGeometry* offsetGeom = ( geometryType == QGis::Polygon ) ? GEOSBuffer( geosGeom, -dist, 8 /*quadSegments*/ ) : GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+    QgsGeometry* offsetGeom = ( geometryType == QGis::Polygon ) ? tempGeometry->buffer( -dist, 8 /*quadSegments*/ ) : tempGeometry->offsetCurve( dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
 
     if ( offsetGeom )
     {
-      tempGeometry->fromGeos( offsetGeom );
+      delete tempGeometry;
+      tempGeometry = offsetGeom;
 
       if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBLineString )
       {

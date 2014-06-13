@@ -5594,6 +5594,21 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
   CATCH_GEOS( 0 )
 }
 
+QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
+{
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos || this->type() != QGis::Line )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSOffsetCurve( mGeos, distance, segments, joinStyle, mitreLimit ) );
+  }
+  CATCH_GEOS( 0 )
+}
+
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {
   if ( mDirtyGeos )

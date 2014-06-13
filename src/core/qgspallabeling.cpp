@@ -1927,7 +1927,16 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // fix invalid polygons
   if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
   {
-    geom->fromGeos( GEOSBuffer( geom->asGeos(), 0, 0 ) );
+    QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
+
+    if ( bufferGeom )
+    {
+      size_t wkbSize = bufferGeom->wkbSize();
+      unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
+      memcpy( wkb, bufferGeom->asWkb(), wkbSize );
+      geom->fromWkb( wkb, wkbSize );
+      delete bufferGeom;
+    }
   }
 
   // CLIP the geometry if it is bigger than the extent
