@@ -27,7 +27,7 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 {
   connect( project, SIGNAL( readProject( const QDomDocument& ) ), SLOT( readProject( const QDomDocument& ) ) );
   connect( project, SIGNAL( writeProject( QDomDocument& ) ), SLOT( writeProject( QDomDocument& ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved(QStringList) ), this, SLOT( layersRemoved(QStringList)) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
@@ -184,7 +184,7 @@ void QgsRelationManager::layersRemoved( const QStringList& layers )
       it.next();
 
       if ( it.value().referencedLayerId() == layer
-         || it.value().referencingLayerId() == layer )
+           || it.value().referencingLayerId() == layer )
       {
         mRelations.remove( it.key() );
       }

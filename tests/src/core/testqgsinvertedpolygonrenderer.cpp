@@ -53,7 +53,7 @@ class TestQgsInvertedPolygon: public QObject
   private:
     bool mTestHasError;
     bool setQml( QString qmlFile );
-  bool imageCheck( QString theType, const QgsRectangle* = 0 );
+    bool imageCheck( QString theType, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QString mTestDataDir;
@@ -120,7 +120,7 @@ void TestQgsInvertedPolygon::graduatedSubRenderer()
 void TestQgsInvertedPolygon::preprocess()
 {
   // FIXME will have to find some overlapping polygons
-  mReport += "<h2>Inverted polygon renderer, preprocessing test</h2>\n";  
+  mReport += "<h2>Inverted polygon renderer, preprocessing test</h2>\n";
   QVERIFY( setQml( "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
@@ -128,9 +128,9 @@ void TestQgsInvertedPolygon::preprocess()
 void TestQgsInvertedPolygon::projectionTest()
 {
   mReport += "<h2>Inverted polygon renderer, projection test</h2>\n";
-  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem("EPSG:2154") );
+  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:2154" ) );
   mMapSettings.setCrsTransformEnabled( true );
-  QgsRectangle extent( QgsPoint(-8639421,8382691), QgsPoint(-3969110,12570905) );
+  QgsRectangle extent( QgsPoint( -8639421, 8382691 ), QgsPoint( -3969110, 12570905 ) );
   QVERIFY( setQml( "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
   QVERIFY( setQml( "inverted_polys_preprocess.qml" ) );

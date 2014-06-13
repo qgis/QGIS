@@ -55,7 +55,7 @@ class ExtractByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename)
         index = vector.spatialindex(layer)
-        
+
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.pendingFields(),
                 layer.dataProvider().geometryType(), layer.crs())

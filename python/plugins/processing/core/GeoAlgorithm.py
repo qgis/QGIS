@@ -117,20 +117,20 @@ class GeoAlgorithm:
         where the description is stored.
 
         Returns None if there is no help file available.
-        
-        The default implementation looks for an rst file in a help folder under the folder 
+
+        The default implementation looks for an rst file in a help folder under the folder
         where the algorithm is located.
         The name of the file is the name console name of the algorithm, without the namespace part
         """
         name = self.commandLineName().split(':')[1].lower()
-        filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')   
-        print filename     
+        filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
+        print filename
         try:
             html = getHtmlFromRstFile(filename)
             return True, html
         except:
             return False, None
-        
+
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.

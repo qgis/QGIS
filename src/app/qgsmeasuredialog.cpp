@@ -133,18 +133,18 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
   }
   else if ( !mMeasureArea && numPoints >= 1 )
   {
-      if ( !mTool->done() )
-      {
-        QTreeWidgetItem * item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
-        item->setTextAlignment( 0, Qt::AlignRight );
-        mTable->addTopLevelItem( item );
-        mTable->scrollToItem( item );
-      }
-      if ( numPoints > 1)
-      {
-        mTotal = mDa.measureLine( mTool->points() );
-        editTotal->setText( formatDistance( mTotal ) );
-      }
+    if ( !mTool->done() )
+    {
+      QTreeWidgetItem * item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
+      item->setTextAlignment( 0, Qt::AlignRight );
+      mTable->addTopLevelItem( item );
+      mTable->scrollToItem( item );
+    }
+    if ( numPoints > 1 )
+    {
+      mTotal = mDa.measureLine( mTool->points() );
+      editTotal->setText( formatDistance( mTotal ) );
+    }
   }
   QgsDebugMsg( "Exiting" );
 }

@@ -53,12 +53,12 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
             helpfile = alg.descriptionFile + '.help'
             if os.path.exists(helpfile):
                 try:
-                    with open(helpfile) as f:    
+                    with open(helpfile) as f:
                         self.descriptions = json.load(f)
                 except Exception, e:
                     print e
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open gelp file: " + helpfile)                                        
-                
+                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open gelp file: " + helpfile)
+
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:
             self.text.setText(self.descriptions[self.ALG_DESC])
@@ -76,7 +76,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         if self.alg.descriptionFile is not None:
             try:
                 with open(self.alg.descriptionFile + '.help', 'w') as f:
-                    json.dump(self.descriptions, f)                
+                    json.dump(self.descriptions, f)
             except Exception, e:
                 QMessageBox.warning(self, 'Error saving help file',
                                     'Help file could not be saved.\n'

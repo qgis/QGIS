@@ -671,7 +671,7 @@ static QPolygonF makeOffsetGeometry( const QgsPolyline& polyline )
 
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     resultLine[i] = QPointF( tempPtr->x(), tempPtr->y() );
-   
+
   return resultLine;
 }
 static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
@@ -810,7 +810,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
   }
   else if ( pointCount > 1 )
   {
-    geometryType = QGis::Line; 
+    geometryType = QGis::Line;
   }
   return offsetLine( polyline, dist, geometryType );
 }
@@ -3258,7 +3258,7 @@ bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPoin
     if ( p1.x() == x && p1.y() == y )
       return true;
 
-    if ( ( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
+    if (( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
     {
       if ( p1.x() + ( y - p1.y() ) / ( p2.y() - p1.y() )*( p2.x() - p1.x() ) <= x )
         inside = !inside;

@@ -34,7 +34,7 @@ QgsRenderContext::QgsRenderContext()
     mShowSelection( true ),
     mUseRenderingOptimization( true )
 {
-    mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()

@@ -155,7 +155,7 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsPoint point = snapPoint( e->pos() );
 
-  if ( mDone )	// if we have stopped measuring any mouse click restart measuring
+  if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
     mDialog->restart();
   }

@@ -39,7 +39,7 @@ class polygonize(GdalAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
-    
+
     def commandLineName(self):
         return "gdalogr:polygonize"
 
