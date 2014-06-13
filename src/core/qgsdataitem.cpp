@@ -223,7 +223,7 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
     {
       // sort items by type, so directories are before data items
       if ( mChildren[i]->mType == child->mType &&
-           mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+           mChildren[i]->mName.localeAwareCompare( child->mName ) > 0 )
         break;
     }
   }

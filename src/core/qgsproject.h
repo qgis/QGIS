@@ -297,7 +297,6 @@ class CORE_EXPORT QgsProject : public QObject
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
       @note: added in version 1.8
-      @note not available in python bindings
      */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
@@ -333,10 +332,13 @@ class CORE_EXPORT QgsProject : public QObject
     QgsRelationManager* relationManager() const;
 
     /** Return pointer to the root (invisible) node of the project's layer tree
-     * @note added in 2.4 */
+     * @note added in 2.4
+     */
     QgsLayerTreeGroup* layerTreeRoot() const;
 
-    /** Return pointer to the helper class that synchronizes map layer registry with layer tree */
+    /** Return pointer to the helper class that synchronizes map layer registry with layer tree
+     * @note added in 2.4
+     */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
   protected:
@@ -353,11 +355,14 @@ class CORE_EXPORT QgsProject : public QObject
     //! @note not available in python bindings
     bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
+    //! @note not available in python bindings
     void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
 
+    //! @note not available in python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup* group );
 
-    void removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
+    //! @note not available in python bindings
+    void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read

@@ -50,6 +50,22 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     bool editable();
 
+    /**
+     * Toggles the form mode between edit feature and add feature.
+     * If set to true, the dialog will be editable even with an invalid feature.
+     * If set to true, the dialog will add a new feature when the form is accepted.
+     *
+     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     */
+    void setIsAddDialog( bool isAddDialog );
+
+    /**
+     * Sets the edit command message (Undo) that will be used when the dialog is accepted
+     *
+     * @param message The message
+     */
+    void setEditCommandMessage( const QString& message ) { mEditCommandMessage = message; }
+
   signals:
     /**
      * Notifies about changes of attributes
@@ -65,8 +81,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * If you want the form to be saved, leave the parameter untouched.
      *
      * @param ok  Set this parameter to false if you don't want the form to be saved
+     * @note not available  in python bindings
      */
     void beforeSave( bool& ok );
+
+    /**
+     * Is emitted, when a feature is changed or added
+     */
+    void featureSaved( const QgsFeature& feature );
 
   public slots:
     void changeAttribute( const QString& field, const QVariant& value );
@@ -125,6 +147,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     //! Set to true while saving to prevent recursive saves
     bool mIsSaving;
+    bool mIsAddDialog;
+
+    QString mEditCommandMessage;
 };
 
 #endif // QGSATTRIBUTEFORM_H

@@ -1112,7 +1112,7 @@ QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 
 QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  if ( mGdalDataType.size() == 0 ) return QGis::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return QGis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
@@ -1974,6 +1974,16 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       QgsLogger::warning( "unable to get driver " + QString::number( i ) );
       continue;
     }
+
+    // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
+    // TODO also make sure drivers are not loaded unnecessarily (as GDALAllRegister() and OGRRegisterAll load all drivers)
+#ifdef GDAL_COMPUTE_VERSION
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, NULL ) ) != "YES" )
+      continue;
+#endif
+#endif
+
     // now we need to see if the driver is for something currently
     // supported; if not, we give it a miss for the next driver
 
@@ -2116,7 +2126,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   }                           // each loaded GDAL driver
 
   // sort file filters alphabetically
-  QgsDebugMsg( "theFileFiltersString: " + theFileFiltersString );
   QStringList filters = theFileFiltersString.split( ";;", QString::SkipEmptyParts );
   filters.sort();
   theFileFiltersString = filters.join( ";;" ) + ";;";
@@ -2138,6 +2147,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   if ( theFileFiltersString.endsWith( ";;" ) ) theFileFiltersString.chop( 2 );
 
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
+  QgsDebugMsg( "Raster extension list built: " + theExtensions.join( " " ) );
 }                               // buildSupportedRasterFileFilter_()
 
 QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg )

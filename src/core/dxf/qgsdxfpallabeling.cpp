@@ -29,15 +29,19 @@ using namespace pal;
 QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits )
     : QgsPalLabeling()
     , mDxfExport( dxf )
+    , mImage( 0 )
+    , mPainter( 0 )
 {
-  QgsMapSettings settings;
-  settings.setExtent( bbox );
+  mSettings = new QgsMapSettings;
+  mSettings->setMapUnits( mapUnits );
+  mSettings->setExtent( bbox );
 
   int dpi = 96;
   double factor = 1000 * dpi / scale / 25.4 * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters );
-  settings.setOutputSize( QSize( bbox.width() * factor, bbox.height() * factor ) );
-  settings.setOutputDpi( dpi );
-  init( settings );
+  mSettings->setOutputSize( QSize( bbox.width() * factor, bbox.height() * factor ) );
+  mSettings->setOutputDpi( dpi );
+  mSettings->setCrsTransformEnabled( false );
+  init( *mSettings );
 
   mImage = new QImage( 10, 10, QImage::Format_ARGB32_Premultiplied );
   mImage->setDotsPerMeterX( 96 / 25.4 * 1000 );
@@ -54,6 +58,7 @@ QgsDxfPalLabeling::~QgsDxfPalLabeling()
 {
   delete mPainter;
   delete mImage;
+  delete mSettings;
 }
 
 void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )
@@ -61,6 +66,12 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
   Q_UNUSED( context );
   Q_UNUSED( drawType );
   Q_UNUSED( dpiRatio );
+
+  if ( drawType == QgsPalLabeling::LabelBuffer )
+  {
+    return;
+  }
+
   //debug: print label infos
   if ( mDxfExport )
   {
@@ -86,7 +97,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     }
     mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 1, 0.01, true );*/
 
-    QStringList textList = text.split( "\n" );
+    QStringList textList = text.split( tmpLyr.wrapChar );
     double textHeight = label->getHeight() / textList.size();
     QFontMetricsF fm( tmpLyr.textFont );
     double textAscent = textHeight * fm.ascent() / fm.height();

@@ -1,4 +1,5 @@
 
+/**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
 class QgsComposerMultiFrame: QObject
 {
 %TypeHeaderCode
@@ -9,7 +10,7 @@ class QgsComposerMultiFrame: QObject
 
     enum ResizeMode
     {
-      UseExistingFrames = 0,
+      UseExistingFrames,
       ExtendToNextPage, //uses the next page(s) until the content has been printed
       RepeatOnEveryPage, //repeats the same frame on every page
       RepeatUntilFinished //duplicates last frame to next page to fit the total size
@@ -28,7 +29,7 @@ class QgsComposerMultiFrame: QObject
      * to and before the specified yPos
      * @note added in version 2.3*/
     virtual double findNearbyPageBreak( double yPos );
-    
+
     void removeFrame( int i );
 
     void update();
@@ -64,7 +65,7 @@ class QgsComposerMultiFrame: QObject
      * @returns new QgsComposerFrame
      * @note added in version 2.3
      */
-    QgsComposerFrame* createNewFrame(QgsComposerFrame* currentFrame, QPointF pos, QSizeF size);
+    QgsComposerFrame* createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size );
 
   public slots:
 
@@ -72,11 +73,10 @@ class QgsComposerMultiFrame: QObject
      * component frames. If the resize mode is set to anything but UseExistingFrames then
      * this may cause new frames to be added or frames to be removed, in order to fit
      * the current size of the multiframe's content.
-     */  
+     */
     void recalculateFrameSizes();
-            
-  protected slots:
 
+  protected slots:
     /**Called before a frame is going to be removed (update frame list)*/
     void handleFrameRemoval( QgsComposerItem* item );
     /**Adapts to changed number of pages if resize type is RepeatOnEveryPage*/

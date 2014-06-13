@@ -60,4 +60,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:enumeratetablefield', input, field, output)
+	processing.runalg('saga:enumeratetablefield', input, field, output)

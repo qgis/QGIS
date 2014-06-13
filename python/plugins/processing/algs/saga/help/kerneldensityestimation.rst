@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:kerneldensityestimation', points, population, radius, kernel, target, output_extent, user_size, user_grid)
+	processing.runalg('saga:kerneldensityestimation', points, population, radius, kernel, target, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

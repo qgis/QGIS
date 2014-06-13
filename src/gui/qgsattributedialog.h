@@ -78,11 +78,13 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
 
     /**
      * @brief setHighlight
-     * @param The highlight. Ownership is taken.
+     * @param h The highlight. Ownership is taken.
      */
     void setHighlight( QgsHighlight *h );
 
-    QDialog* dialog() { return mDialog; }
+    QDialog *dialog() { return mDialog; }
+
+    QgsAttributeForm* attributeForm() { return mAttributeForm; }
 
     const QgsFeature* feature() { return &mAttributeForm->feature(); }
 
@@ -92,6 +94,22 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      * @return returns true, if this dialog was created in an editable manner.
      */
     bool editable() { return mAttributeForm->editable(); }
+
+    /**
+     * Toggles the form mode between edit feature and add feature.
+     * If set to true, the dialog will be editable even with an invalid feature.
+     * If set to true, the dialog will add a new feature when the form is accepted.
+     *
+     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     */
+    void setIsAddDialog( bool isAddDialog ) { mAttributeForm->setIsAddDialog( isAddDialog ); }
+
+    /**
+     * Sets the edit command message (Undo) that will be used when the dialog is accepted
+     *
+     * @param message The message
+     */
+    void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
 
   public slots:
     void accept();

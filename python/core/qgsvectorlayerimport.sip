@@ -19,7 +19,7 @@ class QProgressDialog;
 
     enum ImportError
     {
-      NoError = 0,
+      NoError,
       ErrDriverNotFound,
       ErrCreateDataSource,
       ErrCreateLayer,
@@ -77,4 +77,3 @@ class QProgressDialog;
     /** create index */
     bool createSpatialIndex();
 };
-

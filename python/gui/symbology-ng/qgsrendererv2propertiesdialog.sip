@@ -19,5 +19,4 @@ class QgsRendererV2PropertiesDialog : QDialog
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );
 
-
 };

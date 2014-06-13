@@ -64,6 +64,10 @@ QString ABISYM( QgsApplication::mBuildOutputPath );
 QStringList ABISYM( QgsApplication::mGdalSkipList );
 int ABISYM( QgsApplication::mMaxThreads );
 
+const char* QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
+const char* QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
+const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS2";
+
 /*!
   \class QgsApplication
   \brief The QgsApplication class manages application-wide information.
@@ -1041,6 +1045,6 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsg( QString( "set QThreadPool max thread count to %d" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsg( QString( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 }
 

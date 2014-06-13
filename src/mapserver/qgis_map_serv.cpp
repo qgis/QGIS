@@ -243,7 +243,19 @@ int main( int argc, char * argv[] )
   qInstallMsgHandler( dummyMessageHandler );
 #endif
 
+  QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
+  if ( !optionsPath.isEmpty() )
+  {
+    QgsDebugMsg( "Options PATH: " + optionsPath );
+    QSettings::setDefaultFormat( QSettings::IniFormat );
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
+  }
+
   QgsApplication qgsapp( argc, argv, getenv( "DISPLAY" ) );
+
+  QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
+  QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
+  QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
   //Default prefix path may be altered by environment variable
   QgsApplication::init();
@@ -267,6 +279,7 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "Plugin  PATH: " + QgsApplication::pluginPath() );
   QgsDebugMsg( "PkgData PATH: " + QgsApplication::pkgDataPath() );
   QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
+  QgsDebugMsg( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ) );
 
   QgsDebugMsg( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
@@ -373,10 +386,9 @@ int main( int argc, char * argv[] )
       QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
       if ( !p )
       {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading gthe project file or the SLD configuration" ) );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
         continue;
       }
-      //adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
       QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.take(), theMapRenderer.data(), &capabilitiesCache );
       wmsServer.executeRequest();
     }

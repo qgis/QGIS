@@ -87,7 +87,7 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     enum ItemType
     {
       // base class for the items
-      ComposerItem = 65636, /* UserType + 100 ... SIP does not do arithmetic */
+      ComposerItem,
 
       // derived classes
       ComposerArrow,
@@ -174,16 +174,48 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     virtual void moveContent( double dx, double dy );
 
     /**Zoom content of item. Does nothing per default (but implemented in composer map)
-     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
-    @param x x-position of mouse cursor (in item coordinates)
-    @param y y-position of mouse cursor (in item coordinates)*/
+      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
+      @param x x-position of mouse cursor (in item coordinates)
+      @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y );
+
+    /**Gets the page the item is currently on.
+     * @returns page number for item
+     * @see pagePos
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    int page() const;
+
+    /**Returns the item's position relative to its current page.
+     * @returns position relative to the page's top left corner.
+     * @see page
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    QPointF pagePos() const;
+
+    /**Moves the item so that it retains its relative position on the page
+     * when the paper size changes.
+     * @param newPageWidth new width of the page in mm
+     * @param newPageHeight new height of the page in mm
+     * @see page
+     * @see pagePos
+     * @note this method was added in version 2.4
+    */
+    void updatePagePos( double newPageWidth, double newPageHeight );
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets item position and width / height in one go
-     * @param posIncludesFrame set to true if the position and size arguments include the item's frame border
+      @param x item position x
+      @param y item position y
+      @param width item width
+      @param height item height
+      @param itemPoint item position mode
+      @param posIncludesFrame set to true if the position and size arguments include the item's frame border
+
       @note: this method was added in version 1.6*/
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
 
@@ -236,14 +268,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * @see setFrameEnabled
      */
     virtual void setFrameOutlineWidth( double outlineWidth );
-    
+
     /** Returns the frame's outline width. Only used if hasFrame is true.
      * @returns Frame outline width
      * @note introduced in 2.3
      * @see hasFrame
      * @see setFrameOutlineWidth
      */
-    double frameOutlineWidth() const;    
+    double frameOutlineWidth() const;
 
     /** Returns the join style used for drawing the item's frame
      * @returns Join style for outline frame
@@ -252,7 +284,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      * @see setFrameJoinStyle
      */
     Qt::PenJoinStyle frameJoinStyle() const;
-
     /** Sets join style used when drawing the item's frame
      * @param style Join style for outline frame
      * @returns nothing
@@ -354,7 +385,13 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text
-     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text    
+     * @param p painter to use
+     * @param rect rectangle to draw into
+     * @param text text to draw
+     * @param font font to use
+     * @param halignment optional horizontal alignment
+     * @param valignment optional vertical alignment
+     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
     */
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
@@ -368,8 +405,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
-    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    /**Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontDescentMillimeters( const QFont& font ) const;
+    
+    /**Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
+     * Font height equals the font ascent+descent+1 (for baseline).
+     * @note Added in version 2.4
+    */
+    double fontHeightMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
@@ -481,7 +524,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
     bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
-    
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
@@ -498,7 +540,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
 
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
-    
     /**Calculates corner point after rotation and scaling
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
@@ -506,7 +547,6 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
-    
     void sizeChangedByRotation( double& width, double& height, double rotation );
     /**Calculates width / height of the bounding box of a rotated rectangle
     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )

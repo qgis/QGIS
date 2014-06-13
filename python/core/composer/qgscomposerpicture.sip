@@ -9,7 +9,7 @@ class QgsComposerPicture: QgsComposerItem
 %End
 
   public:
-  
+
     /*! Controls how pictures are scaled within the item's frame
      */
     enum ResizeMode
@@ -107,7 +107,7 @@ class QgsComposerPicture: QgsComposerItem
      * @returns true if rotation map is in use
      * @see rotationMap
      * @see setRotationMap
-    */
+     */
     bool useRotationMap() const;
 
     /**Returns the resize mode used for drawing the picture within the composer
@@ -141,7 +141,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see setUsePictureExpression
      * @see pictureFile
      * @see pictureExpression
-    */
+     */
     bool usePictureExpression() const;
 
     /**Returns the expression the item is using for the picture source. This is only
@@ -150,7 +150,7 @@ class QgsComposerPicture: QgsComposerItem
      * @note added in 2.3
      * @see setPictureExpression
      * @see usePictureExpression
-    */
+     */
     QString pictureExpression() const;
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation

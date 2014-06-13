@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fractaldimensionofgridsurface', input, result)
+	processing.runalg('saga:fractaldimensionofgridsurface', input, result)

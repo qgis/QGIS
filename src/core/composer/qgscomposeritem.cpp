@@ -172,8 +172,12 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   }
 
   //scene rect
+  QPointF pagepos = pagePos();
   composerItemElem.setAttribute( "x", QString::number( pos().x() ) );
   composerItemElem.setAttribute( "y", QString::number( pos().y() ) );
+  composerItemElem.setAttribute( "page", page() );
+  composerItemElem.setAttribute( "pagex", QString::number( pagepos.x() ) );
+  composerItemElem.setAttribute( "pagey", QString::number( pagepos.y() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
   composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
@@ -280,17 +284,28 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //position
-  double x, y, width, height;
-  bool xOk, yOk, widthOk, heightOk, positionModeOK;
+  int page;
+  double x, y, pagex, pagey, width, height;
+  bool xOk, yOk, pageOk, pagexOk, pageyOk, widthOk, heightOk, positionModeOK;
 
   x = itemElem.attribute( "x" ).toDouble( &xOk );
   y = itemElem.attribute( "y" ).toDouble( &yOk );
+  page = itemElem.attribute( "page" ).toInt( &pageOk );
+  pagex = itemElem.attribute( "pagex" ).toDouble( &pagexOk );
+  pagey = itemElem.attribute( "pagey" ).toDouble( &pageyOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
   mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
   if ( !positionModeOK )
   {
     mLastUsedPositionMode = UpperLeft;
+  }
+  if ( pageOk && pagexOk && pageyOk )
+  {
+    xOk = true;
+    yOk = true;
+    x = pagex;
+    y = ( page - 1 ) * ( mComposition->paperHeight() + composition()->spaceBetweenPages() ) + pagey;
   }
 
   if ( !xOk || !yOk || !widthOk || !heightOk )
@@ -481,17 +496,53 @@ void QgsComposerItem::move( double dx, double dy )
   setSceneRect( newSceneRect );
 }
 
-void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode itemPoint )
+int QgsComposerItem::page() const
+{
+  double y = pos().y();
+  double h = composition()->paperHeight() + composition()->spaceBetweenPages();
+  int page = 1;
+  while ( y - h >= 0. )
+  {
+    y -= h;
+    ++page;
+  }
+  return page;
+}
+
+QPointF QgsComposerItem::pagePos() const
+{
+  QPointF p = pos();
+  double h = composition()->paperHeight() + composition()->spaceBetweenPages();
+  p.ry() -= ( page() - 1 ) * h;
+  return p;
+}
+
+void QgsComposerItem::updatePagePos( double newPageWidth, double newPageHeight )
+{
+  Q_UNUSED( newPageWidth )
+  QPointF curPagePos = pagePos();
+  int curPage = page() - 1;
+  setY( curPage * ( newPageHeight + composition()->spaceBetweenPages() ) + curPagePos.y() );
+  emit sizeChanged();
+}
+
+void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode itemPoint, int page )
 {
   double width = rect().width();
   double height = rect().height();
-  setItemPosition( x, y, width, height, itemPoint );
+  setItemPosition( x, y, width, height, itemPoint, false, page );
 }
 
-void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint, bool posIncludesFrame )
+void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint, bool posIncludesFrame, int page )
 {
   double upperLeftX = x;
   double upperLeftY = y;
+
+  if ( page > 0 )
+  {
+    double h = composition()->paperHeight() + composition()->spaceBetweenPages();
+    upperLeftY += ( page - 1 ) * h;
+  }
 
   //store the item position mode
   mLastUsedPositionMode = itemPoint;
@@ -696,6 +747,13 @@ double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsComposerItem::fontHeightMillimeters( const QFont& font ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
 }
 
 double QgsComposerItem::pixelFontSize( double pointSize ) const

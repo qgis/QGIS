@@ -27,10 +27,13 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
   public:
     explicit QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
 
+  public slots:
+    void editExpression();
+
     // QgsEditorConfigWidget interface
   public:
     QgsEditorWidgetConfig config();
-    void setConfig(const QgsEditorWidgetConfig& config);
+    void setConfig( const QgsEditorWidgetConfig& config );
 };
 
 #endif // QGSVALUERELATIONCONFIGDLG_H

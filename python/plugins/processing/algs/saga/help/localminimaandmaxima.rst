@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:localminimaandmaxima', grid, minima, maxima)
+	processing.runalg('saga:localminimaandmaxima', grid, minima, maxima)

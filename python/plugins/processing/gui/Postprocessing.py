@@ -39,45 +39,41 @@ from processing.core.ProcessingResults import ProcessingResults
 from processing.outputs.OutputHTML import OutputHTML
 from processing.tools import dataobjects
 
-
-class Postprocessing:
-
-    @staticmethod
-    def handleAlgorithmResults(alg, progress, showResults=True):
-        wrongLayers = []
-        htmlResults = False
-        progress.setText('Loading resulting layers')
-        i = 0
-        for out in alg.outputs:
-            progress.setPercentage(100 * i / float(len(alg.outputs)))
-            if out.hidden or not out.open:
-                continue
-            if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
-                try:
-                    if out.value.startswith('memory:'):
-                        layer = out.memoryLayer
-                        QgsMapLayerRegistry.instance().addMapLayers([layer])
+def handleAlgorithmResults(alg, progress, showResults=True):
+    wrongLayers = []
+    htmlResults = False
+    progress.setText('Loading resulting layers')
+    i = 0
+    for out in alg.outputs:
+        progress.setPercentage(100 * i / float(len(alg.outputs)))
+        if out.hidden or not out.open:
+            continue
+        if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
+            try:
+                if out.value.startswith('memory:'):
+                    layer = out.memoryLayer
+                    QgsMapLayerRegistry.instance().addMapLayers([layer])
+                else:
+                    if ProcessingConfig.getSetting(
+                            ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
+                        name = os.path.basename(out.value)
                     else:
-                        if ProcessingConfig.getSetting(
-                                ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-                            name = os.path.basename(out.value)
-                        else:
-                            name = out.description
-                        dataobjects.load(out.value, name, alg.crs,
-                                RenderingStyles.getStyle(alg.commandLineName(),
-                                out.name))
-                except Exception, e:
-                    wrongLayers.append(out)
-            elif isinstance(out, OutputHTML):
-                ProcessingResults.addResult(out.description, out.value)
-                htmlResults = True
-            i += 1
-        if wrongLayers:
-            QApplication.restoreOverrideCursor()
-            dlg = CouldNotLoadResultsDialog(wrongLayers, alg)
-            dlg.exec_()
+                        name = out.description
+                    dataobjects.load(out.value, name, alg.crs,
+                            RenderingStyles.getStyle(alg.commandLineName(),
+                            out.name))
+            except Exception, e:
+                wrongLayers.append(out)
+        elif isinstance(out, OutputHTML):
+            ProcessingResults.addResult(out.description, out.value)
+            htmlResults = True
+        i += 1
+    if wrongLayers:
+        QApplication.restoreOverrideCursor()
+        dlg = CouldNotLoadResultsDialog(wrongLayers, alg)
+        dlg.exec_()
 
-        if showResults and htmlResults and not wrongLayers:
-            QApplication.restoreOverrideCursor()
-            dlg = ResultsDialog()
-            dlg.exec_()
+    if showResults and htmlResults and not wrongLayers:
+        QApplication.restoreOverrideCursor()
+        dlg = ResultsDialog()
+        dlg.exec_()

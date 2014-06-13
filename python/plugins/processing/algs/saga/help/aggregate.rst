@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:aggregate', input, size, method)
+	processing.runalg('saga:aggregate', input, size, method)
 
 	Available options for selection parameters:
 

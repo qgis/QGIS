@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtGui
 from qgis.core import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterExtent import ParameterExtent
@@ -39,17 +39,13 @@ from processing.outputs.OutputRaster import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class ClipByExtent(GeoAlgorithm):
+class ClipByExtent(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NO_DATA = 'NO_DATA'
     PROJWIN = 'PROJWIN'
     EXTRA = 'EXTRA'
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/raster-clip.png'
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Clip raster by extent'

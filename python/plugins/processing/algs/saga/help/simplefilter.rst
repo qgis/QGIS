@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:simplefilter', input, mode, method, radius, result)
+	processing.runalg('saga:simplefilter', input, mode, method, radius, result)
 
 	Available options for selection parameters:
 

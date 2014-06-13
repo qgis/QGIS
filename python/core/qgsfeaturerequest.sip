@@ -8,10 +8,10 @@ class QgsFeatureRequest
   public:
     enum Flag
     {
-      NoFlags            = 0,
-      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
-      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      NoFlags,
+      NoGeometry,          //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
+      SubsetOfAttributes,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect       //!< Use exact geometry intersection (slower) instead of bounding boxes
     };
     typedef QFlags<QgsFeatureRequest::Flag> Flags;
 
@@ -93,13 +93,12 @@ class QgsAbstractFeatureSource
 %TypeHeaderCode
 #include <qgsfeaturerequest.h>
 %End
+  public:
+    virtual ~QgsAbstractFeatureSource();
 
-public:
-  virtual ~QgsAbstractFeatureSource();
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
 
-  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
-
-protected:
-  void iteratorOpened( QgsAbstractFeatureIterator* it );
-  void iteratorClosed( QgsAbstractFeatureIterator* it );
+  protected:
+    void iteratorOpened( QgsAbstractFeatureIterator* it );
+    void iteratorClosed( QgsAbstractFeatureIterator* it );
 };

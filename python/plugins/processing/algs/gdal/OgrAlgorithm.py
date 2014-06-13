@@ -38,11 +38,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools import dataobjects
 
 
-class OgrAlgorithm(GeoAlgorithm):
+class OgrAlgorithm(GdalAlgorithm):
 
     DB = 'DB'
 

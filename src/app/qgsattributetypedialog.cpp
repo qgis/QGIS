@@ -37,7 +37,7 @@
 #include <climits>
 #include <cfloat>
 
-QgsAttributeTypeDialog::QgsAttributeTypeDialog(QgsVectorLayer *vl , int fieldIdx )
+QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl , int fieldIdx )
     : QDialog()
     , mLayer( vl )
     , mFieldIdx( fieldIdx )
@@ -62,10 +62,14 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog(QgsVectorLayer *vl , int fieldIdx
                                         + 2 );
   selectionListWidget->setMaximumWidth( selectionListWidget->sizeHintForColumn( 0 )
                                         + 2 );
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/QgsAttributeTypeDialog/geometry", saveGeometry() );
 }
 
 const QString QgsAttributeTypeDialog::editorWidgetV2Type()
@@ -112,7 +116,7 @@ const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetV2Config()
 
 void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
 {
-  for( int i = 0; i < selectionListWidget->count(); i++ )
+  for ( int i = 0; i < selectionListWidget->count(); i++ )
   {
     QListWidgetItem* item = selectionListWidget->item( i );
     if ( item->data( Qt::UserRole ).toString() == type )

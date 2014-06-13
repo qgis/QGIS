@@ -1729,53 +1729,6 @@ void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
   }
 }
 
-#if 0
-void QgsOptions::loadGdalDriverList()
-{
-  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
-  GDALDriverH myGdalDriver; // current driver
-  QString myGdalDriverDescription;
-  QStringList myDrivers;
-  for ( int i = 0; i < GDALGetDriverCount(); ++i )
-  {
-    myGdalDriver = GDALGetDriver( i );
-
-    Q_CHECK_PTR( myGdalDriver );
-
-    if ( !myGdalDriver )
-    {
-      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
-      continue;
-    }
-    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
-    myDrivers << myGdalDriverDescription;
-  }
-  // add the skipped drivers to the list too in case their drivers are
-  // already unloaded...may result in false positive if underlying
-  // sys config has changed and that driver no longer exists...
-  myDrivers.append( mySkippedDrivers );
-  myDrivers.removeDuplicates();
-  myDrivers.sort();
-
-  QStringListIterator myIterator( myDrivers );
-
-  while ( myIterator.hasNext() )
-  {
-    QString myName = myIterator.next();
-    QListWidgetItem * mypItem = new QListWidgetItem( myName );
-    if ( mySkippedDrivers.contains( myName ) )
-    {
-      mypItem->setCheckState( Qt::Unchecked );
-    }
-    else
-    {
-      mypItem->setCheckState( Qt::Checked );
-    }
-    lstGdalDrivers->addItem( mypItem );
-  }
-}
-#endif
-
 void QgsOptions::loadGdalDriverList()
 {
   QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
@@ -1804,6 +1757,16 @@ void QgsOptions::loadGdalDriverList()
       QgsLogger::warning( "unable to get driver " + QString::number( i ) );
       continue;
     }
+
+    // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
+    // TODO add same UI for vector drivers
+#ifdef GDAL_COMPUTE_VERSION
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, NULL ) ) != "YES" )
+      continue;
+#endif
+#endif
+
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
 

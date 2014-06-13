@@ -33,7 +33,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setDragEnabled( true );
   setAcceptDrops( true );
   setDropIndicatorShown( true );
-  setEditTriggers( EditKeyPressed | SelectedClicked );
+  setEditTriggers( EditKeyPressed );
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
   setSelectionMode( ExtendedSelection );
@@ -53,10 +53,11 @@ void QgsLayerTreeView::setModel( QAbstractItemModel* model )
     return;
 
   connect( model, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelRowsInserted( QModelIndex, int, int ) ) );
+  connect( model, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelRowsRemoved() ) );
 
   QTreeView::setModel( model );
 
-  connect( selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( onCurrentChanged( QModelIndex, QModelIndex ) ) );
+  connect( selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( onCurrentChanged() ) );
 
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
 }
@@ -86,6 +87,12 @@ QgsMapLayer* QgsLayerTreeView::currentLayer() const
 
 void QgsLayerTreeView::setCurrentLayer( QgsMapLayer* layer )
 {
+  if ( !layer )
+  {
+    setCurrentIndex( QModelIndex() );
+    return;
+  }
+
   QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layer->id() );
   if ( !nodeLayer )
     return;
@@ -123,6 +130,15 @@ void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end 
   {
     updateExpandedStateFromNode( parentNode->children()[i] );
   }
+
+  // make sure we still have correct current layer
+  onCurrentChanged();
+}
+
+void QgsLayerTreeView::modelRowsRemoved()
+{
+  // make sure we still have correct current layer
+  onCurrentChanged();
 }
 
 void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
@@ -134,19 +150,16 @@ void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
   node->setExpanded( isExpanded( index ) );
 }
 
-void QgsLayerTreeView::onCurrentChanged( QModelIndex current, QModelIndex previous )
+void QgsLayerTreeView::onCurrentChanged()
 {
-  QgsMapLayer* layerPrevious = layerForIndex( previous );
-  QgsMapLayer* layerCurrent = layerForIndex( current );
-
-  if ( layerPrevious == layerCurrent )
+  QgsMapLayer* layerCurrent = layerForIndex( currentIndex() );
+  QModelIndex layerCurrentIndex = layerCurrent ? layerTreeModel()->node2index( layerTreeModel()->rootGroup()->findLayer( layerCurrent->id() ) ) : QModelIndex();
+  if ( mCurrentIndex == layerCurrentIndex )
     return;
 
-  if ( layerCurrent )
-    layerTreeModel()->setCurrentNode( layerTreeModel()->rootGroup()->findLayer( layerCurrent->id() ) );
-  else
-    layerTreeModel()->setCurrentNode( 0 );
+  layerTreeModel()->setCurrentIndex( layerCurrentIndex );
 
+  mCurrentIndex = layerCurrentIndex;
   emit currentLayerChanged( layerCurrent );
 }
 
@@ -170,9 +183,8 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
   else
   {
     // possibly a symbology node
-    QgsLayerTreeModelSymbologyNode* symnode = layerTreeModel()->index2symnode( index );
-    if ( symnode )
-      return symnode->parent()->layer();
+    if ( layerTreeModel()->isIndexSymbologyNode( index ) )
+      return layerTreeModel()->layerNodeForSymbologyNode( index )->layer();
   }
 
   return 0;

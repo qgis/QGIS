@@ -43,15 +43,15 @@ class QGis
     // Feature types
     enum WkbType
     {
-      WKBUnknown = 0,
-      WKBPoint = 1,
+      WKBUnknown,
+      WKBPoint,
       WKBLineString,
       WKBPolygon,
       WKBMultiPoint,
       WKBMultiLineString,
       WKBMultiPolygon,
-      WKBNoGeometry = 100, //attributes only
-      WKBPoint25D = 0x80000001,
+      WKBNoGeometry, //attributes only
+      WKBPoint25D,
       WKBLineString25D,
       WKBPolygon25D,
       WKBMultiPoint25D,
@@ -85,22 +85,22 @@ class QGis
      */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType = 0,
-      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /*! Thirty two bit floating point (float) */      Float32 = 6,
-      /*! Sixty four bit floating point (double) */     Float64 = 7,
-      /*! Complex Int16 */                              CInt16 = 8,
-      /*! Complex Int32 */                              CInt32 = 9,
-      /*! Complex Float32 */                            CFloat32 = 10,
-      /*! Complex Float64 */                            CFloat64 = 11,
+      /*! Unknown or unspecified type */                UnknownDataType,
+      /*! Eight bit unsigned integer (quint8) */        Byte,
+      /*! Sixteen bit unsigned integer (quint16) */     UInt16,
+      /*! Sixteen bit signed integer (qint16) */        Int16,
+      /*! Thirty two bit unsigned integer (quint32) */  UInt32,
+      /*! Thirty two bit signed integer (qint32) */     Int32,
+      /*! Thirty two bit floating point (float) */      Float32,
+      /*! Sixty four bit floating point (double) */     Float64,
+      /*! Complex Int16 */                              CInt16,
+      /*! Complex Int32 */                              CInt32,
+      /*! Complex Float32 */                            CFloat32,
+      /*! Complex Float64 */                            CFloat64,
       /*! Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                      ARGB32 = 12,
+          QImage::Format_ARGB32 */                      ARGB32,
       /*! Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
+          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied,
     };
 
 
@@ -110,16 +110,16 @@ class QGis
      */
     enum UnitType
     {
-      Meters = 0,
-      Feet = 1,
-      Degrees = 2, //for 1.0 api backwards compatibility
-      UnknownUnit = 3,
+      Meters,
+      Feet,
+      Degrees, //for 1.0 api backwards compatibility
+      UnknownUnit,
 
       // for [1.4;1.8] api compatibility
-      DecimalDegrees = 2,         // was 2
-      DegreesMinutesSeconds = 2,  // was 4
-      DegreesDecimalMinutes = 2,  // was 5
-      NauticalMiles = 7
+      DecimalDegrees,         // was 2
+      DegreesMinutesSeconds,  // was 4
+      DegreesDecimalMinutes,  // was 5
+      NauticalMiles
     };
 
     //! Provides the canonical name of the type value
@@ -140,21 +140,34 @@ class QGis
       // These first two are useful for threads to alert their parent data providers
 
       //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = QgisEvent,
+      ProviderExtentCalcEvent,
 
       //! The row count has been calculated by a provider of a layer
       ProviderCountCalcEvent
     };
 
+    /** Old search radius in % of canvas width
+     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
     static const double DEFAULT_IDENTIFY_RADIUS;
 
+    /** Identify search radius in mm
+     *  @note added in 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
+    /** Default highlight color.  The transparency is expected to only be applied to polygon
+     *  fill. Lines and outlines are rendered opaque.
+     *  @note added in 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
+
+    /** Default highlight buffer in mm.
+     *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_BUFFER_MM;
+
+    /** Default highlight line/outline minimum width in mm.
+     *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 };
 

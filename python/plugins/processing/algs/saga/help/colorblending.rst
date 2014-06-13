@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:colorblending', grids, nsteps, range, grid)
+	processing.runalg('saga:colorblending', grids, nsteps, range, grid)
 
 	Available options for selection parameters:
 

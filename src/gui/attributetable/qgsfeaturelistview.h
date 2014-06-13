@@ -110,7 +110,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Sets if the currently shown form has received any edit events so far.
      *
-     * @param status The status
+     * @param state The state
      */
     void setCurrentFeatureEdited( bool state );
 
@@ -148,8 +148,9 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * Set the feature(s) to be edited
      *
      * @param index The selection to set
+     * @param command selection update mode
      */
-    void setEditSelection(const QModelIndex& index , QItemSelectionModel::SelectionFlags command );
+    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
 
     /**
      * Select all currently visible features

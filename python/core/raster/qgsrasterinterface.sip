@@ -98,7 +98,7 @@ class QgsRasterInterface
     virtual int ySize() const;
 
     /** \brief helper function to create zero padded band names */
-    virtual QString  generateBandName( int theBandNumber ) const;
+    virtual QString generateBandName( int theBandNumber ) const;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.

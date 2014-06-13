@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:linesimplification', lines, tolerance, output)
+	processing.runalg('saga:linesimplification', lines, tolerance, output)

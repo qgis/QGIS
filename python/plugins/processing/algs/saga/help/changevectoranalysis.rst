@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:changevectoranalysis', a1, a2, b1, b2, dist, angle)
+	processing.runalg('saga:changevectoranalysis', a1, a2, b1, b2, dist, angle)

@@ -20,6 +20,7 @@ symbology-ng/qgssinglesymbolrendererv2widget.cpp
 symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
 symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
 symbology-ng/qgsrulebasedrendererv2widget.cpp
+symbology-ng/qgsinvertedpolygonrendererwidget.cpp
 symbology-ng/qgsrendererv2propertiesdialog.cpp
 symbology-ng/qgsstylev2managerdialog.cpp
 symbology-ng/qgssymbollevelsv2dialog.cpp
@@ -231,6 +232,7 @@ symbology-ng/qgscategorizedsymbolrendererv2widget.h
 symbology-ng/qgsdatadefinedsymboldialog.h
 symbology-ng/qgsgraduatedsymbolrendererv2widget.h
 symbology-ng/qgsrulebasedrendererv2widget.h
+symbology-ng/qgsinvertedpolygonrendererwidget.h
 symbology-ng/qgsrendererv2widget.h
 symbology-ng/qgsrendererv2propertiesdialog.h
 symbology-ng/qgsstylev2managerdialog.h

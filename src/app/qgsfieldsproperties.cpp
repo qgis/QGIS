@@ -152,7 +152,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       break;
 
     case QgsAttributeEditorElement::AeTypeRelation:
-      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() ) );
+      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() ) );
       break;
 
     case QgsAttributeEditorElement::AeTypeContainer:
@@ -230,7 +230,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, attrEditTypeCol, pb );
 
-  connect( pb, SIGNAL( pressed() ), this, SLOT(attributeTypeDialog()) );
+  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog() ) );
 
   setConfigForRow( row, cfg );
 
@@ -407,8 +407,10 @@ void QgsFieldsProperties::attributeTypeDialog()
   if ( index == -1 )
     return;
 
-
   QgsAttributeTypeDialog attributeTypeDialog( mLayer, index );
+
+  attributeTypeDialog.setFieldEditable( cfg.mEditable );
+  attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
 
   attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
   attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
@@ -421,7 +423,7 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
   cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetV2Config();
-  
+
   pb->setText( attributeTypeDialog.editorWidgetV2Text() );
 
   setConfigForRow( row, cfg );
@@ -736,6 +738,9 @@ void QgsFieldsProperties::apply()
   {
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
+
+    mLayer->setFieldEditable( i, cfg.mEditable );
+    mLayer->setLabelOnTop( i, cfg.mLabelOnTop );
 
     mLayer->setEditorWidgetV2( idx, cfg.mEditorWidgetV2Type );
     mLayer->setEditorWidgetV2Config( idx, cfg.mEditorWidgetV2Config );

@@ -29,7 +29,7 @@ class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
 
   private:
-    bool isFieldSupported(QgsVectorLayer* vl, int fieldIdx);
+    bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx );
 };
 
 #endif // QGSENUMERATIONWIDGETFACTORY_H

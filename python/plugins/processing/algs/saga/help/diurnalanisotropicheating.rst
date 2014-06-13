@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:diurnalanisotropicheating', dem, alpha_max, dah)
+	processing.runalg('saga:diurnalanisotropicheating', dem, alpha_max, dah)

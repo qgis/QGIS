@@ -60,6 +60,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
+    void on_mPageSpinBox_valueChanged( int ) { changeItemPosition(); }
     void on_mXLineEdit_editingFinished() { changeItemPosition(); }
     void on_mYLineEdit_editingFinished() { changeItemPosition(); }
     void on_mWidthLineEdit_editingFinished() { changeItemPosition(); }

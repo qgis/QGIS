@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:massbalanceindex', dem, hrel, tslope, tcurve, threl, mbi)
+	processing.runalg('saga:massbalanceindex', dem, hrel, tslope, tcurve, threl, mbi)

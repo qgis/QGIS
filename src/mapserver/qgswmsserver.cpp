@@ -155,7 +155,7 @@ void QgsWMSServer::executeRequest()
     if ( result )
     {
       QgsDebugMsg( "Sending GetMap response" );
-      mRequestHandler->sendGetMapResponse( "WMS", result );
+      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -254,7 +254,7 @@ void QgsWMSServer::executeRequest()
     {
       QgsDebugMsg( "Sending GetLegendGraphic response" );
       //sending is the same for GetMap and GetLegendGraphic
-      mRequestHandler->sendGetMapResponse( "WMS", result );
+      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -262,6 +262,7 @@ void QgsWMSServer::executeRequest()
       //do some error handling
       QgsDebugMsg( "result image is 0" );
     }
+    delete result;
   }
   //GetPrint
   else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
@@ -318,10 +319,16 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
     wmsCapabilitiesElement.setAttribute( "xmlns", "http://www.opengis.net/wms" );
     wmsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd" );
+    wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wms http://qgis.org/wms_1_3_0.xsd" );
   }
   wmsCapabilitiesElement.setAttribute( "version", version );
   doc.appendChild( wmsCapabilitiesElement );
+
+  //todo: add service capabilities
+  if ( mConfigParser )
+  {
+    mConfigParser->serviceCapabilities( wmsCapabilitiesElement, doc );
+  }
 
   //wms:Capability element
   QDomElement capabilityElement = doc.createElement( "Capability"/*wms:Capability*/ );
@@ -1004,12 +1011,13 @@ QImage* QgsWMSServer::getMap()
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
-  QgsDebugMsg( "clearing filters" );
+  // QgsDebugMsg( "clearing filters" );
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 
-#ifdef QGISDEBUG
-  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
-#endif
+  //#ifdef QGISDEBUG
+  //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
+  //#endif
+
   return theImage;
 }
 
@@ -1377,6 +1385,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
 #endif
   mMapRenderer->setLayerSet( layerIdList );
+
+  //load label settings
+  if ( mConfigParser )
+  {
+    mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
+  }
 
   return theImage;
 }
@@ -2862,12 +2876,18 @@ QDomElement QgsWMSServer::createFeatureGML(
     }
   }
 
-  //read all attribute values from the feature
+  //read all allowed attribute values from the feature
+  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
   QgsAttributes featureAttributes = feat->attributes();
   const QgsFields* fields = feat->fields();
   for ( int i = 0; i < fields->count(); ++i )
   {
     QString attributeName = fields->at( i ).name();
+    //skip attribute if it is explicitly excluded from WMS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
     QString fieldTextString = featureAttributes[i].toString();
     if ( layer )
@@ -2903,12 +2923,12 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
     return attributeVal;
   }
 
-  QgsVectorLayer::EditType type = vl->editType( idx );
-  if ( type == QgsVectorLayer::ValueMap )
+  QString type = vl->editorWidgetV2( idx );
+  if ( type == "ValueMap" )
   {
-    QMap<QString, QVariant> valueMap = vl->valueMap( idx );
-    QMap<QString, QVariant>::const_iterator vmapIt = valueMap.constBegin();
-    for ( ; vmapIt != valueMap.constEnd(); ++vmapIt )
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QMap<QString, QVariant>::const_iterator vmapIt = cfg.constBegin();
+    for ( ; vmapIt != cfg.constEnd(); ++vmapIt )
     {
       if ( vmapIt.value().toString() == attributeVal )
       {
@@ -2916,17 +2936,17 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
       }
     }
   }
-  else if ( type == QgsVectorLayer::ValueRelation )
+  else if ( type == "ValueRelation" )
   {
-    QgsVectorLayer::ValueRelationData vrdata = vl->valueRelation( idx );
-    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( vrdata.mLayer ) );
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( cfg.value( "Layer" ).toString() ) );
     if ( !layer )
     {
       return attributeVal;
     }
 
     QString outputString;
-    if ( vrdata.mAllowMulti )
+    if ( cfg.value( "AllowMulti" ).toBool() )
     {
       QString valueString = attributeVal;
       QStringList valueList = valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
@@ -2936,7 +2956,12 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
         {
           outputString += ";";
         }
-        outputString += relationValue( valueList.at( i ), layer, vrdata.mKey, vrdata.mValue );
+        outputString += relationValue(
+                          valueList.at( i ),
+                          layer,
+                          cfg.value( "Key" ).toString(),
+                          cfg.value( "Value" ).toString()
+                        );
       }
     }
     return outputString;
@@ -2968,4 +2993,24 @@ QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer
     }
   }
   return attributeVal;
+}
+
+int QgsWMSServer::getImageQuality( ) const
+{
+
+  // First taken from QGIS project
+  int imageQuality = mConfigParser->imageQuality();
+
+  // Then checks if a parameter is given, if so use it instead
+  if ( mParameters.contains( "IMAGE_QUALITY" ) )
+  {
+    bool conversionSuccess;
+    int imageQualityParameter;
+    imageQualityParameter = mParameters[ "IMAGE_QUALITY" ].toInt( &conversionSuccess );
+    if ( conversionSuccess )
+    {
+      imageQuality = imageQualityParameter;
+    }
+  }
+  return imageQuality;
 }

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import json
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,7 +27,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import codecs
-import pickle
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -308,9 +308,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             # If help strings were defined before saving the model
             # for the first time, we do it here.
             if self.help:
-                f = open(self.alg.descriptionFile + '.help', 'wb')
-                pickle.dump(self.help, f)
-                f.close()
+                with open(self.descriptionFile + '.help', 'w') as f:
+                    json.dump(self.help, f)
                 self.help = None
             QMessageBox.information(self, self.tr('Model saved'),
                                     self.tr('Model was correctly saved.'))
@@ -509,7 +508,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
-        text = str(self.searchBox.text())
+        text = unicode(self.searchBox.text())
         allAlgs = ModelerUtils.getAlgorithms()
         for providerName in allAlgs.keys():
             groups = {}

@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polynomialtrendfromgrids', grids, y_grids, y_table, polynom, parms, quality)
+	processing.runalg('saga:polynomialtrendfromgrids', grids, y_grids, y_table, polynom, parms, quality)
 
 	Available options for selection parameters:
 

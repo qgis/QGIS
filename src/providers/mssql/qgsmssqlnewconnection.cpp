@@ -173,8 +173,10 @@ void QgsMssqlNewConnection::testConnection()
   }
 
   QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
-                    txtHost->text().trimmed(), txtDatabase->text().trimmed(),
-                    txtUsername->text().trimmed(), txtPassword->text().trimmed() );
+                    txtHost->text().trimmed(),
+                    txtDatabase->text().trimmed(),
+                    txtUsername->text().trimmed(),
+                    txtPassword->text().trimmed() );
 
   if ( db.isOpen() )
     db.close();

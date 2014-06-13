@@ -16,7 +16,7 @@
 #include "qgsphotoconfigdlg.h"
 
 QgsPhotoConfigDlg::QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-  :    QgsEditorConfigWidget( vl, fieldIdx, parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 }
@@ -31,7 +31,7 @@ QgsEditorWidgetConfig QgsPhotoConfigDlg::config()
   return cfg;
 }
 
-void QgsPhotoConfigDlg::setConfig(const QgsEditorWidgetConfig& config)
+void QgsPhotoConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
   sbWidgetHeight->setValue( config.value( "Height", 0 ).toInt() );
   sbWidgetWidth->setValue( config.value( "Width", 0 ).toInt() );

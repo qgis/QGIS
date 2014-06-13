@@ -30,19 +30,15 @@ import os
 from osgeo import gdal, osr
 from PyQt4.QtGui import *
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterBoolean import ParameterBoolean
 
 
-class ExtractProjection(GeoAlgorithm):
+class ExtractProjection(GdalAlgorithm):
 
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
-
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/icons/projection-export.png'
-                     )
 
     def defineCharacteristics(self):
         self.name = 'Extract projection'

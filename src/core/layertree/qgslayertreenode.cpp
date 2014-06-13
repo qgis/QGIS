@@ -39,7 +39,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
   QList<QgsLayerTreeNode*> clonedChildren;
   foreach ( QgsLayerTreeNode* child, other.mChildren )
     clonedChildren << child->clone();
-  insertChildren( -1, clonedChildren );
+  insertChildrenPrivate( -1, clonedChildren );
 }
 
 QgsLayerTreeNode::~QgsLayerTreeNode()
@@ -91,14 +91,7 @@ void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
   mProperties.writeXml( element, doc );
 }
 
-void QgsLayerTreeNode::insertChild( int index, QgsLayerTreeNode *node )
-{
-  QList<QgsLayerTreeNode*> nodes;
-  nodes << node;
-  insertChildren( index, nodes );
-}
-
-void QgsLayerTreeNode::insertChildren( int index, QList<QgsLayerTreeNode*> nodes )
+void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes )
 {
   foreach ( QgsLayerTreeNode* node, nodes )
   {
@@ -126,12 +119,7 @@ void QgsLayerTreeNode::insertChildren( int index, QList<QgsLayerTreeNode*> nodes
   emit addedChildren( this, index, indexTo );
 }
 
-void QgsLayerTreeNode::removeChildAt( int i )
-{
-  removeChildrenRange( i, 1 );
-}
-
-void QgsLayerTreeNode::removeChildrenRange( int from, int count )
+void QgsLayerTreeNode::removeChildrenPrivate( int from, int count )
 {
   if ( count <= 0 )
     return;

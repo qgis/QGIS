@@ -45,13 +45,30 @@ class QgsLayerTreeModelSymbologyNode : public QObject
 };
 
 
-
+/**
+ * The QgsLayerTreeModel class is model implementation for Qt item views framework.
+ * The model can be used in any QTreeView, it is however recommended to use it
+ * with QgsLayerTreeView which brings additional functionality specific to layer tree handling.
+ *
+ * The model listens to the changes in the layer tree and signals the changes as appropriate,
+ * so that any view that uses the model is updated accordingly.
+ *
+ * Behavior of the model can be customized with flags. For example, whether to show symbology or
+ * whether to allow changes to the layer tree.
+ *
+ * @see QgsLayerTreeView
+ * @note added in 2.4
+ */
 class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
+    //! Construct a new tree model with given layer tree (root node must not be null pointer).
+    //! The root node is not transferred by the model.
     explicit QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
     ~QgsLayerTreeModel();
+
+    // Implementation of virtual functions from QAbstractItemModel
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -64,13 +81,15 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QStringList mimeTypes() const;
     QMimeData* mimeData( const QModelIndexList& indexes ) const;
     bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
-
     bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() );
+
+    // New stuff
 
     enum Flag
     {
       // display flags
       ShowSymbology             = 0x0001,  //!< Add symbology items for layer nodes
+      ShowRasterPreviewIcon     = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
 
       // behavioral flags
       AllowNodeReorder          = 0x1000,  //!< Allow reordering with drag'n'drop
@@ -79,25 +98,40 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    void setFlags( Flags f ) { mFlags = f; }
-    void setFlag( Flag f, bool on = true ) { if ( on ) mFlags |= f; else mFlags &= ~f; }
-    Flags flags() const { return mFlags; }
-    bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
+    //! Set OR-ed combination of model flags
+    void setFlags( Flags f );
+    //! Enable or disable a model flag
+    void setFlag( Flag f, bool on = true );
+    //! Return OR-ed combination of model flags
+    Flags flags() const;
+    //! Check whether a flag is enabled
+    bool testFlag( Flag f ) const;
 
-    // conversion functions used by views
-
+    //! Return layer tree node for given index. Returns root node for invalid index.
+    //! Returns null pointer if index does not refer to a layer tree node (e.g. it is a symbology item)
     QgsLayerTreeNode* index2node( const QModelIndex& index ) const;
-    static QgsLayerTreeModelSymbologyNode* index2symnode( const QModelIndex& index );
+    //! Return index for a given node. If the node does not belong to the layer tree, the result is undefined
     QModelIndex node2index( QgsLayerTreeNode* node ) const;
-
+    //! Convert a list of indexes to a list of layer tree nodes.
+    //! Indices that do not represent layer tree nodes are skipped.
+    //! @arg skipInternal If true, a node is included in the output list only if no parent node is in the list
     QList<QgsLayerTreeNode*> indexes2nodes( const QModelIndexList& list, bool skipInternal = false ) const;
+    //! Return true if index represents a symbology node (instead of layer node)
+    bool isIndexSymbologyNode( const QModelIndex& index ) const;
+    //! Return layer node to which a symbology node belongs to. Returns null pointer if index is not a symbology node.
+    QgsLayerTreeLayer* layerNodeForSymbologyNode( const QModelIndex& index ) const;
 
-    QgsLayerTreeGroup* rootGroup() { return mRootNode; }
+    //! Return pointer to the root node of the layer tree. Always a non-null pointer.
+    QgsLayerTreeGroup* rootGroup();
 
+    //! Force a refresh of symbology of layer node.
+    //! Not necessary to call when layer's renderer is changed as the model listens to these events.
     void refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer );
 
-    QgsLayerTreeNode* currentNode() const { return mCurrentNode; }
-    void setCurrentNode( QgsLayerTreeNode* currentNode );
+    //! Get index of the item marked as current. Item marked as current is underlined.
+    QModelIndex currentIndex() const;
+    //! Set index of the current item. May be used by view. Item marked as current is underlined.
+    void setCurrentIndex( const QModelIndex& currentIndex );
 
   signals:
 
@@ -124,15 +158,19 @@ class GUI_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void connectToLayer( QgsLayerTreeLayer* nodeLayer );
     void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
 
+    static QgsLayerTreeModelSymbologyNode* index2symnode( const QModelIndex& index );
+
     static const QIcon& iconGroup();
 
   protected:
-    QgsLayerTreeGroup* mRootNode; // not owned!
+    //! Pointer to the root node of the layer tree. Not owned by the model
+    QgsLayerTreeGroup* mRootNode;
+    //! Set of flags for the model
     Flags mFlags;
-
+    //! Data structure for storage of symbology nodes for each layer
     QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelSymbologyNode*> > mSymbologyNodes;
-
-    QgsLayerTreeNode* mCurrentNode;
+    //! Current index - will be underlined
+    QPersistentModelIndex mCurrentIndex;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

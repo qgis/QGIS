@@ -111,7 +111,7 @@ class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
             selectedFileFilter = unicode(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
                     tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFilefilter)
+                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             self.text.setText(fileName)

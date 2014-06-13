@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:variogramcloud', points, field, distmax, nskip, result)
+	processing.runalg('saga:variogramcloud', points, field, distmax, nskip, result)

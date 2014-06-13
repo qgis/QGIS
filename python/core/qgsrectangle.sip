@@ -77,7 +77,12 @@ class QgsRectangle
     //! expand the rectangle so that covers both the original rectangle and the given point
     void combineExtentWith( double x, double y );
     //! test if rectangle is empty
+    //! Empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point)
     bool isEmpty() const;
+    //! test if the rectangle is null (all coordinates zero or after call to setMinimal()).
+    //! Null rectangle is also an empty rectangle.
+    //! @note added in 2.4
+    bool isNull() const;
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
     //! returns string representation as WKT Polygon

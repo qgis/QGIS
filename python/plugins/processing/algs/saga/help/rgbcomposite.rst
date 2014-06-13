@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:rgbcomposite', grid_r, grid_g, grid_b, method_r, method_g, method_b, grid_rgb)
+	processing.runalg('saga:rgbcomposite', grid_r, grid_g, grid_b, method_r, method_g, method_b, grid_rgb)
 
 	Available options for selection parameters:
 

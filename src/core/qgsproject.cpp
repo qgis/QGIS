@@ -942,6 +942,9 @@ bool QgsProject::read()
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
 
+  // make sure the are just valid layers
+  QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
+
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 
@@ -963,7 +966,11 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup* group )
       QgsLayerTreeGroup* childGroup = QgsLayerTree::toGroup( child );
       if ( childGroup->customProperty( "embedded" ).toInt() )
       {
-        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), childGroup->customProperty( "embedded_project" ).toString() );
+        // make sure to convert the path from relative to absolute
+        QString projectPath = readPath( childGroup->customProperty( "embedded_project" ).toString() );
+        childGroup->setCustomProperty( "embedded_project", projectPath );
+
+        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), projectPath );
         if ( newGroup )
         {
           QList<QgsLayerTreeNode*> clonedChildren;
@@ -992,20 +999,23 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup* group )
   }
 }
 
-void QgsProject::removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group )
+void QgsProject::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group )
 {
-  foreach ( QgsLayerTreeNode* child, group->children() )
+  foreach ( QgsLayerTreeNode* node, group->children() )
   {
-    if ( QgsLayerTree::isGroup( child ) )
+    if ( QgsLayerTree::isGroup( node ) )
     {
-      if ( child->customProperty( "embedded" ).toInt() )
-        QgsLayerTree::toGroup( child )->removeAllChildren();
+      if ( !node->customProperty( "embedded_project" ).toString().isEmpty() )
+      {
+        // may change from absolute path to relative path
+        QString newPath = writePath( node->customProperty( "embedded_project" ).toString() );
+        node->setCustomProperty( "embedded_project", newPath );
+      }
       else
-        removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( child ) );
+        updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ) );
     }
   }
 }
-
 
 
 bool QgsProject::read( QDomNode & layerNode )
@@ -1087,7 +1097,8 @@ bool QgsProject::write()
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode* clonedRoot = mRootGroup->clone();
-  removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
+  QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
+  updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ) ); // convert absolute paths to relative paths if required
   clonedRoot->writeXML( qgisNode );
   delete clonedRoot;
 
@@ -1466,7 +1477,12 @@ QString QgsProject::readPath( QString src ) const
   QString vsiPrefix = qgsVsiPrefix( src );
   if ( ! vsiPrefix.isEmpty() )
   {
-    src.remove( 0, vsiPrefix.size() );
+    // unfortunately qgsVsiPrefix returns prefix also for files like "/x/y/z.gz"
+    // so we need to check if we really have the prefix
+    if ( src.startsWith( "/vsi", Qt::CaseInsensitive ) )
+      src.remove( 0, vsiPrefix.size() );
+    else
+      vsiPrefix.clear();
   }
 
   // relative path should always start with ./ or ../
@@ -1836,7 +1852,7 @@ QgsLayerTreeGroup* QgsProject::createEmbeddedGroup( const QString& groupName, co
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  foreach ( QString layerId, newGroup->childLayerIds() )
+  foreach ( QString layerId, newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {

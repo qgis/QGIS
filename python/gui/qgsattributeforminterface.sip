@@ -21,7 +21,7 @@ class QgsAttributeFormInterface
   public:
     explicit QgsAttributeFormInterface( QgsAttributeForm* form );
 
-    virtual bool acceptChanges( const QgsFeature& feat );
+    virtual bool acceptChanges( const QgsFeature& feature );
 
     virtual void initForm();
 

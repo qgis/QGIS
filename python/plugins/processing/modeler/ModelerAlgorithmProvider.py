@@ -40,13 +40,14 @@ from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
+from processing.gui.GetScriptsAndModels import GetModelsAction
 
 
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions = [CreateNewModelAction(), AddModelFromFileAction()]
+        self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction(),
                                    SaveAsPythonScriptAction()]
 
@@ -80,16 +81,17 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
             return
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('model'):
-                try:
-                    alg = ModelerAlgorithm()
-                    fullpath = os.path.join(folder, descriptionFile)
-                    alg.openModel(fullpath)
-                    if alg.name.strip() != '':
-                        alg.provider = self
-                        self.algs.append(alg)
-                except WrongModelException, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load model ' + descriptionFile + '\n'
-                            + e.msg)
+        for path, subdirs, files in os.walk(folder):
+            for descriptionFile in files:
+                if descriptionFile.endswith('model'):
+                    try:
+                        alg = ModelerAlgorithm()
+                        fullpath = os.path.join(path, descriptionFile)
+                        alg.openModel(fullpath)
+                        if alg.name.strip() != '':
+                            alg.provider = self
+                            self.algs.append(alg)
+                    except WrongModelException, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                'Could not load model ' + descriptionFile + '\n'
+                                + e.msg)

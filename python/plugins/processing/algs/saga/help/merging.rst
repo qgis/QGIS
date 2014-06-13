@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:merging', grids, type, interpol, overlap, merged)
+	processing.runalg('saga:merging', grids, type, interpol, overlap, merged)
 
 	Available options for selection parameters:
 

@@ -74,8 +74,8 @@ class QgsWMSConfigParser
     /**Draw text annotation items from the QGIS projectfile*/
     virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const = 0;
 
-    //todo: fixme
-    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) { Q_UNUSED( lbl ); } //= 0;
+    /**Load PAL engine settings from the QGIS projectfile*/
+    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const = 0;
 
     virtual QString serviceUrl() const = 0;
 
@@ -96,6 +96,7 @@ class QgsWMSConfigParser
 
     virtual double maxWidth() const = 0;
     virtual double maxHeight() const = 0;
+    virtual double imageQuality() const = 0;
 
     //printing
 
@@ -114,6 +115,8 @@ class QgsWMSConfigParser
     virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
 
     virtual int nLayers() const = 0;
+
+    virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
 #if 0
     /**List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/

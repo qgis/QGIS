@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridnormalisation', input, range_min, range_max, output)
+	processing.runalg('saga:gridnormalisation', input, range_min, range_max, output)

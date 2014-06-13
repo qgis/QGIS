@@ -429,8 +429,20 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   private:
 
-    /**Establishes the signal slot connection for the class*/
-    void connectSlots();
+    /**Establishes the signal slot connections from the QgsComposerView to the composer*/
+    void connectViewSlots();
+
+    /**Establishes the signal slot connections from the QgsComposition to the composer*/
+    void connectCompositionSlots();
+
+    /**Establishes other signal slot connections for the composer*/
+    void connectOtherSlots();
+
+    /**Creates the composition widget*/
+    void createCompositionWidget();
+
+    /**Sets up the compositions undo/redo connections*/
+    void setupUndoView();
 
     //! True if a composer map contains a WMS layer
     bool containsWMSLayer() const;
@@ -572,7 +584,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QgsMapLayerAction* mAtlasFeatureAction;
 
-
   signals:
     void printAsRasterChanged( bool state );
 
@@ -617,6 +628,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void activateMonoPreview();
     void activateProtanopePreview();
     void activateDeuteranopePreview();
+
+    //! Sets the composition for the composer window
+    void setComposition( QgsComposition* composition );
 
 };
 

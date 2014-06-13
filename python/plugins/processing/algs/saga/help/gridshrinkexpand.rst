@@ -28,7 +28,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridshrinkexpand', input, operation, mode, radius, method_expand, result)
+	processing.runalg('saga:gridshrinkexpand', input, operation, mode, radius, method_expand, result)
 
 	Available options for selection parameters:
 

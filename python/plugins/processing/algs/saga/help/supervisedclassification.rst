@@ -34,7 +34,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:supervisedclassification', grids, roi, roi_id, method, normalise, threshold_dist, threshold_prob, relative_prob, threshold_angle, class_info, classes, quality)
+	processing.runalg('saga:supervisedclassification', grids, roi, roi_id, method, normalise, threshold_dist, threshold_prob, relative_prob, threshold_angle, class_info, classes, quality)
 
 	Available options for selection parameters:
 

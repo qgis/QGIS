@@ -30,6 +30,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
@@ -43,6 +50,13 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }
 
 QgsComposerShape::~QgsComposerShape()
@@ -323,6 +337,56 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
     }
     properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( pen().color() ) );
     properties.insert( "width_border", QString::number( pen().widthF() ) );
+
+    //for pre 2.0 projects, shape colour and outline were specified in a different element...
+    QDomNodeList outlineColorList = itemElem.elementsByTagName( "OutlineColor" );
+    if ( outlineColorList.size() > 0 )
+    {
+      QDomElement frameColorElem = outlineColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk, widthOk;
+      int penRed, penGreen, penBlue, penAlpha;
+      double penWidth;
+
+      penWidth = itemElem.attribute( "outlineWidth" ).toDouble( &widthOk );
+      penRed = frameColorElem.attribute( "red" ).toDouble( &redOk );
+      penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
+      penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
+      penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk && widthOk )
+      {
+        properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
+        properties.insert( "width_border", QString::number( penWidth ) );
+      }
+    }
+    QDomNodeList fillColorList = itemElem.elementsByTagName( "FillColor" );
+    if ( fillColorList.size() > 0 )
+    {
+      QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk;
+      int fillRed, fillGreen, fillBlue, fillAlpha;
+
+      fillRed = fillColorElem.attribute( "red" ).toDouble( &redOk );
+      fillGreen = fillColorElem.attribute( "green" ).toDouble( &greenOk );
+      fillBlue = fillColorElem.attribute( "blue" ).toDouble( &blueOk );
+      fillAlpha = fillColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk )
+      {
+        properties.insert( "color", QgsSymbolLayerV2Utils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
+        properties.insert( "style", "solid" );
+      }
+    }
+    if ( itemElem.hasAttribute( "transparentFill" ) )
+    {
+      //old style (pre 2.0) of specifying that shapes had no fill
+      bool hasOldTransparentFill = itemElem.attribute( "transparentFill", "0" ).toInt();
+      if ( hasOldTransparentFill )
+      {
+        properties.insert( "style", "no" );
+      }
+    }
+
     mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
   }
   emit itemChanged();

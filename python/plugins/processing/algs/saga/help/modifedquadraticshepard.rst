@@ -33,7 +33,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:modifedquadraticshepard', shapes, field, target, quadratic_neighbors, weighting_neighbors, user_xmin, user_xmax, user_ymin, user_ymax, user_size, user_grid)
+	processing.runalg('saga:modifedquadraticshepard', shapes, field, target, quadratic_neighbors, weighting_neighbors, user_xmin, user_xmax, user_ymin, user_ymax, user_size, user_grid)
 
 	Available options for selection parameters:
 

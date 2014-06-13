@@ -163,6 +163,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     QWidget* mWidget;
     QWidget* mParent;
     QgsVectorLayer* mLayer;
+    bool mInitialized;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

@@ -171,6 +171,11 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     return;
   }
+  if ( size.width() == 0 || size.height() == 0 )
+  {
+    //don't attempt to draw if size is invalid
+    return;
+  }
 
   const QgsMapSettings& ms = mComposition->mapSettings();
 
@@ -180,6 +185,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setOutputDpi( dpi );
   jobMapSettings.setMapUnits( ms.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
+  jobMapSettings.setShowSelection( false );
 
   //set layers to render
   QStringList theLayerSet = layersToRender();
@@ -196,13 +202,13 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
-  /* TODO[MD] fix after merge
+
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
     //if outputing composer, disable optimisations like layer simplification
-    theRendererContext->setUseRenderingOptimization( false );
-  }*/
+    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+  }
 
   //update $map variable. Use QgsComposerItem's id since that is user-definable
   QgsExpression::setSpecialColumn( "$map", QgsComposerItem::id() );
@@ -694,6 +700,7 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
 {
   if ( mAtlasFeatureExtent == extent )
   {
+    emit preparedForAtlas();
     return;
   }
 
@@ -774,7 +781,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
 {
   double currentScaleDenominator = scale();
 
-  if ( scaleDenominator == currentScaleDenominator )
+  if ( scaleDenominator == currentScaleDenominator || scaleDenominator == 0 )
   {
     return;
   }
@@ -1323,11 +1330,13 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
     mAtlasDriven = ( atlasElem.attribute( "atlasDriven", "0" ) != "0" );
-    if ( atlasElem.hasAttribute("fixedScale") ) { // deprecated XML
-      mAtlasScalingMode = (atlasElem.attribute( "fixedScale", "0" ) != "0") ? Fixed : Auto;
+    if ( atlasElem.hasAttribute( "fixedScale" ) ) // deprecated XML
+    {
+      mAtlasScalingMode = ( atlasElem.attribute( "fixedScale", "0" ) != "0" ) ? Fixed : Auto;
     }
-    else if ( atlasElem.hasAttribute("scalingMode") ) {
-      mAtlasScalingMode = static_cast<AtlasScalingMode>(atlasElem.attribute("scalingMode").toInt());
+    else if ( atlasElem.hasAttribute( "scalingMode" ) )
+    {
+      mAtlasScalingMode = static_cast<AtlasScalingMode>( atlasElem.attribute( "scalingMode" ).toInt() );
     }
     mAtlasMargin = atlasElem.attribute( "margin", "0.1" ).toDouble();
   }

@@ -56,10 +56,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
     setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
   }
 
-  //connect to atlas toggling on/off and coverage layer and feature changes
+  //connect to atlas feature changes
   //to update the expression context
-  connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( refreshExpressionContext() ) );
-  connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( refreshExpressionContext() ) );
   connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
 
 }
@@ -80,7 +78,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   drawBackground( painter );
   painter->save();
 
-  double penWidth = pen().widthF();
+  double penWidth = hasFrame() ? pen().widthF() : 0;
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   QString textToDraw = displayText();
@@ -205,6 +203,9 @@ void QgsComposerLabel::refreshExpressionContext()
   if ( mComposition->atlasComposition().enabled() )
   {
     vl = mComposition->atlasComposition().coverageLayer();
+  }
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
     feature = mComposition->atlasComposition().currentFeature();
   }
 
@@ -253,10 +254,12 @@ void QgsComposerLabel::setFont( const QFont& f )
 void QgsComposerLabel::adjustSizeToText()
 {
   double textWidth = textWidthMillimeters( mFont, displayText() );
-  double fontAscent = fontAscentMillimeters( mFont );
+  double fontHeight = fontHeightMillimeters( mFont );
 
-  double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  double height = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
+  double penWidth = hasFrame() ? pen().widthF() : 0;
+
+  double width = textWidth + 2 * mMargin + 2 * penWidth + 1;
+  double height = fontHeight + 2 * mMargin + 2 * penWidth;
 
   //keep alignment point constant
   double xShift = 0;

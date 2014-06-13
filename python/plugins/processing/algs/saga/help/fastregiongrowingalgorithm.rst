@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fastregiongrowingalgorithm', input, start, rep, result, mean)
+	processing.runalg('saga:fastregiongrowingalgorithm', input, start, rep, result, mean)

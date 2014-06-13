@@ -34,4 +34,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridstatisticsforpolygons', grids, polygons, count, min, max, range, sum, mean, var, stddev, quantile, result)
+	processing.runalg('saga:gridstatisticsforpolygons', grids, polygons, count, min, max, range, sum, mean, var, stddev, quantile, result)

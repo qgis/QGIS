@@ -28,7 +28,6 @@ class CORE_EXPORT QgsRendererRangeV2
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
     // default dtor is ok
-
     QgsRendererRangeV2& operator=( QgsRendererRangeV2 range );
 
     double lowerValue() const;

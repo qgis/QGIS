@@ -8,7 +8,7 @@ class QgsDiagram
     /** Returns an instance that is equivalent to this one
      * @note added in 2.4 */
     virtual QgsDiagram* clone() const = 0;
-    
+
     void clearCache();
     QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
     /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */

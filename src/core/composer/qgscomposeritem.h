@@ -133,8 +133,34 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
+    /**Gets the page the item is currently on.
+     * @returns page number for item
+     * @see pagePos
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    int page() const;
+
+    /**Returns the item's position relative to its current page.
+     * @returns position relative to the page's top left corner.
+     * @see page
+     * @see updatePagePos
+     * @note this method was added in version 2.4
+    */
+    QPointF pagePos() const;
+
+    /**Moves the item so that it retains its relative position on the page
+     * when the paper size changes.
+     * @param newPageWidth new width of the page in mm
+     * @param newPageHeight new height of the page in mm
+     * @see page
+     * @see pagePos
+     * @note this method was added in version 2.4
+    */
+    void updatePagePos( double newPageWidth, double newPageHeight );
+
     /**Moves the item to a new position (in canvas coordinates)*/
-    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 
     /**Sets item position and width / height in one go
       @param x item position x
@@ -143,9 +169,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @param height item height
       @param itemPoint item position mode
       @param posIncludesFrame set to true if the position and size arguments include the item's frame border
-
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
@@ -252,7 +278,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      * @note introduced in 2.0
      * @see hasBackground
      */
-    void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
+    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
 
     /** Gets the background color for this item
      * @returns background color
@@ -268,20 +294,20 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void setBackgroundColor( const QColor& backgroundColor );
 
     /** Returns the item's composition blending mode */
-    QPainter::CompositionMode blendMode() const {return mBlendMode;}
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /** Sets the item's composition blending mode*/
     void setBlendMode( QPainter::CompositionMode blendMode );
 
     /** Returns the item's transparency */
-    int transparency() const {return mTransparency;}
+    int transparency() const { return mTransparency; }
     /** Sets the item's transparency */
     void setTransparency( int transparency );
 
     /** Returns true if effects (eg blend modes) are enabled for the item
      * @note introduced in 2.0
     */
-    bool effectsEnabled() const {return mEffectsEnabled;}
+    bool effectsEnabled() const { return mEffectsEnabled; }
     /** Sets whether effects (eg blend modes) are enabled for the item
      * @note introduced in 2.0
     */
@@ -291,7 +317,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
 
-    const QgsComposition* composition() const {return mComposition;}
+    const QgsComposition* composition() const { return mComposition; }
     QgsComposition* composition() {return mComposition;}
 
     virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
@@ -334,8 +360,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
-    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    /**Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontDescentMillimeters( const QFont& font ) const;
+
+    /**Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
+     * Font height equals the font ascent+descent+1 (for baseline).
+     * @note Added in version 2.4
+    */
+    double fontHeightMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
@@ -349,17 +381,17 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Returns position lock for mouse drags (true means locked)
     @note this method was added in version 1.2*/
-    bool positionLock() const {return mItemPositionLocked;}
+    bool positionLock() const { return mItemPositionLocked; }
 
     /**Returns the rotation for the composer item
     @note this method was added in version 2.1*/
-    double itemRotation() const {return mItemRotation;}
+    double itemRotation() const { return mItemRotation; }
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
      *             instead
      */
-    Q_DECL_DEPRECATED double rotation() const {return mItemRotation;}
+    Q_DECL_DEPRECATED double rotation() const { return mItemRotation; }
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }

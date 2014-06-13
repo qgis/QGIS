@@ -149,9 +149,6 @@ class CORE_EXPORT QgsField
 
 }; // class QgsField
 
-// key = field index, value=field data
-typedef QMap<int, QgsField> QgsFieldMap;
-
 
 /**
  \ingroup core

@@ -34,4 +34,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:aggregatepointobservations', reference, reference_id, observations, x, y, track, date, time, parameter, eps_time, eps_space, aggregated)
+	processing.runalg('saga:aggregatepointobservations', reference, reference_id, observations, x, y, track, date, time, parameter, eps_time, eps_space, aggregated)

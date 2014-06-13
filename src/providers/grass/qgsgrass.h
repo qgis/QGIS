@@ -43,6 +43,8 @@ class QgsRectangle;
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
 #define G_TRY try { if( !setjmp( QgsGrass::jumper ) )
+// Ready for > 7.0.beta1
+//#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
 #define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
 
 /*!

@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:accumulatedcostanisotropic', cost, direction, points, k, threshold, acccost)
+	processing.runalg('saga:accumulatedcostanisotropic', cost, direction, points, k, threshold, acccost)

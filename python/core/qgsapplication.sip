@@ -185,12 +185,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
     //! @note Added in 2.0
-    static QIcon getThemeIcon( const QString theName );
+    static QIcon getThemeIcon( const QString &theName );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
     //! @note Added in 2.0
-    static QPixmap getThemePixmap( const QString theName );
+    static QPixmap getThemePixmap( const QString &theName );
 
     //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
@@ -230,8 +230,8 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     /** constants for endian-ness */
     enum endian_t
     {
-      XDR = 0,  // network, or big-endian, byte order
-      NDR = 1   // little-endian byte order
+      XDR, // network, or big-endian, byte order
+      NDR, // little-endian byte order
     };
 
     //! Returns whether this machine uses big or little endian
@@ -294,7 +294,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( );
+    static QStringList skippedGdalDrivers();
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -303,11 +303,20 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
 
+    /** Get maximum concurrent thread count
+     * @note added in 2.4 */
+    static int maxThreads();
+    /** Set maximum concurrent thread count
+     * @note must be between 1 and \#cores, -1 means use all available cores
+     * @note added in 2.4 */
+    static void setMaxThreads( int maxThreads );
 
 %If(ANDROID)
+    //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );
 %End
 
   signals:
+    //! @note not available in python bindings
     // void preNotify( QObject * receiver, QEvent * event, bool * done );
 };

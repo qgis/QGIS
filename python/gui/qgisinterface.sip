@@ -328,7 +328,7 @@ class QgisInterface : QObject
      * An item can be inserted before any existing action.
      */
 
-    //! Menus
+    // Menus
     virtual QMenu *fileMenu() = 0 /Deprecated/;
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;

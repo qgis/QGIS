@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:dtmfilterslopebased', input, radius, terrainslope, stddev, ground, nonground)
+	processing.runalg('saga:dtmfilterslopebased', input, radius, terrainslope, stddev, ground, nonground)

@@ -20,7 +20,7 @@
 
 
 QgsRangeWidgetFactory::QgsRangeWidgetFactory( QString name )
-  : QgsEditorWidgetFactory( name )
+    : QgsEditorWidgetFactory( name )
 {
 }
 
@@ -60,9 +60,9 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   configElement.setAttribute( "Step", config["Step"].toInt() );
 }
 
-bool QgsRangeWidgetFactory::supportsField(QgsVectorLayer* vl, int fieldIdx)
+bool QgsRangeWidgetFactory::supportsField( QgsVectorLayer* vl, int fieldIdx )
 {
-  switch( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->pendingFields()[fieldIdx].type() )
   {
     case QVariant::LongLong:
     case QVariant::Double:

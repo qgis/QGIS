@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fillgapsinrecords', table, order, method, nogaps)
+	processing.runalg('saga:fillgapsinrecords', table, order, method, nogaps)
 
 	Available options for selection parameters:
 

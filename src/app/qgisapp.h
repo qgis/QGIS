@@ -469,7 +469,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex& index );
-    void layerTreeViewCurrentChanged( const QModelIndex& current, const QModelIndex& previous );
+    //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
+    void updateNewLayerInsertionPoint();
     void activeLayerChanged( QgsMapLayer* layer );
     //! Zoom to full extent
     void zoomFull();
@@ -1019,6 +1020,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! refresh map canvas
     void refreshMapCanvas();
 
+    //! start "busy" progress bar
+    void canvasRefreshStarted();
+    //! stop "busy" progress bar
+    void canvasRefreshFinished();
+
     /** Dialog for verification of action on many edits
      * @note added in 1.9 */
     bool verifyEditsActionDialog( const QString& act, const QString& upon );
@@ -1331,6 +1337,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsAnnotationItem*> annotationItems();
     /**Removes annotation items in the canvas*/
     void removeAnnotationItems();
+
+    //! Configure layer tree view according to the user options from QSettings
+    void setupLayerTreeViewFromSettings();
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );

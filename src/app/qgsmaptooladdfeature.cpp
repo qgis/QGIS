@@ -47,11 +47,6 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
 
 void QgsMapToolAddFeature::activate()
 {
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( vlayer && vlayer->geometryType() == QGis::NoGeometry )
   {
@@ -133,7 +128,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //grass provider has its own mechanism of feature addition
     if ( provider->capabilities() & QgsVectorDataProvider::AddFeatures )
     {
-      QgsFeature* f = new QgsFeature( vlayer->pendingFields(), 0 );
+      QgsFeature f( vlayer->pendingFields(), 0 );
 
       QgsGeometry *g = 0;
       if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
@@ -145,19 +140,9 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         g = QgsGeometry::fromMultiPoint( QgsMultiPoint() << savePoint );
       }
 
-      f->setGeometry( g );
+      f.setGeometry( g );
 
-      vlayer->beginEditCommand( tr( "Feature added" ) );
-
-      if ( addFeature( vlayer, f ) )
-      {
-        vlayer->endEditCommand();
-      }
-      else
-      {
-        delete f;
-        vlayer->destroyEditCommand();
-      }
+      addFeature( vlayer, &f );
 
       mCanvas->refresh();
     }
@@ -307,8 +292,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         }
       }
 
-      vlayer->beginEditCommand( tr( "Feature added" ) );
-
       if ( addFeature( vlayer, f ) )
       {
         //add points to other features to keep topology up-to-date
@@ -336,13 +319,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           vlayer->addTopologicalPoints( f->geometry() );
         }
-
-        vlayer->endEditCommand();
-      }
-      else
-      {
-        delete f;
-        vlayer->destroyEditCommand();
       }
 
       stopCapturing();

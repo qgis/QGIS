@@ -97,17 +97,21 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
+        : QgsAttributeEditorElement( AeTypeContainer, name, parent )
+        , mIsGroupBox( true )
+    {}
 
     ~QgsAttributeEditorContainer() {}
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
     virtual void addChildElement( QgsAttributeEditorElement *widget );
-    virtual bool isGroupBox() const { return true; }
+    virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
+    virtual bool isGroupBox() const { return mIsGroupBox; }
     QList<QgsAttributeEditorElement*> children() const { return mChildren; }
     virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
 
   private:
+    bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
 };
 
@@ -1120,6 +1124,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldName  The name of the field
      *
      * @return The id for the editor widget or a NULL string if not applicable
+     *
+     * @note python method name editorWidgetV2ByName
      */
     const QString editorWidgetV2( const QString& fieldName ) const;
 
@@ -1138,6 +1144,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldName The name of the field
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
+     *
+     * @note python method name is editorWidgetV2ConfigByName
      */
     const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const;
 
@@ -1252,7 +1260,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Set string representing 'true' for a checkbox (added in 1.4)
      *
-     * @deprecated Use @see{setEditorWdigetV2Config} instead
+     * @deprecated Use @see{setEditorWidgetV2Config} instead
      */
     Q_DECL_DEPRECATED void setCheckedState( int idx, QString checked, QString notChecked );
 
@@ -1284,14 +1292,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Access value map
-     * @deprecated Use @see{editorWdigetV2Config} instead
+     * @deprecated Use @see{editorWidgetV2Config} instead
      */
     Q_DECL_DEPRECATED QMap<QString, QVariant> valueMap( int idx );
 
     /**
      * Access range widget config data
      *
-     * @deprecated Use @see{editorWdigetV2Config} instead
+     * @deprecated Use @see{editorWidgetV2Config} instead
      */
     Q_DECL_DEPRECATED RangeData range( int idx );
 
@@ -1579,9 +1587,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.9
      */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
-
-    /** Signal emitted on symbology changes, when setRendererV2() is called */
-    void rendererChanged();
 
     /** Signal emitted when setFeatureBlendMode() is called */
     void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );

@@ -26,4 +26,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:representativenessgrid', input, radius, exponent, result)
+	processing.runalg('saga:representativenessgrid', input, radius, exponent, result)

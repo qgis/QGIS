@@ -22,7 +22,7 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="treeTab">
       <attribute name="title">
        <string>Tree</string>
       </attribute>
@@ -53,7 +53,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tableTab">
       <attribute name="title">
        <string>Table</string>
       </attribute>
@@ -66,6 +66,12 @@
        </property>
        <item>
         <widget class="QTableWidget" name="tblResults">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
          <column>
           <property name="text">
            <string>Layer</string>
@@ -90,7 +96,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="plotTab">
       <attribute name="title">
        <string>Graph</string>
       </attribute>

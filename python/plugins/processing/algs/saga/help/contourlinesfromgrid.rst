@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:contourlinesfromgrid', input, zmin, zmax, zstep, contour)
+	processing.runalg('saga:contourlinesfromgrid', input, zmin, zmax, zstep, contour)

@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polartocartesiancoordinates', polar, f_exagg, d_exagg, radius, degree, cartes)
+	processing.runalg('saga:polartocartesiancoordinates', polar, f_exagg, d_exagg, radius, degree, cartes)

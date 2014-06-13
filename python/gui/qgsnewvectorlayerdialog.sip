@@ -17,6 +17,8 @@ class QgsNewVectorLayerDialog : QDialog
     void attributes( QList< QPair<QString, QString> >& at ) const;
     /**Returns the file format for storage*/
     QString selectedFileFormat() const;
+    /**Returns the file format for storage*/
+    QString selectedFileEncoding() const;
     /**Returns the selected crs id*/
     int selectedCrsId() const;
 

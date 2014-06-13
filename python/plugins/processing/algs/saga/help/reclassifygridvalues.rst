@@ -38,7 +38,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:reclassifygridvalues', input, method, old, new, soperator, min, max, rnew, roperator, retab, toperator, nodataopt, nodata, otheropt, others, result)
+	processing.runalg('saga:reclassifygridvalues', input, method, old, new, soperator, min, max, rnew, roperator, retab, toperator, nodataopt, nodata, otheropt, others, result)
 
 	Available options for selection parameters:
 

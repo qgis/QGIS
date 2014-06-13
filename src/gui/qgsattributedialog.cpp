@@ -144,11 +144,12 @@ bool QgsAttributeDialog::eventFilter( QObject* obj, QEvent* e )
 void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent )
 {
   mDialog = new QDialog( parent );
+  mDialog->setWindowTitle( tr( "Feature Attributes" ) );
   mDialog->setLayout( new QGridLayout() );
   mDialog->layout()->setMargin( 0 );
   mAttributeForm = new QgsAttributeForm( layer, *feature, context, parent );
   mDialog->layout()->addWidget( mAttributeForm );
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
-  connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( close() ) );
-  connect( buttonBox, SIGNAL( accepted()), mDialog, SLOT(close()) );
+  connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
+  connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
 }

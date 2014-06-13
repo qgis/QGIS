@@ -38,7 +38,7 @@ from processing.core.SilentProgress import SilentProgress
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.UnthreadedAlgorithmExecutor import \
         UnthreadedAlgorithmExecutor
 from processing.modeler.Providers import Providers
@@ -57,8 +57,6 @@ from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from processing.algs.admintools.AdminToolsAlgorithmProvider import \
-        AdminToolsAlgorithmProvider
 from processing.tools import dataobjects
 
 
@@ -66,6 +64,8 @@ class Processing:
 
     listeners = []
     providers = []
+
+    toolbox = None
 
     # A dictionary of algorithms. Keys are names of providers
     # and values are list with all algorithms from that provider
@@ -80,6 +80,10 @@ class Processing:
     modeler = ModelerAlgorithmProvider()
 
     @staticmethod
+    def setToolbox(toolbox):
+        Processing.toolbox = toolbox
+
+    @staticmethod
     def addProvider(provider, updateList=False):
         """Use this method to add algorithms from external providers.
         """
@@ -91,8 +95,8 @@ class Processing:
             provider.initializeSettings()
             Processing.providers.append(provider)
             ProcessingConfig.readSettings()
-            if updateList:
-                Processing.updateAlgsList()
+            if updateList and Processing.toolbox:
+                Processing.toolbox.updateTree()
         except:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    'Could not load provider:'
@@ -111,7 +115,8 @@ class Processing:
             provider.unload()
             Processing.providers.remove(provider)
             ProcessingConfig.readSettings()
-            Processing.updateAlgsList()
+            if Processing.toolbox:
+                Processing.toolbox.updateTree()
         except:
             # This try catch block is here to avoid problems if the
             # plugin with a provider is unloaded after the Processing
@@ -143,7 +148,6 @@ class Processing:
         Processing.addProvider(Grass7AlgorithmProvider())
         Processing.addProvider(ScriptAlgorithmProvider())
         Processing.addProvider(TauDEMAlgorithmProvider())
-        Processing.addProvider(AdminToolsAlgorithmProvider())
         Processing.modeler.initializeSettings()
 
         # And initialize
@@ -278,8 +282,7 @@ class Processing:
 
     @staticmethod
     def runandload(name, *args):
-        Processing.runAlgorithm(name, Postprocessing.handleAlgorithmResults,
-                                *args)
+        Processing.runAlgorithm(name, handleAlgorithmResults, *args)
 
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args):

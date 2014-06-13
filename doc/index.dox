@@ -39,7 +39,7 @@ website:
 <ul>
 <li>For support we encourage you to join our <a
 href="http://qgis.org/en/site/forusers/support.html#mailing-lists">mailing lists</a> for
-developers.</li> </ul>
+users and developers.</li> </ul>
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
@@ -47,7 +47,7 @@ href="http://hub.qgis.org/projects/quantum-gis">bug tracker</a>. When reporting 
 please include some contact information in case we need help with replicating
 your issue.
 
-\section index_maillist Mailing Lists
+\section index_ircchannel IRC channel
 Some QGIS users and developers can also often be found in the 
 <a href="irc://irc.freenode.net/#qgis">\#qgis</a> IRC channel on irc.freenode.net.<p>
 

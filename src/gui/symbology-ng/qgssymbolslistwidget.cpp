@@ -72,17 +72,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   if ( mSymbol )
   {
-    // output unit
-    mSymbolUnitWidget->blockSignals( true );
-    mSymbolUnitWidget->setUnit( mSymbol->outputUnit() );
-    mSymbolUnitWidget->setMapUnitScale( mSymbol->mapUnitScale() );
-    mSymbolUnitWidget->blockSignals( false );
-
-    mTransparencySlider->blockSignals( true );
-    double transparency = 1 - symbol->alpha();
-    mTransparencySlider->setValue( transparency * 255 );
-    displayTransparency( symbol->alpha() );
-    mTransparencySlider->blockSignals( false );
+    updateSymbolInfo();
   }
 
   // select correct page in stacked widget
@@ -96,8 +86,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
   btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-
-  updateSymbolInfo();
 }
 
 void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
@@ -293,6 +281,17 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
   }
+
+  mSymbolUnitWidget->blockSignals( true );
+  mSymbolUnitWidget->setUnit( mSymbol->outputUnit() );
+  mSymbolUnitWidget->setMapUnitScale( mSymbol->mapUnitScale() );
+  mSymbolUnitWidget->blockSignals( false );
+
+  mTransparencySlider->blockSignals( true );
+  double transparency = 1 - mSymbol->alpha();
+  mTransparencySlider->setValue( transparency * 255 );
+  displayTransparency( mSymbol->alpha() );
+  mTransparencySlider->blockSignals( false );
 }
 
 void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
@@ -310,6 +309,8 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
     QgsSymbolLayerV2* sl = s->takeSymbolLayer( 0 );
     mSymbol->appendSymbolLayer( sl );
   }
+  mSymbol->setAlpha( s->alpha() );
+  mSymbol->setOutputUnit( s->outputUnit() );
   // delete the temporary symbol
   delete s;
 
@@ -348,5 +349,3 @@ void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
   QStringList symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, text );
   populateSymbols( symbols );
 }
-
-

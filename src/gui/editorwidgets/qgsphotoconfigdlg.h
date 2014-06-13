@@ -30,7 +30,7 @@ class GUI_EXPORT QgsPhotoConfigDlg : public QgsEditorConfigWidget, private Ui::Q
     // QgsEditorConfigWidget interface
   public:
     QgsEditorWidgetConfig config();
-    void setConfig(const QgsEditorWidgetConfig& config);
+    void setConfig( const QgsEditorWidgetConfig& config );
 };
 
 #endif // QGSPHOTOCONFIGDLG_H

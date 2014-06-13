@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:slopeaspectcurvature', elevation, method, slope, aspect, curv, hcurv, vcurv)
+	processing.runalg('saga:slopeaspectcurvature', elevation, method, slope, aspect, curv, hcurv, vcurv)
 
 	Available options for selection parameters:
 

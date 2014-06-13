@@ -29,7 +29,7 @@
 class QToolButton;
 class QScrollArea;
 
-class QgsGroupBoxCollapseButton: public QToolButton
+class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
 {
     Q_OBJECT
 

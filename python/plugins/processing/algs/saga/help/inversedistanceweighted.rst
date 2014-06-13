@@ -69,7 +69,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:inversedistanceweighted', shapes, field, target, weighting, power, bandwidth, range, radius, mode, points, npoints, output_extent, user_size, user_grid)
+	processing.runalg('saga:inversedistanceweighted', shapes, field, target, weighting, power, bandwidth, range, radius, mode, points, npoints, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:function', xmin, xmax, ymin, ymax, formul, result)
+	processing.runalg('saga:function', xmin, xmax, ymin, ymax, formul, result)

@@ -45,6 +45,9 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool isEnabled() const { return mEnabled; }
 
+    void setNewLayersVisible( bool enabled ) { mNewLayersVisible = enabled; }
+    bool newLayersVisible() const { return mNewLayersVisible; }
+
     //! Set where the new layers should be inserted - can be used to follow current selection.
     //! By default it is root group with zero index.
     void setLayerInsertionPoint( QgsLayerTreeGroup* parentGroup, int index );
@@ -61,7 +64,9 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
   protected:
     QgsLayerTreeGroup* mRoot;
     QStringList mLayerIdsForRemoval;
+    bool mRegistryRemovingLayers;
     bool mEnabled;
+    bool mNewLayersVisible;
 
     QgsLayerTreeGroup* mInsertionPointGroup;
     int mInsertionPointIndex;

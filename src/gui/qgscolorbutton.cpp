@@ -25,6 +25,26 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QClipboard>
+#include <QDrag>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+QString QgsColorButton::fullPath( const QString &path )
+{
+  TCHAR buf[MAX_PATH];
+  int len = GetLongPathName( path.toUtf8().constData(), buf, MAX_PATH );
+
+  if ( len == 0 || len > MAX_PATH )
+  {
+    QgsDebugMsg( QString( "GetLongPathName('%1') failed with %2: %3" )
+                 .arg( path ).arg( len ).arg( GetLastError() ) );
+    return path;
+  }
+
+  QString res = QString::fromUtf8( buf );
+  return res;
+}
+#endif
 
 /*!
   \class QgsColorButton
@@ -117,7 +137,7 @@ QMimeData * QgsColorButton::createColorMimeData() const
 bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resultColor )
 {
   //attempt to read color data directly from mime
-  QColor mimeColor = qVariantValue<QColor>( mimeData->colorData() );
+  QColor mimeColor = mimeData->colorData().value<QColor>();
   if ( mimeColor.isValid() )
   {
     if ( !( mColorDialogOptions & QColorDialog::ShowAlphaChannel ) )
@@ -386,10 +406,14 @@ void QgsColorButton::setButtonBackground()
         mTempPNG.close();
       }
 
-      bkgrd = QString( " background-image: url(%1);" ).arg( mTempPNG.fileName() );
+      QString bgFileName = mTempPNG.fileName();
+#ifdef Q_OS_WIN
+      //on windows, mTempPNG will use a shortened path for the temporary folder name
+      //this does not work with stylesheets, resulting in the whole button disappearing (#10187)
+      bgFileName = fullPath( bgFileName );
+#endif
+      bkgrd = QString( " background-image: url(%1);" ).arg( bgFileName );
     }
-
-    //QgsDebugMsg( QString( "%1" ).arg( bkgrd ) );
 
     // TODO: get OS-style focus color and switch border to that color when button in focus
     setStyleSheet( QString( "QgsColorButton{"

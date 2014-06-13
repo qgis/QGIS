@@ -199,7 +199,7 @@ void QgsComposerMapWidget::on_mAtlasMarginRadio_toggled( bool checked )
 {
   mAtlasMarginSpinBox->setEnabled( checked );
 
-  if (checked && mComposerMap)
+  if ( checked && mComposerMap )
   {
     mComposerMap->setAtlasScalingMode( QgsComposerMap::Auto );
     updateMapForAtlas();
@@ -224,7 +224,7 @@ void QgsComposerMapWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
     return;
   }
 
-  if (checked)
+  if ( checked )
   {
     mComposerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
     updateMapForAtlas();
@@ -250,7 +250,7 @@ void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
   {
     // restore to fixed scale if no predefined scales exist
     mAtlasFixedScaleRadio->blockSignals( true );
-    mAtlasFixedScaleRadio->setChecked( Qt::Checked );
+    mAtlasFixedScaleRadio->setChecked( true );
     mAtlasFixedScaleRadio->blockSignals( false );
     mComposerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
   }
@@ -420,8 +420,24 @@ void QgsComposerMapWidget::updateGuiElements()
     blockAllSignals( true );
 
     //width, height, scale
-//    QRectF composerMapRect = mComposerMap->rect();
-    mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0 ) );
+    double scale = mComposerMap->scale();
+
+    //round scale to an appropriate number of decimal places
+    if ( scale >= 10 )
+    {
+      //round scale to integer if it's greater than 10
+      mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0 ) );
+    }
+    else if ( scale >= 1 )
+    {
+      //don't round scale if it's less than 10, instead use 4 decimal places
+      mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 4 ) );
+    }
+    else
+    {
+      //if scale < 1 then use 10 decimal places
+      mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 10 ) );
+    }
 
     //preview mode
     QgsComposerMap::PreviewMode previewMode = mComposerMap->previewMode();

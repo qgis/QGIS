@@ -54,6 +54,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     QgsLayerTreeLayer* findLayer( const QString& layerId );
     QList<QgsLayerTreeLayer*> findLayers() const;
+    QStringList findLayerIds() const;
     QgsLayerTreeGroup* findGroup( const QString& name );
 
     static QgsLayerTreeGroup* readXML( QDomElement& element );
@@ -67,8 +68,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     Qt::CheckState isVisible() const { return mChecked; }
     void setVisible( Qt::CheckState state );
-
-    QStringList childLayerIds() const;
 
   protected slots:
     void layerDestroyed();

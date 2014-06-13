@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygonpartstoseparatepolygons', polygons, lakes, parts)
+	processing.runalg('saga:polygonpartstoseparatepolygons', polygons, lakes, parts)

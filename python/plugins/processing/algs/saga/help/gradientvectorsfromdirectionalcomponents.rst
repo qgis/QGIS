@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gradientvectorsfromdirectionalcomponents', x, y, step, size_min, size_max, aggr, style, vectors)
+	processing.runalg('saga:gradientvectorsfromdirectionalcomponents', x, y, step, size_min, size_max, aggr, style, vectors)
 
 	Available options for selection parameters:
 

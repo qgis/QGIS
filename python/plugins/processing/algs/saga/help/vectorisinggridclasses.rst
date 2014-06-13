@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:vectorisinggridclasses', grid, class_all, class_id, split, polygons)
+	processing.runalg('saga:vectorisinggridclasses', grid, class_all, class_id, split, polygons)
 
 	Available options for selection parameters:
 

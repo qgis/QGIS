@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:streampowerindex', slope, area, conv, spi)
+	processing.runalg('saga:streampowerindex', slope, area, conv, spi)
 
 	Available options for selection parameters:
 

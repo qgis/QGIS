@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-import re
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,14 +26,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import pickle
-from processing.tools.system import *
 import os
-import codecs
+import re
+import json
 
 ALG_DESC = 'ALG_DESC'
 ALG_CREATOR = 'ALG_CREATOR'
 ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
+ALG_VERSION = 'ALG_VERSION'
 
 exps = [(r"\*(.*?)\*", r"<i>\1</i>"),
         ("``(.*?)``", r'<FONT FACE="courier">\1</FONT>'),
@@ -45,7 +45,7 @@ exps = [(r"\*(.*?)\*", r"<i>\1</i>"),
 
 def getHtmlFromRstFile(rst):
     if not os.path.exists(rst):
-        return ''
+        return None
     with open(rst) as f:
         lines = f.readlines()
     s = "".join(lines)
@@ -57,9 +57,11 @@ def getHtmlFromRstFile(rst):
 def getHtmlFromHelpFile(alg, helpFile):
     if not os.path.exists(helpFile):
         return None
-    alg = alg
-    f = open(helpFile, 'rb')
-    descriptions = pickle.load(f)
+    try:
+        with open(helpFile) as f:    
+            descriptions = json.load(f)
+    except:
+        return None
     s = '<html><body><h2>Algorithm description</h2>\n'
     s += '<p>' + getDescription(ALG_DESC, descriptions) + '</p>\n'
     s += '<h2>Input parameters</h2>\n'
@@ -73,6 +75,7 @@ def getHtmlFromHelpFile(alg, helpFile):
     s += '<br>'
     s += '<p align="right">Algorithm author: ' + getDescription(ALG_CREATOR, descriptions) + '</p>'
     s += '<p align="right">Help author: ' + getDescription(ALG_HELP_CREATOR, descriptions) + '</p>'
+    s += '<p align="right">Algorithm version: ' + getDescription(ALG_VERSION, descriptions) + '</p>'
     s += '</body></html>'
     return s
 
@@ -81,3 +84,4 @@ def getDescription(name, descriptions):
         return descriptions[name].replace("\n", "<br>")
     else:
         return ''
+

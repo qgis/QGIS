@@ -192,7 +192,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   }
   else
   {
-    value = attrs[mAttrNum];
+    value = attrs.value(mAttrNum);
   }
 
   // find the right symbol for the category
@@ -390,11 +390,15 @@ QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
 
-  if ( QgsExpression* exp = QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( mAttrName ) )
-  {
-    attributes.unite( exp->referencedColumns().toSet() );
-    delete exp;
-  }
+  // mAttrName can contain either attribute name or an expression.
+  // Sometimes it is not possible to distinguish between those two,
+  // e.g. "a - b" can be both a valid attribute name or expression.
+  // Since we do not have access to fields here, try both options.
+  attributes << mAttrName;
+
+  QgsExpression testExpr( mAttrName );
+  if ( !testExpr.hasParserError() )
+    attributes.unite( testExpr.referencedColumns().toSet() );
 
   if ( mRotation.data() ) attributes.unite( mRotation->referencedColumns().toSet() );
   if ( mSizeScale.data() ) attributes.unite( mSizeScale->referencedColumns().toSet() );

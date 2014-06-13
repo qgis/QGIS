@@ -583,7 +583,7 @@ const QgsVectorDataProvider* QgsVectorLayer::dataProvider() const
 
 void QgsVectorLayer::setProviderEncoding( const QString& encoding )
 {
-  if ( mDataProvider )
+  if ( mDataProvider && mDataProvider->encoding() != encoding )
   {
     mDataProvider->setEncoding( encoding );
     updateFields();
@@ -1890,18 +1890,18 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
   switch ( mEditorLayout )
   {
-  case UiFileLayout:
-    editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
-    break;
+    case UiFileLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+      break;
 
-  case TabLayout:
-    editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
-    break;
+    case TabLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+      break;
 
-  case GeneratedLayout:
-  default:
-    editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
-    break;
+    case GeneratedLayout:
+    default:
+      editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+      break;
   }
 
   node.appendChild( editorLayoutElem );
@@ -2566,12 +2566,12 @@ void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
 
 void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
 {
-  mEditorWidgetV2Types[ mUpdatedFields[ attrIdx ].name() ] = widgetType;
+  mEditorWidgetV2Types[ mUpdatedFields[ attrIdx ].name()] = widgetType;
 }
 
-void QgsVectorLayer::setEditorWidgetV2Config(int attrIdx, const QgsEditorWidgetConfig& config )
+void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config )
 {
-  mEditorWidgetV2Configs[ mUpdatedFields[ attrIdx ].name() ] = config;
+  mEditorWidgetV2Configs[ mUpdatedFields[ attrIdx ].name()] = config;
 }
 
 QString QgsVectorLayer::editForm()
@@ -2608,10 +2608,10 @@ QgsVectorLayer::RangeData QgsVectorLayer::range( int idx )
 {
   const QgsEditorWidgetConfig cfg = editorWidgetV2Config( idx );
   return RangeData(
-        cfg.value( "Min" ),
-        cfg.value( "Max" ),
-        cfg.value( "Step" )
-        );
+           cfg.value( "Min" ),
+           cfg.value( "Max" ),
+           cfg.value( "Step" )
+         );
 }
 
 QString QgsVectorLayer::dateFormat( int idx )
@@ -3440,10 +3440,10 @@ QString QgsVectorLayer::metadata()
   myMetadata += "</th>";
 
   //get info for each field by looping through them
-  const QgsFieldMap& myFields = pendingFields();
-  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  const QgsFields& myFields = pendingFields();
+  for ( int i = 0, n = myFields.size(); i < n; ++i )
   {
-    const QgsField& myField = *it;
+    const QgsField& myField = fields[i];
 
     myMetadata += "<tr><td>";
     myMetadata += myField.name();

@@ -50,10 +50,8 @@ class AlgorithmDecorator:
         lines.close()
 
     @staticmethod
-    def classificationFile():
-        folder = os.path.join(os.path.dirname(__file__), 'help')
-        f = os.path.join(folder, 'algclasssification.txt')
-        return f
+    def classificationFile():        
+        return os.path.join(os.path.join(os.path.dirname(__file__), 'algclasssification.txt'))        
 
     @staticmethod
     def getGroupsAndName(alg):

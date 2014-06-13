@@ -25,7 +25,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:fuzzyunionor', grids, type, or)
+	processing.runalg('saga:fuzzyunionor', grids, type, or)
 
 	Available options for selection parameters:
 

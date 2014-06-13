@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:flatdetection', dem, flat_output, noflats, flats)
+	processing.runalg('saga:flatdetection', dem, flat_output, noflats, flats)
 
 	Available options for selection parameters:
 

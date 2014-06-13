@@ -427,6 +427,9 @@ class QgsMapLayer : QObject
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
     void blendModeChanged( const QPainter::CompositionMode &blendMode );
 
+    /** Signal emitted when renderer is changed */
+    void rendererChanged();
+
   protected:
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );

@@ -107,7 +107,7 @@ class CORE_EXPORT QgsVectorFileWriter
         {}
     };
 
-    class HiddenOption: public Option
+    class HiddenOption : public Option
     {
       public:
         HiddenOption( const QString& value )
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QStringList &datasourceOptions = QStringList(), // added in 1.6
                          const QStringList &layerOptions = QStringList(), // added in 1.6
                          QString *newFilename = 0, // added in 1.9
-                         SymbologyExport symbologyExport = NoSymbology//added in 2.0
+                         SymbologyExport symbologyExport = NoSymbology //added in 2.0
                        );
 
     /**Returns map with format filter string as key and OGR format key as value*/

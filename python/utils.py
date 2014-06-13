@@ -418,21 +418,22 @@ def qgsfunction(args, group, **kwargs):
   """
   helptemplate = Template("""<h3>$name function</h3><br>$doc""")
   class QgsExpressionFunction(QgsExpression.Function):
-    def __init__(self, name, args, group, helptext=''):
-      QgsExpression.Function.__init__(self, name, args, group, helptext)
+    def __init__(self, name, args, group, helptext='', usesgeometry=False):
+      QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry)
 
     def func(self, values, feature, parent):
       pass
 
   def wrapper(func):
     name = kwargs.get('name', func.__name__)
+    usesgeometry = kwargs.get('usesgeometry', False)
     help = func.__doc__ or ''
     help = help.strip()
     if args == 0 and not name[0] == '$':
       name = '${0}'.format(name)
     func.__name__ = name
     help = helptemplate.safe_substitute(name=name, doc=help)
-    f = QgsExpressionFunction(name, args, group, help)
+    f = QgsExpressionFunction(name, args, group, help, usesgeometry)
     f.func = func
     register = kwargs.get('register', True)
     if register:

@@ -32,7 +32,6 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
     , mFlags( ShowSymbology )
-    , mCurrentNode( 0 )
 {
   Q_ASSERT( mRootNode );
 
@@ -190,7 +189,15 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
       if ( layer->type() == QgsMapLayer::RasterLayer )
-        return QgsLayerItem::iconRaster();
+      {
+        if ( testFlag( ShowRasterPreviewIcon ) )
+        {
+          QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
+          return QIcon( rlayer->previewAsPixmap( QSize( 32, 32 ) ) );
+        }
+        else
+          return QgsLayerItem::iconRaster();
+      }
       else if ( layer->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
@@ -242,7 +249,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       f.setItalic( true );
     if ( QgsLayerTree::isLayer( node ) )
       f.setBold( true );
-    if ( node == mCurrentNode )
+    if ( index == mCurrentIndex )
       f.setUnderline( true );
     return f;
   }
@@ -272,15 +279,26 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
     return Qt::ItemIsEnabled; // | Qt::ItemIsSelectable;
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
   if ( testFlag( AllowNodeRename ) )
     f |= Qt::ItemIsEditable;
-  if ( testFlag( AllowNodeReorder ) )
-    f |= Qt::ItemIsDragEnabled;
+
   QgsLayerTreeNode* node = index2node( index );
+  bool isEmbedded = node->customProperty( "embedded" ).toInt();
+
+  if ( testFlag( AllowNodeReorder ) )
+  {
+    // only root embedded nodes can be reordered
+    if ( !isEmbedded || ( isEmbedded && node->parent() && !node->parent()->customProperty( "embedded" ).toInt() ) )
+      f |= Qt::ItemIsDragEnabled;
+  }
+
   if ( testFlag( AllowNodeChangeVisibility ) && ( QgsLayerTree::isLayer( node ) || QgsLayerTree::isGroup( node ) ) )
     f |= Qt::ItemIsUserCheckable;
-  if ( testFlag( AllowNodeReorder ) && QgsLayerTree::isGroup( node ) )
+
+  if ( testFlag( AllowNodeReorder ) && QgsLayerTree::isGroup( node ) && !isEmbedded )
     f |= Qt::ItemIsDropEnabled;
+
   return f;
 }
 
@@ -388,6 +406,22 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
   return nodesFinal;
 }
 
+bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
+{
+  return index2symnode( index ) != 0;
+}
+
+QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const
+{
+  QgsLayerTreeModelSymbologyNode* symNode = index2symnode( index );
+  return symNode ? symNode->parent() : 0;
+}
+
+QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup()
+{
+  return mRootNode;
+}
+
 void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
 {
   // update title
@@ -402,21 +436,20 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   addSymbologyToLayer( nodeLayer );
 }
 
-void QgsLayerTreeModel::setCurrentNode( QgsLayerTreeNode* currentNode )
+QModelIndex QgsLayerTreeModel::currentIndex() const
 {
-  if ( mCurrentNode )
-  {
-    QModelIndex idx = node2index( mCurrentNode );
-    emit dataChanged( idx, idx );
-  }
+  return mCurrentIndex;
+}
 
-  mCurrentNode = currentNode;
+void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
+{
+  QModelIndex oldIndex = mCurrentIndex;
+  mCurrentIndex = currentIndex;
 
-  if ( mCurrentNode )
-  {
-    QModelIndex idx = node2index( mCurrentNode );
-    emit dataChanged( idx, idx );
-  }
+  if ( oldIndex.isValid() )
+    emit dataChanged( oldIndex, oldIndex );
+  if ( currentIndex.isValid() )
+    emit dataChanged( currentIndex, currentIndex );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
@@ -486,6 +519,9 @@ void QgsLayerTreeModel::nodeLayerLoaded()
 
 void QgsLayerTreeModel::layerRendererChanged()
 {
+  if ( !testFlag( ShowSymbology ) )
+    return;
+
   QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
   if ( !layer )
     return;
@@ -518,8 +554,6 @@ void QgsLayerTreeModel::removeSymbologyFromLayer( QgsLayerTreeLayer* nodeLayer )
   {
     qDeleteAll( mSymbologyNodes[nodeLayer] );
     mSymbologyNodes.remove( nodeLayer );
-
-    disconnect( nodeLayer->layer(), SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ) );
   }
 }
 
@@ -541,9 +575,6 @@ void QgsLayerTreeModel::addSymbologyToLayer( QgsLayerTreeLayer* nodeL )
   {
     addSymbologyToPluginLayer( nodeL );
   }
-
-  // be ready for any subsequent changes of the renderer
-  connect( nodeL->layer(), SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ) );
 }
 
 
@@ -664,6 +695,8 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   }
 
   QgsMapLayer* layer = nodeLayer->layer();
+  connect( layer, SIGNAL( rendererChanged() ), this, SLOT( layerRendererChanged() ), Qt::UniqueConnection );
+
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     // using unique connection because there may be temporarily more nodes for a layer than just one
@@ -802,6 +835,29 @@ bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex& paren
     return true;
   }
   return false;
+}
+
+void QgsLayerTreeModel::setFlags( QgsLayerTreeModel::Flags f )
+{
+  mFlags = f;
+}
+
+void QgsLayerTreeModel::setFlag( QgsLayerTreeModel::Flag f, bool on )
+{
+  if ( on )
+    mFlags |= f;
+  else
+    mFlags &= ~f;
+}
+
+QgsLayerTreeModel::Flags QgsLayerTreeModel::flags() const
+{
+  return mFlags;
+}
+
+bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
+{
+  return mFlags.testFlag( f );
 }
 
 

@@ -43,14 +43,14 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
     QgsVectorLayer* vlayer;
     QList<QgsSnappingResult> mRecentSnappingResults;
 
-    QgsGeometry* partUnderPoint( QPoint p, int &fid, int &partNum );
+    QgsGeometry* partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 
     /* Rubberband that shows the part being deleted*/
     QgsRubberBand* mRubberBand;
 
     //The feature and part where the mouse cursor was pressed
     //This is used to check whether we are still in the same part at cursor release
-    int mPressedFid;
+    QgsFeatureId mPressedFid;
     int mPressedPartNum;
 };
 

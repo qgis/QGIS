@@ -39,8 +39,8 @@ from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
 from processing.gui.UnthreadedAlgorithmExecutor import \
         UnthreadedAlgorithmExecutor
-from processing.gui.Postprocessing import Postprocessing
 from processing.tools import dataobjects
+from processing.gui.Postprocessing import handleAlgorithmResults
 
 from ui_DlgFieldsCalculator import Ui_FieldsCalculator
 
@@ -200,7 +200,7 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                 ret = UnthreadedAlgorithmExecutor.runalg(self.alg, self)
                 QApplication.restoreOverrideCursor()
                 if ret:
-                    Postprocessing.handleAlgorithmResults(self.alg,
+                    handleAlgorithmResults(self.alg,
                                                           self,
                                                           not keepOpen)
                 self.executed = True

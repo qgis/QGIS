@@ -28,6 +28,8 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString path )
   QFileInfo fi( path );
   mName = fi.baseName();
   mIcon = QIcon( QgsApplication::getThemePixmap( "grass_location.png" ) );
+  // set Directory type so that when sorted it gets into dirs (after the dir it represents)
+  mType = QgsDataItem::Directory;
 }
 QgsGrassLocationItem::~QgsGrassLocationItem() {}
 

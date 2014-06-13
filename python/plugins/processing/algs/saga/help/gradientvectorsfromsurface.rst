@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gradientvectorsfromsurface', surface, step, size_min, size_max, aggr, style, vectors)
+	processing.runalg('saga:gradientvectorsfromsurface', surface, step, size_min, size_max, aggr, style, vectors)
 
 	Available options for selection parameters:
 

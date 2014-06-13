@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:splitshapeslayerrandomly', shapes, percent, a, b)
+	processing.runalg('saga:splitshapeslayerrandomly', shapes, percent, a, b)

@@ -34,7 +34,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:simpleregiongrowing', seeds, features, method, neighbour, sig_1, sig_2, threshold, refresh, leafsize, segments, similarity, table)
+	processing.runalg('saga:simpleregiongrowing', seeds, features, method, neighbour, sig_1, sig_2, threshold, refresh, leafsize, segments, similarity, table)
 
 	Available options for selection parameters:
 

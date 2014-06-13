@@ -54,7 +54,7 @@ my $translators= {
 	hi => 'Harish Kumar Solanki',
 	hu => 'Zoltan Siki',
 	hr => 'Zoran Jankovic',
-	is => 'Thordur Ivarsson',
+	is => 'Ásta Kristín Óladóttir, Thordur Ivarsson',
 	id => 'Trias Aditya, Januar V. Simarmata, I Made Anombawa',
 	it => 'Roberto Angeletti, Michele Beneventi, Marco Braida, Stefano Campus, Luca Casagrande, Paolo Cavallini, Giuliano Curti, Luca Delucchi, Alessandro Fanna, Michele Ferretti, Matteo Ghetta, Anne Gishla, Maurizio Napolitano, Flavio Rigolon',
 	ja => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate',
@@ -85,7 +85,7 @@ my $translators= {
 	te => '',
 	th => 'Man Chao',
         tl => 'Kathrina Gregana',
-	tr => '',
+	tr => 'Osman Yalçın YILMAZ',
 	uk => 'Alexander Bruy',
 	vi => 'Phan Anh, Bùi Hữu Mạnh',
 	zh_CN => 'Calvin Ngei, Zhang Jun, Richard Xie',
@@ -142,7 +142,7 @@ for my $i (<i18n/qgis_*.ts>) {
 	$maxn = $n unless defined $maxn;
 
 	if( $n>$maxn ) {
-		print STDERR "$i: more translation than others. ($n>$maxn)\n";
+		print STDERR "$i: more translations than others. ($n>$maxn)\n";
 		$maxn = $n;
 	}
 

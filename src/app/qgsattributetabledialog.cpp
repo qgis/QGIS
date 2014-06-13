@@ -78,13 +78,13 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QgsAttributeEditorContext context;
 
-  QgsDistanceArea myDa;
+  myDa = new QgsDistanceArea();
 
-  myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa->setSourceCrs( mLayer->crs() );
+  myDa->setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
-  context.setDistanceArea( myDa );
+  context.setDistanceArea( *myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   // Initialize dual view
@@ -207,6 +207,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mFieldCombo->setModel( mFieldModel );
   connect( mOpenExpressionWidget, SIGNAL( clicked() ), this, SLOT( openExpressionBuilder() ) );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
+  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
   editingToggled();
 }
 
@@ -225,9 +226,9 @@ void QgsAttributeTableDialog::updateTitle()
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
-    mRunFieldCalc->setText( tr( "Update All") );
+    mRunFieldCalc->setText( tr( "Update All" ) );
   else
-    mRunFieldCalc->setText( tr( "Update Filtered") );
+    mRunFieldCalc->setText( tr( "Update Filtered" ) );
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
@@ -302,6 +303,7 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
   QString error;
 
   QgsExpression exp( mUpdateExpressionText->text() );
+  exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request;

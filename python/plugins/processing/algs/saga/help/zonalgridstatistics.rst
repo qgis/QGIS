@@ -28,4 +28,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:zonalgridstatistics', zones, catlist, statlist, aspect, shortnames, outtab)
+	processing.runalg('saga:zonalgridstatistics', zones, catlist, statlist, aspect, shortnames, outtab)

@@ -42,7 +42,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:ordinarykrigingglobal', shapes, field, bvariance, target, model, block, dblock, blog, nugget, sill, range, lin_b, exp_b, pow_a, pow_b, user_cell_size, user_fit_extent, output_extent, grid, variance)
+	processing.runalg('saga:ordinarykrigingglobal', shapes, field, bvariance, target, model, block, dblock, blog, nugget, sill, range, lin_b, exp_b, pow_a, pow_b, user_cell_size, user_fit_extent, output_extent, grid, variance)
 
 	Available options for selection parameters:
 

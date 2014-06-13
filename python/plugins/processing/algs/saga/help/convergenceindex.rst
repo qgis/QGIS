@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convergenceindex', elevation, method, neighbours, result)
+	processing.runalg('saga:convergenceindex', elevation, method, neighbours, result)
 
 	Available options for selection parameters:
 

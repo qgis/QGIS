@@ -37,7 +37,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:catchmentareaflowtracing', elevation, sinkroute, weight, material, target, step, method, mindqv, correct, carea, cheight, cslope, accu_tot, accu_left, accu_right)
+	processing.runalg('saga:catchmentareaflowtracing', elevation, sinkroute, weight, material, target, step, method, mindqv, correct, carea, cheight, cslope, accu_tot, accu_left, accu_right)
 
 	Available options for selection parameters:
 

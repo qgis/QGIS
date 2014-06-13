@@ -23,16 +23,20 @@ QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer* vl, QWidget* editor, QWidget
     , mWidget( editor )
     , mParent( parent )
     , mLayer( vl )
+    , mInitialized( false )
 {
 }
 
 QWidget* QgsWidgetWrapper::widget()
 {
   if ( !mWidget )
-  {
     mWidget = createWidget( mParent );
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
+
+  if ( !mInitialized )
+  {
+    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper*>( this ) );
     initWidget( mWidget );
+    mInitialized = true;
   }
 
   return mWidget;
@@ -41,12 +45,6 @@ QWidget* QgsWidgetWrapper::widget()
 void QgsWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
 {
   mConfig = config;
-  // If an editor widget was supplied, we can initialize this now
-  if ( mWidget )
-  {
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
-    initWidget( mWidget );
-  }
 }
 
 void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext& context )
@@ -68,7 +66,7 @@ const QgsEditorWidgetConfig QgsWidgetWrapper::config()
   return mConfig;
 }
 
-const QgsAttributeEditorContext&QgsWidgetWrapper::context()
+const QgsAttributeEditorContext& QgsWidgetWrapper::context()
 {
   return mContext;
 }

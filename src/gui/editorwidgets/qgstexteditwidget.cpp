@@ -16,6 +16,8 @@
 #include "qgstexteditwidget.h"
 
 #include "qgsfield.h"
+#include "qgsfieldvalidator.h"
+#include "qgsfilterlineedit.h"
 
 #include <QSettings>
 
@@ -26,8 +28,7 @@ QgsTextEditWidget::QgsTextEditWidget( QgsVectorLayer* vl, int fieldIdx, QWidget*
 
 QVariant QgsTextEditWidget::value()
 {
-  QSettings settings;
-  QVariant v;
+  QString v;
 
   if ( mTextEdit && mTextEdit->document()->isModified() )
   {
@@ -51,12 +52,11 @@ QVariant QgsTextEditWidget::value()
     v = mLineEdit->text();
   }
 
-  if ( v.toString() == settings.value( "qgis/nullValue", "NULL" ).toString() )
-  {
-    v = QVariant( field().type() );
-  }
-
-  return v;
+  if (( v.isEmpty() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) ) ||
+      v == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    return QVariant( field().type() );
+  else
+    return QVariant( v );
 }
 
 QWidget* QgsTextEditWidget::createWidget( QWidget* parent )
@@ -74,7 +74,7 @@ QWidget* QgsTextEditWidget::createWidget( QWidget* parent )
   }
   else
   {
-    return new QLineEdit( parent );
+    return new QgsFilterLineEdit( parent );
   }
 }
 
@@ -91,22 +91,41 @@ void QgsTextEditWidget::initWidget( QWidget* editor )
     connect( mPlainTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
 
   if ( mLineEdit )
+  {
+    mLineEdit->setValidator( new QgsFieldValidator( mLineEdit, field() ) );
+
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    if ( fle && !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+    {
+      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+    }
+
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+  }
 }
 
 void QgsTextEditWidget::setValue( const QVariant& value )
 {
+  QString v;
+  if ( value.isNull() )
+  {
+    if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+      v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+  }
+  else
+    v = value.toString();
+
   if ( mTextEdit )
   {
     if ( config( "UseHtml" ).toBool() )
-      mTextEdit->setHtml( value.toString() );
+      mTextEdit->setHtml( v );
     else
-      mTextEdit->setPlainText( value.toString() );
+      mTextEdit->setPlainText( v );
   }
 
   if ( mPlainTextEdit )
-    mPlainTextEdit->setPlainText( value.toString() );
+    mPlainTextEdit->setPlainText( v );
 
   if ( mLineEdit )
-    mLineEdit->setText( value.toString() );
+    mLineEdit->setText( v );
 }

@@ -3095,10 +3095,12 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
     }
 
     QgsDebugMsg( "SvgPath: " + svgPath );
-    QFileInfo myInfo( name );
-    QString myFileName = myInfo.fileName(); // foo.svg
-    QString myLowestDir = myInfo.dir().dirName();
-    QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
+    // Not sure why to lowest dir was used instead of full relative path, it was causing #8664
+    //QFileInfo myInfo( name );
+    //QString myFileName = myInfo.fileName(); // foo.svg
+    //QString myLowestDir = myInfo.dir().dirName();
+    //QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
+    QString myLocalPath = svgPath + QDir::separator() + name;
 
     QgsDebugMsg( "Alternative svg path: " + myLocalPath );
     if ( QFile( myLocalPath ).exists() )
@@ -3106,26 +3108,22 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
       QgsDebugMsg( "Svg found in alternative path" );
       return QFileInfo( myLocalPath ).canonicalFilePath();
     }
-    else if ( myInfo.isRelative() )
-    {
-      QFileInfo pfi( QgsProject::instance()->fileName() );
-      QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
-      if ( pfi.exists() && QFile( alternatePath ).exists() )
-      {
-        QgsDebugMsg( "Svg found in alternative path" );
-        return QFileInfo( alternatePath ).canonicalFilePath();
-      }
-      else
-      {
-        QgsDebugMsg( "Svg not found in project path" );
-      }
-    }
-    else
-    {
-      //couldnt find the file, no happy ending :-(
-      QgsDebugMsg( "Computed alternate path but no svg there either" );
-    }
   }
+
+  QFileInfo pfi( QgsProject::instance()->fileName() );
+  QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
+  if ( pfi.exists() && QFile( alternatePath ).exists() )
+  {
+    QgsDebugMsg( "Svg found in alternative path" );
+    return QFileInfo( alternatePath ).canonicalFilePath();
+  }
+  else
+  {
+    QgsDebugMsg( "Svg not found in project path" );
+  }
+  //couldnt find the file, no happy ending :-(
+  QgsDebugMsg( "Computed alternate path but no svg there either" );
+
   return QString();
 }
 
@@ -3181,6 +3179,62 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
   return QPointF( cx, cy );
 }
 
+QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
+{
+  QPointF centroid = QgsSymbolLayerV2Utils::polygonCentroid( points );
+
+  // check if centroid inside in polygon
+  if ( !QgsSymbolLayerV2Utils::pointInPolygon( points, centroid ) )
+  {
+    unsigned int i, pointCount = points.count();
+
+    QgsPolyline polyline( pointCount );
+    for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPoint( points[i].x(), points[i].y() );
+
+    QgsGeometry* geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
+    if ( geom )
+    {
+      QgsGeometry* pointOnSurfaceGeom = geom->pointOnSurface();
+
+      if ( pointOnSurfaceGeom )
+      {
+        QgsPoint point = pointOnSurfaceGeom->asPoint();
+        delete pointOnSurfaceGeom;
+        delete geom;
+
+        return QPointF( point.x(), point.y() );
+      }
+      delete geom;
+    }
+  }
+  return centroid;
+}
+
+bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPointF &point )
+{
+  bool inside = false;
+
+  double x = point.x();
+  double y = point.y();
+
+  for ( int i = 0, j = points.count() - 1; i < points.count(); i++ )
+  {
+    const QPointF& p1 = points[i];
+    const QPointF& p2 = points[j];
+
+    if ( p1.x() == x && p1.y() == y )
+      return true;
+
+    if ( ( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
+    {
+      if ( p1.x() + ( y - p1.y() ) / ( p2.y() - p1.y() )*( p2.x() - p1.x() ) <= x )
+        inside = !inside;
+    }
+
+    j = i;
+  }
+  return inside;
+}
 
 QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
 {

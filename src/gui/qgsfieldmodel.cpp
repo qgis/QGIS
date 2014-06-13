@@ -109,6 +109,10 @@ QModelIndex QgsFieldModel::setExpression( const QString &expression )
   if ( !mAllowExpression )
     return QModelIndex();
 
+  QModelIndex idx = indexFromName( expression );
+  if ( idx.isValid() )
+    return idx;
+
   beginResetModel();
   mExpression = QList<QString>() << expression;
   endResetModel();
@@ -158,7 +162,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   if ( !mLayer )
     return QVariant();
 
-  int exprIdx = index.internalId() - mFields.count();
+  qint64 exprIdx = index.internalId() - mFields.count();
 
   switch ( role )
   {
@@ -219,6 +223,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
         QgsField field = mFields[index.internalId()];
         return ( int )field.type();
       }
+      return QVariant();
     }
 
     case Qt::DisplayRole:
@@ -228,10 +233,14 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return mExpression[exprIdx];
       }
-      QgsField field = mFields[index.internalId()];
-      const QMap< QString, QString > aliases = mLayer->attributeAliases();
-      QString alias = aliases.value( field.name(), field.name() );
-      return alias;
+      else if ( role == Qt::EditRole )
+      {
+        return mFields[index.internalId()].name();
+      }
+      else
+      {
+        return mLayer->attributeDisplayName( index.internalId() );
+      }
     }
 
     case Qt::ForegroundRole:

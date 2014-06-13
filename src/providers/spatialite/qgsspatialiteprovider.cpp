@@ -3827,6 +3827,16 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
     // some error occurred
     goto abort;
   }
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+  sql = QString( "UPDATE geometry_columns_statistics set last_verified = 0 WHERE f_table_name=\"%1\" AND f_geometry_column=\"%2\";" )
+        .arg( mTableName )
+        .arg( mGeometryColumn );
+  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  update_layer_statistics( sqliteHandle, mTableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
+#elif SPATIALITE_VERSION_G_4_1_1
+  gaiaStatisticsInvalidate( sqliteHandle, tableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
+  update_layer_statistics( sqliteHandle, mTableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
+#endif
 
   // reload columns
   loadFields();

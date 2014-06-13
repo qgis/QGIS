@@ -89,6 +89,7 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
     : QObject( canvas )
     , mCanvas( canvas )
     , mRenderer( renderer )
+    , mSyncingExtent( false )
 {
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( onExtentC2R() ) );
   connect( mRenderer, SIGNAL( extentsChanged() ), this, SLOT( onExtentR2C() ) );
@@ -109,12 +110,24 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
 
 void QgsMapCanvasRendererSync::onExtentC2R()
 {
+  // protection against possible bounce back
+  if ( mSyncingExtent )
+    return;
+
+  mSyncingExtent = true;
   mRenderer->setExtent( mCanvas->mapSettings().extent() );
+  mSyncingExtent = false;
 }
 
 void QgsMapCanvasRendererSync::onExtentR2C()
 {
+  // protection against possible bounce back
+  if ( mSyncingExtent )
+    return;
+
+  mSyncingExtent = true;
   mCanvas->setExtent( mRenderer->extent() );
+  mSyncingExtent = false;
 }
 
 void QgsMapCanvasRendererSync::onMapUnitsC2R()
@@ -139,7 +152,7 @@ void QgsMapCanvasRendererSync::onCrsTransformR2C()
 
 void QgsMapCanvasRendererSync::onDestCrsC2R()
 {
-  mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
+  mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs(), true, false );
 }
 
 void QgsMapCanvasRendererSync::onDestCrsR2C()
@@ -188,8 +201,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setFocusPolicy( Qt::StrongFocus );
 
   mMapRenderer = new QgsMapRenderer;
-  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( const QgsMapLayer*, const QString&, const QString& ) ),
-           this, SLOT( getDatumTransformInfo( const QgsMapLayer*, const QString& , const QString& ) ) );
 
   mResizeTimer = new QTimer( this );
   mResizeTimer->setSingleShot( true );
@@ -206,6 +217,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
            this, SLOT( writeProject( QDomDocument & ) ) );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
+  mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
   // class that will sync most of the changes between canvas and (legacy) map renderer
   // it is parented to map canvas, will be deleted automatically
@@ -409,6 +421,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       }
     }
 
+    updateDatumTransformEntries();
+
     QgsDebugMsg( "Layers have changed, refreshing" );
     emit layersChanged();
 
@@ -466,6 +480,8 @@ void QgsMapCanvas::setCrsTransformEnabled( bool enabled )
 
   mSettings.setCrsTransformEnabled( enabled );
 
+  updateDatumTransformEntries();
+
   refresh();
 
   emit hasCrsTransformEnabledChanged( enabled );
@@ -495,6 +511,8 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   }
 
   mSettings.setDestinationCrs( crs );
+
+  updateDatumTransformEntries();
 
   emit destinationCrsChanged();
 }
@@ -634,6 +652,8 @@ void QgsMapCanvas::refreshMap()
   mJob->start();
 
   mMapUpdateTimer.start();
+
+  emit renderStarting();
 }
 
 
@@ -694,6 +714,8 @@ void QgsMapCanvas::rendererJobFinished()
   // so the class is still valid when the execution returns to the class
   mJob->deleteLater();
   mJob = 0;
+
+  emit mapCanvasRefreshed();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -1533,6 +1555,29 @@ void QgsMapCanvas::connectNotify( const char * signal )
 } //connectNotify
 
 
+void QgsMapCanvas::updateDatumTransformEntries()
+{
+  if ( !mSettings.hasCrsTransformEnabled() )
+    return;
+
+  QString destAuthId = mSettings.destinationCrs().authid();
+  foreach ( QString layerID, mSettings.layers() )
+  {
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    if ( !layer )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vl && vl->geometryType() == QGis::NoGeometry )
+      continue;
+
+    // if there are more options, ask the user which datum transform to use
+    if ( !mSettings.datumTransformStore().hasEntryForLayer( layer ) )
+      getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
+  }
+}
+
+
 
 QgsMapTool* QgsMapCanvas::mapTool()
 {
@@ -1665,7 +1710,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
     setExtent( tmpSettings.extent() );
-    // TODO: read only units, extent, projections, dest CRS
+    mSettings.datumTransformStore() = tmpSettings.datumTransformStore();
 
     clearExtentHistory(); // clear the extent history on project load
   }
@@ -1709,6 +1754,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
   if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
   {
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
     return;
   }
@@ -1719,6 +1765,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
   {
     // just use the default transform
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
     return;
   }
@@ -1732,7 +1779,8 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
   //if several possibilities:  present dialog
   QgsDatumTransformDialog d( ml->name(), dt );
-  if ( mMapRenderer && ( d.exec() == QDialog::Accepted ) )
+  d.setDatumTransformInfo( srcCRS.authid(), destCRS.authid() );
+  if ( d.exec() == QDialog::Accepted )
   {
     int srcTransform = -1;
     int destTransform = -1;
@@ -1745,6 +1793,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     {
       destTransform = t.at( 1 );
     }
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
     if ( d.rememberSelection() )
     {
@@ -1754,6 +1803,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   }
   else
   {
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
   }
 }

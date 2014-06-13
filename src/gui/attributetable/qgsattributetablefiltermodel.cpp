@@ -133,10 +133,10 @@ void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
 QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
 {
   QgsFeatureIds ids;
-  for (int i = 0; i < rowCount(); ++i)
+  for ( int i = 0; i < rowCount(); ++i )
   {
-      QModelIndex row = index( i, 0 );
-      ids << rowToId( row );
+    QModelIndex row = index( i, 0 );
+    ids << rowToId( row );
   }
   return ids;
 }
@@ -271,7 +271,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   renderer->startRender( renderContext, layer()->pendingFields() );
 
-  QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterRect( rect ) );
+  QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( QgsFeatureRequest().setFilterRect( rect ) );
 
   QgsFeature f;
 

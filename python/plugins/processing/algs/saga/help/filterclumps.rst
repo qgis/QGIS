@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:filterclumps', grid, threshold, output)
+	processing.runalg('saga:filterclumps', grid, threshold, output)

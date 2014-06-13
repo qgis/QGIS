@@ -27,4 +27,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:quadtreestructuretoshapes', shapes, attribute, polygons, lines, points)
+	processing.runalg('saga:quadtreestructuretoshapes', shapes, attribute, polygons, lines, points)

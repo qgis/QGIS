@@ -26,7 +26,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridbuffer', features, dist, buffertype, buffer)
+	processing.runalg('saga:gridbuffer', features, dist, buffertype, buffer)
 
 	Available options for selection parameters:
 

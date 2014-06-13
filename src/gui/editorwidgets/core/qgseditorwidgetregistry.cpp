@@ -44,10 +44,14 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
   if ( mWidgetFactories.contains( widgetId ) )
   {
     QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->create( vl, fieldIdx, editor, parent );
+
     if ( ww )
     {
       ww->setConfig( config );
       ww->setContext( context );
+      // Make sure that there is a widget created at this point
+      // so setValue() et al won't crash
+      ww->widget();
       return ww;
     }
   }

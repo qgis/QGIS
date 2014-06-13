@@ -109,7 +109,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     inline const QgsFeatureIds deletedFeatureIds() { return mDeletedFeatureIds; }
     //QString dumpEditBuffer();
 
-
   protected slots:
     void undoIndexChanged( int index );
 

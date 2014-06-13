@@ -21,18 +21,18 @@ public:
      * @see setEnabled
      */
     bool enabled() const;
-    
+
     /**Sets whether the atlas is enabled
      * @param enabled set to true to enable to atlas
      * @see enabled
-     */    
+     */
     void setEnabled( bool enabled );
 
     /**Returns the map used by the atlas
      * @deprecated Use QgsComposerMap::atlasDriven() instead
      */
     QgsComposerMap* composerMap() const /Deprecated/;
-    
+
     /**Sets the map used by the atlas
      * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
      */
@@ -43,17 +43,18 @@ public:
      * @see setHideCoverage
      */
     bool hideCoverage() const;
-    
+
     /**Sets whether the coverage layer should be hidden in map items in the composition
      * @param hide set to true to hide the coverage layer
      * @see hideCoverage
-     */    
+     */
     void setHideCoverage( bool hide );
 
     /**Returns whether the atlas map uses a fixed scale
      * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
      */
     bool fixedScale() const /Deprecated/;
+
     /**Sets whether the atlas map should use a fixed scale
      * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
      */
@@ -63,38 +64,48 @@ public:
      * @deprecated Use QgsComposerMap::atlasMargin() instead
      */
     float margin() const /Deprecated/;
-    
+
     /**Sets the margin for the atlas map
      * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
      */
     void setMargin( float margin ) /Deprecated/;
 
-   /**Returns the filename expression used for generating output filenames for each
+    /**Returns the filename expression used for generating output filenames for each
      * atlas page.
      * @returns filename pattern
      * @see setFilenamePattern
+     * @see filenamePatternErrorString
      * @note This property has no effect when exporting to PDF if singleFile() is true
      */
     QString filenamePattern() const;
-    
+
     /**Sets the filename expression used for generating output filenames for each
      * atlas page.
+     * @returns true if filename expression could be successful set, false if expression is invalid
      * @param pattern expression to use for output filenames
      * @see filenamePattern
+     * @see filenamePatternErrorString
      * @note This method has no effect when exporting to PDF if singleFile() is true
-     */    
-    void setFilenamePattern( const QString& pattern );
+     */
+    bool setFilenamePattern( const QString& pattern );
+
+    /**Returns an error string from parsing the filename expression.
+     * @returns filename pattern parser error
+     * @see setFilenamePattern
+     * @see filenamePattern
+     */
+    QString filenamePatternErrorString() const;
 
     /**Returns the coverage layer used for the atlas features
      * @returns atlas coverage layer
      * @see setCoverageLayer
      */
     QgsVectorLayer* coverageLayer() const;
-    
+
     /**Sets the coverage layer to use for the atlas features
      * @param layer vector coverage layer
      * @see coverageLayer
-     */    
+     */
     void setCoverageLayer( QgsVectorLayer* layer );
 
     /**Returns whether the atlas will be exported to a single file. This is only
@@ -104,13 +115,13 @@ public:
      * @note This property is only used for PDF exports.
      */
     bool singleFile() const;
-    
+
     /**Sets whether the atlas should be exported to a single file. This is only
      * applicable for PDF exports.
      * @param single set to true to export atlas to a single file.
      * @see singleFile
      * @note This method is only used for PDF exports.
-     */    
+     */
     void setSingleFile( bool single );
 
     bool sortFeatures() const;
@@ -125,6 +136,13 @@ public:
     QString featureFilter() const;
     void setFeatureFilter( const QString& expression );
 
+    /**Returns an error string from parsing the feature filter expression.
+     * @returns filename pattern parser error
+     * @see setFilenamePattern
+     * @see filenamePattern
+     */
+    QString featureFilterErrorString() const;
+
     QString sortKeyAttributeName() const;
     void setSortKeyAttributeName( QString fieldName );
 
@@ -138,7 +156,7 @@ public:
      * @see QgsComposerMap::atlasScalingMode
     */
     const QVector<double>& predefinedScales() const;
-    
+
     /**Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
      * @param scales a vector of doubles representing predefined scales
@@ -156,11 +174,15 @@ public:
     /** Returns the number of features in the coverage layer */
     int numFeatures() const;
 
-    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( int i );
+    /**Prepare the atlas map for the given feature. Sets the extent and context variables
+     * @returns true if feature was successfully prepared
+    */
+    bool prepareForFeature( int i );
 
-    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( QgsFeature * feat );
+    /**Prepare the atlas map for the given feature. Sets the extent and context variables
+     * @returns true if feature was successfully prepared
+    */
+    bool prepareForFeature( QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;
@@ -203,7 +225,7 @@ public:
 
     /**Is emitted when atlas rendering has ended*/
     void renderEnded();
-    
+
     /**Is emitted when the current atlas feature changes*/
     void featureChanged( QgsFeature* feature );
 

@@ -33,7 +33,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:overlandflowkinematicwaved8', dem, gauges, time_span, time_step, roughness, newton_maxiter, newton_epsilon, precip, threshold, flow, gauges_flow)
+	processing.runalg('saga:overlandflowkinematicwaved8', dem, gauges, time_span, time_step, roughness, newton_maxiter, newton_epsilon, precip, threshold, flow, gauges_flow)
 
 	Available options for selection parameters:
 

@@ -111,7 +111,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      */
     void setAcceptLiveUpdates( bool accept ) { mAcceptLiveUpdates = accept; }
 
-
   public slots:
     /**
      * Sets the background pixmap for the button based upon set color and transparency.
@@ -135,9 +134,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
 
   protected:
     void changeEvent( QEvent* e );
-#if 0 // causes too many cyclical updates, but may be needed on some platforms
-    void paintEvent( QPaintEvent* e );
-#endif
     void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
 
@@ -194,6 +190,16 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * @see createColorMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
+
+#ifdef Q_OS_WIN
+    /**
+     * Expands a shortened Windows path to its full path name.
+     * @returns full path name.
+     * @param path a (possibly) shortened Windows path
+     * @note added in 2.3
+     */
+    QString fullPath( const QString &path );
+#endif
 
   private slots:
     void onButtonClicked();

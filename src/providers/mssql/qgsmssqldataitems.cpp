@@ -100,8 +100,8 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
   QVector<QgsDataItem*> children;
 
   readConnectionSettings();
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService,
-                    mHost, mDatabase, mUsername, mPassword );
+
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService, mHost, mDatabase, mUsername, mPassword );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
@@ -109,24 +109,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
     return children;
   }
 
-  QString connectionName;
-  if ( mService.isEmpty() )
-  {
-    if ( mHost.isEmpty() )
-    {
-      children.append( new QgsErrorItem( this, "QgsMssqlProvider host name not specified", mPath + "/error" ) );
-      return children;
-    }
-
-    if ( mDatabase.isEmpty() )
-    {
-      children.append( new QgsErrorItem( this, "QgsMssqlProvider database name not specified", mPath + "/error" ) );
-      return children;
-    }
-    connectionName = mHost + "." + mDatabase;
-  }
-  else
-    connectionName = mService;
+  QString connectionName = db.connectionName();
 
   QgsMssqlGeomColumnTypeThread *columnTypeThread = 0;
 

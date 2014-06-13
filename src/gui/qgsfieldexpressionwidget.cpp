@@ -38,7 +38,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mButton = new QToolButton( this );
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionEditorOpen.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
 
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
@@ -50,7 +50,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
   connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
-  connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged( int ) ) );
+  connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged() ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 }
 
@@ -124,8 +124,19 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
   {
-    // new expression
-    idx = mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
+    // try to remove quotes and white spaces
+    QString simpleFieldName = fieldName.trimmed();
+    if ( simpleFieldName.startsWith( '"' ) && simpleFieldName.endsWith( '"' ) )
+    {
+      simpleFieldName.remove( 0, 1 ).chop( 1 );
+      idx = mFieldProxyModel->sourceFieldModel()->indexFromName( simpleFieldName );
+    }
+
+    if ( !idx.isValid() )
+    {
+      // new expression
+      idx = mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
+    }
   }
   QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
   mCombo->setCurrentIndex( proxyIndex.row() );
@@ -176,14 +187,24 @@ void QgsFieldExpressionWidget::changeEvent( QEvent* event )
   }
 }
 
-void QgsFieldExpressionWidget::currentFieldChanged( int i /* =0 */ )
+void QgsFieldExpressionWidget::currentFieldChanged()
 {
-  Q_UNUSED( i );
-
   updateLineEditStyle();
 
   bool isExpression, isValid;
   QString fieldName = currentField( &isExpression, &isValid );
+
+  // display tooltip if widget is shorter than expression
+  QFontMetrics metrics( mCombo->lineEdit()->font() );
+  if ( metrics.width( fieldName ) > mCombo->lineEdit()->width() )
+  {
+    mCombo->setToolTip( fieldName );
+  }
+  else
+  {
+    mCombo->setToolTip( "" );
+  }
+
   emit fieldChanged( fieldName );
   emit fieldChanged( fieldName, isValid );
 }

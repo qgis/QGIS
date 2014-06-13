@@ -22,15 +22,15 @@
 #include <QDateTime>
 
 QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString& function, const QString& pyFormName, QgsAttributeForm* form )
-  : QgsAttributeFormInterface( form )
-  , mPyFunctionName( function )
-  , mPyFormVarName( pyFormName )
+    : QgsAttributeFormInterface( form )
+    , mPyFunctionName( function )
+    , mPyFormVarName( pyFormName )
 {
   mPyLayerVarName = QString( "_qgis_layer_%1" ).arg( form->layer()->id() );
 
   QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
-                  .arg( mPyLayerVarName )
-                  .arg(( unsigned long ) form->layer() );
+                      .arg( mPyLayerVarName )
+                      .arg(( unsigned long ) form->layer() );
 
   QgsPythonRunner::run( initLayer );
 }
@@ -46,7 +46,7 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QDialogButtonBox* buttonBox = form()->findChild<QDialogButtonBox*>();
   if ( buttonBox )
   {
-    QObject::connect( buttonBox, SIGNAL(accepted()), form(), SLOT(accept()) );
+    QObject::connect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
   }
 
   // Generate the unique ID of this feature. We used to use feature ID but some providers
@@ -54,8 +54,8 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QDateTime dt = QDateTime::currentDateTime();
   QString pyFeatureVarName = QString( "_qgis_feature_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
   QString initFeature = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
-                    .arg( pyFeatureVarName )
-                    .arg(( unsigned long ) &form()->feature() );
+                        .arg( pyFeatureVarName )
+                        .arg(( unsigned long ) & form()->feature() );
 
   QgsPythonRunner::run( initFeature );
 

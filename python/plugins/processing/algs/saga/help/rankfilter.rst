@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:rankfilter', input, mode, radius, rank, result)
+	processing.runalg('saga:rankfilter', input, mode, radius, rank, result)
 
 	Available options for selection parameters:
 

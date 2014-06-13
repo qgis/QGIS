@@ -152,7 +152,7 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
 
     case QgsVectorLayer::LineEdit:
     {
-      widgetType = "LineEdit";
+      widgetType = "TextEdit";
       cfg.insert( "IsMultiline", false );
       break;
     }
@@ -241,7 +241,7 @@ QgsVectorLayer::EditType QgsLegacyHelpers::convertEditType( const QString& editT
     {
       return QgsVectorLayer::SliderRange;
     }
-    else if (  cfg.value( "Style" ).toString() == "DialRange"  )
+    else if ( cfg.value( "Style" ).toString() == "DialRange" )
     {
       return QgsVectorLayer::DialRange;
     }

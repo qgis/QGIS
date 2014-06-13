@@ -30,7 +30,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:hypsometry', elevation, count, sorting, method, bzrange, zrange_min, zrange_max, table)
+	processing.runalg('saga:hypsometry', elevation, count, sorting, method, bzrange, zrange_min, zrange_max, table)
 
 	Available options for selection parameters:
 

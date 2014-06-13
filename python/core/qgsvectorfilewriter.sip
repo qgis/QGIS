@@ -89,7 +89,7 @@ class QgsVectorFileWriter
 
     enum WriterError
     {
-      NoError = 0,
+      NoError,
       ErrDriverNotFound,
       ErrCreateDataSource,
       ErrCreateLayer,
@@ -103,7 +103,7 @@ class QgsVectorFileWriter
     //added in 2.0
     enum SymbologyExport
     {
-      NoSymbology = 0, //export only data
+      NoSymbology, //export only data
       FeatureSymbology, //Keeps the number of features and export symbology per feature
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
@@ -221,6 +221,6 @@ class QgsVectorFileWriter
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
   protected:
-
+    //! @note not available in python bindings
     // OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
 };

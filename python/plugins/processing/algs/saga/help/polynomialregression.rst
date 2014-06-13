@@ -33,7 +33,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polynomialregression', points, attribute, polynom, xorder, yorder, torder, target, output_extent, user_size, residuals, user_grid)
+	processing.runalg('saga:polynomialregression', points, attribute, polynom, xorder, yorder, torder, target, output_extent, user_size, residuals, user_grid)
 
 	Available options for selection parameters:
 

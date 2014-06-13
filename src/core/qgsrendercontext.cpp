@@ -31,9 +31,10 @@ QgsRenderContext::QgsRenderContext()
     mRasterScaleFactor( 1.0 ),
     mRendererScale( 1.0 ),
     mLabelingEngine( NULL ),
+    mShowSelection( true ),
     mUseRenderingOptimization( true )
 {
-
+    mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()
@@ -48,8 +49,10 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setDrawEditingInformation( mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setForceVectorOutput( mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setUseAdvancedEffects( mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
+  ctx.setUseRenderingOptimization( mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
   ctx.setCoordinateTransform( 0 );
   ctx.setSelectionColor( mapSettings.selectionColor() );
+  ctx.setShowSelection( mapSettings.showSelection() );
   ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );

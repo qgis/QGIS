@@ -37,7 +37,7 @@ QgsField QgsEditorWidgetWrapper::field()
 
 QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
 {
-  return widget->property( "EWV2Wrapper" ).value<QgsEditorWidgetWrapper*>();
+  return qobject_cast<QgsEditorWidgetWrapper*>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>() );
 }
 
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )

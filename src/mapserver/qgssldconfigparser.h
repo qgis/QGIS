@@ -76,8 +76,8 @@ class QgsSLDConfigParser: public QgsWMSConfigParser
     /**Draw text annotation items from the QGIS projectfile*/
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
-    //todo: fixme
-    void loadLabelSettings( QgsLabelingEngineInterface* lbl );
+    /**Load PAL engine settings from projectfile*/
+    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const;
 
     QString serviceUrl() const;
 
@@ -98,6 +98,7 @@ class QgsSLDConfigParser: public QgsWMSConfigParser
 
     double maxWidth() const;
     double maxHeight() const;
+    double imageQuality() const;
 
     //printing
 
@@ -116,6 +117,8 @@ class QgsSLDConfigParser: public QgsWMSConfigParser
     QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 
     int nLayers() const;
+
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
   private:
 

@@ -50,7 +50,7 @@ TARGET_LINK_LIBRARIES (oracleprovider
 
 ########################################################
 # Install
-                
+
 INSTALL(TARGETS oracleprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

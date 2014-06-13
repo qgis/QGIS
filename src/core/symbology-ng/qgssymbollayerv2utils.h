@@ -287,6 +287,12 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF& points );
 
+    //! Calculate a point within of a QPolygonF
+    static QPointF polygonPointOnSurface( const QPolygonF& points );
+
+    //! Calculate whether a point is within of a QPolygonF
+    static bool pointInPolygon( const QPolygonF &points, const QPointF &point );
+
     /** Return a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns null pointer.

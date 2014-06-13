@@ -250,7 +250,7 @@ class topolTest: public QObject
     QMap<QString, TopologyRule> mTopologyRuleMap;
 
     QList<FeatureLayer> mFeatureList1;
-    QMap<int, FeatureLayer> mFeatureMap2;
+    QMap<QgsFeatureId, FeatureLayer> mFeatureMap2;
 
     QgisInterface* theQgsInterface;
     bool mTestCancelled;

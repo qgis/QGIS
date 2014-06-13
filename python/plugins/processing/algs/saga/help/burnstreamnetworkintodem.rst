@@ -27,7 +27,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:burnstreamnetworkintodem', dem, stream, method, epsilon, burn)
+	processing.runalg('saga:burnstreamnetworkintodem', dem, stream, method, epsilon, burn)
 
 	Available options for selection parameters:
 

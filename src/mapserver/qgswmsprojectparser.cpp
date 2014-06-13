@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -335,6 +336,21 @@ double QgsWMSProjectParser::maxHeight() const
     }
   }
   return maxHeight;
+}
+
+double QgsWMSProjectParser::imageQuality() const
+{
+  double imageQuality = -1;
+  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement imageQualityElem = propertiesElem.firstChildElement( "WMSImageQuality" );
+    if ( !imageQualityElem.isNull() )
+    {
+      imageQuality = imageQualityElem.text().toInt();
+    }
+  }
+  return imageQuality;
 }
 
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
@@ -1736,9 +1752,85 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
   }
 }
 
+void QgsWMSProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) const
+{
+  QgsPalLabeling* pal = dynamic_cast<QgsPalLabeling*>( lbl );
+  if ( pal )
+  {
+    QDomElement propertiesElem = mProjectParser.propertiesElem();
+    if ( propertiesElem.isNull() )
+    {
+      return;
+    }
+
+    QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
+    if ( palElem.isNull() )
+    {
+      return;
+    }
+
+    //pal::Pal default positions for candidates;
+    int candPoint, candLine, candPoly;
+    pal->numCandidatePositions( candPoint, candLine, candPoly );
+
+    //mCandPoint
+    QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
+    if ( !candPointElem.isNull() )
+    {
+      candPoint = candPointElem.text().toInt();
+    }
+
+    //mCandLine
+    QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
+    if ( !candLineElem.isNull() )
+    {
+      candLine = candLineElem.text().toInt();
+    }
+
+    //mCandPolygon
+    QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
+    if ( !candPolyElem.isNull() )
+    {
+      candPoly = candPolyElem.text().toInt();
+    }
+
+    pal->setNumCandidatePositions( candPoint, candLine, candPoly );
+
+    //mShowingCandidates
+    QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
+    if ( !showCandElem.isNull() )
+    {
+      pal->setShowingCandidates( showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mShowingAllLabels
+    QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
+    if ( !showAllLabelsElem.isNull() )
+    {
+      pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mShowingPartialsLabels
+    QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
+    if ( !showPartialsLabelsElem.isNull() )
+    {
+      pal->setShowingPartialsLabels( showPartialsLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mDrawOutlineLabels
+    // TODO: This should probably always be true (already default) for WMS, regardless of any project setting.
+    //       Not much sense to output text-as-text, when text-as-outlines gives better results.
+  }
+}
+
 int QgsWMSProjectParser::nLayers() const
 {
   return mProjectParser.numberOfLayers();
+}
+
+void QgsWMSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  mProjectParser.serviceCapabilities( parentElement, doc, "WMS", featureInfoFormatSIA2045() );
 }
 
 QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) const

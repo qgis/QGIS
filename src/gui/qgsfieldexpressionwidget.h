@@ -102,7 +102,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! when expression has been edited (finished) it will be added to the model
     void expressionEditingFinished();
 
-    void currentFieldChanged( int i = 0 );
+    void currentFieldChanged();
 
     /**
      * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status

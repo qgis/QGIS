@@ -32,11 +32,11 @@ class GUI_EXPORT QgsUuidWidget : public QgsEditorWidgetWrapper
     QVariant value();
 
   protected:
-    QWidget* createWidget(QWidget* parent);
-    void initWidget(QWidget* editor);
+    QWidget* createWidget( QWidget* parent );
+    void initWidget( QWidget* editor );
 
   public slots:
-    void setValue(const QVariant& value);
+    void setValue( const QVariant& value );
     void setEnabled( bool enabled );
 
   private:

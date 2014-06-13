@@ -108,6 +108,12 @@
 %Include attributetable/qgsfeatureselectionmodel.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
 
+%Include layertree/qgscustomlayerorderwidget.sip
+%Include layertree/qgslayertreemapcanvasbridge.sip
+%Include layertree/qgslayertreemodel.sip
+%Include layertree/qgslayertreeview.sip
+%Include layertree/qgslayertreeviewdefaultactions.sip
+
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
 %Include raster/qgsrasterhistogramwidget.sip
@@ -122,6 +128,7 @@
 %Include symbology-ng/qgscptcitycolorrampv2dialog.sip
 %Include symbology-ng/qgsellipsesymbollayerv2widget.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2widget.sip
+%Include symbology-ng/qgsinvertedpolygonrendererwidget.sip
 %Include symbology-ng/qgslayerpropertieswidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip

@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:bsplineapproximation', shapes, field, target, level, output_extent, user_size, user_grid)
+	processing.runalg('saga:bsplineapproximation', shapes, field, target, level, output_extent, user_size, user_grid)
 
 	Available options for selection parameters:
 

@@ -24,4 +24,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:convertmultipointstopoints', multipoints, points)
+	processing.runalg('saga:convertmultipointstopoints', multipoints, points)

@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:gridmasking', grid, mask, masked)
+	processing.runalg('saga:gridmasking', grid, mask, masked)

@@ -161,11 +161,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     bool isParallelRenderingEnabled() const;
 
-    //! Set how often map preview should be updated while it is being rendered (in miliseconds)
+    //! Set how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
     void setMapUpdateInterval( int timeMiliseconds );
 
-    //! Find out how often map preview should be updated while it is being rendered (in miliseconds)
+    //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
     int mapUpdateInterval() const;
 
@@ -173,6 +173,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapCanvasMap* map();
 
     //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
+    //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
+    //// and in fact there is no transfer of ownership from c++ to python!
+    //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
+    //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
     Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas paint device
@@ -439,15 +443,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
     void renderComplete( QPainter * );
 
+    // ### QGIS 3: renamte to mapRefreshFinished()
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
-    Q_DECL_DEPRECATED void mapCanvasRefreshed();
+    void mapCanvasRefreshed();
 
+    // ### QGIS 3: rename to mapRefreshStarted()
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    //! @deprecated since 2.4 - anything related to rendering progress is not visible outside of map canvas
-    Q_DECL_DEPRECATED void renderStarting();
+    void renderStarting();
 
     //! Emitted when a new set of layers has been received
     void layersChanged();
@@ -543,6 +547,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     void connectNotify( const char * signal );
 
+    //! Make sure the datum transform store is properly populated
+    void updateDatumTransformEntries();
+
   private:
     /// this class is non-copyable
     /**
@@ -617,7 +624,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Optionally use cache with rendered map layers for the current map settings
     QgsMapRendererCache* mCache;
 
-
     QTimer *mResizeTimer;
 
     QgsPreviewEffect* mPreviewEffect;
@@ -658,6 +664,8 @@ class QgsMapCanvasRendererSync : public QObject
   protected:
     QgsMapCanvas* mCanvas;
     QgsMapRenderer* mRenderer;
+
+    bool mSyncingExtent;
 };
 
 

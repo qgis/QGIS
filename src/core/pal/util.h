@@ -74,7 +74,8 @@ namespace pal
     int  new_label;
   } ElemTrans;
 
-  struct Point {
+  struct Point
+  {
     double x, y;
   };
 

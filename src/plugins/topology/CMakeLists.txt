@@ -13,7 +13,7 @@ SET (topol_SRCS
 
 SET (topol_UIS
   rulesDialog.ui
-  checkDock.ui  
+  checkDock.ui
 )
 
 SET (topol_MOC_HDRS
@@ -42,7 +42,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${GEOS_INCLUDE_DIR}
   ../../core ../../core/raster
-  ../../gui  
+  ../../gui
   ..
 )
 

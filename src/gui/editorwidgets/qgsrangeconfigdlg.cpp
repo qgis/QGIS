@@ -18,9 +18,9 @@
 #include "qgsvectorlayer.h"
 
 QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent ) :
-  QgsEditorConfigWidget( vl, fieldIdx, parent )
+    QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
-  setupUi(this);
+  setupUi( this );
 
   QString text;
 
@@ -32,9 +32,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       rangeStackedWidget->setCurrentIndex( 0 );
 
       rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), "SpinBox");
-      rangeWidget->addItem( tr( "Slider" ), "Slider");
-      rangeWidget->addItem( tr( "Dial" ), "Dial");
+      rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
+      rangeWidget->addItem( tr( "Slider" ), "Slider" );
+      rangeWidget->addItem( tr( "Dial" ), "Dial" );
 
       QVariant min = vl->minimumValue( fieldIdx );
       QVariant max = vl->maximumValue( fieldIdx );
@@ -48,8 +48,8 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       rangeStackedWidget->setCurrentIndex( 1 );
 
       rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), "SpinBox");
-      rangeWidget->addItem( tr( "Slider" ), "Slider");
+      rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
+      rangeWidget->addItem( tr( "Slider" ), "Slider" );
 
       QVariant min = vl->minimumValue( fieldIdx );
       QVariant max = vl->maximumValue( fieldIdx );
@@ -72,7 +72,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  switch( layer()->pendingFields()[field()].type() )
+  switch ( layer()->pendingFields()[field()].type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:
@@ -91,7 +91,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
       break;
   }
 
-  cfg.insert( "Style", rangeWidget->itemData( rangeWidget->currentIndex()).toString() );
+  cfg.insert( "Style", rangeWidget->itemData( rangeWidget->currentIndex() ).toString() );
 
   return cfg;
 }

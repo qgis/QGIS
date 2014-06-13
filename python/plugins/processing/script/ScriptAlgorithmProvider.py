@@ -38,7 +38,7 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
-
+from processing.gui.GetScriptsAndModels import GetScriptsAction
 import processing.resources_rc
 
 
@@ -48,7 +48,8 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.actions.extend([CreateNewScriptAction('Create new script',
                             CreateNewScriptAction.SCRIPT_PYTHON),
-                            AddScriptFromFileAction()])
+                            AddScriptFromFileAction(),
+                            GetScriptsAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
@@ -82,16 +83,17 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
             return
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('py'):
-                try:
-                    fullpath = os.path.join(folder, descriptionFile)
-                    alg = ScriptAlgorithm(fullpath)
-                    if alg.name.strip() != '':
-                        self.algs.append(alg)
-                except WrongScriptException, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-                except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load script:' + descriptionFile + '\n'
-                            + unicode(e))
+        for path, subdirs, files in os.walk(folder):
+            for descriptionFile in files:
+                if descriptionFile.endswith('py'):
+                    try:
+                        fullpath = os.path.join(path, descriptionFile)
+                        alg = ScriptAlgorithm(fullpath)
+                        if alg.name.strip() != '':
+                            self.algs.append(alg)
+                    except WrongScriptException, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
+                    except Exception, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                'Could not load script:' + descriptionFile + '\n'
+                                + unicode(e))

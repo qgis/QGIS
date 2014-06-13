@@ -528,14 +528,20 @@ bool QgsSLDConfigParser::featureInfoFormatSIA2045() const
   return false;
 }
 
-void QgsSLDConfigParser::drawOverlays( QPainter *, int , int, int ) const
+void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
 {
-  //todo: fixme
+  if ( mFallbackParser )
+  {
+    mFallbackParser->drawOverlays( p, dpi, width, height );
+  }
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * )
+void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
 {
-  //needs to be here?
+  if ( mFallbackParser )
+  {
+    mFallbackParser->loadLabelSettings( lbl );
+  }
 }
 
 QString QgsSLDConfigParser::serviceUrl() const
@@ -663,6 +669,15 @@ double QgsSLDConfigParser::maxHeight() const
   return -1;
 }
 
+double QgsSLDConfigParser::imageQuality() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->imageQuality();
+  }
+  return -1;
+}
+
 QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   if ( mFallbackParser )
@@ -716,6 +731,18 @@ int QgsSLDConfigParser::nLayers() const
     }
   }
   return 0;
+}
+
+void QgsSLDConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->serviceCapabilities( parentElement, doc );
+  }
+  else
+  {
+    QgsConfigParserUtils::fallbackServiceCapabilities( parentElement, doc );
+  }
 }
 
 QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& layerName ) const

@@ -39,6 +39,11 @@ class QgsExpression
     //! @note this method does not expect that prepare() has been called on this instance
     QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
 
+    //! Evaluate the feature and return the result
+    //! @note this method does not expect that prepare() has been called on this instance
+    //! @note not available in python bindings
+    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
+
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const;
     //! Returns evaluation error
@@ -63,7 +68,7 @@ class QgsExpression
 
     void setScale( double scale );
 
-    int scale();
+    double scale();
 
     //! Return the expression string that was given when created.
     const QString expression() const;
@@ -125,6 +130,18 @@ class QgsExpression
 
       // strings
       boConcat,
+    };
+    enum SpatialOperator
+    {
+      soBbox,
+      soIntersects,
+      soContains,
+      soCrosses,
+      soEquals,
+      soDisjoint,
+      soOverlaps,
+      soTouches,
+      soWithin,
     };
 
     // static const char* BinaryOperatorText[];
@@ -288,6 +305,8 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+
+        int precedence() const;
     };
 
     class NodeInOperator : QgsExpression::Node

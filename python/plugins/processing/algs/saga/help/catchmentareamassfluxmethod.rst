@@ -33,7 +33,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:catchmentareamassfluxmethod', dem, method, b_slope, b_aspect, b_area, b_flow, area, g_slope, g_aspect, g_area, g_flow)
+	processing.runalg('saga:catchmentareamassfluxmethod', dem, method, b_slope, b_aspect, b_area, b_flow, area, g_slope, g_aspect, g_area, g_flow)
 
 	Available options for selection parameters:
 

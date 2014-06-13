@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:aggregationindex', input, maxnumclass, result)
+	processing.runalg('saga:aggregationindex', input, maxnumclass, result)

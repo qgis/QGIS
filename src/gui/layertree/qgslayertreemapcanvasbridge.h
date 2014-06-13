@@ -26,10 +26,26 @@ class QgsMapCanvasLayer;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
+/**
+ * The QgsLayerTreeMapCanvasBridge class takes care of updates of layer set
+ * for QgsMapCanvas from a layer tree. The class listens to the updates in the layer tree
+ * and updates the list of layers for rendering whenever some layers are added, removed,
+ * or their visibility changes.
+ *
+ * The update of layers is not done immediately - it is postponed, so a series of updates
+ * to the layer tree will trigger just one update of canvas layers.
+ *
+ * Also allows the client to override the default order of layers. This is useful
+ * in advanced cases where the grouping in layer tree should be independent from the actual
+ * order in the canvas.
+ *
+ * @added in 2.4
+ */
 class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 {
     Q_OBJECT
   public:
+    //! Constructor: does not take ownership of the layer tree nor canvas
     QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent = 0 );
 
     void clear();

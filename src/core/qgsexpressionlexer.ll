@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 %option noyywrap
 %option case-insensitive
 %option never-interactive
@@ -23,7 +23,7 @@
 %option 8bit
 
 %{
-  
+
 #include <stdlib.h>  // atof()
 
 #include "qgsexpression.h"

@@ -7,20 +7,19 @@ class QgsTextDiagram: QgsDiagram
   public:
     enum Shape
     {
-      Circle = 0,
+      Circle,
       Rectangle,
       Triangle
     };
 
     enum Orientation
     {
-      Horizontal = 0,
+      Horizontal,
       Vertical
     };
 
     QgsTextDiagram();
     ~QgsTextDiagram();
-
     virtual QgsDiagram* clone() const;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );

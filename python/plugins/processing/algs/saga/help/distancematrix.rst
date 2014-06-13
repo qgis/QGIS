@@ -29,4 +29,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:distancematrix', points, table)
+	processing.runalg('saga:distancematrix', points, table)

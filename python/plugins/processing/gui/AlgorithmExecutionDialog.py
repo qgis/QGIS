@@ -37,7 +37,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.WrongHelpFileException import WrongHelpFileException
-from processing.gui.Postprocessing import Postprocessing
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.UnthreadedAlgorithmExecutor import \
         UnthreadedAlgorithmExecutor
 from processing.parameters.ParameterRaster import ParameterRaster
@@ -101,9 +101,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.logText.readOnly = True
         self.tabWidget.addTab(self.logText, 'Log')
         self.webView = QtWebKit.QWebView()
-        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), 'help',
-                             'help.css'))
-        self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
         url = None
         try:
@@ -251,6 +248,11 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo('<b>Algorithm %s starting...</b>' % self.alg.name)
+            # make sure the log tab is visible before executing the algorithm
+            try:
+                self.repaint()
+            except:
+                pass
             if self.iterateParam:
                 if UnthreadedAlgorithmExecutor.runalgIterating(self.alg,
                         self.iterateParam, self):
@@ -286,7 +288,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         keepOpen = ProcessingConfig.getSetting(
                 ProcessingConfig.KEEP_DIALOG_OPEN)
         if self.iterateParam is None:
-            Postprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
+            handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
         self.setInfo('Algorithm %s finished' % self.alg.name)
         QApplication.restoreOverrideCursor()

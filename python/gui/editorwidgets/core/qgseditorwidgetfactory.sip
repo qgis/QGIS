@@ -104,7 +104,7 @@ class QgsEditorWidgetFactory
      * @param config    The editor widget config.
      * @param value     The value to represent.
      *
-     * @return By default the string representation of the provided value.
+     * @return By default the string representation of the provided value as implied by the field definition is returned.
      */
     virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
 

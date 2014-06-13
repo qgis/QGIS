@@ -32,7 +32,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:geometricfigures', cell_count, cell_size, figure, plane, result)
+	processing.runalg('saga:geometricfigures', cell_count, cell_size, figure, plane, result)
 
 	Available options for selection parameters:
 

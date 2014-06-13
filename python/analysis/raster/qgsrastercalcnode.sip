@@ -7,7 +7,7 @@ class QgsRasterCalcNode
     //! defines possible types of node
     enum Type
     {
-      tOperator = 1,
+      tOperator,
       tNumber,
       tRasterRef
     };

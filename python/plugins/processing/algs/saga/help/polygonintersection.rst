@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygonintersection', shapes_a, field_a, shapes_b, field_b, method, splitparts, shapes_ab)
+	processing.runalg('saga:polygonintersection', shapes_a, field_a, shapes_b, field_b, method, splitparts, shapes_ab)
 
 	Available options for selection parameters:
 

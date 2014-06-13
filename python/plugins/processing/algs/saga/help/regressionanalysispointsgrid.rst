@@ -29,7 +29,7 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:regressionanalysispointsgrid', grid, shapes, attribute, interpol, method, regression, residual)
+	processing.runalg('saga:regressionanalysispointsgrid', grid, shapes, attribute, interpol, method, regression, residual)
 
 	Available options for selection parameters:
 

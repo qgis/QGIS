@@ -16,9 +16,9 @@
 #include "qgswebviewconfigdlg.h"
 
 QgsWebViewWidgetConfigDlg::QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-  :  QgsEditorConfigWidget( vl, fieldIdx, parent)
+    :  QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
-  setupUi(this);
+  setupUi( this );
 }
 
 QgsEditorWidgetConfig QgsWebViewWidgetConfigDlg::config()
@@ -31,7 +31,7 @@ QgsEditorWidgetConfig QgsWebViewWidgetConfigDlg::config()
   return cfg;
 }
 
-void QgsWebViewWidgetConfigDlg::setConfig(const QgsEditorWidgetConfig& config)
+void QgsWebViewWidgetConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
   sbWidgetHeight->setValue( config.value( "Height", 0 ).toInt() );
   sbWidgetWidth->setValue( config.value( "Width", 0 ).toInt() );

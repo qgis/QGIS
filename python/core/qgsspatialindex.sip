@@ -19,7 +19,7 @@ class QgsSpatialIndex
     ~QgsSpatialIndex();
 
     /** implement assignment operator */
-    //QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
+    // QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
 
     /* operations */
 
@@ -38,10 +38,16 @@ class QgsSpatialIndex
     /** returns nearest neighbors (their count is specified by second parameter) */
     QList<qint64> nearestNeighbor( QgsPoint point, int neighbors ) const;
 
+    /* debugging */
+
+    //! get reference count - just for debugging!
+    int refs() const;
 
   protected:
+    // @note not available in python bindings
     // static SpatialIndex::Region rectToRegion( QgsRectangle rect );
-    // bool featureInfo( QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+    // @note not available in python bindings
+    // bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
 
 
 };

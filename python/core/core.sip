@@ -25,6 +25,7 @@
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
+%Include qgsdatumtransformstore.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
 %Include qgseditorwidgetconfig.sip
@@ -153,6 +154,13 @@
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsqtlocationconnection.sip
 
+%Include layertree/qgslayertree.sip
+%Include layertree/qgslayertreegroup.sip
+%Include layertree/qgslayertreelayer.sip
+%Include layertree/qgslayertreenode.sip
+%Include layertree/qgslayertreeregistrybridge.sip
+%Include layertree/qgslayertreeutils.sip
+
 %Include raster/qgsraster.sip
 %Include raster/qgscliptominmaxenhancement.sip
 %Include raster/qgscolorrampshader.sip
@@ -206,6 +214,7 @@
 %Include symbology-ng/qgssinglesymbolrendererv2.sip
 %Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrulebasedrendererv2.sip
+%Include symbology-ng/qgsinvertedpolygonrenderer.sip
 %Include symbology-ng/qgsrendererv2.sip
 %Include symbology-ng/qgsrendererv2registry.sip
 
@@ -221,5 +230,3 @@
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
 %Include dxf/qgsdxfexport.sip
- 
- 

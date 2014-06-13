@@ -2200,7 +2200,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate photocopy (grayscale)</string>
+    <string>Simulate Photocopy (Grayscale)</string>
    </property>
    <property name="toolTip">
     <string>Simulate photocopy (grayscale)</string>
@@ -2211,7 +2211,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate fax (mono)</string>
+    <string>Simulate Fax (Mono)</string>
    </property>
    <property name="toolTip">
     <string>Simulate fax (mono)</string>
@@ -2222,7 +2222,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate color blindness (protanope)</string>
+    <string>Simulate Color Blindness (Protanope)</string>
    </property>
    <property name="toolTip">
     <string>Simulate color blindness (protanope)</string>
@@ -2233,7 +2233,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate color blindness (deuteranope)</string>
+    <string>Simulate Color Blindness (Deuteranope)</string>
    </property>
    <property name="toolTip">
     <string>Simulate color blindness (deuteranope)</string>

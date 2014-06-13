@@ -107,16 +107,16 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );
 
   QSettings settings;
-  splitter->restoreState( settings.value("/windows/QgsExpressionBuilderWidget/splitter").toByteArray() );
-  splitter_2->restoreState( settings.value("/windows/QgsExpressionBuilderWidget/splitter2").toByteArray() );
+  splitter->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter" ).toByteArray() );
+  splitter_2->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter2" ).toByteArray() );
 }
 
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
   QSettings settings;
-  settings.setValue("/windows/QgsExpressionBuilderWidget/splitter", splitter->saveState() );
-  settings.setValue("/windows/QgsExpressionBuilderWidget/splitter2", splitter_2->saveState() );
+  settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter", splitter->saveState() );
+  settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter2", splitter_2->saveState() );
 }
 
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )

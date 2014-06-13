@@ -169,6 +169,15 @@ bool QgsVectorLayerRenderer::render()
     simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
 
     featureRequest.setSimplifyMethod( simplifyMethod );
+
+    QgsVectorSimplifyMethod vectorMethod = mSimplifyMethod;
+    mContext.setVectorSimplifyMethod( vectorMethod );
+  }
+  else
+  {
+    QgsVectorSimplifyMethod vectorMethod;
+    vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+    mContext.setVectorSimplifyMethod( vectorMethod );
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
@@ -218,11 +227,11 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 
       if ( mContext.renderingStopped() )
       {
-        qDebug( "breaking!" );
+        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerID() ) );
         break;
       }
 
-      bool sel = mSelectedFeatureIds.contains( fet.id() );
+      bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature

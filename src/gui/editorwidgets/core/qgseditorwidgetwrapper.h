@@ -128,6 +128,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * will be broadcasted. Helper for int type widgets.
      *
      * @param value The value
+     * @note python name valueChangedInt
      */
     void valueChanged( int value );
 
@@ -136,6 +137,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * will be broadcasted. Helper for double type widgets.
      *
      * @param value The value
+     * @note python name valueChangedDouble
      */
     void valueChanged( double value );
 
@@ -144,6 +146,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * will be broadcasted. Helper for bool type widgets.
      *
      * @param value The value
+     * @note python name valueChangedBool
      */
     void valueChanged( bool value );
 

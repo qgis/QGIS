@@ -25,4 +25,4 @@ Console usage
 
 ::
 
-	sextante.runalg('saga:polygonlineintersection', polygons, lines, intersect)
+	processing.runalg('saga:polygonlineintersection', polygons, lines, intersect)
