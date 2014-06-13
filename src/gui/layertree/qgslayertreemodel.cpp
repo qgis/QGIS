@@ -545,6 +545,9 @@ void QgsLayerTreeModel::layerNeedsUpdate()
 
   QModelIndex index = node2index( nodeLayer );
   emit dataChanged( index, index );
+
+  if ( nodeLayer->customProperty( "showFeatureCount" ).toInt() )
+    refreshLayerSymbology( nodeLayer );
 }
 
 
