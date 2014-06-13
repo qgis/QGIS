@@ -1928,15 +1928,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
   {
     QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
-
-    if ( bufferGeom )
+    if ( !bufferGeom )
     {
-      size_t wkbSize = bufferGeom->wkbSize();
-      unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
-      memcpy( wkb, bufferGeom->asWkb(), wkbSize );
-      geom->fromWkb( wkb, wkbSize );
-      delete bufferGeom;
+      return;
     }
+    geom = bufferGeom;
+    clonedGeometry.reset( geom );
   }
 
   // CLIP the geometry if it is bigger than the extent
