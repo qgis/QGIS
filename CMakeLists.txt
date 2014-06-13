@@ -311,6 +311,7 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
     ADD_DEFINITIONS( /wd4127 )  # constant conditional expressions (used in Qt template classes)
     ADD_DEFINITIONS( /wd4231 )  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
+    ADD_DEFINITIONS( /wd4244 )  # conversion from '...' to '...' possible loss of data
     ADD_DEFINITIONS( /wd4251 )  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
     ADD_DEFINITIONS( /wd4275 )  # non dll-interface class '...' used as base for dll-interface class '...'
     ADD_DEFINITIONS( /wd4505 )  # unreferenced local function has been removed (QgsRasterDataProvider::extent)

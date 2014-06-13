@@ -486,6 +486,12 @@ class CORE_EXPORT QgsGeometry
      **/
     void validateGeometry( QList<Error> &errors );
 
+    /** compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
+        @param geometryList a list of QgsGeometry* as input
+        @returns the new computed QgsGeometry, or null
+    */
+    static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList );
+
   private:
     // Private variables
 
@@ -678,15 +684,5 @@ class CORE_EXPORT QgsConstWkbPtr
 
     inline operator const unsigned char *() const { return mP; }
 };
-
-/** namespace where QgsGeometry-based algorithms lie */
-namespace QgsGeometryAlgorithms
-{
-  /** compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
-      @param geometryList a list of QgsGeometry* as input
-      @returns the new computed QgsGeometry, or null
-  */
-  QgsGeometry* unaryUnion( const QList<QgsGeometry*>& geometryList );
-}
 
 #endif

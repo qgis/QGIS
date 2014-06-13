@@ -224,7 +224,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
-      QScopedPointer<QgsGeometry> unioned( QgsGeometryAlgorithms::unaryUnion( cit->geometries ) );
+      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit->geometries ) );
       // compute the difference with the extent
       QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
       QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>(unioned.data()) );

@@ -6397,10 +6397,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
   }
 }
 
-namespace QgsGeometryAlgorithms
-{
-
-QgsGeometry* unaryUnion( const QList<QgsGeometry*>& geometryList )
+QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
 {
   QList<GEOSGeometry*> geoms;
   foreach( QgsGeometry* g, geometryList )
@@ -6414,5 +6411,3 @@ QgsGeometry* unaryUnion( const QList<QgsGeometry*>& geometryList )
   ret->fromGeos( unioned );
   return ret;
 }
-
-}// QgsGeometryAlgorithms
