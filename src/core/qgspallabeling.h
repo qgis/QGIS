@@ -740,6 +740,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool isShowingPartialsLabels() const { return mShowingPartialsLabels; }
     void setShowingPartialsLabels( bool showing ) { mShowingPartialsLabels = showing; }
 
+    //! @note added in 2.4
+    bool isDrawingOutlineLabels() const { return mDrawOutlineLabels; }
+    void setDrawingOutlineLabels( bool outline ) { mDrawOutlineLabels = outline; }
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
@@ -856,6 +860,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingAllLabels; // whether to avoid collisions or not
     bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
     bool mShowingPartialsLabels; // whether to avoid partials labels or not
+    bool mDrawOutlineLabels; // whether to draw labels as text or outlines
 
     QgsLabelingResults* mResults;
 };
