@@ -2320,7 +2320,6 @@ void QgisApp::initLayerTreeView()
 
   bool otfTransformAutoEnable = QSettings().value( "/Projections/otfTransformAutoEnable", true ).toBool();
   mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
-  mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( otfTransformAutoEnable );
 
   mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
   mMapLayerOrder->setObjectName( "theMapLayerOrder" );
@@ -7293,7 +7292,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
 
     bool otfTransformAutoEnable = mySettings.value( "/Projections/otfTransformAutoEnable", true ).toBool();
     mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
-    mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( otfTransformAutoEnable );
   }
 
   delete optionsDialog;
