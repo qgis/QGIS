@@ -2338,7 +2338,14 @@ void QgisApp::setupLayerTreeViewFromSettings()
 {
   QSettings s;
 
-  mLayerTreeView->layerTreeModel()->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( "/qgis/createRasterLegendIcons", false ).toBool() );
+  QgsLayerTreeModel* model = mLayerTreeView->layerTreeModel();
+  model->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( "/qgis/createRasterLegendIcons", false ).toBool() );
+
+  QFont fontLayer, fontGroup;
+  fontLayer.setBold( s.value( "/qgis/legendLayersBold", true ).toBool() );
+  fontGroup.setBold( s.value( "/qgis/legendGroupsBold", false ).toBool() );
+  model->setLayerTreeNodeFont( QgsLayerTreeNode::NodeLayer, fontLayer );
+  model->setLayerTreeNodeFont( QgsLayerTreeNode::NodeGroup, fontGroup );
 }
 
 

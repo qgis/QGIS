@@ -88,6 +88,11 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! Set index of the current item. May be used by view. Item marked as current is underlined.
     void setCurrentIndex( const QModelIndex& currentIndex );
 
+    //! Set font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
+    void setLayerTreeNodeFont( int nodeType, const QFont& font );
+    //! Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
+    QFont layerTreeNodeFont( int nodeType ) const;
+
   signals:
 
 };
