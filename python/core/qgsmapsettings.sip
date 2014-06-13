@@ -72,6 +72,11 @@ class QgsMapSettings
     Flags flags() const;
     bool testFlag( Flag flag ) const;
 
+    //! sets format of internal QImage
+    void setOutputImageFormat( QImage::Format format );
+    //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
+    QImage::Format outputImageFormat() const;
+
     bool hasValidSettings() const;
     QgsRectangle visibleExtent() const;
     double mapUnitsPerPixel() const;

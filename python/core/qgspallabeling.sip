@@ -666,6 +666,10 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     bool isShowingPartialsLabels() const;
     void setShowingPartialsLabels( bool showing );
 
+    //! @note added in 2.4
+    bool isDrawingOutlineLabels() const;
+    void setDrawingOutlineLabels( bool outline );
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering

@@ -2428,9 +2428,19 @@ void QgsComposition::deleteAndRemoveMultiFrames()
 
 void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
 {
-  printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( file );
+  // setOutputFormat should come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
+  // [LS] This should be QPrinter::NativeFormat for Mac, otherwise fonts are not embed-able
+  // and text is not searchable; however, there are several bugs with <= Qt 4.8.5, 5.1.1, 5.2.0:
+  // https://bugreports.qt-project.org/browse/QTBUG-10094 - PDF font embedding fails
+  // https://bugreports.qt-project.org/browse/QTBUG-33583 - PDF output converts text to outline
+  // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
+  printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+
+  // TODO: add option for this in Composer
+  // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
+  //printer.setFontEmbeddingEnabled( true );
 
   QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
 }
