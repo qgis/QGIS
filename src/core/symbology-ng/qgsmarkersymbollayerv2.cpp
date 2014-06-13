@@ -976,12 +976,13 @@ QgsMapUnitScale QgsSimpleMarkerSymbolLayerV2::mapUnitScale() const
 //////////
 
 
-QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size, double angle )
+QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mPath = QgsSymbolLayerV2Utils::symbolNameToPath( name );
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
+  mScaleMethod = scaleMethod;  
   mOutlineWidth = 1.0;
   mOutlineWidthUnit = QgsSymbolV2::MM;
   mFillColor = QColor( Qt::black );
@@ -994,15 +995,18 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   QString name = DEFAULT_SVGMARKER_NAME;
   double size = DEFAULT_SVGMARKER_SIZE;
   double angle = DEFAULT_SVGMARKER_ANGLE;
-
+  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
+  
   if ( props.contains( "name" ) )
     name = props["name"];
   if ( props.contains( "size" ) )
     size = props["size"].toDouble();
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
-
-  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
+  if ( props.contains( "scale_method" ) )
+    scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
+    
+  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle, scaleMethod );
 
   //we only check the svg default parameters if necessary, since it could be expensive
   if ( !props.contains( "fill" ) && !props.contains( "outline" ) && !props.contains( "outline-width" ) )
@@ -1143,6 +1147,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
   double scaledSize = mSize;
   QgsExpression* sizeExpression = expression( "size" );
+    
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
 
   if ( sizeExpression )
@@ -1297,6 +1302,7 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );  
   map["fill"] = mFillColor.name();
   map["outline"] = mOutlineColor.name();
   map["outline-width"] = QString::number( mOutlineWidth );

@@ -95,7 +95,8 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
   public:
     QgsSvgMarkerSymbolLayerV2( QString name = DEFAULT_SVGMARKER_NAME,
                                double size = DEFAULT_SVGMARKER_SIZE,
-                               double angle = DEFAULT_SVGMARKER_ANGLE );
+                               double angle = DEFAULT_SVGMARKER_ANGLE,
+                               QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 
