@@ -828,6 +828,8 @@ void QgsIdentifyResultsDialog::show()
   // column width is now stored in settings
   //expandColumnsToFit();
 
+  bool showFeatureForm = false;
+
   if ( lstResults->topLevelItemCount() > 0 )
   {
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
@@ -843,8 +845,8 @@ void QgsIdentifyResultsDialog::show()
         if ( layer )
         {
           // if this is the only feature and it's on a vector layer
-          // don't show the form dialog instead of the results window
-          featureForm();
+          // show the form dialog instead of the results window
+          showFeatureForm = true;
         }
       }
     }
@@ -862,8 +864,19 @@ void QgsIdentifyResultsDialog::show()
 
   QDialog::show();
 
-  mDock->show();
-  mDock->raise();
+  // when the feature form is opened don't show and raise the identify result.
+  // If it's not docked, the results would open after or possibly on top of the
+  // feature form and stay open (on top the canvas) after the feature form is
+  // closed.
+  if ( showFeatureForm )
+  {
+    featureForm();
+  }
+  else
+  {
+    mDock->show();
+    mDock->raise();
+  }
 }
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
