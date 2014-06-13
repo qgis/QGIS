@@ -19,6 +19,13 @@ class QgsLayerTreeView : QTreeView
 #include <qgslayertreeview.h>
 %End
 
+%ConvertToSubClassCode
+  if (sipCpp->inherits("QgsLayerTreeView"))
+    sipType = sipType_QgsLayerTreeView;
+  else
+    sipType = 0;
+%End
+
   public:
     explicit QgsLayerTreeView( QWidget *parent /TransferThis/ = 0 );
     ~QgsLayerTreeView();

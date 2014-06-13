@@ -18,6 +18,13 @@ class QgsLayerTreeModel : QAbstractItemModel
 #include <qgslayertreemodel.h>
 %End
 
+%ConvertToSubClassCode
+  if (sipCpp->inherits("QgsLayerTreeModel"))
+    sipType = sipType_QgsLayerTreeModel;
+  else
+    sipType = 0;
+%End
+
   public:
     //! Construct a new tree model with given layer tree (root node must not be null pointer).
     //! The root node is not transferred by the model.
