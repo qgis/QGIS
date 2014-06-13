@@ -1944,11 +1944,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     do_clip = !extentGeom->contains( geom );
     if ( do_clip )
     {
-      geom = geom->intersection( extentGeom ); // creates new geometry
-      if ( !geom )
+      QgsGeometry* clipGeom = geom->intersection( extentGeom ); // creates new geometry
+      if ( !clipGeom )
       {
         return;
       }
+      geom = clipGeom;
+      clonedGeometry.reset( geom );
     }
   }
 
