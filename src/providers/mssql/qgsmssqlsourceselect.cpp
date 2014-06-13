@@ -497,7 +497,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   mConnInfo =  "dbname='" + database + "'";
   if ( !host.isEmpty() )
-    mConnInfo += " host=" + host + "'";
+    mConnInfo += " host='" + host + "'";
   if ( !username.isEmpty() )
     mConnInfo += " user='" + username + "'";
   if ( !password.isEmpty() )
@@ -516,27 +516,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
     return;
   }
 
-  QString connectionName;
-  if ( service.isEmpty() )
-  {
-    if ( host.isEmpty() )
-    {
-      QMessageBox::warning( this,
-                            tr( "MSSQL Provider" ), "QgsMssqlProvider host name not specified" );
-      return;
-    }
-
-    if ( database.isEmpty() )
-    {
-      QMessageBox::warning( this,
-                            tr( "MSSQL Provider" ), "QgsMssqlProvider database name not specified" );
-      return;
-    }
-    connectionName = host + "." + database;
-  }
-  else
-    connectionName = service;
-
+  QString connectionName = db.connectionName();
 
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -784,6 +764,13 @@ void QgsMssqlGeomColumnTypeThread::run()
 
       // issue the sql query
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );
+      if ( !QgsMssqlProvider::OpenDatabase( db ) )
+      {
+        QString msg = db.lastError().text();
+        QgsDebugMsg( msg );
+        continue;
+      }
+
       QSqlQuery q = QSqlQuery( db );
       q.setForwardOnly( true );
       if ( !q.exec( query ) )

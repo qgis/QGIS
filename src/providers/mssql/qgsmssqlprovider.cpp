@@ -87,6 +87,7 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
   if ( !OpenDatabase( mDatabase ) )
   {
     setLastError( mDatabase.lastError( ).text( ) );
+    QgsDebugMsg( mLastError );
     mValid = false;
     return;
   }
@@ -225,7 +226,10 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QStri
     connectionName = service;
 
   if ( !QSqlDatabase::contains( connectionName ) )
+  {
     db = QSqlDatabase::addDatabase( "QODBC", connectionName );
+    db.setConnectOptions("SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV");
+  }
   else
     db = QSqlDatabase::database( connectionName );
 
@@ -263,6 +267,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QStri
     db.setPassword( password );
 
   db.setDatabaseName( connectionString );
+  QgsDebugMsg( connectionString );
   return db;
 }
 
