@@ -300,8 +300,10 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
 
-  tabWidget->removeTab( 1 );
-  tabWidget->removeTab( 1 );
+  // view modes
+  cmbViewMode->addItem( tr( "Tree" ), 0 );
+  cmbViewMode->addItem( tr( "Table" ), 0 );
+  cmbViewMode->addItem( tr( "Graph" ), 0 );
 
   // graph
   mPlot->setVisible( false );
@@ -655,12 +657,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
 
-  if ( tabWidget->indexOf( tableTab ) < 0 )
-  {
-    tabWidget->addTab( tableTab, tr( "Table" ) );
-    tabWidget->addTab( plotTab, tr( "Graph" ) );
-  }
-
   if ( layItem == 0 )
   {
     layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
@@ -907,7 +903,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   QgsDebugMsg( "Entered" );
 
   // only handle context menu event if showing tree widget
-  if ( tabWidget->currentWidget() != treeTab )
+  if ( stackedWidget->currentIndex() != 0 )
     return;
 
   QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
@@ -1076,10 +1072,22 @@ void QgsIdentifyResultsDialog::clear()
   mPrintToolButton->setDisabled( true );
 }
 
-void QgsIdentifyResultsDialog::clearTabs()
+void QgsIdentifyResultsDialog::updateViewModes()
 {
-  tabWidget->removeTab( 1 );
-  tabWidget->removeTab( 1 );
+  // get # of identified vector and raster layers - there must be a better way involving caching
+  int vectorCount = 0, rasterCount = 0;
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem *item = lstResults->topLevelItem( i );
+    if ( vectorLayer( item ) ) vectorCount++;
+    else if ( rasterLayer( item ) ) rasterCount++;
+  }
+
+  lblViewMode->setEnabled( rasterCount > 0 );
+  cmbViewMode->setEnabled( rasterCount > 0 );
+  if ( rasterCount == 0 )
+    cmbViewMode->setCurrentIndex( 0 );
+
 }
 
 void QgsIdentifyResultsDialog::clearHighlights()
@@ -1740,6 +1748,11 @@ void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index
 {
   QSettings settings;
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( index ).toInt() );
+}
+
+void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
+{
+  stackedWidget->setCurrentIndex( index );
 }
 
 void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )

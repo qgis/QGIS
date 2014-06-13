@@ -95,8 +95,6 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
-  bool identifiedRaster = false;
-
   if ( !results.isEmpty() )
   {
     // Show the dialog before items are inserted so that items can resize themselves
@@ -108,8 +106,6 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
     for ( result = results.begin(); result != results.end(); ++result )
     {
       resultsDialog()->addFeature( *result );
-      if ( result->mLayer->type() == QgsMapLayer::RasterLayer )
-        identifiedRaster = true;
     }
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
@@ -120,9 +116,9 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
     resultsDialog()->clear();
     QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
-  // remove table and graph tabs if there are no rasters
-  if ( ! identifiedRaster )
-    resultsDialog()->clearTabs();
+
+  // update possible view modes
+  resultsDialog()->updateViewModes();
 }
 
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )

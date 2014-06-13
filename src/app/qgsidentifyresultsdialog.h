@@ -155,7 +155,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
   public slots:
     /** Remove results */
     void clear();
-    void clearTabs();
+
+    void updateViewModes();
 
     void show();
 
@@ -195,6 +196,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_cmbIdentifyMode_currentIndexChanged( int index );
+
+    void on_cmbViewMode_currentIndexChanged( int index );
 
     void on_mExpandNewToolButton_toggled( bool checked );
 
