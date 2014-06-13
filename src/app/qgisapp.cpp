@@ -159,7 +159,6 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
-// #include "qgspastetransformations.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
