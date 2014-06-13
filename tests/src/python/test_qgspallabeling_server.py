@@ -177,9 +177,10 @@ class TestServerBase(TestQgsPalLabeling):
             qDebug('MapSettings type: {0}'.format(settings_type))
             qDebug(mapSettingsString(ms))
 
-        res_m, self._TestImage = MAPSERV.get_map(
-            self.get_request_params(), False)
+        res_m, self._TestImage, url = MAPSERV.get_map(self.get_request_params(), False)
         # print self._TestImage.__repr__()
+        if 'PAL_VERBOSE' in os.environ:
+            qDebug('GetMap request:\n  {0}\n'.format(url))
         self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
         mismatch = 0
