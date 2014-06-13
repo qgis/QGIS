@@ -28069,63 +28069,63 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="35"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Format&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Examples result&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;dd.MM.yyyy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;21.05.2001&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ddd MMMM d yy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;Tue May 21 01&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;hh:mm:ss.zzz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;14:13:09.042&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;h:m:s ap&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;2:13:9 pm&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Expression&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Date output&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;d&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the day as number without a leading zero (1 to 31)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;dd&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the day as number with a leading zero (01 to 31)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;ddd&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses the system locale to localize the name, i.e.&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;dddd&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qt.html#DayOfWeek-enum&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;Qt::Sunday&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;&apos;). Uses the system locale to localize the name, i.e.&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;M&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the month as number without a leading zero (1-12)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;MM&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the month as number with a leading zero (01-12)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;MMM&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses the system locale to localize the name, i.e.&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;MMMM&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses the system locale to localize the name, i.e.&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;yy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the year as two digit number (00-99)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;yyyy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the year as four digit number&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Expression&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Time output&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;h&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;hh&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;H&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;HH&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;m&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the minute without a leading zero (0 to 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;mm&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the minute with a leading zero (00 to 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;s&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the second without a leading zero (0 to 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ss&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the second with a leading zero (00 to 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;z&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the milliseconds without leading zeroes (0 to 999)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;zzz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;the milliseconds with leading zeroes (000 to 999)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;AP or A&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;use AM/PM display.&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; font-style:italic; color:#66666e;&quot;&gt;A/AP&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt; will be replaced by either &amp;quot;AM&amp;quot; or &amp;quot;PM&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ap or a&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;use am/pm display.&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; font-style:italic; color:#66666e;&quot;&gt;a/ap&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt; will be replaced by either &amp;quot;am&amp;quot; or &amp;quot;pm&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;t&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;the timezone (for example &amp;quot;CEST&amp;quot;)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;포멧&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;예시 결과&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;dd.MM.yyyy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;21.05.2001&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ddd MMMM d yy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;Tue May 21 01&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;hh:mm:ss.zzz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;14:13:09.042&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;h:m:s ap&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;2:13:9 pm&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;계산식&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;일자 출력&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;d&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 붙지 않는 날짜 (1에서 31)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;dd&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 붙는 날짜 (01에서 31)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;ddd&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;지역별로 단축화된 요일이름 (예: &apos;Mon&apos; to &apos;Sun&apos;). 지역화된 이름으로 시스템 언어설정을 사용, 참고: &lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;dddd&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;지역화된 긴 날짜이름 (예: &apos;Monday&apos; to &apos;&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qt.html#DayOfWeek-enum&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;Qt::Sunday&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;&apos;)지역화된 이름으로 시스템 언어설정을 사용, 참고: &lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;M&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 붙지 않는 숫자 월이름 (1-12)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;MM&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 붙는 숫자 월이름 (01-12)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;MMM&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;지역별로 단축화된 월이름 (예: &apos;Jan&apos;에서 &apos;Dec&apos;). 지역화된 이름으로 시스템 언어설정을 사용, 참고:&lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;MMMM&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;지역화된 긴 월이름 (e.g. &apos;January&apos; to &apos;December&apos;). 지역화된 이름으로 시스템 언어설정을 사용, 참고: &lt;/span&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5/qlocale.html#system&quot;&gt;&lt;span style=&quot; font-family:&apos;Arial,FreeSans,sans-serif&apos;; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;&quot;&gt;QLocale::system&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;().&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;yy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;두 자리로 나타낸 연도 (00-99)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;yyyy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;내 자리로 나타낸 연도&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;계산식&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;시간 출력&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;h&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 나오지 않는 시간 (0에서 23혹은 1에서 12 - AM/PM 표시 시)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;hh&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 나오는 시간 (00에서 23 혹은 01에서 12 - AM/PM 표시 시)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;H&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 나오지 않는 시간 (AM/PM 표시되어도 0에서 23)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;HH&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 붙는 시간 ( AM/PM 표시되어도 00에서 23)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;m&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 붙지 않는 분 (0에서 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;mm&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 붙는 분 (00에서 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;s&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 붙지 않는 초 (0에서 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ss&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 붙는 초 (00에서 59)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;z&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;앞에 0이 붙지 않는 밀리초 (0에서 999)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;zzz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;앞에 0이 붙는 밀리초 (000에서 999)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;AP 혹은 A&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;AM/PM 표시 사용.&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; font-style:italic; color:#66666e;&quot;&gt;A/AP&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;은 &amp;quot;AM&amp;quot; 혹은 &amp;quot;PM&amp;quot;으로 표시됨.&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ap or a&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;am/pm 표시 사용.&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; font-style:italic; color:#66666e;&quot;&gt;a/ap&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e;&quot;&gt;은 &amp;quot;am&amp;quot; 혹은 &amp;quot;pm&amp;quot;로 표시됨.&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;t&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;시간대 (예를 들어 &amp;quot;CEST&amp;quot;)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="72"/>
         <source>Field format</source>
-        <translation type="unfinished"></translation>
+        <translation>필드 포맷</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="85"/>
         <source>date</source>
-        <translation type="unfinished"></translation>
+        <translation>일자</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="90"/>
         <source>time</source>
-        <translation type="unfinished"></translation>
+        <translation>시간</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="95"/>
         <source>date &amp; time</source>
-        <translation type="unfinished"></translation>
+        <translation>일자 &amp; 시간</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="100"/>
         <source>custom format</source>
-        <translation type="unfinished"></translation>
+        <translation>사용자 포멧</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="128"/>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="207"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="148"/>
         <source>Widget display</source>
-        <translation type="unfinished"></translation>
+        <translation>위젯 표시</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="177"/>
         <source>calendar popup</source>
-        <translation type="unfinished"></translation>
+        <translation>달력 팝업</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="194"/>
         <source>default</source>
-        <translation type="unfinished">기본값</translation>
+        <translation>기본값</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="199"/>
         <source>custom</source>
-        <translation type="unfinished"></translation>
+        <translation>사용자 정의</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui" line="229"/>
         <source>preview</source>
-        <translation type="unfinished"></translation>
+        <translation>미리보기</translation>
     </message>
 </context>
 <context>
@@ -28143,7 +28143,7 @@ and current file is [%3]</source>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="242"/>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="244"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>알 수 없음</translation>
     </message>
 </context>
 <context>
@@ -28176,17 +28176,17 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="70"/>
         <source>Destination CRS</source>
-        <translation type="unfinished">대상 좌표계</translation>
+        <translation>대상 좌표계</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="91"/>
         <source>Source CRS</source>
-        <translation type="unfinished">원본 좌표계</translation>
+        <translation>원본 좌표계</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="108"/>
         <source>Layer</source>
-        <translation type="unfinished">레이어</translation>
+        <translation>레이어</translation>
     </message>
 </context>
 <context>
@@ -30616,12 +30616,12 @@ Parser error:
     <message>
         <location filename="../src/ui/editorwidgets/qgsdummyconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdummyconfigdlgbase.ui" line="20"/>
         <source>Dummy Text</source>
-        <translation type="unfinished"></translation>
+        <translation>더미 텍스트</translation>
     </message>
 </context>
 <context>
@@ -31410,7 +31410,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="91"/>
         <source>Only update %1 selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>선택된 %1개의 객체만 업데이트 됨</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="126"/>
@@ -31626,7 +31626,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsfieldexpressionwidget.cpp" line="27"/>
         <source>Expression dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>표현식 대화상자</translation>
     </message>
 </context>
 <context>
@@ -31993,12 +31993,12 @@ MyForms.py 은 PYTHONPATH 에 등록되어 있어야 한다, .qgis/python, 또�
     <message>
         <location filename="../src/gui/editorwidgets/qgsfilenamewidget.cpp" line="48"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsfilenamewidget.cpp" line="98"/>
         <source>Select a file</source>
-        <translation type="unfinished">파일 선택</translation>
+        <translation>파일 선택</translation>
     </message>
 </context>
 <context>
@@ -32007,13 +32007,13 @@ MyForms.py 은 PYTHONPATH 에 등록되어 있어야 한다, .qgis/python, 또�
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2630"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2631"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2630"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2631"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
 </context>
 <context>
@@ -33415,7 +33415,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="943"/>
         <source>Band</source>
-        <translation type="unfinished">밴드</translation>
+        <translation>밴드</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="961"/>
@@ -34627,12 +34627,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="742"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="742"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1047"/>
@@ -37893,7 +37893,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
         <source>Handle bad layers</source>
-        <translation type="unfinished">잘못된 레이어 처리</translation>
+        <translation>잘못된 레이어 처리</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
@@ -38185,37 +38185,37 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="27"/>
         <source>Tree</source>
-        <translation type="unfinished">트리</translation>
+        <translation>트리</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="58"/>
         <source>Table</source>
-        <translation type="unfinished">테이블</translation>
+        <translation>테이블</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="77"/>
         <source>Layer</source>
-        <translation type="unfinished">레이어</translation>
+        <translation>레이어</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="82"/>
         <source>FID</source>
-        <translation type="unfinished"></translation>
+        <translation>FID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="87"/>
         <source>Attribute</source>
-        <translation type="unfinished">속성</translation>
+        <translation>속성</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="92"/>
         <source>Value</source>
-        <translation type="unfinished">값</translation>
+        <translation>값</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="101"/>
         <source>Graph</source>
-        <translation type="unfinished"></translation>
+        <translation>그래프</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="116"/>
@@ -38246,7 +38246,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="172"/>
         <source>Clear Results</source>
-        <translation type="unfinished"></translation>
+        <translation>결과 지우기</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="189"/>
@@ -38261,17 +38261,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="242"/>
         <source>Help</source>
-        <translation type="unfinished">도움말</translation>
+        <translation>도움말</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="256"/>
         <source>Mode</source>
-        <translation type="unfinished">모드</translation>
+        <translation>모드</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="279"/>
         <source>Auto open form</source>
-        <translation type="unfinished"></translation>
+        <translation>자동 열림 양식</translation>
     </message>
 </context>
 <context>
@@ -38294,22 +38294,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="296"/>
         <source>Current layer</source>
-        <translation type="unfinished">현재 레이어</translation>
+        <translation>현재 레이어</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="297"/>
         <source>Top down, stop at first</source>
-        <translation type="unfinished">모든 레이어, 첫줄에서 중지</translation>
+        <translation>모든 레이어, 첫줄에서 중지</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="298"/>
         <source>Top down</source>
-        <translation type="unfinished">모든 레이어</translation>
+        <translation>모든 레이어</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="299"/>
         <source>Layer selection</source>
-        <translation type="unfinished">레이어 선택</translation>
+        <translation>레이어 선택</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="435"/>
@@ -38341,12 +38341,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="660"/>
         <source>Table</source>
-        <translation type="unfinished">테이블</translation>
+        <translation>테이블</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="661"/>
         <source>Graph</source>
-        <translation type="unfinished"></translation>
+        <translation>그래프</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="695"/>
@@ -38366,7 +38366,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="936"/>
         <source>Toggle feature selection</source>
-        <translation type="unfinished"></translation>
+        <translation>객체 선택 반전</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="939"/>
@@ -38668,7 +38668,8 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/gui/symbology-ng/qgsinvertedpolygonrendererwidget.cpp" line="46"/>
         <source>The inverted polygon renderer only applies to polygon and multipolygon layers. 
 &apos;%1&apos; is not a polygon layer and then cannot be displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>반전된 다각형 렌더링은 폴리곤과 멀티폴리곤 레이어에만 적용됩니다.
+&apos;%1&apos;은 폴리곤 레이어가 아니기에 표시할 수 없음</translation>
     </message>
 </context>
 <context>
@@ -38676,17 +38677,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="22"/>
         <source>Sub renderer:</source>
-        <translation type="unfinished"></translation>
+        <translation>보조 렌더러:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="37"/>
         <source>Merge polygons before rendering (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>렌더링 전에 폴리곤을 병합 (느림)</translation>
     </message>
 </context>
 <context>
@@ -39233,7 +39234,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgslabelinggui.cpp" line="64"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="65"/>
         <source>map units</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -39242,7 +39243,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="55"/>
         <source>points</source>
-        <translation type="unfinished">포인트</translation>
+        <translation>포인트</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="56"/>
@@ -39256,12 +39257,12 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgslabelinggui.cpp" line="64"/>
         <location filename="../src/app/qgslabelinggui.cpp" line="65"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="59"/>
         <source>% of length</source>
-        <translation type="unfinished">길이의 %</translation>
+        <translation>길이의 %</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="393"/>
@@ -40058,12 +40059,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3775"/>
         <source>Force point inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>점을 강제로 폴리곤 안으로</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4301"/>
         <source>Repeat</source>
-        <translation type="unfinished">반복</translation>
+        <translation>반복</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5348"/>
@@ -40634,13 +40635,13 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="629"/>
         <source>Double-click to view legend</source>
-        <translation type="unfinished"></translation>
+        <translation>범례를 보려면 더블클릭</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="651"/>
         <source>following %1 items
 not displayed</source>
-        <translation type="unfinished">다음의  %1 항목은 
+        <translation>다음의 %1 항목은 
 표시되지 않습니다</translation>
     </message>
 </context>
@@ -40649,47 +40650,47 @@ not displayed</source>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="36"/>
         <source>&amp;Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>그룹 추가(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="43"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">삭제(&amp;R)</translation>
+        <translation>삭제(&amp;R)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="54"/>
         <source>&amp;Show in overview</source>
-        <translation type="unfinished">오버뷰에 표시(&amp;S)</translation>
+        <translation>오버뷰에 표시(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="63"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished">이름 변경(&amp;n)</translation>
+        <translation>이름 변경(&amp;n)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="74"/>
         <source>Show Feature Count</source>
-        <translation type="unfinished">객체 수 표시</translation>
+        <translation>객체 수 표시</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="84"/>
         <source>&amp;Zoom to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>레이어 영역으로 확대(&amp;Z)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="93"/>
         <source>&amp;Zoom to Group</source>
-        <translation type="unfinished"></translation>
+        <translation>그룹 범위로 확대(&amp;Z)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="101"/>
         <source>&amp;Move to Top-level</source>
-        <translation type="unfinished"></translation>
+        <translation>맨 앞으로 가져오기(&amp;M)</translation>
     </message>
     <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="108"/>
         <source>&amp;Group Selected</source>
-        <translation type="unfinished">선택된 그룹*&amp;G)</translation>
+        <translation>선택을 그룹으로(&amp;G)</translation>
     </message>
 </context>
 <context>
@@ -40943,13 +40944,13 @@ not displayed</source>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2323"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2324"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2323"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2324"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2422"/>
@@ -41228,12 +41229,12 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="629"/>
         <source>canvas</source>
-        <translation type="unfinished">캔버스</translation>
+        <translation>캔버스</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="688"/>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="unfinished">캔버스 새로고침: %1 ms</translation>
+        <translation>캔버스 새로고침: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
@@ -41806,7 +41807,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="64"/>
         <source>Delete ring can only be used in a polygon layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>링 제거는 폴리곤 레이어에서만 사용할 수 있습니다.</translation>
     </message>
     <message>
         <source>could not snap to a ring on the current layer.</source>
@@ -42019,7 +42020,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="154"/>
         <source>All (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>모두 (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="191"/>
@@ -42428,22 +42429,22 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="14"/>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>스케일링 범위 조정</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="24"/>
         <source>Maximum scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>최대 스케일:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="31"/>
         <source>Minimum scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>최소 스케일:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="54"/>
         <source>Scale only within the following map unit scale range:</source>
-        <translation type="unfinished"></translation>
+        <translation>스캐일은 다음 지도 단위 스캐일 범위에 있어야 함:</translation>
     </message>
 </context>
 <context>
@@ -42642,14 +42643,14 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1359"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1360"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1358"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1359"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1360"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1512"/>
@@ -42674,7 +42675,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1518"/>
         <source>Offset along line</source>
-        <translation type="unfinished"></translation>
+        <translation>선을 따라 옵셋</translation>
     </message>
 </context>
 <context>
@@ -43033,7 +43034,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="309"/>
         <source>Show non-spatial tables</source>
-        <translation type="unfinished"></translation>
+        <translation>비 공간 테이블 보기</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="315"/>
@@ -46075,7 +46076,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="102"/>
         <source>Identify highlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>강조 색상 지정</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="180"/>
@@ -47374,42 +47375,42 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1652"/>
         <source>Render layers in parallel using many CPU cores</source>
-        <translation type="unfinished"></translation>
+        <translation>여러 CPU 코어를 사용해 병렬 레이어 렌더링</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1666"/>
         <source>Max cores to use:</source>
-        <translation type="unfinished"></translation>
+        <translation>최대 코어 사용:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2663"/>
         <source>Highlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>강조 색상</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2688"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The color used to highlight identified feature. The alpha channel is only used for polygons fill, lines and outlines are fully opaque.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;색상은 식별된 객체를 강조하기 위해 사용됩니다. 알파 채널은 폴리곤 채움에만 사용되며, 라인과 외곽선은 완전히 불투명 합니다.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2701"/>
         <source>Buffer</source>
-        <translation type="unfinished">버퍼</translation>
+        <translation>버퍼</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2708"/>
         <source>Lines / outlines buffer in millimeters.</source>
-        <translation type="unfinished"></translation>
+        <translation>밀리미터 단위의 라인 / 외곽선 버퍼.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2721"/>
         <source>Minimum width</source>
-        <translation type="unfinished"></translation>
+        <translation>최소 두께</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2728"/>
         <source>Minimum line / outline width in millimeters.</source>
-        <translation type="unfinished"></translation>
+        <translation>밀리미터 단위으 라인 / 외곽선 두께</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3186"/>
@@ -49939,27 +49940,27 @@ PostGIS 지오메트리를 가진 테이블에 당신이 SELECT 권한이 있는
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="33"/>
         <source>Picture size</source>
-        <translation type="unfinished"></translation>
+        <translation>픽처 크기</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="39"/>
         <source>Width</source>
-        <translation type="unfinished">폭</translation>
+        <translation>폭</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="53"/>
         <source>Height</source>
-        <translation type="unfinished">높이</translation>
+        <translation>높이</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="73"/>
         <source>Specify the size of the preview. If you leave it set to 0, an optimal size will be estimated.</source>
-        <translation type="unfinished"></translation>
+        <translation>미리보기의 크리 지정. 만약 0으로 놔두면, 최적 크기를 추측합니다.</translation>
     </message>
 </context>
 <context>
@@ -49967,12 +49968,12 @@ PostGIS 지오메트리를 가진 테이블에 당신이 SELECT 권한이 있는
     <message>
         <location filename="../src/gui/editorwidgets/qgsphotowidget.cpp" line="33"/>
         <source>Select a picture</source>
-        <translation type="unfinished"></translation>
+        <translation>피처 선택</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsphotowidget.cpp" line="79"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -51048,7 +51049,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="766"/>
         <source>%1 rating vote(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1의 투표율</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="774"/>
@@ -51158,12 +51159,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1168"/>
         <source>Vote sent successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>성공적으로 투표 전송됨</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1172"/>
         <source>Sending vote to the plugin repository failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>플러그인 저장소에 투표 전송이 실패했습니다.</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -51367,7 +51368,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="376"/>
         <source>about:blank</source>
-        <translation type="unfinished">정보:공백</translation>
+        <translation>about:blank</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="392"/>
@@ -51675,7 +51676,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2458"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2459"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2456"/>
@@ -51683,7 +51684,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2458"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2459"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2595"/>
@@ -53249,7 +53250,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1765"/>
         <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
-        <translation type="unfinished"></translation>
+        <translation>JPEG 이미지의 화질 ( 10 : 작은 이미지 - 100 : 최고 화질 )</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1799"/>
@@ -53453,7 +53454,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="52"/>
         <source>Set provider filter on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 상의 프로바이더 필터 지정</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="205"/>
@@ -53743,29 +53744,29 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="35"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="51"/>
         <source>Editable</source>
-        <translation type="unfinished">편집 가능</translation>
+        <translation>편집 가능</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="36"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="52"/>
         <source>Slider</source>
-        <translation type="unfinished">슬라이더</translation>
+        <translation>슬라이더</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="37"/>
         <source>Dial</source>
-        <translation type="unfinished">다이얼</translation>
+        <translation>다이얼</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="42"/>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="57"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished">이 값의 현재 최소는 %1, 현재 최대는 %2입니다.</translation>
+        <translation>이 값의 현재 최소는 %1, 현재 최대는 %2입니다.</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="63"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished">선택한 속성이 정수 혹은 실수 형태가 아니므로, 범위를 사용할 수 없습니다.</translation>
+        <translation>선택한 속성이 정수 혹은 실수 형태가 아니므로, 범위를 사용할 수 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -53773,32 +53774,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="20"/>
         <source>Allows setting of numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished">지정된 범위에서 수치를 설정할 수 있습니다. 이 편집 위젯은 슬라이더나 스핀 상자에 있을 수 있습니다.</translation>
+        <translation>지정된 범위에서 수치를 설정할 수 있습니다. 이 편집 위젯은 슬라이더나 스핀 상자에 있을 수 있습니다.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="117"/>
         <source>Step</source>
-        <translation type="unfinished">단계</translation>
+        <translation>단계</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="124"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>최대값</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="131"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>최소값</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrangeconfigdlgbase.ui" line="140"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished">로컬 최소값/최대값 = 0/0</translation>
+        <translation>로컬 최소값/최대값 = 0/0</translation>
     </message>
 </context>
 <context>
@@ -54275,17 +54276,17 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="170"/>
         <source>Display</source>
-        <translation type="unfinished">디스플레이</translation>
+        <translation>디스플레이</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="178"/>
         <source>Draw as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>선으로 그리기</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="184"/>
         <source>Draw as lines (only int layers)</source>
-        <translation type="unfinished"></translation>
+        <translation>선으로 그리기 (내부 레이어만)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="190"/>
@@ -55731,22 +55732,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1893"/>
         <source>LegendUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>LegendUrl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1928"/>
         <source>image/png</source>
-        <translation type="unfinished"></translation>
+        <translation>image/png</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1933"/>
         <source>image/jpeg</source>
-        <translation type="unfinished"></translation>
+        <translation>image/jpeg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1938"/>
         <source>image/jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>image/jpg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1957"/>
@@ -56451,12 +56452,12 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>No option selected</source>
-        <translation type="unfinished"></translation>
+        <translation>옵션 선택 안됨</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="116"/>
         <source>Please select an option to load min/max values.</source>
-        <translation type="unfinished"></translation>
+        <translation>최소/최대값을 일기 위해 옵션을 선택해 주십시오.</translation>
     </message>
 </context>
 <context>
@@ -57904,23 +57905,23 @@ standard deviation ×</source>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2036"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2037"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2036"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2037"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2096"/>
         <source>Select SVG texture file</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG 텍스처 파일 선택</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2096"/>
         <source>All files</source>
-        <translation type="unfinished">모든 파일</translation>
+        <translation>모든 파일</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="2290"/>
@@ -58198,29 +58199,31 @@ standard deviation ×</source>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="30"/>
         <source>Minimum
 (exclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>최소값
+(배타적)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="33"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation type="unfinished"></translation>
+        <translation>최소 스캐일, 참고: 최대 스케일과 같을 수 있음. 이 한계값은 배타적임, 이것은 이 스케일에서 레이어가 보이지 않음을 의미.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="35"/>
         <source>Maximum
 (inclusive)</source>
-        <translation type="unfinished"></translation>
+        <translation>최대값
+(허용적)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="38"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation type="unfinished"></translation>
+        <translation>최대 스캐일, 참고: 최소 스케일과 같을 수 있음. 이 한계값은 허용적임, 이것은 이 스케일에서 레이어가 보임을 의미.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="101"/>
         <location filename="../src/gui/qgsscalerangewidget.cpp" line="103"/>
         <source>current</source>
-        <translation type="unfinished"></translation>
+        <translation>현재 설정</translation>
     </message>
 </context>
 <context>
@@ -58228,7 +58231,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/qgsscalevisibilitydialog.cpp" line="37"/>
         <source>Scale visibility </source>
-        <translation type="unfinished"></translation>
+        <translation>가시 스케일</translation>
     </message>
 </context>
 <context>
@@ -58465,13 +58468,13 @@ The error was:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1095"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1096"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1095"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1096"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1316"/>
@@ -58515,13 +58518,13 @@ The error was:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="579"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="580"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="579"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="580"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="710"/>
@@ -58554,14 +58557,14 @@ The error was:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="76"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="77"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="75"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="76"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="77"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="261"/>
@@ -58601,14 +58604,14 @@ The error was:
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="318"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="319"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="317"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="318"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="319"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="515"/>
@@ -61848,17 +61851,17 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="14"/>
         <source>SVG export options</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG 내보내기 옵션</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="22"/>
         <source>Export map layers as svg groups (may affect label placement)</source>
-        <translation type="unfinished"></translation>
+        <translation>지도 레이어를 SVG 그룹으로 내보내기 (라벨 위치에 영향을 줄 것임)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssvgexportoptions.ui" line="35"/>
         <source>Render text as outline</source>
-        <translation type="unfinished"></translation>
+        <translation>문장을 외곽선으로 그리기</translation>
     </message>
 </context>
 <context>
@@ -61882,14 +61885,14 @@ There was a problem with your symbol database.</source>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1549"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1550"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1548"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1549"/>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1550"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1975"/>
@@ -62019,27 +62022,27 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="492"/>
         <source>Symbol name</source>
-        <translation type="unfinished">심볼 이름</translation>
+        <translation>심볼 이름</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
         <source>Please enter name for the symbol:</source>
-        <translation type="unfinished">심볼 이름 입력:</translation>
+        <translation>심볼을 위한 이름을 입력해 주십시오:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="493"/>
         <source>New symbol</source>
-        <translation type="unfinished">새 심볼</translation>
+        <translation>새 심볼</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="500"/>
         <source>Save symbol</source>
-        <translation type="unfinished">심볼 저장</translation>
+        <translation>심볼 저장</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="501"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished">%1라는 심볼이 이미 존재합니다. 덮어 쓰시겠습니까?</translation>
+        <translation>%1라는 심볼이 이미 존재합니다. 덮어 쓰시겠습니까?</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -62097,12 +62100,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="155"/>
         <source>Save symbol</source>
-        <translation type="unfinished">심볼 저장</translation>
+        <translation>심볼 저장</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="158"/>
         <source>Save</source>
-        <translation type="unfinished">저장</translation>
+        <translation>저장</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -62194,12 +62197,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="45"/>
         <source>Millimeter</source>
-        <translation type="unfinished">밀리미터</translation>
+        <translation>밀리미터</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="45"/>
         <source>Map unit</source>
-        <translation type="unfinished">지도 단위</translation>
+        <translation>지도 단위</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="207"/>
@@ -62323,17 +62326,17 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui" line="20"/>
         <source>Multiline</source>
-        <translation type="unfinished">다중 선</translation>
+        <translation>다중 선</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui" line="29"/>
         <source>HTML</source>
-        <translation type="unfinished">HTML</translation>
+        <translation>HTML</translation>
     </message>
 </context>
 <context>
@@ -62970,17 +62973,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="23"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation type="unfinished">사용자는 속성에 있는 값 중 하나를 선택할 수 있습니다. 편집 가능한 경우 행 편집은 자동완성기능을 지원하는 콤보 상자를 보여주고, 아니면 콤보박스가 사용됩니다.</translation>
+        <translation>사용자는 속성에 있는 값 중 하나를 선택할 수 있습니다. 편집 가능한 경우 자동완성기능을 라인 에디터가 보이고, 아니면 콤보박스가 사용됩니다.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsuniquevaluesconfigdlgbase.ui" line="33"/>
         <source>Editable</source>
-        <translation type="unfinished">편집 가능</translation>
+        <translation>편집 가능</translation>
     </message>
 </context>
 <context>
@@ -62988,12 +62991,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsunitselectionwidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsunitselectionwidget.cpp" line="78"/>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>스케일링 범위 조정</translation>
     </message>
 </context>
 <context>
@@ -63001,18 +63004,18 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluemapconfigdlg.cpp" line="164"/>
         <source>Select a file</source>
-        <translation type="unfinished">파일 선택</translation>
+        <translation>파일 선택</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluemapconfigdlg.cpp" line="173"/>
         <source>Error</source>
-        <translation type="unfinished">오류</translation>
+        <translation>오류</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluemapconfigdlg.cpp" line="174"/>
         <source>Could not open file %1
 Error was:%2</source>
-        <translation type="unfinished">%1 파일을 열 수 없음
+        <translation>%1 파일을 열 수 없음
 오류: %2</translation>
     </message>
 </context>
@@ -63021,37 +63024,37 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="20"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation type="unfinished">정의된 값을 선택할 수 있는 콤보 상자. 값은 속성에 저장되어 있으며, 설명은 콤보 박스에 표시됩니다.</translation>
+        <translation>미리 정의된 항목을 선택할 수 있는 콤보 상자. 값은 속성에 저장되어 있으며, 설명은 콤보 박스에 표시됩니다.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="30"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished">레이어에서 데이터 읽기</translation>
+        <translation>레이어에서 데이터 읽기</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="37"/>
         <source>Load Data from CSV file</source>
-        <translation type="unfinished">CSV 파일에서 데이터 읽기</translation>
+        <translation>CSV 파일에서 데이터 읽기</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="58"/>
         <source>Value</source>
-        <translation type="unfinished">값</translation>
+        <translation>값</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="63"/>
         <source>Description</source>
-        <translation type="unfinished">설명</translation>
+        <translation>설명</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluemapconfigdlgbase.ui" line="71"/>
         <source>Remove Selected</source>
-        <translation type="unfinished">선택 삭제</translation>
+        <translation>선택 삭제</translation>
     </message>
 </context>
 <context>
@@ -63059,7 +63062,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluerelationconfigdlg.cpp" line="65"/>
         <source>Edit filter expression</source>
-        <translation type="unfinished">필터 표현식 편집</translation>
+        <translation>필터 표현식 편집</translation>
     </message>
 </context>
 <context>
@@ -63067,52 +63070,52 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="23"/>
         <source>Select layer, key column and value column</source>
-        <translation type="unfinished">레이어와 키 컬럼,값 컬럼 선택</translation>
+        <translation>레이어와 키 컬럼,값 컬럼 선택</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="30"/>
         <source>Layer</source>
-        <translation type="unfinished">레이어</translation>
+        <translation>레이어</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="43"/>
         <source>Key column</source>
-        <translation type="unfinished">키 컬럼</translation>
+        <translation>키 컬럼</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="56"/>
         <source>Value column</source>
-        <translation type="unfinished">값 컬럼</translation>
+        <translation>값 컬럼</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="72"/>
         <source>Allow null value</source>
-        <translation type="unfinished">널 값 허용</translation>
+        <translation>널 값 허용</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="82"/>
         <source>Order by value</source>
-        <translation type="unfinished">값으로 정렬</translation>
+        <translation>값으로 정렬</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="92"/>
         <source>Allow multiple selections</source>
-        <translation type="unfinished">다중행 선택 허용</translation>
+        <translation>다중행 선택 허용</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="99"/>
         <source>Filter expression</source>
-        <translation type="unfinished">필터 표현식</translation>
+        <translation>필터 표현식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsvaluerelationconfigdlgbase.ui" line="112"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -63120,7 +63123,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluerelationwidget.cpp" line="106"/>
         <source>(no selection)</source>
-        <translation type="unfinished">(선택 없음)</translation>
+        <translation>(선택 없음)</translation>
     </message>
 </context>
 <context>
@@ -63739,22 +63742,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="332"/>
         <source>Provider: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>프로바이더: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="333"/>
         <source>Storage: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>저장소: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="335"/>
         <source>expected field</source>
-        <translation type="unfinished"></translation>
+        <translation>예상 필드</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="342"/>
         <source>retrieved field</source>
-        <translation type="unfinished"></translation>
+        <translation>검색된 필드</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="362"/>
@@ -64621,12 +64624,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="470"/>
         <source>A widget to define the scale visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>스케일 가시성을 정의하기 위한 위젯</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="473"/>
         <source>A widget to define the scale visibility.</source>
-        <translation type="unfinished"></translation>
+        <translation>스케일 가시성을 정의하기 위한 위젯.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1132"/>
@@ -64680,22 +64683,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1468"/>
         <source>LegendUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>LegendUrl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1503"/>
         <source>image/png</source>
-        <translation type="unfinished"></translation>
+        <translation>image/png</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1508"/>
         <source>image/jpeg</source>
-        <translation type="unfinished"></translation>
+        <translation>image/jpeg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1513"/>
         <source>image/jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>image/jpg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1532"/>
@@ -66579,12 +66582,12 @@ Response was:
     <message>
         <location filename="../src/gui/editorwidgets/qgswebviewwidget.cpp" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgswebviewwidget.cpp" line="132"/>
         <source>Select a file</source>
-        <translation type="unfinished">파일 선택</translation>
+        <translation>파일 선택</translation>
     </message>
 </context>
 <context>
@@ -66592,17 +66595,17 @@ Response was:
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="27"/>
         <source>Width</source>
-        <translation type="unfinished">폭</translation>
+        <translation>폭</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="41"/>
         <source>Height</source>
-        <translation type="unfinished">높이</translation>
+        <translation>높이</translation>
     </message>
 </context>
 <context>
@@ -67870,7 +67873,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/recorddialog.ui" line="14"/>
         <source>Record Metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>레코드 메타데이터</translation>
     </message>
 </context>
 <context>
@@ -69250,12 +69253,12 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="219"/>
         <source>Symbols in group</source>
-        <translation type="unfinished"></translation>
+        <translation>그룹안의 심볼</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="245"/>
         <source>Open Library</source>
-        <translation type="unfinished"></translation>
+        <translation>라이브러리 열기</translation>
     </message>
     <message>
         <source>Saved styles</source>
@@ -69481,7 +69484,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_centroidfill.ui" line="22"/>
         <source>Force point inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>점을 강제로 폴리곤 안으로</translation>
     </message>
     <message>
         <source>Marker</source>
@@ -69974,7 +69977,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="110"/>
         <source>Offset along line</source>
-        <translation type="unfinished"></translation>
+        <translation>선을 따라 옵셋</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="147"/>
@@ -70222,7 +70225,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="128"/>
         <source>Join style</source>
-        <translation type="unfinished">이음새 스타일</translation>
+        <translation>이음새 스타일</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="138"/>
@@ -70696,17 +70699,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/xmldialog.ui" line="14"/>
         <source>XML Request / Response</source>
-        <translation type="unfinished"></translation>
+        <translation>XML 요청 / 응답</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/xmldialog.ui" line="20"/>
         <source>Request</source>
-        <translation type="unfinished"></translation>
+        <translation>요청</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/xmldialog.ui" line="30"/>
         <source>Response</source>
-        <translation type="unfinished"></translation>
+        <translation>응답</translation>
     </message>
 </context>
 <context>
@@ -76343,7 +76346,22 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$atlasgeometry 함수&lt;/h3&gt;
+Returns the geometry of the current feature iterated in atlas.
+Can be used for rule based display of geometry when using atlas.
+For example to only show geometries of other layers when their geometry 
+intersects the iterated geometry of features using atlas.
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+None
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1707"/>
@@ -76362,7 +76380,21 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$atlasfeatureid 함수&lt;/h3&gt;
+Returns the feature id of the current row while using atlas.
+This enables you to use features of atlas in rules 
+and for example show or hide features based on their id.
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+None
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1812"/>
@@ -76379,7 +76411,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;bounds_width 함수&lt;/h3&gt;
+Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;bounds_width(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1880"/>
@@ -76429,7 +76473,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;bounds_height 함수&lt;/h3&gt;
+Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;bounds_height(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1942"/>
@@ -77302,7 +77358,22 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsl() 함수&lt;/h3&gt;
+Returns a string representation of a color based on its hue, saturation, and lightness attributes
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;예시&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="202"/>
@@ -77437,7 +77508,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;xmax 함수&lt;/h3&gt;
+Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;xmax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="668"/>
@@ -77454,7 +77537,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;bounds 함수&lt;/h3&gt;
+Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;bounds(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="875"/>
@@ -77471,7 +77566,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ymax 함수&lt;/h3&gt;
+Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;ymax(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="950"/>
@@ -77529,7 +77636,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_rgb() 함수&lt;/h3&gt;
+Returns a string representation of a color based on its red, green, and blue components
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;예시&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1066"/>
@@ -77551,7 +77674,24 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_cmyk() 함수&lt;/h3&gt;
+Returns a string representation of a color based on its cyan, magenta, yellow and black components
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;예시&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1157"/>
@@ -77605,7 +77745,27 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;ramp_color() 함수&lt;/h3&gt;
+Returns a string representing a color from a color ramp. 
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;예시&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;253,190,115,255&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;참고:&lt;/h4&gt;
+The color ramps available vary between QGIS installations.  This function
+may not give the expected results if you move your Quantum project.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1366"/>
@@ -77625,7 +77785,22 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsv() 함수&lt;/h3&gt;
+Returns a string representation of a color based on its hue, saturation, and value attributes
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;예시&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1491"/>
@@ -77704,7 +77879,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ymin 함수&lt;/h3&gt;
+Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;ymin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="31"/>
@@ -79190,7 +79377,19 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;xmin 함수&lt;/h3&gt;
+Returns the minimum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;pre&gt;xmin(geom)&lt;/pre&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+geom &amp;rarr; a geometry
+
+&lt;h4&gt;예시&lt;/h4&gt;
+&lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="2038"/>
@@ -83181,19 +83380,19 @@ Returns a string representation of a color based on its hue, saturation, value a
     <name>parent</name>
     <message>
         <source>Cannot parse XML file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>XML 파일을 해석할 수 없음: %s</translation>
     </message>
     <message>
         <source>Cannot open file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>파일 열지 못함: %s</translation>
     </message>
     <message>
         <source>Invalid CSW connections XML.</source>
-        <translation type="unfinished"></translation>
+        <translation>잘못된 CSW 연결 XML.</translation>
     </message>
     <message>
         <source>Loading Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>연결 불러오는 중</translation>
     </message>
 </context>
 <context>
@@ -83523,12 +83722,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../python/plugins/processing/ui/widgetOutputSelect.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>양식</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetOutputSelect.ui" line="29"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>
