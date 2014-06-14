@@ -655,6 +655,18 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
   currentMapExtent()->setYMaximum( centerY + newIntervalY / 2 );
   currentMapExtent()->setYMinimum( centerY - newIntervalY / 2 );
 
+  if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //and also apply to the map's original extent (see #9602)
+    //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
+    QgsScaleCalculator calculator;
+    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setDpi( 25.4 );  //QGraphicsView units are mm
+    double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
+    mExtent.scale( scaleRatio );
+  }
+
   cache();
   update();
   emit itemChanged();
@@ -789,6 +801,19 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
 
   double scaleRatio = scaleDenominator / currentScaleDenominator;
   currentMapExtent()->scale( scaleRatio );
+
+  if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //and also apply to the map's original extent (see #9602)
+    //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
+    QgsScaleCalculator calculator;
+    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setDpi( 25.4 );  //QGraphicsView units are mm
+    scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
+    mExtent.scale( scaleRatio );
+  }
+
   mCacheUpdated = false;
   cache();
   update();
