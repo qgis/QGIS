@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Attribute Edit Dialog</string>
+   <string>Edit Widget Properties</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="6" column="1">
