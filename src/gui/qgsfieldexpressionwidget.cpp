@@ -52,7 +52,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
   connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged() ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
-  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SLOT( returnPressed() ) );
+  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( QString title )
