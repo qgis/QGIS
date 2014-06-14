@@ -1205,7 +1205,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mKeepLayerSet = false;
   }
 
-  QString drawCanvasItemsFlag = itemElem.attribute( "drawCanvasItems" );
+  QString drawCanvasItemsFlag = itemElem.attribute( "drawCanvasItems", "true" );
   if ( drawCanvasItemsFlag.compare( "true", Qt::CaseInsensitive ) == 0 )
   {
     mDrawCanvasItems = true;
