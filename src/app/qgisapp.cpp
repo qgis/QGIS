@@ -6138,17 +6138,6 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
   }
 }
 
-#if 0
-void QgisApp::pasteTransformations()
-{
-  QgsPasteTransformations *pt = new QgsPasteTransformations();
-
-  mMapCanvas->freeze();
-
-  pt->exec();
-}
-#endif
-
 void QgisApp::copyFeatures( QgsFeatureStore & featureStore )
 {
   clipboard()->replaceWithCopyOf( featureStore );
