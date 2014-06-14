@@ -83,7 +83,7 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isVal
   int i = mCombo->currentIndex();
   const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
   if ( !proxyIndex.isValid() )
-    return "";
+    return mCombo->currentText();
 
   if ( isExpression )
   {
