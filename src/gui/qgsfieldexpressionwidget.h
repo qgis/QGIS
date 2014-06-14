@@ -77,11 +77,11 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     /**
       * Return true if the current expression is valid
       */
-    bool isValidExpression( QString& expressionError = QString() );
+    bool isValidExpression( QString *expressionError = 0 );
 
     bool isExpression();
     /**
-      * Retun the current text that is set in the expression area
+      * Return the current text that is set in the expression area
       */
     QString currentText();
 

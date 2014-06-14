@@ -1729,7 +1729,7 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
   return gmSpecialColumns.contains( name );
 }
 
-bool QgsExpression::isValid( const QString &text, const QgsFields &fields, QString errorMessage )
+bool QgsExpression::isValid( const QString &text, const QgsFields &fields, QString &errorMessage )
 {
   QgsExpression exp( text );
   exp.prepare( fields );

@@ -87,9 +87,10 @@ QString QgsFieldExpressionWidget::currentText()
   return mCombo->currentText();
 }
 
-bool QgsFieldExpressionWidget::isValidExpression( QString& expressionError )
+bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError )
 {
-  return QgsExpression::isValid( currentText(), layer()->pendingFields(), expressionError );
+  QString temp;
+  return QgsExpression::isValid( currentText(), layer()->pendingFields(), expressionError ? *expressionError : temp );
 }
 
 bool QgsFieldExpressionWidget::isExpression()
