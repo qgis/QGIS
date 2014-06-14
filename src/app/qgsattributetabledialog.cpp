@@ -157,7 +157,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
   mExpressionSelectButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
-  mOpenExpressionWidget->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -205,14 +204,16 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mFieldModel = new QgsFieldModel();
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
-  connect( mOpenExpressionWidget, SIGNAL( clicked() ), this, SLOT( openExpressionBuilder() ) );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
   connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
+  mUpdateExpressionText->setLayer( mLayer );
+  mUpdateExpressionText->setLeftHandButtonStyle( true );
   editingToggled();
 }
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
+  delete myDa;
 }
 
 void QgsAttributeTableDialog::updateTitle()
@@ -302,7 +303,8 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
   bool calculationSuccess = true;
   QString error;
 
-  QgsExpression exp( mUpdateExpressionText->text() );
+
+  QgsExpression exp( mUpdateExpressionText->currentField() );
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
@@ -362,15 +364,6 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
   }
 
   mLayer->endEditCommand();
-}
-
-void QgsAttributeTableDialog::openExpressionBuilder()
-{
-  QgsExpressionBuilderDialog dlg( mLayer, mUpdateExpressionText->text(), this );
-  if ( dlg.exec() )
-  {
-    mUpdateExpressionText->setText( dlg.expressionText() );
-  }
 }
 
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
