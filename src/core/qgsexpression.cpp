@@ -1729,6 +1729,14 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
   return gmSpecialColumns.contains( name );
 }
 
+bool QgsExpression::isValid( const QString &text, const QgsFields &fields, QString errorMessage )
+{
+  QgsExpression exp( text );
+  exp.prepare( fields );
+  errorMessage = exp.parserErrorString();
+  return !exp.hasParserError();
+}
+
 QList<QgsExpression::Function*> QgsExpression::specialColumns()
 {
   QList<Function*> defs;

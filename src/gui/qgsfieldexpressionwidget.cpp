@@ -64,37 +64,50 @@ void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
   mFieldProxyModel->setFilters( filters );
 }
 
+void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
+{
+  QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>( this->layout() );
+  if ( isLeft )
+  {
+    QLayoutItem* item = layout->takeAt( 1 );
+    layout->insertWidget( 0, item->widget() );
+  }
+  else
+    layout->addWidget( mCombo );
+}
+
 void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
 {
   mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
 
+QString QgsFieldExpressionWidget::currentText()
+{
+  return mCombo->currentText();
+}
+
+bool QgsFieldExpressionWidget::isValidExpression( QString& expressionError )
+{
+  return QgsExpression::isValid( currentText(), layer()->pendingFields(), expressionError );
+}
+
+bool QgsFieldExpressionWidget::isExpression()
+{
+  return !mFieldProxyModel->sourceFieldModel()->isField( currentText() );
+}
+
 QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isValid )
 {
-  if ( isExpression )
-  {
-    *isExpression = false;
-  }
+  QString text = currentText();
   if ( isValid )
   {
-    *isValid = true;
+    *isValid = isValidExpression();
   }
-
-  int i = mCombo->currentIndex();
-  const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
-  if ( !proxyIndex.isValid() )
-    return mCombo->currentText();
-
   if ( isExpression )
   {
-    *isExpression = mFieldProxyModel->data( proxyIndex, QgsFieldModel::IsExpressionRole ).toBool();
+    *isExpression = this->isExpression();
   }
-  if ( isValid )
-  {
-    *isValid = mFieldProxyModel->data( proxyIndex, QgsFieldModel::ExpressionValidityRole ).toBool();
-  }
-  QString expression = mFieldProxyModel->data( proxyIndex, QgsFieldModel::ExpressionRole ).toString();
-  return expression;
+  return text;
 }
 
 QgsVectorLayer *QgsFieldExpressionWidget::layer()
@@ -145,7 +158,7 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
 
 void QgsFieldExpressionWidget::editExpression()
 {
-  QString currentExpression = currentField();
+  QString currentExpression = currentText();
   QgsVectorLayer* vl = layer();
 
   if ( !vl )
@@ -172,6 +185,7 @@ void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 
 void QgsFieldExpressionWidget::expressionEditingFinished()
 {
+  QgsDebugMsg( "Editing finsihed" );
   const QString expression = mCombo->lineEdit()->text();
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->setExpression( expression );
   QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
