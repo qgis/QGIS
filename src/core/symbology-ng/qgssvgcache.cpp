@@ -109,6 +109,8 @@ QgsSvgCache::~QgsSvgCache()
 const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                        double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache )
 {
+  QMutexLocker locker( &mMutex );
+
   fitsInCache = true;
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
@@ -152,6 +154,8 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
 const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput )
 {
+  QMutexLocker locker( &mMutex );
+
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   //if current entry picture is 0: cache picture for entry
