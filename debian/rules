@@ -73,6 +73,10 @@ ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise quantal raring s
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
+ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle"))
+	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
+endif
+
 ifneq (,$(findstring $(DISTRIBUTION),"jessie raring saucy trusty sid sid-oracle"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
