@@ -314,6 +314,9 @@ class QgsGeometry
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments ) /Factory/;
 
+    /** Returns an offset line at a given distance and side from an input line. */
+    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) /Factory/;
+
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance ) /Factory/;
 
