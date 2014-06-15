@@ -150,7 +150,8 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
 // -------------------------
 
 QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider* p )
-    : mFields( p->mFields )
+    : QObject(( QgsWFSProvider* ) p )
+    , mFields( p->mFields )
     , mFeatures( p->mFeatures )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
 {
@@ -163,5 +164,7 @@ QgsWFSFeatureSource::~QgsWFSFeatureSource()
 
 QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest& request )
 {
+  if ( request.filterType() == QgsFeatureRequest::FilterRect )
+    emit extentRequested( request.filterRect() );
   return QgsFeatureIterator( new QgsWFSFeatureIterator( this, false, request ) );
 }
