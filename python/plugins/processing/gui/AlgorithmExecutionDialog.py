@@ -76,9 +76,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
-                | QtGui.QDialogButtonBox.Close)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.runButton = QtGui.QPushButton()
         self.runButton.setText('Run')
         self.buttonBox.addButton(self.runButton,
@@ -128,8 +126,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
         self.buttonBox.rejected.connect(self.close)
-        self.buttonBox.button(
-                QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
 
         self.showDebug = ProcessingConfig.getSetting(
                 ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
@@ -306,19 +302,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.resetGUI()
         self.tabWidget.setCurrentIndex(1)  # log tab
 
-    def iterate(self, i):
-        self.setInfo('<b>Algorithm %s iteration #%i completed</b>'
-                     % (self.alg.name, i))
-
-    def cancel(self):
-        self.setInfo('<b>Algorithm %s canceled</b>' % self.alg.name)
-        try:
-            self.algEx.algExecuted.disconnect()
-            self.algEx.terminate()
-        except:
-            pass
-        self.resetGUI()
-
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
         self.progressLabel.setText('')
@@ -333,24 +316,30 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.logText.append('<span style="color:red">' + msg + '</span>')
         else:
             self.logText.append(msg)
+        QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
             self.setInfo('<tt>' + cmd + '<tt>')
+        QCoreApplication.processEvents()
 
     def setDebugInfo(self, msg):
         if self.showDebug:
             self.setInfo('<span style="color:blue">' + msg + '</span>')
+        QCoreApplication.processEvents()
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
             self.setCommand('<span style="color:darkgray">' + msg + '</span>')
+        QCoreApplication.processEvents()
 
     def setPercentage(self, i):
         if self.progress.maximum() == 0:
             self.progress.setMaximum(100)
         self.progress.setValue(i)
+        QCoreApplication.processEvents()
 
     def setText(self, text):
         self.progressLabel.setText(text)
         self.setInfo(text, False)
+        QCoreApplication.processEvents()
