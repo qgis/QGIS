@@ -49,6 +49,12 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
   return QModelIndex();
 }
 
+bool QgsFieldModel::isField( const QString& expression )
+{
+  int index = mFields.indexFromName( expression );
+  return index >= 0;
+}
+
 void QgsFieldModel::setLayer( QgsVectorLayer *layer )
 {
   if ( mLayer )

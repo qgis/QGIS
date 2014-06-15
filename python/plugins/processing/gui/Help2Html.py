@@ -58,7 +58,7 @@ def getHtmlFromHelpFile(alg, helpFile):
     if not os.path.exists(helpFile):
         return None
     try:
-        with open(helpFile) as f:    
+        with open(helpFile) as f:
             descriptions = json.load(f)
     except:
         return None

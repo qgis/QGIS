@@ -49,7 +49,7 @@ class GridNearest(GdalAlgorithm):
 
     def commandLineName(self):
         return "gdalogr:gridnearestneighbor"
-    
+
     def defineCharacteristics(self):
         self.name = 'Grid (Nearest neighbor)'
         self.group = '[GDAL] Analysis'

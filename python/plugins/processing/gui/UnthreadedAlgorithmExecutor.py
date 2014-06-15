@@ -87,7 +87,7 @@ class UnthreadedAlgorithmExecutor:
         for out in alg.outputs:
             outputs[out.name] = out.value
 
-        # now run all the algorithms        
+        # now run all the algorithms
         for i,f in enumerate(filelist):
             alg.setParameterValue(paramToIter, f)
             for out in alg.outputs:
@@ -100,7 +100,7 @@ class UnthreadedAlgorithmExecutor:
                              + str(len(filelist)) + '...')
             progress.setPercentage(i * 100 / len(filelist))
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
-                handleAlgorithmResults(alg, SilentProgress(), False)                 
+                handleAlgorithmResults(alg, SilentProgress(), False)
             else:
                 return False
 

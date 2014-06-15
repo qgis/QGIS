@@ -51,7 +51,7 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
         self.addOutput(OutputNumber(self.YMIN, 'min Y'))
         self.addOutput(OutputNumber(self.YMAX, 'max Y'))
         self.addOutput(OutputExtent(self.EXTENT, 'Extent'))
-        
+
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.LAYER)
         layer = dataobjects.getObjectFromUri(uri)
@@ -63,4 +63,4 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
                             layer.extent().xMaximum(),
                             layer.extent().yMinimum(),
                             layer.extent().yMaximum()))
-        
+

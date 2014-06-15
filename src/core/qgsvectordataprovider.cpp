@@ -264,13 +264,52 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
                       .arg( mNativeTypes[i].mMaxLen )
                       .arg( mNativeTypes[i].mMinPrec )
                       .arg( mNativeTypes[i].mMaxPrec ), 2 );
-    if ( field.type() == mNativeTypes[i].mType &&
-         field.length() >= mNativeTypes[i].mMinLen && field.length() <= mNativeTypes[i].mMaxLen &&
-         field.precision() >= mNativeTypes[i].mMinPrec && field.precision() <= mNativeTypes[i].mMaxPrec )
+
+    if ( field.type() != mNativeTypes[i].mType )
+      continue;
+
+    if ( field.length() == -1 )
     {
-      QgsDebugMsg( "native type matches" );
-      return true;
+      // source length unlimited
+      if ( mNativeTypes[i].mMinLen > -1 || mNativeTypes[i].mMaxLen > -1 )
+      {
+        // destination limited
+        continue;
+      }
     }
+    else
+    {
+      // source length limited
+      if ( mNativeTypes[i].mMinLen > -1 && mNativeTypes[i].mMaxLen > -1 &&
+           ( field.length() < mNativeTypes[i].mMinLen || field.length() < mNativeTypes[i].mMaxLen ) )
+      {
+        // source length exceeds destination limits
+        continue;
+      }
+    }
+
+    if ( field.precision() == -1 )
+    {
+      // source precision unlimited / n/a
+      if ( mNativeTypes[i].mMinPrec > -1 || mNativeTypes[i].mMaxPrec > -1 )
+      {
+        // destination limited
+        continue;
+      }
+    }
+    else
+    {
+      // source precision unlimited / n/a
+      if ( mNativeTypes[i].mMinPrec > -1 && mNativeTypes[i].mMaxPrec > -1 &&
+           ( field.precision() < mNativeTypes[i].mMinPrec || field.precision() < mNativeTypes[i].mMaxPrec ) )
+      {
+        // source precision exceeds destination limits
+        continue;
+      }
+    }
+
+    QgsDebugMsg( "native type matches" );
+    return true;
   }
 
   QgsDebugMsg( "no sufficient native type found" );

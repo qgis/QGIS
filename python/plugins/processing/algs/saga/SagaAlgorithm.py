@@ -403,6 +403,8 @@ class SagaAlgorithm(GeoAlgorithm):
         name = ''.join(c for c in name if c in validChars)
         html = getHtmlFromRstFile(os.path.join(os.path.dirname(__file__), 'help',
                             name + '.rst'))
+        if html is None:
+            return True, None
         imgpath = os.path.join(os.path.dirname(__file__),os.pardir, os.pardir, 'images', 'saga100x100.jpg')
         html = ('<img src="%s"/>' % imgpath) + html
         return True, html

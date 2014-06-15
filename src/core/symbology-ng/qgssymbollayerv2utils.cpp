@@ -659,10 +659,30 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
   y = p1.y() + t1 * ( x - p1.x() );
   return QPointF( x, y );
 }
+#else
+static QPolygonF makeOffsetGeometry( const QgsPolyline& polyline )
+{
+  int i, pointCount = polyline.count();
+
+  QPolygonF resultLine;
+  resultLine.resize( pointCount );
+
+  const QgsPoint* tempPtr = polyline.data();
+
+  for ( i = 0; i < pointCount; ++i, tempPtr++ )
+    resultLine[i] = QPointF( tempPtr->x(), tempPtr->y() );
+
+  return resultLine;
+}
+static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
+{
+  QList<QPolygonF> resultGeom;
+  for ( int ring = 0; ring < polygon.size(); ++ring ) resultGeom.append( makeOffsetGeometry( polygon[ ring ] ) );
+  return resultGeom;
+}
 #endif
 
-
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType geometryType )
 {
   QList<QPolygonF> resultLine;
 
@@ -685,11 +705,11 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry* tempGeometry = QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry * tempGeometry = ( geometryType == QGis::Polygon ) ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
   {
     const GEOSGeometry* geosGeom = tempGeometry->asGeos();
-    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+    GEOSGeometry* offsetGeom = ( geometryType == QGis::Polygon ) ? GEOSBuffer( geosGeom, -dist, 8 /*quadSegments*/ ) : GEOSOffsetCurve( geosGeom, dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
 
     if ( offsetGeom )
     {
@@ -697,16 +717,13 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 
       if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBLineString )
       {
-        tempPolyline = tempGeometry->asPolyline();
-
-        pointCount = tempPolyline.count();
-        newLine.resize( pointCount );
-
-        QgsPoint* tempPtr2 = tempPolyline.data();
-        for ( i = 0; i < pointCount; ++i, tempPtr2++ )
-          newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
-        resultLine.append( newLine );
-
+        resultLine.append( makeOffsetGeometry( tempGeometry->asPolyline() ) );
+        delete tempGeometry;
+        return resultLine;
+      }
+      else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBPolygon )
+      {
+        resultLine.append( makeOffsetGeometry( tempGeometry->asPolygon() ) );
         delete tempGeometry;
         return resultLine;
       }
@@ -716,17 +733,18 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 
         for ( int part = 0; part < tempMPolyline.count(); ++part )
         {
-          tempPolyline = tempMPolyline[ part ];
+          resultLine.append( makeOffsetGeometry( tempMPolyline[ part ] ) );
+        }
+        delete tempGeometry;
+        return resultLine;
+      }
+      else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBMultiPolygon )
+      {
+        QgsMultiPolygon tempMPolygon = tempGeometry->asMultiPolygon();
 
-          pointCount = tempPolyline.count();
-          newLine.resize( pointCount );
-
-          QgsPoint* tempPtr2 = tempPolyline.data();
-          for ( i = 0; i < pointCount; ++i, tempPtr2++ )
-            newLine[i] = QPointF( tempPtr2->x(), tempPtr2->y() );
-          resultLine.append( newLine );
-
-          newLine = QPolygonF();
+        for ( int part = 0; part < tempMPolygon.count(); ++part )
+        {
+          resultLine.append( makeOffsetGeometry( tempMPolygon[ part ] ) );
         }
         delete tempGeometry;
         return resultLine;
@@ -780,6 +798,21 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
   return resultLine;
 
 #endif
+}
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
+{
+  QGis::GeometryType geometryType = QGis::Point;
+  int pointCount = polyline.count();
+
+  if ( pointCount > 3 && polyline[ 0 ].x() == polyline[ pointCount - 1 ].x() && polyline[ 0 ].y() == polyline[ pointCount - 1 ].y() )
+  {
+    geometryType = QGis::Polygon;
+  }
+  else if ( pointCount > 1 )
+  {
+    geometryType = QGis::Line;
+  }
+  return offsetLine( polyline, dist, geometryType );
 }
 
 /////
@@ -3225,7 +3258,7 @@ bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPoin
     if ( p1.x() == x && p1.y() == y )
       return true;
 
-    if ( ( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
+    if (( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
     {
       if ( p1.x() + ( y - p1.y() ) / ( p2.y() - p1.y() )*( p2.x() - p1.x() ) <= x )
         inside = !inside;

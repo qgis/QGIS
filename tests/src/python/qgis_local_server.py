@@ -430,7 +430,7 @@ class QgisLocalServer(object):
             openInBrowserTab(url)
             return False, ''
 
-        success = ('perhaps you left off the .qgs extension' in xml or
+        success = ('error reading the project file' in xml or
                    'WMS_Capabilities' in xml)
         return success, xml
 
@@ -525,7 +525,7 @@ class QgisLocalServer(object):
                 'No valid PNG output'
             )
 
-        return success, filepath
+        return success, filepath, url
 
     def process_params(self, params):
         # set all keys to uppercase
@@ -821,7 +821,7 @@ if __name__ == '__main__':
     try:
         local_srv.check_server_capabilities()
         # open resultant png with system
-        result, png = local_srv.get_map(req_params)
+        result, png, url = local_srv.get_map(req_params)
     finally:
         local_srv.shutdown()
 

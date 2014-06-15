@@ -2505,13 +2505,6 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="cbxAddNewLayersToCurrentGroup">
-                    <property name="text">
-                     <string>Add new layers to selected or current group</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_34">
                     <item>
                      <widget class="QLabel" name="label_58">

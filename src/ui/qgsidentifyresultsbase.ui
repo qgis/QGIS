@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>341</width>
+    <width>394</width>
     <height>409</height>
    </rect>
   </property>
@@ -18,14 +18,8 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="treeTab">
-      <attribute name="title">
-       <string>Tree</string>
-      </attribute>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="stackedWidgetPage1" native="true">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
         <number>0</number>
@@ -53,10 +47,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tableTab">
-      <attribute name="title">
-       <string>Table</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage2" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
         <number>0</number>
@@ -96,10 +87,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="plotTab">
-      <attribute name="title">
-       <string>Graph</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage3" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QwtPlot" name="mPlot"/>
@@ -251,7 +239,10 @@
    <item>
     <layout class="QHBoxLayout" name="mIdentifyModeHorizontalLayout">
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="lblIdentifyMode">
+       <property name="toolTip">
+        <string>Select identify mode</string>
+       </property>
        <property name="text">
         <string>Mode</string>
        </property>
@@ -262,6 +253,32 @@
      </item>
      <item>
       <spacer name="horizontalSpacer_43">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblViewMode">
+       <property name="toolTip">
+        <string>Select view mode for raster layers</string>
+       </property>
+       <property name="text">
+        <string>View</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbViewMode"/>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>

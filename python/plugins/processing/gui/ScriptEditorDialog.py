@@ -167,7 +167,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
             # the first time, we do it here
             if self.help:
                 with open(self.filename + '.help', 'w') as f:
-                    json.dump(self.help, f) 
+                    json.dump(self.help, f)
                 self.help = None
             self.setHasChanged(False)
         else:

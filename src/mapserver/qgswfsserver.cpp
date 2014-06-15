@@ -624,9 +624,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
     if ( featureCounter == 0 )
-      throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
-    else
-      endGetFeature( request, format );
+      startGetFeature( request, format, layerCrs, &searchRect );
+    endGetFeature( request, format );
     return 0;
   }
 
@@ -1068,9 +1067,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   if ( featureCounter == 0 )
-    throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
-  else
-    endGetFeature( request, format );
+    startGetFeature( request, format, layerCrs, &searchRect );
+  endGetFeature( request, format );
 
   return 0;
 }

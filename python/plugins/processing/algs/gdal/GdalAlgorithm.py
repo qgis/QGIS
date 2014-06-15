@@ -32,11 +32,11 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 
 
 class GdalAlgorithm(GeoAlgorithm):
-    
+
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
 
 class GdalScriptAlgorithm(ScriptAlgorithm):
-    
+
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')

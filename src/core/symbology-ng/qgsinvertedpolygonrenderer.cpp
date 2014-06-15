@@ -69,6 +69,9 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
     return;
   }
 
+  // first call start render on the sub renderer
+  mSubRenderer->startRender( context, fields );
+
   mFeaturesCategories.clear();
   mFeatureDecorations.clear();
   mFields = fields;
@@ -114,8 +117,6 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
 
   mExtentPolygon.clear();
   mExtentPolygon.append( exteriorRing );
-
-  mSubRenderer->startRender( mContext, fields );
 }
 
 bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
@@ -171,9 +172,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   if ( ! mSymbolCategories.contains( catId ) )
   {
-    // the exterior ring must be a square in the destination CRS
     CombinedFeature cFeat;
-    cFeat.multiPolygon.append( mExtentPolygon );
     // store the first feature
     cFeat.feature = feature;
     mSymbolCategories.insert( catId, mSymbolCategories.count() );
@@ -182,11 +181,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  QgsGeometry* geom = feature.geometry();
-  if ( !geom )
+  if ( !feature.geometry() )
   {
     return false;
   }
+  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.geometry() ) );
 
   const QgsCoordinateTransform* xform = context.coordinateTransform();
   if ( xform )
@@ -196,61 +195,15 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   if ( mPreprocessingEnabled )
   {
-    // preprocessing
-    if ( ! cFeat.feature.geometry() )
+    // fix the polygon if it is not valid
+    if ( ! geom->isGeosValid() )
     {
-      // first feature: add the current geometry
-      cFeat.feature.setGeometry( new QgsGeometry( *geom ) );
-    }
-    else
-    {
-      // other features: combine them (union)
-      QgsGeometry* combined = cFeat.feature.geometry()->combine( geom );
-      if ( combined && combined->isGeosValid() )
-      {
-        cFeat.feature.setGeometry( combined );
-      }
+      geom.reset( geom->buffer( 0, 0 ) );
     }
   }
-  else
-  {
-    // No preprocessing involved.
-    // We build here a "reversed" geometry of all the polygons
-    //
-    // The final geometry is a multipolygon F, with :
-    // * the first polygon of F having the current extent as its exterior ring
-    // * each polygon's exterior ring is added as interior ring of the first polygon of F
-    // * each polygon's interior ring is added as new polygons in F
-    //
-    // No validity check is done, on purpose, it will be very slow and painting
-    // operations do not need geometries to be valid
+  // add the geometry to the list of geometries for this feature
+  cFeat.geometries.append( geom.take() );
 
-    QgsMultiPolygon multi;
-    if (( geom->wkbType() == QGis::WKBPolygon ) ||
-        ( geom->wkbType() == QGis::WKBPolygon25D ) )
-    {
-      multi.append( geom->asPolygon() );
-    }
-    else if (( geom->wkbType() == QGis::WKBMultiPolygon ) ||
-             ( geom->wkbType() == QGis::WKBMultiPolygon25D ) )
-    {
-      multi = geom->asMultiPolygon();
-    }
-
-    for ( int i = 0; i < multi.size(); i++ )
-    {
-      // add the exterior ring as interior ring to the first polygon
-      cFeat.multiPolygon[0].append( multi[i][0] );
-
-      // add interior rings as new polygons
-      for ( int j = 1; j < multi[i].size(); j++ )
-      {
-        QgsPolygon new_poly;
-        new_poly.append( multi[i][j] );
-        cFeat.multiPolygon.append( new_poly );
-      }
-    }
-  }
   return true;
 }
 
@@ -267,23 +220,61 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
 
   for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
   {
-    QgsFeature feat( cit->feature );
-    if ( !mPreprocessingEnabled )
+    QgsFeature& feat = cit->feature;
+    if ( mPreprocessingEnabled )
     {
-      // no preprocessing - the final polygon has already been prepared
-      feat.setGeometry( QgsGeometry::fromMultiPolygon( cit->multiPolygon ) );
+      // compute the unary union on the polygons
+      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit->geometries ) );
+      // compute the difference with the extent
+      QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
+      QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>(unioned.data()) );
+      if ( final )
+      {
+        feat.setGeometry( final );
+      }
     }
     else
     {
-      // preprocessing mode - we still have to invert (using difference)
-      if ( feat.geometry() )
+      // No preprocessing involved.
+      // We build here a "reversed" geometry of all the polygons
+      //
+      // The final geometry is a multipolygon F, with :
+      // * the first polygon of F having the current extent as its exterior ring
+      // * each polygon's exterior ring is added as interior ring of the first polygon of F
+      // * each polygon's interior ring is added as new polygons in F
+      //
+      // No validity check is done, on purpose, it will be very slow and painting
+      // operations do not need geometries to be valid
+      QgsMultiPolygon finalMulti;
+      finalMulti.append( mExtentPolygon );
+      foreach( QgsGeometry* geom, cit->geometries )
       {
-        QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
-        QgsGeometry *final = rect->difference( feat.geometry() );
-        if ( final )
+        QgsMultiPolygon multi;
+        if (( geom->wkbType() == QGis::WKBPolygon ) ||
+            ( geom->wkbType() == QGis::WKBPolygon25D ) )
         {
-          feat.setGeometry( final );
+          multi.append( geom->asPolygon() );
         }
+        else if (( geom->wkbType() == QGis::WKBMultiPolygon ) ||
+                 ( geom->wkbType() == QGis::WKBMultiPolygon25D ) )
+        {
+          multi = geom->asMultiPolygon();
+        }
+
+        for ( int i = 0; i < multi.size(); i++ )
+        {
+          // add the exterior ring as interior ring to the first polygon
+          finalMulti[0].append( multi[i][0] );
+
+          // add interior rings as new polygons
+          for ( int j = 1; j < multi[i].size(); j++ )
+          {
+            QgsPolygon new_poly;
+            new_poly.append( multi[i][j] );
+            finalMulti.append( new_poly );
+          }
+        }
+        feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
       }
     }
     mSubRenderer->renderFeature( feat, mContext );

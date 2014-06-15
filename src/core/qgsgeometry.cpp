@@ -5187,7 +5187,7 @@ int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeome
     return -1;
   }
 
-  double bufferDistance = pow( 1.0L, geomDigits( line2 )-11 );
+  double bufferDistance = pow( 1.0L, geomDigits( line2 ) - 11 );
 
   GEOSGeometry* bufferGeom = GEOSBuffer( line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
@@ -5217,7 +5217,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   if ( !point || !line )
     return -1;
 
-  double bufferDistance = pow( 1.0L, geomDigits( line )-11 );
+  double bufferDistance = pow( 1.0L, geomDigits( line ) - 11 );
 
   GEOSGeometry* lineBuffer = GEOSBuffer( line, bufferDistance, 8 );
   if ( !lineBuffer )
@@ -5258,12 +5258,12 @@ int QgsGeometry::geomDigits( const GEOSGeometry* geom )
 
     int digits;
     digits = ceil( log10( fabs( t ) ) );
-    if( digits > maxDigits )
+    if ( digits > maxDigits )
       maxDigits = digits;
 
     GEOSCoordSeq_getY( bBoxCoordSeq, i, &t );
     digits = ceil( log10( fabs( t ) ) );
-    if( digits > maxDigits )
+    if ( digits > maxDigits )
       maxDigits = digits;
   }
 
@@ -6395,4 +6395,19 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
     default:
       return 0;
   }
+}
+
+QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
+{
+  QList<GEOSGeometry*> geoms;
+  foreach( QgsGeometry* g, geometryList )
+  {
+    // const cast: it is ok here, since the pointers will only be used to be stored
+    // in a list for a call to union
+    geoms.append( const_cast<GEOSGeometry*>(g->asGeos()) );
+  }
+  GEOSGeometry* unioned = _makeUnion( geoms );
+  QgsGeometry *ret = new QgsGeometry();
+  ret->fromGeos( unioned );
+  return ret;
 }

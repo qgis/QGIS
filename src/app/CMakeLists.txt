@@ -92,7 +92,6 @@ SET(QGIS_APP_SRCS
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
   qgsoptions.cpp
-  #qgspastetransformations.cpp
   qgspointrotationitem.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
@@ -235,7 +234,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmeasuretool.h
   qgsmergeattributesdialog.h
   qgsoptions.h
-  #qgspastetransformations.h
   qgsprojectlayergroupdialog.h
   qgsprojectproperties.h
   qgsrastercalcdialog.h

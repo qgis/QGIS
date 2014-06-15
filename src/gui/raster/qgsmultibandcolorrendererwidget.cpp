@@ -130,7 +130,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   bool redMinOk, redMaxOk;
   double redMin = mRedMinLineEdit->text().toDouble( &redMinOk );
   double redMax = mRedMaxLineEdit->text().toDouble( &redMaxOk );
-  if ( redMinOk && redMaxOk && redBand != -1  )
+  if ( redMinOk && redMaxOk && redBand != -1 )
   {
     redEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( redBand ) ) );

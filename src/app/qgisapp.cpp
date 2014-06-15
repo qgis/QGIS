@@ -159,7 +159,6 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
-// #include "qgspastetransformations.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
@@ -2320,7 +2319,6 @@ void QgisApp::initLayerTreeView()
 
   bool otfTransformAutoEnable = QSettings().value( "/Projections/otfTransformAutoEnable", true ).toBool();
   mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
-  mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( otfTransformAutoEnable );
 
   mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
   mMapLayerOrder->setObjectName( "theMapLayerOrder" );
@@ -2339,7 +2337,14 @@ void QgisApp::setupLayerTreeViewFromSettings()
 {
   QSettings s;
 
-  mLayerTreeView->layerTreeModel()->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( "/qgis/createRasterLegendIcons", false ).toBool() );
+  QgsLayerTreeModel* model = mLayerTreeView->layerTreeModel();
+  model->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( "/qgis/createRasterLegendIcons", false ).toBool() );
+
+  QFont fontLayer, fontGroup;
+  fontLayer.setBold( s.value( "/qgis/legendLayersBold", true ).toBool() );
+  fontGroup.setBold( s.value( "/qgis/legendGroupsBold", false ).toBool() );
+  model->setLayerTreeNodeFont( QgsLayerTreeNode::NodeLayer, fontLayer );
+  model->setLayerTreeNodeFont( QgsLayerTreeNode::NodeGroup, fontGroup );
 }
 
 
@@ -6133,17 +6138,6 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
   }
 }
 
-#if 0
-void QgisApp::pasteTransformations()
-{
-  QgsPasteTransformations *pt = new QgsPasteTransformations();
-
-  mMapCanvas->freeze();
-
-  pt->exec();
-}
-#endif
-
 void QgisApp::copyFeatures( QgsFeatureStore & featureStore )
 {
   clipboard()->replaceWithCopyOf( featureStore );
@@ -7239,6 +7233,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
   QSettings mySettings;
   QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
 
+  bool oldCapitalise = mySettings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool();
+
   QgsOptions *optionsDialog = new QgsOptions( parent );
   if ( !currentPage.isEmpty() )
   {
@@ -7265,6 +7261,13 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
     mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false ).toBool() );
 
     mMapCanvas->setMapUpdateInterval( mySettings.value( "/qgis/map_update_interval", 250 ).toInt() );
+
+    if ( oldCapitalise != mySettings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() )
+    {
+      // if the layer capitalization has changed, we need to update all layer names
+      foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+        layer->setLayerName( layer->originalName() );
+    }
 
     //update any open compositions so they reflect new composer settings
     //we have to push the changes to the compositions here, because compositions
@@ -7293,7 +7296,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
 
     bool otfTransformAutoEnable = mySettings.value( "/Projections/otfTransformAutoEnable", true ).toBool();
     mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
-    mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( otfTransformAutoEnable );
   }
 
   delete optionsDialog;

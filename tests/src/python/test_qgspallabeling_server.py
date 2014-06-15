@@ -31,6 +31,7 @@ from qgis.core import *
 from utilities import (
     unittest,
     expectedFailure,
+    mapSettingsString
 )
 
 from qgis_local_server import (
@@ -117,7 +118,8 @@ class TestServerBase(TestQgsPalLabeling):
                           ignore_errors=True)
 
     # noinspection PyPep8Naming
-    def get_wms_params(self):
+    def get_request_params(self):
+        # TODO: support other types of servers, besides WMS
         ms = self._TestMapSettings
         osize = ms.outputSize()
         dpi = str(ms.outputDpi())
@@ -147,7 +149,17 @@ class TestServerBase(TestQgsPalLabeling):
         # print params
         return params
 
+    def sync_map_settings(self):
+        """
+        Sync custom test QgsMapSettings to Project file
+        """
+        pal = QgsPalLabeling()
+        pal.loadEngineSettings()
+        pal.init(self._TestMapSettings)
+        pal.saveEngineSettings()
+
     def checkTest(self, **kwargs):
+        self.sync_map_settings()
         self.lyr.writeToLayer(self.layer)
         # save project file
         self._TestProj.write()
@@ -155,8 +167,20 @@ class TestServerBase(TestQgsPalLabeling):
         # MAPSERV.fcgi_server_process().start()
         # get server results
         # print self.params.__repr__()
-        res_m, self._TestImage = MAPSERV.get_map(self.params, False)
+
+        ms = self._MapSettings  # class settings
+        settings_type = 'Class'
+        if self._TestMapSettings is not None:
+            ms = self._TestMapSettings  # per test settings
+            settings_type = 'Test'
+        if 'PAL_VERBOSE' in os.environ:
+            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(mapSettingsString(ms))
+
+        res_m, self._TestImage, url = MAPSERV.get_map(self.get_request_params(), False)
         # print self._TestImage.__repr__()
+        if 'PAL_VERBOSE' in os.environ:
+            qDebug('GetMap request:\n  {0}\n'.format(url))
         self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
         mismatch = 0
@@ -182,11 +206,6 @@ class TestServerBasePoint(TestServerBase):
     def setUpClass(cls):
         TestServerBase.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
-
-    def setUp(self):
-        super(TestServerBasePoint, self).setUp()
-        # self._TestMapSettings defines the params
-        self.params = self.get_wms_params()
 
 
 class TestServerPoint(TestServerBasePoint, TestPointBase):

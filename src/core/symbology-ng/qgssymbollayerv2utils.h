@@ -312,9 +312,10 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
 class QPolygonF;
 
-//! calculate line shifted by a specified distance
+//! @deprecated since 2.4 - calculate line shifted by a specified distance
 QList<QPolygonF> offsetLine( QPolygonF polyline, double dist );
-
+//! calculate geometry shifted by a specified distance
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType geometryType );
 
 #endif
 

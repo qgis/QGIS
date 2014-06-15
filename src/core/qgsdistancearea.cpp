@@ -714,7 +714,7 @@ double QgsDistanceArea::computeDistanceBearing(
 
 double QgsDistanceArea::computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 )
 {
-  return sqrt( ( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
+  return sqrt(( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
 }
 
 double QgsDistanceArea::computeDistance( const QList<QgsPoint>& points )

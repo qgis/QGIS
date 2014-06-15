@@ -59,6 +59,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! setFilters allows fitering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
+    void setLeftHandButtonStyle( bool isLeft );
+
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() { return mFieldProxyModel->filters(); }
 
@@ -72,6 +74,17 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     QString currentField( bool *isExpression = 0, bool *isValid = 0 );
 
+    /**
+      * Return true if the current expression is valid
+      */
+    bool isValidExpression( QString *expressionError = 0 );
+
+    bool isExpression();
+    /**
+      * Return the current text that is set in the expression area
+      */
+    QString currentText();
+
     //! Returns the currently used layer
     QgsVectorLayer* layer();
 
@@ -81,6 +94,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! fieldChanged signal with indication of the validity of the expression
     void fieldChanged( QString fieldName, bool isValid );
+
+    void returnPressed();
 
   public slots:
     //! set the layer used to display the fields and expression

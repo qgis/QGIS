@@ -34,7 +34,7 @@ QgsEditorConfigWidget *QgsDateTimeEditFactory::configWidget( QgsVectorLayer *vl,
   return new QgsDateTimeEditConfig( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsDateTimeEditFactory::readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx )
+QgsEditorWidgetConfig QgsDateTimeEditFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );

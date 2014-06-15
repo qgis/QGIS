@@ -47,7 +47,7 @@ class GridAverage(GdalAlgorithm):
     ANGLE = 'ANGLE'
     NODATA = 'NODATA'
     OUTPUT = 'OUTPUT'
-    
+
     def commandLineName(self):
         return "gdalogr:gridaverage"
 

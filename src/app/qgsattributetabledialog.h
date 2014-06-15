@@ -185,8 +185,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void columnBoxInit();
 
-    void openExpressionBuilder();
-
     void updateFieldFromExpression();
 
   private:

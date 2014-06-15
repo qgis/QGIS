@@ -55,7 +55,7 @@ class GridDataMetrics(GdalAlgorithm):
 
     def commandLineName(self):
         return "gdalogr:griddatametrics"
-    
+
     def defineCharacteristics(self):
         self.name = 'Grid (Data metrics)'
         self.group = '[GDAL] Analysis'

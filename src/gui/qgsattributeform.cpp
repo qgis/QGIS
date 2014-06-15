@@ -188,15 +188,24 @@ bool QgsAttributeForm::save()
       {
         mLayer->beginEditCommand( mEditCommandMessage );
 
+        int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if ( dst[i] == src[i] || !src[i].isValid() )
+          if ( dst[i] == src[i] || !dst[i].isValid() )
+          {
+            QgsDebugMsg( "equal or invalid destination" );
+            QgsDebugMsg( QString( "dst:'%1' (type:%2,isNull:%3,isValid:%4)" )
+                         .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
+            QgsDebugMsg( QString( "src:'%1' (type:%2,isNull:%3,isValid:%4)" )
+                         .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
             continue;
+          }
 
           success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
+          n++;
         }
 
-        if ( success )
+        if ( success && n > 0 )
         {
           mLayer->endEditCommand();
           mFeature.setAttributes( dst );

@@ -2,6 +2,7 @@
 #define QGSMAPSETTINGS_H
 
 #include <QColor>
+#include <QImage>
 #include <QSize>
 #include <QStringList>
 
@@ -87,6 +88,11 @@ class CORE_EXPORT QgsMapSettings
     void setFlag( Flag flag, bool on = true );
     Flags flags() const;
     bool testFlag( Flag flag ) const;
+
+    //! sets format of internal QImage
+    void setOutputImageFormat( QImage::Format format ) { mImageFormat = format; }
+    //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
+    QImage::Format outputImageFormat() const { return mImageFormat; }
 
     bool hasValidSettings() const;
     QgsRectangle visibleExtent() const;
@@ -177,6 +183,8 @@ class CORE_EXPORT QgsMapSettings
     bool mShowSelection;
 
     Flags mFlags;
+
+    QImage::Format mImageFormat;
 
     // derived properties
     bool mValid; //!< whether the actual settings are valid (set in updateDerived())

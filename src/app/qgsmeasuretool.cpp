@@ -155,12 +155,12 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsPoint point = snapPoint( e->pos() );
 
-  if ( mDone )	// if we have stopped measuring any mouse click restart measuring
+  if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
     mDialog->restart();
   }
 
-  if ( e->button() == Qt::RightButton ) // if we clicked the rigth button we stop measuring
+  if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
   {
     mDone = true;
   }

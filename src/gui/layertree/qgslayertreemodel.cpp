@@ -40,6 +40,8 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
   connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
   connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
+
+  mFontLayer.setBold( true );
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -244,11 +246,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::FontRole )
   {
-    QFont f;
+    QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
     if ( node->customProperty( "embedded" ).toInt() )
       f.setItalic( true );
-    if ( QgsLayerTree::isLayer( node ) )
-      f.setBold( true );
     if ( index == mCurrentIndex )
       f.setUnderline( true );
     return f;
@@ -452,6 +452,43 @@ void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
     emit dataChanged( currentIndex, currentIndex );
 }
 
+
+void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
+{
+  if ( nodeType == QgsLayerTreeNode::NodeGroup )
+  {
+    if ( mFontGroup != font )
+    {
+      mFontGroup = font;
+      recursivelyEmitDataChanged();
+    }
+  }
+  else if ( nodeType == QgsLayerTreeNode::NodeLayer )
+  {
+    if ( mFontLayer != font )
+    {
+      mFontLayer = font;
+      recursivelyEmitDataChanged();
+    }
+  }
+  else
+    QgsDebugMsg( "invalid node type" );
+}
+
+
+QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
+{
+  if ( nodeType == QgsLayerTreeNode::NodeGroup )
+    return mFontGroup;
+  else if ( nodeType == QgsLayerTreeNode::NodeLayer )
+    return mFontLayer;
+  else
+  {
+    QgsDebugMsg( "invalid node type" );
+    return QFont();
+  }
+}
+
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
 {
   Q_ASSERT( node );
@@ -545,6 +582,9 @@ void QgsLayerTreeModel::layerNeedsUpdate()
 
   QModelIndex index = node2index( nodeLayer );
   emit dataChanged( index, index );
+
+  if ( nodeLayer->customProperty( "showFeatureCount" ).toInt() )
+    refreshLayerSymbology( nodeLayer );
 }
 
 
@@ -705,6 +745,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
     connect( layer, SIGNAL( editingStarted() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
     connect( layer, SIGNAL( layerModified() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
+    connect( layer, SIGNAL( layerNameChanged() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
   }
 }
 
@@ -742,6 +783,20 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
     // last instance of the layer in the tree: disconnect from all signals from layer!
     disconnect( nodeLayer->layer(), 0, this, 0 );
   }
+}
+
+void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex& idx )
+{
+  QgsLayerTreeNode* node = index2node( idx );
+  if ( !node )
+    return;
+
+  int count = node->children().count();
+  if ( count == 0 )
+    return;
+  emit dataChanged( index( 0, 0, idx ), index( count - 1, 0, idx ) );
+  for ( int i = 0; i < count; ++i )
+    recursivelyEmitDataChanged( index( i, 0, idx ) );
 }
 
 

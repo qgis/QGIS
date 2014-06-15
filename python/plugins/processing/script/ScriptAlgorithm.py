@@ -210,7 +210,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputFile()
             subtokens = tokens[1].split(' ')
             if len(subtokens > 2):
-                out.ext = subtokens[2] 
+                out.ext = subtokens[2]
         elif tokens[1].lower().strip().startswith('output directory'):
             out = OutputDirectory()
         elif tokens[1].lower().strip().startswith('output number'):
