@@ -228,6 +228,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 };
 
 
+#include <QEventLoop>
 
 /** job implementation that renders everything sequentially using a custom painter.
  *  The returned image is always invalid (because there is none available).
@@ -247,6 +248,20 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 
     //! @note not available in python bindings
     const LayerRenderJobs& jobs() const { return mLayerJobs; }
+
+    /**
+     * Wait for the job to be finished - and keep the thread's event loop running while waiting.
+     *
+     * With a call to waitForFinished(), the waiting is done with a synchronization primitive
+     * and does not involve processing of messages. That may cause issues to code which requires
+     * some events to be handled in the main thread. Some plugins hooking into the rendering
+     * pipeline may require this in order to work properly - for example, OpenLayers plugin
+     * which uses a QWebPage in the main thread.
+     *
+     * Ideally the "wait for finished" method should not be used at all. The code triggering
+     * rendering should not need to actively wait for rendering to finish.
+     */
+    void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
 
   protected slots:
     void futureFinished();

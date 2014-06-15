@@ -222,7 +222,8 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   // render
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
   job.start();
-  job.waitForFinished();
+  // wait, but allow network requests to be processed
+  job.waitForFinishedWithEventLoop( QEventLoop::ExcludeUserInputEvents );
 }
 
 void QgsComposerMap::cache( void )

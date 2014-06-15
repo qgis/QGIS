@@ -297,6 +297,14 @@ QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 }
 
 
+void QgsMapRendererCustomPainterJob::waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags )
+{
+  QEventLoop loop;
+  connect( &mFutureWatcher, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+  loop.exec( flags );
+}
+
+
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
