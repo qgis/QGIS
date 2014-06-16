@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -47,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>407</width>
-        <height>360</height>
+        <height>364</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -105,7 +114,14 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="mResizeModeComboBox"/>
+           <widget class="QComboBox" name="mResizeModeComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0" colspan="2">
            <widget class="QPushButton" name="mAddFramePushButton">
@@ -168,7 +184,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

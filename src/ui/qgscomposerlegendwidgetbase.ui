@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>375</width>
-        <height>1320</height>
+        <y>-169</y>
+        <width>374</width>
+        <height>1145</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -802,7 +802,7 @@
              <string>Space below title.</string>
             </property>
             <property name="suffix">
-             <string>mm</string>
+             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -818,15 +818,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

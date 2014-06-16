@@ -55,8 +55,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>392</width>
-        <height>606</height>
+        <width>408</width>
+        <height>576</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -75,7 +75,7 @@
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item row="1" column="0">
+          <item row="0" column="0">
            <widget class="QLabel" name="mLayerLabel">
             <property name="text">
              <string>Layer</string>
@@ -85,7 +85,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -95,28 +95,28 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="1" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
              <string>Refresh table data</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
             </property>
            </widget>
           </item>
-          <item row="9" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Show only visible features</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="mComposerMapLabel">
             <property name="text">
              <string>Composer map</string>
@@ -129,17 +129,17 @@
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="4" column="1">
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
-          <item row="13" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="mFeatureFilterCheckBox">
             <property name="text">
              <string>Filter with</string>
             </property>
            </widget>
           </item>
-          <item row="13" column="1">
+          <item row="5" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mFeatureFilterEdit"/>
@@ -157,7 +157,7 @@
             </item>
            </layout>
           </item>
-          <item row="15" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="mMaxNumFeaturesLabel">
             <property name="text">
              <string>Maximum rows</string>
@@ -170,14 +170,14 @@
             </property>
            </widget>
           </item>
-          <item row="15" column="1">
+          <item row="6" column="1">
            <widget class="QSpinBox" name="mMaximumColumnsSpinBox">
             <property name="maximum">
              <number>999</number>
             </property>
            </widget>
           </item>
-          <item row="17" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="mMarginLabel">
             <property name="text">
              <string>Margin</string>
@@ -190,8 +190,12 @@
             </property>
            </widget>
           </item>
-          <item row="17" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginSpinBox"/>
+          <item row="7" column="1">
+           <widget class="QDoubleSpinBox" name="mMarginSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -231,7 +235,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox"/>
+           <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0" colspan="2">
            <widget class="QgsColorButton" name="mGridColorButton">
@@ -278,6 +286,12 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="mHeaderHAlignmentComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <item>
              <property name="text">
               <string>Follow column alignment</string>
@@ -311,20 +325,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>
