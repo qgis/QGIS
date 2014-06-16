@@ -813,7 +813,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   QMap<QString, QString>::const_iterator itemLabelIt = mParameters.find( "RULELABEL" );
   if ( itemLabelIt != mParameters.constEnd() )
   {
-    mDrawLegendItemLabel = itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive );
+    mDrawLegendItemLabel = ( itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   else
   {
