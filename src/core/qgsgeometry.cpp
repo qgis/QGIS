@@ -6420,12 +6420,10 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
   QList<GEOSGeometry*> geoms;
   foreach( QgsGeometry* g, geometryList )
   {
-    // const cast: it is ok here, since the pointers will only be used to be stored
-    // in a list for a call to union
-    geoms.append( const_cast<GEOSGeometry*>(g->asGeos()) );
+    geoms.append( GEOSGeom_clone(g->asGeos()) );
   }
-  GEOSGeometry* unioned = _makeUnion( geoms );
+  GEOSGeometry *geomUnion = _makeUnion( geoms );
   QgsGeometry *ret = new QgsGeometry();
-  ret->fromGeos( unioned );
+  ret->fromGeos( geomUnion );
   return ret;
 }
