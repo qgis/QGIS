@@ -64,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>377</width>
-        <height>1251</height>
+        <width>375</width>
+        <height>1320</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -408,7 +408,7 @@
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QPushButton" name="mTitleFontButton">
             <property name="sizePolicy">
@@ -444,7 +444,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mFontColorPushButton">
+           <widget class="QgsColorButton" name="mFontColorButton">
             <property name="text">
              <string>Font color...</string>
             </property>
@@ -817,6 +817,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>

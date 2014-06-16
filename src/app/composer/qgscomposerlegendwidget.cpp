@@ -197,6 +197,7 @@ void QgsComposerLegendWidget::setGuiElements()
   {
     mMapComboBox->setCurrentIndex( mMapComboBox->findData( -1 ) );
   }
+  mFontColorButton->setColor( mLegend->fontColor() );
   blockAllSignals( false );
 }
 
@@ -472,23 +473,15 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   }
 }
 
-void QgsComposerLegendWidget::on_mFontColorPushButton_clicked()
+void QgsComposerLegendWidget::on_mFontColorButton_colorChanged( const QColor& newFontColor )
 {
   if ( !mLegend )
   {
     return;
   }
 
-  QColor oldColor = mLegend->fontColor();
-  QColor newColor = QColorDialog::getColor( oldColor, 0 );
-
-  if ( !newColor.isValid() ) //user canceled the dialog
-  {
-    return;
-  }
-
   mLegend->beginCommand( tr( "Legend font color changed" ) );
-  mLegend->setFontColor( newColor );
+  mLegend->setFontColor( newFontColor );
   mLegend->update();
   mLegend->endCommand();
 }
@@ -947,6 +940,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mIconLabelSpaceSpinBox->blockSignals( b );
   mBoxSpaceSpinBox->blockSignals( b );
   mColumnSpaceSpinBox->blockSignals( b );
+  mFontColorButton->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::refreshMapComboBox()

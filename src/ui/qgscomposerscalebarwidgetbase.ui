@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -51,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-406</y>
+        <y>-476</y>
         <width>340</width>
-        <height>888</height>
+        <height>882</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -415,21 +424,21 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mFontColorPushButton">
+           <widget class="QgsColorButton" name="mFontColorButton">
             <property name="text">
              <string>Font color...</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mColorPushButton">
+           <widget class="QgsColorButton" name="mFillColorButton">
             <property name="text">
              <string>Fill color...</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mStrokeColorPushButton">
+           <widget class="QgsColorButton" name="mStrokeColorButton">
             <property name="text">
              <string>Stroke color...</string>
             </property>
@@ -447,15 +456,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenCapStyleComboBox</class>
