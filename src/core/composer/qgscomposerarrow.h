@@ -110,8 +110,10 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     /**Default marker, no marker or svg marker*/
     MarkerMode mMarkerMode;
     QColor mArrowColor;
-
-
+    /**Indicates QGIS version to mimic bounding box behaviour for. The line placement changed in version 2.4, so a value
+     * of 22 is used to indicate that the line should be drawn using the older placement routine.
+    */
+    int mBoundsBehaviour;
 
     /**Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
         Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed*/
