@@ -238,18 +238,10 @@ void QgsMapRendererCustomPainterJob::start()
   QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
 
   // now we are ready to start rendering!
-  if ( !mLayerJobs.isEmpty() )
-  {
-    connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( futureFinished() ) );
+  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( futureFinished() ) );
 
-    mFuture = QtConcurrent::run( staticRender, this );
-    mFutureWatcher.setFuture( mFuture );
-  }
-  else
-  {
-    // just make sure we will clean up and emit finished() signal
-    QTimer::singleShot( 0, this, SLOT( futureFinished() ) );
-  }
+  mFuture = QtConcurrent::run( staticRender, this );
+  mFutureWatcher.setFuture( mFuture );
 }
 
 
