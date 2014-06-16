@@ -6402,16 +6402,12 @@ namespace QgsGeometryAlgorithms
 
 QgsGeometry* unaryUnion( const QList<QgsGeometry*>& geometryList )
 {
-  QVector<GEOSGeometry*> geoms;
+  QList<GEOSGeometry*> geoms;
   foreach( QgsGeometry* g, geometryList )
   {
     geoms.append( GEOSGeom_clone(g->asGeos()) );
   }
-
-  GEOSGeometry* geomCollection = 0;
-  geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geoms );
-  GEOSGeometry* geomUnion = GEOSUnaryUnion( geomCollection );
-  GEOSGeom_destroy( geomCollection );
+  GEOSGeometry *geomUnion = _makeUnion( geoms );
   QgsGeometry *ret = new QgsGeometry();
   ret->fromGeos( geomUnion );
   return ret;
