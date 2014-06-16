@@ -3110,12 +3110,12 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgGetScriptsAndModels.ui" line="14"/>
         <source>Get scripts and models</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz skrypty i modele</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgGetScriptsAndModels.ui" line="86"/>
         <source>about:blank</source>
-        <translation type="unfinished">informacja:brak</translation>
+        <translation>informacja:brak</translation>
     </message>
 </context>
 <context>
@@ -7437,7 +7437,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2203"/>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Odcienie szarości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2206"/>
@@ -7447,7 +7447,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2214"/>
         <source>Simulate Fax (Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Czarno-biały</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2217"/>
@@ -7457,7 +7457,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2225"/>
         <source>Simulate Color Blindness (Protanope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ślepota barw (protanopia)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2228"/>
@@ -7467,7 +7467,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2236"/>
         <source>Simulate Color Blindness (Deuteranope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ślepota barw (daltonizm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2239"/>
@@ -11157,7 +11157,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="50"/>
         <source>Inverted polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopełnienie poligonów</translation>
     </message>
     <message numerus="yes">
         <source>%n geometry error(s) found.</source>
@@ -17777,18 +17777,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="36"/>
         <source>&amp;Expand All</source>
-        <translation type="unfinished">Rozwiń wszystkie</translation>
+        <translation>Rozwiń wszystkie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="37"/>
         <source>&amp;Collapse All</source>
-        <translation type="unfinished">Zwiń wszystkie</translation>
+        <translation>Zwiń wszystkie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="48"/>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="76"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Usuń</translation>
+        <translation>&amp;Usuń</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="51"/>
@@ -17980,13 +17980,13 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="206"/>
         <source>Atlas filter eval error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd filtrowania obiektów atlasu: %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="206"/>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="741"/>
         <source>Composer</source>
-        <translation type="unfinished">Wydruk</translation>
+        <translation>Wydruk</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="349"/>
@@ -18001,7 +18001,7 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="741"/>
         <source>Atlas filename evaluation error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd nazwy pliku atlasu: %1</translation>
     </message>
     <message>
         <source>Filename eval error: %1</source>
@@ -18017,14 +18017,16 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="103"/>
         <source>Could not evaluate filename pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawna maska nazwy pliku</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="104"/>
         <source>Could not set filename pattern as &apos;%1&apos;.
 Parser error:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Maska pliku nie może mieć postaci &apos;%1&apos;.
+Błąd:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="120"/>
@@ -18474,7 +18476,7 @@ Parser error:
     <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="147"/>
         <source>Feature Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrybutu obiektu</translation>
     </message>
 </context>
 <context>
@@ -19023,7 +19025,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="582"/>
         <source>[update field expression]</source>
-        <translation type="unfinished"></translation>
+        <translation>[aktualizuj wyrażenie pola]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="641"/>
@@ -20733,7 +20735,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="269"/>
         <source>Simulate Photocopy (Grayscale)</source>
-        <translation type="unfinished"></translation>
+        <translation>Odcienie szarości</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="270"/>
@@ -20743,7 +20745,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="273"/>
         <source>Simulate Fax (Mono)</source>
-        <translation type="unfinished"></translation>
+        <translation>Czarno-biały</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="274"/>
@@ -20753,7 +20755,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="277"/>
         <source>Simulate Color Blindness (Protanope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ślepota barw (protanopia)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="278"/>
@@ -20763,7 +20765,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="281"/>
         <source>Simulate Color Blindness (Deuteranope)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ślepota barw (daltonizm)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="282"/>
@@ -20843,7 +20845,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1799"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2059"/>
         <source>Feature filter parser error: %1</source>
-        <translation type="unfinished">Błąd filtrowania obiektów: %1</translation>
+        <translation>Błąd filtrowania obiektów: %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1676"/>
@@ -22348,7 +22350,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="225"/>
         <source>Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Strona</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="246"/>
@@ -27083,7 +27085,7 @@ a aktualną wersją pliku jest [%3]</translation>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="242"/>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="244"/>
         <source>unknown</source>
-        <translation type="unfinished">nieznany</translation>
+        <translation>nieznany</translation>
     </message>
 </context>
 <context>
@@ -27116,17 +27118,17 @@ a aktualną wersją pliku jest [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="70"/>
         <source>Destination CRS</source>
-        <translation type="unfinished">Docelowy układ współrzędnych</translation>
+        <translation>Docelowy układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="91"/>
         <source>Source CRS</source>
-        <translation type="unfinished">Źródłowy układ współrzędnych</translation>
+        <translation>Źródłowy układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="108"/>
         <source>Layer</source>
-        <translation type="unfinished">Warstwa</translation>
+        <translation>Warstwa</translation>
     </message>
 </context>
 <context>
@@ -36845,7 +36847,7 @@ w wierszu %2 kolumnie %3</translation>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
         <source>Handle bad layers</source>
-        <translation type="unfinished">Brakujące warstwy</translation>
+        <translation>Brakujące warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
@@ -37289,12 +37291,12 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="660"/>
         <source>Table</source>
-        <translation type="unfinished">Tabela</translation>
+        <translation>Tabela</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="661"/>
         <source>Graph</source>
-        <translation type="unfinished">Wykres</translation>
+        <translation>Wykres</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="695"/>
@@ -37612,7 +37614,8 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/gui/symbology-ng/qgsinvertedpolygonrendererwidget.cpp" line="46"/>
         <source>The inverted polygon renderer only applies to polygon and multipolygon layers. 
 &apos;%1&apos; is not a polygon layer and then cannot be displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlanie dopełnień poligonów ma zastosowanie tylko do warstw poligonowych wielopoligonowych.
+% nie jest warstwą poligonową i nie może być wyświetlona.</translation>
     </message>
 </context>
 <context>
@@ -37620,17 +37623,17 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="22"/>
         <source>Sub renderer:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wyświetlanie:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="37"/>
         <source>Merge polygons before rendering (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Złącz poligony przed wyświetlaniem (wolne)</translation>
     </message>
 </context>
 <context>
@@ -38991,7 +38994,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3775"/>
         <source>Force point inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymuś punkt wewnątrz poligonu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4301"/>
@@ -41365,7 +41368,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="14"/>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostosuj zakresy skalowe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="24"/>
@@ -41380,7 +41383,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="54"/>
         <source>Scale only within the following map unit scale range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaluj jedynie w podanych zakresach:</translation>
     </message>
 </context>
 <context>
@@ -45006,7 +45009,7 @@ Zawsze z sieci: zawsze wczytuj z sieci, bez sprawdzania.</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="602"/>
         <source>Mean +/- standard deviation</source>
-        <translation>odchylenia standarowego</translation>
+        <translation>średnia +/- odchylenie standardowe</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="767"/>
@@ -51574,7 +51577,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1765"/>
         <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
-        <translation type="unfinished"></translation>
+        <translation>Komprersja obrazów JPEG ( 10 : mniejszy plik - 100 : najlepsza jakość )</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1799"/>
@@ -60387,7 +60390,7 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="155"/>
         <source>Save symbol</source>
-        <translation type="unfinished">Zapisz symbol</translation>
+        <translation>Zapisz symbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="158"/>
@@ -61221,7 +61224,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/gui/qgsunitselectionwidget.cpp" line="78"/>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostosuj zakresy skalowe</translation>
     </message>
 </context>
 <context>
@@ -61287,7 +61290,7 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluerelationconfigdlg.cpp" line="65"/>
         <source>Edit filter expression</source>
-        <translation type="unfinished">Edytuj wyrażenie filtra</translation>
+        <translation>Edytuj wyrażenie filtra</translation>
     </message>
 </context>
 <context>
@@ -62002,22 +62005,22 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="332"/>
         <source>Provider: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło danych: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="333"/>
         <source>Storage: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nośnik: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="335"/>
         <source>expected field</source>
-        <translation type="unfinished"></translation>
+        <translation>oczekiwane pole</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="342"/>
         <source>retrieved field</source>
-        <translation type="unfinished"></translation>
+        <translation>pozyskane pole</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="362"/>
@@ -67707,7 +67710,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_centroidfill.ui" line="22"/>
         <source>Force point inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymuś punkt wewnątrz poligonu</translation>
     </message>
     <message>
         <source>Marker</source>
