@@ -2217,7 +2217,7 @@ void QgisApp::createOverview()
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
   mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
-  mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
+  mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", true ).toBool() );
 
   mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false ).toBool() );
 
@@ -7256,7 +7256,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
-    mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
+    mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", true ).toBool() );
 
     mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false ).toBool() );
 
