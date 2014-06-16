@@ -83,7 +83,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
       return NULL;
 
     QList<QgsField> attrList;
-    attrList.append( QgsField( "one", QVariant::Int ) );
+    attrList.append( QgsField( "id", QVariant::Int ) );
     prov->addAttributes( attrList );
     QList<QgsMapLayer *> myList;
     myList << myLayer;

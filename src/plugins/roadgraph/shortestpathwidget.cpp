@@ -37,6 +37,7 @@
 #include <qgsfeature.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
+#include <qgsvectordataprovider.h>
 #include <qgsmessagebar.h>
 
 #include <qgsgraphdirector.h>
@@ -400,10 +401,11 @@ void RgShortestPathWidget::exportPath()
   }
   p.push_front( ct.transform( p1 ) );
 
-  vl->startEditing();
   QgsFeature f;
+  QgsFeatureList features;
   f.setGeometry( QgsGeometry::fromPolyline( p ) );
-  vl->addFeature( f );
+  features << f;
+  vl->dataProvider()->addFeatures( features );
   vl->updateExtents();
 
   mPlugin->iface()->mapCanvas()->update();
