@@ -73,6 +73,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   mSubRenderer->startRender( context, fields );
 
   mFeaturesCategories.clear();
+  mSymbolCategories.clear();
   mFeatureDecorations.clear();
   mFields = fields;
 
@@ -278,6 +279,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       }
     }
     mSubRenderer->renderFeature( feat, mContext );
+  }
+  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  {
+    foreach( QgsGeometry* g, cit->geometries )
+    {
+      delete g;
+    }
   }
 
   // when no features are visible, we still have to draw the exterior rectangle
