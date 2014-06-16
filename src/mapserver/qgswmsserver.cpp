@@ -768,7 +768,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   QMap<QString, QString>::const_iterator layerTitleIt = mParameters.find( "LAYERTITLE" );
   if ( layerTitleIt != mParameters.constEnd() )
   {
-    mDrawLegendLayerLabel = layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive );
+    mDrawLegendLayerLabel = ( layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   else
   {
