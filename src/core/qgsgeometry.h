@@ -355,8 +355,11 @@ class CORE_EXPORT QgsGeometry
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments );
 
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
     /** Returns an offset line at a given distance and side from an input line. */
     QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit );
+#endif
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance );

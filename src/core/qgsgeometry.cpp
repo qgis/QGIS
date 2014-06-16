@@ -5594,6 +5594,8 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
   CATCH_GEOS( 0 )
 }
 
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
 QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
 {
   if ( mDirtyGeos )
@@ -5608,6 +5610,7 @@ QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinSt
   }
   CATCH_GEOS( 0 )
 }
+#endif
 
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {
