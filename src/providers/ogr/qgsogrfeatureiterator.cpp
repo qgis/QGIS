@@ -337,7 +337,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
   mSubsetString = p->mSubsetString;
   mEncoding = p->mEncoding; // no copying - this is a borrowed pointer from Qt
   mFields = p->mAttributeFields;
-  mOgrGeometryTypeFilter = p->mOgrGeometryTypeFilter;
+  mOgrGeometryTypeFilter = wkbFlatten(p->mOgrGeometryTypeFilter);
 }
 
 QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest& request )
