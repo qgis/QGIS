@@ -390,7 +390,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
 
-  //QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, f, crs );
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->pendingFields(), f, vlayer->crs() );
   featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
@@ -399,6 +398,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   const QgsFields &fields = vlayer->pendingFields();
   const QgsAttributes& attrs = f.attributes();
+  bool featureLabeled = false;
   for ( int i = 0; i < attrs.count(); ++i )
   {
     if ( i >= fields.count() )
@@ -427,9 +427,16 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     {
       featItem->setText( 0, attrItem->text( 0 ) );
       featItem->setText( 1, attrItem->text( 1 ) );
+      featureLabeled = true;
     }
 
     featItem->addChild( attrItem );
+  }
+
+  if( !featureLabeled )
+  {
+    featItem->setText( 0, tr( "feature id" ) );
+    featItem->setText( 1, QString::number( f.id() ) );
   }
 
   if ( derivedAttributes.size() >= 0 )
