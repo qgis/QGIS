@@ -39,6 +39,7 @@
 #endif
 
 #include <qglobal.h>
+#include <qgsgeometry.h>
 
 #include "pointset.h"
 #include "util.h"
@@ -988,29 +989,30 @@ namespace pal
     // check if centroid inside in polygon
     if ( forceInside && !isPointInPolygon( nbPoints, x, y, px, py ) )
     {
-      GEOSCoordSequence *coord = GEOSCoordSeq_create( nbPoints, 2 );
+      GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+      GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
 
       for ( int i = 0; i < nbPoints; ++i )
       {
-        GEOSCoordSeq_setX( coord, i, x[i] );
-        GEOSCoordSeq_setY( coord, i, y[i] );
+        GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
+        GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
       }
 
-      GEOSGeometry *geom = GEOSGeom_createPolygon( GEOSGeom_createLinearRing( coord ), 0, 0 );
+      GEOSGeometry *geom = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
 
       if ( geom )
       {
-        GEOSGeometry *pointGeom = GEOSPointOnSurface( geom );
+        GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, geom );
 
         if ( pointGeom )
         {
-          const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq( pointGeom );
-          GEOSCoordSeq_getX( coordSeq, 0, &px );
-          GEOSCoordSeq_getY( coordSeq, 0, &py );
+          const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
+          GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
+          GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
 
-          GEOSGeom_destroy( pointGeom );
+          GEOSGeom_destroy_r( geosctxt, pointGeom );
         }
-        GEOSGeom_destroy( geom );
+        GEOSGeom_destroy_r( geosctxt, geom );
       }
     }
   }

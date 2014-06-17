@@ -41,6 +41,7 @@
 #include <cmath>
 #include <vector>
 
+#include <qgsgeometry.h>
 
 #include <pal/pal.h>
 #include <pal/layer.h>
@@ -285,6 +286,7 @@ namespace pal
       throw InternalException::UnknownGeometry();
     }
 
+    GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
     // if multiple labels are requested for lines, split the line in pieces of desired distance
     if ( repeatDistance > 0 )
     {
@@ -292,20 +294,20 @@ namespace pal
       for ( int i = 0; i < nSimpleGeometries; ++i )
       {
         const GEOSGeometry* geom = simpleGeometries->pop_front();
-        if ( GEOSGeomTypeId( geom ) == GEOS_LINESTRING )
+        if ( GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
         {
-          const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( geom );
+          const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
           // get number of points
           unsigned int n;
-          GEOSCoordSeq_getSize( cs, &n );
+          GEOSCoordSeq_getSize_r( geosctxt, cs, &n );
 
           // Read points
           std::vector<Point> points( n );
           for ( unsigned int i = 0; i < n; ++i )
           {
-            GEOSCoordSeq_getX( cs, i, &points[i].x );
-            GEOSCoordSeq_getY( cs, i, &points[i].y );
+            GEOSCoordSeq_getX_r( geosctxt, cs, i, &points[i].x );
+            GEOSCoordSeq_getY_r( geosctxt, cs, i, &points[i].y );
           }
 
           // Cumulative length vector
@@ -337,26 +339,26 @@ namespace pal
             p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
             p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
             part.push_back( p );
-            GEOSCoordSequence* cooSeq = GEOSCoordSeq_create( part.size(), 2 );
+            GEOSCoordSequence* cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
             for ( std::size_t i = 0; i < part.size(); ++i )
             {
-              GEOSCoordSeq_setX( cooSeq, i, part[i].x );
-              GEOSCoordSeq_setY( cooSeq, i, part[i].y );
+              GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
+              GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
             }
 
-            simpleGeometries->push_back( GEOSGeom_createLineString( cooSeq ) );
+            simpleGeometries->push_back( GEOSGeom_createLineString_r( geosctxt, cooSeq ) );
             part.clear();
             part.push_back( p );
           }
           // Create final part
           part.push_back( points[n - 1] );
-          GEOSCoordSequence* cooSeq = GEOSCoordSeq_create( part.size(), 2 );
+          GEOSCoordSequence* cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
           for ( std::size_t i = 0; i < part.size(); ++i )
           {
-            GEOSCoordSeq_setX( cooSeq, i, part[i].x );
-            GEOSCoordSeq_setY( cooSeq, i, part[i].y );
+            GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
+            GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
           }
-          simpleGeometries->push_back( GEOSGeom_createLineString( cooSeq ) );
+          simpleGeometries->push_back( GEOSGeom_createLineString_r( geosctxt, cooSeq ) );
         }
         else
         {
@@ -370,13 +372,13 @@ namespace pal
       const GEOSGeometry* geom = simpleGeometries->pop_front();
 
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
-      if ( GEOSisValid( geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
+      if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         std::cerr << "ignoring invalid feature " << geom_id << std::endl;
         continue;
       }
 
-      int type = GEOSGeomTypeId( geom );
+      int type = GEOSGeomTypeId_r( geosctxt, geom );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
@@ -404,9 +406,9 @@ namespace pal
       if ( mode == LabelPerFeature && repeatDistance == 0.0 && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
       {
         if ( type == GEOS_LINESTRING )
-          GEOSLength( geom, &geom_size );
+          GEOSLength_r( geosctxt, geom, &geom_size );
         else if ( type == GEOS_POLYGON )
-          GEOSArea( geom, &geom_size );
+          GEOSArea_r( geosctxt, geom, &geom_size );
 
         if ( geom_size > biggest_size )
         {

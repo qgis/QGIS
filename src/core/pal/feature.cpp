@@ -39,6 +39,7 @@
 #endif
 
 #include <qglobal.h>
+#include <qgsgeometry.h>
 
 #include <cmath>
 #include <cstring>
@@ -109,7 +110,7 @@ namespace pal
 
     if ( ownsGeom )
     {
-      GEOSGeom_destroy( the_geom );
+      GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), the_geom );
       the_geom = NULL;
     }
   }
@@ -123,15 +124,16 @@ namespace pal
     int i, j;
 
     const GEOSCoordSequence *coordSeq;
+    GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
 
-    type = GEOSGeomTypeId( geom );
+    type = GEOSGeomTypeId_r( geosctxt, geom );
 
     if ( type == GEOS_POLYGON )
     {
-      if ( GEOSGetNumInteriorRings( geom ) > 0 )
+      if ( GEOSGetNumInteriorRings_r( geosctxt, geom ) > 0 )
       {
         // set nbHoles, holes member variables
-        nbHoles = GEOSGetNumInteriorRings( geom );
+        nbHoles = GEOSGetNumInteriorRings_r( geosctxt, geom );
         holes = new PointSet*[nbHoles];
 
         for ( i = 0; i < nbHoles; i++ )
@@ -139,20 +141,20 @@ namespace pal
           holes[i] = new PointSet();
           holes[i]->holeOf = NULL;
 
-          const GEOSGeometry* interior =  GEOSGetInteriorRingN( geom, i );
-          holes[i]->nbPoints = GEOSGetNumCoordinates( interior );
+          const GEOSGeometry* interior =  GEOSGetInteriorRingN_r( geosctxt, geom, i );
+          holes[i]->nbPoints = GEOSGetNumCoordinates_r( geosctxt, interior );
           holes[i]->x = new double[holes[i]->nbPoints];
           holes[i]->y = new double[holes[i]->nbPoints];
 
           holes[i]->xmin = holes[i]->ymin = DBL_MAX;
           holes[i]->xmax = holes[i]->ymax = -DBL_MAX;
 
-          coordSeq = GEOSGeom_getCoordSeq( interior );
+          coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, interior );
 
           for ( j = 0; j < holes[i]->nbPoints; j++ )
           {
-            GEOSCoordSeq_getX( coordSeq, j, &holes[i]->x[j] );
-            GEOSCoordSeq_getY( coordSeq, j, &holes[i]->y[j] );
+            GEOSCoordSeq_getX_r( geosctxt, coordSeq, j, &holes[i]->x[j] );
+            GEOSCoordSeq_getY_r( geosctxt, coordSeq, j, &holes[i]->y[j] );
 
             holes[i]->xmax = holes[i]->x[j] > holes[i]->xmax ? holes[i]->x[j] : holes[i]->xmax;
             holes[i]->xmin = holes[i]->x[j] < holes[i]->xmin ? holes[i]->x[j] : holes[i]->xmin;
@@ -166,7 +168,7 @@ namespace pal
       }
 
       // use exterior ring for the extraction of coordinates that follows
-      geom = GEOSGetExteriorRing( geom );
+      geom = GEOSGetExteriorRing_r( geosctxt, geom );
     }
     else
     {
@@ -175,8 +177,8 @@ namespace pal
     }
 
     // find out number of points
-    nbPoints = GEOSGetNumCoordinates( geom );
-    coordSeq = GEOSGeom_getCoordSeq( geom );
+    nbPoints = GEOSGetNumCoordinates_r( geosctxt, geom );
+    coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
     // initialize bounding box
     xmin = ymin = DBL_MAX;
@@ -188,8 +190,8 @@ namespace pal
 
     for ( i = 0; i < nbPoints; i++ )
     {
-      GEOSCoordSeq_getX( coordSeq, i, &x[i] );
-      GEOSCoordSeq_getY( coordSeq, i, &y[i] );
+      GEOSCoordSeq_getX_r( geosctxt, coordSeq, i, &x[i] );
+      GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &y[i] );
 
       xmax = x[i] > xmax ? x[i] : xmax;
       xmin = x[i] < xmin ? x[i] : xmin;
@@ -1393,13 +1395,14 @@ namespace pal
 
   void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] )
   {
-    int geomType = GEOSGeomTypeId( the_geom );
+    GEOSContextHandle_t ctxt = QgsGeometry::getGEOSHandler();
+    int geomType = GEOSGeomTypeId_r( ctxt, the_geom );
 
     double sizeCost = 0;
     if ( geomType == GEOS_LINESTRING )
     {
       double length;
-      if ( GEOSLength( the_geom, &length ) != 1 )
+      if ( GEOSLength_r( ctxt, the_geom, &length ) != 1 )
         return; // failed to calculate length
       double bbox_length = max( bbx[2] - bbx[0], bby[2] - bby[0] );
       if ( length >= bbox_length / 4 )
@@ -1410,7 +1413,7 @@ namespace pal
     else if ( geomType == GEOS_POLYGON )
     {
       double area;
-      if ( GEOSArea( the_geom, &area ) != 1 )
+      if ( GEOSArea_r( ctxt, the_geom, &area ) != 1 )
         return;
       double bbox_area = ( bbx[2] - bbx[0] ) * ( bby[2] - bby[0] );
       if ( area >= bbox_area / 16 )
@@ -1432,27 +1435,28 @@ namespace pal
 
   bool FeaturePart::isConnected( FeaturePart* p2 )
   {
-    return ( GEOSTouches( the_geom, p2->the_geom ) == 1 );
+    return ( GEOSTouches_r( QgsGeometry::getGEOSHandler(), the_geom, p2->the_geom ) == 1 );
   }
 
   bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
   {
-    GEOSGeometry* g1 = GEOSGeom_clone( the_geom );
-    GEOSGeometry* g2 = GEOSGeom_clone( other->the_geom );
+    GEOSContextHandle_t ctxt = QgsGeometry::getGEOSHandler();
+    GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, the_geom );
+    GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->the_geom );
     GEOSGeometry* geoms[2] = { g1, g2 };
-    GEOSGeometry* g = GEOSGeom_createCollection( GEOS_MULTILINESTRING, geoms, 2 );
-    GEOSGeometry* gTmp = GEOSLineMerge( g );
-    GEOSGeom_destroy( g );
+    GEOSGeometry* g = GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 );
+    GEOSGeometry* gTmp = GEOSLineMerge_r( ctxt, g );
+    GEOSGeom_destroy_r( ctxt, g );
 
-    if ( GEOSGeomTypeId( gTmp ) != GEOS_LINESTRING )
+    if ( GEOSGeomTypeId_r( ctxt, gTmp ) != GEOS_LINESTRING )
     {
       // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
-      GEOSGeom_destroy( gTmp );
+      GEOSGeom_destroy_r( ctxt, gTmp );
       return false;
     }
 
     if ( ownsGeom ) // delete old geometry if we own it
-      GEOSGeom_destroy( the_geom );
+      GEOSGeom_destroy_r( ctxt, the_geom );
     // set up new geometry
     the_geom = gTmp;
     ownsGeom = true;

@@ -1985,7 +1985,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
+  GEOSGeometry* geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
@@ -3536,7 +3536,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   }
 
   //create PALGeometry with diagram = true
-  QgsPalGeometry* lbl = new QgsPalGeometry( feat.id(), "", GEOSGeom_clone( geos_geom ) );
+  QgsPalGeometry* lbl = new QgsPalGeometry( feat.id(), "", GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom ) );
   lbl->setIsDiagram( true );
 
   // record the created geometry - it will be deleted at the end.

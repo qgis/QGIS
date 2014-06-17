@@ -589,6 +589,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
   int i = 0;
   ErrorList errorList;
+  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
 
   // could be enabled for lines and points too
   // so duplicate rule may be removed?
@@ -646,13 +647,13 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
         QgsGeometry* polyGeom = QgsGeometry::fromPolygon( polygon );
 
-        geomList.push_back( GEOSGeom_clone( polyGeom->asGeos() ) );
+        geomList.push_back( GEOSGeom_clone_r( geosctxt, polyGeom->asGeos() ) );
       }
 
     }
     else
     {
-      geomList.push_back( GEOSGeom_clone( g1->asGeos() ) );
+      geomList.push_back( GEOSGeom_clone_r( geosctxt, g1->asGeos() ) );
     }
   }
 
@@ -672,11 +673,11 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   }
 
   GEOSGeometry* collection = 0;
-  collection = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, geomArray, geomList.size() );
+  collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomArray, geomList.size() );
 
 
   qDebug() << "performing cascaded union..might take time..-";
-  GEOSGeometry* unionGeom = GEOSUnionCascaded( collection );
+  GEOSGeometry* unionGeom = GEOSUnionCascaded_r( geosctxt, collection );
   //delete[] geomArray;
 
   QgsGeometry test;
@@ -875,7 +876,7 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
     if ( !g->asGeos() )
       continue;
 
-    if ( !GEOSisValid( g->asGeos() ) )
+    if ( !GEOSisValid_r( QgsGeometry::getGEOSHandler(), g->asGeos() ) )
     {
       QgsRectangle r = g->boundingBox();
       QList<FeatureLayer> fls;
