@@ -281,7 +281,20 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
         currentSymbolItem->setIcon( QIcon( itemPixmap ) );
       }
       currentSymbolItem->setLayerID( rasterLayer->id() );
-      currentSymbolItem->setColor( itemIt->second );
+
+      QColor itemColor = itemIt->second;
+
+      //determine raster layer opacity, and adjust item color opacity to match
+      QgsRasterRenderer* rasterRenderer = rasterLayer->renderer();
+      int opacity = 255;
+      if ( rasterRenderer )
+      {
+        opacity = rasterRenderer->opacity() * 255.0;
+      }
+      itemColor.setAlpha( opacity );
+
+      currentSymbolItem->setColor( itemColor );
+
       int currentRowCount = layerItem->rowCount();
       layerItem->setChild( currentRowCount, 0, currentSymbolItem );
       row++;
