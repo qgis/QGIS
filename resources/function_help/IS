@@ -2,7 +2,7 @@
 Returns 1 if a is the same as b.
 
 <h4>Syntax</h4>
-<pre>a is b</pre>
+<pre>a IS b</pre>
 
 <h4>Arguments</h4>
 None
@@ -12,7 +12,6 @@ None
 <pre> 'A' IS 'a'  &rarr; returns 0 </pre>
 <pre> 4 IS 4      &rarr; returns 1 </pre>
 <pre> 4 IS 2+2    &rarr; returns 1 </pre>
-<pre> 4 IS 2      &rarr; returns 0 </pre>
 <pre> 4 IS 2      &rarr; returns 0 </pre>
 <pre> $geometry IS NULL  &rarr; returns 0, if your geometry is not NULL</pre>
 
