@@ -43,6 +43,7 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
     : QDialog( parent, fl )
     , mButton( 0 )
     , mCount( 0 )
+    , mShowToolTips( true )
 {
   setupUi( this );
 
@@ -119,7 +120,8 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   if ( !isVisible() && level > QgsMessageLog::INFO )
   {
     mButton->show();
-    QToolTip::showText( mButton->mapToGlobal( QPoint( 0, 0 ) ), mButton->toolTip() );
+    if ( mShowToolTips )
+      QToolTip::showText( mButton->mapToGlobal( QPoint( 0, 0 ) ), mButton->toolTip() );
   }
 
   if ( tag.isNull() )
