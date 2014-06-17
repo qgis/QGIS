@@ -96,8 +96,6 @@ class PythonConsoleWidget(QWidget):
 
         self.settings = QSettings()
 
-        self.options = optionsDialog(self)
-
         self.shell = ShellScintilla(self)
         self.setFocusProxy(self.shell)
         self.shellOut = ShellOutputScintilla(self)
@@ -534,8 +532,6 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.saveAsFileButton.triggered.connect(self.saveAsScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        self.connect(self.options.buttonBox, SIGNAL("accepted()"),
-                     self.prefChanged)
         self.connect(self.listClassMethod, SIGNAL('itemClicked(QTreeWidgetItem*, int)'),
                      self.onClickGoToLine)
         self.lineEditFind.returnPressed.connect(self._findText)
@@ -681,12 +677,11 @@ class PythonConsoleWidget(QWidget):
         QgsContextHelp.run( "PythonConsole" )
 
     def openSettings(self):
-        self.options.exec_()
-
-    def prefChanged(self):
-        self.shell.refreshSettingsShell()
-        self.shellOut.refreshSettingsOutput()
-        self.tabEditorWidget.refreshSettingsEditor()
+        options = optionsDialog(self)
+        if options.exec_():
+            self.shell.refreshSettingsShell()
+            self.shellOut.refreshSettingsOutput()
+            self.tabEditorWidget.refreshSettingsEditor()
 
     def callWidgetMessageBar(self, text):
         self.shellOut.widgetMessageBar(iface, text)

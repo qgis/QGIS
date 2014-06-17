@@ -180,6 +180,9 @@
               <property name="gridStyle">
                <enum>Qt::SolidLine</enum>
               </property>
+              <property name="columnCount">
+               <number>2</number>
+              </property>
               <property name="rowCount">
                <number>0</number>
               </property>
