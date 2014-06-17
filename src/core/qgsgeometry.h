@@ -357,7 +357,10 @@ class CORE_EXPORT QgsGeometry
 
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-    /** Returns an offset line at a given distance and side from an input line. */
+    /** Returns an offset line at a given distance and side from an input line (uses GEOS)
+     @note added in 2.3
+     @note only available with GEOS >= 3.3
+      */
     QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit );
 #endif
 
