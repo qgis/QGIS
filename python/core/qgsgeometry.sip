@@ -314,7 +314,21 @@ class QgsGeometry
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments ) /Factory/;
 
-    /** Returns an offset line at a given distance and side from an input line. */
+    /** Returns a buffer region around the geometry, with additional style options.
+     * @param segments    For round joins, number of segments to approximate quarter-circle
+     * @param endCapStyle Round (1) / Flat (2) / Square (3) end cap style
+     * @param joinStyle   Round (1) / Mitre (2) / Bevel (3) join style
+     * @param mitreLimit  Limit on the mitre ratio used for very sharp corners
+     * @note added in 2.4
+     * @note needs GEOS >= 3.3 - otherwise always returns 0
+     */
+    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) /Factory/;
+
+    /** Returns an offset line at a given distance and side from an input line.
+     * See buffer() method for details on parameters.
+     * @note added in 2.4
+     * @note needs GEOS >= 3.3 - otherwise always returns 0
+     */
     QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) /Factory/;
 
     /** Returns a simplified version of this geometry using a specified tolerance value */

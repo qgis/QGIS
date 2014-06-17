@@ -5594,10 +5594,30 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
   CATCH_GEOS( 0 )
 }
 
+QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit )
+{
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSBufferWithStyle( mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit ) );
+  }
+  CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
+}
+
 QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
 {
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   if ( mDirtyGeos )
     exportWkbToGeos();
 
@@ -5609,8 +5629,10 @@ QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinSt
     return fromGeosGeom( GEOSOffsetCurve( mGeos, distance, segments, joinStyle, mitreLimit ) );
   }
   CATCH_GEOS( 0 )
-}
+#else
+  return 0;
 #endif
+}
 
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {

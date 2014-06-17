@@ -708,7 +708,13 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
   QgsGeometry* tempGeometry = ( geometryType == QGis::Polygon ) ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
   {
-    QgsGeometry* offsetGeom = ( geometryType == QGis::Polygon ) ? tempGeometry->buffer( -dist, 8 /*quadSegments*/ ) : tempGeometry->offsetCurve( dist, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+    int quadSegments = 0; // we want mitre joins, not round joins
+    double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
+    QgsGeometry* offsetGeom = 0;
+    if ( geometryType == QGis::Polygon )
+      offsetGeom = tempGeometry->buffer( -dist, quadSegments, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, mitreLimit );
+    else
+      offsetGeom = tempGeometry->offsetCurve( dist, quadSegments, GEOSBUF_JOIN_MITRE, mitreLimit );
 
     if ( offsetGeom )
     {
