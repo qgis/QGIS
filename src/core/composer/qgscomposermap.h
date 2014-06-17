@@ -727,7 +727,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
-    void drawGridLine( const QLineF& line, QPainter* p );
+    void drawGridLine( const QLineF& line, QgsRenderContext& context );
     void drawOverviewMapExtent( QPainter* p );
     void createDefaultOverviewFrameSymbol();
     void createDefaultGridLineSymbol();

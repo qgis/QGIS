@@ -1432,21 +1432,45 @@ void QgsComposerMap::drawGrid( QPainter* p )
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
   p->setClipRect( thisPaintRect );
 
+  QPaintDevice* thePaintDevice = p->device();
+  if ( !thePaintDevice )
+  {
+    return;
+  }
+
   // set the blend mode for drawing grid lines
   p->save();
   p->setCompositionMode( mGridBlendMode );
+  p->setRenderHint( QPainter::Antialiasing );
+
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
+  p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
+  //setup render context
+  QgsMapSettings ms = mComposition->mapSettings();
+  //context units should be in dots
+  ms.setOutputSize( QSizeF( rect().width() * dotsPerMM, rect().height() * dotsPerMM ).toSize() );
+  ms.setExtent( *currentMapExtent() );
+  ms.setOutputDpi( p->device()->logicalDpiX() );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  context.setPainter( p );
 
   //simpler approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsComposerMap::Solid )
   {
+    //need to scale line to dots, rather then mm, since the painter has been scaled to dots
+    QLineF line;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
-      drawGridLine( vIt->second, p );
+      line = QLineF( vIt->second.p1() * dotsPerMM, vIt->second.p2() * dotsPerMM )  ;
+      drawGridLine( line, context );
     }
 
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
     {
-      drawGridLine( hIt->second, p );
+      line = QLineF( hIt->second.p1() * dotsPerMM, hIt->second.p2() * dotsPerMM )  ;
+      drawGridLine( line, context );
     }
   }
   else //cross
@@ -1456,7 +1480,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
     {
       //start mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
-      drawGridLine( QLineF( vIt->second.p1(), crossEnd1 ), p );
+      drawGridLine( QLineF( vIt->second.p1(), crossEnd1 ), context );
 
       //test for intersection with every horizontal line
       hIt = horizontalLines.constBegin();
@@ -1466,12 +1490,12 @@ void QgsComposerMap::drawGrid( QPainter* p )
         {
           crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
           crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
-          drawGridLine( QLineF( crossEnd1, crossEnd2 ), p );
+          drawGridLine( QLineF( crossEnd1, crossEnd2 ), context );
         }
       }
       //end mark
       QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
-      drawGridLine( QLineF( vIt->second.p2(), crossEnd2 ), p );
+      drawGridLine( QLineF( vIt->second.p2(), crossEnd2 ), context );
     }
 
     hIt = horizontalLines.constBegin();
@@ -1479,7 +1503,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
     {
       //start mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
-      drawGridLine( QLineF( hIt->second.p1(), crossEnd1 ), p );
+      drawGridLine( QLineF( hIt->second.p1(), crossEnd1 ), context );
 
       vIt = verticalLines.constBegin();
       for ( ; vIt != verticalLines.constEnd(); ++vIt )
@@ -1488,12 +1512,12 @@ void QgsComposerMap::drawGrid( QPainter* p )
         {
           crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
           crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
-          drawGridLine( QLineF( crossEnd1, crossEnd2 ), p );
+          drawGridLine( QLineF( crossEnd1, crossEnd2 ), context );
         }
       }
       //end mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
-      drawGridLine( QLineF( hIt->second.p2(), crossEnd1 ), p );
+      drawGridLine( QLineF( hIt->second.p2(), crossEnd1 ), context );
     }
   }
   // reset composition mode
@@ -1529,24 +1553,15 @@ void QgsComposerMap::drawGridFrame( QPainter* p, const QList< QPair< double, QLi
   drawGridFrameBorder( p, bottomGridFrame, QgsComposerMap::Bottom );
 }
 
-void QgsComposerMap::drawGridLine( const QLineF& line, QPainter* p )
+void QgsComposerMap::drawGridLine( const QLineF& line, QgsRenderContext& context )
 {
-  if ( !mGridLineSymbol || !p )
+  if ( !mGridLineSymbol )
   {
     return;
   }
-
-  //setup render context
-  QgsRenderContext context;
-  context.setPainter( p );
   if ( mPreviewMode == Rectangle )
   {
     return;
-  }
-  else
-  {
-    context.setScaleFactor( 1.0 );
-    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
   }
 
   QPolygonF poly;
@@ -2556,22 +2571,33 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   QgsRectangle thisExtent = *currentMapExtent();
   QgsRectangle intersectRect = thisExtent.intersect( &otherExtent );
 
-  QgsRenderContext context;
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = p->device()->logicalDpiX() / 25.4;
+
+  //setup render context
+  QgsMapSettings ms = mComposition->mapSettings();
+  //context units should be in dots
+  ms.setOutputSize( QSizeF( rect().width() * dotsPerMM, rect().height() * dotsPerMM ).toSize() );
+  ms.setExtent( *currentMapExtent() );
+  ms.setOutputDpi( p->device()->logicalDpiX() );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
-  context.setScaleFactor( 1.0 );
-  context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
 
   p->save();
   p->setCompositionMode( mOverviewBlendMode );
   p->translate( mXOffset, mYOffset );
+  p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+  p->setRenderHint( QPainter::Antialiasing );
+
   mOverviewFrameMapSymbol->startRender( context );
 
   //construct a polygon corresponding to the intersecting map extent
+  //need to scale line to dots, rather then mm, since the painter has been scaled to dots
   QPolygonF intersectPolygon;
-  double x = ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
-  double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
-  double width = intersectRect.width() / thisExtent.width() * rect().width();
-  double height = intersectRect.height() / thisExtent.height() * rect().height();
+  double x = dotsPerMM * ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
+  double y = dotsPerMM * ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
+  double width = dotsPerMM * intersectRect.width() / thisExtent.width() * rect().width();
+  double height = dotsPerMM * intersectRect.height() / thisExtent.height() * rect().height();
   intersectPolygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height ) << QPointF( x, y );
 
   QList<QPolygonF> rings; //empty list
