@@ -166,19 +166,16 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
 
-  QgsRenderContext context;
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = p->device()->logicalDpiX() / 25.4;
+
+  //setup render context
+  QgsMapSettings ms = mComposition->mapSettings();
+  //context units should be in dots
+  ms.setOutputDpi( p->device()->logicalDpiX() );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
-  context.setScaleFactor( 1.0 );
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
-  {
-    //Limit resolution of symbol fill if composition is not being exported
-    //otherwise zooming into composition slows down renders
-    context.setRasterScaleFactor( qMin( horizontalViewScaleFactor(), 3.0 ) );
-  }
-  else
-  {
-    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
-  }
+  p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
   //generate polygon to draw
   QList<QPolygonF> rings; //empty list
@@ -196,7 +193,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
     {
       //create an ellipse
       QPainterPath ellipsePath;
-      ellipsePath.addEllipse( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      ellipsePath.addEllipse( QRectF( 0, 0 , rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
       QPolygonF ellipsePoly = ellipsePath.toFillPolygon( t );
       shapePolygon = ti.map( ellipsePoly );
       break;
@@ -207,22 +204,22 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
       if ( mCornerRadius > 0 )
       {
         QPainterPath roundedRectPath;
-        roundedRectPath.addRoundedRect( QRectF( 0, 0 , rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
+        roundedRectPath.addRoundedRect( QRectF( 0, 0 , rect().width() * dotsPerMM, rect().height() * dotsPerMM ), mCornerRadius * dotsPerMM, mCornerRadius * dotsPerMM );
         QPolygonF roundedPoly = roundedRectPath.toFillPolygon( t );
         shapePolygon = ti.map( roundedPoly );
       }
       else
       {
-        shapePolygon = QPolygonF( QRectF( 0, 0, rect().width(), rect().height() ) );
+        shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
       }
       break;
     }
     case Triangle:
     {
-      shapePolygon << QPointF( 0, rect().height() );
-      shapePolygon << QPointF( rect().width() , rect().height() );
-      shapePolygon << QPointF( rect().width() / 2.0, 0 );
-      shapePolygon << QPointF( 0, rect().height() );
+      shapePolygon << QPointF( 0, rect().height() * dotsPerMM );
+      shapePolygon << QPointF( rect().width() * dotsPerMM, rect().height() * dotsPerMM );
+      shapePolygon << QPointF( rect().width() / 2.0 * dotsPerMM, 0 );
+      shapePolygon << QPointF( 0, rect().height() * dotsPerMM );
       break;
     }
   }

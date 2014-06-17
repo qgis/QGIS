@@ -154,19 +154,15 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     return;
   }
 
-  QgsRenderContext context;
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
+
+  //setup render context
+  QgsMapSettings ms = mComposition->mapSettings();
+  //context units should be in dots
+  ms.setOutputDpi( painter->device()->logicalDpiX() );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( painter );
-  context.setScaleFactor( 1.0 );
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
-  {
-    //Limit resolution of symbol fill if composition is not being exported
-    //otherwise zooming into composition slows down renders
-    context.setRasterScaleFactor( qMin( horizontalViewScaleFactor(), 3.0 ) );
-  }
-  else
-  {
-    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
-  }
 
   painter->save();
 
@@ -187,11 +183,14 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
 
+  painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
   painter->setRenderHint( QPainter::Antialiasing );
   mComposition->pageStyleSymbol()->startRender( context );
 
   calculatePageMargin();
-  QPolygonF pagePolygon = QPolygonF( QRectF( mPageMargin, mPageMargin, rect().width() - 2 * mPageMargin, rect().height() - 2 * mPageMargin ) );
+  QPolygonF pagePolygon = QPolygonF( QRectF( mPageMargin * dotsPerMM, mPageMargin * dotsPerMM,
+                                     ( rect().width() - 2 * mPageMargin ) * dotsPerMM, ( rect().height() - 2 * mPageMargin ) * dotsPerMM ) );
   QList<QPolygonF> rings; //empty list
 
   //need to render using atlas feature properties?
