@@ -83,7 +83,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
       return NULL;
 
     QList<QgsField> attrList;
-    attrList.append( QgsField( "lenght", QVariant::Double, "", 20, 8 ) );
+    attrList.append( QgsField( "length", QVariant::Double, "", 20, 8 ) );
     attrList.append( QgsField( "time", QVariant::Double, "", 20, 8 ) );
     prov->addAttributes( attrList );
     myLayer->updateFields();
