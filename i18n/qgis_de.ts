@@ -4943,6 +4943,14 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <translation>Konnte vorhandene Shapedatei nicht löschen.</translation>
     </message>
     <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation>Derzeit erlaubt QGIS den gleichzeitigen Zugriff von 
+                                 verschiedenen Threads auf die gleiche Datenquelle nicht. Stellen Sie sicher, 
+                                 dass die Attributtabellen des Layers geschlossen sind. Fortfahren?</translation>
+    </message>
+    <message>
         <source>Unable to delete incomplete shapefile.</source>
         <translation>Konnte unvollständige Shapedatei nicht löschen.</translation>
     </message>
@@ -4986,7 +4994,7 @@ Bitte wählen Sie ein anderes Feld...</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from                                  different threads to the same datasource. Make sure your layer&apos;s                                  attribute tables are closed. Continue?</source>
-        <translation>Derzeit erlaubt QGIS den gleichzeitigen Zugriff von 
+        <translation type="obsolete">Derzeit erlaubt QGIS den gleichzeitigen Zugriff von 
                                  verschiedenen Threads auf die gleiche Datenquelle nicht. Stellen Sie sicher, 
                                  dass die Attributtabellen des Layers geschlossen sind. Fortfahren?</translation>
     </message>
@@ -7221,7 +7229,13 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or                              parameters and can&apos;t be executed</source>
-        <translation>Modell enthält keine Algorithmen und/oder                             Parameter und kann nicht ausgeführt werden</translation>
+        <translation type="obsolete">Modell enthält keine Algorithmen und/oder                             Parameter und kann nicht ausgeführt werden</translation>
+    </message>
+    <message>
+        <source>Model doesn&apos;t contains any algorithms and/or 
+                             parameters and can&apos;t be executed</source>
+        <translation>Modell enthält keine Algorithmen und/oder
+                             Parameter und kann nicht ausgeführt werden</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
@@ -7262,8 +7276,27 @@ Funktioniert auf allen ändernbaren Layern</translation>
         <translation>Konnte Modell nicht speichern</translation>
     </message>
     <message>
+        <source>This model can&apos;t be saved in its 
+                                     original location (probably you do not 
+                                     have permission to do it). Please, use 
+                                     the &apos;Save as...&apos; option.</source>
+        <translation>Diese Modell kann an seiner ur-
+                                    sprünglichen Stelle gespeichert werden 
+                                    (wahrscheinlich haben Sie keine Berechtig-
+                                    ung dazu). Bitte &apos;Speichern als...&apos; ver-
+                                    wenden.</translation>
+    </message>
+    <message>
+        <source>The selected model could not be loaded.
+
+                                 Wrong line: %s</source>
+        <translation>Das gewählte Modell konnte nicht geladen werden.
+
+                                 Fehlerhafte Zeile: %s</translation>
+    </message>
+    <message>
         <source>This model can&apos;t be saved in its                                      original location (probably you do not                                      have permission to do it). Please, use                                      the &apos;Save as...&apos; option.</source>
-        <translation>Diese Modell kann an seiner ursprünglichen Stelle gespeichert werden (wahrscheinlich haben Sie keine Berechtigung dazu). Bitte &apos;Speichern als...&apos; verwenden.</translation>
+        <translation type="obsolete">Diese Modell kann an seiner ursprünglichen Stelle gespeichert werden (wahrscheinlich haben Sie keine Berechtigung dazu). Bitte &apos;Speichern als...&apos; verwenden.</translation>
     </message>
     <message>
         <source>Model saved</source>
@@ -7284,7 +7317,7 @@ Funktioniert auf allen ändernbaren Layern</translation>
     <message>
         <source>The selected model could not be loaded.
                                  Wrong line: %s</source>
-        <translation>Das gewählte Modell konnte nicht geladen werden.
+        <translation type="obsolete">Das gewählte Modell konnte nicht geladen werden.
                                  Fehlerhafte Zeile: %s</translation>
     </message>
     <message>
@@ -13859,39 +13892,39 @@ Ausdruckfehler:
 <context>
     <name>QgsAtlasCompositionWidgetBase</name>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="122"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="140"/>
         <source>Coverage layer </source>
         <translation>Abdeckungslayer </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="176"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="184"/>
         <source>Hidden coverage layer</source>
         <translation>Abdeckungslayer verstecken</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="204"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="222"/>
         <source>Output filename expression</source>
         <translation>Ausgabedateiausdruck</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="165"/>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="230"/>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="240"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="173"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="248"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="258"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="107"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="125"/>
         <source>Configuration</source>
         <translation>Konfiguration</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="220"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="238"/>
         <source>Sort by</source>
         <translation>Sortieren nach</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="129"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="147"/>
         <source>Filter with</source>
         <translation>Filtern nach</translation>
     </message>
@@ -13901,22 +13934,22 @@ Ausdruckfehler:
         <translation>Atlas-Erzeugung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="189"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="207"/>
         <source>Output</source>
         <translation>Ergebnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="254"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="272"/>
         <source>Single file export when possible</source>
         <translation>Einzeldatei, wenn möglich</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="227"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="245"/>
         <source>Sort direction</source>
         <translation>Richtung sortieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="47"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="65"/>
         <source>Generate an atlas</source>
         <translation>Einen Atlas erzeugen</translation>
     </message>
@@ -17052,12 +17085,12 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
 <context>
     <name>QgsComposerHtmlWidgetBase</name>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="84"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="93"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="69"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="78"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
@@ -17067,42 +17100,42 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>HTML-Rahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="35"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="44"/>
         <source>HTML frame</source>
         <translation>HTML-Rahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="57"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="66"/>
         <source>Main properties</source>
         <translation>Haupteigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="109"/>
         <source>Resize mode</source>
         <translation>Resize-Modus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="113"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="129"/>
         <source>Add Frame</source>
         <translation>Rahmen hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="123"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="139"/>
         <source>Use smart page breaks</source>
         <translation>Intelligenter Seitenumbrüche nutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="138"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="154"/>
         <source>Maximum distance</source>
         <translation>Maximalabstand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="145"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="161"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="93"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="102"/>
         <source>Refresh HTML</source>
         <translation>HTML aktualisieren</translation>
     </message>
@@ -17224,58 +17257,63 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Drehung</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="265"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="271"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="278"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="284"/>
         <source>Frame</source>
         <translation>Rahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="300"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="312"/>
         <source>Thickness</source>
         <translation>Dicke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="293"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="347"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="305"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="382"/>
         <source>Color...</source>
         <translation>Farbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="316"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="331"/>
+        <source> mm</source>
+        <translation> mm</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="338"/>
         <source>Join style</source>
         <translation>Verbindungsstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="329"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="358"/>
         <source>Background</source>
         <translation>Hintergrund</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="375"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="410"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="388"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="423"/>
         <source>Rendering</source>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="406"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="441"/>
         <source>Blending mode</source>
         <translation>Mischmodus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="416"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="451"/>
         <source>Transparency</source>
         <translation>Transparenz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="357"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="392"/>
         <source>Item ID</source>
         <translation>Elementkennung</translation>
     </message>
@@ -17710,6 +17748,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="748"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="768"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="785"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="805"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
@@ -17825,9 +17864,8 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Titelzwischenraum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="805"/>
         <source>mm</source>
-        <translation>mm</translation>
+        <translation type="obsolete">mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="497"/>
@@ -18305,72 +18343,72 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
 <context>
     <name>QgsComposerMapWidgetBase</name>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="50"/>
         <source>Map</source>
         <translation>Karte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="111"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="120"/>
         <source>Scale</source>
         <translation>Maßstab </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="183"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="192"/>
         <source>X min</source>
         <translation>X-Min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="199"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="208"/>
         <source>Y min</source>
         <translation>Y-Min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="215"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="224"/>
         <source>X max</source>
         <translation>X-Max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="72"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="81"/>
         <source>Main properties</source>
         <translation>Haupteigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="128"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Map rotation</source>
         <translation>Kartendrehung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="145"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="154"/>
         <source>Draw map canvas items</source>
         <translation>Kartenelemente zeichnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="168"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="177"/>
         <source>Extents</source>
         <translation>Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="231"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="240"/>
         <source>Y max</source>
         <translation>Y-Max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="247"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="256"/>
         <source>Set to map canvas extent</source>
         <translation>Anzeigegrenzen übernehmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="366"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="375"/>
         <source>Grid &amp;type</source>
         <translation>Gitter&amp;typ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="455"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="464"/>
         <source>Cross width</source>
         <translation>Kreuzbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="158"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="167"/>
         <source>Lock layers for map item</source>
         <translation>Layer des Kartenelements festhalten</translation>
     </message>
@@ -18380,209 +18418,217 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Kartenoptionen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="334"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="343"/>
         <source>Show grid</source>
         <translation>Gitter anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="502"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="514"/>
         <source>Interval</source>
         <translation>Intervall</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="384"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="427"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="393"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="436"/>
         <source>X </source>
         <translation>X </translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="135"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="144"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="254"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="263"/>
         <source>View extent in map canvas</source>
         <translation>Ausmaße in der Karte anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="264"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="273"/>
         <source>Controlled by atlas</source>
         <translation>Gesteuert durch Atlas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="282"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="291"/>
         <source>Margin around feature</source>
         <translation>Rand um Objekte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="298"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="307"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="314"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="323"/>
         <source>Fixed scale</source>
         <translation>Fester Maßstab</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="321"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="330"/>
         <source>Use one of the predefined scales of the project where the atlas feature best fits.</source>
         <translation>Vordefinierten Projektmaßstab verwenden bei dem das Atlas-Objekt am besten paßt.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="324"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="333"/>
         <source>Predefined scale (best fit)</source>
         <translation>Vordefinierter Maßstab (am passensten)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="397"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="440"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="406"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="449"/>
         <source>Y </source>
         <translation>Y </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="412"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="421"/>
         <source>Offset</source>
         <translation>Versatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="495"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="477"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="567"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="581"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="765"/>
+        <source> mm</source>
+        <translation> mm</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="507"/>
         <source>Blend mode</source>
         <translation>Mischmodi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="517"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="529"/>
         <source>Grid frame</source>
         <translation>Gitterrahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="545"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="557"/>
         <source>Frame size</source>
         <translation>Rahmengröße</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="558"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="574"/>
         <source>Frame line thickness</source>
         <translation>Rahmenlinienbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="568"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="588"/>
         <source>Color...</source>
         <translation>Farbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="575"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="595"/>
         <source>Frame fill colors</source>
         <translation>Rahmenfüllfarben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="602"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="622"/>
         <source>Draw coordinates</source>
         <translation>Koordinaten zeichnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="632"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="652"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="642"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="662"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="661"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="681"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="680"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="700"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="699"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="719"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="718"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="738"/>
         <source>Font</source>
         <translation>Schrift</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="764"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="788"/>
         <source>Font color...</source>
         <translation>Schriftfarbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="777"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="801"/>
         <source>Overview</source>
         <translation>Übersicht</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="795"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="819"/>
         <source>Overview frame</source>
         <translation>Übersichtsrahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="805"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="829"/>
         <source>Overview style</source>
         <translation>Übersichtsstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="812"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="836"/>
         <source>Change...</source>
         <translation>Ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="819"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="843"/>
         <source>Overview blending mode</source>
         <translation>Übersichtsmischmodus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="829"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="853"/>
         <source>Invert overview</source>
         <translation>Übersicht invertieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="836"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="860"/>
         <source>Center on overview</source>
         <translation>Auf Übersicht zentrieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="532"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="544"/>
         <source>Frame style</source>
         <translation>Rahmenstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="475"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="487"/>
         <source>Line style</source>
         <translation>Linienstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="485"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="497"/>
         <source>change...</source>
         <translation>ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="725"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="745"/>
         <source>Font...</source>
         <translation>Schriftart...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="732"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="752"/>
         <source>Distance to map frame</source>
         <translation>Abstand zum Kartenrahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="748"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="772"/>
         <source>Coordinate precision</source>
         <translation>Koordinatengenauigkeit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="102"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="111"/>
         <source>Update preview</source>
         <translation>Vorschau aktualisieren</translation>
     </message>
@@ -18610,12 +18656,12 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>1 Element gewählt</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="834"/>
+        <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="839"/>
         <source>dx: %1 mm dy: %2 mm</source>
         <translation>dx %1 mm dy: %2 mm</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="1060"/>
+        <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="1065"/>
         <source>width: %1 mm height: %2 mm</source>
         <translation>Breite: %1 mm Höhe: %2 mm</translation>
     </message>
@@ -19125,29 +19171,29 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="280"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="315"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="332"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="355"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="318"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="335"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="358"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="429"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="432"/>
         <source>Font color...</source>
         <translation>Schriftfarbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="436"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="439"/>
         <source>Fill color...</source>
         <translation>Füllfarbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="443"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="446"/>
         <source>Stroke color...</source>
         <translation>Strichfarbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="391"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="394"/>
         <source>Alignment</source>
         <translation>Ausrichtung</translation>
     </message>
@@ -19202,37 +19248,37 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="305"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="308"/>
         <source>Box margin</source>
         <translation>Rahmenrand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="322"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="325"/>
         <source>Labels margin</source>
         <translation>Beschriftungsrand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="339"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="342"/>
         <source>Line width</source>
         <translation>Linienbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="371"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="374"/>
         <source>Join style</source>
         <translation>Verbindungsstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="381"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="384"/>
         <source>Cap style</source>
         <translation>Endenstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="404"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="407"/>
         <source>Fonts and colors</source>
         <translation>Schriftarten und Farben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="422"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="425"/>
         <source>Font...</source>
         <translation>Schriftart...</translation>
     </message>
@@ -19495,57 +19541,63 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Rand</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="202"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="196"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="240"/>
+        <source> mm</source>
+        <translation> mm</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="206"/>
         <source>Show grid</source>
         <translation>Gitter anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="223"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="227"/>
         <source>Stroke width</source>
         <translation>Strichbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="239"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="247"/>
         <source>Color...</source>
         <translation>Farbe...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="249"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="257"/>
         <source>Fonts</source>
         <translation>Schriftarten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="261"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="269"/>
         <source>Header font...</source>
         <translation>Kopfschriftart...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="268"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="276"/>
         <source>Content font...</source>
         <translation>Textschriftart...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="275"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="283"/>
         <source>Header alignment</source>
         <translation>Überschriftenausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="283"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="297"/>
         <source>Follow column alignment</source>
         <translation>Spaltenausrichtung folgen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="288"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="302"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="293"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="307"/>
         <source>Center</source>
         <translation>Zentriert</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="298"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="312"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
@@ -39674,6 +39726,11 @@ Fehler: %2</translation>
         <translation>Formular</translation>
     </message>
     <message>
+        <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="23"/>
+        <source>The field contains a filename for a picture. The widget will show a preview of this picture.</source>
+        <translation>Das Feld enthält den Dateiname eines Bildes und das Element zeigt eine Voransicht des Bildes.</translation>
+    </message>
+    <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="33"/>
         <source>Picture size</source>
         <translation>Bildgröße</translation>
@@ -41406,156 +41463,156 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="219"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="197"/>
         <source>Layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="220"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="198"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="221"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="199"/>
         <source>Identifiable</source>
         <translation>Abfragbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="241"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="219"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="249"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="227"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="253"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="231"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="750"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1112"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="728"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1090"/>
         <source>Coordinate System Restriction</source>
         <translation>Koordinatensystemeinschränkung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="750"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="728"/>
         <source>No coordinate systems selected. Disabling restriction.</source>
         <translation>Kein Koordinatensystem gewählt. Einschränkung aufgehoben.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="172"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="150"/>
         <source>Selection color</source>
         <translation>Auswahlfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="916"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="894"/>
         <source>Measure tool (CRS transformation: %1)</source>
         <translation>Meßwerkzeug (KBS-Transformation: %1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="917"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="895"/>
         <source>Canvas units (CRS transformation: %1)</source>
         <translation>Karteneinheiten (KBS-Transformation: %1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="950"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="951"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="928"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="929"/>
         <source>OFF</source>
         <translation>AUS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="961"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="962"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="939"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="940"/>
         <source>ON</source>
         <translation>AN</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1112"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1090"/>
         <source>CRS %1 was already selected</source>
         <translation>KBS %1 war bereits gewählt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1132"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1110"/>
         <source>Coordinate System Restrictions</source>
         <translation>Koordinatensystemeinschränkung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1133"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1111"/>
         <source>The current selection of coordinate systems will be lost.
 Proceed?</source>
         <translation>Die aktuelle Koordinatensystemauswahl wird verloren gehen.
 Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1166"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1144"/>
         <source>Select print composer</source>
         <translation>Druckzusammenstellung wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1166"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1144"/>
         <source>Composer Title</source>
         <translation>Titel der Druckzusammenstellung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1188"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1166"/>
         <source>Select restricted layers and groups</source>
         <translation>Eingeschränkte Layer und Gruppen wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1262"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1240"/>
         <source>Enter scale</source>
         <translation>Maßstab eingeben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1263"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1241"/>
         <source>Scale denominator</source>
         <translation>Maßstabsnenner</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1287"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1265"/>
         <source>Load scales</source>
         <translation>Maßstäbe laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1288"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1314"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1266"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1292"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XML-Dateien (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1313"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1291"/>
         <source>Save scales</source>
         <translation>Maßstäbe speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1462"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1440"/>
         <source>Select a valid symbol</source>
         <translation>Ein gültiges Symbol wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1468"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1446"/>
         <source>Invalid symbol : </source>
         <translation>Ungültiges Symbil : </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1514"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1618"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1619"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1492"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1597"/>
         <source>Parameters:</source>
         <translation>Parameter:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1618"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1619"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1597"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
         <translation>%1 aus Menü wählen, um die Radien einzustellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1630"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1608"/>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
         <translation>Ellipsoide Berechnungen nur bei eingeschalteter KBS-Transformation möglich</translation>
     </message>
@@ -42063,27 +42120,27 @@ Fortfahren?</translation>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="501"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="503"/>
         <source>User Defined Coordinate Systems</source>
         <translation>Benutzerdefiniertes Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="577"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="579"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Geografisches Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="586"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="588"/>
         <source>Projected Coordinate Systems</source>
         <translation>Projiziertes Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1002"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1004"/>
         <source>Resource Location Error</source>
         <translation>Ressource nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1003"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -52161,6 +52218,11 @@ Antwort war:
         <translation>Formular</translation>
     </message>
     <message>
+        <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="20"/>
+        <source>Field contains a filename or URL for a webpage</source>
+        <translation>Das Feld enthält einen Dateinamen oder eine URL einer Webseite</translation>
+    </message>
+    <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="27"/>
         <source>Width</source>
         <translation>Breite</translation>
@@ -53304,105 +53366,105 @@ Grund: %2</translation>
 <context>
     <name>RgShortestPathWidget</name>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="58"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="59"/>
         <source>Shortest path</source>
         <translation>Kürzester Weg</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="96"/>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="103"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="97"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="104"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="97"/>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="111"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="98"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="112"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="69"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="70"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="81"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="82"/>
         <source>Stop</source>
         <translation>Stopp</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="94"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="95"/>
         <source>Criterion</source>
         <translation>Kriterium</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="119"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="120"/>
         <source>Calculate</source>
         <translation>Berechnen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="121"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="122"/>
         <source>Export</source>
         <translation>Exportieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="126"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="127"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="131"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="132"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="238"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="239"/>
         <source>Point not selected</source>
         <translation>Punkt nicht gewählt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="238"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="239"/>
         <source>First, select start and stop points.</source>
         <translation>Zuerst Start- und Endpunkte wählen.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="250"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="251"/>
         <source>Plugin isn&apos;t configured</source>
         <translation>Erweiterung is nicht konfiguriert</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="250"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="251"/>
         <source>Plugin isn&apos;t configured!</source>
         <translation>Erweiterung is nicht konfiguriert!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="271"/>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="276"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="272"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="277"/>
         <source>Tie point failed</source>
         <translation>Punktzuordnung fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="271"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="272"/>
         <source>Start point doesn&apos;t tie to the road!</source>
         <translation>Startpunkt konnte keiner Straße zugeordnet werden!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="276"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="277"/>
         <source>Stop point doesn&apos;t tie to the road!</source>
         <translation>Endpunkt konnte keiner Straße zugeordnet werden!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="291"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="292"/>
         <source>Cannot calculate path</source>
         <translation>Kann Weg nicht berechnen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="292"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="293"/>
         <source>The created graph is empty. Please check your input data.</source>
         <translation>Der erzeugte Graph ist leer. Bitte prüfen die Eingabe prüfen.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="307"/>
+        <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="308"/>
         <source>Path not found</source>
         <translation>Pfad nicht gefunden</translation>
     </message>
