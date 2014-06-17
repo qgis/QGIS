@@ -58,6 +58,23 @@ QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
   return node;
 }
 
+
+bool QgsLayerTreeNode::isExpanded() const
+{
+  return mExpanded;
+}
+
+
+void QgsLayerTreeNode::setExpanded( bool expanded )
+{
+  if ( mExpanded == expanded )
+    return;
+
+  mExpanded = expanded;
+  emit expandedChanged( this, expanded );
+}
+
+
 void QgsLayerTreeNode::setCustomProperty( const QString &key, const QVariant &value )
 {
   mProperties.setValue( key, value );
@@ -115,6 +132,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
     connect( nodes[i], SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ) );
     connect( nodes[i], SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ) );
     connect( nodes[i], SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ) );
+    connect( nodes[i], SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ), this, SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ) );
   }
   emit addedChildren( this, index, indexTo );
 }
