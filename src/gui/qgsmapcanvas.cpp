@@ -223,10 +223,11 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   // it is parented to map canvas, will be deleted automatically
   new QgsMapCanvasRendererSync( this, mMapRenderer );
 
-  mSettings.setOutputSize( size() );
-  mMapRenderer->setOutputSize( size(), mSettings.outputDpi() );
-  setSceneRect( 0, 0, size().width(), size().height() );
-  mScene->setSceneRect( QRectF( 0, 0, size().width(), size().height() ) );
+  QSize s = viewport()->size();
+  mSettings.setOutputSize( s );
+  mMapRenderer->setOutputSize( s, mSettings.outputDpi() );
+  setSceneRect( 0, 0, s.width(), s.height() );
+  mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
   moveCanvasContents( true );
 
@@ -1220,7 +1221,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
   QGraphicsView::resizeEvent( e );
   mResizeTimer->start( 500 );
 
-  QSize lastSize = size();
+  QSize lastSize = viewport()->size();
 
   mSettings.setOutputSize( lastSize );
   mMapRenderer->setOutputSize( lastSize, mSettings.outputDpi() );
@@ -1644,7 +1645,7 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   if ( !reset )
     pnt += mCanvasProperties->mouseLastXY - mCanvasProperties->rubberStartPoint;
 
-  setSceneRect( -pnt.x(), -pnt.y(), size().width(), size().height() );
+  setSceneRect( -pnt.x(), -pnt.y(), viewport()->size().width(), viewport()->size().height() );
 }
 
 void QgsMapCanvas::showError( QgsMapLayer * mapLayer )
