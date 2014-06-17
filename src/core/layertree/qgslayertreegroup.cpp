@@ -214,15 +214,18 @@ void QgsLayerTreeGroup::writeXML( QDomElement& parentElement )
 
 void QgsLayerTreeGroup::readChildrenFromXML( QDomElement& element )
 {
+  QList<QgsLayerTreeNode*> nodes;
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
   {
     QgsLayerTreeNode* newNode = QgsLayerTreeNode::readXML( childElem );
     if ( newNode )
-      addChildNode( newNode );
+      nodes << newNode;
 
     childElem = childElem.nextSiblingElement();
   }
+
+  insertChildNodes( -1, nodes );
 }
 
 QString QgsLayerTreeGroup::dump() const

@@ -100,6 +100,11 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
     QFont layerTreeNodeFont( int nodeType ) const;
 
+    //! Set at what number of symbology nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
+    void setAutoCollapseSymbologyNodes( int nodeCount );
+    //! Return at what number of symbology nodes the layer node should be collapsed. -1 means no auto-collapse (default).
+    int autoCollapseSymbologyNodes() const;
+
   signals:
 
 };

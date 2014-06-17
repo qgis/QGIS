@@ -32,6 +32,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
     , mFlags( ShowSymbology )
+    , mAutoCollapseSymNodesCount( -1 )
 {
   Q_ASSERT( mRootNode );
 
@@ -429,11 +430,17 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   emit dataChanged( idx, idx );
 
   // update children
-  beginRemoveRows( idx, 0, rowCount( idx ) - 1 );
+  int oldNodeCount = rowCount( idx );
+  beginRemoveRows( idx, 0, oldNodeCount - 1 );
   removeSymbologyFromLayer( nodeLayer );
   endRemoveRows();
 
   addSymbologyToLayer( nodeLayer );
+  int newNodeCount = rowCount( idx );
+
+  // automatic collapse of symbology nodes - useful if a layer has many symbology nodes
+  if ( mAutoCollapseSymNodesCount != -1 && oldNodeCount != newNodeCount && newNodeCount >= mAutoCollapseSymNodesCount )
+    nodeLayer->setExpanded( false );
 }
 
 QModelIndex QgsLayerTreeModel::currentIndex() const
@@ -732,6 +739,13 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   if ( testFlag( ShowSymbology ) )
   {
     addSymbologyToLayer( nodeLayer );
+
+    // automatic collapse of symbology nodes - useful if a layer has many symbology nodes
+    if ( !mRootNode->customProperty( "loading" ).toBool() )
+    {
+      if ( mAutoCollapseSymNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseSymNodesCount )
+        nodeLayer->setExpanded( false );
+    }
   }
 
   QgsMapLayer* layer = nodeLayer->layer();
