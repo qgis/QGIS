@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -60,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-86</y>
-        <width>339</width>
-        <height>665</height>
+        <y>-20</y>
+        <width>340</width>
+        <height>846</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -184,6 +175,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
             </property>
@@ -260,7 +254,7 @@
              <string> units</string>
             </property>
             <property name="decimals">
-             <number>2</number>
+             <number>6</number>
             </property>
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
