@@ -1363,11 +1363,6 @@ void QgsIdentifyResultsDialog::layerDestroyed()
       tblResults->removeRow( i );
     }
   }
-
-  if ( lstResults->topLevelItemCount() == 0 )
-  {
-    close();
-  }
 }
 
 void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
@@ -1426,11 +1421,6 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
       QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
       tblResults->removeRow( i );
     }
-  }
-
-  if ( lstResults->topLevelItemCount() == 0 )
-  {
-    close();
   }
 }
 
