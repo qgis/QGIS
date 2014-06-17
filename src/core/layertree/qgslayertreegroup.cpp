@@ -41,6 +41,13 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup& other )
 }
 
 
+QgsLayerTreeGroup* QgsLayerTreeGroup::insertGroup( int index, const QString& name )
+{
+  QgsLayerTreeGroup* grp = new QgsLayerTreeGroup( name );
+  insertChildNode( index, grp );
+  return grp;
+}
+
 QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString &name )
 {
   QgsLayerTreeGroup* grp = new QgsLayerTreeGroup( name );
