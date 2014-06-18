@@ -70591,7 +70591,29 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;p&gt;
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nowa warstwa SpatiaLite Layer&lt;/h3&gt;
+W tym oknie można utworzyć nową bazę danych SpatiaLite database lub/i pustą warstwę SpatiaLite do edycji.
+&lt;h4&gt;Baza danych&lt;/h4&gt;
+Wybierz bazę danych z listy rozwijalnej. Na tej liście znajdują się zapisane połączenia SpatiaLite. Jeśli nie ma na liście połączenia z istniejącą bazą, lub chcesz utworzyć nową bazę, wybierz przycisk (&lt;label&gt;...&lt;/label&gt;) znajdujący się po prawej stronie listy.
+&lt;h4&gt;nazwa warstwy&lt;/h4&gt;
+Wprowadź nazwę warstwy którą chcesz utworzyć. Powinno to ybć jedno słowo. Może zawierać znak podkreślenia.
+&lt;h4&gt;Kolumna geometrii&lt;/h4&gt;
+Wprowadź nazwę kolumny zawierającej geometrię lub zaakceptuj nazwę domyślną.
+&lt;h4&gt;Typ&lt;/h4&gt;
+Wybierz typ tworzonej warstwy. 
+&lt;h4&gt;Podaj układ współrzędnych&lt;/h4&gt;
+Domyślnie przyjmowanym układem współrzędnych jest WGS 84. Możesz go jednak zmienić. Wybrany układ musi jednak znajdować się w spatial_ref_sys bazy danych SpatiaLite.
+&lt;h4&gt;Generuj klucz główny z autoinkrementacją&lt;/h4&gt;
+Włącz tę opcję, aby utworzyć klucz główny do tworzonej warstwy. Autoinkrementacja oznacza, że przy dodawaniu nowych obiektów ich identyfikatory będą dopisywany automatycznie.
+&lt;h4&gt;Nowe pole&lt;/h4&gt;
+Wpisz nazwę pola i wybierz jego typ, a następnie &lt;label&gt;Dodaj do listy pól&lt;/label&gt;.&lt;br/&gt;
+W przypadku pól numerycznych nie muszą być podawane ani rozmiary ani liczba cyfr dizesiętnych.
+&lt;h4&gt;Lista pól&lt;/h4&gt;
+W tej części wyświetlane są dotychczas zdefiniowane dla warstwy pola. Aby usunąć któreś z nich, zaznacz je na liście a następnie wybierz przycisk &lt;label&gt;Usuń&lt;/label&gt;.
+
+&lt;p&gt;
+Przycisk &lt;label&gt;OK&lt;/label&gt; spowoduje utworznie nowej warstwy i zamknięcie okna. Przycisk&lt;label&gt;Zastosuj&lt;/label&gt; również utworzy warstwę, lecz nie spowoduje zamknięcia okna umożliwiając dodanie kolejnych podobnych warstw. &lt;label&gt;Anuluj&lt;/label&gt; zamknie okno bez zapisywania zmian.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="245"/>
