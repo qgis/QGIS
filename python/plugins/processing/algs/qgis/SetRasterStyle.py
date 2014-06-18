@@ -38,7 +38,7 @@ from qgis.utils import iface
 class SetRasterStyle(GeoAlgorithm):
 
     INPUT = 'INPUT'
-    STYLE = 'STYLE'    
+    STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
 
@@ -46,22 +46,22 @@ class SetRasterStyle(GeoAlgorithm):
         self.allowOnlyOpenedLayers = True
         self.name = 'Set style for raster layer'
         self.group = 'Raster general tools'
-        self.addParameter(ParameterRaster(self.INPUT, 'Vector layer'))        
+        self.addParameter(ParameterRaster(self.INPUT, 'Vector layer'))
         self.addParameter(ParameterFile(self.STYLE,
                           'Style file', False, False, 'qml'))
         self.addOutput(OutputRaster(self.OUTPUT, 'Styled layer', True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)        
-        
+        layer = dataobjects.getObjectFromUri(filename)
+
         style = self.getParameterValue(self.STYLE)
         with open(style) as f:
-            xml = "".join(f.readlines()) 
+            xml = "".join(f.readlines())
         d = QDomDocument();
         d.setContent(xml);
-        n = d.firstChild();        
-        layer.readSymbology(n, '')                
+        n = d.firstChild();
+        layer.readSymbology(n, '')
         self.setOutputValue(self.OUTPUT, filename)
         iface.mapCanvas().refresh()
         iface.legendInterface().refreshLayerSymbology(layer)

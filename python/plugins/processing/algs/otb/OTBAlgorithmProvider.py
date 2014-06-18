@@ -75,10 +75,10 @@ class OTBAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if OTBUtils.findOtbPath() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_FOLDER, 
+            ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_FOLDER,
                                                 "OTB command line tools folder", OTBUtils.otbPath()))
-        if OTBUtils.findOtbLibPath() is None:            
-            ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_LIB_FOLDER, 
+        if OTBUtils.findOtbLibPath() is None:
+            ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_LIB_FOLDER,
                                                 "OTB applications folder", OTBUtils.otbLibPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_SRTM_FOLDER, "SRTM tiles folder", OTBUtils.otbSRTMPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_GEOID_FILE, "Geoid file", OTBUtils.otbGeoidPath()))

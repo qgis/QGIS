@@ -462,7 +462,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
     {
       dashWidthDiv = 1.0;
     }
-      
+
     QVector<qreal> dashVector;
     QStringList dashList = dashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
     QStringList::const_iterator dashIt = dashList.constBegin();

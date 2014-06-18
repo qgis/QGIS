@@ -60,7 +60,7 @@ class OTBUtils:
                 if os.path.exists(os.path.join(testfolder, "otbcli")):
                     folder = testfolder
         elif isWindows():
-            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 
+            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()),
                                       os.pardir, "bin")
             if os.path.exists(os.path.join(testfolder, "otbcli.bat")):
                 folder = testfolder
@@ -71,12 +71,12 @@ class OTBUtils:
         return folder
 
     @staticmethod
-    def otbPath():        
+    def otbPath():
         folder = OTBUtils.findOtbPath()
         if folder is None:
             folder = ProcessingConfig.getSetting(OTBUtils.OTB_FOLDER)
         return folder
-    
+
     @staticmethod
     def findOtbLibPath():
         folder = None
@@ -105,8 +105,8 @@ class OTBUtils:
         if folder is None:
             folder = ProcessingConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
         return folder
-        
-    
+
+
     @staticmethod
     def otbSRTMPath():
         folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)

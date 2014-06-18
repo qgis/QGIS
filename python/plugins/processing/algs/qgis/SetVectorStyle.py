@@ -37,7 +37,7 @@ from qgis.utils import iface
 class SetVectorStyle(GeoAlgorithm):
 
     INPUT = 'INPUT'
-    STYLE = 'STYLE'    
+    STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
 
@@ -46,18 +46,18 @@ class SetVectorStyle(GeoAlgorithm):
         self.name = 'Set style for vector layer'
         self.group = 'Vector general tools'
         self.addParameter(ParameterVector(self.INPUT, 'Vector layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))        
+                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterFile(self.STYLE,
                           'Style file', False, False, 'qml'))
         self.addOutput(OutputVector(self.OUTPUT, 'Styled layer', True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)        
-        
+        layer = dataobjects.getObjectFromUri(filename)
+
         style = self.getParameterValue(self.STYLE)
-        layer.loadNamedStyle(style)        
-        
+        layer.loadNamedStyle(style)
+
         self.setOutputValue(self.OUTPUT, filename)
         iface.mapCanvas().refresh()
         iface.legendInterface().refreshLayerSymbology(layer)

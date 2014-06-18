@@ -479,7 +479,9 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
     }
   }
   else
+  {
     QgsDebugMsg( "invalid node type" );
+  }
 }
 
 

@@ -356,6 +356,7 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry* buffer( double distance, int segments );
 
     /** Returns a buffer region around the geometry, with additional style options.
+     * @param distance    buffer distance
      * @param segments    For round joins, number of segments to approximate quarter-circle
      * @param endCapStyle Round (1) / Flat (2) / Square (3) end cap style
      * @param joinStyle   Round (1) / Mitre (2) / Bevel (3) join style

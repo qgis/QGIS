@@ -60,7 +60,7 @@ class SagaUtils:
 
     @staticmethod
     def findSagaFolder():
-        folder = None        
+        folder = None
         if isMac():
             testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
             if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
@@ -70,16 +70,16 @@ class SagaUtils:
                 if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
                     folder = testfolder
         elif isWindows():
-            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga')                
+            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga')
             if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
                 folder = testfolder
         return folder
-    
+
     @staticmethod
-    def sagaPath():            
+    def sagaPath():
         folder = SagaUtils.findSagaFolder()
         if folder is None:
-            folder = ProcessingConfig.getSetting(SagaUtils.SAGA_FOLDER)                    
+            folder = ProcessingConfig.getSetting(SagaUtils.SAGA_FOLDER)
         return folder or ''
 
     @staticmethod
@@ -87,8 +87,8 @@ class SagaUtils:
         if SagaUtils.findSagaFolder() is not None:
             return not isMac();
         else:
-            return ProcessingConfig.getSetting(SagaUtils.SAGA_208) 
-        
+            return ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+
     @staticmethod
     def sagaDescriptionPath():
         return os.path.join(os.path.dirname(__file__), 'description')

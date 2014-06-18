@@ -53,7 +53,7 @@ class ParameterFile(Parameter):
             else:
                 self.value = ''
         if self.ext is not None and self.value != '':
-            return self.value.endswith(self.ext) 
+            return self.value.endswith(self.ext)
         return True
 
     def deserialize(self, s):

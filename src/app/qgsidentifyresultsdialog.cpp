@@ -433,7 +433,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     featItem->addChild( attrItem );
   }
 
-  if( !featureLabeled )
+  if ( !featureLabeled )
   {
     featItem->setText( 0, tr( "feature id" ) );
     featItem->setText( 1, QString::number( f.id() ) );

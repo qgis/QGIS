@@ -6440,9 +6440,9 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
 QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
 {
   QList<GEOSGeometry*> geoms;
-  foreach( QgsGeometry* g, geometryList )
+  foreach ( QgsGeometry* g, geometryList )
   {
-    geoms.append( GEOSGeom_clone(g->asGeos()) );
+    geoms.append( GEOSGeom_clone( g->asGeos() ) );
   }
   GEOSGeometry *geomUnion = _makeUnion( geoms );
   QgsGeometry *ret = new QgsGeometry();

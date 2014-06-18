@@ -562,6 +562,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
+    Q_UNUSED( cacheValid );
   }
 
   mGeometryCaches.clear();
@@ -915,6 +916,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   job.renderer->render();
   int tt = t.elapsed();
   QgsDebugMsg( QString( "job %1 end [%2 ms]" ).arg(( ulong ) &job, 0, 16 ).arg( tt ) );
+  Q_UNUSED( tt );
 }
 
 
