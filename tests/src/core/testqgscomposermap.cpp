@@ -155,6 +155,7 @@ void TestQgsComposerMap::crossGrid()
   QgsCompositionChecker checker( "composermap_crossgrid", mComposition );
 
   bool testResult = checker.testComposition( mReport, 0, 100 );
+  mComposerMap->setGridStyle( QgsComposerMap::Solid );
   mComposerMap->setGridEnabled( false );
   mComposerMap->setShowGridAnnotation( false );
   QVERIFY( testResult );
