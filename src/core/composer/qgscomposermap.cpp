@@ -1480,7 +1480,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
     {
       //start mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
-      drawGridLine( QLineF( vIt->second.p1(), crossEnd1 ), context );
+      drawGridLine( QLineF( vIt->second.p1() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
 
       //test for intersection with every horizontal line
       hIt = horizontalLines.constBegin();
@@ -1490,12 +1490,12 @@ void QgsComposerMap::drawGrid( QPainter* p )
         {
           crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
           crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
-          drawGridLine( QLineF( crossEnd1, crossEnd2 ), context );
+          drawGridLine( QLineF( crossEnd1 * dotsPerMM, crossEnd2 * dotsPerMM ), context );
         }
       }
       //end mark
       QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
-      drawGridLine( QLineF( vIt->second.p2(), crossEnd2 ), context );
+      drawGridLine( QLineF( vIt->second.p2() * dotsPerMM, crossEnd2 * dotsPerMM ), context );
     }
 
     hIt = horizontalLines.constBegin();
@@ -1503,7 +1503,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
     {
       //start mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
-      drawGridLine( QLineF( hIt->second.p1(), crossEnd1 ), context );
+      drawGridLine( QLineF( hIt->second.p1() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
 
       vIt = verticalLines.constBegin();
       for ( ; vIt != verticalLines.constEnd(); ++vIt )
@@ -1512,12 +1512,12 @@ void QgsComposerMap::drawGrid( QPainter* p )
         {
           crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
           crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
-          drawGridLine( QLineF( crossEnd1, crossEnd2 ), context );
+          drawGridLine( QLineF( crossEnd1 * dotsPerMM, crossEnd2 * dotsPerMM ), context );
         }
       }
       //end mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
-      drawGridLine( QLineF( hIt->second.p2(), crossEnd1 ), context );
+      drawGridLine( QLineF( hIt->second.p2() * dotsPerMM, crossEnd1 * dotsPerMM ), context );
     }
   }
   // reset composition mode

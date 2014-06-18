@@ -37,6 +37,7 @@ class TestQgsComposerMap: public QObject
     void cleanup();// will be called after every testfunction.
     void render(); //test if rendering of the composition with composr map is correct
     void grid(); //test if grid and grid annotation works
+    void crossGrid(); //test if grid "cross" mode works
     void overviewMap(); //test if overview map frame works
     void overviewMapBlending(); //test if blend modes with overview map frame works
     void overviewMapInvert(); //test if invert of overview map frame works
@@ -132,6 +133,26 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_Overlay );
   qWarning() << "grid annotation font: " << mComposerMap->gridAnnotationFont().toString() << " exactMatch:" << mComposerMap->gridAnnotationFont().exactMatch();
   QgsCompositionChecker checker( "composermap_grid", mComposition );
+
+  bool testResult = checker.testComposition( mReport, 0, 100 );
+  mComposerMap->setGridEnabled( false );
+  mComposerMap->setShowGridAnnotation( false );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::crossGrid()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  mComposerMap->setGridEnabled( true );
+  mComposerMap->setGridStyle( QgsComposerMap::Cross );
+  mComposerMap->setCrossLength( 2.0 );
+  mComposerMap->setGridIntervalX( 2000 );
+  mComposerMap->setGridIntervalY( 2000 );
+  mComposerMap->setShowGridAnnotation( false );
+  mComposerMap->setGridPenWidth( 0.5 );
+  mComposerMap->setGridPenColor( QColor( 0, 255, 0 ) );
+  mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
+  QgsCompositionChecker checker( "composermap_crossgrid", mComposition );
 
   bool testResult = checker.testComposition( mReport, 0, 100 );
   mComposerMap->setGridEnabled( false );
