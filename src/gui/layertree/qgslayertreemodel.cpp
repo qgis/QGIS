@@ -642,6 +642,9 @@ void QgsLayerTreeModel::addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL )
   QSize iconSize( 16, 16 );
   QgsLegendSymbolList items = r->legendSymbolItems();
 
+  if ( items.count() == 0 )
+    return;
+
   beginInsertRows( node2index( nodeL ), 0, items.count() - 1 );
 
   typedef QPair<QString, QgsSymbolV2*> XY;
@@ -675,6 +678,9 @@ void QgsLayerTreeModel::addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL )
     if ( !img.isNull() )
       lst << new QgsLayerTreeModelSymbologyNode( nodeL, tr( "Double-click to view legend" ) );
   }
+
+  if ( rasterItemList.count() == 0 )
+    return;
 
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
   // and it is very slow, so we limit max count
@@ -713,6 +719,9 @@ void QgsLayerTreeModel::addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL )
 
   QSize iconSize( 16, 16 );
   QgsLegendSymbologyList symbologyList = player->legendSymbologyItems( iconSize );
+
+  if ( symbologyList.count() == 0 )
+    return;
 
   beginInsertRows( node2index( nodeL ), 0, symbologyList.count() - 1 );
 
