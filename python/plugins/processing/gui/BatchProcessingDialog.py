@@ -91,6 +91,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table.setColumnCount(self.alg.getVisibleParametersCount()
                                   + nOutputs)
         self.setTableContent()
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        self.table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
         self.table.setSizePolicy(QtGui.QSizePolicy.Expanding,
@@ -135,7 +137,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
     def setTableContent(self):
         i = 0
         for param in self.alg.parameters:
-            self.table.setColumnWidth(i, 250)
             self.table.setHorizontalHeaderItem(i,
                     QtGui.QTableWidgetItem(param.description))
             if param.isAdvanced:
@@ -143,13 +144,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             i += 1
         for out in self.alg.outputs:
             if not out.hidden:
-                self.table.setColumnWidth(i, 250)
                 self.table.setHorizontalHeaderItem(i,
-                        QtGui.QTableWidgetItem(out.description))
+                         QtGui.QTableWidgetItem(out.description))
                 i += 1
 
         if self.alg.getVisibleOutputsCount():
-            self.table.setColumnWidth(i, 200)
             self.table.setHorizontalHeaderItem(i,
                 QtGui.QTableWidgetItem('Load in QGIS'))
 
@@ -319,7 +318,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
     def addRow(self):
         self.table.setRowCount(self.table.rowCount() + 1)
-        self.table.setRowHeight(self.table.rowCount() - 1, 22)
         i = 0
         for param in self.alg.parameters:
             if param.hidden:
@@ -343,6 +341,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             item.setCurrentIndex(0)
             self.table.setCellWidget(self.table.rowCount() - 1, i, item)
 
+            
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:

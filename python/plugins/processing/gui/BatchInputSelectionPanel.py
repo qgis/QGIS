@@ -45,7 +45,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         self.row = row
         self.col = col
         self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
         self.text = QtGui.QLineEdit()
         self.text.setText('')
