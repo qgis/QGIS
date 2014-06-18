@@ -175,6 +175,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   ms.setOutputDpi( p->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
+  context.setForceVectorOutput( true );
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
   //generate polygon to draw

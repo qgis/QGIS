@@ -1454,6 +1454,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
   ms.setExtent( *currentMapExtent() );
   ms.setOutputDpi( p->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  context.setForceVectorOutput( true );
   context.setPainter( p );
 
   //simpler approach: draw vertical lines first, then horizontal ones
@@ -2581,6 +2582,7 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   ms.setExtent( *currentMapExtent() );
   ms.setOutputDpi( p->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  context.setForceVectorOutput( true );
   context.setPainter( p );
 
   p->save();

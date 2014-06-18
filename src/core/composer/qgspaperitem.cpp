@@ -163,6 +163,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   ms.setOutputDpi( painter->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( painter );
+  context.setForceVectorOutput( true );
 
   painter->save();
 
