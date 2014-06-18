@@ -2611,7 +2611,7 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
     //We are inverting the overview frame (ie, shading outside the intersecting extent)
     //Construct a polygon corresponding to the overview map extent
     QPolygonF outerPolygon;
-    outerPolygon << QPointF( 0, 0 ) << QPointF( rect().width(), 0 ) << QPointF( rect().width(), rect().height() ) << QPointF( 0, rect().height() ) << QPointF( 0, 0 );
+    outerPolygon << QPointF( 0, 0 ) << QPointF( rect().width() * dotsPerMM, 0 ) << QPointF( rect().width() * dotsPerMM, rect().height() * dotsPerMM ) << QPointF( 0, rect().height() * dotsPerMM ) << QPointF( 0, 0 );
 
     //Intersecting extent is an inner ring for the shaded area
     rings.append( intersectPolygon );
