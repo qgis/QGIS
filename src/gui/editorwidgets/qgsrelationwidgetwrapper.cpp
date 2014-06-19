@@ -26,6 +26,10 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const Qg
 {
 }
 
+void QgsRelationWidgetWrapper::setEnabled( bool enabled )
+{
+  // Do nothing, we only work on the related table, so no need to disable anything
+}
 
 QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 {
