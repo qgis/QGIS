@@ -1857,6 +1857,9 @@ void QgsWMSProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) c
     //mDrawOutlineLabels
     // TODO: This should probably always be true (already default) for WMS, regardless of any project setting.
     //       Not much sense to output text-as-text, when text-as-outlines gives better results.
+
+    //save settings into global project instance (QgsMapRendererCustomPainterJob reads label settings from there)
+    pal->saveEngineSettings();
   }
 }
 
