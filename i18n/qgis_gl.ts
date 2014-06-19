@@ -17891,7 +17891,7 @@ Erro do intérprete:
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Edit Widget Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Propiedades do Widget</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="43"/>
@@ -20987,7 +20987,7 @@ Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="331"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="338"/>
@@ -21097,7 +21097,7 @@ Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="123"/>
         <source>Label color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiada a cor da etiqueta</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="148"/>
@@ -22360,7 +22360,7 @@ Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="581"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="765"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="507"/>
@@ -23731,7 +23731,7 @@ Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="199"/>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="243"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="209"/>
@@ -25742,7 +25742,7 @@ e o ficheiro actual está en [%3]</translation>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="242"/>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="244"/>
         <source>unknown</source>
-        <translation type="unfinished">descoñecido</translation>
+        <translation>descoñecido</translation>
     </message>
 </context>
 <context>
@@ -25775,17 +25775,17 @@ e o ficheiro actual está en [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="70"/>
         <source>Destination CRS</source>
-        <translation type="unfinished">SRC de destino</translation>
+        <translation>SRC de destino</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="91"/>
         <source>Source CRS</source>
-        <translation type="unfinished">Fonte do SRC</translation>
+        <translation>Fonte do SRC</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="108"/>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
 </context>
 <context>
@@ -26022,7 +26022,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="14"/>
         <source>Grid properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades da grella</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="34"/>
@@ -28359,7 +28359,7 @@ Erro do intérprete:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="297"/>
         <source>Draw text as outlines (recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Debuxa-lo texto coma contorno (recomendado)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="248"/>
@@ -35090,7 +35090,7 @@ na liña %2 columna %3</translation>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="86"/>
         <source>Datasource</source>
-        <translation type="unfinished">Fonte de datos</translation>
+        <translation>Fonte de datos</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="97"/>
@@ -35499,17 +35499,17 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="244"/>
         <source>Select identify mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar modo de identificación</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="270"/>
         <source>Select view mode for raster layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar modo de visualización para capas ráster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="273"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="296"/>
@@ -35614,22 +35614,22 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="304"/>
         <source>Tree</source>
-        <translation type="unfinished">Árbore</translation>
+        <translation>Árbore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="305"/>
         <source>Table</source>
-        <translation type="unfinished">Táboa</translation>
+        <translation>Táboa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="306"/>
         <source>Graph</source>
-        <translation type="unfinished">Gráfico</translation>
+        <translation>Gráfico</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="438"/>
         <source>feature id</source>
-        <translation type="unfinished">ID de entidades</translation>
+        <translation>ID de entidades</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="444"/>
@@ -36007,7 +36007,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
     <message>
         <location filename="../src/ui/qgsinvertedpolygonrendererwidgetbase.ui" line="37"/>
         <source>Merge polygons before rendering (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuntar polígonos antes de renderizar (lento)</translation>
     </message>
 </context>
 <context>
@@ -47000,7 +47000,7 @@ Comprobe as mensaxes de advertencia para posibles erros.</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="23"/>
         <source>The field contains a filename for a picture. The widget will show a preview of this picture.</source>
-        <translation type="unfinished"></translation>
+        <translation>O campo contén un nome de ficheiro dunha imaxe. Un widget amosará unha vista previa desta imaxe.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="33"/>
@@ -49785,7 +49785,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1765"/>
         <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
-        <translation type="unfinished"></translation>
+        <translation>Calidade das imaxes JPEG ( 10 : imaxes pequenas - 100 : a mellor calidade )</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1799"/>
@@ -54051,7 +54051,7 @@ desviación estándar ×</translation>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="14"/>
         <source>Add relation</source>
-        <translation type="unfinished">Engadir relación</translation>
+        <translation>Engadir relación</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="26"/>
@@ -59644,7 +59644,7 @@ O erro foi:%2</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsvaluerelationconfigdlg.cpp" line="65"/>
         <source>Edit filter expression</source>
-        <translation type="unfinished">Editar expresión do filtro</translation>
+        <translation>Editar expresión do filtro</translation>
     </message>
 </context>
 <context>
@@ -60341,22 +60341,22 @@ O erro foi:%2</translation>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="330"/>
         <source>Provider: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Provedor: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="331"/>
         <source>Storage: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacén: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="333"/>
         <source>expected field</source>
-        <translation type="unfinished"></translation>
+        <translation>campo agardado</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="340"/>
         <source>retrieved field</source>
-        <translation type="unfinished"></translation>
+        <translation>campo obtido</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="360"/>
@@ -61802,32 +61802,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1659"/>
         <source>empty response</source>
-        <translation type="unfinished">resposta baleira</translation>
+        <translation>resposta baleira</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1665"/>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished">Excepción de servizo WFS: %1</translation>
+        <translation>Excepción de servizo WFS: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1671"/>
         <source>unsuccessful service response: %1</source>
-        <translation type="unfinished">Resposta de servizo insatisfactoria: %1</translation>
+        <translation>Resposta de servizo insatisfactoria: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1678"/>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished">Informe de excepción WFS (código=%1 texto=%2)</translation>
+        <translation>Informe de excepción WFS (código=%1 texto=%2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1679"/>
         <source>missing</source>
-        <translation type="unfinished">perdido</translation>
+        <translation>perdido</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1685"/>
         <source>unhandled response: %1</source>
-        <translation type="unfinished">resposta non tratada: %1</translation>
+        <translation>resposta non tratada: %1</translation>
     </message>
     <message>
         <source>Error</source>
@@ -63106,7 +63106,7 @@ A resposta foi:
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="20"/>
         <source>Field contains a filename or URL for a webpage</source>
-        <translation type="unfinished"></translation>
+        <translation>O campo contén un nome de ficheiro ou URL dunha páxina web</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="27"/>
@@ -64219,7 +64219,7 @@ Frase de razón: %2</translation>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="14"/>
         <source>Select dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione dimensións</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="21"/>
@@ -74642,7 +74642,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función contains&lt;/h3&gt;
+Devolve certo se e só se ningún punto de b está no exterior de a, e alomenos un punto do interior de b está no interior de a. 
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;contains( xeometría a , xeometría b)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+xeometría &amp;rarr; xeometría
+xeometría &amp;rarr; xeometría
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; devolve 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; devolve 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="950"/>
@@ -74850,7 +74863,24 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Expresión IS&lt;/h3&gt;
+Devolve 1 se a é o mesmo que b.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;a IS b&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; devolve 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; devolve 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; devolve 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; devolve 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; devolve 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; devolve 0, se a xeometría non é NULL&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1365"/>
