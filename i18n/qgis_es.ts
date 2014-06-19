@@ -32124,11 +32124,11 @@ en la línea %2 columna %3</translation>
     </message>
     <message>
         <source>New file</source>
-        <translation>Archivo nuevo</translation>
+        <translation type="obsolete">Archivo nuevo</translation>
     </message>
     <message>
         <source>New datasource</source>
-        <translation>Nuevo origen de datos</translation>
+        <translation type="obsolete">Nuevo origen de datos</translation>
     </message>
     <message>
         <source>none</source>
@@ -32162,6 +32162,10 @@ en la línea %2 columna %3</translation>
             <numerusform>Todavía hay %n capas no manejadas, que se perderán si cierra ahora.</numerusform>
         </translation>
     </message>
+    <message>
+        <source>Datasource</source>
+        <translation type="unfinished">Origen de datos</translation>
+    </message>
 </context>
 <context>
     <name>QgsHandleBadLayersBase</name>
@@ -32171,31 +32175,31 @@ en la línea %2 columna %3</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation>Nombre de la capa</translation>
+        <translation type="obsolete">Nombre de la capa</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>Provider</source>
-        <translation>Proveedor</translation>
+        <translation type="obsolete">Proveedor</translation>
     </message>
     <message>
         <source>Original filename</source>
-        <translation>Nombre de archivo original</translation>
+        <translation type="obsolete">Nombre de archivo original</translation>
     </message>
     <message>
         <source>New filename</source>
-        <translation>Nuevo nombre de archivo</translation>
+        <translation type="obsolete">Nuevo nombre de archivo</translation>
     </message>
     <message>
         <source>Original datasource</source>
-        <translation>Fuente de datos original</translation>
+        <translation type="obsolete">Fuente de datos original</translation>
     </message>
     <message>
         <source>New datasource</source>
-        <translation>Nuevo origen de datos</translation>
+        <translation type="obsolete">Nuevo origen de datos</translation>
     </message>
 </context>
 <context>
@@ -32712,6 +32716,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>Tree</source>
         <translation type="unfinished">Árbol</translation>
+    </message>
+    <message>
+        <source>feature id</source>
+        <translation type="unfinished">ID del objeto espacial</translation>
     </message>
 </context>
 <context>
