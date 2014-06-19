@@ -14221,7 +14221,7 @@ Prosimy o kontakt z autorami.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="658"/>
         <source>Log Messages</source>
-        <translation>Zapisz komunikaty</translation>
+        <translation>Komunikaty</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="709"/>
