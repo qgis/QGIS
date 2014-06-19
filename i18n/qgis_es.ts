@@ -17955,7 +17955,7 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>Edit Widget Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar propiedades del control</translation>
     </message>
 </context>
 <context>
@@ -20370,7 +20370,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
 </context>
 <context>
@@ -20413,7 +20413,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Label color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de etiqueta cambiado</translation>
     </message>
 </context>
 <context>
@@ -21670,7 +21670,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
 </context>
 <context>
@@ -22628,7 +22628,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
 </context>
 <context>
@@ -24673,7 +24673,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Grid properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de la cuadrícula</translation>
     </message>
 </context>
 <context>
@@ -26601,7 +26601,7 @@ Error del analizador:
     </message>
     <message>
         <source>Draw text as outlines (recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dibujar texto como líneas exteriores (recomendado)</translation>
     </message>
 </context>
 <context>
@@ -32560,15 +32560,15 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Select identify mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar modo de identificación</translation>
     </message>
     <message>
         <source>Select view mode for raster layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar modo de vista para capas ráster</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished">Ver</translation>
+        <translation>Ver</translation>
     </message>
 </context>
 <context>
@@ -32715,7 +32715,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished">Árbol</translation>
+        <translation>Árbol</translation>
     </message>
     <message>
         <source>feature id</source>
@@ -42228,7 +42228,7 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>The field contains a filename for a picture. The widget will show a preview of this picture.</source>
-        <translation type="unfinished"></translation>
+        <translation>El campo contiene un nombre de archivo para una imagen. El control mostrará una vista previa de esta imagen.</translation>
     </message>
 </context>
 <context>
@@ -48428,7 +48428,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Add relation</source>
-        <translation type="unfinished">Añadir relación</translation>
+        <translation>Añadir relación</translation>
     </message>
 </context>
 <context>
@@ -55276,27 +55276,27 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>empty response</source>
-        <translation type="unfinished">respuesta vacía</translation>
+        <translation>respuesta vacía</translation>
     </message>
     <message>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished">excepción del servicio WFS: %1</translation>
+        <translation>excepción del servicio WFS: %1</translation>
     </message>
     <message>
         <source>unsuccessful service response: %1</source>
-        <translation type="unfinished">respuesta del servicio sin éxito: %1</translation>
+        <translation>respuesta del servicio sin éxito: %1</translation>
     </message>
     <message>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished">Informe de excepción WFS (código=%1 texto=%2)</translation>
+        <translation>Informe de excepción WFS (código=%1 texto=%2)</translation>
     </message>
     <message>
         <source>missing</source>
-        <translation type="unfinished">falta</translation>
+        <translation>falta</translation>
     </message>
     <message>
         <source>unhandled response: %1</source>
-        <translation type="unfinished">respuesta no manejada: %1</translation>
+        <translation>respuesta no manejada: %1</translation>
     </message>
 </context>
 <context>
@@ -56419,7 +56419,7 @@ La respuesta fue:
     </message>
     <message>
         <source>Field contains a filename or URL for a webpage</source>
-        <translation type="unfinished"></translation>
+        <translation>El campo contiene un nombre de archivo o URL para una página web</translation>
     </message>
 </context>
 <context>
@@ -57378,7 +57378,7 @@ Frase de motivo: %2</translation>
     </message>
     <message>
         <source>Select dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar dimensiones</translation>
     </message>
 </context>
 <context>
@@ -69354,7 +69354,19 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $geometry&lt;/h3&gt;
+Devuelve la geometría del objeto espacial actual. Se puede usar para procesar con otras funciones.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$geometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;within function&lt;/h3&gt;
@@ -69371,7 +69383,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función within()&lt;/h3&gt;
+Devuelve 1 si la geometría A está completamente dentro de la geometría B.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;within( geometría A , geometría B)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+geometría &amp;rarr; geometría
+geometría &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; devuelve 1&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; devuelve 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
@@ -69388,7 +69413,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función overlaps()&lt;/h3&gt;
+Devuelve 1 si las geometrías comparten espacio, son de la misma dimensión, pero no están completamente contenidas por la otra.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;overlaps( A, B )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+A &amp;rarr; geometría
+B &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; devuelve 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; devuelve 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
@@ -69404,7 +69442,19 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función geomFromWKT()&lt;/h3&gt;
+Devuelve una geometría creada a partir de una representación de Texto Bien Conocido (WKT).
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;geomFromWKT(texto)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+texto &amp;rarr; representación de una geometría en Texto Bien Conocido (WKT)
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; devuelve una geometría&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;difference function&lt;/h3&gt;
@@ -69420,7 +69470,19 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función difference()&lt;/h3&gt;
+Devuelve una geometría que representa la parte de la geometría A que no intersecta con la geometría B.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;difference( A, B )&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+geometría &amp;rarr; geometría
+geometría &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; devuelve LINESTRING(4 4, 5 5)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
@@ -69440,7 +69502,23 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;Función wordwrap()&lt;/h3&gt;
+Devuelve una cadena recortada a un número máximo/mínimo de caracteres.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     wordwrap(&lt;i&gt;cadena,longitud_recorte[,cadena_delimitadora]&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a recortar.&lt;br&gt;
+&lt;i&gt;  longitud_recorte&lt;/i&gt; &amp;rarr; es un número. Si es positivo, el número representa el número máximo ideal de caracteres a recortar; si es negativo, el número representa el número mínimo de caracteres a recortar.&lt;br&gt;
+&lt;i&gt;  cadena_delimitadora&lt;/i&gt; &amp;rarr; es una cadena. La cadena delimitadora para recortar una nueva cadena (&lt;u&gt;opcional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     wordwrap(&apos;UNIVERSIDAD DE QGIS&apos;,13) &amp;rarr; &apos;UNIVERSIDAD DE&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSIDAD DE QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSIDAD&amp;#92;nDE QGIS&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
@@ -69459,7 +69537,22 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $atlasgeometry&lt;/h3&gt;
+Devuelve la geometría del objeto espacial actual iterado en atlas.
+Se puede usar para representar geometrías en base a reglas cuando se usa atlas.
+Por ejemplo, para mostrar sólo las geometrías de otras capas cuando su geometría 
+intersecta la geometría iterada de objetos espaciales usando atlas.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
@@ -69709,7 +69802,20 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función contains()&lt;/h3&gt;
+Devuelve verdadero si y sólo si ningún punto de B cae en el exterior de A, y al menos un punto del interior de B cae en el interior de A.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;contains( geometría A, geometría B)&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+geometría &amp;rarr; geometría
+geometría &amp;rarr; geometría
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; devuelve 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; devuelve 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;IS expression&lt;/h3&gt;
@@ -69730,7 +69836,24 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Expresión IS&lt;/h3&gt;
+Devuelve 1 si A es lo mismo que B.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;A IS B&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; devuelve 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; devuelve 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; devuelve 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; devuelve 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; devuelve 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; devuelve 0, si su geometría no es NULL&lt;/pre&gt;
+
+</translation>
     </message>
 </context>
 <context>
