@@ -1724,6 +1724,8 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setToolTip( tr( "Current map coordinate (lat,lon or east,north)" ) );
   statusBar()->addPermanentWidget( mCoordsEdit, 0 );
   connect( mCoordsEdit, SIGNAL( returnPressed() ), this, SLOT( userCenter() ) );
+  mDizzyTimer = new QTimer( this );
+  connect( mDizzyTimer, SIGNAL( timeout() ), this, SLOT( dizzy() ) );
 
   // add a label to show current scale
   mScaleLabel = new QLabel( QString(), statusBar() );
@@ -6605,8 +6607,36 @@ void QgisApp::userScale()
   mMapCanvas->zoomScale( 1.0 / mScaleEdit->scale() );
 }
 
+void QgisApp::dizzy()
+{
+  // constants should go to options so that people can customize them to their taste
+  int d = 10; // max. translational dizziness offset
+  int r = 4;  // max. rotational dizzines angle
+  QRectF rect = mMapCanvas->sceneRect();
+  if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
+    return; // do not affect panning
+  rect.moveTo(( rand() % ( 2 * d ) ) - d, ( rand() % ( 2 * d ) ) - d );
+  mMapCanvas->setSceneRect( rect );
+  QTransform matrix;
+  matrix.rotate(( rand() % ( 2 * r ) ) - r );
+  mMapCanvas->setTransform( matrix );
+}
+
 void QgisApp::userCenter()
 {
+  if ( mCoordsEdit->text() == "dizzy" )
+  {
+    // sometimes you may feel a bit dizzy...
+    if ( mDizzyTimer->isActive() )
+    {
+      mDizzyTimer->stop();
+      mMapCanvas->setSceneRect( mMapCanvas->viewport()->rect() );
+      mMapCanvas->setTransform( QTransform() );
+    }
+    else
+      mDizzyTimer->start( 100 );
+  }
+
   QStringList parts = mCoordsEdit->text().split( ',' );
   if ( parts.size() != 2 )
     return;
