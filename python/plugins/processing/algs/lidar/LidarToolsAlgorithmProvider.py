@@ -121,7 +121,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             fusiontools = [
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
-                GridSurfaceCreate(), MergeData(), TinSurfaceCreate(),
+                GridSurfaceCreate(), MergeData(), TinSurfaceCreate()
                 ]
             for alg in fusiontools:
                 alg.group = 'Fusion'
