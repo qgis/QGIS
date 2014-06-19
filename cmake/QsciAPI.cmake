@@ -27,6 +27,7 @@ FOREACH(apiFile qgis.core.api qgis.gui.api qgis.analysis.api qgis.networkanalysi
   IF(EXISTS "${api}")
     FILE(READ "${api}" FILE_CONTENT)
     STRING(REGEX REPLACE "([^\n]+)" "qgis.\\1" MODIFIED_CONTENT "${FILE_CONTENT}")
-    FILE(APPEND "${QGIS_PYTHON_API_FILE}" "${MODIFIED_CONTENT}")
+    STRING(REPLACE "qgis._" "qgis." REPLACE_CONTENT "${MODIFIED_CONTENT}")
+    FILE(APPEND "${QGIS_PYTHON_API_FILE}" "${REPLACE_CONTENT}")
   ENDIF(EXISTS "${api}")
 ENDFOREACH(apiFile)
