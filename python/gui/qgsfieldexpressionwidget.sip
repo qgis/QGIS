@@ -56,7 +56,7 @@ class QgsFieldExpressionWidget : QWidget
     //! fieldChanged signal with indication of the validity of the expression
     void fieldChanged( QString fieldName, bool isValid );
 
-    void returnPressed();
+//    void returnPressed();
 
   public slots:
     //! set the layer used to display the fields and expression

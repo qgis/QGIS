@@ -52,7 +52,8 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
   connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged() ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
-  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
+  // NW TODO - Fix in 2.6
+//  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( QString title )
@@ -181,6 +182,7 @@ void QgsFieldExpressionWidget::editExpression()
 void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 {
   updateLineEditStyle( expression );
+  emit fieldChanged( expression, isValidExpression());
 }
 
 void QgsFieldExpressionWidget::expressionEditingFinished()
