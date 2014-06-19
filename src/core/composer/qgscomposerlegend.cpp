@@ -23,6 +23,7 @@
 #include "qgscomposition.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgssymbolv2.h"
@@ -346,7 +347,6 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   //real symbol height. Can be different from standard height in case of point symbols
   double realSymbolHeight;
 
-#if 0
   QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( symbolItem->parent() );
 
   int opacity = 255;
@@ -355,10 +355,14 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
     QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
     if ( currentLayer )
     {
-      opacity = currentLayer->getTransparency();
+      //vector layer
+      QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      if ( vectorLayer )
+      {
+        opacity = 255 - ( 255 * vectorLayer->layerTransparency() / 100 );
+      }
     }
   }
-#endif
 
   QString text = symbolItem->text();
 
@@ -376,7 +380,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   if ( symbolNg ) //item with symbol NG?
   {
     // must be called also with painter=0 to get real size
-    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight );
+    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight, opacity );
     symbolSize.rwidth() = qMax( x - point.x(), mSymbolWidth );
     symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
   }
@@ -472,14 +476,15 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
 }
 
 
-void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const
+void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const
 {
   if ( !s )
   {
     return;
   }
 
-  double rasterScaleFactor = 1.0;
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = 1.0;
   if ( p )
   {
     QPaintDevice* paintDevice = p->device();
@@ -487,7 +492,7 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
     {
       return;
     }
-    rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
+    dotsPerMM = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
   }
 
   //consider relation to composer map for symbol sizes in mm
@@ -530,23 +535,43 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
 
   if ( p )
   {
-    p->save();
-    p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
-    p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-
     if ( markerSymbol && sizeInMapUnits )
     {
       s->setOutputUnit( QgsSymbolV2::MM );
     }
 
-    s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
+    p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    if ( opacity != 255 && mComposition && mComposition->useAdvancedEffects() )
+    {
+      //semi transparent layer, so need to draw symbol to an image (to flatten it first)
+      //create image which is same size as legend rect, in case symbol bleeds outside its alloted space
+      QImage tempImage = QImage( QSize( rect().width() * dotsPerMM, rect().height() * dotsPerMM ), QImage::Format_ARGB32 );
+      QPainter imagePainter( &tempImage );
+      tempImage.fill( Qt::transparent );
+      imagePainter.translate( dotsPerMM * ( currentXPosition + widthOffset ),
+                              dotsPerMM * ( currentYCoord + heightOffset ) );
+      s->drawPreviewIcon( &imagePainter, QSize( width * dotsPerMM, height * dotsPerMM ) );
+      //reduce opacity of image
+      imagePainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+      imagePainter.fillRect( tempImage.rect(), QColor( 0, 0, 0, opacity ) );
+      //draw rendered symbol image
+      p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
+      p->drawImage( 0, 0, tempImage );
+    }
+    else
+    {
+      p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
+      p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
+      s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ) );
+    }
+    p->restore();
 
     if ( markerSymbol && sizeInMapUnits )
     {
       s->setOutputUnit( QgsSymbolV2::MapUnit );
       markerSymbol->setSize( size );
     }
-    p->restore();
   }
   currentXPosition += width;
   currentXPosition += 2 * widthOffset;

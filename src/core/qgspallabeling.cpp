@@ -1927,7 +1927,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // fix invalid polygons
   if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
   {
-    geom->fromGeos( GEOSBuffer( geom->asGeos(), 0, 0 ) );
+    QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
+    if ( !bufferGeom )
+    {
+      return;
+    }
+    geom = bufferGeom;
+    clonedGeometry.reset( geom );
   }
 
   // CLIP the geometry if it is bigger than the extent
@@ -1938,11 +1944,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     do_clip = !extentGeom->contains( geom );
     if ( do_clip )
     {
-      geom = geom->intersection( extentGeom ); // creates new geometry
-      if ( !geom )
+      QgsGeometry* clipGeom = geom->intersection( extentGeom ); // creates new geometry
+      if ( !clipGeom )
       {
         return;
       }
+      geom = clipGeom;
+      clonedGeometry.reset( geom );
     }
   }
 

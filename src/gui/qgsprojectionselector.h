@@ -205,6 +205,9 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void refresh();
     //! Let listeners know if find has focus so they can adjust the default button
     void searchBoxHasFocus( bool );
+    //! Notify others that the widget is now fully initialized, including deferred selection of projection
+    //! @note added in 2.4
+    void initialized();
 };
 
 #endif

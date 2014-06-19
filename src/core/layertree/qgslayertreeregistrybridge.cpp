@@ -134,5 +134,13 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
 
   QgsDebugMsg( QString( "%1 layers will be removed" ).arg( toRemove.count() ) );
 
-  QgsMapLayerRegistry::instance()->removeMapLayers( toRemove );
+  // delay the removal of layers from the registry. There may be other slots connected to map layer registry's signals
+  // that might disrupt the execution flow - e.g. a processEvents() call may force update of layer tree view with
+  // semi-broken tree model
+  QMetaObject::invokeMethod( this, "removeLayersFromRegistry", Qt::QueuedConnection, Q_ARG( QStringList, toRemove ) );
+}
+
+void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( QStringList layerIds )
+{
+  QgsMapLayerRegistry::instance()->removeMapLayers( layerIds );
 }

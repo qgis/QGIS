@@ -73,6 +73,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   mSubRenderer->startRender( context, fields );
 
   mFeaturesCategories.clear();
+  mSymbolCategories.clear();
   mFeatureDecorations.clear();
   mFields = fields;
 
@@ -201,6 +202,10 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
       geom.reset( geom->buffer( 0, 0 ) );
     }
   }
+
+  if ( !geom )
+    return false; // do not let invalid geometries sneak in!
+
   // add the geometry to the list of geometries for this feature
   cFeat.geometries.append( geom.take() );
 
@@ -220,18 +225,15 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
 
   for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
   {
-    QgsFeature& feat = cit->feature;
+    QgsFeature feat = cit->feature; // just a copy, so that we do not accumulate geometries again
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
       QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit->geometries ) );
       // compute the difference with the extent
       QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
-      QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>(unioned.data()) );
-      if ( final )
-      {
-        feat.setGeometry( final );
-      }
+      QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
+      feat.setGeometry( final );
     }
     else
     {
@@ -247,7 +249,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      foreach( QgsGeometry* geom, cit->geometries )
+      foreach ( QgsGeometry* geom, cit->geometries )
       {
         QgsMultiPolygon multi;
         if (( geom->wkbType() == QGis::WKBPolygon ) ||
@@ -263,8 +265,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
 
         for ( int i = 0; i < multi.size(); i++ )
         {
+          const QgsPolyline& exterior = multi[i][0];
           // add the exterior ring as interior ring to the first polygon
-          finalMulti[0].append( multi[i][0] );
+          // make sure it satisfies at least very basic requirements of GEOS
+          // (otherwise the creation of GEOS geometry will fail)
+          if ( exterior.count() < 4 || exterior[0] != exterior[exterior.count() - 1] )
+            continue;
+          finalMulti[0].append( exterior );
 
           // add interior rings as new polygons
           for ( int j = 1; j < multi[i].size(); j++ )
@@ -274,10 +281,18 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
             finalMulti.append( new_poly );
           }
         }
-        feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
       }
+      feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
-    mSubRenderer->renderFeature( feat, mContext );
+    if ( feat.geometry() )
+      mSubRenderer->renderFeature( feat, mContext );
+  }
+  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  {
+    foreach ( QgsGeometry* g, cit->geometries )
+    {
+      delete g;
+    }
   }
 
   // when no features are visible, we still have to draw the exterior rectangle

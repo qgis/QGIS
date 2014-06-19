@@ -99,6 +99,8 @@ from RandomPointsAlongLines import RandomPointsAlongLines
 from PointsToPaths import PointsToPaths
 from PostGISExecuteSQL import PostGISExecuteSQL
 from ImportIntoPostGIS import ImportIntoPostGIS
+from SetVectorStyle import SetVectorStyle
+from SetRasterStyle import SetRasterStyle
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
 # from MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -154,7 +156,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
-                        PostGISExecuteSQL(), ImportIntoPostGIS()
+                        PostGISExecuteSQL(), ImportIntoPostGIS(),
+                        SetVectorStyle(), SetRasterStyle(),
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------

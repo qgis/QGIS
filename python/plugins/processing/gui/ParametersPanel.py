@@ -277,7 +277,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterFile):
-            item = FileSelectionPanel(param.isFolder)
+            item = FileSelectionPanel(param.isFolder, param.ext)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 item = MultipleFileInputPanel()

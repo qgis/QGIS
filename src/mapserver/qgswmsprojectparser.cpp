@@ -709,7 +709,7 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument
   parentElem.appendChild( layerDrawingOrderElem );
 }
 
-void QgsWMSProjectParser::addDrawingOrder( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
+void QgsWMSProjectParser::addDrawingOrderEmbeddedGroup( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
 {
   if ( groupElem.isNull() )
   {
@@ -797,6 +797,43 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement groupElem, bool useDrawin
     for ( ; layerNamesIt != layerNames.constEnd(); ++layerNamesIt )
     {
       orderedLayerList.insert( orderedLayerList.size(), layerNamesIt.value() );
+    }
+  }
+}
+
+void QgsWMSProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
+{
+  if ( elem.isNull() )
+  {
+    return;
+  }
+
+  if ( elem.tagName() == "legendgroup" )
+  {
+    if ( elem.attribute( "embedded" ) == "1" )
+    {
+      addDrawingOrderEmbeddedGroup( elem, useDrawingOrder, orderedLayerList );
+    }
+    else
+    {
+      QDomNodeList groupChildren = elem.childNodes();
+      for ( int i = 0; i < groupChildren.size(); ++i )
+      {
+        addDrawingOrder( groupChildren.at( i ).toElement(), useDrawingOrder, orderedLayerList );
+      }
+    }
+  }
+  else if ( elem.tagName() == "legendlayer" )
+  {
+    QString layerName = elem.attribute( "name" );
+    if ( useDrawingOrder )
+    {
+      int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+      orderedLayerList.insert( drawingOrder, layerName );
+    }
+    else
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerName );
     }
   }
 }
@@ -1820,6 +1857,9 @@ void QgsWMSProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) c
     //mDrawOutlineLabels
     // TODO: This should probably always be true (already default) for WMS, regardless of any project setting.
     //       Not much sense to output text-as-text, when text-as-outlines gives better results.
+
+    //save settings into global project instance (QgsMapRendererCustomPainterJob reads label settings from there)
+    pal->saveEngineSettings();
   }
 }
 

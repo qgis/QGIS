@@ -54,7 +54,7 @@ struct QgsWFSAuthorization
 };
 
 /**A provider reading features from a WFS server*/
-class QgsWFSProvider: public QgsVectorDataProvider
+class QgsWFSProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -131,16 +131,19 @@ class QgsWFSProvider: public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
-    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
-    virtual void reloadData();
-
     /**Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
     int describeFeatureType( const QString& uri, QString& geometryAttribute,
                              QgsFields& fields, QGis::WkbType& geomType );
 
+  public slots:
+    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
+      synchronize with changes in the data source*/
+    virtual void reloadData();
+
   signals:
     void dataReadProgressMessage( QString message );
+
+    void dataChanged();
 
   private slots:
     /**Receives the progress signals from QgsWFSData::dataReadProgress, generates a string
@@ -149,6 +152,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     /**Sets mNetworkRequestFinished flag to true*/
     void networkRequestFinished();
+
+    void extendExtent( const QgsRectangle & );
 
   private:
     bool mNetworkRequestFinished;
@@ -187,16 +192,20 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int mFeatureCount;
     /**Flag if provider is valid*/
     bool mValid;
+    bool mCached;
+    bool mPendingRetrieval;
     /**Namespace URL of the server (comes from DescribeFeatureDocument)*/
     QString mWfsNamespace;
     /**Server capabilities for this layer (generated from capabilities document)*/
     int mCapabilities;
+#if 0
     /**GetRenderedOnly: layer asociated with this provider*/
     QgsVectorLayer *mLayer;
     /**GetRenderedOnly: fetch only features within canvas extent to be rendered*/
     bool mGetRenderedOnly;
     /**GetRenderedOnly initializaiton flat*/
     bool mInitGro;
+#endif
     /**if GetRenderedOnly, extent specified in WFS getFeatures; else empty (no constraint)*/
     QgsRectangle mGetExtent;
 
@@ -258,8 +267,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
     void appendSupportedOperations( const QDomElement& operationsElem, int& capabilities ) const;
     /**records provider error*/
     void handleException( const QDomDocument& serverResponse );
+#if 0
     /**Initializes "Cache Features" inactive processing*/
     bool initGetRenderedOnly( const QgsRectangle &rect );
+#endif
     /**Converts DescribeFeatureType schema geometry property type to WKBType*/
     QGis::WkbType geomTypeFromPropertyType( QString attName, QString propType );
 

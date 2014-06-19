@@ -113,19 +113,15 @@ void QgsComposerLabelWidget::on_mMarginDoubleSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLabelWidget::on_mFontColorButton_clicked()
+void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &newLabelColor )
 {
   if ( !mComposerLabel )
   {
     return;
   }
-  QColor newColor = QColorDialog::getColor( mComposerLabel->fontColor() );
-  if ( !newColor.isValid() )
-  {
-    return;
-  }
-  mComposerLabel->beginCommand( tr( "Label font changed" ) );
-  mComposerLabel->setFontColor( newColor );
+
+  mComposerLabel->beginCommand( tr( "Label color changed" ) );
+  mComposerLabel->setFontColor( newLabelColor );
   mComposerLabel->endCommand();
 }
 
@@ -241,6 +237,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
+  mFontColorButton->setColor( mComposerLabel->fontColor() );
   blockAllSignals( false );
 }
 
@@ -255,4 +252,5 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
+  mFontColorButton->blockSignals( block );
 }

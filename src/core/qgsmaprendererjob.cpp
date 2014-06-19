@@ -1,3 +1,17 @@
+/***************************************************************************
+  qgsmaprendererjob.cpp
+  --------------------------------------
+  Date                 : December 2013
+  Copyright            : (C) 2013 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgsmaprendererjob.h"
 
@@ -224,18 +238,10 @@ void QgsMapRendererCustomPainterJob::start()
   QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
 
   // now we are ready to start rendering!
-  if ( !mLayerJobs.isEmpty() )
-  {
-    connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( futureFinished() ) );
+  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( futureFinished() ) );
 
-    mFuture = QtConcurrent::run( staticRender, this );
-    mFutureWatcher.setFuture( mFuture );
-  }
-  else
-  {
-    // just make sure we will clean up and emit finished() signal
-    QTimer::singleShot( 0, this, SLOT( futureFinished() ) );
-  }
+  mFuture = QtConcurrent::run( staticRender, this );
+  mFutureWatcher.setFuture( mFuture );
 }
 
 
@@ -294,6 +300,14 @@ bool QgsMapRendererCustomPainterJob::isActive() const
 QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 {
   return mLabelingEngine ? mLabelingEngine->takeResults() : 0;
+}
+
+
+void QgsMapRendererCustomPainterJob::waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags )
+{
+  QEventLoop loop;
+  connect( &mFutureWatcher, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+  loop.exec( flags );
 }
 
 
@@ -548,6 +562,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
+    Q_UNUSED( cacheValid );
   }
 
   mGeometryCaches.clear();
@@ -901,6 +916,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   job.renderer->render();
   int tt = t.elapsed();
   QgsDebugMsg( QString( "job %1 end [%2 ms]" ).arg(( ulong ) &job, 0, 16 ).arg( tt ) );
+  Q_UNUSED( tt );
 }
 
 

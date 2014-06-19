@@ -740,6 +740,11 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
 
 }
 
+void QgsComposerMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
+{
+  Q_UNUSED( event );
+}
+
 QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( const QPointF &cursorPos )
 {
   //find offset between cursor position and actual edge of item

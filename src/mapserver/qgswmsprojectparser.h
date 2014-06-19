@@ -129,6 +129,9 @@ class QgsWMSProjectParser: public QgsWMSConfigParser
     /**Adds drawing order info from layer element or group element (recursive)*/
     void addDrawingOrder( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
 
+    /**Adds drawing order info from embedded layer element or embedded group element (recursive)*/
+    void addDrawingOrderEmbeddedGroup( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
+
     void addLayers( QDomDocument &doc,
                     QDomElement &parentLayer,
                     const QDomElement &legendElem,

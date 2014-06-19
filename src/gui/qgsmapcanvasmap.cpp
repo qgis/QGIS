@@ -42,7 +42,9 @@ void QgsMapCanvasMap::paint( QPainter* painter )
 {
   int w = qRound( boundingRect().width() ) - 2, h = qRound( boundingRect().height() ) - 2; // setRect() makes the size +2 :-(
   if ( mImage.size() != QSize( w, h ) )
+  {
     QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
+  }
   painter->drawImage( QRect( 0, 0, w, h ), mImage );
 }
 

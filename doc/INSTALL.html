@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday March 06, 2014</H3>
+<H3>Wednesday June 18, 2014</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday March 06, 2014
-Last Change : Thursday March 06, 2014
+Last Updated: Wednesday June 18, 2014
+Last Change : Wednesday June 18, 2014
 </P>
 <DIV CLASS="toc">
 
@@ -881,22 +881,24 @@ build QGIS.
 <P>
 The free (as in free beer) Express Edition installer is available under:
 </P>
+<P>
+Currently we use Visual C++ 2008 Express for 32bit builds:
+</P>
 	<BLOCKQUOTE>
 	<A HREF="http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe">http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe</A>
 	</BLOCKQUOTE>
 <P>
-The optional products are not necessary.  In the process the Windows SDKs for
-Visual Studio 2008 will also be downloaded and installed.
-</P>
-<P>
-You also need the Microsoft Windows Server&reg; 2003 R2 Platform SDK (for setupapi):
+And Visual C++ 2010 Express for 64bit builds:
 </P>
 	<BLOCKQUOTE>
-	<A HREF="http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe">http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe</A>
+	<A HREF="http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe">http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe</A>
 	</BLOCKQUOTE>
 <P>
-You only need Microsoft Windows Core SDK / Build Environment (x86 32-Bit).
+You also need the Windows SDK for Windows 7 and .NET Framework 4:
 </P>
+	<BLOCKQUOTE>
+	<A HREF="http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe">http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe</A>
+	</BLOCKQUOTE>
 
 <H3>4.1.2. Other tools and dependencies</H3>
 
@@ -911,7 +913,7 @@ Download and install following packages:
 </TR>
 <TR>
 <TD>CMake</TD>
-<TD><A HREF="http://www.cmake.org/files/v2.8/cmake-2.8.4-win32-x86.exe">http://www.cmake.org/files/v2.8/cmake-2.8.4-win32-x86.exe</A></TD>
+<TD><A HREF="http://www.cmake.org/files/v2.8/cmake-2.8.12.2-win32-x86.exe">http://www.cmake.org/files/v2.8/cmake-2.8.12.2-win32-x86.exe</A></TD>
 </TR>
 <TR>
 <TD>Flex</TD>
@@ -922,22 +924,24 @@ Download and install following packages:
 <TD><A HREF="http://gnuwin32.sourceforge.net/downlinks/bison.php">http://gnuwin32.sourceforge.net/downlinks/bison.php</A></TD>
 </TR>
 <TR>
-<TD>SVN</TD>
-<TD><A HREF="http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download">http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download</A></TD>
-</TR>
-<TR>
-<TD>or GIT</TD>
-<TD><A HREF="http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe">http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe</A></TD>
+<TD>GIT</TD>
+<TD><A HREF="https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe">https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe</A></TD>
 </TR>
 <TR>
 <TD>OSGeo4W</TD>
-<TD><A HREF="http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe">http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe</A></TD>
+<TD><A HREF="http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe">http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe</A> (32bit) or <A HREF="http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe">http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe</A> (64bit)</TD>
 </TR>
 </TABLE>
 
 <P>
+You can also use flex, bison &amp; git from
+</P>
+	<BLOCKQUOTE>
+	<A HREF="http://cygwin.com">http://cygwin.com</A>
+	</BLOCKQUOTE>
+<P>
 OSGeo4W does not only provide ready packages for the current QGIS release and
-nightly builds of the trunk, but also offers most of the dependencies needs to
+nightly builds of master, but also offers most of the dependencies needs to
 build it.
 </P>
 <P>
@@ -959,22 +963,13 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 <LI>spatialite
 <LI>libspatialindex-devel
 <LI>python-qscintilla
-</UL>
-
-<P>
+<P></P>
 This will also select packages the above packages depend on.
-</P>
-<P>
-Additionally QGIS also needs the include file <CODE>unistd.h</CODE>, which normally
-doesn't exist on Windows.  It's shipped with Flex/Bison in <CODE>GnuWin32\include</CODE>
-and needs to be copied into the <CODE>VC\include</CODE> directory of your Visual C++
-installation.
-</P>
-<P>
+<P></P>
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
-</P>
+</UL>
 
 <H3>4.1.3. Setting up the Visual Studio project with CMake</H3>
 

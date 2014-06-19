@@ -216,7 +216,7 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }

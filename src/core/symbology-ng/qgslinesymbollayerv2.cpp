@@ -447,6 +447,13 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
     double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
 
     double dashWidthDiv = mPen.widthF();
+
+    if ( strokeWidthExpression )
+    {
+      dashWidthDiv = pen.widthF();
+      scaledWidth = pen.widthF();
+    }
+
     //fix dash pattern width in Qt 4.8
     QStringList versionSplit = QString( qVersion() ).split( "." );
     if ( versionSplit.size() > 1
@@ -455,7 +462,6 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
     {
       dashWidthDiv = 1.0;
     }
-
 
     QVector<qreal> dashVector;
     QStringList dashList = dashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );

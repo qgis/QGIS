@@ -768,7 +768,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   QMap<QString, QString>::const_iterator layerTitleIt = mParameters.find( "LAYERTITLE" );
   if ( layerTitleIt != mParameters.constEnd() )
   {
-    mDrawLegendLayerLabel = layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive );
+    mDrawLegendLayerLabel = ( layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   else
   {
@@ -813,7 +813,7 @@ void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamp
   QMap<QString, QString>::const_iterator itemLabelIt = mParameters.find( "RULELABEL" );
   if ( itemLabelIt != mParameters.constEnd() )
   {
-    mDrawLegendItemLabel = itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive );
+    mDrawLegendItemLabel = ( itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
   else
   {

@@ -90,7 +90,8 @@ QString QgsFieldExpressionWidget::currentText()
 bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError )
 {
   QString temp;
-  return QgsExpression::isValid( currentText(), layer()->pendingFields(), expressionError ? *expressionError : temp );
+  QgsVectorLayer* vl = layer();
+  return QgsExpression::isValid( currentText(), vl ? vl->pendingFields() : QgsFields(), expressionError ? *expressionError : temp );
 }
 
 bool QgsFieldExpressionWidget::isExpression()
@@ -162,9 +163,6 @@ void QgsFieldExpressionWidget::editExpression()
 {
   QString currentExpression = currentText();
   QgsVectorLayer* vl = layer();
-
-  if ( !vl )
-    return;
 
   QgsExpressionBuilderDialog dlg( vl, currentExpression );
   if ( !mDa.isNull() )
@@ -263,10 +261,8 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString expression )
 bool QgsFieldExpressionWidget::isExpressionValid( const QString expressionStr )
 {
   QgsVectorLayer* vl = layer();
-  if ( !vl )
-    return false;
 
   QgsExpression expression( expressionStr );
-  expression.prepare( vl->pendingFields() );
+  expression.prepare( vl ? vl->pendingFields() : QgsFields() );
   return !expression.hasParserError();
 }

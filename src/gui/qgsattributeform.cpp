@@ -317,6 +317,7 @@ void QgsAttributeForm::init()
       QFileInfo fi( mLayer->editForm() );
       loader.setWorkingDirectory( fi.dir() );
       formWidget = loader.load( &file, this );
+      formWidget->setWindowFlags( Qt::Widget );
       layout()->addWidget( formWidget );
       formWidget->show();
       file.close();

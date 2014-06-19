@@ -5594,6 +5594,46 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
   CATCH_GEOS( 0 )
 }
 
+QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit )
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSBufferWithStyle( mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit ) );
+  }
+  CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
+}
+
+QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+  if ( mDirtyGeos )
+    exportWkbToGeos();
+
+  if ( !mGeos || this->type() != QGis::Line )
+    return 0;
+
+  try
+  {
+    return fromGeosGeom( GEOSOffsetCurve( mGeos, distance, segments, joinStyle, mitreLimit ) );
+  }
+  CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
+}
+
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {
   if ( mDirtyGeos )
@@ -6400,14 +6440,12 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
 QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
 {
   QList<GEOSGeometry*> geoms;
-  foreach( QgsGeometry* g, geometryList )
+  foreach ( QgsGeometry* g, geometryList )
   {
-    // const cast: it is ok here, since the pointers will only be used to be stored
-    // in a list for a call to union
-    geoms.append( const_cast<GEOSGeometry*>(g->asGeos()) );
+    geoms.append( GEOSGeom_clone( g->asGeos() ) );
   }
-  GEOSGeometry* unioned = _makeUnion( geoms );
+  GEOSGeometry *geomUnion = _makeUnion( geoms );
   QgsGeometry *ret = new QgsGeometry();
-  ret->fromGeos( unioned );
+  ret->fromGeos( geomUnion );
   return ret;
 }

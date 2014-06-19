@@ -51,6 +51,7 @@ class QDomElement;
  * file. The storage is not efficient for large amount of data.
  *
  * Custom properties that have already been used within QGIS:
+ * - "loading" - whether the project is being currently loaded (root node only)
  * - "overview" - whether to show a layer in overview
  * - "showFeatureCount" - whether to show feature counts in layer tree (vector only)
  * - "embedded" - whether the node comes from an external project
@@ -92,9 +93,9 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     virtual QgsLayerTreeNode* clone() const = 0;
 
     //! Return whether the node should be shown as expanded or collapsed in GUI
-    bool isExpanded() const { return mExpanded; }
+    bool isExpanded() const;
     //! Set whether the node should be shown as expanded or collapsed in GUI
-    void setExpanded( bool expanded ) { mExpanded = expanded; }
+    void setExpanded( bool expanded );
 
     /** Set a custom property for the node. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString& key, const QVariant& value );
@@ -119,6 +120,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void visibilityChanged( QgsLayerTreeNode* node, Qt::CheckState state );
     //! Emitted when a custom property of a node within the tree has been changed or removed
     void customPropertyChanged( QgsLayerTreeNode* node, QString key );
+    //! Emitted when the collapsed/expanded state of a node within the tree has been changed
+    void expandedChanged( QgsLayerTreeNode* node, bool expanded );
 
   protected:
 

@@ -21,6 +21,7 @@
 #include <QColor>
 #include <QMap>
 #include <QMultiHash>
+#include <QMutex>
 #include <QString>
 #include <QUrl>
 
@@ -176,6 +177,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     /** SVG content to be rendered if SVG file was not found. */
     QByteArray mMissingSvg;
+
+    //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
+    QMutex mMutex;
 };
 
 #endif // QGSSVGCACHE_H

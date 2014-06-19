@@ -246,7 +246,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
      it is possible that it differs from mSymbolHeight*/
-    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
+    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity = 255 ) const;
 
     /** Draw atom and return its actual size, the atom is drawn with the space above it
      *  so that first atoms in column are all aligned to the same line regardles their

@@ -41,6 +41,13 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup& other )
 }
 
 
+QgsLayerTreeGroup* QgsLayerTreeGroup::insertGroup( int index, const QString& name )
+{
+  QgsLayerTreeGroup* grp = new QgsLayerTreeGroup( name );
+  insertChildNode( index, grp );
+  return grp;
+}
+
 QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString &name )
 {
   QgsLayerTreeGroup* grp = new QgsLayerTreeGroup( name );
@@ -207,15 +214,18 @@ void QgsLayerTreeGroup::writeXML( QDomElement& parentElement )
 
 void QgsLayerTreeGroup::readChildrenFromXML( QDomElement& element )
 {
+  QList<QgsLayerTreeNode*> nodes;
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
   {
     QgsLayerTreeNode* newNode = QgsLayerTreeNode::readXML( childElem );
     if ( newNode )
-      addChildNode( newNode );
+      nodes << newNode;
 
     childElem = childElem.nextSiblingElement();
   }
+
+  insertChildNodes( -1, nodes );
 }
 
 QString QgsLayerTreeGroup::dump() const

@@ -22,13 +22,18 @@ class QgsSpatialIndex;
 typedef QMap<QgsFeatureId, QgsFeature*> QgsFeaturePtrMap;
 
 
-class QgsWFSFeatureSource : public QgsAbstractFeatureSource
+class QgsWFSFeatureSource : public QObject, public QgsAbstractFeatureSource
 {
+    Q_OBJECT
+
   public:
     QgsWFSFeatureSource( const QgsWFSProvider* p );
     ~QgsWFSFeatureSource();
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  signals:
+    void extentRequested( const QgsRectangle & );
 
   protected:
 
@@ -57,7 +62,6 @@ class QgsWFSFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsWFS
   private:
     QList<QgsFeatureId> mSelectedFeatures;
     QList<QgsFeatureId>::const_iterator mFeatureIterator;
-
 };
 
 #endif // QGSWFSFEATUREITERATOR_H

@@ -130,7 +130,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-             ProcessingLog.addToLog(
+            ProcessingLog.addToLog(
                  ProcessingLog.LOG_INFO,
                  'Can not generate requested number of random points. Maximum '
                  'number of attempts exceeded.')

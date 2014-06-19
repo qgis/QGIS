@@ -144,10 +144,14 @@ void QgsFeatureListView::editSelectionChanged( QItemSelection deselected, QItemS
   QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
-    QgsFeature feat;
-    mModel->featureByIndex( mModel->mapFromMaster( currentSelection.indexes().first() ), feat );
+    QModelIndexList indexList = currentSelection.indexes();
+    if ( !indexList.isEmpty() )
+    {
+      QgsFeature feat;
+      mModel->featureByIndex( mModel->mapFromMaster( indexList.first() ), feat );
 
-    emit currentEditSelectionChanged( feat );
+      emit currentEditSelectionChanged( feat );
+    }
   }
 }
 

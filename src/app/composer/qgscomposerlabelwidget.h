@@ -37,7 +37,7 @@ class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidget
     void on_mFontButton_clicked();
     void on_mInsertExpressionButton_clicked();
     void on_mMarginDoubleSpinBox_valueChanged( double d );
-    void on_mFontColorButton_clicked();
+    void on_mFontColorButton_colorChanged( const QColor& newLabelColor );
     void on_mCenterRadioButton_clicked();
     void on_mLeftRadioButton_clicked();
     void on_mRightRadioButton_clicked();

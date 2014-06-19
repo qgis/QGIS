@@ -903,6 +903,8 @@ bool QgsProject::read()
 
   // read the layer tree from project file
 
+  mRootGroup->setCustomProperty( "loading", 1 );
+
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
   {
@@ -944,6 +946,8 @@ bool QgsProject::read()
 
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
+
+  mRootGroup->removeCustomProperty( "loading" );
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );

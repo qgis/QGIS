@@ -1230,6 +1230,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @note added in 2.3 */
     void activateDeuteranopePreview();
 
+    /** Make the user feel dizzy */
+    void dizzy();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1541,6 +1544,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Timer for map tips
      */
     QTimer *mpMapTipsTimer;
+
+    //! Helps to make people dizzy
+    QTimer* mDizzyTimer;
 
     /** Point of last mouse position in map coordinates (used with MapTips)
      */

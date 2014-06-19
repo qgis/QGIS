@@ -355,6 +355,24 @@ class CORE_EXPORT QgsGeometry
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments );
 
+    /** Returns a buffer region around the geometry, with additional style options.
+     * @param distance    buffer distance
+     * @param segments    For round joins, number of segments to approximate quarter-circle
+     * @param endCapStyle Round (1) / Flat (2) / Square (3) end cap style
+     * @param joinStyle   Round (1) / Mitre (2) / Bevel (3) join style
+     * @param mitreLimit  Limit on the mitre ratio used for very sharp corners
+     * @note added in 2.4
+     * @note needs GEOS >= 3.3 - otherwise always returns 0
+     */
+    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit );
+
+    /** Returns an offset line at a given distance and side from an input line.
+     * See buffer() method for details on parameters.
+     * @note added in 2.4
+     * @note needs GEOS >= 3.3 - otherwise always returns 0
+     */
+    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit );
+
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance );
 

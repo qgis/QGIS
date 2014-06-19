@@ -32,6 +32,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
     , mFlags( ShowSymbology )
+    , mAutoCollapseSymNodesCount( -1 )
 {
   Q_ASSERT( mRootNode );
 
@@ -429,11 +430,17 @@ void QgsLayerTreeModel::refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer )
   emit dataChanged( idx, idx );
 
   // update children
-  beginRemoveRows( idx, 0, rowCount( idx ) - 1 );
+  int oldNodeCount = rowCount( idx );
+  beginRemoveRows( idx, 0, oldNodeCount - 1 );
   removeSymbologyFromLayer( nodeLayer );
   endRemoveRows();
 
   addSymbologyToLayer( nodeLayer );
+  int newNodeCount = rowCount( idx );
+
+  // automatic collapse of symbology nodes - useful if a layer has many symbology nodes
+  if ( mAutoCollapseSymNodesCount != -1 && oldNodeCount != newNodeCount && newNodeCount >= mAutoCollapseSymNodesCount )
+    nodeLayer->setExpanded( false );
 }
 
 QModelIndex QgsLayerTreeModel::currentIndex() const
@@ -472,7 +479,9 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
     }
   }
   else
+  {
     QgsDebugMsg( "invalid node type" );
+  }
 }
 
 
@@ -635,6 +644,9 @@ void QgsLayerTreeModel::addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL )
   QSize iconSize( 16, 16 );
   QgsLegendSymbolList items = r->legendSymbolItems();
 
+  if ( items.count() == 0 )
+    return;
+
   beginInsertRows( node2index( nodeL ), 0, items.count() - 1 );
 
   typedef QPair<QString, QgsSymbolV2*> XY;
@@ -668,6 +680,9 @@ void QgsLayerTreeModel::addSymbologyToRasterLayer( QgsLayerTreeLayer* nodeL )
     if ( !img.isNull() )
       lst << new QgsLayerTreeModelSymbologyNode( nodeL, tr( "Double-click to view legend" ) );
   }
+
+  if ( rasterItemList.count() == 0 )
+    return;
 
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
   // and it is very slow, so we limit max count
@@ -707,6 +722,9 @@ void QgsLayerTreeModel::addSymbologyToPluginLayer( QgsLayerTreeLayer* nodeL )
   QSize iconSize( 16, 16 );
   QgsLegendSymbologyList symbologyList = player->legendSymbologyItems( iconSize );
 
+  if ( symbologyList.count() == 0 )
+    return;
+
   beginInsertRows( node2index( nodeL ), 0, symbologyList.count() - 1 );
 
   typedef QPair<QString, QPixmap> XY;
@@ -732,6 +750,13 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   if ( testFlag( ShowSymbology ) )
   {
     addSymbologyToLayer( nodeLayer );
+
+    // automatic collapse of symbology nodes - useful if a layer has many symbology nodes
+    if ( !mRootNode->customProperty( "loading" ).toBool() )
+    {
+      if ( mAutoCollapseSymNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseSymNodesCount )
+        nodeLayer->setExpanded( false );
+    }
   }
 
   QgsMapLayer* layer = nodeLayer->layer();

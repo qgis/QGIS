@@ -90,6 +90,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
     void mousePressEvent( QGraphicsSceneMouseEvent* event );
+    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event );
     void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
     void hoverLeaveEvent( QGraphicsSceneHoverEvent * event );
 

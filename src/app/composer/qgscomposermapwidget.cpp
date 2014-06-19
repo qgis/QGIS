@@ -306,6 +306,9 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
     return;
   }
 
+  if ( qRound( scaleDenominator ) == qRound( mComposerMap->scale() ) )
+    return;
+
   mComposerMap->beginCommand( tr( "Map scale changed" ) );
   mComposerMap->setNewScale( scaleDenominator );
   mComposerMap->endCommand();

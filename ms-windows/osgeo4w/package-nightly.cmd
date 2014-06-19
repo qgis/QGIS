@@ -13,8 +13,6 @@ REM *   the Free Software Foundation; either version 2 of the License, or     *
 REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
-set GRASS_VERSION=6.4.3
-
 set VERSION=%1
 set PACKAGE=%2
 set PACKAGENAME=%3
@@ -51,6 +49,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
+set GRASS_VERSION=6.4.4RC1
 set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
 call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
@@ -62,6 +61,7 @@ set CMAKE_OPT=^
 goto devenv
 
 :devenv_x86_64
+set GRASS_VERSION=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
