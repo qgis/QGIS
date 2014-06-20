@@ -341,7 +341,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             item.setCurrentIndex(0)
             self.table.setCellWidget(self.table.rowCount() - 1, i, item)
 
-            
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
