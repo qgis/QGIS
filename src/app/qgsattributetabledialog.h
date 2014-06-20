@@ -153,7 +153,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void updateTitle();
 
-    void updateButtonStatus( QString fieldName, bool isValid  );
+    void updateButtonStatus( QString fieldName, bool isValid );
   signals:
     /**
      * Informs that editing mode has been toggled

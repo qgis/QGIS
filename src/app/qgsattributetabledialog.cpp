@@ -236,6 +236,7 @@ void QgsAttributeTableDialog::updateTitle()
 
 void QgsAttributeTableDialog::updateButtonStatus( QString fieldName, bool isValid )
 {
+  Q_UNUSED( fieldName );
   mRunFieldCalc->setEnabled( isValid );
 }
 

@@ -182,7 +182,7 @@ void QgsFieldExpressionWidget::editExpression()
 void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 {
   updateLineEditStyle( expression );
-  emit fieldChanged( expression, isValidExpression());
+  emit fieldChanged( expression, isValidExpression() );
 }
 
 void QgsFieldExpressionWidget::expressionEditingFinished()
