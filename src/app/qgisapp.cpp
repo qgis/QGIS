@@ -2364,6 +2364,14 @@ void QgisApp::updateNewLayerInsertionPoint()
   {
     if ( QgsLayerTreeNode* currentNode = mLayerTreeView->currentNode() )
     {
+      // if the insertion point is actually a group, insert new layers into the group
+      if ( QgsLayerTree::isGroup( currentNode ) )
+      {
+        QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( QgsLayerTree::toGroup( currentNode ), 0 );
+        return;
+      }
+
+      // otherwise just set the insertion point in front of the current node
       QgsLayerTreeNode* parentNode = currentNode->parent();
       if ( QgsLayerTree::isGroup( parentNode ) )
         parentGroup = QgsLayerTree::toGroup( parentNode );
