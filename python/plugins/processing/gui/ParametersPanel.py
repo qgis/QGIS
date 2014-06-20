@@ -197,10 +197,9 @@ class ParametersPanel(QtGui.QWidget):
                 items.append((self.NOT_SELECTED, None))
             for layer in layers:
                 items.append((self.getExtendedLayerName(layer), layer))
-            item = InputLayerSelectorPanel(items)
+            item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterVector):
-            if self.somethingDependsOnThisParameter(param) \
-                or self.alg.allowOnlyOpenedLayers:
+            if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QtGui.QComboBox()
                 layers = dataobjects.getVectorLayers(param.shapetype)
                 if param.optional:
@@ -220,7 +219,7 @@ class ParametersPanel(QtGui.QWidget):
                 for i,(name,layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
-                item = InputLayerSelectorPanel(items)
+                item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
                 item = QtGui.QComboBox()
@@ -242,7 +241,7 @@ class ParametersPanel(QtGui.QWidget):
                 for i,(name,layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
-                item = InputLayerSelectorPanel(items)
+                item = InputLayerSelectorPanel(items, param)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem('Yes')

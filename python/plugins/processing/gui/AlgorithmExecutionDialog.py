@@ -156,8 +156,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
             if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                output.open = \
-                    self.paramTable.checkBoxes[output.name].isChecked()
+                output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 
