@@ -5622,6 +5622,10 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
         <translation>Не удалось удалить существующий shape-файл.</translation>
     </message>
     <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from different threads to the same datasource. Make sure your layer&apos;s attribute tables are closed. Continue?</source>
+        <translation>QGIS не поддерживает одновременный доступ к одному источнику данных из нескольких потоков. Убедитесь, что таблица атрибутов вашего слоя закрыта. Вы уверены, что хотите продолжить?</translation>
+    </message>
+    <message>
         <source>Error loading output shapefile:
 %s</source>
         <translation>Ошибка при загрузке созданного shape-файла:
@@ -5697,7 +5701,7 @@ Would you like to add the new layer to the TOC?</source>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation>QGIS не поддерживает одновременный доступ
+        <translation type="obsolete">QGIS не поддерживает одновременный доступ
 к одному источнику данных из нескольких потоков.
 Убедитесь, что таблица атрибутов вашего слоя закрыта.
 Вы уверены, что хотите продолжить?</translation>
@@ -8168,7 +8172,7 @@ Acts on currently active editable layer</source>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or 
                              parameters and can&apos;t be executed</source>
-        <translation>Модель не содержит алгоритмов и/или параметров и не может быть выполнена</translation>
+        <translation type="obsolete">Модель не содержит алгоритмов и/или параметров и не может быть выполнена</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
@@ -8200,7 +8204,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
-        <translation type="obsolete">Модель не содержит алгоритмов и/или параметров и не может быть выполнена</translation>
+        <translation>Модель не содержит алгоритмов и/или параметров и не может быть выполнена</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -11985,22 +11989,22 @@ Only %1 of %2 features written.</source>
         <translation>Модуль пространственных запросов для векторных слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10001"/>
+        <location filename="../src/app/qgisapp.cpp" line="10009"/>
         <source>minidump written to %1</source>
         <translation>Дамп памяти сохранён в файле %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10005"/>
+        <location filename="../src/app/qgisapp.cpp" line="10013"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation>Не удалось сохранить дамп памяти в файле %1 (ошибка: %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10012"/>
+        <location filename="../src/app/qgisapp.cpp" line="10020"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation>Не удалось создать дамп памяти в файле %1 (ошибка: %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10015"/>
+        <location filename="../src/app/qgisapp.cpp" line="10023"/>
         <source>Crash dumped</source>
         <translation>Сбой в программе</translation>
     </message>
@@ -13689,66 +13693,66 @@ Response was:
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2735"/>
-        <location filename="../src/app/qgisapp.cpp" line="2742"/>
-        <location filename="../src/app/qgisapp.cpp" line="3073"/>
+        <location filename="../src/app/qgisapp.cpp" line="2743"/>
+        <location filename="../src/app/qgisapp.cpp" line="2750"/>
+        <location filename="../src/app/qgisapp.cpp" line="3081"/>
         <source>Invalid Data Source</source>
         <translation>Недопустимый источник данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4985"/>
-        <location filename="../src/app/qgisapp.cpp" line="7363"/>
-        <location filename="../src/app/qgisapp.cpp" line="7372"/>
-        <location filename="../src/app/qgisapp.cpp" line="7433"/>
-        <location filename="../src/app/qgisapp.cpp" line="7442"/>
+        <location filename="../src/app/qgisapp.cpp" line="4993"/>
+        <location filename="../src/app/qgisapp.cpp" line="7371"/>
+        <location filename="../src/app/qgisapp.cpp" line="7380"/>
+        <location filename="../src/app/qgisapp.cpp" line="7441"/>
+        <location filename="../src/app/qgisapp.cpp" line="7450"/>
         <source>No Layer Selected</source>
         <translation>Слой не выбран</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7187"/>
+        <location filename="../src/app/qgisapp.cpp" line="7195"/>
         <source>There is a new version of QGIS available</source>
         <translation>Доступна новая версия QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7191"/>
+        <location filename="../src/app/qgisapp.cpp" line="7199"/>
         <source>You are running a development version of QGIS</source>
         <translation>Вы используете разрабатываемую версию QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7195"/>
+        <location filename="../src/app/qgisapp.cpp" line="7203"/>
         <source>You are running the current version of QGIS</source>
         <translation>Вы используете последнюю версию QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7200"/>
+        <location filename="../src/app/qgisapp.cpp" line="7208"/>
         <source>Would you like more information?</source>
         <translation>Вы хотите получить дополнительную информацию?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7203"/>
-        <location filename="../src/app/qgisapp.cpp" line="7216"/>
-        <location filename="../src/app/qgisapp.cpp" line="7221"/>
-        <location filename="../src/app/qgisapp.cpp" line="7242"/>
+        <location filename="../src/app/qgisapp.cpp" line="7211"/>
+        <location filename="../src/app/qgisapp.cpp" line="7224"/>
+        <location filename="../src/app/qgisapp.cpp" line="7229"/>
+        <location filename="../src/app/qgisapp.cpp" line="7250"/>
         <source>QGIS Version Information</source>
         <translation>Информация о версии QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7221"/>
+        <location filename="../src/app/qgisapp.cpp" line="7229"/>
         <source>Unable to get current version information from server</source>
         <translation>Не удалось получить информацию о версии с сервера</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7231"/>
+        <location filename="../src/app/qgisapp.cpp" line="7239"/>
         <source>Connection refused - server may be down</source>
         <translation>В соединении отказано — вероятно, сервер недоступен</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7234"/>
+        <location filename="../src/app/qgisapp.cpp" line="7242"/>
         <source>QGIS server was not found</source>
         <translation>Сервер QGIS не найден</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9226"/>
+        <location filename="../src/app/qgisapp.cpp" line="9234"/>
         <source>Invalid Layer</source>
         <translation>Недействительный слой</translation>
     </message>
@@ -13757,27 +13761,27 @@ Response was:
         <translation type="obsolete">Слой %1 не является действительным и не может быть загружен.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5034"/>
+        <location filename="../src/app/qgisapp.cpp" line="5042"/>
         <source>Problem deleting features</source>
         <translation>Ошибка удаления объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5035"/>
+        <location filename="../src/app/qgisapp.cpp" line="5043"/>
         <source>A problem occured during deletion of features</source>
         <translation>При удалении объектов возникла ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4994"/>
+        <location filename="../src/app/qgisapp.cpp" line="5002"/>
         <source>No Vector Layer Selected</source>
         <translation>Не выбран векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4995"/>
+        <location filename="../src/app/qgisapp.cpp" line="5003"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Удаление объектов работает только для векторных слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4986"/>
+        <location filename="../src/app/qgisapp.cpp" line="4994"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Для удаления объектов необходимо выбрать в легенде векторный слой</translation>
     </message>
@@ -13817,7 +13821,7 @@ Response was:
         <translation>Если включено, отрисовка слоёв карты выполняется сразу в ответ на команды навигации и другие события. Снимите этот флажок для быстрого добавления большого количества слоёв и выбора их символики.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3831"/>
+        <location filename="../src/app/qgisapp.cpp" line="3839"/>
         <source>Choose a QGIS project file</source>
         <translation>Выберите файл проекта QGIS</translation>
     </message>
@@ -13827,7 +13831,7 @@ Response was:
         <translation>Переключить отрисовку карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3674"/>
+        <location filename="../src/app/qgisapp.cpp" line="3682"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Выберите открываемый файл проекта QGIS</translation>
     </message>
@@ -13836,7 +13840,7 @@ Response was:
         <translation type="obsolete">Ошибка чтения проекта QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9145"/>
+        <location filename="../src/app/qgisapp.cpp" line="9153"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Открыть GDAL-совместимый источник растровых данных</translation>
     </message>
@@ -13882,40 +13886,40 @@ Response was:
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3725"/>
+        <location filename="../src/app/qgisapp.cpp" line="3733"/>
         <source>Unable to open project</source>
         <translation>Не удалось открыть проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7596"/>
-        <location filename="../src/app/qgisapp.cpp" line="7639"/>
+        <location filename="../src/app/qgisapp.cpp" line="7604"/>
+        <location filename="../src/app/qgisapp.cpp" line="7647"/>
         <source>Layer is not valid</source>
         <translation>Неверный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7640"/>
+        <location filename="../src/app/qgisapp.cpp" line="7648"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Слой не является действительным и не может быть добавлен в проект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7752"/>
+        <location filename="../src/app/qgisapp.cpp" line="7760"/>
         <source>Save?</source>
         <translation>Сохранить?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9385"/>
+        <location filename="../src/app/qgisapp.cpp" line="9393"/>
         <source>Unsupported Data Source</source>
         <translation>Неподдерживаемый источник данных</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1320"/>
-        <location filename="../src/app/qgisapp.cpp" line="4769"/>
-        <location filename="../src/app/qgisapp.cpp" line="6094"/>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
-        <location filename="../src/app/qgisapp.cpp" line="6132"/>
-        <location filename="../src/app/qgisapp.cpp" line="6268"/>
-        <location filename="../src/app/qgisapp.cpp" line="6348"/>
-        <location filename="../src/app/qgisapp.cpp" line="9246"/>
+        <location filename="../src/app/qgisapp.cpp" line="4777"/>
+        <location filename="../src/app/qgisapp.cpp" line="6102"/>
+        <location filename="../src/app/qgisapp.cpp" line="6128"/>
+        <location filename="../src/app/qgisapp.cpp" line="6140"/>
+        <location filename="../src/app/qgisapp.cpp" line="6276"/>
+        <location filename="../src/app/qgisapp.cpp" line="6356"/>
+        <location filename="../src/app/qgisapp.cpp" line="9254"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -13930,24 +13934,24 @@ Response was:
         <translation>Запуск Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5002"/>
+        <location filename="../src/app/qgisapp.cpp" line="5010"/>
         <source>Provider does not support deletion</source>
         <translation>Источник не поддерживает удаление</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5003"/>
+        <location filename="../src/app/qgisapp.cpp" line="5011"/>
         <source>Data provider does not support deleting features</source>
         <translation>Источник данных не поддерживает удаление объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5010"/>
-        <location filename="../src/app/qgisapp.cpp" line="5490"/>
-        <location filename="../src/app/qgisapp.cpp" line="5549"/>
+        <location filename="../src/app/qgisapp.cpp" line="5018"/>
+        <location filename="../src/app/qgisapp.cpp" line="5498"/>
+        <location filename="../src/app/qgisapp.cpp" line="5557"/>
         <source>Layer not editable</source>
         <translation>Нередактируемый слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5011"/>
+        <location filename="../src/app/qgisapp.cpp" line="5019"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Режим редактирования не активирован для слоя. Активируйте «Режим редактирования» на панели инструментов оцифровки.</translation>
     </message>
@@ -13962,7 +13966,7 @@ Response was:
         <translation>Текущий масштаб карты (в формате x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8463"/>
+        <location filename="../src/app/qgisapp.cpp" line="8471"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Координаты карты в позиции курсора мыши</translation>
     </message>
@@ -13980,23 +13984,23 @@ Response was:
         <translation>Текущий масштаб карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8528"/>
+        <location filename="../src/app/qgisapp.cpp" line="8536"/>
         <source>Extents:</source>
         <translation>Границы:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9557"/>
+        <location filename="../src/app/qgisapp.cpp" line="9565"/>
         <source>Project file is older</source>
         <translation>Устаревший файл проекта</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9555"/>
+        <location filename="../src/app/qgisapp.cpp" line="9563"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Установки:Параметры:Общие&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9556"/>
+        <location filename="../src/app/qgisapp.cpp" line="9564"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Предупреждать при попытке открытия файлов проекта старых версий QGIS</translation>
     </message>
@@ -14038,62 +14042,62 @@ Please contact the developers.
         <translation>Преобразование координат — щёлкните для открытия диалога свойств системы координат</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2574"/>
+        <location filename="../src/app/qgisapp.cpp" line="2582"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>Версия GDAL/OGR при сборке</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2575"/>
+        <location filename="../src/app/qgisapp.cpp" line="2583"/>
         <source>Running against GDAL/OGR</source>
         <translation>Текущая версия GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3215"/>
+        <location filename="../src/app/qgisapp.cpp" line="3223"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора MSSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6211"/>
+        <location filename="../src/app/qgisapp.cpp" line="6219"/>
         <source>Start editing failed</source>
         <translation>Не удалось начать редактирование</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6212"/>
+        <location filename="../src/app/qgisapp.cpp" line="6220"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Источник не может быть открыт для редактирования</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6237"/>
+        <location filename="../src/app/qgisapp.cpp" line="6245"/>
         <source>Stop editing</source>
         <translation>Прекратить редактирование</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6238"/>
+        <location filename="../src/app/qgisapp.cpp" line="6246"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Вы хотите сохранить изменения в слое %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6269"/>
+        <location filename="../src/app/qgisapp.cpp" line="6277"/>
         <source>Problems during roll back</source>
         <translation>Ошибка в процессе отката</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6709"/>
+        <location filename="../src/app/qgisapp.cpp" line="6717"/>
         <source>No legend entries selected</source>
         <translation>Не выбраны элементы легенды</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6710"/>
+        <location filename="../src/app/qgisapp.cpp" line="6718"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>Выберите слои и группы, которые нужно удалить.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6717"/>
+        <location filename="../src/app/qgisapp.cpp" line="6725"/>
         <source>Remove layers and groups</source>
         <translation>Удалить слои и группы</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6717"/>
+        <location filename="../src/app/qgisapp.cpp" line="6725"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation>
@@ -14103,7 +14107,7 @@ Please contact the developers.
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6729"/>
+        <location filename="../src/app/qgisapp.cpp" line="6737"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation>
@@ -14113,27 +14117,27 @@ Please contact the developers.
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6804"/>
+        <location filename="../src/app/qgisapp.cpp" line="6812"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (неподдерживаемый тип слоя: %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7753"/>
+        <location filename="../src/app/qgisapp.cpp" line="7761"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Сохранить текущий проект? %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8455"/>
+        <location filename="../src/app/qgisapp.cpp" line="8463"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Границы текущего окна в координатах карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8621"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Maptips require an active layer</source>
         <translation>Для вывода всплывающих описаний необходим активный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4522"/>
+        <location filename="../src/app/qgisapp.cpp" line="4530"/>
         <source>Labeling</source>
         <translation>Подписи</translation>
     </message>
@@ -14219,7 +14223,7 @@ Please contact the developers.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1704"/>
-        <location filename="../src/app/qgisapp.cpp" line="8465"/>
+        <location filename="../src/app/qgisapp.cpp" line="8473"/>
         <source>Coordinate:</source>
         <translation>Координаты:</translation>
     </message>
@@ -14276,28 +14280,28 @@ Please contact the developers.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2509"/>
-        <location filename="../src/app/qgisapp.cpp" line="3609"/>
+        <location filename="../src/app/qgisapp.cpp" line="2517"/>
+        <location filename="../src/app/qgisapp.cpp" line="3617"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Новый &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2564"/>
+        <location filename="../src/app/qgisapp.cpp" line="2572"/>
         <source>QGIS version</source>
         <translation>Версия QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2565"/>
+        <location filename="../src/app/qgisapp.cpp" line="2573"/>
         <source>QGIS code revision</source>
         <translation>Ревизия</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2569"/>
+        <location filename="../src/app/qgisapp.cpp" line="2577"/>
         <source>Compiled against Qt</source>
         <translation>Версия Qt при сборке</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2570"/>
+        <location filename="../src/app/qgisapp.cpp" line="2578"/>
         <source>Running against Qt</source>
         <translation>Текущая версия Qt</translation>
     </message>
@@ -14306,172 +14310,172 @@ Please contact the developers.
         <translation type="obsolete">Версия GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2584"/>
+        <location filename="../src/app/qgisapp.cpp" line="2592"/>
         <source>PostgreSQL Client Version</source>
         <translation>Версия PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2588"/>
+        <location filename="../src/app/qgisapp.cpp" line="2596"/>
         <source>No support.</source>
         <translation>Не поддерживается</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2592"/>
+        <location filename="../src/app/qgisapp.cpp" line="2600"/>
         <source>SpatiaLite Version</source>
         <translation>Версия SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2598"/>
+        <location filename="../src/app/qgisapp.cpp" line="2606"/>
         <source>QWT Version</source>
         <translation>Версия QWT</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2599"/>
+        <location filename="../src/app/qgisapp.cpp" line="2607"/>
         <source>PROJ.4 Version</source>
         <translation>Версия PROJ.4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2603"/>
+        <location filename="../src/app/qgisapp.cpp" line="2611"/>
         <source>QScintilla2 Version</source>
         <translation>Версия QScintilla2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2606"/>
+        <location filename="../src/app/qgisapp.cpp" line="2614"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>В этой сборке QGIS включен отладочный режим.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2833"/>
+        <location filename="../src/app/qgisapp.cpp" line="2841"/>
         <source>Vector</source>
         <translation>Вектор</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3096"/>
+        <location filename="../src/app/qgisapp.cpp" line="3104"/>
         <source>PostgreSQL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3096"/>
+        <location filename="../src/app/qgisapp.cpp" line="3104"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3152"/>
+        <location filename="../src/app/qgisapp.cpp" line="3160"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>Слой %1 недействителен и не может быть загружен</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3153"/>
+        <location filename="../src/app/qgisapp.cpp" line="3161"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>Слой %1 недействителен и не может быть загружен. Дополнительная информация доступна в &lt;a href=&quot;#messageLog&quot;&gt;журнале сообщений&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3179"/>
+        <location filename="../src/app/qgisapp.cpp" line="3187"/>
         <source>SpatiaLite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3179"/>
+        <location filename="../src/app/qgisapp.cpp" line="3187"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора SpatiaLite.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3194"/>
+        <location filename="../src/app/qgisapp.cpp" line="3202"/>
         <source>Delimited Text</source>
         <translation>Текст с разделителями</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3194"/>
+        <location filename="../src/app/qgisapp.cpp" line="3202"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора слоя CSV.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3215"/>
+        <location filename="../src/app/qgisapp.cpp" line="3223"/>
         <source>MSSQL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3232"/>
+        <location filename="../src/app/qgisapp.cpp" line="3240"/>
         <source>Oracle</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3232"/>
+        <location filename="../src/app/qgisapp.cpp" line="3240"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора Oracle.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3255"/>
+        <location filename="../src/app/qgisapp.cpp" line="3263"/>
         <source>WMS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3255"/>
+        <location filename="../src/app/qgisapp.cpp" line="3263"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора WMS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3272"/>
+        <location filename="../src/app/qgisapp.cpp" line="3280"/>
         <source>WCS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3272"/>
+        <location filename="../src/app/qgisapp.cpp" line="3280"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора WCS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3294"/>
+        <location filename="../src/app/qgisapp.cpp" line="3302"/>
         <source>WFS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3294"/>
+        <location filename="../src/app/qgisapp.cpp" line="3302"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>Не удалось открыть диалог выбора WFS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3479"/>
+        <location filename="../src/app/qgisapp.cpp" line="3487"/>
         <source>Default failed to open: %1</source>
         <translation>Не удалось открыть файл шаблона: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3483"/>
+        <location filename="../src/app/qgisapp.cpp" line="3491"/>
         <source>Default not found: %1</source>
         <translation>Не найден файл шаблона: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3485"/>
+        <location filename="../src/app/qgisapp.cpp" line="3493"/>
         <source>Open Template Project</source>
         <translation>Загрузка шаблона</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3510"/>
+        <location filename="../src/app/qgisapp.cpp" line="3518"/>
         <source>Auto-open Project</source>
         <translation>Автозагрузка проекта</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3543"/>
+        <location filename="../src/app/qgisapp.cpp" line="3551"/>
         <source>Failed to open: %1</source>
         <translation>Не удалось открыть проект : %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3566"/>
+        <location filename="../src/app/qgisapp.cpp" line="3574"/>
         <source>Not valid project file: %1</source>
         <translation>Файл проекта содержит ошибки: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3579"/>
+        <location filename="../src/app/qgisapp.cpp" line="3587"/>
         <source>Project failed to open: %1</source>
         <translation>Не удалось открыть проект: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3586"/>
+        <location filename="../src/app/qgisapp.cpp" line="3594"/>
         <source>Default template has been reopened: %1</source>
         <translation>Шаблон по умолчанию открыт повторно: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3593"/>
+        <location filename="../src/app/qgisapp.cpp" line="3601"/>
         <source>File not found: %1</source>
         <translation>Файл не найден: %1</translation>
     </message>
@@ -14480,47 +14484,47 @@ Please contact the developers.
         <translation type="obsolete">Проекты QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3711"/>
+        <location filename="../src/app/qgisapp.cpp" line="3719"/>
         <source>Loading project: %1</source>
         <translation>Загрузка проекта %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3780"/>
+        <location filename="../src/app/qgisapp.cpp" line="3788"/>
         <source>Security warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3781"/>
+        <location filename="../src/app/qgisapp.cpp" line="3789"/>
         <source>project macros have been disabled.</source>
         <translation>Поддержка макросов будет выключена.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3772"/>
+        <location filename="../src/app/qgisapp.cpp" line="3780"/>
         <source>Enable macros</source>
         <translation>Разрешить макросы</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3804"/>
+        <location filename="../src/app/qgisapp.cpp" line="3812"/>
         <source>Project loaded</source>
         <translation>Проект загружен</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4063"/>
+        <location filename="../src/app/qgisapp.cpp" line="4071"/>
         <source>Unable to load %1</source>
         <translation>Не удалось загрузить %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4503"/>
+        <location filename="../src/app/qgisapp.cpp" line="4511"/>
         <source>Default system font substituted.</source>
         <translation>Будет использован системный шрифт.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4523"/>
+        <location filename="../src/app/qgisapp.cpp" line="4531"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>Не найден шрифт подписей для слоя &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4514"/>
+        <location filename="../src/app/qgisapp.cpp" line="4522"/>
         <source>Open labeling dialog</source>
         <translation>Параметры подписей</translation>
     </message>
@@ -14621,95 +14625,95 @@ Please contact the developers.
         <translation>Дата и время</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2579"/>
+        <location filename="../src/app/qgisapp.cpp" line="2587"/>
         <source>Compiled against GEOS</source>
         <translation>Версия GEOS при сборке</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="2588"/>
         <source>Running against GEOS</source>
         <translation>Текущая версия GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3853"/>
+        <location filename="../src/app/qgisapp.cpp" line="3861"/>
         <source>Insufficient permissions</source>
         <translation>Недостаточно прав</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3854"/>
+        <location filename="../src/app/qgisapp.cpp" line="3862"/>
         <source>The project file is not writable.</source>
         <translation>Файл проекта защищен от записи.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3957"/>
+        <location filename="../src/app/qgisapp.cpp" line="3965"/>
         <source>DXF export completed</source>
         <translation>Экспорт в DXF завершен</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3961"/>
+        <location filename="../src/app/qgisapp.cpp" line="3969"/>
         <source>DXF export failed</source>
         <translation>Не удалось выполнить экспорт в DXF</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4534"/>
-        <location filename="../src/app/qgisapp.cpp" line="4555"/>
+        <location filename="../src/app/qgisapp.cpp" line="4542"/>
+        <location filename="../src/app/qgisapp.cpp" line="4563"/>
         <source>Commit errors</source>
         <translation>Ошибки записи</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4535"/>
-        <location filename="../src/app/qgisapp.cpp" line="4556"/>
+        <location filename="../src/app/qgisapp.cpp" line="4543"/>
+        <location filename="../src/app/qgisapp.cpp" line="4564"/>
         <source>Could not commit changes to layer %1</source>
         <translation>Не удалось внести изменения в слой %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4537"/>
+        <location filename="../src/app/qgisapp.cpp" line="4545"/>
         <source>Errors: %1
 </source>
         <translation>Ошибки: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4544"/>
+        <location filename="../src/app/qgisapp.cpp" line="4552"/>
         <source>Show more</source>
         <translation>Ошибки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4594"/>
+        <location filename="../src/app/qgisapp.cpp" line="4602"/>
         <source>Labeling Options</source>
         <translation>Параметры подписей</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4595"/>
+        <location filename="../src/app/qgisapp.cpp" line="4603"/>
         <source>Please select a vector layer first</source>
         <translation>Выберите векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4603"/>
+        <location filename="../src/app/qgisapp.cpp" line="4611"/>
         <source>Layer labeling settings</source>
         <translation>Параметры подписей слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4695"/>
+        <location filename="../src/app/qgisapp.cpp" line="4703"/>
         <source>Reading raster</source>
         <translation>Загрузка растра</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4770"/>
+        <location filename="../src/app/qgisapp.cpp" line="4778"/>
         <source>Cannot write raster error code: %1</source>
         <translation>Не удалось сохранить растр. Код ошибки: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5020"/>
+        <location filename="../src/app/qgisapp.cpp" line="5028"/>
         <source>No Features Selected</source>
         <translation>Объекты не выбраны</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5021"/>
+        <location filename="../src/app/qgisapp.cpp" line="5029"/>
         <source>The current layer has not selected features</source>
         <translation>В текущем слое отсутствуют выбранные объекты</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5040"/>
+        <location filename="../src/app/qgisapp.cpp" line="5048"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation>
@@ -14719,124 +14723,124 @@ Please contact the developers.
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5146"/>
+        <location filename="../src/app/qgisapp.cpp" line="5154"/>
         <source>Create unique print composer title</source>
         <translation>Введите название макета</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
+        <location filename="../src/app/qgisapp.cpp" line="5157"/>
         <source>(title generated if left empty)</source>
         <translation>или оставьте поле пустым для автоматической генерации имени</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5163"/>
+        <location filename="../src/app/qgisapp.cpp" line="5171"/>
         <source>Composer title</source>
         <translation>Название макета</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5178"/>
+        <location filename="../src/app/qgisapp.cpp" line="5186"/>
         <source>Title can not be empty!</source>
         <translation>Имя макета не может быть пустым.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5189"/>
+        <location filename="../src/app/qgisapp.cpp" line="5197"/>
         <source>Title already exists!</source>
         <translation>Макет с таким именем уже существует.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5251"/>
+        <location filename="../src/app/qgisapp.cpp" line="5259"/>
         <source> copy</source>
         <translation> (копия)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5740"/>
+        <location filename="../src/app/qgisapp.cpp" line="5748"/>
         <source>No active vector layer</source>
         <translation>Не выбран активный векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5741"/>
+        <location filename="../src/app/qgisapp.cpp" line="5749"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>Для выделения объектов необходимо выбрать векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5883"/>
-        <location filename="../src/app/qgisapp.cpp" line="5890"/>
-        <location filename="../src/app/qgisapp.cpp" line="5896"/>
+        <location filename="../src/app/qgisapp.cpp" line="5891"/>
+        <location filename="../src/app/qgisapp.cpp" line="5898"/>
+        <location filename="../src/app/qgisapp.cpp" line="5904"/>
         <source>Paste features</source>
         <translation>Вставить объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5884"/>
+        <location filename="../src/app/qgisapp.cpp" line="5892"/>
         <source>no features could be successfully pasted.</source>
         <translation>отсутствуют объекты, которые можно вставить.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5891"/>
+        <location filename="../src/app/qgisapp.cpp" line="5899"/>
         <source>%1 features were successfully pasted.</source>
         <translation>Успешно вставлено %1 объектов.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5897"/>
+        <location filename="../src/app/qgisapp.cpp" line="5905"/>
         <source>%1 of %2 features could be successfully pasted.</source>
         <translation>Возможна вставка только %1 объектов из %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5924"/>
+        <location filename="../src/app/qgisapp.cpp" line="5932"/>
         <source>Pasted</source>
         <translation>Вставленный</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5925"/>
+        <location filename="../src/app/qgisapp.cpp" line="5933"/>
         <source>New memory layer name</source>
         <translation>Новое имя виртуального слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5926"/>
+        <location filename="../src/app/qgisapp.cpp" line="5934"/>
         <source>Layer name</source>
         <translation>Имя слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6002"/>
+        <location filename="../src/app/qgisapp.cpp" line="6010"/>
         <source>No features in clipboard.</source>
         <translation>В буфере обмена нет объектов.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6006"/>
+        <location filename="../src/app/qgisapp.cpp" line="6014"/>
         <source>No features with geometry found, point type layer will be created.</source>
         <translation>Не найдены объекты с геометрией, будет создан точечный слой.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6010"/>
+        <location filename="../src/app/qgisapp.cpp" line="6018"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation>Найдены разные типы геометрии, объекты с геометрией отличной от %1 будет созданы без геометрии.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6024"/>
+        <location filename="../src/app/qgisapp.cpp" line="6032"/>
         <source>Cannot create new layer</source>
         <translation>Не удалось создать новый слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6037"/>
+        <location filename="../src/app/qgisapp.cpp" line="6045"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>Не удалось создать поле: %1 (%2, %3)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6095"/>
+        <location filename="../src/app/qgisapp.cpp" line="6103"/>
         <source>Cannot copy style: %1</source>
         <translation>Не удалось скопировать стиль: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6121"/>
+        <location filename="../src/app/qgisapp.cpp" line="6129"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>Не удалось обработать стиль: %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6133"/>
+        <location filename="../src/app/qgisapp.cpp" line="6141"/>
         <source>Cannot read style: %1</source>
         <translation>Не удалось прочитать стиль: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6349"/>
+        <location filename="../src/app/qgisapp.cpp" line="6357"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -14847,69 +14851,69 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6350"/>
+        <location filename="../src/app/qgisapp.cpp" line="6358"/>
         <source>rollback</source>
         <translation>откатить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6350"/>
+        <location filename="../src/app/qgisapp.cpp" line="6358"/>
         <source>cancel</source>
         <translation>отменить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6380"/>
+        <location filename="../src/app/qgisapp.cpp" line="6388"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6380"/>
-        <location filename="../src/app/qgisapp.cpp" line="6406"/>
-        <location filename="../src/app/qgisapp.cpp" line="6432"/>
+        <location filename="../src/app/qgisapp.cpp" line="6388"/>
+        <location filename="../src/app/qgisapp.cpp" line="6414"/>
+        <location filename="../src/app/qgisapp.cpp" line="6440"/>
         <source>all</source>
         <translation>всех</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6406"/>
+        <location filename="../src/app/qgisapp.cpp" line="6414"/>
         <source>Rollback</source>
         <translation>Откатить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6432"/>
+        <location filename="../src/app/qgisapp.cpp" line="6440"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6448"/>
+        <location filename="../src/app/qgisapp.cpp" line="6456"/>
         <source>Current edits</source>
         <translation>Текущие правки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6449"/>
+        <location filename="../src/app/qgisapp.cpp" line="6457"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 текущие правки для %2 слоёв?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6866"/>
+        <location filename="../src/app/qgisapp.cpp" line="6874"/>
         <source>Set scale visibility for selected layers</source>
         <translation>Задать видимость в пределах масштаба для слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7487"/>
+        <location filename="../src/app/qgisapp.cpp" line="7495"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
         <translation>http://qgis.org/en/site/forusers/commercial_support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9837"/>
+        <location filename="../src/app/qgisapp.cpp" line="9845"/>
         <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
         <translation>Время ожидания ответа на запрос &apos;%1&apos; истекло. Полученные данные скорее всего неполные.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9838"/>
+        <location filename="../src/app/qgisapp.cpp" line="9846"/>
         <source>Network request timeout</source>
         <translation>Время ожидания ответа истекло</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9838"/>
+        <location filename="../src/app/qgisapp.cpp" line="9846"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
         <translation>Время ожидания ответа истекло. Полученные данные скорее всего неполные.</translation>
     </message>
@@ -14944,28 +14948,28 @@ Errors: %3
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6756"/>
+        <location filename="../src/app/qgisapp.cpp" line="6764"/>
         <source>copy</source>
         <translation>копия</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6760"/>
+        <location filename="../src/app/qgisapp.cpp" line="6768"/>
         <source>Plugin layer</source>
         <translation>Слой модуля</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6772"/>
+        <location filename="../src/app/qgisapp.cpp" line="6780"/>
         <source>Memory layer</source>
         <translation>Виртуальный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6792"/>
-        <location filename="../src/app/qgisapp.cpp" line="6803"/>
+        <location filename="../src/app/qgisapp.cpp" line="6800"/>
+        <location filename="../src/app/qgisapp.cpp" line="6811"/>
         <source>Duplicate layer: </source>
         <translation>Дублирующийся слой:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6793"/>
+        <location filename="../src/app/qgisapp.cpp" line="6801"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (в результате дублирования получен недействительный слой)</translation>
     </message>
@@ -14974,44 +14978,44 @@ Errors: %3
         <translation type="obsolete">%1 (неподдерживаемый тип слоя: %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7113"/>
+        <location filename="../src/app/qgisapp.cpp" line="7121"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Не удалось загрузить требуемую библиотеку Python: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7124"/>
+        <location filename="../src/app/qgisapp.cpp" line="7132"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>В библиотеке python не найден символ instance().</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7139"/>
+        <location filename="../src/app/qgisapp.cpp" line="7147"/>
         <source>Python support ENABLED :-) </source>
         <translation>Активирована поддержка Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7209"/>
+        <location filename="../src/app/qgisapp.cpp" line="7217"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS — Изменения с момента последнего выпуска</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7237"/>
+        <location filename="../src/app/qgisapp.cpp" line="7245"/>
         <source>Unknown network socket error: %1</source>
         <translation>Неизвестная ошибка сетевого соединения: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7434"/>
-        <location filename="../src/app/qgisapp.cpp" line="7443"/>
+        <location filename="../src/app/qgisapp.cpp" line="7442"/>
+        <location filename="../src/app/qgisapp.cpp" line="7451"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>Для изменения яркости и контраста необходимо выбрать растровый слой.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7469"/>
+        <location filename="../src/app/qgisapp.cpp" line="7477"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>ru</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7728"/>
+        <location filename="../src/app/qgisapp.cpp" line="7736"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>В проекте есть слои в режиме редактирования. Изменения в этих слоях не будут сохранены!</translation>
     </message>
@@ -15020,48 +15024,48 @@ Errors: %3
         <translation type="obsolete">Сохранить текущий проект?%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8366"/>
+        <location filename="../src/app/qgisapp.cpp" line="8374"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>Текущая система координат: %1 (преобразование включено)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8373"/>
+        <location filename="../src/app/qgisapp.cpp" line="8381"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>Текущая система координат: %1 (преобразование выключено)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9244"/>
+        <location filename="../src/app/qgisapp.cpp" line="9252"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>Не удалось добавить слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9245"/>
-        <location filename="../src/app/qgisapp.cpp" line="9383"/>
+        <location filename="../src/app/qgisapp.cpp" line="9253"/>
+        <location filename="../src/app/qgisapp.cpp" line="9391"/>
         <source>Raster layer</source>
         <translation>Растровый слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9426"/>
+        <location filename="../src/app/qgisapp.cpp" line="9434"/>
         <source>Exit QGIS</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9427"/>
+        <location filename="../src/app/qgisapp.cpp" line="9435"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Вы уверены, что хотите выйти?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9535"/>
+        <location filename="../src/app/qgisapp.cpp" line="9543"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
         <translation>Этот проект был создан в предыдущих версиях QGIS. При сохранении проекта он будет обновлен, что может привести к невозможности открытия проекта в старых версиях QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9561"/>
+        <location filename="../src/app/qgisapp.cpp" line="9569"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>Этот проект был сохранён в одной из предыдущих версий QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9818"/>
+        <location filename="../src/app/qgisapp.cpp" line="9826"/>
         <source>
 
 Always ignore these errors?</source>
@@ -15070,7 +15074,7 @@ Always ignore these errors?</source>
 Игнорировать эти ошибки в будущем?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="9822"/>
+        <location filename="../src/app/qgisapp.cpp" line="9830"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -15080,40 +15084,40 @@ Always ignore these errors?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3653"/>
+        <location filename="../src/app/qgisapp.cpp" line="3661"/>
         <source>Calculating...</source>
         <translation>Обработка...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3653"/>
-        <location filename="../src/app/qgisapp.cpp" line="4693"/>
+        <location filename="../src/app/qgisapp.cpp" line="3661"/>
+        <location filename="../src/app/qgisapp.cpp" line="4701"/>
         <source>Abort...</source>
         <translation>Отменить...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4916"/>
+        <location filename="../src/app/qgisapp.cpp" line="4924"/>
         <source>Saving done</source>
         <translation>Файл записан</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4917"/>
+        <location filename="../src/app/qgisapp.cpp" line="4925"/>
         <source>Export to vector file has been completed</source>
         <translation>Слой выгружен в векторный файл</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4923"/>
+        <location filename="../src/app/qgisapp.cpp" line="4931"/>
         <source>Save error</source>
         <translation>Ошибка сохранения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4924"/>
+        <location filename="../src/app/qgisapp.cpp" line="4932"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Не удалось выполнить экспорт в векторный файл.
 Ошибка: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5512"/>
+        <location filename="../src/app/qgisapp.cpp" line="5520"/>
         <source>Merged feature attributes</source>
         <translation>Объединение атрибутов объектов</translation>
     </message>
@@ -15122,8 +15126,8 @@ Error: %1</source>
         <translation type="obsolete">Уровень детализации</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7364"/>
-        <location filename="../src/app/qgisapp.cpp" line="7373"/>
+        <location filename="../src/app/qgisapp.cpp" line="7372"/>
+        <location filename="../src/app/qgisapp.cpp" line="7381"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Для растяжения гистограммы необходимо выбрать растровый слой.</translation>
     </message>
@@ -15144,12 +15148,12 @@ Error: %1</source>
         <translation type="obsolete">Не выбран действительный растровый слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7597"/>
+        <location filename="../src/app/qgisapp.cpp" line="7605"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Слой %1 не является действительным и не может быть добавлен в проект</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8694"/>
+        <location filename="../src/app/qgisapp.cpp" line="8702"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -15159,35 +15163,35 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6015"/>
-        <location filename="../src/app/qgisapp.cpp" line="6024"/>
-        <location filename="../src/app/qgisapp.cpp" line="6036"/>
-        <location filename="../src/app/qgisapp.cpp" line="9729"/>
+        <location filename="../src/app/qgisapp.cpp" line="6023"/>
+        <location filename="../src/app/qgisapp.cpp" line="6032"/>
+        <location filename="../src/app/qgisapp.cpp" line="6044"/>
+        <location filename="../src/app/qgisapp.cpp" line="9737"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9730"/>
+        <location filename="../src/app/qgisapp.cpp" line="9738"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Данный слой не имеет диалога свойств.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9764"/>
+        <location filename="../src/app/qgisapp.cpp" line="9772"/>
         <source>Authentication required</source>
         <translation>Требуется проверка подлинности</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9791"/>
+        <location filename="../src/app/qgisapp.cpp" line="9799"/>
         <source>Proxy authentication required</source>
         <translation>Для доступа к прокси-серверу требуется проверка подлинности</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9802"/>
+        <location filename="../src/app/qgisapp.cpp" line="9810"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>Ошибка SSL при доступе к URL %1:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3896"/>
+        <location filename="../src/app/qgisapp.cpp" line="3904"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Выберите имя файла для сохранения проекта QGIS</translation>
     </message>
@@ -15233,99 +15237,99 @@ Please contact the developers.
         <translation>Текущие правки</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3676"/>
-        <location filename="../src/app/qgisapp.cpp" line="3833"/>
-        <location filename="../src/app/qgisapp.cpp" line="3898"/>
+        <location filename="../src/app/qgisapp.cpp" line="3684"/>
+        <location filename="../src/app/qgisapp.cpp" line="3841"/>
+        <location filename="../src/app/qgisapp.cpp" line="3906"/>
         <source>QGIS files</source>
         <translation>Проекты QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4150"/>
+        <location filename="../src/app/qgisapp.cpp" line="4158"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Выберите имя файла для сохранения снимка карты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5031"/>
+        <location filename="../src/app/qgisapp.cpp" line="5039"/>
         <source>Features deleted</source>
         <translation>Удаление объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5086"/>
+        <location filename="../src/app/qgisapp.cpp" line="5094"/>
         <source>Merging features...</source>
         <translation>Объединение объектов...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5086"/>
+        <location filename="../src/app/qgisapp.cpp" line="5094"/>
         <source>Abort</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5475"/>
-        <location filename="../src/app/qgisapp.cpp" line="5538"/>
+        <location filename="../src/app/qgisapp.cpp" line="5483"/>
+        <location filename="../src/app/qgisapp.cpp" line="5546"/>
         <source>No active layer</source>
         <translation>Не выбран активный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5476"/>
-        <location filename="../src/app/qgisapp.cpp" line="5538"/>
+        <location filename="../src/app/qgisapp.cpp" line="5484"/>
+        <location filename="../src/app/qgisapp.cpp" line="5546"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Активный слой не выбран. Пожалуйста, выберите слой из списка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5484"/>
-        <location filename="../src/app/qgisapp.cpp" line="5544"/>
+        <location filename="../src/app/qgisapp.cpp" line="5492"/>
+        <location filename="../src/app/qgisapp.cpp" line="5552"/>
         <source>Active layer is not vector</source>
         <translation>Активный слой не является векторным</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5484"/>
-        <location filename="../src/app/qgisapp.cpp" line="5544"/>
+        <location filename="../src/app/qgisapp.cpp" line="5492"/>
+        <location filename="../src/app/qgisapp.cpp" line="5552"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Инструмент объединения объектов работает только с векторными данными. Пожалуйста, выберите векторный слой</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5490"/>
-        <location filename="../src/app/qgisapp.cpp" line="5549"/>
+        <location filename="../src/app/qgisapp.cpp" line="5498"/>
+        <location filename="../src/app/qgisapp.cpp" line="5557"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Инструмент объединения объектов работает только в режиме редактирования слоёв. Для выполнения объединения, выберите «Слой -&gt; Режим редактирования» в главном меню</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5498"/>
-        <location filename="../src/app/qgisapp.cpp" line="5564"/>
-        <location filename="../src/app/qgisapp.cpp" line="5601"/>
+        <location filename="../src/app/qgisapp.cpp" line="5506"/>
+        <location filename="../src/app/qgisapp.cpp" line="5572"/>
+        <location filename="../src/app/qgisapp.cpp" line="5609"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Для объединения объектов необходимо выделить по крайней мере два объекта</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5576"/>
-        <location filename="../src/app/qgisapp.cpp" line="5616"/>
+        <location filename="../src/app/qgisapp.cpp" line="5584"/>
+        <location filename="../src/app/qgisapp.cpp" line="5624"/>
         <source>Merge failed</source>
         <translation>Ошибка объединения</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5576"/>
-        <location filename="../src/app/qgisapp.cpp" line="5616"/>
+        <location filename="../src/app/qgisapp.cpp" line="5584"/>
+        <location filename="../src/app/qgisapp.cpp" line="5624"/>
         <source>An error occured during the merge operation</source>
         <translation>В процессе объединения объектов возникла ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5584"/>
-        <location filename="../src/app/qgisapp.cpp" line="5623"/>
+        <location filename="../src/app/qgisapp.cpp" line="5592"/>
+        <location filename="../src/app/qgisapp.cpp" line="5631"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>В результате операции объединения будет создан объект, тип которого не совместим с текущим слоем. Операция будет отменена</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5629"/>
+        <location filename="../src/app/qgisapp.cpp" line="5637"/>
         <source>Merged features</source>
         <translation>Объединение объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5778"/>
+        <location filename="../src/app/qgisapp.cpp" line="5786"/>
         <source>Features cut</source>
         <translation>Вырезка объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5804"/>
+        <location filename="../src/app/qgisapp.cpp" line="5812"/>
         <source>Features pasted</source>
         <translation>Вставка объектов</translation>
     </message>
@@ -15354,13 +15358,13 @@ Please contact the developers.
         <translation>Координаты в выбранной системе (широта, долгота или x, y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2734"/>
+        <location filename="../src/app/qgisapp.cpp" line="2742"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>Источник данных %1 не имеет слоёв</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2741"/>
-        <location filename="../src/app/qgisapp.cpp" line="3072"/>
+        <location filename="../src/app/qgisapp.cpp" line="2749"/>
+        <location filename="../src/app/qgisapp.cpp" line="3080"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 не является действительным источником данных</translation>
     </message>
@@ -15377,19 +15381,19 @@ Please contact the developers.
         <translation type="obsolete">Выберите векторные слои для добавления...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3863"/>
-        <location filename="../src/app/qgisapp.cpp" line="3917"/>
+        <location filename="../src/app/qgisapp.cpp" line="3871"/>
+        <location filename="../src/app/qgisapp.cpp" line="3925"/>
         <source>Saved project to: %1</source>
         <translation>Проект сохранён в файле %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3875"/>
-        <location filename="../src/app/qgisapp.cpp" line="3924"/>
+        <location filename="../src/app/qgisapp.cpp" line="3883"/>
+        <location filename="../src/app/qgisapp.cpp" line="3932"/>
         <source>Unable to save project %1</source>
         <translation>Не удалось сохранить проект %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4155"/>
+        <location filename="../src/app/qgisapp.cpp" line="4163"/>
         <source>Saved map image to %1</source>
         <translation>Изображение карты сохранено в %1</translation>
     </message>
@@ -15398,14 +15402,14 @@ Please contact the developers.
         <translation type="obsolete">Пожалуйста, выберите векторный слой.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5498"/>
-        <location filename="../src/app/qgisapp.cpp" line="5564"/>
-        <location filename="../src/app/qgisapp.cpp" line="5601"/>
+        <location filename="../src/app/qgisapp.cpp" line="5506"/>
+        <location filename="../src/app/qgisapp.cpp" line="5572"/>
+        <location filename="../src/app/qgisapp.cpp" line="5609"/>
         <source>Not enough features selected</source>
         <translation>Не выделено достаточное количество объектов</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5584"/>
+        <location filename="../src/app/qgisapp.cpp" line="5592"/>
         <source>Union operation canceled</source>
         <translation>Операция объединения прервана</translation>
     </message>
@@ -15420,7 +15424,7 @@ Errors: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7242"/>
+        <location filename="../src/app/qgisapp.cpp" line="7250"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Не удалось связаться с сервером версии QGIS
@@ -15431,12 +15435,12 @@ Errors: %2
         <translation type="obsolete">%1 не является допустимым (определяемым) источником растровых данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9380"/>
+        <location filename="../src/app/qgisapp.cpp" line="9388"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 не является поддерживаемым источником растровых данных</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9539"/>
+        <location filename="../src/app/qgisapp.cpp" line="9547"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Этот проект был создан с использованием устаревшей версии QGIS. При сохранении проекта, файл будет обновлён, что может повлечь за собой несовместимость с предыдущими версиями QGIS.&lt;p&gt;Несмотря на то, что разработчики QGIS стремятся к максимальной обратной совместимости, часть информации из старого проекта может быть потеряна. В этом случае рекомендуется отправить сообщение об ошибке по адресу: %3. Пожалуйста, приложите старый файл проекта и укажите версию QGIS, в которой была обнаружена ошибка.&lt;p&gt;Если вы не хотите получать это предупреждение в будущем, снимите флажок «%5» в меню «%4».&lt;p&gt;Версия файла проекта: %1&lt;br&gt;Текущая версия QGIS: %2</translation>
     </message>
@@ -15446,12 +15450,12 @@ Errors: %2
         <translation>Слои</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5026"/>
+        <location filename="../src/app/qgisapp.cpp" line="5034"/>
         <source>Delete features</source>
         <translation>Удаление объектов</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5026"/>
+        <location filename="../src/app/qgisapp.cpp" line="5034"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -15461,8 +15465,8 @@ Errors: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5206"/>
-        <location filename="../src/app/qgisapp.cpp" line="5289"/>
+        <location filename="../src/app/qgisapp.cpp" line="5214"/>
+        <location filename="../src/app/qgisapp.cpp" line="5297"/>
         <source>Composer %1</source>
         <translation>Макет %1</translation>
     </message>
@@ -17026,7 +17030,7 @@ Parser error:
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="435"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="436"/>
         <source>feature id</source>
         <translation>ID объекта</translation>
     </message>
@@ -21025,7 +21029,7 @@ Please try a lower resolution or a smaller papersize</source>
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="317"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="318"/>
         <source>Map will be printed here</source>
         <translation>Карта</translation>
     </message>
@@ -27191,7 +27195,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="297"/>
         <source>Draw text as outlines (recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразовывать текст в кривые (рекомендуется)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="248"/>
@@ -38103,7 +38107,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="14"/>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроить диапазон масштабирования</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="24"/>
@@ -38118,7 +38122,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmapunitscaledialog.ui" line="54"/>
         <source>Scale only within the following map unit scale range:</source>
-        <translation type="unfinished">Выполнять масштабирование только в заданном диапазоне масштабов:</translation>
+        <translation>Выполнять масштабирование только в заданном диапазоне масштабов:</translation>
     </message>
 </context>
 <context>
@@ -52823,17 +52827,17 @@ The error was:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1320"/>
         <source>Use whole shape</source>
-        <translation type="unfinished">Использовать весь полигон</translation>
+        <translation>Использовать весь полигон</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1321"/>
         <source>Maximum distance</source>
-        <translation type="unfinished">Максимальное расстояние</translation>
+        <translation>Максимальное расстояние</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1322"/>
         <source>Ignore rings</source>
-        <translation type="unfinished">Игнорировать кольца</translation>
+        <translation>Игнорировать кольца</translation>
     </message>
 </context>
 <context>
@@ -56947,7 +56951,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgsunitselectionwidget.cpp" line="78"/>
         <source>Adjust scaling range</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроить диапазон масштабирования</translation>
     </message>
 </context>
 <context>
@@ -60719,7 +60723,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1906"/>
         <source>Selected tile matrix set </source>
-        <translation type="unfinished"></translation>
+        <translation>Используемые настройки тайлов</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1907"/>
