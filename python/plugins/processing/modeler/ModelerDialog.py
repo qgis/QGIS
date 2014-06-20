@@ -335,8 +335,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.hasChanged = False
             except WrongModelException, e:
                 QMessageBox.critical(self, self.tr('Could not open model'),
-                        self.tr('The selected model could not be loaded.\n\
-                                 Wrong line: %s') % e.msg)
+                        self.tr('The selected model could not be loaded.\n'
+                                'Wrong line: %s') % e.msg)
 
     def repaintModel(self):
         self.scene = ModelerScene()
