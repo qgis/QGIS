@@ -121,6 +121,9 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
   {
     //refresh table attributes when composition is refreshed
     connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshAttributes() ) );
+
+    //connect to atlas feature changes to update table rows
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshAttributes() ) );
   }
 }
 
@@ -405,7 +408,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   if ( !selectionRect.isEmpty() )
     req.setFilterRect( selectionRect );
 
-  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoGeometry );
+  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoFlags );
 
   QgsFeature f;
   int counter = 0;
