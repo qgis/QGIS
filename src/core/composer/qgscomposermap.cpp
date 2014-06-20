@@ -221,9 +221,10 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   // render
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
-  job.start();
-  // wait, but allow network requests to be processed
-  job.waitForFinishedWithEventLoop( QEventLoop::ExcludeUserInputEvents );
+  // Render the map in this thread. This is done because of problems
+  // with printing to printer on Windows (printing to PDF is fine though).
+  // Raster images were not displayed - see #10599
+  job.renderSynchronously();
 }
 
 void QgsComposerMap::cache( void )

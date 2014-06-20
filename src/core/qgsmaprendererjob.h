@@ -278,6 +278,17 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      */
     void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
 
+    /**
+     * Render the map synchronously in this thread. The function does not return until the map
+     * is completely rendered.
+     *
+     * This is an alternative to ordinary API (using start() + waiting for finished() signal).
+     * Users are discouraged to use this method unless they have a strong reason for doing it.
+     * The synchronous rendering blocks the main thread, making the application unresponsive.
+     * Also, it is not possible to cancel rendering while it is in progress.
+     */
+    void renderSynchronously();
+
   protected slots:
     void futureFinished();
 
@@ -296,6 +307,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 
     bool mActive;
     LayerRenderJobs mLayerJobs;
+    bool mRenderSynchronously;
 };
 
 

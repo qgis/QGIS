@@ -182,6 +182,7 @@ QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSett
     , mPainter( painter )
     , mLabelingEngine( 0 )
     , mActive( false )
+    , mRenderSynchronously( false )
 {
   QgsDebugMsg( "QPAINTER construct" );
 }
@@ -236,6 +237,13 @@ void QgsMapRendererCustomPainterJob::start()
   mLayerJobs = prepareJobs( mPainter, mLabelingEngine );
 
   QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
+
+  if ( mRenderSynchronously )
+  {
+    // do the rendering right now!
+    doRender();
+    return;
+  }
 
   // now we are ready to start rendering!
   connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( futureFinished() ) );
@@ -308,6 +316,15 @@ void QgsMapRendererCustomPainterJob::waitForFinishedWithEventLoop( QEventLoop::P
   QEventLoop loop;
   connect( &mFutureWatcher, SIGNAL( finished() ), &loop, SLOT( quit() ) );
   loop.exec( flags );
+}
+
+
+void QgsMapRendererCustomPainterJob::renderSynchronously()
+{
+  mRenderSynchronously = true;
+  start();
+  futureFinished();
+  mRenderSynchronously = false;
 }
 
 
