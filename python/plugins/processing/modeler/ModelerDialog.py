@@ -205,8 +205,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         # TODO: enable alg cloning without saving to file
         if len(self.alg.algs) == 0:
             QMessageBox.warning(self, self.tr('Empty model'),
-                    self.tr("Model doesn't contains any algorithms and/or \
-                             parameters and can't be executed"))
+                    self.tr("Model doesn't contains any algorithms and/or "
+                            "parameters and can't be executed"))
             return
 
         if self.alg.descriptionFile is None:
