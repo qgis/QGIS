@@ -80,6 +80,8 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
     if ( !username.isEmpty() )
       realm.prepend( username + "@" );
 
+    QgsCredentials::instance()->lock();
+
     while ( !mDatabase.open() )
     {
       bool ok = QgsCredentials::instance()->get( realm, username, password, mDatabase.lastError().text() );
@@ -102,6 +104,8 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
 
     if ( mDatabase.isOpen() )
       QgsCredentials::instance()->put( realm, username, password );
+
+    QgsCredentials::instance()->unlock();
   }
 
   if ( !mDatabase.isOpen() )

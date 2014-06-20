@@ -38,6 +38,10 @@ QgsCredentials *QgsCredentials::instance()
   return new QgsCredentialsConsole();
 }
 
+QgsCredentials::QgsCredentials()
+{
+}
+
 QgsCredentials::~QgsCredentials()
 {
 }
@@ -69,6 +73,18 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   QgsDebugMsg( QString( "inserting realm:%1 username:%2 password:%3" ).arg( realm ).arg( username ).arg( password ) );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
+
+
+void QgsCredentials::lock()
+{
+  mMutex.lock();
+}
+
+void QgsCredentials::unlock()
+{
+  mMutex.unlock();
+}
+
 
 ////////////////////////////////
 // QgsCredentialsConsole

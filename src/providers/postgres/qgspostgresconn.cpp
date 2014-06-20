@@ -181,6 +181,8 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared )
     QString username = uri.username();
     QString password = uri.password();
 
+    QgsCredentials::instance()->lock();
+
     while ( PQstatus() != CONNECTION_OK )
     {
       bool ok = QgsCredentials::instance()->get( conninfo, username, password, PQerrorMessage() );
@@ -201,6 +203,8 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared )
 
     if ( PQstatus() == CONNECTION_OK )
       QgsCredentials::instance()->put( conninfo, username, password );
+
+    QgsCredentials::instance()->unlock();
   }
 
   if ( PQstatus() != CONNECTION_OK )
