@@ -38,6 +38,25 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= Whats new in Version 2.4.0 'Chugiak'? =
+
+This is the minor release sports a number of great new features:
+
+- Colour preview modes in composer and map canvas
+- Multi-threaded rendering
+- New expression functions (bounding box related functions, wordwrap)
+- Copy, paste and drag and drop colours
+- Label features multiple times
+- Improvements to composer picture items
+- Predefined scales mode for atlas maps
+- Improved attribute tables in composer
+- General composer improvements - join and capping styles, button to zoom to main map
+- Improvements to HTML frames in composer
+- Shapeburst fill style
+- Option to shift marker line placement
+- New Inverted Polygon renderer
+-
+
 = Whats new in Version 2.2.0 'Valmiera'? =
 
 This is the minor release sports a number of great new features:
