@@ -296,10 +296,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                             % unicode(sys.exc_info()[1]))
                 else:
                     QMessageBox.warning(self, self.tr("Can't save model"),
-                            self.tr("This model can't be saved in its \
-                                     original location (probably you do not \
-                                     have permission to do it). Please, use \
-                                     the 'Save as...' option."))
+                            self.tr("This model can't be saved in its "
+                                    "original location (probably you do not "
+                                    "have permission to do it). Please, use "
+                                    "the 'Save as...' option."))
                 return
             fout.write(text)
             fout.close()
