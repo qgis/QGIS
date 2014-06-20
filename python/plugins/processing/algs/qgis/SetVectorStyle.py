@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -42,7 +43,7 @@ class SetVectorStyle(GeoAlgorithm):
 
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
+        #self.allowOnlyOpenedLayers = True
         self.name = 'Set style for vector layer'
         self.group = 'Vector general tools'
         self.addParameter(ParameterVector(self.INPUT, 'Vector layer',
@@ -51,13 +52,16 @@ class SetVectorStyle(GeoAlgorithm):
                           'Style file', False, False, 'qml'))
         self.addOutput(OutputVector(self.OUTPUT, 'Styled layer', True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, progress):        
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
 
         style = self.getParameterValue(self.STYLE)
-        layer.loadNamedStyle(style)
-
-        self.setOutputValue(self.OUTPUT, filename)
-        iface.mapCanvas().refresh()
-        iface.legendInterface().refreshLayerSymbology(layer)
+        layer = dataobjects.getObjectFromUri(filename, False)
+        if layer is None:
+            dataobjects.load(filename, os.path.basename(filename), style=style)
+            self.getOutputFromName(self.OUTPUT).open = False
+        else:
+            layer.loadNamedStyle(style)                        
+            iface.mapCanvas().refresh()
+            iface.legendInterface().refreshLayerSymbology(layer)

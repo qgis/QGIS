@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4.QtCore import *
 from PyQt4.QtXml import *
 from qgis.core import *
@@ -46,7 +47,7 @@ class SetRasterStyle(GeoAlgorithm):
         self.allowOnlyOpenedLayers = True
         self.name = 'Set style for raster layer'
         self.group = 'Raster general tools'
-        self.addParameter(ParameterRaster(self.INPUT, 'Vector layer'))
+        self.addParameter(ParameterRaster(self.INPUT, 'Raster layer'))        
         self.addParameter(ParameterFile(self.STYLE,
                           'Style file', False, False, 'qml'))
         self.addOutput(OutputRaster(self.OUTPUT, 'Styled layer', True))
@@ -56,12 +57,16 @@ class SetRasterStyle(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(filename)
 
         style = self.getParameterValue(self.STYLE)
-        with open(style) as f:
-            xml = "".join(f.readlines())
-        d = QDomDocument();
-        d.setContent(xml);
-        n = d.firstChild();
-        layer.readSymbology(n, '')
-        self.setOutputValue(self.OUTPUT, filename)
-        iface.mapCanvas().refresh()
-        iface.legendInterface().refreshLayerSymbology(layer)
+        if layer is None:
+            dataobjects.load(filename, os.path.basename(filename), style=style)
+            self.getOutputFromName(self.OUTPUT).open = False
+        else:
+            with open(style) as f:
+                xml = "".join(f.readlines()) 
+            d = QDomDocument();
+            d.setContent(xml);
+            n = d.firstChild();        
+            layer.readSymbology(n, '')                
+            self.setOutputValue(self.OUTPUT, filename)
+            iface.mapCanvas().refresh()
+            iface.legendInterface().refreshLayerSymbology(layer)
