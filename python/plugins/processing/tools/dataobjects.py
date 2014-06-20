@@ -36,6 +36,12 @@ from processing.tools.system import *
 
 ALL_TYPES = [-1]
 
+_loadedLayers = {}
+
+def resetLoadedLayers():
+    global _loadedLayers
+    _loadedLayers = {}
+
 def getSupportedOutputVectorLayerExtensions():
     formats = QgsVectorFileWriter.supportedFiltersAndFormats()
     exts = ['shp']  # shp is the default, should be the first
@@ -206,6 +212,9 @@ def getObjectFromUri(uri, forceLoad=True):
 
     if uri is None:
         return None
+    print _loadedLayers
+    if uri in _loadedLayers:
+        return _loadedLayers[uri]
     layers = getRasterLayers()
     for layer in layers:
         if layer.source() == uri:
@@ -228,11 +237,13 @@ def getObjectFromUri(uri, forceLoad=True):
         if layer.isValid():
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
+            _loadedLayers[layer.source()] = layer
             return layer
         layer = QgsRasterLayer(uri, uri)
         if layer.isValid():
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
+            _loadedLayers[layer.source()] = layer
             return layer
         if prjSetting:
             settings.setValue('/Projections/defaultBehaviour', prjSetting)

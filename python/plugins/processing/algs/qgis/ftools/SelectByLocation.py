@@ -46,7 +46,6 @@ class SelectByLocation(GeoAlgorithm):
 
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name = 'Select by location'
         self.group = 'Vector selection tools'
         self.addParameter(ParameterVector(self.INPUT, 'Layer to select from',

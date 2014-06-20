@@ -1059,7 +1059,6 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
     RESULT = 'RESULT'
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name = 'Select by attribute'
         self.group = 'Vector selection tools'
 
@@ -1087,8 +1086,7 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
 
         filename = self.getParameterValue(self.LAYERNAME)
-        layer = dataobjects.getObjectFromUri(filename)
-
+        layer = dataobjects.getObjectFromUri(filename)        
         attribute = self.getParameterValue(self.ATTRIBUTE)
         comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
         comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
