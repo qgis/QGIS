@@ -44,7 +44,6 @@ class SetRasterStyle(GeoAlgorithm):
 
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name = 'Set style for raster layer'
         self.group = 'Raster general tools'
         self.addParameter(ParameterRaster(self.INPUT, 'Raster layer'))        
