@@ -1452,7 +1452,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
 
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
-      QString type = iter->typeName();
+      QString type = iter->typeName().toLower();
       if ( type == "char" || type == "varchar2" )
       {
         type = QString( "%1(%2 char)" ).arg( type ).arg( iter->length() );
@@ -1489,6 +1489,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
       }
 
       qry.finish();
+
     }
 
     if ( !db.commit() )
@@ -1502,6 +1503,11 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
     if ( !db.rollback() )
       QgsMessageLog::logMessage( tr( "Could not rollback transaction" ), tr( "Oracle" ) );
     returnvalue = false;
+  }
+
+  if( !loadFields() )
+  {
+    QgsMessageLog::logMessage( tr( "Could not reload fields." ), tr( "Oracle" ) );
   }
 
   return returnvalue;
@@ -1560,6 +1566,11 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
       QgsMessageLog::logMessage( tr( "Could not rollback transaction" ), tr( "Oracle" ) );
     }
     returnvalue = false;
+  }
+
+  if( !loadFields() )
+  {
+    QgsMessageLog::logMessage( tr( "Could not reload fields." ), tr( "Oracle" ) );
   }
 
   return returnvalue;
