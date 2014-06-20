@@ -301,7 +301,7 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
 
         key = '/MetaSearch/%s' % current_text
 
-        msg = self.tr('Remove service %s?' % current_text)
+        msg = self.tr('Remove service %s?') % current_text
 
         result = QMessageBox.information(self, self.tr('Confirm delete'), msg,
                                          QMessageBox.Ok | QMessageBox.Cancel)
@@ -335,7 +335,7 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
             name = server.attrib.get('name')
             # check for duplicates
             if name in keys:
-                msg = self.tr('%s exists.  Overwrite?' % name)
+                msg = self.tr('%s exists.  Overwrite?') % name
                 res = QMessageBox.warning(self,
                                           self.tr('Loading connections'), msg,
                                           QMessageBox.Yes | QMessageBox.No)
@@ -463,12 +463,12 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
         except ExceptionReport, err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
-                                self.tr('Search error: %s' % err))
+                                self.tr('Search error: %s') % err)
             return
         except Exception, err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
-                                self.tr('Connection error: %s' % err))
+                                self.tr('Connection error: %s') % err)
             return
 
         if self.catalog.results['matches'] == 0:
@@ -486,10 +486,10 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
 
         position = self.catalog.results['returned'] + self.startfrom
 
-        msg = self.tr('Showing %d - %d of %d result%s' %
-                     (self.startfrom + 1, position,
+        msg = self.tr('Showing %d - %d of %d result%s') % (
+                      self.startfrom + 1, position,
                       self.catalog.results['matches'],
-                      's'[self.catalog.results['matches'] == 1:]))
+                      's'[self.catalog.results['matches'] == 1:])
 
         self.lblResults.setText(msg)
 
@@ -687,7 +687,7 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
                 ows = WebCoverageService(data_url, '1.0.0')
         except Exception, err:
             QApplication.restoreOverrideCursor()
-            msg = self.tr('Error connecting to %s: %s' % (stype[0], err))
+            msg = self.tr('Error connecting to %s: %s') % (stype[0], err)
             QMessageBox.warning(self, self.tr('Connection error'), msg)
             return
 
@@ -710,7 +710,7 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
 
         # check for duplicates
         if sname in keys and self.radioTitleAsk.isChecked():
-            msg = self.tr('Connection %s exists. Overwrite?' % sname)
+            msg = self.tr('Connection %s exists. Overwrite?') % sname
             res = QMessageBox.warning(self, self.tr('Saving server'), msg,
                                       QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
@@ -779,7 +779,7 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
         except ExceptionReport, err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
-                                self.tr('Error getting response: %s' % err))
+                                self.tr('Error getting response: %s') % err)
             return
 
         QApplication.restoreOverrideCursor()
@@ -848,11 +848,11 @@ class MetaSearchDialog(QDialog, Ui_MetaSearchDialog):
             self.catalog = CatalogueServiceWeb(self.catalog_url)
             return True
         except ExceptionReport, err:
-            msg = self.tr('Error connecting to service: %s' % err)
+            msg = self.tr('Error connecting to service: %s') % err
         except ValueError, err:
-            msg = self.tr('Value Error: %s' % err)
+            msg = self.tr('Value Error: %s') % err
         except Exception, err:
-            msg = self.tr('Unknown Error: %s' % err)
+            msg = self.tr('Unknown Error: %s') % err
 
         QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         QApplication.restoreOverrideCursor()

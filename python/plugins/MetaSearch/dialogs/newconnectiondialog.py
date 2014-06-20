@@ -65,7 +65,7 @@ class NewConnectionDialog(QDialog, Ui_NewConnectionDialog):
             if all([self.conn_name_orig != conn_name,
                     self.settings.contains(keyurl)]):
                 res = QMessageBox.warning(self, self.tr('Save connection'),
-                                          self.tr('Overwrite %s?' % conn_name),
+                                          self.tr('Overwrite %s?') % conn_name,
                                           QMessageBox.Ok | QMessageBox.Cancel)
                 if res == QMessageBox.Cancel:
                     return
