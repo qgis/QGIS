@@ -67,7 +67,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 if self.optional:
                     return True
                 else:
-                    return False            
+                    return False
             self.value = ";".join([self.getAsString(lay) for lay in obj])
             return True
         else:

@@ -52,7 +52,7 @@ class SetVectorStyle(GeoAlgorithm):
                           'Style file', False, False, 'qml'))
         self.addOutput(OutputVector(self.OUTPUT, 'Styled layer', True))
 
-    def processAlgorithm(self, progress):        
+    def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
 
@@ -62,6 +62,6 @@ class SetVectorStyle(GeoAlgorithm):
             dataobjects.load(filename, os.path.basename(filename), style=style)
             self.getOutputFromName(self.OUTPUT).open = False
         else:
-            layer.loadNamedStyle(style)                        
+            layer.loadNamedStyle(style)
             iface.mapCanvas().refresh()
             iface.legendInterface().refreshLayerSymbology(layer)
