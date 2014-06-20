@@ -468,11 +468,9 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   QgsWmsCapabilities caps;
   if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
   {
-    QMessageBox::warning(
-      this,
-      tr( "WMS Provider" ),
-      tr( "Failed to parse capabilities:\n" ) + caps.lastError()
-    );
+    QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ), tr( "Failed to parse capabilities:\n" ), QMessageBox::Ok, this );
+    msgBox.setDetailedText( caps.lastError() );
+    msgBox.exec();
     return;
   }
 
