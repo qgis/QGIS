@@ -468,8 +468,10 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   QgsWmsCapabilities caps;
   if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
   {
-    QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ), tr( "Failed to parse capabilities:\n" ), QMessageBox::Ok, this );
-    msgBox.setDetailedText( caps.lastError() );
+    QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ),
+                        tr( "The server you are trying to connect to does not seem to be a WMS server. Please check the URL." ),
+                        QMessageBox::Ok, this );
+    msgBox.setDetailedText( tr( "Instead of the capabilities string that was expected, the following response has been received:\n\n%1" ).arg( caps.lastError() ) );
     msgBox.exec();
     return;
   }
