@@ -88,6 +88,14 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
 
+    /**
+     * Is used to enable or disable the edit functionality of the managed widget.
+     * By default this will enable or disable the whole widget
+     *
+     * @param enabled  Enable or Disable?
+     */
+    void setEnabled( bool enabled );
+
   signals:
     /**
      * Emit this signal, whenever the value changed.

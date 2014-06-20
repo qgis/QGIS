@@ -151,7 +151,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Is used to enable or disable the edit functionality of the managed widget.
-     * By default this will enable or disable the whole widget
+     * By default this will not change the enabled state of the widget
      *
      * @param enabled  Enable or Disable?
      */

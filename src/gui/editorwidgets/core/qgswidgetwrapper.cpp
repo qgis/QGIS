@@ -88,8 +88,5 @@ void QgsWidgetWrapper::initWidget( QWidget* editor )
 
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
-  if ( mWidget )
-  {
-    mWidget->setEnabled( enabled );
-  }
+  Q_UNUSED( enabled );
 }
