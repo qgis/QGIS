@@ -199,17 +199,19 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table.setEnabled(False)
         self.tabWidget.setCurrentIndex(1)
         self.progress.setMaximum(len(self.algs))
+        # make sure the log tab is visible before executing the algorithm
+        try:
+            self.repaint()
+        except:
+            pass
         for (i, alg) in enumerate(self.algs):
             self.setBaseText('Processing algorithm ' + str(i + 1) + '/'
                              + str(len(self.algs)) + '...')
-            # make sure the log tab is visible before executing the algorithm
-            try:
-                self.repaint()
-            except:
-                pass
+            self.setInfo('<b>Algorithm %s starting...</b>' % alg.name)
             if UnthreadedAlgorithmExecutor.runalg(alg, self) and not self.canceled:
                 if self.load[i]:
                     handleAlgorithmResults(alg, self, False)
+                self.setInfo('Algorithm %s correctly executed...' % alg.name)
             else:
                 QApplication.restoreOverrideCursor()
                 return
