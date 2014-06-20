@@ -189,8 +189,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     self.algs = None
                     return
             self.algs.append(alg)
-            widget = self.table.cellWidget(row, col)
-            self.load.append(widget.currentIndex() == 0)
+            if self.alg.getVisibleOutputsCount():
+                widget = self.table.cellWidget(row, col)
+                self.load.append(widget.currentIndex() == 0)
+            else:
+                self.load.append(False)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
@@ -204,8 +207,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                 self.repaint()
             except:
                 pass
-            if UnthreadedAlgorithmExecutor.runalg(alg, self) \
-                and not self.canceled:
+            if UnthreadedAlgorithmExecutor.runalg(alg, self) and not self.canceled:
                 if self.load[i]:
                     handleAlgorithmResults(alg, self, False)
             else:
