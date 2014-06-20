@@ -7260,21 +7260,8 @@ Funktioniert auf allen ändernbaren Layern</translation>
         <translation>Konnte Modell nicht speichern</translation>
     </message>
     <message>
-        <source>This model can&apos;t be saved in its 
-                                     original location (probably you do not 
-                                     have permission to do it). Please, use 
-                                     the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The selected model could not be loaded.
-
-                                 Wrong line: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>This model can&apos;t be saved in its                                      original location (probably you do not                                      have permission to do it). Please, use                                      the &apos;Save as...&apos; option.</source>
-        <translation type="obsolete">Diese Modell kann an seiner ursprünglichen Stelle gespeichert werden (wahrscheinlich haben Sie keine Berechtigung dazu). Bitte &apos;Speichern als...&apos; verwenden.</translation>
+        <translation>Dieses Modell kann an seiner ursprünglichen Stelle gespeichert werden (wahrscheinlich haben Sie keine Berechtigung dazu). Bitte &apos;Speichern als...&apos; verwenden.</translation>
     </message>
     <message>
         <source>Model saved</source>
@@ -7294,9 +7281,9 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
-                                 Wrong line: %s</source>
-        <translation type="obsolete">Das gewählte Modell konnte nicht geladen werden.
-                                 Fehlerhafte Zeile: %s</translation>
+Wrong line: %s</source>
+        <translation>Das gewählte Modell konnte nicht geladen werden.
+Fehlerhafte Zeile: %s</translation>
     </message>
     <message>
         <source>Parameters</source>
@@ -37798,25 +37785,25 @@ Es fehlen einige der UI-Vorlagenobjekte:</translation>
 <context>
     <name>QgsOracleConn</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="110"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="114"/>
         <source>Connection to database failed</source>
         <translation>Verbindung zur Datenbank schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="110"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="170"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="219"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="239"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="250"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="420"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="438"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="469"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="114"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="174"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="223"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="243"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="254"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="424"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="442"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="473"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="170"/>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="417"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="174"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="421"/>
         <source>SQL:%1
 error:%2
 </source>
@@ -37825,7 +37812,7 @@ Fehler:%2
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="219"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="223"/>
         <source>Querying available tables failed.
 SQL:%1
 error:%2
@@ -37836,62 +37823,62 @@ Fehler:%2
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="239"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="243"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>Die Datenbankverbindung war erfolgreich, jedoch konnten die zugänglichen Tabellen nicht bestimmt werden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="250"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="254"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>Konnte Liste der räumlichen Tabellen der Datenbank nicht bestimmen</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="435"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="439"/>
         <source>Unsupported geometry type %1 in %2.%3.%4 ignored</source>
         <translation>Nicht unterstützter Geometrietyp %1 in %2.%3.%4 ignoriert</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="467"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="471"/>
         <source>View %1.%2 doesn&apos;t have integer columns for use as keys.</source>
         <translation>Sicht %1.%2 hat keine als Schlüssel verwendbare Integer-Spalte.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="578"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="582"/>
         <source>Point</source>
         <translation>Punkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="582"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="586"/>
         <source>Multipoint</source>
         <translation>Multipunkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="586"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="590"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="590"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="594"/>
         <source>Multiline</source>
         <translation>Multilinie</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="594"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="598"/>
         <source>Polygon</source>
         <translation>Polygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="598"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="602"/>
         <source>Multipolygon</source>
         <translation>Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="601"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="605"/>
         <source>No Geometry</source>
         <translation>Ohne Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="604"/>
+        <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="608"/>
         <source>Unknown Geometry</source>
         <translation>Unbekannte Geometrie</translation>
     </message>
@@ -40705,61 +40692,61 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPostgresConn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="210"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="214"/>
         <source>Connection to database failed</source>
         <translation>Verbindung zur Datenbank schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="210"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="224"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="214"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="228"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="238"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="255"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="323"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="459"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="513"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="598"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="627"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="638"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="682"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="696"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="796"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="819"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="830"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="882"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="888"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="898"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="904"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="909"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="915"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="920"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1625"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1634"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="232"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="242"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="259"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="327"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="463"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="517"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="602"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="631"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="642"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="686"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="700"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="800"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="823"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="834"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="886"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="892"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="902"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="908"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="913"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="919"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="924"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1629"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1638"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="224"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="228"/>
         <source>error in setting encoding</source>
         <translation>Fehler beim Setzen der Codierung</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="228"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="232"/>
         <source>undefined return value from encoding setting</source>
         <translation>Ungültiger Rückgabewert aus Codierungseinstellung</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="238"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="242"/>
         <source>Your database has no working PostGIS support.</source>
         <translation>Ihre Datenbank hat keine funktionierende PostGIS-Unterstützung.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="255"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="259"/>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>Diese PostGIS-Installation hat keine GEOS-Unterstützung. Objektauswahl und -identifizierung kann nicht richtig funktionieren. Bitte PostGIS mit GEOS-Unterstützung installieren (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="323"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="327"/>
         <source>SQL:%1
 result:%2
 error:%3
@@ -40770,12 +40757,12 @@ Fehler:%3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="459"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="463"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>Die Datenbankverbindung war erfolgreich, jedoch konnten die zugänglichen Tabellen nicht bestimmt werden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="511"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="515"/>
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
@@ -40784,113 +40771,113 @@ Fehler:%3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="627"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="631"/>
         <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
         <translation>Die Datenbankverbindung war erfolgreich, jedoch wurden keine zugänglichen Tabellen gefunden.  Bitte stellen Sie sicher, dass Sie das SELECT-Recht für eine Tabelle mit PostGIS-Geometrie haben.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="638"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="642"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>Konnte Liste der räumlichen Tabellen der Datenbank nicht bestimmen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="682"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="686"/>
         <source>Retrieval of postgis version failed</source>
         <translation>Bestimmen der PostGIS-Version schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="696"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="700"/>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
         <translation>Unverständliche PostGIS-Version &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="794"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="798"/>
         <source>Connection error: %1 returned %2 [%3]</source>
         <translation>Verbindungsfehler: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="817"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="821"/>
         <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>Fehlerhafte Abfrage: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1424"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1428"/>
         <source>Point</source>
         <translation>Punkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1432"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1436"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1440"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1444"/>
         <source>Polygon</source>
         <translation>Polygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1447"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1451"/>
         <source>No Geometry</source>
         <translation>Ohne Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1462"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1466"/>
         <source>None</source>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1464"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1468"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1466"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1470"/>
         <source>Geography</source>
         <translation>Geographie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1468"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1472"/>
         <source>TopoGeometry</source>
         <translation>Topo-Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1624"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1634"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1628"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1638"/>
         <source>Query could not be canceled [%1]</source>
         <translation>Abfrage konnte nicht abgebrochen werden [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1624"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1628"/>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1428"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1432"/>
         <source>Multipoint</source>
         <translation>Multipunkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1436"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1440"/>
         <source>Multiline</source>
         <translation>Multilinie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1444"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1448"/>
         <source>Multipolygon</source>
         <translation>Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1450"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1454"/>
         <source>Unknown Geometry</source>
         <translation>Unbekannte Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="878"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="882"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>Abfrage: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="596"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="600"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
@@ -40899,14 +40886,14 @@ Die Fehlermeldung der Datenbank war:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="830"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="834"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>Abfrage gescheitert: %1
 Fehler: kein Ergebnispuffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="886"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="890"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -40915,27 +40902,27 @@ SQL: %2
 Ergebnis: %3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="898"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="902"/>
         <source>resetting bad connection.</source>
         <translation>Schlechte Verbindung wird zurückgesetzt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="904"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="908"/>
         <source>retry after reset succeeded.</source>
         <translation>Erneuter Versuch nach Rücksetzung erfolgreich.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="909"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="913"/>
         <source>retry after reset failed again.</source>
         <translation>Erneuter Versuch nach Rücksetzung schlug wieder fehl.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="915"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="919"/>
         <source>connection still bad after reset.</source>
         <translation>Verbindung nach Rücksetzung immer noch schlecht.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="920"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="924"/>
         <source>bad connection, not retrying.</source>
         <translation>Schlechte Verbindung, keine neuen Versuche.</translation>
     </message>
@@ -51289,11 +51276,6 @@ Fehler war:%2</translation>
 </source>
         <translation>Eigenschaften-Abfrage gescheitert:</translation>
     </message>
-    <message>
-        <source>Failed to parse capabilities:
-</source>
-        <translation type="obsolete">Unverständliche Eigenschaften:</translation>
-    </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
         <source>Options (%n coordinate reference systems available)</source>
@@ -55504,7 +55486,7 @@ Topopologie-Prüfung wiederholen.</translation>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1107"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1117"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -55578,7 +55560,7 @@ Auf diesem Reiter können Sie einstellen welche Layern das Abfragewerkzeug berü
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1441"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="840"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -55595,7 +55577,7 @@ Eine genaue Beschreibung wie mit Vektordaten umzugehen ist, steht im Kapitel 5 &
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1056"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="994"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -55673,47 +55655,7 @@ Durch Abhaken von &lt;label&gt;Suchoptionen&lt;/label&gt; werden weitere Möglic
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="822"/>
-        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
-
-The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Searching&quot;&gt;Searching&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Field&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Selecting&lt;/h4&gt;
-&lt;/a&gt;
-Rows can be selected by clicking on the row number on the left side of the row. Selecting a row doesn&apos;t change the current cursor position. Multiple rows can be marked by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
-
-&lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sorting&lt;/h4&gt;
-&lt;/a&gt;
-Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
-Use &lt;label&gt;Move selected to top&lt;/label&gt; button to sort selected rows and display them in first table rows.  To show selected records only, use the check box &lt;label&gt;Show selected records only&lt;/label&gt;.
-
-&lt;a name=&quot;Searching&quot;&gt;
-&lt;h4&gt;Searching&lt;/h4&gt;
-&lt;/a&gt;
-For a simple search by attributes on only one column the &lt;label&gt;Look for&lt;/label&gt; field can be used. Select the field (column) from which the search should be performed from the drop down menu and hit the &lt;label&gt;Search&lt;/label&gt; button.&lt;br&gt;
-For more complex searches use the &lt;label&gt;Advanced search&lt;/label&gt;. This button opens the Query Builder and allows you to select table features matching a SQL-like WHERE clause.
-
-&lt;a name=&quot;Field&quot;&gt;
-&lt;h4&gt;Field Calculator&lt;/h4&gt;
-&lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows to perform calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
-The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
-You have to bring the vector layer in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1009"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="961"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -55782,7 +55724,7 @@ In diesem Dialog kann eine Verbindung zu einer PostgreSQL-Datenbank eingestellt 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1421"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="783"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -55790,7 +55732,7 @@ In diesem Dialog kann eine Verbindung zu einer PostgreSQL-Datenbank eingestellt 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1409"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="828"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -55819,7 +55761,7 @@ In diesem Abschnitt werden die vorhandenen Attribute aufgelistet. Um ein Attribu
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1526"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="805"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -55868,7 +55810,7 @@ Klicken Sie auf &lt;label&gt;OK&lt;/label&gt; um den Layer anzulegen und den Dia
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="858"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="233"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -55955,7 +55897,7 @@ Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeit
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="302"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1357"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -56034,14 +55976,14 @@ Sie können dann die Layerliste mit einem Klick auf den Knopf &lt;label&gt;Verbi
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1407"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1511"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Datenbankverbindung&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="910"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1473"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -56119,7 +56061,7 @@ Ein Häkchen in &lt;label&gt;Suchoptionen&lt;/label&gt; aktiviert zusätzliche O
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1093"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1198"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -56134,331 +56076,7 @@ und in der Liste zur Auswahl angeboten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="340"/>
-        <source>&lt;style&gt;
-	#toolbarConsole td{
-		background: #f6f6f6;
-	}
-&lt;/style&gt;
-&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;p align=&apos;justify&apos;&gt;
-				The QGIS Python Console is an interactive shell for the python command executions. 
-				It also has a python file editor that allows you to edit and save your python scripts. 
-				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-				The console is split in two main panes, top and bottom one 
-				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-				shows the commands output. You can drag and drop or copy and paste text into input area and 
-				execute code snippets from the output pane by selecting some text and clicking on the 
-				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
-				for managing your code (comment and 
-				uncomment code, check syntax, share the code via codepad.org and much more).
-			&lt;/p&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Console&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
-			&lt;br&gt;
-                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import Processing class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
-		&lt;/tr&gt;
-                &lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
-		&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;editor&quot;&gt;
-&lt;h4&gt;Editor&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
-			&lt;br&gt;
-			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Settings&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
-from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
-script to be executed in order to avoid to save it after any modification.
-This action will store a temporary file into the temporary system directory 
-that will be automatically deleted after running.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-	from the close button. This allows you to save the geometry to be restored to the next start.
-&lt;/p&gt;
-</source>
-        <translation>&lt;style&gt;
-	#toolbarConsole td{
-		background: #f6f6f6;
-	}
-&lt;/style&gt;
-&lt;h3&gt;Python Konsole für QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Konsole&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Einstellungen&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;p align=&apos;justify&apos;&gt;
-				Die QGIS Python Konsole ist eine interaktive Shell für Python Kommandoausführungen. 
-				Ebenfalls beinhaltet sie einen Python Dateieditor der das Editieren und speichern von Python Dateien erlaubt. 
-				Konsole und Editor basieren auf PyQScintilla2.&lt;br&gt;
-				Die Konsole ist aufgeteilt in zwei Hauptfenster, Oberes und Unteres welche in der Größe veränderbar sind. Das Ausgabefeld ist ein ein &quot;nur lesen&quot; Feld welches nur die Ausgabe des jeweiligen Kommandos anzeigt. In das Eingabefeld kann per kopieren/einfügen oder drag and drop text eingefügt werden und es können code schnippsel aus dem Ausgabefeld eingefügt werden indem der Text selektiert wird und auf &lt;label&gt;Füge Ausgewähltes ein&lt;/label&gt; aus dem Kontextmenü geklickt wird. 
-				Es spielt hierbei keine Rolle ob der ausgewählte Text den Interpreter Prompt (&gt;&gt;&gt;, ...) beinhaltet. Das Eingabefeld ist die Interaktive Python Shell für Eingabekommandos.&lt;br&gt; Um den Python Dateieditor zu benutzen klicken sie auf &lt;label&gt;Zeige Editor&lt;/label&gt; aus der Toolbar. Mit Hilfe des Editors kann man Python Dateien editieren und abspeichern und er beinhaltet grundlegende Funktionen um den Code zu verwalten (Code kommentieren, unkommentieren, Syntaxprüfung, Codeaustausch mit Hilfe von codepad und vieles mehr).
-			&lt;/p&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Konsole&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; um die Autovervollständigungsliste zu seigen.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; um die Befehlshistorienliste zu zeigen.&lt;/li&gt;
-			&lt;br&gt;
-                        &lt;li&gt;Codeschnippseausführung mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando aus dem Ausgabefeld.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Öffne QGIS API dokumentation mittels Eingabe von &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Öffne PyQGIS Cookbook mittel Eingabe von &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Speichere und Lösche die Historie der Befehle unter Zuhilfenahme des Kontextmenüs des Eingabefeldes. 
-			Die Historie wird in die Datei ~/.qgis2/console_history.txt gespeichert&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Lösche Python Konsole&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Importiere Processing class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Importiere PyQt4.QtCore class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool zum importieren von PyQt4.QtGui class&lt;/td&gt;
-		&lt;/tr&gt;
-                &lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Führe Befehl aus (wirkt wie ein drücken auf die Entertaste)&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Einstellungen&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Hilfe&lt;/td&gt;
-		&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;editor&quot;&gt;
-&lt;h4&gt;Editor&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; zeigt die Autovervollständigungsliste.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Austausch von Codeteilen mittels codepad.org.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntaxprüfung.&lt;/li&gt; 
-			&lt;br&gt;
-			&lt;li&gt;Objektinspector: ein Klassen und Funktionsbrowser.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Gehe zu einer Objektdefinition mittels Mausklick. (aus dem Objektinspektor)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Ausführung von Codeteilen mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Führe das Ganze script aus mittels &lt;label&gt;Run script&lt;/label&gt; Kommando 
-			(Dies erzeugt eine Bytekompilierte Datei mit dem Anhang .pyc)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Einstellungen&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Weitere Einstellungen für die Python Konsole:&lt;/i&gt;&lt;/b&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autovervollständigung:&lt;/label&gt; Wenn markiert ist die Codevervollständigung aktiviert. Die Vervollständigung funktioniert aus dem aktuellen Dokument, aus den installierten APIs und beides (Dokument und APIs)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autovervollständigung Schwellenwert:&lt;/label&gt; Setzt den Schwellenwert ab wieviel eingegebenen Buchstaben die Autovervollständigung einsetzt.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatische Klammerneinfügung:&lt;/label&gt; Wenn gesetzt werden Klammern automatisch geschlossen&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script vor Start:&lt;/label&gt; Erlaubt das Script automatisch abzuspeichern bevor es gestartet wird.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Benutze geladene APIs Datei:&lt;/label&gt; Es kann zwischen bereits geladenen API Dateien oder APIs zum Laden aus dem Dateisystem ausgewählt werden.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Benutze vorbereitete APIs Datei:&lt;/label&gt; Wenn ausgewählt wird die *.pap Datei für die Codevervollständigung genutzt. Um eine solche Datei vorzubereiten muss zumindest eine *.api Datei geladen und dann compiliert werden mittels &lt;label&gt;Compiliere Apis...&lt;/label&gt; Knopf.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Notiz:&lt;/b&gt; Um den Status des Konsolenwidgets zu speichern muss die Konsole über den schliessen Knopf geschlossen werden. Dies erlaubt die Wiederherstellung des Fensterstatus beim nächsten Start.
-&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="950"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="285"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -56538,7 +56156,7 @@ Um ein Lesezeichen im Dialog zu löschen, klicken Sie auf &lt;label&gt;Löschen&
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1494"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="354"/>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -56605,7 +56223,7 @@ Diese Erweiterung unterstützt grundlegende HTML-Hervorhebungstags zur Textforma
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="96"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="723"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -56746,7 +56364,7 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1097"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="786"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -56767,7 +56385,7 @@ Die abfragbare Layer können in Dialog Projekteigenschaften unter &lt;label&gt;E
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="990"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="390"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -56807,14 +56425,14 @@ anzeigt.&lt;/li&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1235"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="803"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Neue OGR-Datenbankverbindung&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1228"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="796"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -56833,7 +56451,7 @@ Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="65"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1395"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -56898,7 +56516,7 @@ Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1237"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="386"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -56914,7 +56532,7 @@ vier Ecken der Karte entsprechenden, Positionen wählen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1042"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1343"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -56945,7 +56563,7 @@ Ein Liste der unterstützten Formate und deren Optionen finden Sie unter &lt;a h
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1395"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="325"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -56970,7 +56588,7 @@ Klicken Sie auf einen der Icons oben im Dialogfenster, um den Elementtyp festzul
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1142"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1031"/>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -57138,14 +56756,337 @@ Hinweis: Experimentelle Erweiterungen sind grundsätzliche für den Produktivein
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="948"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1202"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Stil-Manager&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1256"/>
+        <source>&lt;style&gt;
+ #toolbarConsole td{
+  background: #f6f6f6;
+ }
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+ &lt;tr&gt;
+  &lt;td&gt;
+   &lt;p align=&apos;justify&apos;&gt;
+    The QGIS Python Console is an interactive shell for the python command executions. 
+    It also has a python file editor that allows you to edit and save your python scripts. 
+    Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+    The console is split in two main panes, top and bottom one 
+    resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+    shows the commands output. You can drag and drop or copy and paste text into input area and 
+    execute code snippets from the output pane by selecting some text and clicking on the 
+    &lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+    No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+    python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+    &lt;label&gt;Show editor&lt;/label&gt; button 
+    from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
+    for managing your code (comment and 
+    uncomment code, check syntax, share the code via codepad.org and much more).
+   &lt;/p&gt;
+  &lt;/td&gt;
+ &lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+ &lt;tr&gt;
+  &lt;td&gt;
+   &lt;ul&gt;
+   &lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+    &lt;ol&gt;
+    &lt;li&gt;Python&lt;/li&gt;
+    &lt;li&gt;PyQGIS&lt;/li&gt;
+    &lt;li&gt;PyQt4&lt;/li&gt;
+    &lt;li&gt;QScintilla2&lt;/li&gt;
+    &lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+    &lt;/ol&gt;
+   &lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+   &lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+   The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+   &lt;br&gt;
+   &lt;/ul&gt;
+  &lt;/td&gt;
+  &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+ &lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+  &lt;tr&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td&gt;Import Processing class&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;&lt;/td&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;&lt;/td&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+  &lt;/tr&gt;
+                &lt;tr&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+   &lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+ &lt;tr&gt;
+  &lt;td&gt;
+   &lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+   &lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+  &lt;/td&gt;
+  &lt;td&gt;
+   &lt;ul&gt;
+   &lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+    &lt;ol&gt;
+    &lt;li&gt;Python&lt;/li&gt;
+    &lt;li&gt;PyQGIS&lt;/li&gt;
+    &lt;li&gt;PyQt4&lt;/li&gt;
+    &lt;li&gt;QScintilla2&lt;/li&gt;
+    &lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+    &lt;/ol&gt;
+   &lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+   &lt;br&gt;
+   &lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+   &lt;br&gt;
+   &lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+   (this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+   &lt;br&gt;
+   &lt;/ul&gt;
+  &lt;/td&gt;
+ &lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+ &lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+ from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation type="obsolete">&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Konsole für QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Konsole&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Einstellungen&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				Die QGIS Python Konsole ist eine interaktive Shell für Python Kommandoausführungen. 
+				Ebenfalls beinhaltet sie einen Python Dateieditor der das Editieren und speichern von Python Dateien erlaubt. 
+				Konsole und Editor basieren auf PyQScintilla2.&lt;br&gt;
+				Die Konsole ist aufgeteilt in zwei Hauptfenster, Oberes und Unteres welche in der Größe veränderbar sind. Das Ausgabefeld ist ein ein &quot;nur lesen&quot; Feld welches nur die Ausgabe des jeweiligen Kommandos anzeigt. In das Eingabefeld kann per kopieren/einfügen oder drag and drop text eingefügt werden und es können code schnippsel aus dem Ausgabefeld eingefügt werden indem der Text selektiert wird und auf &lt;label&gt;Füge Ausgewähltes ein&lt;/label&gt; aus dem Kontextmenü geklickt wird. 
+				Es spielt hierbei keine Rolle ob der ausgewählte Text den Interpreter Prompt (&gt;&gt;&gt;, ...) beinhaltet. Das Eingabefeld ist die Interaktive Python Shell für Eingabekommandos.&lt;br&gt; Um den Python Dateieditor zu benutzen klicken sie auf &lt;label&gt;Zeige Editor&lt;/label&gt; aus der Toolbar. Mit Hilfe des Editors kann man Python Dateien editieren und abspeichern und er beinhaltet grundlegende Funktionen um den Code zu verwalten (Code kommentieren, unkommentieren, Syntaxprüfung, Codeaustausch mit Hilfe von codepad und vieles mehr).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Konsole&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; um die Autovervollständigungsliste zu seigen.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; um die Befehlshistorienliste zu zeigen.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Codeschnippseausführung mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando aus dem Ausgabefeld.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne QGIS API dokumentation mittels Eingabe von &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne PyQGIS Cookbook mittel Eingabe von &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Speichere und Lösche die Historie der Befehle unter Zuhilfenahme des Kontextmenüs des Eingabefeldes. 
+			Die Historie wird in die Datei ~/.qgis2/console_history.txt gespeichert&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Lösche Python Konsole&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool zum importieren von PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Führe Befehl aus (wirkt wie ein drücken auf die Entertaste)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Einstellungen&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Hilfe&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; zeigt die Autovervollständigungsliste.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Austausch von Codeteilen mittels codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntaxprüfung.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Objektinspector: ein Klassen und Funktionsbrowser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gehe zu einer Objektdefinition mittels Mausklick. (aus dem Objektinspektor)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ausführung von Codeteilen mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Führe das Ganze script aus mittels &lt;label&gt;Run script&lt;/label&gt; Kommando 
+			(Dies erzeugt eine Bytekompilierte Datei mit dem Anhang .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Einstellungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Weitere Einstellungen für die Python Konsole:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung:&lt;/label&gt; Wenn markiert ist die Codevervollständigung aktiviert. Die Vervollständigung funktioniert aus dem aktuellen Dokument, aus den installierten APIs und beides (Dokument und APIs)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung Schwellenwert:&lt;/label&gt; Setzt den Schwellenwert ab wieviel eingegebenen Buchstaben die Autovervollständigung einsetzt.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatische Klammerneinfügung:&lt;/label&gt; Wenn gesetzt werden Klammern automatisch geschlossen&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script vor Start:&lt;/label&gt; Erlaubt das Script automatisch abzuspeichern bevor es gestartet wird.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze geladene APIs Datei:&lt;/label&gt; Es kann zwischen bereits geladenen API Dateien oder APIs zum Laden aus dem Dateisystem ausgewählt werden.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze vorbereitete APIs Datei:&lt;/label&gt; Wenn ausgewählt wird die *.pap Datei für die Codevervollständigung genutzt. Um eine solche Datei vorzubereiten muss zumindest eine *.api Datei geladen und dann compiliert werden mittels &lt;label&gt;Compiliere Apis...&lt;/label&gt; Knopf.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Notiz:&lt;/b&gt; Um den Status des Konsolenwidgets zu speichern muss die Konsole über den schliessen Knopf geschlossen werden. Dies erlaubt die Wiederherstellung des Fensterstatus beim nächsten Start.
+&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1204"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -57403,7 +57344,7 @@ Der Reiter Diagramm-Überlagerung gestattet Ihnen über dem Layer eine Grafik ei
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="508"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="409"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -58051,7 +57992,331 @@ Wikipedia&lt;/a&gt; näher beschrieben sind.&lt;p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1424"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="65"/>
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows editing and saving python files and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Konsole für QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Konsole&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Einstellungen&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				Die QGIS Python Konsole ist eine interaktive Shell für Python Kommandoausführungen. 
+				Ebenfalls beinhaltet sie einen Python Dateieditor der das Editieren und speichern von Python Dateien erlaubt. 
+				Konsole und Editor basieren auf PyQScintilla2.&lt;br&gt;
+				Die Konsole ist aufgeteilt in zwei Hauptfenster, Oberes und Unteres welche in der Größe veränderbar sind. Das Ausgabefeld ist ein ein &quot;nur lesen&quot; Feld welches nur die Ausgabe des jeweiligen Kommandos anzeigt. In das Eingabefeld kann per kopieren/einfügen oder drag and drop text eingefügt werden und es können code schnippsel aus dem Ausgabefeld eingefügt werden indem der Text selektiert wird und auf &lt;label&gt;Füge Ausgewähltes ein&lt;/label&gt; aus dem Kontextmenü geklickt wird. 
+				Es spielt hierbei keine Rolle ob der ausgewählte Text den Interpreter Prompt (&gt;&gt;&gt;, ...) beinhaltet. Das Eingabefeld ist die Interaktive Python Shell für Eingabekommandos.&lt;br&gt; Um den Python Dateieditor zu benutzen klicken sie auf &lt;label&gt;Zeige Editor&lt;/label&gt; aus der Toolbar. Mit Hilfe des Editors kann man Python Dateien editieren und abspeichern und er beinhaltet grundlegende Funktionen um den Code zu verwalten (Code kommentieren, unkommentieren, Syntaxprüfung, Codeaustausch mit Hilfe von codepad und vieles mehr).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Konsole&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; um die Autovervollständigungsliste zu seigen.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; um die Befehlshistorienliste zu zeigen.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Codeschnippseausführung mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando aus dem Ausgabefeld.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne QGIS API dokumentation mittels Eingabe von &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Öffne PyQGIS Cookbook mittel Eingabe von &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Speichere und Lösche die Historie der Befehle unter Zuhilfenahme des Kontextmenüs des Eingabefeldes. 
+			Die Historie wird in die Datei ~/.qgis2/console_history.txt gespeichert&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Lösche Python Konsole&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importiere PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool zum importieren von PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Führe Befehl aus (wirkt wie ein drücken auf die Entertaste)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Einstellungen&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Hilfe&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Hauptfunktionen:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Codevervollständigung, Syntax Highlighting, Calltips für folgende APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; zeigt die Autovervollständigungsliste.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Austausch von Codeteilen mittels codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntaxprüfung.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Objektinspector: ein Klassen und Funktionsbrowser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gehe zu einer Objektdefinition mittels Mausklick. (aus dem Objektinspektor)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ausführung von Codeteilen mittels &lt;label&gt;Zeige ausgewähltes&lt;/label&gt; Kommando.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Führe das Ganze script aus mittels &lt;label&gt;Run script&lt;/label&gt; Kommando 
+			(Dies erzeugt eine Bytekompilierte Datei mit dem Anhang .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Einstellungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Weitere Einstellungen für die Python Konsole:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung:&lt;/label&gt; Wenn markiert ist die Codevervollständigung aktiviert. Die Vervollständigung funktioniert aus dem aktuellen Dokument, aus den installierten APIs und beides (Dokument und APIs)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autovervollständigung Schwellenwert:&lt;/label&gt; Setzt den Schwellenwert ab wieviel eingegebenen Buchstaben die Autovervollständigung einsetzt.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatische Klammerneinfügung:&lt;/label&gt; Wenn gesetzt werden Klammern automatisch geschlossen&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script vor Start:&lt;/label&gt; Erlaubt das Script automatisch abzuspeichern bevor es gestartet wird.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze geladene APIs Datei:&lt;/label&gt; Es kann zwischen bereits geladenen API Dateien oder APIs zum Laden aus dem Dateisystem ausgewählt werden.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Benutze vorbereitete APIs Datei:&lt;/label&gt; Wenn ausgewählt wird die *.pap Datei für die Codevervollständigung genutzt. Um eine solche Datei vorzubereiten muss zumindest eine *.api Datei geladen und dann compiliert werden mittels &lt;label&gt;Compiliere Apis...&lt;/label&gt; Knopf.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Notiz:&lt;/b&gt; Um den Status des Konsolenwidgets zu speichern muss die Konsole über den schliessen Knopf geschlossen werden. Dies erlaubt die Wiederherstellung des Fensterstatus beim nächsten Start.
+&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="337"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -58088,7 +58353,7 @@ Ein Benutzer-KBS in QGIS zu definieren erfordert gutes Verständnis der PROJ.4-P
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="156"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="847"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -58250,7 +58515,7 @@ Haken Sie &lt;label&gt;Proxy für Webzugriff benutzen an&lt;/label&gt; und setze
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="270"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1441"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -58317,7 +58582,7 @@ SQL-Anywhere-Datenbank vorzunehmen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1241"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1426"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -58350,7 +58615,7 @@ Durch Klick auf &lt;label&gt;Berechnen&lt;/label&gt; wird der kürzeste Weg mit 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="230"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="921"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -58440,7 +58705,7 @@ Geometriezeilen bestimmt.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1448"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1152"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -59591,7 +59856,7 @@ Erweiterung wird nicht aktiviert.</translation>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1682"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="200"/>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
 Returns the number of the current row.
 
@@ -59619,7 +59884,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2017"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -59655,7 +59920,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blaua
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2014"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="327"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
@@ -59664,7 +59929,7 @@ Dies Gruppe enth&amp;auml;lt Funktionen die mit Bedingungen umgehen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="138"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="55"/>
         <source>&lt;h3&gt;$feature function&lt;/h3&gt;
 In atlas generation, returns the current feature number that is iterated over on the coverage layer.
 
@@ -59693,7 +59958,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1025"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="149"/>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
 Returns the total number of pages in the composition.
 
@@ -59722,7 +59987,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1854"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="175"/>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
 Returns the perimeter length of the current feature.
 
@@ -59751,7 +60016,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="41"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="359"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
@@ -59760,7 +60025,7 @@ Dies Gruppe enth&amp;auml;lt Funktionen f&amp;uuml;r Geometrieobjekten (z.B. L&a
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1328"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="851"/>
         <source>&lt;h3&gt;contains function&lt;/h3&gt;
 Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
 
@@ -59791,7 +60056,7 @@ b &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="959"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="376"/>
         <source>&lt;h3&gt;IS expression&lt;/h3&gt;
 Returns 1 if a is the same as b.
 
@@ -59829,7 +60094,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1087"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="788"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -59863,7 +60128,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blaua
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1433"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="891"/>
         <source>&lt;h3&gt;crosses function&lt;/h3&gt;
 Returns 1 if the supplied geometries have some, but not all, interior points in common.
 
@@ -59894,7 +60159,7 @@ geometry &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="587"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1990"/>
         <source>&lt;h3&gt;within function&lt;/h3&gt;
 Returns 1 if the geometry a is completely inside geometry b
 
@@ -59925,7 +60190,7 @@ b &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="770"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="837"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -59956,7 +60221,7 @@ F&amp;uuml;gt Zeichenketten zu einer zusammen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="919"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="213"/>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -59985,7 +60250,7 @@ Hinweis: Die Funktion ist nur in einigen Zusammenh&amp;auml;ngen verf&amp;uuml;g
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2054"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1532"/>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
 Returns true if any part of a string matches the supplied regular expression.
 
@@ -60018,7 +60283,7 @@ Gibt 1 zur&amp;uuml;ck, wenn irgendein Teil der Zeichenkette dem gegebenen regul
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="25"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1547"/>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
 Returns a string with the supplied regular expression replaced.
 
@@ -60053,7 +60318,7 @@ Liefert eine Zeichenkette in der der angegebene regul&amp;auml;re Ausdruck erset
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1038"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1563"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
 
@@ -60086,7 +60351,7 @@ Liefert den Teil einer Zeichenkette zur&amp;uuml;ck, die dem gegebenen regul&amp
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1926"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="475"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -60152,7 +60417,7 @@ sinnvolle Informationen zu erhalten:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="854"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2071"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -60193,7 +60458,7 @@ Bestimmt das Jahr eines Datums oder die L&amp;auml;nge eines &lt;code&gt;Interva
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="440"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="521"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -60222,7 +60487,7 @@ Gibt den Arcustanget eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1251"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1422"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -60265,7 +60530,7 @@ eines &lt;code&gt;Intervalls&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="977"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
         <source>&lt;h3&gt;$length function&lt;/h3&gt;
 Returns the length of the current feature.
 
@@ -60293,7 +60558,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="499"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="323"/>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
@@ -60303,7 +60568,7 @@ Diese Gruppe enthält Funktionen zur Farbmanipulation
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1959"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1348"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -60338,7 +60603,7 @@ Diese Funktion akzeptiert ein Argument.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="741"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1285"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -60373,7 +60638,7 @@ Ergibt ersten &lt;i&gt;n&lt;/i&gt; Zeichen von links.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="470"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1793"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -60402,7 +60667,7 @@ Gibt den Tangens eines Winkel zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1943"/>
         <source>&lt;h3&gt;union function&lt;/h3&gt;
 Returns a geometry that represents the point set union of the geometries.
 
@@ -60430,7 +60695,7 @@ geometry &amp;rarr; Geometrie
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; ergibt MULTIPOINT(4 4, 5 5)&lt;/pre</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="932"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1915"/>
         <source>&lt;h3&gt;touches function&lt;/h3&gt;
 Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
 
@@ -60460,7 +60725,7 @@ geometry &amp;rarr; Geometrie
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; ergibt 0&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1400"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1364"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -60487,7 +60752,7 @@ Wandelt eine Zeichenkette in Kleinbuchstaben um.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="453"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1182"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -60523,7 +60788,7 @@ beschr&amp;auml;nkt die Zahl auch auf die angegebene Anzahl von Nachkommastellen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="176"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="411"/>
         <source>&lt;h3&gt;NOT&lt;/h3&gt;
 Returns 1 if a is not the same as b.
 
@@ -60556,7 +60821,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1763"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2046"/>
         <source>&lt;h3&gt;xmin function&lt;/h3&gt;
 Returns the minimum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -60585,7 +60850,7 @@ Gibt den kleinste X-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;pre&gt;xmin($geometry) &amp;rarr; ergibt die minimale X-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1285"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="446"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
@@ -60594,7 +60859,7 @@ Dies Gruppen enth&amp;auml;lt Funktionen f&amp;uuml;r Zeichenketten (z.B. Ersetz
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1272"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2104"/>
         <source>&lt;h3&gt;ymin function&lt;/h3&gt;
 Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -60623,7 +60888,7 @@ Gibt den kleinste Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;pre&gt;ymin($geometry) &amp;rarr; ergibt die minimale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="705"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="755"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -60655,7 +60920,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;t
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="989"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="925"/>
         <source>&lt;h3&gt;difference function&lt;/h3&gt;
 Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
 
@@ -60684,7 +60949,7 @@ b &amp;rarr; Geometrie
 &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1747"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="722"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -60716,7 +60981,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;t
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="552"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1477"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -60760,7 +61025,7 @@ unterscheiden.  Diese Funktion kann daher unterschiedliche Ergebnisse liefern.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="163"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="952"/>
         <source>&lt;h3&gt;distance function&lt;/h3&gt;
  Returns the minimum distance (based on spatial ref) between two geometries in projected units.
 
@@ -60789,7 +61054,7 @@ b &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="664"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
         <source>&lt;h3&gt;intersects function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
 
@@ -60820,7 +61085,7 @@ b &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1073"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="938"/>
         <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
 Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
 
@@ -60851,7 +61116,7 @@ b &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="449"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -60879,7 +61144,7 @@ abs(&lt;i&gt;wert&lt;/i&gt;)&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1356"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="252"/>
         <source>&lt;h3&gt;AND logical operator&lt;/h3&gt;
 Returns 1 when condition a and b are true.
 
@@ -60910,7 +61175,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="304"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1463"/>
         <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
 Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
 
@@ -60941,7 +61206,7 @@ b &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1193"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="590"/>
         <source>&lt;h3&gt;bounds_width function&lt;/h3&gt;
 Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -60970,7 +61235,7 @@ geom &amp;rarr; eine Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="59"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2004"/>
         <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
 Returns a string wrapped to a maximum/minimum number of characters.
 
@@ -61007,7 +61272,7 @@ Gibt eine auf eine maximal/minimale Länge umgebrochene Zeichenkette zurück.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2001"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="577"/>
         <source>&lt;h3&gt;bounds_height function&lt;/h3&gt;
 Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -61036,7 +61301,7 @@ geom &amp;rarr; eine Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="76"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="426"/>
         <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
 Returns 1 when condition a or b is true.
 
@@ -61067,7 +61332,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2091"/>
         <source>&lt;h3&gt;ymax function&lt;/h3&gt;
 Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -61096,7 +61361,7 @@ Gibt den größten Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im r
 &lt;pre&gt;ymax($geometry) &amp;rarr; ergibt die maximale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1002"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="632"/>
         <source>&lt;h3&gt;centroid function&lt;/h3&gt;
 Returns the geometric center of a geometry.
 
@@ -61124,7 +61389,7 @@ a &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="946"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="865"/>
         <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
 Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
 
@@ -61152,7 +61417,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; ergibt POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1104"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2033"/>
         <source>&lt;h3&gt;xmax function&lt;/h3&gt;
 Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -61181,7 +61446,7 @@ Gibt die größte X-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;pre&gt;xmax($geometry) &amp;rarr; ergibt die maximale X-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="265"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="564"/>
         <source>&lt;h3&gt;bounds function&lt;/h3&gt;
 Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -61210,7 +61475,7 @@ geom &amp;rarr; eine Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="905"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="603"/>
         <source>&lt;h3&gt;buffer function&lt;/h3&gt;
 Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -61241,7 +61506,7 @@ b    &amp;rarr; Distanz
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="816"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1225"/>
         <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
 Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
 
@@ -61268,7 +61533,7 @@ a &amp;rarr;  Geometriee
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="828"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1199"/>
         <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
 Returns a geometry from a GML representation of geometry
 
@@ -61296,7 +61561,7 @@ text &amp;rarr; GML-Repräsentation einer Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="422"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="685"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -61332,7 +61597,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb- und S
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="220"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1888"/>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
 Converts a number to string.
 
@@ -61363,7 +61628,7 @@ Wandelt eine Zahl in eine Zeichenkette um.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="891"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="993"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -61395,7 +61660,7 @@ Formatiert eine Zeichenkette mit den gegebenen Argumenten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2035"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="703"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -61434,7 +61699,7 @@ Schwarzanteil und Alpha-/Transparenzanteil zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="118"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1443"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -61476,7 +61741,7 @@ aus einem &lt;code&gt;Intervall&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="661"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="408"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
@@ -61485,7 +61750,7 @@ Die Gruppe enth&amp;auml;lt mathematische Funktionen (z.B. Quadratwurzel, Sinus 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="191"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1650"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -61541,7 +61806,7 @@ Formt einen gegebenen Wert aus einem Ausgangsbereich mittels einer exponentielle
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="347"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1746"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -61580,7 +61845,7 @@ Gibt -1 zur&amp;uuml;ck, wenn der Ausdruck nicht gefunden wurde.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="234"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="39"/>
         <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
 Returns the geometry of the current feature iterated in atlas.
 Can be used for rule based display of geometry when using atlas.
@@ -61614,7 +61879,7 @@ Kein
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="250"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="24"/>
         <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
 Returns the feature id of the current row while using atlas.
 This enables you to use features of atlas in rules 
@@ -61646,7 +61911,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1342"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="823"/>
         <source>&lt;h3&gt;combine function&lt;/h3&gt;
 Returns the combination of geometry a and geometry b.
 
@@ -61676,7 +61941,7 @@ geometry &amp;rarr; Geometrie
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; ergibt LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1015"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="339"/>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
 Double click to add field name to expression string.
 &lt;br&gt;&lt;br&gt;
@@ -61697,7 +61962,7 @@ Feldwerte aus WFS-Layern zu laden bevor die Layer tatsächlich geladen wurde, wi
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1914"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2021"/>
         <source>&lt;h3&gt;xat() function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -61724,7 +61989,7 @@ Liefert eine X-Koordinate der Geometrie der aktuellen Geometrie.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="333"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="362"/>
         <source>&lt;h3&gt;ILIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.
 
@@ -61754,7 +62019,7 @@ keine
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; ergibt 0 &lt;/pre</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1479"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1874"/>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -61788,7 +62053,7 @@ als des Umwandlungsergebnis ist.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1867"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="665"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -61830,7 +62095,7 @@ Diese Funktion kann beliebig viele Argumente haben.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="44"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="617"/>
         <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -61862,7 +62127,7 @@ Rundet eine Zahl auf.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="631"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1847"/>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -61893,7 +62158,7 @@ Wandelt eine Zeichenkette in eine ganze Zahl um.  Bricht ab, wenn die Zeichenket
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1288"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1679"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -61934,7 +62199,7 @@ Formt einen gegebenen Wert aus einem Ausgangsbereich mittels linearer Interpolat
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="291"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1212"/>
         <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
 Returns a geometry created from a Well-Known Text (WKT) representation.
 
@@ -61962,7 +62227,7 @@ text &amp;rarr; Well-Known Text-Repräsentation (WKT) einer Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1708"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
 Returns the area size of the current feature.
 
@@ -61991,7 +62256,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="757"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="68"/>
         <source>&lt;h3&gt;$geometry function&lt;/h3&gt;
 Returns the geometry of the current feature. Can be used for processing with other functions.
 
@@ -62018,7 +62283,7 @@ Keine
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2069"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1315"/>
         <source>&lt;h3&gt;ln() function&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -62053,7 +62318,7 @@ Die Funktion akzeptiert ein Argument.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1822"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1258"/>
         <source>&lt;h3&gt;intersection function&lt;/h3&gt;
 Returns a geometry that represents the shared portion of geometry a and geometry b.
 
@@ -62081,7 +62346,7 @@ b &amp;rarr; Geometrie
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; ergibt LINESTRING(3 3, 4 4)&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="151"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="2059"/>
         <source>&lt;h3&gt;yat() function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -62108,7 +62373,7 @@ Liefert eine Y-Koordinate der Geometrie der aktuellen Geometrie.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="349"/>
         <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
 Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
 &lt;br&gt;&lt;br&gt;
@@ -62131,7 +62396,7 @@ Feldwerte aus WFS-Layern zu laden bevor die Layer tatsächlich geladen wurde, wi
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1780"/>
         <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
 Returns a geometry that represents the portions of a and b that do not intersect.
 
@@ -62160,7 +62425,7 @@ b &amp;rarr; Geometrie
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1887"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1929"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -62191,7 +62456,7 @@ Entfernt f&amp;uuml;hrende und schlie&amp;szlig;ende Leerzeichen (Leerzeichen, T
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1695"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1834"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -62221,7 +62486,7 @@ Wandelt eine Zeichenkette in einen Qt-Datum&amp;amp;Zeit-Typ.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1970"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62264,7 +62529,7 @@ eines &lt;code&gt;Intervalls&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1206"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="294"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -62325,7 +62590,7 @@ Ergebnis zur&amp;uuml;ckgegeben werden kann.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="678"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="81"/>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
 Returns the feature id of the current row.
 
@@ -62354,7 +62619,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1161"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="336"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
@@ -62363,7 +62628,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen zur Verarbeitung von Daten und Zeiten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="524"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="136"/>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
 In atlas generation, returns the total number of features within the coverage layer.
 
@@ -62392,7 +62657,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1835"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1631"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -62430,7 +62695,7 @@ Ergibt eine mit einem am Anfang mit einem Zeichen auf eine bestimmte L&amp;auml;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="784"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -62467,7 +62732,7 @@ Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte L&amp;auml;ng
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="802"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1956"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -62498,7 +62763,7 @@ Wandelt eine Zeichenkette in Gro&amp;szlig;buchstaben.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1308"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="443"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
@@ -62507,7 +62772,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen, die mit Datensatzkennungen arbeiten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1447"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1594"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -62541,7 +62806,7 @@ Ergibt letzten &lt;i&gt;n&lt;/i&gt; Zeichen von rechts.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1301"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -62572,7 +62837,7 @@ Liefert die L&amp;auml;nge einer Zeichenkette.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="573"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1408"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -62603,7 +62868,7 @@ Gibt den kleinsten Wert eine Menge von Werten zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1164"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -62638,7 +62903,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;t
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="601"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="508"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -62667,7 +62932,7 @@ Gibt den Arcussinus eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1148"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1733"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -62696,7 +62961,7 @@ Gibt die Quadratwurzel eines Werts zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1901"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="226"/>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
 Returns the x coordinate of the current feature.
 
@@ -62725,7 +62990,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1610"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -62770,7 +63035,7 @@ Um zur n&amp;auml;chsten ganzen Zahl zu runden: &lt;code&gt;round(zahl)&lt;/code
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1507"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1007"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -63119,7 +63384,7 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="614"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="106"/>
         <source>&lt;h3&gt;$map function&lt;/h3&gt;
 Returns the id of the current map item if the map is being drawn in a composition, or &quot;canvas&quot; if the map is being
 drawn within the main QGIS window.
@@ -63155,7 +63420,7 @@ $map &amp;rarr; &quot;canvas&quot; (im QGIS-Kartenfenster)&lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1975"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="123"/>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
 Returns the current date and time
 
@@ -63183,7 +63448,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="691"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="550"/>
         <source>&lt;h3&gt;bbox function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
 
@@ -63213,7 +63478,7 @@ b &amp;rarr; geometrie
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; ergibt 0&lt;/pre</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="90"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="266"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -63272,7 +63537,7 @@ Ergebnis zur&amp;uuml;ckgegeben werden kann.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1802"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="645"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -63314,7 +63579,7 @@ Eingabewert auf eine gegebenen Bereich beschränken.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="645"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="330"/>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
@@ -63323,7 +63588,7 @@ This group contains functions that operate on condition.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1053"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="905"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63364,7 +63629,7 @@ Tag eines Datum oder Anzahl der Tage eines &lt;code&gt;Intervalls&lt;/code&gt;.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="841"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="965"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -63392,7 +63657,7 @@ Gibt die Exponentialfunktion eines Wert zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="318"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="978"/>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -63425,7 +63690,7 @@ Rundet eine Zahl ab.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1493"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="394"/>
         <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
 
@@ -63456,7 +63721,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1734"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1861"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -63486,7 +63751,7 @@ Wandelt eine Zeichenkette in einen Interval-Typ.  Kann verwendet werden um Tagen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1311"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="771"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 
@@ -63521,7 +63786,7 @@ Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;t
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="648"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1902"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -63551,7 +63816,7 @@ Wandelt eine Zeichenkette in einen Qt-Zeittyp um.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="365"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1394"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -63582,7 +63847,7 @@ Gibt den gr&amp;ouml;&amp;szlig;ten Wert eine Menge von Werte zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="483"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="462"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -63611,7 +63876,7 @@ Gibt den Arcuscosinus eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="537"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1806"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -63643,7 +63908,7 @@ Wandelt alle Worte einer Zeichenkette in Kleinbuchstaben mit gro&amp;szlig;em An
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2101"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="534"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -63676,7 +63941,7 @@ Argumente zur&amp;uuml;ck, um den den Quadranten des Ergebnisses zu bestimmen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="874"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1498"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -63712,7 +63977,7 @@ Dies Funktion hat zwei Argumente.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1463"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="333"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
@@ -63721,7 +63986,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen, die einen Datentypen in einen anderen 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="496"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="440"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
@@ -63730,7 +63995,7 @@ Die Gruppe enth&amp;auml;lt Operatoren (z.B. +, - und *)
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1776"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="162"/>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
 Returns the current page number within a composition.
 
@@ -63759,7 +64024,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1127"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1699"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63803,7 +64068,7 @@ aus einem &lt;code&gt;Intervall&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1789"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="239"/>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
 Returns the y coordinate of the current feature.
 
@@ -63832,7 +64097,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1387"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="878"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -63860,7 +64125,7 @@ Gibt den Cosinus eines Winkels zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1370"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1331"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -63897,7 +64162,7 @@ Die Funktion akzeptiert zwei Werte.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1988"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1720"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -63926,7 +64191,7 @@ Gibt den Sinus eines Winkels zur&amp;uuml;ck.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1235"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1764"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -63961,7 +64226,7 @@ Liefert einen Teil einer Zeichenkette
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="392"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1515"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -63997,7 +64262,7 @@ Diese Funktion hat zwei Argumente.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="2085"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1578"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -64032,7 +64297,7 @@ Liefert eine Zeichenkette in der die angegebene Zeichenkette ersetzt ist.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="503"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1237"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -64077,7 +64342,7 @@ aus einem &lt;code&gt;Intervall&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1181"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="188"/>
         <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
 Returns pi as value for calculations
 
@@ -64104,7 +64369,7 @@ Keine
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1721"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1821"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
