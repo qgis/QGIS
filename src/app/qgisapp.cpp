@@ -3641,6 +3641,14 @@ void QgisApp::newVectorLayer()
     //todo: the last parameter will change accordingly to layer type
     addVectorLayers( fileNames, enc, "file" );
   }
+  else if( fileName.isNull() )
+  {
+    QLabel *msgLabel = new QLabel( tr( "Layer creation failed. Please check the <a href=\"#messageLog\">message log</a> for further information." ), messageBar() );
+    msgLabel->setWordWrap( true );
+    connect( msgLabel, SIGNAL( linkActivated( QString ) ), mLogDock, SLOT( show() ) );
+    QgsMessageBarItem *item = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
+    messageBar()->pushItem( item );
+  }
 }
 
 void QgisApp::newSpatialiteLayer()

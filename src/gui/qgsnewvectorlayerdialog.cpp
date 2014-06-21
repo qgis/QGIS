@@ -243,7 +243,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   QgsNewVectorLayerDialog geomDialog( parent );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
-    return QString();
+    return "";
   }
 
   QGis::WkbType geometrytype = geomDialog.selectedType();
@@ -261,7 +261,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   QString fileName = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), lastUsedDir, filterString );
   if ( fileName.isNull() )
   {
-    return fileName;
+    return "";
   }
 
   if ( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
@@ -290,23 +290,24 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
         QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
         if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs ) )
         {
-          return QString();
+          return QString::null;
         }
       }
       else
       {
         QgsDebugMsg( "geometry type not recognised" );
-        return QString();
+        return QString::null;
       }
     }
     else
     {
       QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
-      return QString();
+      return QString::null;
     }
   }
 
   if ( pEnc )
     *pEnc = enc;
+
   return fileName;
 }
