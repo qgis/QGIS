@@ -35,21 +35,52 @@ class QgsMapRendererJob;
 class QgsMapLayer;
 
 
+/**
+ * The QgsMapSettings class contains configuration for rendering of the map.
+ * The rendering itself is done by QgsMapRendererJob subclasses.
+ *
+ * In order to set up QgsMapSettings instance, it is necessary to set at least
+ * few members: extent, output size and layers.
+ *
+ * QgsMapSettings and QgsMapRendererJob (+subclasses) are intended to replace
+ * QgsMapRenderer class that existed before QGIS 2.4. The advantage of the new
+ * classes is that they separate the settings from the rendering and provide
+ * asynchronous API for map rendering.
+ *
+ * @note added in 2.4
+ */
 class CORE_EXPORT QgsMapSettings
 {
   public:
     QgsMapSettings();
 
+    //! Return geographical coordinates of the rectangle that should be rendered.
+    //! The actual visible extent used for rendering could be slightly different
+    //! since the given extent may be expanded in order to fit the aspect ratio
+    //! of output size. Use visibleExtent() to get the resulting extent.
     QgsRectangle extent() const;
+    //! Set coordinates of the rectangle which should be rendered.
+    //! The actual visible extent used for rendering could be slightly different
+    //! since the given extent may be expanded in order to fit the aspect ratio
+    //! of output size. Use visibleExtent() to get the resulting extent.
     void setExtent( const QgsRectangle& rect );
 
+    //! Return the size of the resulting map image
     QSize outputSize() const;
+    //! Set the size of the resulting map image
     void setOutputSize( const QSize& size );
 
+    //! Return DPI used for conversion between real world units (e.g. mm) and pixels
+    //! Default value is 96
     int outputDpi() const;
+    //! Set DPI used for conversion between real world units (e.g. mm) and pixels
     void setOutputDpi( int dpi );
 
+    //! Get list of layer IDs for map rendering
+    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
     QStringList layers() const;
+    //! Set list of layer IDs for map rendering. The layers must be registered in QgsMapLayerRegistry.
+    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
     void setLayers( const QStringList& layers );
 
     //! sets whether to use projections for this layer set
