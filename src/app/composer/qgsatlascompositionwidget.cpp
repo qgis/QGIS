@@ -30,7 +30,7 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
 {
   setupUi( this );
 
-  mAtlasCoverageLayerComboBox->setFilters( QgsMapLayerProxyModel::HasGeometry );
+  mAtlasCoverageLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
 
   connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mAtlasSortFeatureKeyComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeCoverageLayer( QgsMapLayer* ) ) );
