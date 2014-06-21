@@ -93,13 +93,19 @@ class CORE_EXPORT QgsMapSettings
     //! returns CRS of destination coordinate reference system
     const QgsCoordinateReferenceSystem& destinationCrs() const;
 
+    //! Get units of map's geographical coordinates - used for scale calculation
     QGis::UnitType mapUnits() const;
+    //! Set units of map's geographical coordinates - used for scale calculation
     void setMapUnits( QGis::UnitType u );
 
+    //! Set the background color of the map
     void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
+    //! Get the background color of the map
     QColor backgroundColor() const { return mBackgroundColor; }
 
+    //! Set color that is used for drawing of selected vector features
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
+    //! Get color that is used for drawing of selected vector features
     QColor selectionColor() const { return mSelectionColor; }
 
     /**Sets whether vector selections should be shown in the rendered map
@@ -118,21 +124,26 @@ class CORE_EXPORT QgsMapSettings
     */
     bool showSelection() const { return mShowSelection; }
 
+    //! Enumeration of flags that adjust the way how map is rendered
     enum Flag
     {
-      Antialiasing       = 0x01,
-      DrawEditingInfo    = 0x02,
-      ForceVectorOutput  = 0x04,
-      UseAdvancedEffects = 0x08,
-      DrawLabeling       = 0x10,
-      UseRenderingOptimization = 0x20,
+      Antialiasing       = 0x01,  //!< Enable anti-aliasin for map rendering
+      DrawEditingInfo    = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput  = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects = 0x08,  //!< Enable layer transparency and blending effects
+      DrawLabeling       = 0x10,  //!< Enable drawing of labels on top of the map
+      UseRenderingOptimization = 0x20, //!< Enable vector simplification and other rendering optimizations
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    //! Set combination of flags that will be used for rendering
     void setFlags( Flags flags );
+    //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
+    //! Return combination of flags used for rendering
     Flags flags() const;
+    //! Check whether a particular flag is enabled
     bool testFlag( Flag flag ) const;
 
     //! sets format of internal QImage
@@ -140,9 +151,13 @@ class CORE_EXPORT QgsMapSettings
     //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
     QImage::Format outputImageFormat() const { return mImageFormat; }
 
+    //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
+    //! Return the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
+    //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
+    //! Return the calculated scale of the map
     double scale() const;
 
 
