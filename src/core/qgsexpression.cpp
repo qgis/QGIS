@@ -51,7 +51,7 @@ QgsExpression::Interval QgsExpression::Interval::invalidInterVal()
 QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
 {
   int seconds = 0;
-  QRegExp rx( "(\\d?\\.?\\d+\\s+[a-z]+)", Qt::CaseInsensitive );
+  QRegExp rx( "([-+]?\\d?\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
   QStringList list;
   int pos = 0;
 
@@ -61,44 +61,43 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
     pos += rx.matchedLength();
   }
 
+  QMap<int, QStringList> map;
+  map.insert( 1, QStringList() << "second" << "seconds" << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( "|" ) );
+  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( "|" ) );
+  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( "|" ) );
+  map.insert( 0 + DAY, QStringList() << "day" << "days" << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( "|" ) );
+  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( "|" ) );
+  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( "|" ) );
+  map.insert( 0 + YEARS, QStringList() << "year" << "years" << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( "|" ) );
+
   foreach ( QString match, list )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
-    int value = split.at( 0 ).toInt( &ok );
+    double value = split.at( 0 ).toDouble( &ok );
     if ( !ok )
     {
       continue;
     }
 
-    if ( match.contains( "day", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "day", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "days", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::DAY;
-    if ( match.contains( "week", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "week", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "weeks", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::WEEKS;
-    if ( match.contains( "month", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "month", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "months", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::MONTHS;
-    if ( match.contains( "year", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "year", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "years", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::YEARS;
-    if ( match.contains( "second", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "second", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "seconds", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value;
-    if ( match.contains( "minute", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "minute", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "minutes", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::MINUTE;
-    if ( match.contains( "hour", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "hour", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr( "hours", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
-      seconds += value * QgsExpression::Interval::HOUR;
+    bool matched = false;
+    foreach ( int duration, map.keys() )
+    {
+      foreach ( QString name, map[duration] )
+      {
+        if ( match.contains( name, Qt::CaseInsensitive ) )
+        {
+          matched = true;
+          break;
+        }
+      }
+
+      if ( matched )
+      {
+        seconds += value * duration;
+        break;
+      }
+    }
   }
 
   // If we can't parse the string at all then we just return invalid
