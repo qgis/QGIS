@@ -49,7 +49,10 @@ class QgsSnappingDock : public QDockWidget
 
 };
 
-QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): QDialog( parent ), mMapCanvas( canvas ), mDock( 0 )
+QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
+    : QDialog( parent )
+    , mMapCanvas( canvas )
+    , mDock( 0 )
 {
   setupUi( this );
 
@@ -190,6 +193,14 @@ void QgsSnappingDialog::apply()
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
   QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+
+  disconnect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), this, SLOT( reload() ) );
+  connect( this, SIGNAL( snapSettingsChanged() ), QgsProject::instance(), SIGNAL( snapSettingsChanged() ) );
+
+  emit snapSettingsChanged();
+
+  disconnect( this, SIGNAL( snapSettingsChanged() ), QgsProject::instance(), SIGNAL( snapSettingsChanged() ) );
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), this, SLOT( reload() ) );
 }
 
 void QgsSnappingDialog::show()
