@@ -711,6 +711,10 @@ int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
         {
           geomType = OGR_G_GetGeometryType( firstGeometry );
         }
+        else
+        {
+          geomType = wkbNone;
+        }
         OGR_F_Destroy( firstFeature );
       }
       OGR_L_ResetReading( ogrLayer );
