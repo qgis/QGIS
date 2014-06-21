@@ -591,3 +591,8 @@ QgsComposerTableColumn *QgsComposerTableSortColumnsProxyModel::columnFromRow( in
   QModelIndex proxyIndex = index( row, 0 );
   return columnFromIndex( proxyIndex );
 }
+
+void QgsComposerTableSortColumnsProxyModel::resetFilter()
+{
+  invalidate();
+}
