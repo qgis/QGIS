@@ -95,7 +95,7 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
     , mVectorLayer( 0 )
     , mComposerMap( 0 )
     , mMaximumNumberOfFeatures( 5 )
-    , mShowOnlyVisibleFeatures( true )
+    , mShowOnlyVisibleFeatures( false )
     , mFilterFeatures( false )
     , mFeatureFilter( "" )
 {

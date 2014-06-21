@@ -874,11 +874,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         if ( mapItemList.size() > 0 )
         {
           newTable->setComposerMap( mapItemList.at( 0 ) );
-          newTable->setDisplayOnlyVisibleFeatures( true );
-        }
-        else
-        {
-          newTable->setDisplayOnlyVisibleFeatures( false );
         }
         composition()->addComposerTable( newTable );
 
