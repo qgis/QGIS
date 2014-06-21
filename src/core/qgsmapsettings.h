@@ -108,22 +108,6 @@ class CORE_EXPORT QgsMapSettings
     //! Get color that is used for drawing of selected vector features
     QColor selectionColor() const { return mSelectionColor; }
 
-    /**Sets whether vector selections should be shown in the rendered map
-     * @param showSelection set to true if selections should be shown
-     * @see showSelection
-     * @see setSelectionColor
-     * @note Added in QGIS v2.4
-    */
-    void setShowSelection( const bool showSelection ) { mShowSelection = showSelection; }
-
-    /**Returns true if vector selections should be shown in the rendered map
-     * @returns true if selections should be shown
-     * @see setShowSelection
-     * @see selectionColor
-     * @note Added in QGIS v2.4
-    */
-    bool showSelection() const { return mShowSelection; }
-
     //! Enumeration of flags that adjust the way how map is rendered
     enum Flag
     {
@@ -133,6 +117,7 @@ class CORE_EXPORT QgsMapSettings
       UseAdvancedEffects = 0x08,  //!< Enable layer transparency and blending effects
       DrawLabeling       = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20, //!< Enable vector simplification and other rendering optimizations
+      DrawSelection      = 0x40,  //!< Whether vector selections should be shown in the rendered map
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -240,8 +225,6 @@ class CORE_EXPORT QgsMapSettings
 
     QColor mBackgroundColor;
     QColor mSelectionColor;
-    /**Whether selection should be shown in the map*/
-    bool mShowSelection;
 
     Flags mFlags;
 

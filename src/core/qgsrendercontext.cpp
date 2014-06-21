@@ -52,7 +52,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setUseRenderingOptimization( mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
   ctx.setCoordinateTransform( 0 );
   ctx.setSelectionColor( mapSettings.selectionColor() );
-  ctx.setShowSelection( mapSettings.showSelection() );
+  ctx.setShowSelection( mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
   ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );

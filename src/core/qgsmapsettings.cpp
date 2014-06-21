@@ -39,8 +39,7 @@ QgsMapSettings::QgsMapSettings()
     , mDatumTransformStore( mDestCRS )
     , mBackgroundColor( Qt::white )
     , mSelectionColor( Qt::yellow )
-    , mShowSelection( true )
-    , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling )
+    , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
     , mImageFormat( QImage::Format_ARGB32_Premultiplied )
 {
   updateDerived();
