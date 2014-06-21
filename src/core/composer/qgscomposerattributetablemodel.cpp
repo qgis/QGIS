@@ -36,14 +36,6 @@ QgsComposerAttributeTableColumnModel::~QgsComposerAttributeTableColumnModel()
 
 QModelIndex QgsComposerAttributeTableColumnModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  if ( row < 0 || row >= rowCount()
-       || column < 0 || column >= columnCount() )
-  {
-    //invalid row
-    return QModelIndex();
-  }
-
   if ( hasIndex( row, column, parent ) )
   {
     if (( *mComposerTable->columns() )[row] )

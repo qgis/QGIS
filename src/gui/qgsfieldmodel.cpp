@@ -135,11 +135,12 @@ void QgsFieldModel::removeExpression()
 
 QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  if ( row < 0 || row >= rowCount() )
-    return QModelIndex();
+  if ( hasIndex( row, column, parent ) )
+  {
+    return createIndex( row, column, row );
+  }
 
-  return createIndex( row, column, row );
+  return QModelIndex();
 }
 
 QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
@@ -150,7 +151,11 @@ QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
 
 int QgsFieldModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  if ( parent.isValid() )
+  {
+    return 0;
+  }
+
   return mAllowExpression ? mFields.count() + mExpression.count() : mFields.count();
 }
 

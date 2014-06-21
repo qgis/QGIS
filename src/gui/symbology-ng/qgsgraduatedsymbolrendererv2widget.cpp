@@ -93,6 +93,11 @@ QgsRendererRangeV2 QgsGraduatedSymbolRendererV2Model::rendererRange( const QMode
 
 Qt::ItemFlags QgsGraduatedSymbolRendererV2Model::flags( const QModelIndex & index ) const
 {
+  if ( !index.isValid() )
+  {
+    return Qt::ItemIsDropEnabled;
+  }
+
   Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
   if ( index.column() == 2 )
@@ -178,7 +183,10 @@ QVariant QgsGraduatedSymbolRendererV2Model::headerData( int section, Qt::Orienta
 
 int QgsGraduatedSymbolRendererV2Model::rowCount( const QModelIndex &parent ) const
 {
-  if ( parent.column() > 0 || !mRenderer ) return 0;
+  if ( parent.isValid() || !mRenderer )
+  {
+    return 0;
+  }
   return mRenderer->ranges().size();
 }
 

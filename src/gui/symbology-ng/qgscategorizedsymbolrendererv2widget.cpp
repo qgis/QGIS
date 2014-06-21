@@ -87,6 +87,11 @@ QgsRendererCategoryV2 QgsCategorizedSymbolRendererV2Model::category( const QMode
 
 Qt::ItemFlags QgsCategorizedSymbolRendererV2Model::flags( const QModelIndex & index ) const
 {
+  if ( !index.isValid() )
+  {
+    return Qt::ItemIsDropEnabled;
+  }
+
   Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
   if ( index.column() == 1 || index.column() == 2 )
   {
@@ -186,7 +191,10 @@ QVariant QgsCategorizedSymbolRendererV2Model::headerData( int section, Qt::Orien
 
 int QgsCategorizedSymbolRendererV2Model::rowCount( const QModelIndex &parent ) const
 {
-  if ( parent.column() > 0 || !mRenderer ) return 0;
+  if ( parent.isValid() || !mRenderer )
+  {
+    return 0;
+  }
   return mRenderer->categories().size();
 }
 
