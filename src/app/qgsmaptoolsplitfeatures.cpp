@@ -106,8 +106,8 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
     if ( returnCode == 4 )
     {
       QgisApp::instance()->messageBar()->pushMessage(
-        tr( "No feature split done" ),
-        tr( "If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection" ),
+        tr( "No features were split" ),
+        tr( "If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection." ),
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
     }
@@ -132,7 +132,7 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
       //several intersections but only one split (most likely line)
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
-        tr( "An error occured during feature splitting" ),
+        tr( "An error occured during splitting." ),
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
     }
