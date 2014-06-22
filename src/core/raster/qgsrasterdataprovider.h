@@ -379,6 +379,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;
 
+    /** Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses */
+    void copyBaseSettings( const QgsRasterDataProvider& other );
+
     static QStringList cStringList2Q_( char ** stringList );
 
     static QString makeTableCell( const QString & value );

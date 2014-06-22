@@ -154,6 +154,7 @@ QgsGrassRasterProvider::~QgsGrassRasterProvider()
 QgsRasterInterface * QgsGrassRasterProvider::clone() const
 {
   QgsGrassRasterProvider * provider = new QgsGrassRasterProvider( dataSourceUri() );
+  provider->copyBaseSettings( *this );
   return provider;
 }
 

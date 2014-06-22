@@ -513,4 +513,14 @@ bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value )
   return QgsRasterRange::contains( value, rangeList );
 }
 
+void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider& other )
+{
+  mDpi = other.mDpi;
+  mSrcNoDataValue = other.mSrcNoDataValue;
+  mSrcHasNoDataValue = other.mSrcHasNoDataValue;
+  mUseSrcNoDataValue = other.mUseSrcNoDataValue;
+  mUserNoDataValue = other.mUserNoDataValue;
+  mExtent = other.mExtent;
+}
+
 // ENDS

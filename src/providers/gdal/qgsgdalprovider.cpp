@@ -157,6 +157,7 @@ QgsRasterInterface * QgsGdalProvider::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsGdalProvider * provider = new QgsGdalProvider( dataSourceUri() );
+  provider->copyBaseSettings( *this );
   return provider;
 }
 
