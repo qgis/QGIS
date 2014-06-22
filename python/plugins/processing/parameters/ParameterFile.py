@@ -38,7 +38,7 @@ class ParameterFile(Parameter):
         self.optional = optional
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        return '"' + unicode(self.value) + '"'
 
     def serialize(self):
         return self.__module__.split('.')[-1] + '|' + self.name + '|' \
@@ -46,7 +46,7 @@ class ParameterFile(Parameter):
             + str(self.optional)
 
     def setValue(self, obj):
-        self.value = str(obj)
+        self.value = unicode(obj)
         if self.value.strip() == '' or self.value is None:
             if not self.optional:
                 return False
