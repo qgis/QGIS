@@ -64,6 +64,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
     mFileFormatLabel->setVisible( false );
   }
 
+  mFileFormatComboBox->setCurrentIndex( 0 );
+
   mFileEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
 
   // Use default encoding if none supplied
@@ -102,6 +104,14 @@ QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/NewVectorLayer/geometry", saveGeometry() );
+}
+
+void QgsNewVectorLayerDialog::on_mFileFormatComboBox_currentIndexChanged( int index )
+{
+  if ( mFileFormatComboBox->currentText() == tr( "ESRI Shapefile" ) )
+    mNameEdit->setMaxLength( 10 );
+  else
+    mNameEdit->setMaxLength( 32767 );
 }
 
 void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )

@@ -49,6 +49,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
   protected slots:
     void on_mAddAttributeButton_clicked();
     void on_mRemoveAttributeButton_clicked();
+    void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
     void on_pbnChangeSpatialRefSys_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
