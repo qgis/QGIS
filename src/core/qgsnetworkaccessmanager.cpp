@@ -246,22 +246,23 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
 
   if ( this != instance() )
   {
+    Qt::ConnectionType connectionType = thread() == instance()->thread() ? Qt::AutoConnection : Qt::BlockingQueuedConnection;
+
     connect( this, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
              instance(), SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
-             Qt::BlockingQueuedConnection );
+             connectionType );
 
     connect( this, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
              instance(), SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
-             Qt::BlockingQueuedConnection );
+             connectionType );
 
     connect( this, SIGNAL( requestTimedOut( QNetworkReply* ) ),
-             instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ),
-             Qt::BlockingQueuedConnection );
+             instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ) );
 
 #ifndef QT_NO_OPENSSL
     connect( this, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
              instance(), SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
-             Qt::BlockingQueuedConnection );
+             connectionType );
 #endif
   }
 

@@ -439,7 +439,7 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
     setQueryItem( url, "FORMAT", mSettings.mImageMimeType );
 }
 
-QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight )
+QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, int pixelHeight )
 {
   QgsDebugMsg( "Entering." );
 

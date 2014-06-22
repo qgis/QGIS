@@ -21,11 +21,18 @@ class QgsCredentials
      * @note added in 2.4
      */
     void lock();
+
     /**
      * Unlock the instance after being locked.
      * @note added in 2.4
      */
     void unlock();
+
+    /**
+     * Return pointer to mutex
+     * @note added in 2.4
+     */
+    QMutex *mutex();
 
   protected:
     QgsCredentials();

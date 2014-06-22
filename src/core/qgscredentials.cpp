@@ -54,9 +54,12 @@ bool QgsCredentials::get( QString realm, QString &username, QString &password, Q
     username = credentials.first;
     password = credentials.second;
     QgsDebugMsg( QString( "retrieved realm:%1 username:%2 password:%3" ).arg( realm ).arg( username ).arg( password ) );
-    return true;
+
+    if ( !password.isNull() )
+      return true;
   }
-  else if ( request( realm, username, password, message ) )
+
+  if ( request( realm, username, password, message ) )
   {
     QgsDebugMsg( QString( "requested realm:%1 username:%2 password:%3" ).arg( realm ).arg( username ).arg( password ) );
     return true;
@@ -73,7 +76,6 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   QgsDebugMsg( QString( "inserting realm:%1 username:%2 password:%3" ).arg( realm ).arg( username ).arg( password ) );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
-
 
 void QgsCredentials::lock()
 {
