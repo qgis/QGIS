@@ -1055,7 +1055,7 @@ bool QgsProject::write()
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     imp_->file.close();         // even though we got an error, let's make
     // sure it's closed anyway
