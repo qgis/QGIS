@@ -51,7 +51,10 @@
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
+%Include qgsmaprenderercustompainterjob.sip
 %Include qgsmaprendererjob.sip
+%Include qgsmaprendererparalleljob.sip
+%Include qgsmaprenderersequentialjob.sip
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip

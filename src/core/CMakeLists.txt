@@ -7,6 +7,9 @@ SET(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgsmapsettings.cpp
   qgsmaprendererjob.cpp
+  qgsmaprenderercustompainterjob.cpp
+  qgsmaprendererparalleljob.cpp
+  qgsmaprenderersequentialjob.cpp
   qgsvectorlayerrenderer.cpp
   raster/qgsrasterlayerrenderer.cpp
 
@@ -323,6 +326,9 @@ SET(QGIS_CORE_MOC_HDRS
 
   qgsmaprenderercache.h
   qgsmaprendererjob.h
+  qgsmaprenderercustompainterjob.h
+  qgsmaprendererparalleljob.h
+  qgsmaprenderersequentialjob.h
 
   qgsapplication.h
   qgsbrowsermodel.h
