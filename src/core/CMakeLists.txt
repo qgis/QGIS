@@ -3,16 +3,6 @@
 
 SET(QGIS_CORE_SRCS
 
-  qgsmaprenderercache.cpp
-  qgsxmlutils.cpp
-  qgsmapsettings.cpp
-  qgsmaprendererjob.cpp
-  qgsmaprenderercustompainterjob.cpp
-  qgsmaprendererparalleljob.cpp
-  qgsmaprenderersequentialjob.cpp
-  qgsvectorlayerrenderer.cpp
-  raster/qgsrasterlayerrenderer.cpp
-
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -64,13 +54,14 @@ SET(QGIS_CORE_SRCS
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
-  qgsbrowsermodel.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
   qgscontexthelp_texts.cpp
+  qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscredentials.cpp
   qgscrscache.cpp
@@ -105,17 +96,24 @@ SET(QGIS_CORE_SRCS
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
-  qgssimplifymethod.cpp
+  qgsmaprenderercache.cpp
+  qgsmaprenderercustompainterjob.cpp
+  qgsmaprendererjob.cpp
+  qgsmaprendererparalleljob.cpp
+  qgsmaprenderersequentialjob.cpp
+  qgsmapsettings.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
+  qgsnetworkaccessmanager.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
   qgsowsconnection.cpp
+  qgspaintenginehack.cpp
   qgspallabeling.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
@@ -136,8 +134,10 @@ SET(QGIS_CORE_SRCS
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
+  qgsscaleutils.cpp
+  qgssimplifymethod.cpp
   qgssnapper.cpp
-  qgscoordinatereferencesystem.cpp
+  qgsspatialindex.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
@@ -148,10 +148,10 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
+  qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
-
-  qgsnetworkaccessmanager.cpp
+  qgsxmlutils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -224,6 +224,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
+  raster/qgsrasterlayerrenderer.cpp
   raster/qgsrasternuller.cpp
   raster/qgsrastertransparency.cpp
   raster/qgsrasterpipe.cpp
@@ -246,10 +247,6 @@ SET(QGIS_CORE_SRCS
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp  
 
-  qgsspatialindex.cpp
-
-  qgspaintenginehack.cpp
-  qgsscaleutils.cpp
 )
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -324,12 +321,6 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
 
-  qgsmaprenderercache.h
-  qgsmaprendererjob.h
-  qgsmaprenderercustompainterjob.h
-  qgsmaprendererparalleljob.h
-  qgsmaprenderersequentialjob.h
-
   qgsapplication.h
   qgsbrowsermodel.h
   qgscontexthelp.h
@@ -342,6 +333,11 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
+  qgsmaprenderercache.h
+  qgsmaprenderercustompainterjob.h
+  qgsmaprendererjob.h
+  qgsmaprendererparalleljob.h
+  qgsmaprenderersequentialjob.h
   qgsmessageoutput.h
   qgsmessagelog.h
   qgsnetworkreplyparser.h
@@ -433,14 +429,17 @@ SET(QGIS_CORE_HDRS
   qgscacheindexfeatureid.h
   qgsclipper.h
   qgscontexthelp.h
+  qgscoordinatereferencesystem.h
   qgscoordinatetransform.h
   qgscredentials.h
+  qgscrscache.h
+  qgscsexception.h
   qgsdatadefined.h
   qgsdatasourceuri.h
   qgsdataitem.h
   qgsdatumtransformstore.h
+  qgsdbfilterproxymodel.h
   qgsdistancearea.h
-  qgscsexception.h
   qgseditorwidgetconfig.h
   qgserror.h
   qgsexception.h
@@ -458,10 +457,17 @@ SET(QGIS_CORE_HDRS
   qgshttptransaction.h
   qgslabel.h
   qgslabelattributes.h
+  qgslabelsearchtree.h
+  qgslegacyhelpers.h
   qgslogger.h
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
+  qgsmaprenderercache.h
+  qgsmaprenderercustompainterjob.h
+  qgsmaprendererjob.h
+  qgsmaprendererparalleljob.h
+  qgsmaprenderersequentialjob.h
   qgsmapsettings.h
   qgsmaptopixel.h
   qgsmapunitscale.h
@@ -472,6 +478,7 @@ SET(QGIS_CORE_HDRS
   qgsofflineediting.h
   qgsogcutils.h
   qgsowsconnection.h
+  qgspaintenginehack.h
   qgspallabeling.h
   qgspluginlayer.h
   qgspluginlayerregistry.h
@@ -492,8 +499,11 @@ SET(QGIS_CORE_HDRS
   qgsrelationmanager.h
   qgsrunprocess.h
   qgsscalecalculator.h
+  qgsscaleutils.h
+  qgssimplifymethod.h
   qgssnapper.h
-  qgscoordinatereferencesystem.h
+  qgsspatialindex.h
+  qgstolerance.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorfilewriter.h
@@ -504,16 +514,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
   qgsvectorlayerundocommand.h
-  qgstolerance.h
-  qgscrscache.h
-  qgsspatialindex.h
-  qgspaintenginehack.h
-  qgsscaleutils.h
-  qgsdbfilterproxymodel.h
   qgsvectorlayerjoinbuffer.h
-  qgslabelsearchtree.h
-  qgslegacyhelpers.h
-  qgssimplifymethod.h
   qgsvectorsimplifymethod.h
 
   qgsdiagramrendererv2.h
