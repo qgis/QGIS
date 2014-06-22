@@ -308,7 +308,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.progress.setValue(0)
         self.runButton.setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 
     def setInfo(self, msg, error=False):
         if error:
