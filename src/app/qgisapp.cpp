@@ -9775,41 +9775,43 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
   QString username = auth->user();
   QString password = auth->password();
 
-  QMutexLocker lock( QgsCredentials::instance()->mutex() );
-
-  do
   {
-    bool ok = QgsCredentials::instance()->get(
-                QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
-                username, password,
-                tr( "Authentication required" ) );
-    if ( !ok )
-      return;
+    QMutexLocker lock( QgsCredentials::instance()->mutex() );
 
-    if ( reply->isFinished() )
-      return;
-
-    if ( auth->user() == username && password == auth->password() )
+    do
     {
-      if ( !password.isNull() )
+      bool ok = QgsCredentials::instance()->get(
+                  QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
+                  username, password,
+                  tr( "Authentication required" ) );
+      if ( !ok )
+        return;
+
+      if ( reply->isFinished() )
+        return;
+
+      if ( auth->user() == username && password == auth->password() )
       {
-        // credentials didn't change - stored ones probably wrong? clear password and retry
+        if ( !password.isNull() )
+        {
+          // credentials didn't change - stored ones probably wrong? clear password and retry
+          QgsCredentials::instance()->put(
+            QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
+            username, QString::null );
+          continue;
+        }
+      }
+      else
+      {
+        // save credentials
         QgsCredentials::instance()->put(
           QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
-          username, QString::null );
-        continue;
+          username, password
+        );
       }
     }
-    else
-    {
-      // save credentials
-      QgsCredentials::instance()->put(
-        QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
-        username, password
-      );
-    }
+    while ( 0 );
   }
-  while ( 0 );
 
   auth->setUser( username );
   auth->setPassword( password );
@@ -9828,37 +9830,39 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
   QString username = auth->user();
   QString password = auth->password();
 
-  QMutexLocker lock( QgsCredentials::instance()->mutex() );
-
-  do
   {
-    bool ok = QgsCredentials::instance()->get(
-                QString( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
-                username, password,
-                tr( "Proxy authentication required" ) );
-    if ( !ok )
-      return;
+    QMutexLocker lock( QgsCredentials::instance()->mutex() );
 
-    if ( auth->user() == username && password == auth->password() )
+    do
     {
-      if ( !password.isNull() )
+      bool ok = QgsCredentials::instance()->get(
+                  QString( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
+                  username, password,
+                  tr( "Proxy authentication required" ) );
+      if ( !ok )
+        return;
+
+      if ( auth->user() == username && password == auth->password() )
       {
-        // credentials didn't change - stored ones probably wrong? clear password and retry
+        if ( !password.isNull() )
+        {
+          // credentials didn't change - stored ones probably wrong? clear password and retry
+          QgsCredentials::instance()->put(
+            QString( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
+            username, QString::null );
+          continue;
+        }
+      }
+      else
+      {
         QgsCredentials::instance()->put(
           QString( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
-          username, QString::null );
-        continue;
+          username, password
+        );
       }
     }
-    else
-    {
-      QgsCredentials::instance()->put(
-        QString( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
-        username, password
-      );
-    }
+    while ( 0 );
   }
-  while ( 0 );
 
   auth->setUser( username );
   auth->setPassword( password );

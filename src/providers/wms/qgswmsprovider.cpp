@@ -2367,7 +2367,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
     QEventLoop loop;
-    connect( mIdentifyReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+    mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
     if ( mIdentifyResultBodies.size() == 0 ) // no result
@@ -2767,8 +2767,11 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
 void QgsWmsProvider::identifyReplyFinished()
 {
+  QgsDebugMsg( "Entered." );
   mIdentifyResultHeaders.clear();
   mIdentifyResultBodies.clear();
+
+  QEventLoop *loop = qobject_cast< QEventLoop *>( sender()->property( "eventLoop" ).value< QObject *>() );
 
   if ( mIdentifyReply->error() == QNetworkReply::NoError )
   {
@@ -2782,8 +2785,8 @@ void QgsWmsProvider::identifyReplyFinished()
 
       QgsDebugMsg( QString( "redirected getfeatureinfo: %1" ).arg( redirect.toString() ) );
       mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
+      mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
       connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
-
       return;
     }
 
@@ -2794,8 +2797,6 @@ void QgsWmsProvider::identifyReplyFinished()
       mErrorFormat = "text/plain";
       mError = tr( "Map getfeatureinfo error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
-
-      //mIdentifyResult = "";
     }
 
     QgsNetworkReplyParser parser( mIdentifyReply );
@@ -2805,7 +2806,6 @@ void QgsWmsProvider::identifyReplyFinished()
       mErrorFormat = "text/plain";
       mError = tr( "Cannot parse getfeatureinfo: %1" ).arg( parser.error() );
       emit statusChanged( mError );
-      //mIdentifyResult = "";
     }
     else
     {
@@ -2823,6 +2823,9 @@ void QgsWmsProvider::identifyReplyFinished()
     emit statusChanged( mError );
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
   }
+
+  if ( loop )
+    QMetaObject::invokeMethod( loop, "quit", Qt::QueuedConnection );
 
   mIdentifyReply->deleteLater();
   mIdentifyReply = 0;
@@ -3016,12 +3019,11 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 
   QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
   mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
-
   connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
   connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
 
   QEventLoop loop;
-  connect( mGetLegendGraphicReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+  mGetLegendGraphicReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   QgsDebugMsg( "exiting." );
@@ -3032,6 +3034,8 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 void QgsWmsProvider::getLegendGraphicReplyFinished()
 {
   QgsDebugMsg( "entering." );
+
+  QEventLoop *loop = qobject_cast< QEventLoop *>( sender()->property( "eventLoop" ).value< QObject *>() );
 
   if ( mGetLegendGraphicReply->error() == QNetworkReply::NoError )
   {
@@ -3060,6 +3064,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
         mGetLegendGraphicReply->deleteLater();
         QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
         mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+        mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
 
         connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
         connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
@@ -3098,6 +3103,9 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
     QgsMessageLog::logMessage( tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() ), tr( "WMS" ) );
     mHttpGetLegendGraphicResponse.clear();
   }
+
+  if ( loop )
+    QMetaObject::invokeMethod( loop, "quit", Qt::QueuedConnection );
 
   mGetLegendGraphicReply->deleteLater();
   mGetLegendGraphicReply = 0;
