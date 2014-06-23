@@ -602,7 +602,14 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
     QTableWidgetItem *aliasItem = mFieldsList->item( row, column );
     if ( aliasItem )
     {
-      mLayer->addAttributeAlias( idx, aliasItem->text() );
+        if ( !aliasItem->text().trimmed().isEmpty() )
+        {
+          mLayer->addAttributeAlias( idx, aliasItem->text() );
+        }
+        else
+        {
+          mLayer->remAttributeAlias(idx);
+        }
     }
   }
 }

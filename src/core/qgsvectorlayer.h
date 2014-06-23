@@ -1104,6 +1104,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void addAttributeAlias( int attIndex, QString aliasString );
 
     /**
+     * Removes an alias (a display name) for attributes to display in dialogs
+     * @note added in version 2.4
+     */
+    void remAttributeAlias( int attIndex );
+
+    /**
      * Adds a tab (for the attribute editor form) holding groups and fields
      * @note added in version 2.0
      */
