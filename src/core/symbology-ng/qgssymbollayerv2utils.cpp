@@ -2417,8 +2417,27 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
 bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QString &function )
 {
   QgsDebugMsg( "Entered." );
+  QDomElement elem;
+  if ( element.tagName() == "Filter" )
+  {
+    elem = element;
+  }
+  else
+  {
+    QDomNodeList filterNodes = element.elementsByTagName( "Filter" );
+    if ( filterNodes.size() > 0 )
+    {
+      elem = filterNodes.at( 0 ).toElement();
+    }
+  }
 
-  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( element );
+  if ( elem.isNull() )
+  {
+    return false;
+  }
+
+
+  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( elem );
   if ( !expr )
     return false;
 

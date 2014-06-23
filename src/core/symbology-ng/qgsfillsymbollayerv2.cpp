@@ -2636,7 +2636,10 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   graphicFillElem.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), mColor, Qt::SolidLine, mLineWidth, mDistance );
+  //line properties must be inside the graphic definition
+  QColor lineColor = mFillLineSymbol ? mFillLineSymbol->color() : QColor();
+  double lineWidth = mFillLineSymbol ? mFillLineSymbol->width() : 0.0;
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), lineColor, Qt::SolidLine, lineWidth, mDistance );
 
   // <Rotation>
   QString angleFunc;
@@ -2655,11 +2658,6 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   // <se:Displacement>
   QPointF lineOffset( sin( mLineAngle ) * mOffset, cos( mLineAngle ) * mOffset );
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, lineOffset );
-
-  if ( mFillLineSymbol )
-  {
-    mFillLineSymbol->toSld( doc, element, props );
-  }
 }
 
 QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFactor ) const
