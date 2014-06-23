@@ -155,8 +155,8 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
         cfg = mWidgetFactories[ewv2Type]->readEditorConfig( ewv2CfgElem, vectorLayer, idx );
       }
 
-      vectorLayer->setFieldEditable( idx, ewv2CfgElem.attribute( "fieldEditable" ) == "1" );
-      vectorLayer->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop" ) == "1" );
+      vectorLayer->setFieldEditable( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) == "1" );
+      vectorLayer->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
       vectorLayer->setEditorWidgetV2Config( idx, cfg );
     }
     else
