@@ -73,12 +73,8 @@ void QgsMeasureDialog::updateSettings()
   QgsDebugMsg( QString( "Display units: %1" ).arg( QGis::toLiteral( mDisplayUnits ) ) );
   QgsDebugMsg( QString( "Canvas units : %1" ).arg( QGis::toLiteral( mCanvasUnits ) ) );
 
-  // clear interface
-  mTable->clear();
-
   mTotal = 0;
   updateUi();
-
 }
 
 void QgsMeasureDialog::restart()
