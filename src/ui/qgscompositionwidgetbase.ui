@@ -361,6 +361,9 @@
               <property name="prefix">
                <string>x: </string>
               </property>
+              <property name="suffix">
+               <string> mm</string>
+              </property>
               <property name="maximum">
                <double>9999.000000000000000</double>
               </property>
@@ -372,7 +375,7 @@
                <string>y: </string>
               </property>
               <property name="suffix">
-               <string/>
+               <string> mm</string>
               </property>
              </widget>
             </item>
