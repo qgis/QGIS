@@ -110,20 +110,18 @@ void QgsFieldModel::setAllowExpression( bool allowExpression )
   }
 }
 
-QModelIndex QgsFieldModel::setExpression( const QString &expression )
+void QgsFieldModel::setExpression( const QString &expression )
 {
   if ( !mAllowExpression )
-    return QModelIndex();
+    return;
 
   QModelIndex idx = indexFromName( expression );
   if ( idx.isValid() )
-    return idx;
+    return;
 
   beginResetModel();
   mExpression = QList<QString>() << expression;
   endResetModel();
-
-  return index( mFields.count() , 0 );
 }
 
 void QgsFieldModel::removeExpression()

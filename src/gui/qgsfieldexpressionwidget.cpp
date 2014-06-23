@@ -152,7 +152,8 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
     if ( !idx.isValid() )
     {
       // new expression
-      idx = mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
+      mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
+      idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
     }
   }
   QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
@@ -189,7 +190,8 @@ void QgsFieldExpressionWidget::expressionEditingFinished()
 {
   QgsDebugMsg( "Editing finsihed" );
   const QString expression = mCombo->lineEdit()->text();
-  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->setExpression( expression );
+  mFieldProxyModel->sourceFieldModel()->setExpression( expression );
+  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( expression );
   QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
   mCombo->setCurrentIndex( proxyIndex.row() );
   currentFieldChanged();
