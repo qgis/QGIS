@@ -120,7 +120,9 @@ void QgsFieldModel::setExpression( const QString &expression )
     return;
 
   beginResetModel();
-  mExpression = QList<QString>() << expression;
+  mExpression = QList<QString>();
+  if ( !expression.isEmpty() )
+    mExpression << expression;
   endResetModel();
 }
 
