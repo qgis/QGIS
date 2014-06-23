@@ -594,13 +594,13 @@
        </item>
        <item>
         <widget class="QCheckBox" name="cbxSubsetIndex">
+         <property name="toolTip">
+          <string>Use an index to improve performance of subset filters (set in layer properties)</string>
+         </property>
          <property name="statusTip">
           <string>Use an index to improve performance of subset filters (set in layer properties)</string>
          </property>
          <property name="whatsThis">
-          <string>Use an index to improve performance of subset filters (set in layer properties)</string>
-         </property>
-         <property name="accessibleName">
           <string>Use an index to improve performance of subset filters (set in layer properties)</string>
          </property>
          <property name="text">
