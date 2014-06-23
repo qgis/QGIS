@@ -1358,7 +1358,7 @@ void QgsIdentifyResultsDialog::layerDestroyed()
     {
       for ( int j = 0; j < layItem->childCount(); j++ )
       {
-        delete mHighlights.take( layItem->child( i ) );
+        delete mHighlights.take( layItem->child( j ) );
       }
     }
   }
