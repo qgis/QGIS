@@ -141,8 +141,11 @@ class QgsComposerMap : QgsComposerItem
     void toggleAtlasPreview();
 
     /**Returns a pointer to the current map extent, which is either the original user specified
-      extent or the temporary atlas-driven feature extent depending on the current atlas state of the composition.
-      Both a const and non-const version are included.*/
+     * extent or the temporary atlas-driven feature extent depending on the current atlas state
+     * of the composition. Both a const and non-const version are included.
+     * @returns pointer to current map extent
+     * @see visibleExtentPolygon
+    */
     const QgsRectangle* currentMapExtent() const;
 
     PreviewMode previewMode() const;
@@ -477,6 +480,14 @@ class QgsComposerMap : QgsComposerItem
      * @note this method was added in version 2.4
     */
     int numberExportLayers() const;
+
+    /**Returns a polygon representing the current visible map extent, considering map extents and rotation.
+     * If the map rotation is 0, the result is the same as currentMapExtent
+     * @returns polygon with the four corner points representing the visible map extent. The points are
+     * clockwise, starting at the top-left point
+     * @see currentMapExtent
+    */
+    QPolygonF visibleExtentPolygon() const;
 
   signals:
     void extentChanged();

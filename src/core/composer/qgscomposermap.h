@@ -175,8 +175,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void toggleAtlasPreview();
 
     /**Returns a pointer to the current map extent, which is either the original user specified
-      extent or the temporary atlas-driven feature extent depending on the current atlas state of the composition.
-      Both a const and non-const version are included.*/
+     * extent or the temporary atlas-driven feature extent depending on the current atlas state
+     * of the composition. Both a const and non-const version are included.
+     * @returns pointer to current map extent
+     * @see visibleExtentPolygon
+    */
     QgsRectangle* currentMapExtent();
     const QgsRectangle* currentMapExtent() const;
 
@@ -513,6 +516,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     */
     int numberExportLayers() const;
 
+    /**Returns a polygon representing the current visible map extent, considering map extents and rotation.
+     * If the map rotation is 0, the result is the same as currentMapExtent
+     * @returns polygon with the four corner points representing the visible map extent. The points are
+     * clockwise, starting at the top-left point
+     * @see currentMapExtent
+    */
+    QPolygonF visibleExtentPolygon() const;
+
   signals:
     void extentChanged();
 
@@ -703,10 +714,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
     QPolygonF transformedMapPolygon() const;
     double maxExtension() const;
-    /**Returns the polygon of the map extent. If rotation == 0, the result is the same as mExtent
-    @param poly out: the result polygon with the four corner points. The points are clockwise, starting at the top-left point
-    @return true in case of success*/
-    void mapPolygon( QPolygonF& poly ) const;
+
     /** mapPolygon variant using a given extent */
     void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
 

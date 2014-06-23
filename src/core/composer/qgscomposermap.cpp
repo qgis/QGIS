@@ -2075,8 +2075,7 @@ QPolygonF QgsComposerMap::transformedMapPolygon() const
   //qWarning("transformed:");
   //qWarning(QString::number(dx).toLocal8Bit().data());
   //qWarning(QString::number(dy).toLocal8Bit().data());
-  QPolygonF poly;
-  mapPolygon( poly );
+  QPolygonF poly = visibleExtentPolygon();
   poly.translate( -dx, -dy );
   return poly;
 }
@@ -2146,30 +2145,32 @@ void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) c
   dx = rotationPoint.x() - extent.xMinimum();
   dy = rotationPoint.y() - extent.yMaximum();
   rotate( mMapRotation, dx, dy );
-  poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
+  poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 
   //top right point
   dx = rotationPoint.x() - extent.xMaximum();
   dy = rotationPoint.y() - extent.yMaximum();
   rotate( mMapRotation, dx, dy );
-  poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
+  poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 
   //bottom right point
   dx = rotationPoint.x() - extent.xMaximum();
   dy = rotationPoint.y() - extent.yMinimum();
   rotate( mMapRotation, dx, dy );
-  poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
+  poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 
   //bottom left point
   dx = rotationPoint.x() - extent.xMinimum();
   dy = rotationPoint.y() - extent.yMinimum();
   rotate( mMapRotation, dx, dy );
-  poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
+  poly << QPointF( rotationPoint.x() - dx, rotationPoint.y() - dy );
 }
 
-void QgsComposerMap::mapPolygon( QPolygonF& poly ) const
+QPolygonF QgsComposerMap::visibleExtentPolygon() const
 {
-  return mapPolygon( *currentMapExtent(), poly );
+  QPolygonF poly;
+  mapPolygon( *currentMapExtent(), poly );
+  return poly;
 }
 
 void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
@@ -2569,9 +2570,13 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
     return;
   }
 
-  QgsRectangle otherExtent = *overviewFrameMap->currentMapExtent();
-  QgsRectangle thisExtent = *currentMapExtent();
-  QgsRectangle intersectRect = thisExtent.intersect( &otherExtent );
+  //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
+  QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
+
+  //get current map's extent as a QPolygonF
+  QPolygonF thisExtent = visibleExtentPolygon();
+  //intersect the two
+  QPolygonF intersectExtent = thisExtent.intersected( otherExtent );
 
   //setup painter scaling to dots so that raster symbology is drawn to scale
   double dotsPerMM = p->device()->logicalDpiX() / 25.4;
@@ -2596,12 +2601,15 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
 
   //construct a polygon corresponding to the intersecting map extent
   //need to scale line to dots, rather then mm, since the painter has been scaled to dots
+  QTransform mapTransform;
+  QPolygonF thisRectPoly = QPolygonF( QRectF( 0, 0, dotsPerMM *  rect().width(), dotsPerMM *  rect().height() ) );
+
+  //workaround QT Bug #21329
+  thisRectPoly.pop_back();
+  //create transform from map coordinates to painter coordinates
+  QTransform::quadToQuad( thisExtent, thisRectPoly, mapTransform );
   QPolygonF intersectPolygon;
-  double x = dotsPerMM * ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
-  double y = dotsPerMM * ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
-  double width = dotsPerMM * intersectRect.width() / thisExtent.width() * rect().width();
-  double height = dotsPerMM * intersectRect.height() / thisExtent.height() * rect().height();
-  intersectPolygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height ) << QPointF( x, y );
+  intersectPolygon = mapTransform.map( intersectExtent );
 
   QList<QPolygonF> rings; //empty list
   if ( !mOverviewInverted )
