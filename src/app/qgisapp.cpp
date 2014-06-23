@@ -5873,6 +5873,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       // convert geometry to match destination layer
       QGis::GeometryType destType = pasteVectorLayer->geometryType();
       bool destIsMulti = QGis::isMultiType( pasteVectorLayer->wkbType() );
+      if ( pasteVectorLayer->storageType() == "ESRI Shapefile" )
+      {
+        // force destination to multi if shapefile
+        destIsMulti = true;
+      }
       if ( destType != QGis::UnknownGeometry )
       {
         QgsGeometry* newGeometry = featureIt->geometry()->convertToType( destType, destIsMulti );
