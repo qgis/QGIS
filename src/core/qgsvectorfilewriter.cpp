@@ -625,8 +625,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   driverMetadata.insert( "CSV",
                          MetaData(
-                           "Comma Separated Value",
-                           QObject::tr( "Comma Separated Value" ),
+                           "Comma Separated Value [CSV]",
+                           QObject::tr( "Comma Separated Value [CSV]" ),
                            "*.csv",
                            "csv",
                            datasetOptions,
@@ -2205,8 +2205,8 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
   else if ( driverName.startsWith( "CSV" ) )
   {
-    longName = "Comma Separated Value";
-    trLongName = QObject::tr( "Comma Separated Value" );
+    longName = "Comma Separated Value [CSV]";
+    trLongName = QObject::tr( "Comma Separated Value [CSV]" );
     glob = "*.csv";
     ext = "csv";
   }
