@@ -393,6 +393,9 @@ void QgsGml::endElement( const XML_Char* el )
       //error
     }
 
+    if ( pointList.count() == 0 )
+      return;  // error
+
     if ( theParseMode == QgsGml::geometry )
     {
       //directly add WKB point to the feature
