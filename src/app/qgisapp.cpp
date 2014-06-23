@@ -9906,6 +9906,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
 void QgisApp::namRequestTimedOut( QNetworkReply *reply )
 {
+  Q_UNUSED( reply );
   QLabel *msgLabel = new QLabel( tr( "A network request timed out, any data received is likely incomplete." ) +
                                  tr( " Please check the <a href=\"#messageLog\">message log</a> for further info." ), messageBar() );
   msgLabel->setWordWrap( true );
