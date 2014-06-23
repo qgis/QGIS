@@ -219,10 +219,25 @@ void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString & 
 
 void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
 {
-  QFileInfo fi( mStartMarkerLineEdit->text() );
-  QString svgFileName = QFileDialog::getOpenFileName( 0, tr( "Start marker svg file" ), fi.dir().absolutePath() );
+  QSettings s;
+  QString openDir;
+
+  if ( !mStartMarkerLineEdit->text().isEmpty() )
+  {
+    QFileInfo fi( mStartMarkerLineEdit->text() );
+    openDir = fi.dir().absolutePath();
+  }
+
+  if ( openDir.isEmpty() )
+  {
+    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+  }
+
+  QString svgFileName = QFileDialog::getOpenFileName( 0, tr( "Start marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
+    QFileInfo fileInfo( svgFileName );
+    s.setValue( "/UI/lastComposerMarkerDir", fileInfo.absolutePath() );
     mArrow->beginCommand( tr( "Arrow start marker" ) );
     mStartMarkerLineEdit->setText( svgFileName );
     mArrow->endCommand();
@@ -231,12 +246,27 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
 
 void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
 {
-  QFileInfo fi( mEndMarkerLineEdit->text() );
-  QString svgFileName = QFileDialog::getOpenFileName( 0, tr( "End marker svg file" ), fi.dir().absolutePath() );
+  QSettings s;
+  QString openDir;
+
+  if ( !mEndMarkerLineEdit->text().isEmpty() )
+  {
+    QFileInfo fi( mEndMarkerLineEdit->text() );
+    openDir = fi.dir().absolutePath();
+  }
+
+  if ( openDir.isEmpty() )
+  {
+    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+  }
+
+  QString svgFileName = QFileDialog::getOpenFileName( 0, tr( "End marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
+    QFileInfo fileInfo( svgFileName );
+    s.setValue( "/UI/lastComposerMarkerDir", fileInfo.absolutePath() );
     mArrow->beginCommand( tr( "Arrow end marker" ) );
-    mEndMarkerLineEdit ->setText( svgFileName );
+    mEndMarkerLineEdit->setText( svgFileName );
     mArrow->endCommand();
   }
 }

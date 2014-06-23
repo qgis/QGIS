@@ -63,6 +63,7 @@ QgsComposerPictureWidget::~QgsComposerPictureWidget()
 
 void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 {
+  QSettings s;
   QString openDir;
   QString lineEditText = mPictureLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -71,6 +72,10 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
     openDir = openDirFileInfo.path();
   }
 
+  if ( openDir.isEmpty() )
+  {
+    openDir = s.value( "/UI/lastComposerPictureDir", "" ).toString();
+  }
 
   //show file dialog
   QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select svg or image file" ), openDir );
@@ -86,6 +91,8 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
     QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
     return;
   }
+
+  s.setValue( "/UI/lastComposerPictureDir", fileInfo.absolutePath() );
 
   mPictureLineEdit->blockSignals( true );
   mPictureLineEdit->setText( filePath );
