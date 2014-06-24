@@ -36,8 +36,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     const QgsFeature& feature() { return mFeature; }
 
+    /**
+     * Hides the button box (Ok/Cancel) and enables auto-commit
+     */
     void hideButtonBox();
 
+    /**
+     * Shows the button box (Ok/Cancel) and disables auto-commit
+     */
     void showButtonBox();
 
     /**
@@ -46,8 +52,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void addInterface( QgsAttributeFormInterface* iface );
 
+    /**
+     * Returns the layer for which this form is shown
+     *
+     * @return  Layer
+     */
     QgsVectorLayer* layer() { return mLayer; }
 
+    /**
+     * Returns if the form is currently in editable mode.
+     *
+     * @return Editable mode of this form
+     */
     bool editable();
 
     /**
@@ -118,6 +134,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     Q_DECL_DEPRECATED void reject() { resetValues(); }
 
+    /**
+     * Sets all values to the values of the current feature
+     */
     void resetValues();
 
   private slots:
