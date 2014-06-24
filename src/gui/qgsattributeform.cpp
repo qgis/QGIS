@@ -28,6 +28,7 @@
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QGroupBox>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
@@ -322,6 +323,8 @@ void QgsAttributeForm::init()
       formWidget->show();
       file.close();
       createWrappers();
+
+      formWidget->installEventFilter( this );
     }
   }
 
@@ -663,4 +666,23 @@ void QgsAttributeForm::connectWrappers()
     if ( eww )
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
   }
+}
+
+
+bool QgsAttributeForm::eventFilter( QObject* object, QEvent* e )
+{
+  Q_UNUSED( object )
+
+  if ( e->type() == QEvent::KeyPress )
+  {
+    QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>( e );
+    if ( keyEvent->key() == Qt::Key_Escape )
+    {
+      // Re-emit to this form so it will be forwarded to parent
+      event( e );
+      return true;
+    }
+  }
+
+  return false;
 }

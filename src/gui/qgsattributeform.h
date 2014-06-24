@@ -66,6 +66,16 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setEditCommandMessage( const QString& message ) { mEditCommandMessage = message; }
 
+    /**
+     * Intercepts keypress on custom form (escape should not close it)
+     *
+     * @param object   The object for which the event has been sent
+     * @param event    The event which is being filtered
+     *
+     * @return         true if the event has been handled (key was ESC)
+     */
+    bool eventFilter( QObject* object, QEvent* event );
+
   signals:
     /**
      * Notifies about changes of attributes
