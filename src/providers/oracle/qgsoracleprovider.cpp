@@ -720,7 +720,7 @@ bool QgsOracleProvider::loadFields()
     if ( field.name() == mGeometryColumn )
       continue;
 
-    if ( !types.contains( field.name() ) )
+    if ( !mIsQuery && !types.contains( field.name() ) )
       continue;
 
     mAttributeFields.append( QgsField( field.name(), field.type(), types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) ) );
@@ -815,24 +815,6 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
       QgsMessageLog::logMessage( tr( "The custom query is not a select query." ), tr( "Oracle" ) );
       return false;
     }
-
-    // get a new alias for the subquery
-    int index = 0;
-    QString alias;
-    QRegExp regex;
-    do
-    {
-      alias = QString( "subQuery_%1" ).arg( QString::number( index++ ) );
-      QString pattern = QString( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
-      regex.setPattern( pattern );
-      regex.setCaseSensitivity( Qt::CaseInsensitive );
-    }
-    while ( mQuery.contains( regex ) );
-
-    // convert the custom query into a subquery
-    mQuery = QString( "%1 AS %2" )
-             .arg( mQuery )
-             .arg( quotedIdentifier( alias ) );
 
     if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) ) )
     {
@@ -953,7 +935,11 @@ bool QgsOracleProvider::determinePrimaryKey()
     QString primaryKey = mUri.keyColumn();
     int idx = fieldNameIndex( mUri.keyColumn() );
 
-    if ( idx >= 0 && ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) )
+    if ( idx >= 0 && (
+           mAttributeFields[idx].type() == QVariant::Int ||
+           mAttributeFields[idx].type() == QVariant::LongLong ||
+           mAttributeFields[idx].type() == QVariant::Double
+         ) )
     {
       if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
       {
@@ -1505,7 +1491,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
     returnvalue = false;
   }
 
-  if( !loadFields() )
+  if ( !loadFields() )
   {
     QgsMessageLog::logMessage( tr( "Could not reload fields." ), tr( "Oracle" ) );
   }
@@ -1568,7 +1554,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
     returnvalue = false;
   }
 
-  if( !loadFields() )
+  if ( !loadFields() )
   {
     QgsMessageLog::logMessage( tr( "Could not reload fields." ), tr( "Oracle" ) );
   }
@@ -2095,6 +2081,12 @@ bool QgsOracleProvider::getGeometryDetails()
   int detectedSrid = -1;
   QGis::WkbType detectedType = QGis::WKBUnknown;
   mSpatialIndex = QString::null;
+
+  if ( mIsQuery )
+  {
+    detectedSrid = mSrid;
+    detectedType = mRequestedGeomType;
+  }
 
   if ( !ownerName.isEmpty() )
   {
