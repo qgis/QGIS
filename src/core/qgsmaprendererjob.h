@@ -35,6 +35,9 @@ class QgsMapRendererCache;
 class QgsPalLabeling;
 
 
+/** Structure keeping low-level rendering job information.
+ * @note not part of public API!
+ */
 struct LayerRenderJob
 {
   QgsRenderContext context;
@@ -48,7 +51,30 @@ struct LayerRenderJob
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
-/** abstract base class renderer jobs that asynchronously start map rendering */
+/**
+ * Abstract base class for map rendering implementations.
+ *
+ * The API is designed in a way that rendering is done asynchronously, therefore
+ * the caller is not blocked while the rendering is in progress. Non-blocking
+ * operation is quite important because the rendering can take considerable
+ * amount of time.
+ *
+ * Common use case:
+ * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+ * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
+ * 2. connect to job's finished() signal
+ * 3. call start(). Map rendering will start in background, the function immediately returns
+ * 4. at some point, slot connected to finished() signal is called, map rendering is done
+ *
+ * It is possible to cancel the rendering job while it is active by calling cancel() function.
+ *
+ * The following subclasses are available:
+ * - QgsMapRendererSequentialJob - renders map in one background thread to an image
+ * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
+ * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
+ *
+ * @note added in 2.4
+ */
 class CORE_EXPORT QgsMapRendererJob : public QObject
 {
     Q_OBJECT
@@ -149,6 +175,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
 /** Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
+ *
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
 {

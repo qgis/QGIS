@@ -20,8 +20,13 @@
 
 #include <QEventLoop>
 
-/** job implementation that renders everything sequentially using a custom painter.
- *  The returned image is always invalid (because there is none available).
+/** Job implementation that renders everything sequentially using a custom painter.
+ *
+ * Also supports synchronous rendering in main thread for cases when rendering in background
+ * is not an option because of some technical limitations (e.g. printing to printer on some
+ * platforms).
+ *
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
