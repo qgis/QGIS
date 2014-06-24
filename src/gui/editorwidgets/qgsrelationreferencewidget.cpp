@@ -77,6 +77,11 @@ void QgsRelationReferenceWidget::initWidget( QWidget* editor )
 
   if ( relation.isValid() )
   {
+    if ( config( "AllowNULL" ).toBool() )
+    {
+      mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
+    }
+
     mReferencedLayer = relation.referencedLayer();
     int refFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().first().second );
 
@@ -93,11 +98,6 @@ void QgsRelationReferenceWidget::initWidget( QWidget* editor )
       mComboBox->addItem( txt, f.id() );
 
       mFidFkMap.insert( f.id(), f.attribute( refFieldIdx ) );
-    }
-
-    if ( config( "AllowNULL" ).toBool() )
-    {
-      mComboBox->addItem( "[NULL]" );
     }
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
@@ -119,7 +119,7 @@ QVariant QgsRelationReferenceWidget::value()
   QVariant varFid = mComboBox->itemData( mComboBox->currentIndex() );
   if ( varFid.isNull() )
   {
-    return QVariant();
+    return QVariant( field().type() );
   }
   else
   {
@@ -129,9 +129,24 @@ QVariant QgsRelationReferenceWidget::value()
 
 void QgsRelationReferenceWidget::setValue( const QVariant& value )
 {
-  QgsFeatureId fid = mFidFkMap.key( value );
   int oldIdx = mComboBox->currentIndex();
-  mComboBox->setCurrentIndex( mComboBox->findData( fid ) );
+
+  if ( value.isNull() )
+  {
+    if ( config( "AllowNULL" ).toBool() )
+    {
+      mComboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+      mComboBox->setCurrentIndex( -1 );
+    }
+  }
+  else
+  {
+    QgsFeatureId fid = mFidFkMap.key( value );
+    mComboBox->setCurrentIndex( mComboBox->findData( fid ) );
+  }
 
   if ( !mInitialValueAssigned )
   {

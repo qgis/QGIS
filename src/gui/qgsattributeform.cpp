@@ -155,7 +155,7 @@ bool QgsAttributeForm::save()
         QVariant srcVar = eww->value();
         if ( dstVar != srcVar && srcVar.isValid() )
         {
-          dst[eww->fieldIdx()] = eww->value();
+          dst[eww->fieldIdx()] = srcVar;
 
           doUpdate = true;
         }
