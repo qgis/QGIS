@@ -1,0 +1,19 @@
+r.spread
+r.spread - Simulates elliptically anisotropic spread on a graphics window and generates a raster map of the cumulative time of spread, given raster maps containing the rates of spread (ROS), the ROS directions and the spread origins.
+Raster (r.*)
+ParameterRaster|max|Name of raster map containing MAX rate of spread (ROS) (cm/min)|True
+ParameterRaster|dir|Name of raster map containing DIRections of max ROS (degree)|True
+ParameterRaster|base|Name of raster map containing BASE ROS (cm/min)|True
+ParameterRaster|start|Name of raster map containing STARTing sources|True
+*ParameterBoolean|-s|For wildfires: consider SPOTTING effect (-s)|False
+*ParameterRaster|spot_dist|Name of raster map containing max SPOTting DISTance (m) (required with -s)|False
+*ParameterRaster|w_speed|Name of raster map containing midflame Wind SPEED (ft/min) (required with -s)|False
+*ParameterRaster|f_mois|Name of raster map containing fine Fuel MOISture of the cell receiving a spotting firebrand (%) (required with -s)|False
+*ParameterNumber|least_size|Basic sampling window SIZE needed to meet certain accuracy (default 3). Options: 3,5,7,9,11,13,15|3|15|3
+*ParameterNumber|comp_dens|Sampling DENSity for additional COMPutin (range: 0.0 - 1.0 (default 0.5))|0|1|0.5
+*ParameterNumber|init_time|INITial TIME for current simulation (0) (min)|0|None|0
+*ParameterNumber|lag|Simulating time duration LAG (fill the region) (min)|0|None|0
+*ParameterRaster|backdrop|Name of raster map as a display backdrop|False
+OutputRaster|output|Name of raster map to contain OUTPUT spread time (min)
+OutputRaster|x_output|Name of raster map to contain X_BACK coordinates
+OutputRaster|y_output|Name of raster map to contain Y_BACK coordinates
