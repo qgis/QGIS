@@ -52,6 +52,7 @@ QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomEleme
   cfg.insert( "FilterExpression", configElement.attribute( "FilterExpression" ) );
   cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) );
   cfg.insert( "AllowMulti", configElement.attribute( "AllowMulti" ) );
+  cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) );
 
   return cfg;
 }
@@ -68,6 +69,7 @@ void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& co
   configElement.setAttribute( "FilterExpression", config.value( "FilterExpression" ).toString() );
   configElement.setAttribute( "OrderByValue", config.value( "OrderByValue" ).toBool() );
   configElement.setAttribute( "AllowMulti", config.value( "AllowMulti" ).toBool() );
+  configElement.setAttribute( "AllowNull", config.value( "AllowNull" ).toBool() );
 }
 
 QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
