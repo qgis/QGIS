@@ -84,13 +84,23 @@ void QgsFieldModel::layerDeleted()
 
 void QgsFieldModel::updateModel()
 {
-  beginResetModel();
-  mExpression = QList<QString>();
   if ( mLayer )
-    mFields = mLayer->pendingFields();
+  {
+    if ( mFields.toList() != mLayer->pendingFields().toList() )
+    {
+      beginResetModel();
+      mFields = mLayer->pendingFields();
+      endResetModel();
+    }
+    else
+      emit dataChanged( index(0, 0 ), index( rowCount(), 0 ));
+  }
   else
+  {
+    beginResetModel();
     mFields = QgsFields();
-  endResetModel();
+    beginResetModel();
+  }
 }
 
 void QgsFieldModel::setAllowExpression( bool allowExpression )
