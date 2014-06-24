@@ -98,7 +98,7 @@ class Grass7Algorithm(GeoAlgorithm):
     def getParameterDescriptions(self):
         descs = {}
         try:
-            helpfile = self.helpFile()
+            _, helpfile = self.help()
         except WrongHelpFileException:
             return descs
         if helpfile:
