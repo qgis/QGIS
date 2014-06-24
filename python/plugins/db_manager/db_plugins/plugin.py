@@ -554,7 +554,7 @@ class Table(DbItemObject):
 		schema = self.schemaName() if self.schemaName() else ''
 		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
 		uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
-		uri.setDataSource(schema, self.name, geomCol if geomCol else None, uniqueCol.name if uniqueCol else "" )
+		uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "" )
 		return uri
 
 	def mimeUri(self):
