@@ -48,7 +48,7 @@ To indicate the type of geometry, use the following values:
 
 - A numerical value
 
-ParameterNumericalValue|[name of GRASS parameter]|[description of parameter to show]|[min value]|[max value]|[default value]
+ParameterNumber|[name of GRASS parameter]|[description of parameter to show]|[min value]|[max value]|[default value]
 
 "None" can be used for both min and max values to indicate that there is no lower
 or upper limit.
@@ -72,6 +72,12 @@ ParameterSelection|[name of GRASS parameter]|[description of parameter to show]|
 
 Example: ParameterBoolean|-c|-c|True
 
+-  A range
+
+ParameterRange|[name of GRASS parameter]|[description of parameter to show]|[comma separated values to limit the range]
+
+Example: ParameterRange|from|description|0,1
+
 - Outputs
 
 All outputs are added with the following syntax:
@@ -84,7 +90,6 @@ The following types are available
   -OutputVector
   -OutputTable
   -OutputFile (for any file that is not a layer or table of a format supported by QGIS)
-
 
 - Advanced parameters
 
