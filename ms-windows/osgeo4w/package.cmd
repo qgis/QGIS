@@ -49,7 +49,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-set GRASS_VERSION=6.4.4RC1
+set GRASS_VERSION=6.4.4
 set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
 call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
