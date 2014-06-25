@@ -159,7 +159,7 @@ class CORE_EXPORT QgsExpression
     double scale() { return mScale; }
 
     //! Return the expression string that was given when created.
-    const QString expression() const { return dump(); }
+    const QString expression() const { return mExp; }
 
     //! Return the expression string that represents this QgsExpression.
     QString dump() const;
