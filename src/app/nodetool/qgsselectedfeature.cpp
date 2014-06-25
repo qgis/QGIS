@@ -258,7 +258,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   beginGeometryChange();
 
   int count = 0;
-  for ( int i = mVertexMap.size() - 1; i > -1; i-- )
+  for ( int i = mVertexMap.size() - 1; i > -1 && nSelected > 0; i-- )
   {
     if ( mVertexMap[i]->isSelected() )
     {
