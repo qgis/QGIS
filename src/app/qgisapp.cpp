@@ -4820,6 +4820,9 @@ void QgisApp::saveAsLayerDefinition()
   if ( path.isEmpty() )
     return;
 
+  if ( !path.endsWith(".qlr" ) )
+    path = path.append(".qlr" );
+
   QDomDocument doc = QgsMapLayer::asLayerDefinition( layers );
   QFile file( path );
   if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
