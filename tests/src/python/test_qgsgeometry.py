@@ -903,6 +903,13 @@ class TestQgsGeometry(TestCase):
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
+        polyline = QgsGeometry.fromWkt("MULTILINESTRING((0 0, 1 0, 1 1, 2 1,2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
+        for i in range(5):
+                assert polyline.deleteVertex(5), "Delete vertex 5 failed"
+        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0))"
+        wkt = polyline.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
         # 5---4
         # |   |
         # | 2-3
@@ -947,6 +954,14 @@ class TestQgsGeometry(TestCase):
 
         assert polygon.deleteVertex( 6 ), "Delete vertex 6 failed"
         expwkt = "MULTIPOLYGON(((1 0,1 1,2 1,2 2,0 2,1 0)),((5 0,3 2,3 1,4 1,5 0)))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        for i in range(6):
+             assert polygon.deleteVertex( 0 ), "Delete vertex 0 failed"
+
+        expwkt = "MULTIPOLYGON(((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
