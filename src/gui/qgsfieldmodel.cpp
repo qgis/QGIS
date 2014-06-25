@@ -93,13 +93,13 @@ void QgsFieldModel::updateModel()
       endResetModel();
     }
     else
-      emit dataChanged( index(0, 0 ), index( rowCount(), 0 ));
+      emit dataChanged( index( 0, 0 ), index( rowCount(), 0 ) );
   }
   else
   {
     beginResetModel();
     mFields = QgsFields();
-    beginResetModel();
+    endResetModel();
   }
 }
 
