@@ -205,7 +205,7 @@ void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &t
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Item wrapping changed" ), QgsComposerMergeCommand::ComposerLegendText );
+    mLegend->beginCommand( tr( "Item wrapping changed" ) );
     mLegend->setWrapChar( text );
     mLegend->adjustBoxSize();
     mLegend->update();
@@ -724,13 +724,13 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
     return;
   }
 
-  mLegend->beginCommand( "Legend item removed" );
-
   QItemSelectionModel* selectionModel = mItemTreeView->selectionModel();
   if ( !selectionModel )
   {
     return;
   }
+
+  mLegend->beginCommand( "Legend item removed" );
 
   QList<QPersistentModelIndex> indexes;
   foreach ( const QModelIndex &index, selectionModel->selectedIndexes() )
@@ -773,13 +773,14 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   }
 
   QgsComposerLegendItemDialog itemDialog( currentItem );
-  if ( itemDialog.exec() == QDialog::Accepted )
+  if ( itemDialog.exec() != QDialog::Accepted )
   {
-    currentItem->setUserText( itemDialog.itemText() );
-    mLegend->model()->updateItemText( currentItem );
+    return;
   }
 
   mLegend->beginCommand( tr( "Legend item edited" ) );
+  currentItem->setUserText( itemDialog.itemText() );
+  mLegend->model()->updateItemText( currentItem );
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();
