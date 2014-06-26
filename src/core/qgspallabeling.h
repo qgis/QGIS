@@ -255,7 +255,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Vali = 12, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //data defined rotation
       RepeatDistance = 84,
-      RepeatDistanceUnit = 85,
+      RepeatDistanceUnit = 86,
 
       // rendering
       ScaleVisibility = 23,
