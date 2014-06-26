@@ -327,6 +327,8 @@ class ParametersPanel(QtGui.QWidget):
         for child in children:
             widget = self.valueItems[child]
             widget.clear()
+            if self.alg.getParameterFromName(child).optional:
+                widget.addItem("[not set]")
             widget.addItems(self.getFields(layer,
                             self.alg.getParameterFromName(child).datatype))
 

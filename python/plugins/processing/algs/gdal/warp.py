@@ -56,8 +56,8 @@ class warp(GdalAlgorithm):
         self.addParameter(ParameterCrs(self.DEST_SRS,
                           'Destination SRS (EPSG Code)', 'EPSG:4326'))
         self.addParameter(ParameterNumber(self.TR,
-            'Output file resolution in target georeferenced units \
-            (leave 0 for no change)', 0.0, None, 0.0))
+            'Output file resolution in target georeferenced units (leave 0 for no change)',
+            0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD, 'Resampling method',
                           self.METHOD_OPTIONS))
         self.addParameter(ParameterString(self.EXTRA,
