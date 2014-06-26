@@ -424,11 +424,15 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Print on a preconfigured printer */
     void doPrint( QPrinter& printer, QPainter& painter );
 
-    /** Convenience function that prepares the printer and prints */
-    void print( QPrinter &printer );
+    /**Convenience function that prepares the printer and prints
+     * @returns true if print was successful
+    */
+    bool print( QPrinter &printer );
 
-    /** Convenience function that prepares the printer for printing in PDF and prints */
-    void exportAsPDF( const QString& file );
+    /**Convenience function that prepares the printer for printing in PDF and prints
+     * @returns true if export was successful
+    */
+    bool exportAsPDF( const QString& file );
 
     //! print composer page to image
     //! If the image does not fit into memory, a null image is returned

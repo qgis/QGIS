@@ -2445,11 +2445,11 @@ void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
   QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
 }
 
-void QgsComposition::exportAsPDF( const QString& file )
+bool QgsComposition::exportAsPDF( const QString& file )
 {
   QPrinter printer;
   beginPrintAsPDF( printer, file );
-  print( printer );
+  return print( printer );
 }
 
 void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
@@ -2499,11 +2499,19 @@ void QgsComposition::beginPrint( QPrinter &printer )
   printer.setResolution( printResolution() );
 }
 
-void QgsComposition::print( QPrinter &printer )
+bool QgsComposition::print( QPrinter &printer )
 {
   beginPrint( printer );
-  QPainter p( &printer );
+  QPainter p;
+  bool ready = p.begin( &printer );
+  if ( !ready )
+  {
+    //error beginning print
+    return false;
+  }
   doPrint( printer, p );
+  p.end();
+  return true;
 }
 
 QImage QgsComposition::printPageAsRaster( int page )
