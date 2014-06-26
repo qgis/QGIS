@@ -22,6 +22,7 @@
 #include "qgsattributeform.h"
 
 #include <QDialog>
+#include <QPointer>
 
 class QLayout;
 
@@ -114,16 +115,25 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
   public slots:
     void accept();
 
+    //! Show the dialog and block the application until the dialog is closed. Ownership of this object is not changed.
     int exec();
+
+    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
+    //! closed.
     void show();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *e );
 
+  private slots:
+    void onDialogFinished( int result );
+
   private:
     void init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent );
 
-    QDialog *mDialog;
+    // Using a guarded pointer we can savely delete the dialog in the destructor even
+    // when the dialog is this object's parent
+    QPointer<QDialog> mDialog;
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
     QgsHighlight *mHighlight;
