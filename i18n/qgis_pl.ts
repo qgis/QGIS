@@ -16393,7 +16393,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3646"/>
         <source>Layer creation failed. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się utworzenie warstwy. Sprawdź &lt;a href=&quot;#messageLog&quot;&gt;komunikaty&lt;/a&gt;, aby uzyskać więcej informacji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3869"/>
@@ -16763,7 +16763,7 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9911"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished"></translation>
+        <translation> Sprawdź &lt;a href=&quot;#messageLog&quot;&gt;komunikaty&lt;/a&gt;, aby uzyskać więcej informacji.</translation>
     </message>
     <message>
         <source>The request &apos;%1&apos; timed out. Any data received is likely incomplete.</source>
@@ -19436,7 +19436,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Edit Widget Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości widżetu edycji</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="43"/>
@@ -41398,7 +41398,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="110"/>
         <source>If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzie podziału działa na wybranych obiektach. Jeśli chcesz podzielić wszystkie obiekty wdłuż linii podziału - usuń zaznaczenie obiektów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="118"/>
@@ -41436,12 +41436,12 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="106"/>
         <source>No parts were split</source>
-        <translation type="unfinished">Nie wyodrębniono części</translation>
+        <translation>Nie wyodrębniono części</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="107"/>
         <source>If there are selected parts, the split tool only applies to those. If you would like to split all parts under the split line, clear the selection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzie podziału działa na wybranych obiektach. Jeśli chcesz podzielić wszystkie obiekty wdłuż linii podziału - usuń zaznaczenie obiektów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="114"/>
@@ -47551,7 +47551,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1510"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1573"/>
         <source>Could not reload fields.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się ponowne odczytanie pól.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1549"/>
@@ -48918,7 +48918,8 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="23"/>
         <source>The field contains a filename for a picture. The widget will show a preview of this picture.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole zawiera nazwę pliku z obrazem. 
+Widżet wyświetli podgląd obrazu.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsphotoconfigdlgbase.ui" line="33"/>
@@ -55514,7 +55515,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="14"/>
         <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj relację</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="26"/>
@@ -59958,22 +59959,22 @@ Nadpisać ją?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="758"/>
         <source>All Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Wszystkie symbole</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="768"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupy</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="769"/>
         <source>Ungrouped</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozgrupowane</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="776"/>
         <source>Smart Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Cwane grupy</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="883"/>
@@ -63698,32 +63699,32 @@ Błąd:%2</translation>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1659"/>
         <source>empty response</source>
-        <translation type="unfinished">pusta odpowiedź</translation>
+        <translation>pusta odpowiedź</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1665"/>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished">Wyjątek WFS: %1</translation>
+        <translation>Wyjątek WFS: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1671"/>
         <source>unsuccessful service response: %1</source>
-        <translation type="unfinished">niepomyślna odpowiedź usługi: %1</translation>
+        <translation>niepomyślna odpowiedź usługi: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1678"/>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished">Raport wyjątku WFS (kod=%1 tekst=%2)</translation>
+        <translation>Raport wyjątku WFS (kod=%1 tekst=%2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1679"/>
         <source>missing</source>
-        <translation type="unfinished">brak</translation>
+        <translation>brak</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1685"/>
         <source>unhandled response: %1</source>
-        <translation type="unfinished">nieobsługiwana odpowiedź: %1</translation>
+        <translation>nieobsługiwana odpowiedź: %1</translation>
     </message>
     <message>
         <source>Error</source>
@@ -64167,14 +64168,16 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="472"/>
         <source>The server you are trying to connect to does not seem to be a WMS server. Please check the URL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Serwer z którym próbujesze się połączyć prawdopodobnie nie jest serwerem WMS. Sprawdź adres URL.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
         <source>Instead of the capabilities string that was expected, the following response has been received:
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamiast Capabilities, została zwrócona następująca odpowiedź:
+
+%1</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
@@ -65084,7 +65087,7 @@ Odpowiedź:
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="20"/>
         <source>Field contains a filename or URL for a webpage</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole zawiera nazwę pliku lub adres URL</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgswebviewconfigdlgbase.ui" line="27"/>
