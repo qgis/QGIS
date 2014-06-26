@@ -286,24 +286,39 @@ class Processing:
         if alg is None:
             print 'Error: Algorithm not found\n'
             return
-        if len(args) != alg.getVisibleParametersCount() \
-                    + alg.getVisibleOutputsCount():
-            print 'Error: Wrong number of parameters'
-            processing.alghelp(algOrName)
-            return
-
         alg = alg.getCopy()
-        if isinstance(args, dict):
-            # Set params by name
-            for (name, value) in args.items():
-                if alg.getParameterFromName(name).setValue(value):
+        
+        if len(args) == 1 and isinstance(args[0], dict):
+            # Set params by name and try to run the alg even if not all parameter values are provided, 
+            # by using the default values instead.
+            setParams = []
+            for (name, value) in args[0].items():
+                param = alg.getParameterFromName(name)
+                if param and param.setValue(value):
+                    setParams.append(name)
                     continue
-                if alg.getOutputFromName(name).setValue(value):
+                output = alg.getOutputFromName(name)
+                if output and output.setValue(value):
                     continue
                 print 'Error: Wrong parameter value %s for parameter %s.' \
                     % (value, name)
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Error in %s. Wrong parameter value %s for parameter %s." \
+                    % (alg.name, value, name))
                 return
+            # fill any missing parameters with default values if allowed
+            for param in alg.parameters:
+                if param.name not in setParams:
+                    if not param.setValue(None):
+                        print ("Error: Missing parameter value for parameter %s." % (param.name))
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Error in %s. Missing parameter value for parameter %s." \
+                            % (alg.name, param.name))
+                        return
         else:
+            if len(args) != alg.getVisibleParametersCount() \
+                    + alg.getVisibleOutputsCount():
+                print 'Error: Wrong number of parameters'
+                processing.alghelp(algOrName)
+                return
             i = 0
             for param in alg.parameters:
                 if not param.hidden:
