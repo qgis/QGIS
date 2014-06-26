@@ -37,6 +37,8 @@
  * 2. renderer job (still in GUI thread) stores the renderer for later use.
  * 3. renderer job (in worker thread) calls QgsMapLayerRenderer::render()
  * 4. renderer job (again in GUI thread) will check errors() and report them
+ *
+ * @note added in 2.4
  */
 class CORE_EXPORT QgsMapLayerRenderer
 {

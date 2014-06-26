@@ -42,6 +42,11 @@ typedef QList<int> QgsAttributeList;
 #include "qgsmaplayerrenderer.h"
 
 
+/**
+ * Implementation of threaded rendering for vector layers.
+ *
+ * @note added in 2.4
+ */
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
   public:
