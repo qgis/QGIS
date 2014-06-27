@@ -560,7 +560,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             req.setSubsetOfAttributes( attrIndexes );
 
             QgsFeatureIterator fit = layer->getFeatures( req );
-            while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+            while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
             {
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerCrs, &searchRect );
@@ -579,7 +579,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               {
                 throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
               }
-              while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+              while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
               {
                 QVariant res = mFilter->evaluate( &feature, fields );
                 if ( mFilter->hasEvalError() )
@@ -601,7 +601,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         else
         {
-          while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
           {
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerCrs, &searchRect );
@@ -877,7 +877,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           {
             throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
           }
-          while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
           {
             QVariant res = mFilter->evaluate( &feature, fields );
             if ( mFilter->hasEvalError() )
@@ -958,7 +958,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           req.setSubsetOfAttributes( attrIndexes );
 
           QgsFeatureIterator fit = layer->getFeatures( req );
-          while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
           {
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerCrs, &searchRect );
@@ -996,7 +996,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             req.setSubsetOfAttributes( attrIndexes );
             QgsFeatureIterator fit = layer->getFeatures( req );
-            while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+            while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
             {
               QVariant res = mFilter->evaluate( &feature, fields );
               if ( mFilter->hasEvalError() )
@@ -1039,7 +1039,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         req.setSubsetOfAttributes( attrIndexes );
         QgsFeatureIterator fit = layer->getFeatures( req );
-        while ( fit.nextFeature( feature ) && (maxFeatures == -1 || featureCounter < maxFeat) )
+        while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
         {
           mErrors << QString( "The feature %2 of layer for the TypeName '%1'" ).arg( tnStr ).arg( featureCounter );
           if ( featureCounter == 0 )
