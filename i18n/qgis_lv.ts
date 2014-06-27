@@ -16841,6 +16841,18 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Feature filter parser error: %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error creating %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image export error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG export error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -44797,6 +44809,10 @@ standard deviation ×</source>
     <message>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
         <translation>Relācijas ir nederīgas. Pārbaudi vai tavs relāciju definīcijas ir korektas.</translation>
+    </message>
+    <message>
+        <source>(no selection)</source>
+        <translation type="unfinished">(nav izvēles)</translation>
     </message>
 </context>
 <context>

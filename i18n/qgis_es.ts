@@ -19215,6 +19215,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Feature filter parser error: %1</source>
         <translation>Error del analizador de filtros de objetos espaciales: %1</translation>
     </message>
+    <message>
+        <source>Error creating %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image export error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG export error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -48614,6 +48626,10 @@ desviación estándar ×</translation>
     <message>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
         <translation>La relación no es válida. Por favor, asegúrese de que la definición de su relación es correcta.</translation>
+    </message>
+    <message>
+        <source>(no selection)</source>
+        <translation type="unfinished">(ninguna selección)</translation>
     </message>
 </context>
 <context>
