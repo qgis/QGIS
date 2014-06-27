@@ -108,6 +108,7 @@ QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 
 void QgsNewVectorLayerDialog::on_mFileFormatComboBox_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   if ( mFileFormatComboBox->currentText() == tr( "ESRI Shapefile" ) )
     mNameEdit->setMaxLength( 10 );
   else
