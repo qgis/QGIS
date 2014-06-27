@@ -58,9 +58,9 @@ void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
     {
       p->setBrush( mScaleBar->brush() );
     }
-    else //white
+    else //secondary color
     {
-      p->setBrush( QColor( 255, 255, 255 ) );
+      p->setBrush( mScaleBar->brush2() );
     }
 
     QRectF segmentRect( segmentIt->first + xOffset, barTopPosition, segmentIt->second, mScaleBar->height() );
