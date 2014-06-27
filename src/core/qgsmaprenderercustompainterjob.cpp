@@ -187,7 +187,22 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 
 void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJob* self )
 {
-  self->doRender();
+  try
+  {
+    self->doRender();
+  }
+  catch ( QgsException & e )
+  {
+    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+  }
+  catch ( std::exception & e )
+  {
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsg( "Caught unhandled unknown exception" );
+  }
 }
 
 void QgsMapRendererCustomPainterJob::doRender()

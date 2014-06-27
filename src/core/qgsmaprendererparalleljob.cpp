@@ -207,7 +207,24 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   QTime t;
   t.start();
   QgsDebugMsg( QString( "job %1 start" ).arg(( ulong ) &job, 0, 16 ) );
-  job.renderer->render();
+
+  try
+  {
+    job.renderer->render();
+  }
+  catch ( QgsException & e )
+  {
+    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+  }
+  catch ( std::exception & e )
+  {
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsg( "Caught unhandled unknown exception" );
+  }
+
   int tt = t.elapsed();
   QgsDebugMsg( QString( "job %1 end [%2 ms]" ).arg(( ulong ) &job, 0, 16 ).arg( tt ) );
   Q_UNUSED( tt );
@@ -218,7 +235,22 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
 {
   QPainter painter( &self->mFinalImage );
 
-  drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, &painter );
+  try
+  {
+    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, &painter );
+  }
+  catch ( QgsException & e )
+  {
+    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+  }
+  catch ( std::exception & e )
+  {
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsg( "Caught unhandled unknown exception" );
+  }
 
   painter.end();
 }
