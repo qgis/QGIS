@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Friday June 20, 2014
+Friday June 27, 2014
 
 
 ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ Friday June 20, 2014
 ------------------------------------------------------------------------
 
 
-Last Updated: Friday June 20, 2014
-Last Change : Friday June 20, 2014
+Last Updated: Friday June 27, 2014
+Last Change : Friday June 27, 2014
 
 
   1. Whats new in Version 2.4.0 'Chugiak'?
@@ -42,10 +42,10 @@ Last Change : Friday June 20, 2014
 
 This is the minor release sports a number of great new features:
 
-- Colour preview modes in composer and map canvas
 - Multi-threaded rendering
+- Color preview modes in composer and map canvas
 - New expression functions (bounding box related functions, wordwrap)
-- Copy, paste and drag and drop colours
+- Copy, paste and drag and drop colors
 - Label features multiple times
 - Improvements to composer picture items
 - Predefined scales mode for atlas maps

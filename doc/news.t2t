@@ -42,10 +42,10 @@ Last Change : %%mtime(%A %B %d, %Y)
 
 This is the minor release sports a number of great new features:
 
-- Colour preview modes in composer and map canvas
 - Multi-threaded rendering
+- Color preview modes in composer and map canvas
 - New expression functions (bounding box related functions, wordwrap)
-- Copy, paste and drag and drop colours
+- Copy, paste and drag and drop colors
 - Label features multiple times
 - Improvements to composer picture items
 - Predefined scales mode for atlas maps
