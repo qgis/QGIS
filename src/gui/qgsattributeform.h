@@ -117,9 +117,28 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void featureSaved( const QgsFeature& feature );
 
   public slots:
+    /**
+     * Call this to change the content of a given attribute. Will update the editor(s) related to this field.
+     *
+     * @param field The field to change
+     * @param value The new value
+     */
     void changeAttribute( const QString& field, const QVariant& value );
+
+    /**
+     * Update all editors to correspond to a different feature.
+     *
+     * @param feature The feature which will be represented by the form
+     */
     void setFeature( const QgsFeature& feature );
+
+    /**
+     * Save all the values from the editors to the layer.
+     *
+     * @return True if successful
+     */
     bool save();
+
     /**
      * Alias for save()
      *
