@@ -123,6 +123,10 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             if isinstance(child, TreeProviderItem):
                 if child.providerName == providerName:
                     child.refresh()
+                    # sort categories and items in categories
+                    child.sortChildren(0, Qt.AscendingOrder)
+                    for i in xrange(child.childCount()):
+                        child.child(i).sortChildren(0, Qt.AscendingOrder)
                     break
 
     def showPopupMenu(self, point):
