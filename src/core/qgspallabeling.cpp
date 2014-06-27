@@ -1985,7 +1985,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
+  GEOSGeometry* geos_geom_clone;
+  if ( GEOSGeomTypeId( geos_geom ) == GEOS_POLYGON && repeatDistance > 0 && placement == Line )
+  {
+    geos_geom_clone = GEOSBoundary( geos_geom );
+  }
+  else
+  {
+    geos_geom_clone = GEOSGeom_clone( geos_geom );
+  }
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
@@ -2256,48 +2264,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 #endif
   lbl->setDefinedFont( labelFont );
 
-  // data defined repeat distance?
-  double repeatDist = repeatDistance;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal ) )
-  {
-    bool ok;
-    double distD = exprVal.toDouble( &ok );
-    if ( ok )
-    {
-      repeatDist = distD;
-    }
-  }
-
-  // data defined label-repeat distance units?
-  bool repeatdistinmapunit = repeatDistanceUnit == MapUnits;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal ) )
-  {
-    QString units = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
-    if ( !units.isEmpty() )
-    {
-      repeatdistinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
-    }
-  }
-
-  if ( repeatDist != 0 )
-  {
-    if ( !repeatdistinmapunit ) //convert distance from mm/map units to pixels
-    {
-      repeatDist *= repeatDistanceMapUnitScale.computeMapUnitsPerPixel( context ) * context.scaleFactor();
-    }
-    else //mm
-    {
-      repeatDist *= vectorScaleFactor;
-    }
-  }
-
   //  feature to the layer
   try
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
-                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
+                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow ) )
       return;
   }
   catch ( std::exception &e )
@@ -3414,8 +3386,48 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
 
+
   // set whether location of centroid must be inside of polygons
   l->setCentroidInside( lyr.centroidInside );
+
+  // set repeat distance
+  // data defined repeat distance?
+  QVariant exprVal;
+  double repeatDist = lyr.repeatDistance;
+  if ( lyr.dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal ) )
+  {
+    bool ok;
+    double distD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      repeatDist = distD;
+    }
+  }
+
+  // data defined label-repeat distance units?
+  bool repeatdistinmapunit = lyr.repeatDistanceUnit == QgsPalLayerSettings::MapUnits;
+  if ( lyr.dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal ) )
+  {
+    QString units = exprVal.toString().trimmed();
+    QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
+    if ( !units.isEmpty() )
+    {
+      repeatdistinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
+    }
+  }
+
+  if ( repeatDist != 0 )
+  {
+    if ( !repeatdistinmapunit ) //convert distance from mm/map units to pixels
+    {
+      repeatDist *= lyr.repeatDistanceMapUnitScale.computeMapUnitsPerPixel( ctx ) * ctx.scaleFactor();
+    }
+    else //mm
+    {
+      repeatDist *= lyr.vectorScaleFactor;
+    }
+  }
+  l->setRepeatDistance( repeatDist );
 
   // set how to show upside-down labels
   Layer::UpsideDownLabels upsdnlabels;
