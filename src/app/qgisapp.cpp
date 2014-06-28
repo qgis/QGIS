@@ -8651,8 +8651,10 @@ void QgisApp::projectPropertiesProjections()
 {
   // Driver to display the project props dialog and switch to the
   // projections tab
+  mOnTheFlyProjectionStatusButton->setEnabled( false );
   mShowProjectionTab = true;
   projectProperties();
+  mOnTheFlyProjectionStatusButton->setEnabled( true );
 }
 
 void QgisApp::projectProperties()
