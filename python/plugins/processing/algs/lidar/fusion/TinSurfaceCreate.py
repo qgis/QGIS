@@ -2,14 +2,10 @@
 
 """
 ***************************************************************************
-    CanopyModel.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Catalog.py
     ---------------------
     Date                 : June 2014
-    Copyright            : (C) 2014 by Agresta S. Coop.
+    Copyright            : (C) 2014 by Agresta S. Coop
     Email                : iescamochero at agresta dot org
 ***************************************************************************
 *                                                                         *
@@ -21,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Agresta S. Coop - www.agresta.org'
+__date__ = 'June 2014'
+__copyright__ = '(C) 2014, Agresta S. Coop'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -31,81 +27,47 @@ import os
 import subprocess
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterSelection import ParameterSelection
 from processing.outputs.OutputFile import OutputFile
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
+from processing.parameters.ParameterString import ParameterString
 
 
-class CanopyModel(FusionAlgorithm):
+class TinSurfaceCreate(FusionAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT_DTM = 'OUTPUT_DTM'
-    OUTPUT_ASCII = 'OUTPUT_ASCII'
-    CELLSIZE = 'CELLSIZE'  
+    OUTPUT_DTM = 'OUTPUT_DTM';
+    OUTPUT_ASCII = 'OUTPUT_ASCII';
+    CELLSIZE = 'CELLSIZE'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
     UNITS = ['Meter', 'Feet']
-    GROUND = 'GROUND'
-    MEDIAN = 'MEDIAN'
-    SMOOTH = 'SMOOTH'
-    SLOPE = 'SLOPE'
     CLASS = 'CLASS'
     ASCII = 'ASCII'
-    ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Canopy Model'
-        self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))        
+        self.name = 'Tin Surface Create'
+        self.group = 'Surface'
+        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
         self.addParameter(ParameterNumber(self.CELLSIZE, 'Cellsize', 0, None, 10.0))
         self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units', self.UNITS))
         self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units', self.UNITS))
-        self.addParameter(ParameterBoolean(self.ASCII, 'ASCII Output?'))
         self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))
         self.addOutput(OutputFile(self.OUTPUT_ASCII, 'ASCII Output Surface', 'asc'))
-        ground = ParameterFile(self.GROUND, 'Input ground DTM layer', False, True)
-        ground.isAdvanced = True
-        self.addParameter(ground)
-        median = ParameterString(self.MEDIAN, 'Median (set blank if not used)', '', False, True)
-        median.isAdvanced = True
-        self.addParameter(median)
-        smooth = ParameterString(self.SMOOTH, 'Smooth (set blank if not used)', '', False, True)
-        smooth.isAdvanced = True
-        self.addParameter(smooth) 
-        slope = ParameterString(self.SLOPE, 'Slope (set blank if not used)', '', False, True)
-        slope.isAdvanced = True
-        self.addParameter(slope)
-        class_var = ParameterString(self.CLASS, 'Class (set blank if not used)', '', False, True)
+        self.addParameter(ParameterBoolean(self.ASCII, 'ASCII Output?'))  
+        class_var = ParameterString(self.CLASS, 'Class(set blank if not used)', 2, False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-        advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS, 'Additional modifiers', '', False, True)
-        advance_modifiers.isAdvanced = True
-        self.addParameter(advance_modifiers)   
+
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyModel.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'TINSurfaceCreate.exe')]
         commands.append('/verbose')
-        ground = self.getParameterValue(self.GROUND)
-        if str(ground).strip() != '':
-            commands.append('/ground:' + str(ground))
-        median = self.getParameterValue(self.MEDIAN)
-        if str(median).strip() != '':
-            commands.append('/median:' + str(median))
-        smooth = self.getParameterValue(self.SMOOTH)
-        if str(smooth).strip() != '':
-            commands.append('/smooth:' + str(smooth))
-        slope = self.getParameterValue(self.SLOPE)
-        if str(slope).strip() != '':
-            commands.append('/slope:' + str(slope))
         class_var = self.getParameterValue(self.CLASS)
         if str(class_var).strip() != '':
             commands.append('/class:' + str(class_var))
-        advance_modifiers = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
-        if advance_modifiers != '':
-            commands.append(s)
         commands.append(self.getOutputValue(self.OUTPUT_DTM))
         commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
@@ -118,8 +80,7 @@ class CanopyModel(FusionAlgorithm):
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
-            FusionUtils.createFileList(files)
-            commands.append(FusionUtils.tempFileListFilepath())
+            commands.extend(files)            
         FusionUtils.runFusion(commands, progress)
         ascii = self.getParameterValue(self.ASCII)
         if ascii == 1:

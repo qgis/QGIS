@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 
 """
 ***************************************************************************
-    CanopyMaxima.py
+    Csv2Grid.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : June 2014
+    Copyright            : (C) 2014 by Agresta S. Coop
+    Email                : iescamochero at agresta dot org
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,55 +17,43 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
-
+__author__ = 'Agresta S. Coop - www.agresta.org'
+__date__ = 'June 2014'
+__copyright__ = '(C) 2014, Agresta S. Coop'
 # This will get replaced with a git SHA1 when you do a git archive
-
 __revision__ = '$Format:%H$'
 
 import os
 from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.outputs.OutputTable import OutputTable
-from FusionUtils import FusionUtils
+from processing.parameters.ParameterString import ParameterString
+from processing.outputs.OutputFile import OutputFile
 from FusionAlgorithm import FusionAlgorithm
+from FusionUtils import FusionUtils
 
 
-class CanopyMaxima(FusionAlgorithm):
+class Csv2Grid(FusionAlgorithm):
 
     INPUT = 'INPUT'
+    COLUMN = 'COLUMN'
     OUTPUT = 'OUTPUT'
-    THRESHOLD = 'THRESHOLD'
-    GROUND = 'GROUND'
 
     def defineCharacteristics(self):
-        self.name = 'Canopy Maxima'
+        self.name = 'Csv2Grid'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
-        self.addParameter(ParameterFile(self.GROUND,
-            'Input ground DTM layer [optional, leave blank if not using it]'))
-        self.addParameter(ParameterNumber(self.THRESHOLD, 'Minimum threshold',
-                          0, None, 10.0))
-        self.addOutput(OutputTable(self.OUTPUT, 'Output file with maxima'))
-        self.addAdvancedModifiers()
+        self.addParameter(ParameterFile(self.INPUT, 'CSV Files'))
+        self.addParameter(ParameterString(self.COLUMN, 'Column'))
+        self.addOutput(OutputFile(self.OUTPUT, 'Raster Output file', 'asc'))
+
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyMaxima.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'CSV2Grid.exe')]
         commands.append('/verbose')
-        self.addAdvancedModifiersToCommand(commands)
-        ground = self.getParameterValue(self.GROUND)
-        if str(ground).strip() != '':
-            commands.append('/ground:' + str(ground))
-        commands.append('/threshold:'
-                        + str(self.getParameterValue(self.THRESHOLD)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
+        commands.append(self.getParameterValue(self.COLUMN))
         commands.append(self.getOutputValue(self.OUTPUT))
-
         FusionUtils.runFusion(commands, progress)
