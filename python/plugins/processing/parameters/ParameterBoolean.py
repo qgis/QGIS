@@ -39,7 +39,10 @@ class ParameterBoolean(Parameter):
         if value is None:
             self.value = self.default
             return True
-        self.value = str(value) == str(True)
+        if isinstance(value, basestring):
+            self.value = str(value).lower() == str(True).lower()
+        else:
+            self.value = bool(value)
         return True
 
     def serialize(self):
