@@ -95,7 +95,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(layers[idx].name() for idx in selected))
                 else:
-                    rowdif = len(layers) - (self.table.rowCount() - self.row)
+                    rowdif = len(selected) - (self.table.rowCount() - self.row)
                     for i in range(rowdif):
                         self.batchDialog.addRow()
                     for i, layeridx in enumerate(selected):
