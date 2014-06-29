@@ -168,9 +168,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
-    void setSnapGridTolerance( double tolerance );
-    double snapGridTolerance() const {return mSnapGridTolerance;}
-
     void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const {return mSnapGridOffsetX;}
 
@@ -183,8 +180,53 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
-    void setAlignmentSnapTolerance( double t ) { mAlignmentSnapTolerance = t; }
-    double alignmentSnapTolerance() const { return mAlignmentSnapTolerance; }
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to the
+     * composition grid.
+     * @param tolerance snap tolerance in pixels
+     * @see snapGridTolerance
+     * @deprecated Use setSnapTolerance instead
+    */
+    Q_DECL_DEPRECATED void setSnapGridTolerance( double tolerance ) { mSnapTolerance = tolerance; }
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to the
+     * composition grid.
+     * @returns snap tolerance in pixels
+     * @see setSnapGridTolerance
+     * @deprecated Use snapTolerance instead
+    */
+    Q_DECL_DEPRECATED double snapGridTolerance() const {return mSnapTolerance;}
+
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @param t snap tolerance in pixels
+     * @see alignmentSnapTolerance
+     * @deprecated Use setSnapTolerance instead
+    */
+    Q_DECL_DEPRECATED void setAlignmentSnapTolerance( double t ) { mSnapTolerance = t; }
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @returns snap tolerance in pixels
+     * @see setAlignmentSnapTolerance
+     * @deprecated Use snapTolerance instead
+    */
+    Q_DECL_DEPRECATED double alignmentSnapTolerance() const { return mSnapTolerance; }
+
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @param t snap tolerance in pixels
+     * @see alignmentSnapTolerance
+     * @note Added in QGIS 2.5
+    */
+    void setSnapTolerance( int snapTolerance ) { mSnapTolerance = snapTolerance; }
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @returns snap tolerance in pixels
+     * @see setAlignmentSnapTolerance
+     * @note Added in QGIS 2.5
+    */
+    int snapTolerance() const { return mSnapTolerance; }
 
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack() { return &mUndoStack; }
@@ -524,7 +566,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool mSnapToGrid;
     bool mGridVisible;
     double mSnapGridResolution;
-    double mSnapGridTolerance;
     double mSnapGridOffsetX;
     double mSnapGridOffsetY;
     QPen mGridPen;
@@ -534,7 +575,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool mAlignmentSnap;
     bool mGuidesVisible;
     bool mSmartGuides;
-    double mAlignmentSnapTolerance;
+    int mSnapTolerance;
 
     /**Arbitraty snap lines (horizontal and vertical)*/
     QList< QGraphicsLineItem* > mSnapLines;
@@ -580,6 +621,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void deleteAndRemoveMultiFrames();
 
     static QString encodeStringForXML( const QString& str );
+
+    //tries to return the current QGraphicsView attached to the composition
+    QGraphicsView* graphicsView() const;
 
     bool mPreventCursorChange;
 
