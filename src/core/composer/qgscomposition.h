@@ -214,7 +214,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
-     * @param t snap tolerance in pixels
+     * @param snapTolerance snap tolerance in pixels
      * @see alignmentSnapTolerance
      * @note Added in QGIS 2.5
     */

@@ -459,8 +459,8 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
   QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
   if ( myDefaultProjectionOption == "prompt" )
   {
-    //@note this class is not a descendent of QWidget so we cant pass
-    //it in the ctor of the layer projection selector
+    // @note this class is not a descendent of QWidget so we can't pass
+    // it in the ctor of the layer projection selector
 
     QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified

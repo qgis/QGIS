@@ -4633,5 +4633,101 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>radUseGlobalProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leLayerGlobalCrs</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>644</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseGlobalProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pbnSelectProjection</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseProjectProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leLayerGlobalCrs</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>644</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radUseProjectProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pbnSelectProjection</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radPromptForProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leLayerGlobalCrs</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>644</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radPromptForProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pbnSelectProjection</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

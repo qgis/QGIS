@@ -18,7 +18,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-
+#include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject* parent )
@@ -123,7 +123,12 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     {
       foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
-        if ( layerNode->layer() )
+        if ( layerNode->layer() &&
+	     (
+	       qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
+	       qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
+	     )
+           )
         {
           mCanvas->setDestinationCrs( layerNode->layer()->crs() );
           mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
