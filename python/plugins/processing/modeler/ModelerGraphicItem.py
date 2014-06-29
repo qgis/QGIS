@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,8 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtCore, QtGui
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.Parameter import Parameter
+from processing.modeler.ModelerAlgorithm import Input, Algorithm, Output
 from processing.modeler.ModelerParameterDefinitionDialog import \
         ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -39,36 +39,31 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
     BOX_HEIGHT = 30
     BOX_WIDTH = 200
 
-    def __init__(self, element, elementIndex, model):
+    def __init__(self, element, model):
         super(ModelerGraphicItem, self).__init__(None, None)
         self.model = model
         self.element = element
-        self.elementIndex = elementIndex
-        self.inputFolded = True
-        self.outputFolded = True
-        if isinstance(element, Parameter):
+        if isinstance(element, Input):
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/input.png')
             self.pixmap = icon.pixmap(20, 20, state=QtGui.QIcon.On)
-            self.text = element.description
-        elif isinstance(element, basestring):
+            self.text = element.param.description
+        elif isinstance(element, Output):
             # Output name
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/output.png')
             self.pixmap = icon.pixmap(20, 20, state=QtGui.QIcon.On)
-            self.text = element
+            self.text = element.description
         else:
-            state = QtGui.QIcon.On
-            if self.elementIndex in self.model.deactivated:
-                state = QtGui.QIcon.Off
-            self.text = element.name
-            self.pixmap = element.getIcon().pixmap(15, 15, state=state)
+            self.text = element.description
+            self.pixmap = element.algorithm.getIcon().pixmap(15, 15)
         self.arrows = []
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setZValue(1000)
 
-        if not isinstance(element, basestring):
+        if not isinstance(element, Output):
             icon = QtGui.QIcon(os.path.dirname(__file__)
                                + '/../images/edit.png')
             pt = QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2
@@ -87,32 +82,30 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                     self.removeElement)
             self.deleteButton.setParentItem(self)
 
-        if isinstance(element, GeoAlgorithm):
-            if element.parameters:
-                pt = self.getLinkPointForParameter(-1)
-                x = self.getXPositionForFoldButton()
-                pt = QtCore.QPointF(x, pt.y() + 2)
-                self.inButton = FoldButtonGraphicItem(pt, self.foldInput)
+        if isinstance(element, Algorithm):
+            alg = element.algorithm
+            if alg.parameters:
+                pt = self.getLinkPointForParameter(-1)                
+                pt = QtCore.QPointF(0, pt.y() + 2)
+                self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.paramsFolded)
                 self.inButton.setParentItem(self)
-            if element.outputs:
+            if alg.outputs:
                 pt = self.getLinkPointForOutput(-1)
-                x = self.getXPositionForFoldButton()
-                pt = QtCore.QPointF(x, pt.y() + 2)
-                self.outButton = FoldButtonGraphicItem(pt, self.foldOutput)
+                pt = QtCore.QPointF(0, pt.y() + 2)
+                self.outButton = FoldButtonGraphicItem(pt, self.foldOutput, self.element.outputsFolded)
                 self.outButton.setParentItem(self)
 
     def foldInput(self, folded):
-        self.inputFolded = folded
+        self.element.paramsFolded = folded
         self.prepareGeometryChange()
-        if self.element.outputs:
+        if self.element.algorithm.outputs:
             pt = self.getLinkPointForOutput(-1)
-            x = self.getXPositionForFoldButton()
-            pt = QtCore.QPointF(x, pt.y())
+            pt = QtCore.QPointF(0, pt.y())
             self.outButton.position = pt
         self.update()
 
     def foldOutput(self, folded):
-        self.outputFolded = folded
+        self.element.outputsFolded = folded
         self.prepareGeometryChange()
         self.update()
 
@@ -122,8 +115,11 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
     def boundingRect(self):
         font = QtGui.QFont('Verdana', 8)
         fm = QtGui.QFontMetricsF(font)
-        numParams = (0 if self.inputFolded else len(self.element.parameters))
-        numOutputs = (0 if self.outputFolded else len(self.element.outputs))
+        unfolded = isinstance(self.element, Algorithm) and not self.element.paramsFolded
+        numParams = len(self.element.algorithm.parameters) if unfolded else 0
+        unfolded = isinstance(self.element, Algorithm) and not self.element.outputsFolded
+        numOutputs = len(self.element.algorithm.outputs) if unfolded else 0
+        
         hUp = fm.height() * 1.2 * (numParams + 2)
         hDown = fm.height() * 1.2 * (numOutputs + 2)
         rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2,
@@ -136,13 +132,15 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         self.editElement()
 
     def contextMenuEvent(self, event):
+        if isinstance(self.element, Output):
+            return
         popupmenu = QtGui.QMenu()
         removeAction = popupmenu.addAction('Remove')
         removeAction.triggered.connect(self.removeElement)
         editAction = popupmenu.addAction('Edit')
-        editAction.triggered.connect(self.editElement)
-        if isinstance(self.element, GeoAlgorithm):
-            if self.elementIndex in self.model.deactivated:
+        editAction.triggered.connect(self.editElement)                
+        if isinstance(self.element, Algorithm):
+            if not self.element.active:
                 removeAction = popupmenu.addAction('Activate')
                 removeAction.triggered.connect(self.activateAlgorithm)
             else:
@@ -151,56 +149,52 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         popupmenu.exec_(event.screenPos())
 
     def deactivateAlgorithm(self):
-        self.model.setPositions(self.scene().getParameterPositions(),
-                                self.scene().getAlgorithmPositions(),
-                                self.scene().getOutputPositions())
-        self.model.deactivateAlgorithm(self.elementIndex, True)
+        self.model.deactivateAlgorithm(self.element.name)
+        self.model.updateModelerView()
 
     def activateAlgorithm(self):
-        self.model.setPositions(self.scene().getParameterPositions(),
-                                self.scene().getAlgorithmPositions(),
-                                self.scene().getOutputPositions())
-        if not self.model.activateAlgorithm(self.elementIndex, True):
+        if self.model.activateAlgorithm(self.element.name):
+            self.model.updateModelerView()
+        else:
             QtGui.QMessageBox.warning(None, 'Could not activate Algorithm',
-                    'The selected algorithm depends on other currently \
-                    non-active algorithms.\nActivate them them before trying \
-                    to activate it.')
+                    'The selected algorithm depends on other currently non-active algorithms.\n'
+                    'Activate them them before trying to activate it.')        
 
     def editElement(self):
-        self.model.setPositions(self.scene().getParameterPositions(),
-                                self.scene().getAlgorithmPositions(),
-                                self.scene().getOutputPositions())
-        if isinstance(self.element, Parameter):
+        if isinstance(self.element, Input):
             dlg = ModelerParameterDefinitionDialog(self.model,
-                    param=self.element)
+                    param=self.element.param)
             dlg.exec_()
             if dlg.param is not None:
-                self.model.updateParameter(self.elementIndex, dlg.param)
-                self.element = dlg.param
-                self.text = self.element.description
+                self.model.updateParameter(dlg.param)
+                self.element.param = dlg.param
+                self.text = dlg.param.description
                 self.update()
-        elif isinstance(self.element, GeoAlgorithm):
-            dlg = self.element.getCustomModelerParametersDialog(self.model,
-                    self.elementIndex)
+        elif isinstance(self.element, Algorithm):
+            dlg = self.element.algorithm.getCustomModelerParametersDialog(self.model, self.element.name)
             if not dlg:
-                dlg = ModelerParametersDialog(self.element, self.model,
-                        self.elementIndex)
+                dlg = ModelerParametersDialog(self.element.algorithm, self.model, self.element.name)
             dlg.exec_()
-            if dlg.params is not None:
-                self.model.updateAlgorithm(self.elementIndex, dlg.params,
-                        dlg.values, dlg.outputs, dlg.dependencies)
+            if dlg.alg is not None:
+                dlg.alg.name = self.element.name
+                self.model.updateAlgorithm(dlg.alg)
+                self.model.updateModelerView()
 
     def removeElement(self):
-        if isinstance(self.element, Parameter):
-            if not self.model.removeParameter(self.elementIndex):
+        if isinstance(self.element, Input):
+            if not self.model.removeParameter(self.element.param.name):
                 QtGui.QMessageBox.warning(None, 'Could not remove element',
-                        'Other elements depend on the selected one.\nRemove \
-                        them before trying to remove it.')
-        elif isinstance(self.element, GeoAlgorithm):
-            if not self.model.removeAlgorithm(self.elementIndex):
+                        'Other elements depend on the selected one.\n'
+                        'Remove them before trying to remove it.')
+            else:
+                self.model.updateModelerView()
+        elif isinstance(self.element, Algorithm):
+            if not self.model.removeAlgorithm(self.element.name):
                 QtGui.QMessageBox.warning(None, 'Could not remove element',
-                        'Other elements depend on the selected one.\nRemove \
-                        them before trying to remove it.')
+                        'Other elements depend on the selected one.\n'
+                        'Remove them before trying to remove it.')
+            else:
+                self.model.updateModelerView()
 
     def getAdjustedText(self, text):
         font = QtGui.QFont('Verdana', 8)
@@ -223,34 +217,35 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                              ModelerGraphicItem.BOX_HEIGHT + 2)
         painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))
         color = QtGui.QColor(125, 232, 232)
-        if isinstance(self.element, Parameter):
+        if isinstance(self.element, Input):
             color = QtGui.QColor(179, 179, 255)
-        elif isinstance(self.element, GeoAlgorithm):
+        elif isinstance(self.element, Algorithm):
             color = QtCore.Qt.white
         painter.setBrush(QtGui.QBrush(color, QtCore.Qt.SolidPattern))
         painter.drawRect(rect)
         font = QtGui.QFont('Verdana', 8)
         painter.setFont(font)
         painter.setPen(QtGui.QPen(QtCore.Qt.black))
-        if self.isSelected():
+        text = self.getAdjustedText(self.text)
+        if isinstance(self.element, Algorithm) and not self.element.active:
+            painter.setPen(QtGui.QPen(QtCore.Qt.gray))
+            text = text + "\n(deactivated)"
+        elif self.isSelected():
             painter.setPen(QtGui.QPen(QtCore.Qt.blue))
-        if isinstance(self.element, GeoAlgorithm):
-            if self.elementIndex in self.model.deactivated:
-                painter.setPen(QtGui.QPen(QtCore.Qt.lightGray))
         fm = QtGui.QFontMetricsF(font)
         text = self.getAdjustedText(self.text)
         h = fm.height()
         pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h / 2.0)
         painter.drawText(pt, text)
         painter.setPen(QtGui.QPen(QtCore.Qt.black))
-        if isinstance(self.element, GeoAlgorithm):
+        if isinstance(self.element, Algorithm):
             h = -(fm.height() * 1.2)
             h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
             pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
             painter.drawText(pt, 'In')
             i = 1
-            if not self.inputFolded:
-                for param in self.element.parameters:
+            if not self.element.paramsFolded:
+                for param in self.element.algorithm.parameters:
                     if not param.hidden:
                         text = self.getAdjustedText(param.description)
                         h = -(fm.height() * 1.2) * (i + 1)
@@ -258,63 +253,59 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                         pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
                                 + 33, h)
                         painter.drawText(pt, text)
-                        i += 1
-            i = 1
+                        i += 1            
             h = fm.height() * 1.2
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
             painter.drawText(pt, 'Out')
-            if not self.outputFolded:
-                for out in self.element.outputs:
-                    if not out.hidden:
+            if not self.element.outputsFolded:
+                for i, out in enumerate(self.element.algorithm.outputs):
                         text = self.getAdjustedText(out.description)
-                        h = fm.height() * 1.2 * (i + 1)
+                        h = fm.height() * 1.2 * (i + 2)
                         h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
                         pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
                                 + 33, h)
                         painter.drawText(pt, text)
-                        i += 1
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
                                self.pixmap)
 
     def getLinkPointForParameter(self, paramIndex):
         offsetX = 25
-        if self.inputFolded:
+        if isinstance(self.element, Algorithm) and self.element.paramsFolded:
             paramIndex = -1
             offsetX = 17
         font = QtGui.QFont('Verdana', 8)
         fm = QtGui.QFontMetricsF(font)
-        if isinstance(self.element, GeoAlgorithm):
+        if isinstance(self.element, Algorithm):
             h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
             h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0
         else:
             h = 0
         return QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
 
-    def getXPositionForFoldButton(self):
-        return 0
 
     def getLinkPointForOutput(self, outputIndex):
-        if isinstance(self.element, GeoAlgorithm):
-            outputIndex = (outputIndex if not self.outputFolded else -1)
+        if isinstance(self.element, Algorithm):
+            outputIndex = (outputIndex if not self.element.outputsFolded else -1)
             text = self.getAdjustedText(
-                    self.element.outputs[outputIndex].description)
+                    self.element.algorithm.outputs[outputIndex].description)
             font = QtGui.QFont('Verdana', 8)
             fm = QtGui.QFontMetricsF(font)
             w = fm.width(text)
             h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
             y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
             x = (-ModelerGraphicItem.BOX_WIDTH / 2 + 33 + w
-                 + 5 if not self.outputFolded else 10)
+                 + 5 if not self.element.outputsFolded else 10)
             return QtCore.QPointF(x, y)
         else:
             return QtCore.QPointF(0, 0)
 
     def itemChange(self, change, value):
-        if change == QtGui.QGraphicsItem.ItemPositionChange:
+        if change == QtGui.QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
-                arrow.updatePosition()
+                arrow.updatePosition()                
+            self.element.pos = self.pos()             
 
         return value
 
@@ -399,9 +390,9 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
              False: QtGui.QIcon(os.path.dirname(__file__)
              + '/../images/minus.png')}
 
-    def __init__(self, position, action):
-        self.folded = True
-        icon = self.icons[True]
+    def __init__(self, position, action, folded):
+        self.folded = folded
+        icon = self.icons[self.folded]
         super(FoldButtonGraphicItem, self).__init__(icon, position, action)
 
     def mousePressEvent(self, event):

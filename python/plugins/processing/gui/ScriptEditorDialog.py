@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.modeler.ModelerUtils import ModelerUtils
 
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
@@ -38,7 +39,6 @@ from qgis.utils import iface
 
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.modeler.Providers import Providers
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
@@ -180,10 +180,10 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = Providers.providers['script']
+            alg.provider = ModelerUtils.providers['script']
         if self.algType == self.SCRIPT_R:
             alg = RAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = Providers.providers['r']
+            alg.provider = ModelerUtils.providers['r']
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:

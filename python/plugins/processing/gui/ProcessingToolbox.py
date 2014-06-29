@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,6 +29,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
+from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -37,7 +39,6 @@ from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-from processing.modeler.Providers import Providers
 
 from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
 
@@ -259,7 +260,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             if not ProcessingConfig.getSetting(name):
                 continue
             if providerName in providersToExclude \
-                        or len(Providers.providers[providerName].actions) != 0:
+                        or len(ModelerUtils.providers[providerName].actions) != 0:
                 continue
             algs = provider.values()
 

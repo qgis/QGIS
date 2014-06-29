@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 
 
 __author__ = 'Victor Olaya'
@@ -44,21 +45,21 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def __init__(self, alg):
         QDialog.__init__(self)
-
         self.setupUi(self)
-
         self.alg = alg
         self.descriptions = {}
-        if self.alg.descriptionFile is not None:
-            helpfile = alg.descriptionFile + '.help'
-            if os.path.exists(helpfile):
-                try:
-                    with open(helpfile) as f:
-                        self.descriptions = json.load(f)
-                except Exception, e:
-                    print e
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open help file: " + helpfile)
-
+        if isinstance(self.alg, ModelerAlgorithm):
+            self.descriptions = self.alg.helpContent
+        else:
+            if self.alg.descriptionFile is not None:
+                helpfile = alg.descriptionFile + '.help'
+                if os.path.exists(helpfile):
+                    try:
+                        with open(helpfile) as f:    
+                            self.descriptions = json.load(f)
+                    except Exception, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot open help file: " + helpfile)                                        
+                
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:
             self.text.setText(self.descriptions[self.ALG_DESC])
@@ -73,17 +74,20 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def accept(self):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
-        if self.alg.descriptionFile is not None:
-            try:
-                with open(self.alg.descriptionFile + '.help', 'w') as f:
-                    json.dump(self.descriptions, f)
-            except Exception, e:
-                QMessageBox.warning(self, 'Error saving help file',
-                                    'Help file could not be saved.\n'
-                                    'Check that you have permission to modify the help\n'
-                                    'file. You might not have permission if you are \n'
-                                    'editing an example model or script, since they \n'
-                                    'are stored on the installation folder')
+        if isinstance(self.alg, ModelerAlgorithm):
+            self.alg.helpContent = self.descriptions
+        else:
+            if self.alg.descriptionFile is not None:
+                try:
+                    with open(self.alg.descriptionFile + '.help', 'w') as f:
+                        json.dump(self.descriptions, f)                
+                except Exception, e:
+                    QMessageBox.warning(self, 'Error saving help file',
+                                        'Help file could not be saved.\n'
+                                        'Check that you have permission to modify the help\n'
+                                        'file. You might not have permission if you are \n'
+                                        'editing an example model or script, since they \n'
+                                        'are stored on the installation folder')
 
         QDialog.accept(self)
 
@@ -126,8 +130,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         item = self.tree.currentItem()
         if isinstance(item, TreeDescriptionItem):
             if self.currentName:
-                self.descriptions[self.currentName] = \
-                    unicode(self.text.toPlainText())
+                self.descriptions[self.currentName] = unicode(self.text.toPlainText())
             name = item.name
             if name:
                 self.text.setEnabled(True)
