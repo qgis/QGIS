@@ -24,6 +24,7 @@
 
 class QDomDocument;
 class QDomElement;
+class QgsLayerTreeGroup;
 class QgsMapLayer;
 class QgsSymbolV2;
 class QgsVectorLayer;
@@ -52,15 +53,21 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     QgsLegendModel();
     ~QgsLegendModel();
 
-    /**Sets layer set and groups*/
-    void setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo );
+    /** Set layers and groups from a layer tree
+     *  @note added in 2.6
+     */
+    void setLayerSetAndGroups( QgsLayerTreeGroup* rootGroup );
+    /** Sets layer set and groups
+     * @deprecated in 2.6
+     */
+    Q_DECL_DEPRECATED void setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo );
     void setLayerSet( const QStringList& layerIds, double scaleDenominator = -1, QString rule = "" );
     /**Adds a group
       @param text name of group (defaults to translation of "Group")
       @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
       @returns a pointer to the added group
       */
-    QStandardItem *addGroup( QString text = QString::null, int position = -1 );
+    QStandardItem *addGroup( QString text = QString::null, int position = -1, QStandardItem* parentItem = 0 );
 
     /**Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
     void updateItem( QStandardItem* item );
@@ -97,7 +104,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
 
   public slots:
     void removeLayer( const QString& layerId );
-    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, QString rule = "" );
+    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, QString rule = "", QStandardItem* parentItem = 0 );
 
   private slots:
     void updateLayer();
@@ -117,6 +124,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     void updateSymbolV2ItemText( QStandardItem* symbolItem );
     void updateRasterSymbolItemText( QStandardItem* symbolItem );
 
+    void addGroupFromLayerTree( QgsLayerTreeGroup* parentGroup, QStandardItem* parentItem );
 
   protected:
     QStringList mLayerIds;
