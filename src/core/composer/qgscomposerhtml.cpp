@@ -134,6 +134,7 @@ void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
   }
 
   p->save();
+  p->setRenderHint( QPainter::Antialiasing );
   p->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
   p->translate( 0.0, -renderExtent.top() * mHtmlUnitsToMM );
   mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top() * mHtmlUnitsToMM, renderExtent.width() * mHtmlUnitsToMM, renderExtent.height() * mHtmlUnitsToMM ) );

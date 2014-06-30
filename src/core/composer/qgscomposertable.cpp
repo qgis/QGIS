@@ -79,6 +79,10 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   drawBackground( painter );
+  painter->save();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+
   painter->setPen( Qt::SolidLine );
 
   //now draw the text
@@ -152,6 +156,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     drawHorizontalGridLines( painter, mAttributeMaps.size() );
     drawVerticalGridLines( painter, mMaxColumnWidthMap );
   }
+
+  painter->restore();
 
   //draw frame and selection boxes if necessary
   drawFrame( painter );

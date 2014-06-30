@@ -49,6 +49,8 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   double segmentHeight = mScaleBar->height() / 2;
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( mScaleBar->pen() );
 
   QList<QPair<double, double> > segmentInfo;

@@ -270,6 +270,9 @@ void QgsComposerScaleBar::applyDefaultSettings()
 
   mHeight = 3;
 
+  //default to no background
+  setBackgroundEnabled( false );
+
   mPen = QPen( Qt::black );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );

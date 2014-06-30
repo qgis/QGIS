@@ -90,8 +90,10 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   if ( painter )
   {
-    painter->save();
     drawBackground( painter );
+    painter->save();
+    //antialiasing on
+    painter->setRenderHint( QPainter::Antialiasing, true );
     painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
   }
 

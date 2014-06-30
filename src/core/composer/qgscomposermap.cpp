@@ -1541,6 +1541,9 @@ void QgsComposerMap::drawGrid( QPainter* p )
 
 void QgsComposerMap::drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines )
 {
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing );
+
   //Sort the coordinate positions for each side
   QMap< double, double > leftGridFrame;
   QMap< double, double > rightGridFrame;
@@ -1553,6 +1556,8 @@ void QgsComposerMap::drawGridFrame( QPainter* p, const QList< QPair< double, QLi
   drawGridFrameBorder( p, rightGridFrame, QgsComposerMap::Right );
   drawGridFrameBorder( p, topGridFrame, QgsComposerMap::Top );
   drawGridFrameBorder( p, bottomGridFrame, QgsComposerMap::Bottom );
+
+  p->restore();
 }
 
 void QgsComposerMap::drawGridLine( const QLineF& line, QgsRenderContext& context )
@@ -1632,6 +1637,8 @@ void QgsComposerMap::drawCoordinateAnnotations( QPainter* p, const QList< QPair<
     return;
   }
 
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing );
 
   QString currentAnnotationString;
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
@@ -1649,6 +1656,7 @@ void QgsComposerMap::drawCoordinateAnnotations( QPainter* p, const QList< QPair<
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }
+  p->restore();
 }
 
 void QgsComposerMap::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString )
@@ -2368,6 +2376,7 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
   }
 
   painter->save();
+  painter->setRenderHint( QPainter::Antialiasing );
 
   //determine scale factor according to graphics view dpi
   double scaleFactor = 1.0 / mMapCanvas->logicalDpiX() * 25.4;
@@ -2391,7 +2400,6 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
     itemY = mapPos.y() + ( itemScenePos.y() - parentScenePos.y() ) * scaleFactor;
   }
   painter->translate( itemX, itemY );
-
 
   painter->scale( scaleFactor, scaleFactor );
 

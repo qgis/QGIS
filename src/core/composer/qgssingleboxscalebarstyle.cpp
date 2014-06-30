@@ -43,6 +43,8 @@ void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   double barTopPosition = mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
 
   p->save();
+  //antialiasing on
+  p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( mScaleBar->pen() );
 
 
