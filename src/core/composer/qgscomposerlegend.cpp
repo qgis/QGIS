@@ -58,6 +58,8 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   if ( mComposerMap )
     mLegendRenderer->setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
 
+  mLegendRenderer->setLegendSize( rect().size() );
+
   if ( !painter )
     return;
 
@@ -81,7 +83,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 {
-  QSizeF size = mLegendRenderer->legendSize();
+  QSizeF size = mLegendRenderer->minimumSize();
   if ( !painter )
     mLegendRenderer->drawLegend( painter );
   return size;
@@ -90,7 +92,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
 void QgsComposerLegend::adjustBoxSize()
 {
-  QSizeF size = mLegendRenderer->legendSize();
+  QSizeF size = mLegendRenderer->minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {

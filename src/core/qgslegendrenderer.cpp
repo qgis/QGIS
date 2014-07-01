@@ -40,7 +40,7 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLegendModel* legendModel )
   rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
-QSizeF QgsLegendRenderer::legendSize()
+QSizeF QgsLegendRenderer::minimumSize()
 {
   return paintAndDetermineSize( 0 );
 }
@@ -119,6 +119,14 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
   if ( !mTitle.isEmpty() )
   {
     size.rwidth() = qMax( titleSize.width(), size.width() );
+  }
+
+  // override the size if it was set by the user
+  if ( mLegendSize.isValid() )
+  {
+    qreal w = qMax( size.width(), mLegendSize.width() );
+    qreal h = qMax( size.height(), mLegendSize.height() );
+    size = QSizeF( w, h );
   }
 
   // Now we have set the correct total item width and can draw the title centered

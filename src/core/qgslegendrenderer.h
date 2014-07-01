@@ -32,7 +32,13 @@ class QgsLegendRenderer
     explicit QgsLegendRenderer( QgsLegendModel* legendModel );
 
     /** Run the layout algorithm and determine the size required for legend */
-    QSizeF legendSize();
+    QSizeF minimumSize();
+
+    /** Set the preferred resulting legend size. */
+    void setLegendSize( QSizeF s ) { mLegendSize = s; }
+
+    /** Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size */
+    QSizeF legendSize() const { return mLegendSize; }
 
     /** Draw the legend with given painter. It will occupy the area reported in legendSize().
      *  Painter should be scaled beforehand so that units correspond to millimeters.
@@ -208,6 +214,8 @@ class QgsLegendRenderer
 
   private:
     QgsLegendModel* mLegendModel;
+
+    QSizeF mLegendSize;
 
     QString mTitle;
 
