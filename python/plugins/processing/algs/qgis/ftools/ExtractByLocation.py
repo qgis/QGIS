@@ -86,7 +86,8 @@ class ExtractByLocation(GeoAlgorithm):
             if not intersects and (self.opFlags & self.operators['OVERLAPS']):
                 if geomB.type() == QGis.Line or geomA.type() == QGis.Line:
                     intersects |= geomA.crosses(geomB)
-                intersects |= geomA.overlaps(geomB)
+                else:
+                    intersects |= geomA.overlaps(geomB)
             if not intersects and (self.opFlags & self.operators['WITHIN']):
                 intersects |= geomA.contains(geomB)
             return intersects   
