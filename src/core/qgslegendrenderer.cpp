@@ -10,12 +10,6 @@
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
-/*
-will stay in composer legend:
-- draw background(?)
-- update item size
-- draw frame, selection
-*/
 
 QgsLegendRenderer::QgsLegendRenderer( QgsLegendModel* legendModel )
     : mLegendModel( legendModel )
