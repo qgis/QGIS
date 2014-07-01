@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -153,7 +153,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
         if isWindows():
             lastoolsPipe = [
-                flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(), 
+                flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(),
                 hugeFileGroundClassify(), hugeFileNormalize()
                 ]
         else:

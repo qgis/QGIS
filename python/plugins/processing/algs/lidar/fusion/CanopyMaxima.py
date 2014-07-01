@@ -32,8 +32,8 @@ from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.outputs.OutputTable import OutputTable
-from fusion.FusionUtils import FusionUtils
-from fusion.FusionAlgorithm import FusionAlgorithm
+from FusionUtils import FusionUtils
+from FusionAlgorithm import FusionAlgorithm
 
 
 class CanopyMaxima(FusionAlgorithm):
