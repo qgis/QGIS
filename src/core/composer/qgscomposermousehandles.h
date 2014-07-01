@@ -188,7 +188,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     //helper functions for item align
     void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX, QMap< double, const QgsComposerItem* >& alignCoordsY );
     bool nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue ) const;
-    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord ) const;
+    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord );
 
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView* graphicsView();

@@ -478,10 +478,12 @@ void QgsComposerItem::drawFrame( QPainter* p )
 {
   if ( mFrame && p )
   {
+    p->save();
     p->setPen( pen() );
     p->setBrush( Qt::NoBrush );
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+    p->restore();
   }
 }
 
@@ -624,10 +626,12 @@ void QgsComposerItem::drawBackground( QPainter* p )
 {
   if ( mBackground && p )
   {
+    p->save();
     p->setBrush( brush() );//this causes a problem in atlas generation
     p->setPen( Qt::NoPen );
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+    p->restore();
   }
 }
 

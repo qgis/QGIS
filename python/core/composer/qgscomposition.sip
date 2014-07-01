@@ -112,9 +112,6 @@ class QgsComposition : QGraphicsScene
     void setSnapGridResolution( double r );
     double snapGridResolution() const;
 
-    void setSnapGridTolerance( double tolerance );
-    double snapGridTolerance() const;
-
     void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const;
 
@@ -127,8 +124,53 @@ class QgsComposition : QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const;
 
-    void setAlignmentSnapTolerance( double t );
-    double alignmentSnapTolerance() const;
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to the
+     * composition grid.
+     * @param tolerance snap tolerance in pixels
+     * @see snapGridTolerance
+     * @deprecated Use setSnapTolerance instead
+    */
+    void setSnapGridTolerance( double tolerance ) /Deprecated/;
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to the
+     * composition grid.
+     * @returns snap tolerance in pixels
+     * @see setSnapGridTolerance
+     * @deprecated Use snapTolerance instead
+    */
+    double snapGridTolerance() const /Deprecated/;
+
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @param t snap tolerance in pixels
+     * @see alignmentSnapTolerance
+     * @deprecated Use setSnapTolerance instead
+    */
+    void setAlignmentSnapTolerance( double t ) /Deprecated/;
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @returns snap tolerance in pixels
+     * @see setAlignmentSnapTolerance
+     * @deprecated Use snapTolerance instead
+    */
+    double alignmentSnapTolerance() const /Deprecated/;
+
+    /**Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @param t snap tolerance in pixels
+     * @see alignmentSnapTolerance
+     * @note Added in QGIS 2.5
+    */
+    void setSnapTolerance( int snapTolerance );
+
+    /**Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+     * and the edges and centers of other items.
+     * @returns snap tolerance in pixels
+     * @see setAlignmentSnapTolerance
+     * @note Added in QGIS 2.5
+    */
+    int snapTolerance() const;
 
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack();

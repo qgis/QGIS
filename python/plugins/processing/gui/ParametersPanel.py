@@ -105,7 +105,12 @@ class ParametersPanel(QtGui.QWidget):
                 continue
             desc = param.description
             if isinstance(param, ParameterExtent):
-                desc += '(xmin, xmax, ymin, ymax)'
+                desc += ' (xmin, xmax, ymin, ymax)'
+            try:
+                if param.optional:
+                    desc += ' [optional]'
+            except:
+                pass
             label = QtGui.QLabel(desc)
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)

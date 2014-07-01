@@ -158,6 +158,12 @@ cmake %CMAKE_OPT% ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
+	-D WITH_INTERNAL_JINJA2=FALSE ^
+	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
+	-D WITH_INTERNAL_PYGMENTS=FALSE ^
+	-D WITH_INTERNAL_DATEUTIL=FALSE ^
+	-D WITH_INTERNAL_PYTZ=FALSE ^
+	-D WITH_INTERNAL_SIX=FALSE ^
 	%SRCDIR%
 if errorlevel 1 (echo cmake failed & goto error)
 
@@ -308,9 +314,12 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin/%PACKA
 	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll"
+	"apps/%PACKAGENAME%/plugins/grassprovider.dll"
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
+
+REM grass direct library disabled
+REM     "apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll"
+
 
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-globe-plugin/%PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^

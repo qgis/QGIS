@@ -297,7 +297,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
          <property name="title">
-          <string>Grid</string>
+          <string>Guides and Grid</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -321,7 +321,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>Spacing</string>
+             <string>Grid spacing</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -382,66 +382,19 @@
            </layout>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>Tolerance</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+             <string>Snap tolerance</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mGridToleranceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
+           <widget class="QSpinBox" name="mSnapToleranceSpinBox">
             <property name="suffix">
-             <string> mm</string>
+             <string> px</string>
             </property>
-            <property name="value">
-             <double>2.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignmentSnapGroupCheckBox">
-         <property name="title">
-          <string>Snap to alignments</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QFormLayout" name="formLayout_3">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Tolerance</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mAlignmentToleranceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
+            <property name="maximum">
+             <number>200</number>
             </property>
            </widget>
           </item>

@@ -76,7 +76,7 @@ def getRasterLayers():
         if layer.type() == layer.RasterLayer:
             if layer.providerType() == 'gdal':  # only gdal file-based layers
                 raster.append(layer)
-    return raster
+    return sorted(raster,  key=lambda layer: layer.name().lower())
 
 
 def getVectorLayers(shapetype=[-1]):
@@ -86,17 +86,16 @@ def getVectorLayers(shapetype=[-1]):
         if layer.type() == layer.VectorLayer:
             if shapetype == ALL_TYPES or layer.geometryType() in shapetype:
                 uri = unicode(layer.source())
-                if not uri.lower().endswith('csv') \
-                        and not uri.lower().endswith('dbf'):
+                if not uri.lower().endswith('csv') and not uri.lower().endswith('dbf'):
                     vector.append(layer)
-    return vector
+    return sorted(vector,  key=lambda layer: layer.name().lower())
 
 
 def getAllLayers():
     layers = []
     layers += getRasterLayers()
     layers += getVectorLayers()
-    return layers
+    return sorted(layers,  key=lambda layer: layer.name().lower())
 
 
 def getTables():
@@ -105,7 +104,7 @@ def getTables():
     for layer in layers:
         if layer.type() == layer.VectorLayer:
             tables.append(layer)
-    return tables
+    return sorted(tables,  key=lambda table: table.name().lower())
 
 
 def extent(layers):

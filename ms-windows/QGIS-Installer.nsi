@@ -58,8 +58,6 @@ Name "${DISPLAYED_NAME}"
 ;Name of the output file (installer executable)
 OutFile "${INSTALLER_NAME}"
 
-;Define installation folder
-InstallDir "$PROGRAMFILES\${QGIS_BASE}"
 
 ;Tell the installer to show Install and Uninstall details as default
 ShowInstDetails show
@@ -100,6 +98,10 @@ Function .onInit
 			  StrCpy $INSTDIR "$PROGRAMFILES64\${QGIS_BASE}"
 			${EndIf}
 		${EndIf}
+	${EndIf}
+
+	${If} $INSTDIR == ""
+		StrCpy $INSTDIR "$PROGRAMFILES\${QGIS_BASE}"
 	${EndIf}
 
 	Var /GLOBAL ASK_FOR_PATH
@@ -464,7 +466,7 @@ Section /O "Alaska Data Set" SecAlaskaSDB
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 33914
 
-	StrCpy $HTTP_PATH "http://download.osgeo.org/qgis/data"
+	StrCpy $HTTP_PATH "http://qgis.org/downloads/data"
 	StrCpy $ARCHIVE_NAME "qgis_sample_data.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "Alaska"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "qgis_sample_data"

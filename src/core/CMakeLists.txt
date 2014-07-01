@@ -92,6 +92,8 @@ SET(QGIS_CORE_SRCS
   qgslabelattributes.cpp
   qgslabelsearchtree.cpp
   qgslegacyhelpers.cpp
+  qgslegendrenderer.cpp
+  qgslegendsettings.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp
@@ -459,6 +461,8 @@ SET(QGIS_CORE_HDRS
   qgslabelattributes.h
   qgslabelsearchtree.h
   qgslegacyhelpers.h
+  qgslegendrenderer.h
+  qgslegendsettings.h
   qgslogger.h
   qgsmaplayer.h
   qgsmaplayerregistry.h

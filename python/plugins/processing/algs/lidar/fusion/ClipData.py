@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4 import QtGui
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterSelection import ParameterSelection

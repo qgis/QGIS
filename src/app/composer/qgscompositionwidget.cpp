@@ -79,14 +79,12 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
     connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
 
-    mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
+    mSnapToleranceSpinBox->setValue( mComposition->snapTolerance() );
 
     //snap grid
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
-
-    mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
   }
   blockSignals( false );
 }
@@ -559,19 +557,11 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
+void QgsCompositionWidget::on_mSnapToleranceSpinBox_valueChanged( int tolerance )
 {
   if ( mComposition )
   {
-    mComposition->setSnapGridTolerance( d );
-  }
-}
-
-void QgsCompositionWidget::on_mAlignmentToleranceSpinBox_valueChanged( double d )
-{
-  if ( mComposition )
-  {
-    mComposition->setAlignmentSnapTolerance( d );
+    mComposition->setSnapTolerance( tolerance );
   }
 }
 
@@ -589,7 +579,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
-  mGridToleranceSpinBox->blockSignals( block );
-  mAlignmentToleranceSpinBox->blockSignals( block );
+  mSnapToleranceSpinBox->blockSignals( block );
 }
 

@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-20</y>
+        <y>-440</y>
         <width>340</width>
-        <height>846</height>
+        <height>879</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -434,6 +434,13 @@
            <widget class="QgsColorButton" name="mFillColorButton">
             <property name="text">
              <string>Fill color...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsColorButton" name="mFillColor2Button">
+            <property name="text">
+             <string>Secondary fill color...</string>
             </property>
            </widget>
           </item>

@@ -43,6 +43,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QPrinter>
 #include <QSettings>
@@ -83,13 +84,12 @@ void QgsComposition::init()
   mSnapToGrid = false;
   mGridVisible = false;
   mSnapGridResolution = 0;
-  mSnapGridTolerance = 0;
   mSnapGridOffsetX = 0;
   mSnapGridOffsetY = 0;
   mAlignmentSnap = true;
   mGuidesVisible = true;
   mSmartGuides = true;
-  mAlignmentSnapTolerance = 0;
+  mSnapTolerance = 0;
   mSelectionHandles = 0;
   mActiveItemCommand = 0;
   mActiveMultiFrameCommand = 0;
@@ -170,10 +170,9 @@ void QgsComposition::loadDefaults()
 {
   QSettings settings;
   mSnapGridResolution = settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble();
-  mSnapGridTolerance = settings.value( "/Composer/defaultSnapGridTolerance", 2 ).toDouble();
   mSnapGridOffsetX = settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble();
   mSnapGridOffsetY = settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble();
-  mAlignmentSnapTolerance = settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble();
+  mSnapTolerance = settings.value( "/Composer/defaultSnapTolerancePixels", 10 ).toInt();
 }
 
 void QgsComposition::updateBounds()
@@ -640,7 +639,6 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
     compositionElem.setAttribute( "gridVisible", "0" );
   }
   compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
-  compositionElem.setAttribute( "snapGridTolerance", QString::number( mSnapGridTolerance ) );
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
@@ -669,7 +667,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "alignmentSnap", mAlignmentSnap ? 1 : 0 );
   compositionElem.setAttribute( "guidesVisible", mGuidesVisible ? 1 : 0 );
   compositionElem.setAttribute( "smartGuides", mSmartGuides ? 1 : 0 );
-  compositionElem.setAttribute( "alignmentSnapTolerance", mAlignmentSnapTolerance );
+  compositionElem.setAttribute( "snapTolerancePixels", mSnapTolerance );
 
   //save items except paper items and frame items (they are saved with the corresponding multiframe)
   QList<QGraphicsItem*> itemList = items();
@@ -733,14 +731,13 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mGridVisible = compositionElem.attribute( "gridVisible", "0" ).toInt() == 0 ? false : true;
 
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
-  mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
 
   mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
   mGuidesVisible = compositionElem.attribute( "guidesVisible", "1" ).toInt() == 0 ? false : true;
   mSmartGuides = compositionElem.attribute( "smartGuides", "1" ).toInt() == 0 ? false : true;
-  mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
+  mSnapTolerance = compositionElem.attribute( "snapTolerancePixels", "10" ).toInt();
 
   //custom snap lines
   QDomNodeList snapLineNodes = compositionElem.elementsByTagName( "SnapLine" );
@@ -1733,7 +1730,7 @@ void QgsComposition::refreshZList()
 
 QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
 {
-  if ( !mSnapToGrid || mSnapGridResolution <= 0 )
+  if ( !mSnapToGrid || mSnapGridResolution <= 0 || !graphicsView() )
   {
     return scenePoint;
   }
@@ -1750,12 +1747,16 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
   double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;
 
-  if ( abs( xSnapped - scenePoint.x() ) > mSnapGridTolerance )
+  //convert snap tolerance from pixels to mm
+  double viewScaleFactor = graphicsView()->transform().m11();
+  double alignThreshold = mSnapTolerance / viewScaleFactor;
+
+  if ( fabs( xSnapped - scenePoint.x() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     xSnapped = scenePoint.x();
   }
-  if ( abs( ySnapped - scenePoint.y() ) > mSnapGridTolerance )
+  if ( fabs( ySnapped - scenePoint.y() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     ySnapped = scenePoint.y();
@@ -1959,11 +1960,6 @@ void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
   updatePaperItems();
-}
-
-void QgsComposition::setSnapGridTolerance( double tolerance )
-{
-  mSnapGridTolerance = tolerance;
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
@@ -2576,6 +2572,19 @@ QString QgsComposition::encodeStringForXML( const QString& str )
   modifiedStr.replace( "<", "&lt;" );
   modifiedStr.replace( ">", "&gt;" );
   return modifiedStr;
+}
+
+QGraphicsView *QgsComposition::graphicsView() const
+{
+  //try to find current view attached to composition
+  QList<QGraphicsView*> viewList = views();
+  if ( viewList.size() > 0 )
+  {
+    return viewList.at( 0 );
+  }
+
+  //no view attached to composition
+  return 0;
 }
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const

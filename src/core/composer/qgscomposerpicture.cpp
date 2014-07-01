@@ -60,6 +60,9 @@ QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( 0 ),
 
 void QgsComposerPicture::init()
 {
+  //default to no background
+  setBackgroundEnabled( false );
+
   //connect some signals
 
   //connect to atlas feature changing
@@ -123,6 +126,8 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
                          rect().height() * mComposition->printResolution() / 25.4 );
     }
     painter->save();
+    //antialiasing on
+    painter->setRenderHint( QPainter::Antialiasing, true );
 
     //zoom mode - calculate anchor point and rotation
     if ( mResizeMode == Zoom )

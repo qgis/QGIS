@@ -57,8 +57,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
     void on_mOffsetYSpinBox_valueChanged( double d );
-    void on_mGridToleranceSpinBox_valueChanged( double d );
-    void on_mAlignmentToleranceSpinBox_valueChanged( double d );
+    void on_mSnapToleranceSpinBox_valueChanged( int tolerance );
 
     /**Sets GUI elements to width/height from composition*/
     void displayCompositionWidthHeight();

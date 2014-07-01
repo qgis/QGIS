@@ -18,6 +18,7 @@
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsfield.h"
+#include "qgslayertree.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
@@ -48,6 +49,31 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
 
 QgsLegendModel::~QgsLegendModel()
 {
+}
+
+void QgsLegendModel::setLayerSetAndGroups( QgsLayerTreeGroup* rootGroup )
+{
+  clear();
+  addGroupFromLayerTree( rootGroup, invisibleRootItem() );
+}
+
+void QgsLegendModel::addGroupFromLayerTree( QgsLayerTreeGroup* parentGroup, QStandardItem* parentItem )
+{
+  foreach ( QgsLayerTreeNode* node, parentGroup->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
+      QStandardItem* groupItem = addGroup( nodeGroup->name(), -1, parentItem );
+      addGroupFromLayerTree( nodeGroup, groupItem );
+    }
+    else if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() )
+        addLayer( nodeLayer->layer(), -1, QString(), parentItem );
+    }
+  }
 }
 
 void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo )
@@ -115,21 +141,24 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
   }
 }
 
-QStandardItem* QgsLegendModel::addGroup( QString text, int position )
+QStandardItem* QgsLegendModel::addGroup( QString text, int position, QStandardItem* parentItem )
 {
   if ( text.isNull() )
     text = tr( "Group" );
+
+  if ( !parentItem )
+    parentItem = invisibleRootItem();
 
   QgsComposerGroupItem* groupItem = new QgsComposerGroupItem( text );
   groupItem->setUserText( text );
 
   if ( position == -1 )
   {
-    position = invisibleRootItem()->rowCount();
+    position = parentItem->rowCount();
   }
   QList<QStandardItem *> itemsList;
   itemsList << groupItem << new QgsComposerStyleItem( groupItem );
-  invisibleRootItem()->insertRow( position, itemsList );
+  parentItem->insertRow( position, itemsList );
 
   emit layersChanged();
   return groupItem;
@@ -524,12 +553,15 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule, QStandardItem* parentItem )
 {
   if ( !theMapLayer )
   {
     return;
   }
+
+  if ( !parentItem )
+    parentItem = invisibleRootItem();
 
   QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( theMapLayer->name() );
   if ( theMapLayer->title() != "" )
@@ -543,7 +575,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
 
   QList<QStandardItem *> itemsList;
   itemsList << layerItem << new QgsComposerStyleItem( layerItem );
-  invisibleRootItem()->appendRow( itemsList );
+  parentItem->appendRow( itemsList );
 
   switch ( theMapLayer->type() )
   {

@@ -723,14 +723,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mGridStyleComboBox->setCurrentIndex( 1 );
   }
 
-  //grid defaults
+  //grid and guide defaults
   mGridResolutionSpinBox->setValue( settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble() );
-  mGridToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapGridTolerance", 2 ).toDouble() );
+  mSnapToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapTolerancePixels", 10 ).toInt() );
   mOffsetXSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble() );
   mOffsetYSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble() );
-
-  //guide defaults
-  mGuideToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble() );
 
   //
   // Locale settings
@@ -1311,14 +1308,11 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Composer/gridStyle", "Crosses" );
   }
 
-  //grid defaults
+  //grid and guide defaults
   settings.setValue( "/Composer/defaultSnapGridResolution", mGridResolutionSpinBox->value() );
-  settings.setValue( "/Composer/defaultSnapGridTolerance", mGridToleranceSpinBox->value() );
+  settings.setValue( "/Composer/defaultSnapTolerancePixels", mSnapToleranceSpinBox->value() );
   settings.setValue( "/Composer/defaultSnapGridOffsetX", mOffsetXSpinBox->value() );
   settings.setValue( "/Composer/defaultSnapGridOffsetY", mOffsetYSpinBox->value() );
-
-  //guide defaults
-  settings.setValue( "/Composer/defaultSnapGuideTolerance", mGuideToleranceSpinBox->value() );
 
   //
   // Locale settings

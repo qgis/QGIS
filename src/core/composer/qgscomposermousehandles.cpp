@@ -1229,8 +1229,12 @@ QPointF QgsComposerMouseHandles::alignPos( const QPointF& pos, double& alignX, d
     return pos;
   }
 
+  //convert snap tolerance from pixels to mm
+  double viewScaleFactor = graphicsView()->transform().m11();
+  double alignThreshold = mComposition->snapTolerance() / viewScaleFactor;
+
   QPointF result( pos.x(), pos.y() );
-  if ( abs( nearestX - pos.x() ) < mComposition->alignmentSnapTolerance() )
+  if ( fabs( nearestX - pos.x() ) < alignThreshold )
   {
     result.setX( nearestX );
     alignX = nearestX;
@@ -1240,7 +1244,7 @@ QPointF QgsComposerMouseHandles::alignPos( const QPointF& pos, double& alignX, d
     alignX = -1;
   }
 
-  if ( abs( nearestY - pos.y() ) < mComposition->alignmentSnapTolerance() )
+  if ( fabs( nearestY - pos.y() ) < alignThreshold )
   {
     result.setY( nearestY );
     alignY = nearestY;
@@ -1309,7 +1313,7 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
   }
 }
 
-void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord ) const
+void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord )
 {
   double currentCoord = 0;
   if ( !nearestItem( alignCoords, checkCoord, currentCoord ) )
@@ -1317,8 +1321,12 @@ void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< d
     return;
   }
 
-  double currentDiff = abs( checkCoord - currentCoord );
-  if ( currentDiff < mComposition->alignmentSnapTolerance() && currentDiff < smallestDiff )
+  double currentDiff = fabs( checkCoord - currentCoord );
+  //convert snap tolerance from pixels to mm
+  double viewScaleFactor = graphicsView()->transform().m11();
+  double alignThreshold = mComposition->snapTolerance() / viewScaleFactor;
+
+  if ( currentDiff < alignThreshold && currentDiff < smallestDiff )
   {
     itemCoord = currentCoord + itemCoordOffset;
     alignCoord = currentCoord;

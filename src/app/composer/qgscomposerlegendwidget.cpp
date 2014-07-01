@@ -26,12 +26,12 @@
 #include <QFontDialog>
 #include <QColorDialog>
 
-#include "qgsapplegendinterface.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
@@ -916,9 +916,7 @@ void QgsComposerLegendWidget::updateLegend()
 
 
     //and also group info
-    QgsAppLegendInterface legendIface( app->layerTreeView() );
-    QList< GroupLayerInfo > groupInfo = legendIface.groupLayerRelationship();
-    mLegend->model()->setLayerSetAndGroups( layerIdList, groupInfo );
+    mLegend->model()->setLayerSetAndGroups( QgsProject::instance()->layerTreeRoot() );
     mLegend->endCommand();
   }
 }

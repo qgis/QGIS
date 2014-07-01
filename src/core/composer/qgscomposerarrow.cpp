@@ -61,9 +61,8 @@ void QgsComposerArrow::initGraphicsSettings()
   mPen.setColor( QColor( 0, 0, 0 ) );
   mPen.setWidthF( 1 );
 
-  //set composer item brush and pen to transparent white by default
-  setPen( QPen( QColor( 255, 255, 255, 0 ) ) );
-  setBrush( QBrush( QColor( 255, 255, 255, 0 ) ) );
+  //default to no background
+  setBackgroundEnabled( false );
 }
 
 void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -76,6 +75,10 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
   }
 
   drawBackground( painter );
+
+  painter->save();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
 
   //draw arrow
   QPen arrowPen = mPen;
@@ -98,6 +101,8 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
     drawSVGMarker( painter, StartMarker, mStartMarkerFile );
     drawSVGMarker( painter, EndMarker, mEndMarkerFile );
   }
+
+  painter->restore();
 
   drawFrame( painter );
   if ( isSelected() )
