@@ -246,6 +246,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
 
+  setInteractive( false );
+
   refresh();
 
 } // QgsMapCanvas ctor
