@@ -52,6 +52,10 @@ class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
     QRect mSelectRect;
 
     QgsRubberBand* mRubberBand;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

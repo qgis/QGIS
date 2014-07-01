@@ -35,6 +35,8 @@ QgsMapToolSelectRectangle::QgsMapToolSelectRectangle( QgsMapCanvas* canvas )
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
   mRubberBand = 0;
+  mFillColor = QColor( 254,178,76, 63 );
+  mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 
@@ -43,9 +45,8 @@ void QgsMapToolSelectRectangle::canvasPressEvent( QMouseEvent *e )
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
-  QColor color( 254,178,76 );
-  color.setAlpha( 63 );
-  mRubberBand->setColor( color );
+  mRubberBand->setFillColor( mFillColor );
+  mRubberBand->setBorderColor( mBorderColour );
 }
 
 

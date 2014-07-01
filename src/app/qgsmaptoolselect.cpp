@@ -32,6 +32,8 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
+  mFillColor = QColor( 254,178,76, 63 );
+  mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
@@ -42,9 +44,8 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
   QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
-  QColor color( 254,178,76 );
-  color.setAlpha( 63 );
-  rubberBand.setColor( color );
+  rubberBand.setFillColor( mFillColor );
+  rubberBand.setBorderColor( mBorderColour );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );

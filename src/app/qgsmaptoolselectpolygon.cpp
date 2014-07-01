@@ -28,6 +28,8 @@ QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas* canvas )
 {
   mRubberBand = 0;
   mCursor = Qt::ArrowCursor;
+  mFillColor = QColor( 254,178,76, 63 );
+  mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
@@ -40,9 +42,8 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
   if ( mRubberBand == NULL )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
-    QColor color( 254,178,76 );
-    color.setAlpha( 63 );
-    mRubberBand->setColor( color );
+    mRubberBand->setFillColor( mFillColor );
+    mRubberBand->setBorderColor( mBorderColour );
   }
   if ( e->button() == Qt::LeftButton )
   {
