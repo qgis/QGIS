@@ -44,6 +44,9 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QMouseEvent * e )
   if ( mRubberBand == NULL )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    QColor color( 254,178,76 );
+    color.setAlpha( 63 );
+    mRubberBand->setColor( color );
   }
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   mDragging = true;

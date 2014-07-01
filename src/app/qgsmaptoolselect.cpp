@@ -25,6 +25,7 @@
 
 #include <QMouseEvent>
 #include <QRect>
+#include <QColor>
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
@@ -41,6 +42,9 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
   QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
+  QColor color( 254,178,76 );
+  color.setAlpha( 63 );
+  rubberBand.setColor( color );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );

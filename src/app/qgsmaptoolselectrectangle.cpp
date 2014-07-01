@@ -43,6 +43,9 @@ void QgsMapToolSelectRectangle::canvasPressEvent( QMouseEvent *e )
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  QColor color( 254,178,76 );
+  color.setAlpha( 63 );
+  mRubberBand->setColor( color );
 }
 
 
