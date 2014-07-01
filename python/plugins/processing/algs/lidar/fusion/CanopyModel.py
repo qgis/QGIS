@@ -43,7 +43,6 @@ class CanopyModel(FusionAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT_DTM = 'OUTPUT_DTM'
-    OUTPUT_ASCII = 'OUTPUT_ASCII'
     CELLSIZE = 'CELLSIZE'  
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
@@ -53,7 +52,6 @@ class CanopyModel(FusionAlgorithm):
     SMOOTH = 'SMOOTH'
     SLOPE = 'SLOPE'
     CLASS = 'CLASS'
-    ASCII = 'ASCII'
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
@@ -63,22 +61,20 @@ class CanopyModel(FusionAlgorithm):
         self.addParameter(ParameterNumber(self.CELLSIZE, 'Cellsize', 0, None, 10.0))
         self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units', self.UNITS))
         self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units', self.UNITS))
-        self.addParameter(ParameterBoolean(self.ASCII, 'ASCII Output?'))
-        self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))
-        self.addOutput(OutputFile(self.OUTPUT_ASCII, 'ASCII Output Surface', 'asc'))
+        self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))        
         ground = ParameterFile(self.GROUND, 'Input ground DTM layer', False, True)
         ground.isAdvanced = True
         self.addParameter(ground)
-        median = ParameterString(self.MEDIAN, 'Median (set blank if not used)', '', False, True)
+        median = ParameterString(self.MEDIAN, 'Median', '', False, True)
         median.isAdvanced = True
         self.addParameter(median)
-        smooth = ParameterString(self.SMOOTH, 'Smooth (set blank if not used)', '', False, True)
+        smooth = ParameterString(self.SMOOTH, 'Smooth', '', False, True)
         smooth.isAdvanced = True
         self.addParameter(smooth) 
-        slope = ParameterString(self.SLOPE, 'Slope (set blank if not used)', '', False, True)
+        slope = ParameterString(self.SLOPE, 'Slope', '', False, True)
         slope.isAdvanced = True
         self.addParameter(slope)
-        class_var = ParameterString(self.CLASS, 'Class (set blank if not used)', '', False, True)
+        class_var = ParameterString(self.CLASS, 'Class', '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
         advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS, 'Additional modifiers', '', False, True)
@@ -89,23 +85,23 @@ class CanopyModel(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyModel.exe')]
         commands.append('/verbose')
         ground = self.getParameterValue(self.GROUND)
-        if str(ground).strip() != '':
+        if str(ground).strip():
             commands.append('/ground:' + str(ground))
         median = self.getParameterValue(self.MEDIAN)
-        if str(median).strip() != '':
+        if str(median).strip():
             commands.append('/median:' + str(median))
         smooth = self.getParameterValue(self.SMOOTH)
-        if str(smooth).strip() != '':
+        if str(smooth).strip():
             commands.append('/smooth:' + str(smooth))
         slope = self.getParameterValue(self.SLOPE)
-        if str(slope).strip() != '':
+        if str(slope).strip():
             commands.append('/slope:' + str(slope))
         class_var = self.getParameterValue(self.CLASS)
-        if str(class_var).strip() != '':
+        if str(class_var).strip():
             commands.append('/class:' + str(class_var))
         advance_modifiers = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
-        if advance_modifiers != '':
-            commands.append(s)
+        if advance_modifiers:
+            commands.append(advance_modifiers)
         commands.append(self.getOutputValue(self.OUTPUT_DTM))
         commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
@@ -121,10 +117,3 @@ class CanopyModel(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        ascii = self.getParameterValue(self.ASCII)
-        if ascii == 1:
-            commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
-            commands.append(self.getOutputValue(self.OUTPUT_DTM))
-            commands.append(self.getOutputValue(self.OUTPUT_ASCII))
-            p = subprocess.Popen(commands, shell=True)
-            p.wait()

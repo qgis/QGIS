@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
-    Catalog.py
+    ASCII2DTM.py
     ---------------------
-    Date                 : June 2014
-    Copyright            : (C) 2014 by Agresta S. Coop
-    Email                : iescamochero at agresta dot org
+    Date                 : May 2014
+    Copyright            : (C) 2014 by Niccolo' Marchi
+    Email                : sciurusurbanus at hotmail dot it
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,64 +17,65 @@
 ***************************************************************************
 """
 
-__author__ = 'Agresta S. Coop - www.agresta.org'
-__date__ = 'June 2014'
-__copyright__ = '(C) 2014, Agresta S. Coop'
+__author__ = "Niccolo' Marchi"
+__date__ = 'May 2014'
+__copyright__ = "(C) 2014 by Niccolo' Marchi"
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 import subprocess
 from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
+from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputFile import OutputFile
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
-from processing.parameters.ParameterString import ParameterString
 
 
-class TinSurfaceCreate(FusionAlgorithm):
+class ASCII2DTM(FusionAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT_DTM = 'OUTPUT_DTM';
-    CELLSIZE = 'CELLSIZE'
+    OUTPUT = 'OUTPUT'
+    COORDSYS = 'COORDSYS'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
     UNITS = ['Meter', 'Feet']
-    CLASS = 'CLASS'
+    ZONE = 'ZONE'
 
     def defineCharacteristics(self):
-        self.name = 'Tin Surface Create'
-        self.group = 'Surface'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
-        self.addParameter(ParameterNumber(self.CELLSIZE, 'Cellsize', 0, None, 10.0))
-        self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units', self.UNITS))
-        self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units', self.UNITS))
-        self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))
-        class_var = ParameterString(self.CLASS, 'Class', 2, False, True)
-        class_var.isAdvanced = True
-        self.addParameter(class_var)
-
+        self.name = 'ASCII to DTM'
+        self.group = 'Conversion'
+        self.addParameter(ParameterFile(self.INPUT, 'Input ESRI ASCII layer'))
+        self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units',
+                          self.UNITS))
+        self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units',
+                          self.UNITS))
+        self.addParameter(ParameterSelection(self.COORDSYS, 'Coordinate system',
+                          ['unknown', 'UTM', 'state plane']))
+        self.addParameter(ParameterNumber(self.ZONE, "Coordinate system zone ('0' for unknown)", 0, None,
+                          0))
+        self.addOutput(OutputFile(self.OUTPUT, 'Output surface', 'dtm'))
+        self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'TINSurfaceCreate.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'ASCII2DTM.exe')]
         commands.append('/verbose')
-        class_var = self.getParameterValue(self.CLASS)
-        if str(class_var).strip() != '':
-            commands.append('/class:' + str(class_var))
-        commands.append(self.getOutputValue(self.OUTPUT_DTM))
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        self.addAdvancedModifiersToCommand(commands)
+        outFile = self.getOutputValue(self.OUTPUT)
+        commands.append(outFile)
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
-        commands.append('0')
-        commands.append('0')
+        commands.append(str(self.getParameterValue(self.COORDSYS)))
+        commands.append(str(self.getParameterValue(self.ZONE)))
         commands.append('0')
         commands.append('0')
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
-            commands.extend(files)            
+            FusionUtils.createFileList(files)
+            commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
