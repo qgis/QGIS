@@ -92,6 +92,7 @@ SET(QGIS_CORE_SRCS
   qgslabelattributes.cpp
   qgslabelsearchtree.cpp
   qgslegacyhelpers.cpp
+  qgslegendrenderer.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp
