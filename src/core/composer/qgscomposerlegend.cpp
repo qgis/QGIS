@@ -31,7 +31,6 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mComposerMap( 0 )
 {
-  mLegendRenderer = new QgsLegendRenderer( &mLegendModel );
 
   adjustBoxSize();
 
@@ -45,7 +44,6 @@ QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 ), mComposerMap( 0 )
 
 QgsComposerLegend::~QgsComposerLegend()
 {
-  delete mLegendRenderer;
 }
 
 void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -53,12 +51,11 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  if ( mComposition )
-    mLegendRenderer->setUseAdvancedEffects( mComposition->useAdvancedEffects() );
-  if ( mComposerMap )
-    mLegendRenderer->setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
 
-  mLegendRenderer->setLegendSize( rect().size() );
+  if ( mComposition )
+    mSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
+  if ( mComposerMap )
+    mSettings.setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
 
   if ( !painter )
     return;
@@ -69,7 +66,9 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
-  mLegendRenderer->drawLegend( painter );
+  QgsLegendRenderer legendRenderer( &mLegendModel, mSettings );
+  legendRenderer.setLegendSize( rect().size() );
+  legendRenderer.drawLegend( painter );
 
   painter->restore();
 
@@ -83,16 +82,18 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 {
-  QSizeF size = mLegendRenderer->minimumSize();
+  QgsLegendRenderer legendRenderer( &mLegendModel, mSettings );
+  QSizeF size = legendRenderer.minimumSize();
   if ( !painter )
-    mLegendRenderer->drawLegend( painter );
+    legendRenderer.drawLegend( painter );
   return size;
 }
 
 
 void QgsComposerLegend::adjustBoxSize()
 {
-  QSizeF size = mLegendRenderer->minimumSize();
+  QgsLegendRenderer legendRenderer( &mLegendModel, mSettings );
+  QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
@@ -100,54 +101,54 @@ void QgsComposerLegend::adjustBoxSize()
   }
 }
 
-void QgsComposerLegend::setTitle( const QString& t ) { mLegendRenderer->setTitle( t ); }
-QString QgsComposerLegend::title() const { return mLegendRenderer->title(); }
+void QgsComposerLegend::setTitle( const QString& t ) { mSettings.setTitle( t ); }
+QString QgsComposerLegend::title() const { return mSettings.title(); }
 
-Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mLegendRenderer->titleAlignment(); }
-void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mLegendRenderer->setTitleAlignment( alignment ); }
+Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
+void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
 
-QgsComposerLegendStyle& QgsComposerLegend::rstyle( QgsComposerLegendStyle::Style s ) { return mLegendRenderer->rstyle( s ); }
-QgsComposerLegendStyle QgsComposerLegend::style( QgsComposerLegendStyle::Style s ) const { return mLegendRenderer->style( s ); }
-void QgsComposerLegend::setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style ) { mLegendRenderer->setStyle( s, style ); }
+QgsComposerLegendStyle& QgsComposerLegend::rstyle( QgsComposerLegendStyle::Style s ) { return mSettings.rstyle( s ); }
+QgsComposerLegendStyle QgsComposerLegend::style( QgsComposerLegendStyle::Style s ) const { return mSettings.style( s ); }
+void QgsComposerLegend::setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style ) { mSettings.setStyle( s, style ); }
 
-QFont QgsComposerLegend::styleFont( QgsComposerLegendStyle::Style s ) const { return mLegendRenderer->style( s ).font(); }
+QFont QgsComposerLegend::styleFont( QgsComposerLegendStyle::Style s ) const { return mSettings.style( s ).font(); }
 void QgsComposerLegend::setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f ) { rstyle( s ).setFont( f ); }
 
 void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
 void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
 
-double QgsComposerLegend::boxSpace() const { return mLegendRenderer->boxSpace(); }
-void QgsComposerLegend::setBoxSpace( double s ) { mLegendRenderer->setBoxSpace( s ); }
+double QgsComposerLegend::boxSpace() const { return mSettings.boxSpace(); }
+void QgsComposerLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
 
-double QgsComposerLegend::columnSpace() const { return mLegendRenderer->columnSpace(); }
-void QgsComposerLegend::setColumnSpace( double s ) { mLegendRenderer->setColumnSpace( s ); }
+double QgsComposerLegend::columnSpace() const { return mSettings.columnSpace(); }
+void QgsComposerLegend::setColumnSpace( double s ) { mSettings.setColumnSpace( s ); }
 
-QColor QgsComposerLegend::fontColor() const { return mLegendRenderer->fontColor(); }
-void QgsComposerLegend::setFontColor( const QColor& c ) { mLegendRenderer->setFontColor( c ); }
+QColor QgsComposerLegend::fontColor() const { return mSettings.fontColor(); }
+void QgsComposerLegend::setFontColor( const QColor& c ) { mSettings.setFontColor( c ); }
 
-double QgsComposerLegend::symbolWidth() const { return mLegendRenderer->symbolSize().width(); }
-void QgsComposerLegend::setSymbolWidth( double w ) { mLegendRenderer->setSymbolSize( QSizeF( w, mLegendRenderer->symbolSize().height() ) ); }
+double QgsComposerLegend::symbolWidth() const { return mSettings.symbolSize().width(); }
+void QgsComposerLegend::setSymbolWidth( double w ) { mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) ); }
 
-double QgsComposerLegend::symbolHeight() const { return mLegendRenderer->symbolSize().height(); }
-void QgsComposerLegend::setSymbolHeight( double h ) { mLegendRenderer->setSymbolSize( QSizeF( mLegendRenderer->symbolSize().width(), h ) ); }
+double QgsComposerLegend::symbolHeight() const { return mSettings.symbolSize().height(); }
+void QgsComposerLegend::setSymbolHeight( double h ) { mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) ); }
 
-double QgsComposerLegend::wmsLegendWidth() const { return mLegendRenderer->wmsLegendSize().width(); }
-void QgsComposerLegend::setWmsLegendWidth( double w ) { mLegendRenderer->setWmsLegendSize( QSizeF( w, mLegendRenderer->wmsLegendSize().height() ) ); }
+double QgsComposerLegend::wmsLegendWidth() const { return mSettings.wmsLegendSize().width(); }
+void QgsComposerLegend::setWmsLegendWidth( double w ) { mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) ); }
 
-double QgsComposerLegend::wmsLegendHeight() const {return mLegendRenderer->wmsLegendSize().height(); }
-void QgsComposerLegend::setWmsLegendHeight( double h ) { mLegendRenderer->setWmsLegendSize( QSizeF( mLegendRenderer->wmsLegendSize().width(), h ) ); }
+double QgsComposerLegend::wmsLegendHeight() const {return mSettings.wmsLegendSize().height(); }
+void QgsComposerLegend::setWmsLegendHeight( double h ) { mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) ); }
 
-void QgsComposerLegend::setWrapChar( const QString& t ) { mLegendRenderer->setWrapChar( t ); }
-QString QgsComposerLegend::wrapChar() const {return mLegendRenderer->wrapChar(); }
+void QgsComposerLegend::setWrapChar( const QString& t ) { mSettings.setWrapChar( t ); }
+QString QgsComposerLegend::wrapChar() const {return mSettings.wrapChar(); }
 
-int QgsComposerLegend::columnCount() const { return mLegendRenderer->columnCount(); }
-void QgsComposerLegend::setColumnCount( int c ) { mLegendRenderer->setColumnCount( c ); }
+int QgsComposerLegend::columnCount() const { return mSettings.columnCount(); }
+void QgsComposerLegend::setColumnCount( int c ) { mSettings.setColumnCount( c ); }
 
-int QgsComposerLegend::splitLayer() const { return mLegendRenderer->splitLayer(); }
-void QgsComposerLegend::setSplitLayer( bool s ) { mLegendRenderer->setSplitLayer( s ); }
+int QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
+void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
 
-int QgsComposerLegend::equalColumnWidth() const { return mLegendRenderer->equalColumnWidth(); }
-void QgsComposerLegend::setEqualColumnWidth( bool s ) { mLegendRenderer->setEqualColumnWidth( s ); }
+int QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
+void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
 
 
 void QgsComposerLegend::synchronizeWithModel()
@@ -176,21 +177,21 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   elem.appendChild( composerLegendElem );
 
   //write general properties
-  composerLegendElem.setAttribute( "title", mLegendRenderer->title() );
-  composerLegendElem.setAttribute( "titleAlignment", QString::number(( int ) mLegendRenderer->titleAlignment() ) );
-  composerLegendElem.setAttribute( "columnCount", QString::number( mLegendRenderer->columnCount() ) );
-  composerLegendElem.setAttribute( "splitLayer", QString::number( mLegendRenderer->splitLayer() ) );
-  composerLegendElem.setAttribute( "equalColumnWidth", QString::number( mLegendRenderer->equalColumnWidth() ) );
+  composerLegendElem.setAttribute( "title", mSettings.title() );
+  composerLegendElem.setAttribute( "titleAlignment", QString::number(( int ) mSettings.titleAlignment() ) );
+  composerLegendElem.setAttribute( "columnCount", QString::number( mSettings.columnCount() ) );
+  composerLegendElem.setAttribute( "splitLayer", QString::number( mSettings.splitLayer() ) );
+  composerLegendElem.setAttribute( "equalColumnWidth", QString::number( mSettings.equalColumnWidth() ) );
 
-  composerLegendElem.setAttribute( "boxSpace", QString::number( mLegendRenderer->boxSpace() ) );
-  composerLegendElem.setAttribute( "columnSpace", QString::number( mLegendRenderer->columnSpace() ) );
+  composerLegendElem.setAttribute( "boxSpace", QString::number( mSettings.boxSpace() ) );
+  composerLegendElem.setAttribute( "columnSpace", QString::number( mSettings.columnSpace() ) );
 
-  composerLegendElem.setAttribute( "symbolWidth", QString::number( mLegendRenderer->symbolSize().width() ) );
-  composerLegendElem.setAttribute( "symbolHeight", QString::number( mLegendRenderer->symbolSize().height() ) );
-  composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mLegendRenderer->wmsLegendSize().width() ) );
-  composerLegendElem.setAttribute( "wmsLegendHeight", QString::number( mLegendRenderer->wmsLegendSize().height() ) );
-  composerLegendElem.setAttribute( "wrapChar", mLegendRenderer->wrapChar() );
-  composerLegendElem.setAttribute( "fontColor", mLegendRenderer->fontColor().name() );
+  composerLegendElem.setAttribute( "symbolWidth", QString::number( mSettings.symbolSize().width() ) );
+  composerLegendElem.setAttribute( "symbolHeight", QString::number( mSettings.symbolSize().height() ) );
+  composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mSettings.wmsLegendSize().width() ) );
+  composerLegendElem.setAttribute( "wmsLegendHeight", QString::number( mSettings.wmsLegendSize().height() ) );
+  composerLegendElem.setAttribute( "wrapChar", mSettings.wrapChar() );
+  composerLegendElem.setAttribute( "fontColor", mSettings.fontColor().name() );
 
   if ( mComposerMap )
   {
@@ -220,16 +221,16 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   }
 
   //read general properties
-  mLegendRenderer->setTitle( itemElem.attribute( "title" ) );
+  mSettings.setTitle( itemElem.attribute( "title" ) );
   if ( !itemElem.attribute( "titleAlignment" ).isEmpty() )
   {
-    mLegendRenderer->setTitleAlignment(( Qt::AlignmentFlag )itemElem.attribute( "titleAlignment" ).toInt() );
+    mSettings.setTitleAlignment(( Qt::AlignmentFlag )itemElem.attribute( "titleAlignment" ).toInt() );
   }
   int colCount = itemElem.attribute( "columnCount", "1" ).toInt();
   if ( colCount < 1 ) colCount = 1;
-  mLegendRenderer->setColumnCount( colCount );
-  mLegendRenderer->setSplitLayer( itemElem.attribute( "splitLayer", "0" ).toInt() == 1 );
-  mLegendRenderer->setEqualColumnWidth( itemElem.attribute( "equalColumnWidth", "0" ).toInt() == 1 );
+  mSettings.setColumnCount( colCount );
+  mSettings.setSplitLayer( itemElem.attribute( "splitLayer", "0" ).toInt() == 1 );
+  mSettings.setEqualColumnWidth( itemElem.attribute( "equalColumnWidth", "0" ).toInt() == 1 );
 
   QDomNodeList stylesNodeList = itemElem.elementsByTagName( "styles" );
   if ( stylesNodeList.size() > 0 )
@@ -255,16 +256,16 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   //font color
   QColor fontClr;
   fontClr.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
-  mLegendRenderer->setFontColor( fontClr );
+  mSettings.setFontColor( fontClr );
 
   //spaces
-  mLegendRenderer->setBoxSpace( itemElem.attribute( "boxSpace", "2.0" ).toDouble() );
-  mLegendRenderer->setColumnSpace( itemElem.attribute( "columnSpace", "2.0" ).toDouble() );
+  mSettings.setBoxSpace( itemElem.attribute( "boxSpace", "2.0" ).toDouble() );
+  mSettings.setColumnSpace( itemElem.attribute( "columnSpace", "2.0" ).toDouble() );
 
-  mLegendRenderer->setSymbolSize( QSizeF( itemElem.attribute( "symbolWidth", "7.0" ).toDouble(), itemElem.attribute( "symbolHeight", "14.0" ).toDouble() ) );
-  mLegendRenderer->setWmsLegendSize( QSizeF( itemElem.attribute( "wmsLegendWidth", "50" ).toDouble(), itemElem.attribute( "wmsLegendHeight", "25" ).toDouble() ) );
+  mSettings.setSymbolSize( QSizeF( itemElem.attribute( "symbolWidth", "7.0" ).toDouble(), itemElem.attribute( "symbolHeight", "14.0" ).toDouble() ) );
+  mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( "wmsLegendWidth", "50" ).toDouble(), itemElem.attribute( "wmsLegendHeight", "25" ).toDouble() ) );
 
-  mLegendRenderer->setWrapChar( itemElem.attribute( "wrapChar" ) );
+  mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );
 
   //composer map
   if ( !itemElem.attribute( "map" ).isEmpty() )

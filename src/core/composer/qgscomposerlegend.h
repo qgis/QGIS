@@ -22,6 +22,7 @@
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
 #include "qgslegendmodel.h"
+#include "qgslegendsettings.h"
 
 class QgsSymbolV2;
 class QgsComposerGroupItem;
@@ -149,7 +150,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     QgsLegendModel mLegendModel;
 
-    QgsLegendRenderer* mLegendRenderer;
+    QgsLegendSettings mSettings;
 
     const QgsComposerMap* mComposerMap;
 };
