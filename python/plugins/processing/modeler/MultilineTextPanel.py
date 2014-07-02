@@ -63,11 +63,11 @@ class MultilineTextPanel(QtGui.QWidget):
             return self.combo.itemData(self.combo.currentIndex())
 
     def setValue(self, value):
-        items = [self.combo.itemData(i) for i in range(1, self.combo.count())]        
-        for idx, item in enumerate(items):            
-            if item == value:                
+        items = [self.combo.itemData(i) for i in range(1, self.combo.count())]
+        for idx, item in enumerate(items):
+            if item == value:
                 self.combo.setCurrentIndex(idx)
                 return
-        self.combo.setCurrentIndex(0)        
+        self.combo.setCurrentIndex(0)
         if value:
             self.textBox.setPlainText(value)

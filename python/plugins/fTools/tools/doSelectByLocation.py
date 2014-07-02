@@ -85,10 +85,10 @@ class Dialog(QDialog, Ui_Dialog):
         geom = QgsGeometry()
         selectedSet = []
         index = ftools_utils.createIndex(inputProvider)
-        
+
         def _points_op(geomA,geomB):
             return geomA.intersects(geomB)
-            
+
         def _poly_lines_op(geomA,geomB):
             if geomA.disjoint(geomB):
                 return False
@@ -102,14 +102,14 @@ class Dialog(QDialog, Ui_Dialog):
                     intersects |= geomA.overlaps(geomB)
             if not intersects and (self.opFlags & self.WITHIN):
                 intersects |= geomA.contains(geomB)
-            return intersects   
-        
+            return intersects
+
         def _sp_operator():
             if inputLayer.geometryType() == QGis.Point:
                 return _points_op
             else:
                 return _poly_lines_op
-        
+
         self.opFlags = 0
         if self.chkTouches.checkState() == Qt.Checked:
             self.opFlags |= self.TOUCH

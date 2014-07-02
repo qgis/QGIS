@@ -42,7 +42,7 @@ class ExtractByLocation(GeoAlgorithm):
     OVERLAPS = 'OVERLAPS'
     WITHIN = 'WITHIN'
     OUTPUT = 'OUTPUT'
-    
+
     METHODS = ['creating new selection', 'adding to current selection',
                'removing from current selection']
     opFlags = 0
@@ -73,10 +73,10 @@ class ExtractByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename)
         index = vector.spatialindex(layer)
-        
+
         def _points_op(geomA,geomB):
             return geomA.intersects(geomB)
-            
+
         def _poly_lines_op(geomA,geomB):
             if geomA.disjoint(geomB):
                 return False
@@ -90,14 +90,14 @@ class ExtractByLocation(GeoAlgorithm):
                     intersects |= geomA.overlaps(geomB)
             if not intersects and (self.opFlags & self.operators['WITHIN']):
                 intersects |= geomA.contains(geomB)
-            return intersects   
-        
+            return intersects
+
         def _sp_operator():
             if layer.geometryType() == QGis.Point:
                 return _points_op
             else:
                 return _poly_lines_op
-        
+
         self.opFlags = 0
         if self.getParameterValue(self.TOUCHES):
             self.opFlags |= self.operators['TOUCHES']

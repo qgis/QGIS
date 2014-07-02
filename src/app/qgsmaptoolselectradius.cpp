@@ -35,7 +35,7 @@ QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
 {
   mRubberBand = 0;
   mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254,178,76, 63 );
+  mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
 }
 

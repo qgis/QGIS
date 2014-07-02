@@ -55,7 +55,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         QDialog.__init__(self)
 
         self.setupUi(self)
-        
+
         self.zoom = 1
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
@@ -65,7 +65,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
-                
+
         self.view.setScene(self.scene)
         self.view.setAcceptDrops(True)
         self.view.ensureVisible(0, 0, 10, 10)
@@ -103,17 +103,17 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             self.view.scale(factor, factor)
             self.view.centerOn(event.pos().x(), event.pos().y())
             self.repaintModel()
-            
-        def _enterEvent(e):         
-            QGraphicsView.enterEvent(self.view, e)  
+
+        def _enterEvent(e):
+            QGraphicsView.enterEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
         def _mousePressEvent(e):
-            QGraphicsView.mousePressEvent(self.view, e)           
+            QGraphicsView.mousePressEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
-        def _mouseReleaseEvent(e): 
-            QGraphicsView.mouseReleaseEvent(self.view, e)          
-            self.view.viewport().setCursor(Qt.ArrowCursor)            
-                
+        def _mouseReleaseEvent(e):
+            QGraphicsView.mouseReleaseEvent(self.view, e)
+            self.view.viewport().setCursor(Qt.ArrowCursor)
+
         self.view.setDragMode(QGraphicsView.ScrollHandDrag);
         self.view.dragEnterEvent = _dragEnterEvent
         self.view.dropEvent = _dropEvent
@@ -304,7 +304,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 return
             fout.write(text)
             fout.close()
-            self.update = True           
+            self.update = True
             QMessageBox.information(self, self.tr('Model saved'),
                                     self.tr('Model was correctly saved.'))
 
@@ -335,7 +335,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 QMessageBox.critical(self, self.tr('Could not open model'),
                         self.tr('The selected model could not be loaded.\n'
                                  'See the log for more information.'))
-            except Exception, e:                
+            except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                             'Could not load model ' + filename + '\n'
                             + e.args[0])
@@ -354,7 +354,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def addInput(self):
         item = self.inputsTree.currentItem()
         paramType = str(item.text(0))
-        self.addInputOfType(paramType)        
+        self.addInputOfType(paramType)
 
     def addInputOfType(self, paramType, pos=None):
         if paramType in ModelerParameterDefinitionDialog.paramTypes:
@@ -364,12 +364,12 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 if pos is None:
                     pos = self.getPositionForParameterItem()
                 if isinstance(pos, QPoint):
-                    pos =  QPointF(pos)                     
+                    pos =  QPointF(pos)
                 self.alg.addParameter(Input(dlg.param, pos))
                 self.repaintModel()
                 #self.view.ensureVisible(self.scene.getLastParameterItem())
                 self.hasChanged = True
-                
+
     def getPositionForParameterItem(self):
         MARGIN = 20
         BOX_WIDTH = 200
@@ -379,7 +379,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
         else:
             newX = MARGIN + BOX_WIDTH / 2
-        return QPointF(newX, MARGIN + BOX_HEIGHT / 2)                
+        return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
     def fillInputsTree(self):
         icon = QIcon(os.path.dirname(__file__) + '/../images/input.png')
@@ -409,9 +409,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 if pos is None:
                     dlg.alg.pos = self.getPositionForAlgorithmItem()
                 else:
-                    dlg.alg.pos = pos    
+                    dlg.alg.pos = pos
                 if isinstance(dlg.alg.pos, QPoint):
-                    dlg.alg.pos =  QPointF(pos)         
+                    dlg.alg.pos =  QPointF(pos)
                 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
                 for i, out in enumerate(dlg.alg.outputs):
                     dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
@@ -420,7 +420,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.repaintModel()
                 #self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.hasChanged = True
-                
+
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
         BOX_WIDTH = 200
@@ -435,7 +435,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
-                
+
 
     def fillAlgorithmTree(self):
         settings = QSettings()

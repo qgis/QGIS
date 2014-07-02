@@ -81,10 +81,10 @@ class SelectByLocation(GeoAlgorithm):
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
         index = vector.spatialindex(inputLayer)
-        
+
         def _points_op(geomA,geomB):
             return geomA.intersects(geomB)
-            
+
         def _poly_lines_op(geomA,geomB):
             if geomA.disjoint(geomB):
                 return False
@@ -98,14 +98,14 @@ class SelectByLocation(GeoAlgorithm):
                     intersects |= geomA.overlaps(geomB)
             if not intersects and (self.opFlags & self.operators['WITHIN']):
                 intersects |= geomA.contains(geomB)
-            return intersects   
-        
+            return intersects
+
         def _sp_operator():
             if inputLayer.geometryType() == QGis.Point:
                 return _points_op
             else:
                 return _poly_lines_op
-        
+
         self.opFlags = 0
         if self.getParameterValue(self.TOUCHES):
             self.opFlags |= self.operators['TOUCHES']

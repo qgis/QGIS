@@ -11,7 +11,7 @@
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
 
-QgsLegendRenderer::QgsLegendRenderer(QgsLegendModel* legendModel, const QgsLegendSettings& settings )
+QgsLegendRenderer::QgsLegendRenderer( QgsLegendModel* legendModel, const QgsLegendSettings& settings )
     : mLegendModel( legendModel )
     , mSettings( settings )
 {

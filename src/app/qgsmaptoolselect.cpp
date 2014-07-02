@@ -32,7 +32,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254,178,76, 63 );
+  mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
 }
 

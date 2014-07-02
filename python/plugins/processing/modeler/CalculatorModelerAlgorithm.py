@@ -40,7 +40,7 @@ FORMULA = 'FORMULA'
 NUMBER = 'NUMBER'
 RESULT = 'RESULT'
 AVAILABLE_VARIABLES = 10
-    
+
 class CalculatorModelerAlgorithm(GeoAlgorithm):
 
     def defineCharacteristics(self):
@@ -68,10 +68,10 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
 
     def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
         return CalculatorModelerParametersDialog(self, modelAlg, algIndex)
-    
+
 
 class CalculatorModelerParametersDialog(ModelerParametersDialog):
-    
+
     def setupUi(self):
         self.valueItems = {}
         self.dependentItems = {}
@@ -112,21 +112,21 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
     def createAlgorithm(self):
         alg = Algorithm('modelertools:calculator')
         alg.setName(self.model)
-        alg.description = "Calculator"                
+        alg.description = "Calculator"
 
         formula = self.formulaText.text()
         alg.params[FORMULA] = formula
- 
+
         for i in xrange(AVAILABLE_VARIABLES):
             paramname = NUMBER + str(i)
             alg.params[paramname] = None
-            
+
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
         used = []
         for i in range(len(numbers)):
             if str(chr(i + 97)) in formula:
-                used.append(numbers[i])        
-            
+                used.append(numbers[i])
+
         for i, variable in enumerate(used):
             paramname = NUMBER + str(i)
             alg.params[paramname] = variable
@@ -135,4 +135,4 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         return alg
 
 
-    
+

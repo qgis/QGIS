@@ -333,7 +333,7 @@ namespace pal
       /** join connected features with the same label text */
       void joinConnectedFeatures();
 
-      void chopFeatures(double chopInterval );
+      void chopFeatures( double chopInterval );
 
   };
 

@@ -138,7 +138,7 @@ class Processing:
         Processing.addProvider(SagaAlgorithmProvider())
         Processing.addProvider(GrassAlgorithmProvider())
         Processing.addProvider(Grass7AlgorithmProvider())
-        Processing.addProvider(ScriptAlgorithmProvider())        
+        Processing.addProvider(ScriptAlgorithmProvider())
         Processing.addProvider(TauDEMAlgorithmProvider())
         Processing.addProvider(ModelerAlgorithmProvider())
         Processing.modeler.initializeSettings()
@@ -211,7 +211,7 @@ class Processing:
             for action in providerActions:
                 actions.append(action)
             Processing.actions[provider.getName()] = actions
-       
+
         Processing.actions[provider.getName()] = actions
 
     @staticmethod
@@ -256,9 +256,9 @@ class Processing:
             print 'Error: Algorithm not found\n'
             return
         alg = alg.getCopy()
-        
+
         if len(args) == 1 and isinstance(args[0], dict):
-            # Set params by name and try to run the alg even if not all parameter values are provided, 
+            # Set params by name and try to run the alg even if not all parameter values are provided,
             # by using the default values instead.
             setParams = []
             for (name, value) in args[0].items():

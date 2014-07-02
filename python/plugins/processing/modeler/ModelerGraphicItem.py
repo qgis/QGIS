@@ -85,7 +85,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         if isinstance(element, Algorithm):
             alg = element.algorithm
             if alg.parameters:
-                pt = self.getLinkPointForParameter(-1)                
+                pt = self.getLinkPointForParameter(-1)
                 pt = QtCore.QPointF(0, pt.y() + 2)
                 self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.paramsFolded)
                 self.inButton.setParentItem(self)
@@ -119,7 +119,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         numParams = len(self.element.algorithm.parameters) if unfolded else 0
         unfolded = isinstance(self.element, Algorithm) and not self.element.outputsFolded
         numOutputs = len(self.element.algorithm.outputs) if unfolded else 0
-        
+
         hUp = fm.height() * 1.2 * (numParams + 2)
         hDown = fm.height() * 1.2 * (numOutputs + 2)
         rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2,
@@ -138,7 +138,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         removeAction = popupmenu.addAction('Remove')
         removeAction.triggered.connect(self.removeElement)
         editAction = popupmenu.addAction('Edit')
-        editAction.triggered.connect(self.editElement)                
+        editAction.triggered.connect(self.editElement)
         if isinstance(self.element, Algorithm):
             if not self.element.active:
                 removeAction = popupmenu.addAction('Activate')
@@ -158,7 +158,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         else:
             QtGui.QMessageBox.warning(None, 'Could not activate Algorithm',
                     'The selected algorithm depends on other currently non-active algorithms.\n'
-                    'Activate them them before trying to activate it.')        
+                    'Activate them them before trying to activate it.')
 
     def editElement(self):
         if isinstance(self.element, Input):
@@ -253,7 +253,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                         pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
                                 + 33, h)
                         painter.drawText(pt, text)
-                        i += 1            
+                        i += 1
             h = fm.height() * 1.2
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QtCore.QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
@@ -304,8 +304,8 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
     def itemChange(self, change, value):
         if change == QtGui.QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
-                arrow.updatePosition()                
-            self.element.pos = self.pos()             
+                arrow.updatePosition()
+            self.element.pos = self.pos()
 
         return value
 
