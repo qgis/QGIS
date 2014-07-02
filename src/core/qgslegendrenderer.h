@@ -23,7 +23,7 @@ class QgsSymbolV2;
  *
  * @note added in 2.6
  */
-class QgsLegendRenderer
+class CORE_EXPORT QgsLegendRenderer
 {
   public:
     /** Construct legend renderer. The ownership of legend model does not change */

@@ -13,7 +13,7 @@
  *
  * @note added in 2.6
  */
-class QgsLegendSettings
+class CORE_EXPORT QgsLegendSettings
 {
   public:
     QgsLegendSettings();
