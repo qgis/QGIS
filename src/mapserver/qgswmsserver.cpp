@@ -1062,7 +1062,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QgsDebugMsg( QString( "mMapRenderer width = %1 height = %2" ).arg( mMapRenderer->outputSize().width() ).arg( mMapRenderer->outputSize().height() ) );
   QgsDebugMsg( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
 
-  //find out the current scale denominater and set it to the SLD parser
+  //find out the current scale denominator and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
   double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
@@ -1507,7 +1507,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   QgsCoordinateReferenceSystem outputCRS;
 
   //wms spec says that CRS parameter is mandatory.
-  //we don't rejeict the request if it is not there but disable reprojection on the fly
+  //we don't reject the request if it is not there but disable reprojection on the fly
   if ( crs.isEmpty() )
   {
     //disable on the fly projection
@@ -1649,7 +1649,7 @@ int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoor
   // use pixel center instead of corner
   // Unfortunately going through pixel (integer) we cannot reconstruct precisely
   // the coordinate clicked on client and thus result may differ from
-  // the same raster loaded and queried localy on client
+  // the same raster loaded and queried locally on client
   mapPoint.setX( mapPoint.x() + xRes / 2 );
   mapPoint.setY( mapPoint.y() - yRes / 2 );
 
