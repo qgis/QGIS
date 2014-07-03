@@ -324,7 +324,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                 == ModelerParameterDefinitionDialog.PARAMETER_STRING \
                 or isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description,
-                    str(self.defaultTextBox.text()))
+                    unicode(self.defaultTextBox.text()))
         elif self.paramType \
                 == ModelerParameterDefinitionDialog.PARAMETER_EXTENT \
                 or isinstance(self.param, ParameterExtent):
