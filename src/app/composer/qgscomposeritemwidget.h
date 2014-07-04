@@ -22,10 +22,31 @@
 #include "qgscomposeritem.h"
 
 class QgsComposerItem;
+class QgsAtlasComposition;
+
+/**A base class for property widgets for composer items. All composer item widgets should inherit from
+ * this base class.
+*/
+class QgsComposerItemBaseWidget: public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerItem* item );
+    ~QgsComposerItemBaseWidget();
+
+  protected:
+    /**Returns the current atlas coverage layer (if set)*/
+    QgsVectorLayer* atlasCoverageLayer() const;
+
+    /**Returns the atlas for the composition*/
+    QgsAtlasComposition *atlasComposition() const;
+
+    QgsComposerItem* mItem;
+};
 
 /**A class to enter generic properties for composer items (e.g. background, outline, frame).
  This widget can be embedded into other item widgets*/
-class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
+class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerItemWidgetBase
 {
     Q_OBJECT
   public:
@@ -92,7 +113,6 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 //    void changeItemTransparency( int value );
     void changeItemPosition();
 
-    QgsComposerItem* mItem;
 };
 
 #endif //QGSCOMPOSERITEMWIDGET_H

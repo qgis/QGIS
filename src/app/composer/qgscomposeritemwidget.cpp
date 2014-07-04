@@ -23,7 +23,52 @@
 #include <QColorDialog>
 #include <QPen>
 
-QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
+
+//QgsComposerItemBaseWidget
+
+QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
+{
+
+}
+
+QgsComposerItemBaseWidget::~QgsComposerItemBaseWidget()
+{
+
+}
+
+QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
+{
+  if ( !mItem )
+  {
+    return 0;
+  }
+
+  QgsComposition* composition = mItem->composition();
+
+  if ( !composition )
+  {
+    return 0;
+  }
+
+  return &composition->atlasComposition();
+}
+
+QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
+{
+  QgsAtlasComposition* atlasMap = atlasComposition();
+
+  if ( atlasMap && atlasMap->enabled() )
+  {
+    return atlasMap->coverageLayer();
+  }
+
+  return 0;
+}
+
+
+//QgsComposerItemWidget
+
+QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QgsComposerItemBaseWidget( parent, item )
 {
 
   setupUi( this );
@@ -55,7 +100,7 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mTransparencySpnBx, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget(): QWidget( 0 ), mItem( 0 )
+QgsComposerItemWidget::QgsComposerItemWidget(): QgsComposerItemBaseWidget( 0, 0 )
 {
 
 }

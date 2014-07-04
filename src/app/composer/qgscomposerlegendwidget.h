@@ -19,6 +19,7 @@
 #define QGSCOMPOSERLEGENDWIDGET_H
 
 #include "ui_qgscomposerlegendwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 #include <QWidget>
 #include <QItemDelegate>
 
@@ -39,7 +40,7 @@ class QgsComposerLegendWidgetStyleDelegate : public QItemDelegate
 /** \ingroup MapComposer
  * A widget for setting properties relating to a composer legend.
  */
-class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidgetBase
+class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLegendWidgetBase
 {
     Q_OBJECT
 

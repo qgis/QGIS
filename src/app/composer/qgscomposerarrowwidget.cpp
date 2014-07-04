@@ -22,7 +22,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QWidget( 0 ), mArrow( arrow )
+QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( 0, arrow ), mArrow( arrow )
 {
   setupUi( this );
   mRadioButtonGroup = new QButtonGroup( this );

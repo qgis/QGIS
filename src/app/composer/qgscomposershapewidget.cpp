@@ -24,7 +24,7 @@
 #include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 
-QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QWidget( 0 ), mComposerShape( composerShape )
+QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( 0, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
 
@@ -104,12 +104,8 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
     return;
   }
 
-  QgsVectorLayer* coverageLayer = 0;
   // use the atlas coverage layer, if any
-  if ( mComposerShape->composition()->atlasComposition().enabled() )
-  {
-    coverageLayer = mComposerShape->composition()->atlasComposition().coverageLayer();
-  }
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerShape->shapeStyleSymbol()->clone() );
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );

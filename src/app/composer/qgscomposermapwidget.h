@@ -20,12 +20,14 @@
 
 #include "ui_qgscomposermapwidgetbase.h"
 #include "qgscomposermap.h"
+#include "qgscomposeritemwidget.h"
+
 class QgsMapLayer;
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
  * */
-class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
+class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapWidgetBase
 {
     Q_OBJECT
 
