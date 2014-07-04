@@ -608,7 +608,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
     QgsSymbolV2* newSymbol = symbol->clone();
     newSymbol->setColor( ramp->color( x ) );
 
-    cats.append( QgsRendererCategoryV2( value, newSymbol, value.toString() ) );
+    cats.append( QgsRendererCategoryV2( value, newSymbol, value.toString(), true ) );
   }
 
   // add null (default) value if not exists
@@ -616,7 +616,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   {
     QgsSymbolV2* newSymbol = symbol->clone();
     newSymbol->setColor( ramp->color( invert ? 0 : 1 ) );
-    cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString() ) );
+    cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString(), true ) );
   }
 }
 
@@ -791,7 +791,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
 {
   if ( !mModel ) return;
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
-  QgsRendererCategoryV2 cat( QString(), symbol, QString() );
+  QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
 }
 

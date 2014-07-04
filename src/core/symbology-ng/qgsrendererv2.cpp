@@ -520,6 +520,7 @@ bool QgsFeatureRendererV2::legendSymbolItemsCheckable() const
 
 bool QgsFeatureRendererV2::legendSymbolItemChecked( QString item )
 {
+  Q_UNUSED( item );
   return false;
 }
 

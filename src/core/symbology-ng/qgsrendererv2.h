@@ -151,15 +151,15 @@ class CORE_EXPORT QgsFeatureRendererV2
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! items of symbology items in legend should be checkable
-    //! @node added in 2.5
+    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;
 
     //! items of symbology items in legend is checked
-    //! @node added in 2.5
+    //! @note added in 2.5
     virtual bool legendSymbolItemChecked( QString key );
 
     //! item in symbology was checked
-    //! @node added in 2.5
+    //! @note added in 2.5
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
     //! return a list of item text / symbol
