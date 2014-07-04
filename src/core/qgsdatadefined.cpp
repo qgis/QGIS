@@ -65,7 +65,17 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
     }
   }
 
-  mExpression->prepare( layer->pendingFields() );
+  if ( layer )
+  {
+    mExpression->prepare( layer->pendingFields() );
+  }
+  else
+  {
+    //preparing expression without a layer set, so pass empty field list
+    QgsFields empty;
+    mExpression->prepare( empty );
+  }
+
   if ( mExpression->hasEvalError() )
   {
     QgsDebugMsg( "Prepare error:" + mExpression->evalErrorString() );
