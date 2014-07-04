@@ -356,7 +356,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         elif isinstance(param, ParameterFile):
             item = QtGui.QComboBox()
             item.setEditable(True)
-            files = self.getFiles()
+            files = self.getAvailableValuesOfType(ParameterFile, OutputFile)
             for f in files:
                 item.addItem(self.resolveValueDescription(f), f)
         else:
