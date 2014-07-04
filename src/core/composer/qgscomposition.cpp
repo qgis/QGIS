@@ -821,6 +821,10 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     return false;
   }
 
+  // read atlas parameters - must be done before adding items
+  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
+  atlasComposition().readXML( atlasElem, importDoc );
+
   // remove all uuid attributes since we don't want duplicates UUIDS
   QDomNodeList composerItemsNodes = importDoc.elementsByTagName( "ComposerItem" );
   for ( int i = 0; i < composerItemsNodes.count(); ++i )
@@ -836,9 +840,9 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   //addItemsFromXML
   addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
 
-  // read atlas parameters
-  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
-  atlasComposition().readXML( atlasElem, importDoc );
+  //read atlas map parameters (for pre 2.2 templates)
+  //this can only be done after items have been added
+  atlasComposition().readXMLMapSettings( atlasElem, importDoc );
   return true;
 }
 

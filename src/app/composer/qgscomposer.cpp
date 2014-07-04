@@ -2987,8 +2987,13 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   createCompositionWidget();
 
   //read and restore all the items
+  QDomElement atlasElem;
   if ( mComposition )
   {
+    // read atlas parameters - must be done before adding items
+    atlasElem = composerElem.firstChildElement( "Atlas" );
+    mComposition->atlasComposition().readXML( atlasElem, doc );
+
     mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
   }
 
@@ -3023,15 +3028,14 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   setupUndoView();
 
-  // atlas properties reading
-  QDomNodeList atlasNodeList = composerElem.elementsByTagName( "Atlas" );
-
   //delete old atlas composition widget
   QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
   delete oldAtlasWidget;
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
-  mComposition->atlasComposition().readXML( atlasNodeList.at( 0 ).toElement(), doc );
+  //read atlas map parameters (for pre 2.2 templates)
+  //this part must be done after adding items
+  mComposition->atlasComposition().readXMLMapSettings( atlasElem, doc );
 
   //set state of atlas controls
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
