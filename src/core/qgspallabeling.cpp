@@ -654,23 +654,6 @@ static QgsPalLayerSettings::SizeUnit _decodeUnits( const QString& str )
   return QgsPalLayerSettings::MM; // "MM"
 }
 
-static QPainter::CompositionMode _decodeBlendMode( const QString& str )
-{
-  if ( str.compare( "Lighten", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Lighten;
-  if ( str.compare( "Screen", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Screen;
-  if ( str.compare( "Dodge", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorDodge;
-  if ( str.compare( "Addition", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Plus;
-  if ( str.compare( "Darken", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Darken;
-  if ( str.compare( "Multiply", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Multiply;
-  if ( str.compare( "Burn", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorBurn;
-  if ( str.compare( "Overlay", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Overlay;
-  if ( str.compare( "SoftLight", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_SoftLight;
-  if ( str.compare( "HardLight", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_HardLight;
-  if ( str.compare( "Difference", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Difference;
-  if ( str.compare( "Subtract", Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Exclusion;
-  return QPainter::CompositionMode_SourceOver; // "Normal"
-}
-
 static Qt::PenJoinStyle _decodePenJoinStyle( const QString& str )
 {
   if ( str.compare( "Miter", Qt::CaseInsensitive ) == 0 ) return Qt::MiterJoin;
@@ -2483,7 +2466,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
 
       if ( !blendstr.isEmpty() )
       {
-        dataDefinedValues.insert( p, QVariant(( int )_decodeBlendMode( blendstr ) ) );
+        dataDefinedValues.insert( p, QVariant(( int )QgsSymbolLayerV2Utils::decodeBlendMode( blendstr ) ) );
         return true;
       }
     }
