@@ -462,6 +462,7 @@ namespace pal
           double bmin[2], bmax[2];
           partCheck->getBoundingBox( bmin, bmax );
           rtree->Remove( bmin, bmax, partCheck );
+          featureParts->remove( partCheck );
 
           otherPart->getBoundingBox( bmin, bmax );
 
