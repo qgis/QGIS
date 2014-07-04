@@ -453,6 +453,20 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
+    
+    /**Returns whether this item is part of a group
+     * @returns true if item is in a group
+     * @note added in version 2.5
+     * @see setIsGroupMember
+    */
+    bool isGroupMember() const;
+
+    /**Sets whether this item is part of a group
+     * @param isGroupMember set to true if item is in a group
+     * @note added in version 2.5
+     * @see isGroupMember
+    */
+    void setIsGroupMember( bool isGroupMember );
 
     /**Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,

@@ -409,6 +409,20 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @note there is not setter since one can't manually set the id*/
     QString uuid() const { return mUuid; }
 
+    /**Returns whether this item is part of a group
+     * @returns true if item is in a group
+     * @note added in version 2.5
+     * @see setIsGroupMember
+    */
+    bool isGroupMember() const { return mIsGroupMember; }
+
+    /**Sets whether this item is part of a group
+     * @param isGroupMember set to true if item is in a group
+     * @note added in version 2.5
+     * @see isGroupMember
+    */
+    void setIsGroupMember( bool isGroupMember );
+
     /**Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
@@ -483,6 +497,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**The item's position mode
     @note: this member was added in version 2.0*/
     ItemPositionMode mLastUsedPositionMode;
+
+    /**Whether or not this item is part of a group*/
+    bool mIsGroupMember;
 
     /**The layer that needs to be exported
     @note: if -1, all layers are to be exported

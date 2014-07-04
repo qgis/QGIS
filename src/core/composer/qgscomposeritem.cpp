@@ -64,6 +64,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mIsGroupMember( false )
     , mCurrentExportLayer( -1 )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
@@ -89,6 +90,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mIsGroupMember( false )
     , mCurrentExportLayer( -1 )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
@@ -1177,4 +1179,10 @@ void QgsComposerItem::setId( const QString& id )
 {
   setToolTip( id );
   mId = id;
+}
+
+void QgsComposerItem::setIsGroupMember( bool isGroupMember )
+{
+  mIsGroupMember = isGroupMember;
+  setFlag( QGraphicsItem::ItemIsSelectable, !isGroupMember ); //item in groups cannot be selected
 }
