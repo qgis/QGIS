@@ -752,7 +752,10 @@ bool QgsCategorizedSymbolRendererV2::legendSymbolItemsCheckable() const
 
 bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( int index )
 {
-  return index < 0 ? true : mCategories[ index ].renderState();
+  if( index >= 0 && index < mCategories.size() )
+    return mCategories[ index ].renderState();
+  else
+    return true;
 }
 
 void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( int index, bool state )

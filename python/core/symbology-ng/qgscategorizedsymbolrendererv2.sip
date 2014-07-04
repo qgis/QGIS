@@ -6,7 +6,7 @@ class QgsRendererCategoryV2
   public:
 
     //! takes ownership of symbol
-    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol /Transfer/, QString label, bool render );
+    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol /Transfer/, QString label, bool render = true );
 
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );

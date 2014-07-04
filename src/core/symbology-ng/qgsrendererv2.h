@@ -156,7 +156,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! items of symbology items in legend is checked
     //! @note added in 2.5
-    virtual bool legendSymbolItemChecked( int key );
+    virtual bool legendSymbolItemChecked( int index );
 
     //! item in symbology was checked
     //! @note added in 2.5
