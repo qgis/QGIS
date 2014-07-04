@@ -88,7 +88,17 @@ void QgsComposerHtml::loadHtml()
   if ( frameCount() < 1 )  return;
 
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
-  contentsSize.setWidth( mFrameItems.at( 0 )->boundingRect().width() * mHtmlUnitsToMM );
+
+  //find maximum frame width
+  double maxFrameWidth = 0;
+  QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
+  for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
+  {
+    maxFrameWidth = qMax( maxFrameWidth, ( *frameIt )->boundingRect().width() );
+  }
+  //set content width to match maximum frame width
+  contentsSize.setWidth( maxFrameWidth * mHtmlUnitsToMM );
+
   mWebPage->setViewportSize( contentsSize );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
