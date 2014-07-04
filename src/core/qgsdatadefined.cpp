@@ -39,6 +39,12 @@ QgsDataDefined::~QgsDataDefined()
   delete mExpression;
 }
 
+void QgsDataDefined::setExpressionString( const QString &expr )
+{
+  mExpressionString = expr;
+  mExpressionPrepared = false;
+}
+
 bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
 {
   if ( !mUseExpression || mExpressionString.isEmpty() )
