@@ -175,7 +175,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( !r )
         return QVariant();
 
-      return r->legendSymbolItemChecked( sym->name() ) ? Qt::Checked : Qt::Unchecked;
+      return r->legendSymbolItemChecked( index.row() ) ? Qt::Checked : Qt::Unchecked;
     }
     return QVariant();
   }
@@ -342,7 +342,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
     if ( !r )
       return false;
 
-    r->checkLegendSymbolItem( sym->name(), value == Qt::Checked );
+    r->checkLegendSymbolItem( index.row(), value == Qt::Checked );
 
     emit dataChanged( index, index );
 

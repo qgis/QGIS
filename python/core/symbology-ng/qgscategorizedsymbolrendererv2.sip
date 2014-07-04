@@ -141,11 +141,11 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( int index );
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( int index, bool state = true );
 
   protected:
     void rebuildHash();

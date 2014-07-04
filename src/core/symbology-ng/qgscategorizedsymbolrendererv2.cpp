@@ -750,16 +750,12 @@ bool QgsCategorizedSymbolRendererV2::legendSymbolItemsCheckable() const
   return true;
 }
 
-bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( QString key )
+bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( int index )
 {
-  int idx = categoryIndexForLabel( key );
-  return idx < 0 ? true : mCategories[ idx ].renderState();
+  return index < 0 ? true : mCategories[ index ].renderState();
 }
 
-void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( QString key, bool state )
+void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( int index, bool state )
 {
-  int idx = categoryIndexForLabel( key );
-  if ( idx < 0 )
-    return;
-  updateCategoryRenderState( idx, state );
+  updateCategoryRenderState( index, state );
 }

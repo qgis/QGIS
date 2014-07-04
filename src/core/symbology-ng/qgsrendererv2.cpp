@@ -518,15 +518,15 @@ bool QgsFeatureRendererV2::legendSymbolItemsCheckable() const
   return false;
 }
 
-bool QgsFeatureRendererV2::legendSymbolItemChecked( QString item )
+bool QgsFeatureRendererV2::legendSymbolItemChecked( int index )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( index );
   return false;
 }
 
-void QgsFeatureRendererV2::checkLegendSymbolItem( QString item, bool state )
+void QgsFeatureRendererV2::checkLegendSymbolItem(int index, bool state )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( index );
   Q_UNUSED( state );
 }
 
