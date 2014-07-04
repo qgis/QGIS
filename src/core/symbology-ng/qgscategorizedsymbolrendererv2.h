@@ -32,7 +32,7 @@ class CORE_EXPORT QgsRendererCategoryV2
     QgsRendererCategoryV2( );
 
     //! takes ownership of symbol
-    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label );
+    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label, bool render );
 
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
@@ -47,6 +47,10 @@ class CORE_EXPORT QgsRendererCategoryV2
     void setSymbol( QgsSymbolV2* s );
     void setLabel( const QString &label );
 
+    // @note added in 2.5
+    bool renderState() const;
+    void setRenderState( bool render );
+
     // debugging
     QString dump() const;
 
@@ -56,6 +60,7 @@ class CORE_EXPORT QgsRendererCategoryV2
     QVariant mValue;
     QScopedPointer<QgsSymbolV2> mSymbol;
     QString mLabel;
+    bool mRender;
 
     void swap( QgsRendererCategoryV2 & other );
 };
@@ -97,9 +102,16 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( QVariant val );
 
+    //! return index of category with specified label (-1 if not found or not unique)
+    //! @note added in 2.5
+    int categoryIndexForLabel( QString val );
+
     bool updateCategoryValue( int catIndex, const QVariant &value );
     bool updateCategorySymbol( int catIndex, QgsSymbolV2* symbol );
     bool updateCategoryLabel( int catIndex, QString label );
+
+    //! @note added in 2.5
+    bool updateCategoryRenderState( int catIndex, bool render );
 
     void addCategory( const QgsRendererCategoryV2 &category );
     bool deleteCategory( int catIndex );
@@ -152,6 +164,18 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
+
+    //! items of symbology items in legend should be checkable
+    // @note added in 2.5
+    virtual bool legendSymbolItemsCheckable() const;
+
+    //! item in symbology was checked
+    // @note added in 2.5
+    virtual bool legendSymbolItemChecked( QString key );
+
+    //! item in symbology was checked
+    // @note added in 2.5
+    virtual void checkLegendSymbolItem( QString key, bool state = true );
 
   protected:
     QString mAttrName;

@@ -161,6 +161,22 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       return sym->name();
     else if ( role == Qt::DecorationRole )
       return sym->icon();
+    else if ( role == Qt::CheckStateRole )
+    {
+      QgsLayerTreeLayer *nodeL = layerNodeForSymbologyNode( index );
+      if ( !nodeL || !nodeL->childrenCheckable() )
+        return QVariant();
+
+      if( !nodeL->isVisible() )
+        return Qt::PartiallyChecked;
+
+      QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );
+      QgsFeatureRendererV2* r = vlayer->rendererV2();
+      if ( !r )
+        return QVariant();
+
+      return r->legendSymbolItemChecked( sym->name() ) ? Qt::Checked : Qt::Unchecked;
+    }
     return QVariant();
   }
 
@@ -277,7 +293,13 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
   }
 
   if ( index2symnode( index ) )
-    return Qt::ItemIsEnabled; // | Qt::ItemIsSelectable;
+  {
+    QgsLayerTreeLayer *nodeL = layerNodeForSymbologyNode( index );
+    if ( nodeL && nodeL->childrenCheckable() )
+      return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    else
+      return Qt::ItemIsEnabled; // | Qt::ItemIsSelectable;
+  }
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
@@ -305,6 +327,31 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
 bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
+  QgsLayerTreeModelSymbologyNode *sym = index2symnode( index );
+  if ( sym )
+  {
+    if ( role != Qt::CheckStateRole )
+      return false;
+
+    QgsLayerTreeLayer *nodeL = layerNodeForSymbologyNode( index );
+    if ( !nodeL || !nodeL->childrenCheckable() )
+      return false;
+
+    QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( nodeL->layer() );
+    QgsFeatureRendererV2* r = vlayer->rendererV2();
+    if ( !r )
+      return false;
+
+    r->checkLegendSymbolItem( sym->name(), value == Qt::Checked );
+
+    emit dataChanged( index, index );
+
+    if ( nodeL->isVisible() )
+      vlayer->clearCacheImage();
+
+    return true;
+  }
+
   QgsLayerTreeNode* node = index2node( index );
   if ( !node )
     return QgsLayerTreeModel::setData( index, value, role );
@@ -318,12 +365,16 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
     {
       QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
       layer->setVisible(( Qt::CheckState )value.toInt() );
+      return true;
     }
-    else if ( QgsLayerTree::isGroup( node ) )
+
+    if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup* group = QgsLayerTree::toGroup( node );
       group->setVisible(( Qt::CheckState )value.toInt() );
+      return true;
     }
+
     return true;
   }
   else if ( role == Qt::EditRole )
@@ -643,7 +694,7 @@ void QgsLayerTreeModel::addSymbologyToVectorLayer( QgsLayerTreeLayer* nodeL )
   }
   QSize iconSize( 16, 16 );
   QgsLegendSymbolList items = r->legendSymbolItems();
-
+  nodeL->setChildrenCheckable( r->legendSymbolItemsCheckable() );
   if ( items.count() == 0 )
     return;
 
