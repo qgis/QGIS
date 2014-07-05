@@ -150,6 +150,10 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   }
 
   //connect data defined buttons
+  connect( mItemRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mItemRotationSpinBox, SLOT( setDisabled( bool ) ) );
+
   connect( mTransparencyDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mTransparencySlider, SLOT( setDisabled( bool ) ) );
@@ -494,7 +498,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mTransparencySlider->setValue( mItem->transparency() );
   mTransparencySpnBx->setValue( mItem->transparency() );
-  mItemRotationSpinBox->setValue( mItem->itemRotation() );
+  mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerItem::OriginalValue ) );
 
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
@@ -514,28 +518,37 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   QgsVectorLayer* vl = atlasCoverageLayer();
 
   //block signals from data defined buttons
+  mItemRotationDDBtn->blockSignals( true );
   mTransparencyDDBtn->blockSignals( true );
   mBlendModeDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
+  mItemRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemRotation ),
+                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
   mTransparencyDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::Transparency ),
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
   mBlendModeDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::BlendMode ),
                          QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
+  mItemRotationSpinBox->setEnabled( !mItemRotationDDBtn->isActive() );
   mTransparencySlider->setEnabled( !mTransparencyDDBtn->isActive() );
   mTransparencySpnBx->setEnabled( !mTransparencyDDBtn->isActive() );
   mBlendModeCombo->setEnabled( !mBlendModeDDBtn->isActive() );
 
   //unblock signals from data defined buttons
+  mItemRotationDDBtn->blockSignals( false );
   mTransparencyDDBtn->blockSignals( false );
   mBlendModeDDBtn->blockSignals( false );
 }
 
 QgsComposerItem::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
 {
-  if ( widget == mTransparencyDDBtn )
+  if ( widget == mItemRotationDDBtn )
+  {
+    return QgsComposerItem::ItemRotation;
+  }
+  else if ( widget == mTransparencyDDBtn )
   {
     return QgsComposerItem::Transparency;
   }

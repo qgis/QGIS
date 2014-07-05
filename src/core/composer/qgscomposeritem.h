@@ -118,6 +118,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       MapYMax /*< map extent y maximum */
     };
 
+    /** Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, /*< return the current evaluated value for the property */
+      OriginalValue /*< return the original, user set value */
+    };
+
     /**Constructor
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
@@ -139,7 +149,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void setSelected( bool s );
 
     /** \brief Is selected */
-    virtual bool selected() const {return QGraphicsRectItem::isSelected();};
+    virtual bool selected() const { return QGraphicsRectItem::isSelected(); }
 
     /** stores state in project */
     virtual bool writeSettings();
@@ -414,15 +424,20 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const { return mItemPositionLocked; }
 
-    /**Returns the rotation for the composer item
-    @note this method was added in version 2.1*/
-    double itemRotation() const { return mItemRotation; }
+    /**Returns the current rotation for the composer item.
+     * @returns rotation for composer item
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+     * @note this method was added in version 2.1
+     */
+    double itemRotation( PropertyValueType valueType = EvaluatedValue ) const;
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
      *             instead
      */
-    Q_DECL_DEPRECATED double rotation() const { return mItemRotation; }
+    Q_DECL_DEPRECATED double rotation() const { return mEvaluatedItemRotation; }
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -541,6 +556,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Item rotation in degrees, clockwise*/
     double mItemRotation;
+    /**Temporary evaluated item rotation in degrees, clockwise. Data defined rotation may mean
+     * this value differs from mItemRotation.
+    */
+    double mEvaluatedItemRotation;
 
     /**Composition blend mode for item*/
     QPainter::CompositionMode mBlendMode;
@@ -678,13 +697,24 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Map of current data defined properties*/
     QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
+    /**Refresh item's rotation, considering data defined rotation setting
+      *@param updateItem set to false to prevent the item being automatically updated
+      *@param rotateAroundCenter set to true to rotate the item around its center rather
+      * than its origin
+      * @note this method was added in version 2.5
+     */
+    void refreshRotation( bool updateItem = true, bool rotateAroundCenter = false );
+
     /**Refresh item's transparency, considering data defined transparency
       *@param updateItem set to false to prevent the item being automatically updated
       * after the transparency is set
+      * @note this method was added in version 2.5
      */
     void refreshTransparency( bool updateItem = true );
 
-    /**Refresh item's blend mode, considering data defined blend mode*/
+    /**Refresh item's blend mode, considering data defined blend mode
+     * @note this method was added in version 2.5
+     */
     void refreshBlendMode();
 
     void init( bool manageZValue );

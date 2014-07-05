@@ -531,8 +531,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Forces items in the composition to refresh. For instance, this causes maps to redraw
      * and rebuild cached images, html items to reload their source url, and attribute tables
-     * to refresh their contents.
-    @note added in version 2.3*/
+     * to refresh their contents. Calling this also triggers a recalculation of all data defined
+     * attributes within the composition.
+     * @note added in version 2.3*/
     void refreshItems();
 
     /**Clears any selected items and sets an item as the current selection.

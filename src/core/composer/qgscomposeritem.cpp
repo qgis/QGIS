@@ -61,6 +61,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
+    , mEvaluatedItemRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
@@ -87,6 +88,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
+    , mEvaluatedItemRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
@@ -120,6 +122,7 @@ void QgsComposerItem::init( bool manageZValue )
   setGraphicsEffect( mEffect );
 
   // data defined strings
+  mDataDefinedNames.insert( ItemRotation, QString( "dataDefinedRotation" ) );
   mDataDefinedNames.insert( Transparency, QString( "dataDefinedTransparency" ) );
   mDataDefinedNames.insert( BlendMode, QString( "dataDefinedBlendMode" ) );
 
@@ -531,6 +534,11 @@ void QgsComposerItem::setPositionLock( bool lock )
   mItemPositionLocked = lock;
 }
 
+double QgsComposerItem::itemRotation( PropertyValueType valueType ) const
+{
+  return valueType == EvaluatedValue ? mEvaluatedItemRotation : mItemRotation;
+}
+
 void QgsComposerItem::move( double dx, double dy )
 {
   QRectF newSceneRect( pos().x() + dx, pos().y() + dy, rect().width(), rect().height() );
@@ -612,7 +620,7 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   {
     //adjust position to account for frame size
 
-    if ( mItemRotation == 0 )
+    if ( mEvaluatedItemRotation == 0 )
     {
       upperLeftX += estimatedFrameBleed();
       upperLeftY += estimatedFrameBleed();
@@ -621,7 +629,7 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
     {
       //adjust position for item rotation
       QLineF lineToItemOrigin = QLineF( 0, 0, estimatedFrameBleed(), estimatedFrameBleed() );
-      lineToItemOrigin.setAngle( -45 - mItemRotation );
+      lineToItemOrigin.setAngle( -45 - mEvaluatedItemRotation );
       upperLeftX += lineToItemOrigin.x2();
       upperLeftY += lineToItemOrigin.y2();
     }
@@ -935,20 +943,7 @@ void QgsComposerItem::setRotation( double r )
 
 void QgsComposerItem::setItemRotation( double r, bool adjustPosition )
 {
-  if ( adjustPosition )
-  {
-    //adjustPosition set, so shift the position of the item so that rotation occurs around item center
-    //create a line from the centrepoint of the rect() to its origin, in scene coordinates
-    QLineF refLine = QLineF( mapToScene( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) ) , mapToScene( QPointF( 0 , 0 ) ) );
-    //rotate this line by the current rotation angle
-    refLine.setAngle( refLine.angle() - r + mItemRotation );
-    //get new end point of line - this is the new item position
-    QPointF rotatedReferencePoint = refLine.p2();
-    setPos( rotatedReferencePoint );
-    emit sizeChanged();
-  }
-
-  if ( r > 360 )
+  if ( r >= 360 )
   {
     mItemRotation = (( int )r ) % 360;
   }
@@ -957,17 +952,59 @@ void QgsComposerItem::setItemRotation( double r, bool adjustPosition )
     mItemRotation = r;
   }
 
-  setTransformOriginPoint( 0, 0 );
-  QGraphicsItem::setRotation( mItemRotation );
+  refreshRotation( true, adjustPosition );
+}
 
-  emit itemRotationChanged( r );
-  update();
+void QgsComposerItem::refreshRotation( bool updateItem , bool adjustPosition )
+{
+  double rotation = mItemRotation;
+
+  //data defined rotation set?
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerItem::ItemRotation, exprVal ) )
+  {
+    bool ok;
+    double rotD = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Rotation:%1" ).arg( rotD ) );
+    if ( ok )
+    {
+      rotation = rotD;
+    }
+  }
+
+  if ( adjustPosition )
+  {
+    //adjustPosition set, so shift the position of the item so that rotation occurs around item center
+    //create a line from the centrepoint of the rect() to its origin, in scene coordinates
+    QLineF refLine = QLineF( mapToScene( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) ) , mapToScene( QPointF( 0 , 0 ) ) );
+    //rotate this line by the current rotation angle
+    refLine.setAngle( refLine.angle() - rotation + mEvaluatedItemRotation );
+    //get new end point of line - this is the new item position
+    QPointF rotatedReferencePoint = refLine.p2();
+    setPos( rotatedReferencePoint );
+    emit sizeChanged();
+  }
+
+  setTransformOriginPoint( 0, 0 );
+  QGraphicsItem::setRotation( rotation );
+
+  mEvaluatedItemRotation = rotation;
+
+  emit itemRotationChanged( rotation );
+
+  //update bounds of scene, since rotation may affect this
+  mComposition->updateBounds();
+
+  if ( updateItem )
+  {
+    update();
+  }
 }
 
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
 {
   //kept for api compatibility with QGIS 2.0, use item rotation
-  return imageSizeConsideringRotation( width, height, mItemRotation );
+  return imageSizeConsideringRotation( width, height, mEvaluatedItemRotation );
 }
 
 QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
@@ -1108,7 +1145,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
   //kept for api compatibility with QGIS 2.0, use item rotation
-  return cornerPointOnRotatedAndScaledRect( x, y, width, height, mItemRotation );
+  return cornerPointOnRotatedAndScaledRect( x, y, width, height, mEvaluatedItemRotation );
 }
 
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const
@@ -1151,7 +1188,7 @@ bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, d
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
 {
   //kept for api compatibility with QGIS 2.0, use item rotation
-  return sizeChangedByRotation( width, height, mItemRotation );
+  return sizeChangedByRotation( width, height, mEvaluatedItemRotation );
 }
 
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
@@ -1289,6 +1326,10 @@ void QgsComposerItem::repaint()
 void QgsComposerItem::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
 {
   //update data defined properties and redraw item to match
+  if ( property == QgsComposerItem::ItemRotation || property == QgsComposerItem::AllProperties )
+  {
+    refreshRotation( false, true );
+  }
   if ( property == QgsComposerItem::Transparency || property == QgsComposerItem::AllProperties )
   {
     refreshTransparency( false );

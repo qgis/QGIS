@@ -163,6 +163,16 @@ class QgsComposerItem : QObject, QGraphicsRectItem
       MapYMax /*< map extent y maximum */
     };
 
+    /** Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, /*< return the current evaluated value for the property */
+      OriginalValue /*< return the original, user set value */
+    };
+
     /**Constructor
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
@@ -458,9 +468,14 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const;
 
-    /**Returns the rotation for the composer item
-    @note this method was added in version 2.1*/
-    double itemRotation() const;
+    /**Returns the current rotation for the composer item.
+     * @returns rotation for composer item
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+     * @note this method was added in version 2.1
+     */
+    double itemRotation( PropertyValueType valueType = EvaluatedValue ) const;
 
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
