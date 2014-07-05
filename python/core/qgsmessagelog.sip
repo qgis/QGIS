@@ -13,6 +13,12 @@ class QgsMessageLog : QObject
       WARNING,
       CRITICAL,
     };
+    
+    static void activate();
+
+    static void deactivate();
+
+    static bool isActivated();
 
     //! add a message to the instance (and create it if necessary)
     static void logMessage( QString message, QString tag = QString::null, MessageLevel level = WARNING );
