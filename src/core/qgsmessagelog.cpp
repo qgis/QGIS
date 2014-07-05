@@ -22,6 +22,7 @@
 class QgsMessageLogConsole;
 
 QgsMessageLog *QgsMessageLog::sInstance = 0;
+bool QgsMessageLog::activated = true;
 
 QgsMessageLog::QgsMessageLog()
     : QObject()
@@ -40,11 +41,25 @@ QgsMessageLog *QgsMessageLog::instance()
   return sInstance;
 }
 
+void QgsMessageLog::activate(){
+  QgsMessageLog::activated = true;
+}
+
+void QgsMessageLog::deactivate(){
+  QgsMessageLog::activated = false;
+}
+
+bool QgsMessageLog::isActivated(){
+  return QgsMessageLog::activated;
+}
+
 void QgsMessageLog::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
-  QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( tag ).arg( level ).arg( message ) );
+  if (QgsMessageLog::activated){
+    QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( tag ).arg( level ).arg( message ) );
 
-  QgsMessageLog::instance()->emitMessage( message, tag, level );
+    QgsMessageLog::instance()->emitMessage( message, tag, level );
+  }
 }
 
 void QgsMessageLog::emitMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
@@ -68,4 +83,3 @@ void QgsMessageLogConsole::logMessage( QString message, QString tag, QgsMessageL
       : "CRITICAL" )
     << "]: " << message.toLocal8Bit().data() << std::endl;
 }
-

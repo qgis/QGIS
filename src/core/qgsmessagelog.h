@@ -44,6 +44,12 @@ class CORE_EXPORT QgsMessageLog : public QObject
       CRITICAL = 2
     };
 
+    static void activate();
+
+    static void deactivate();
+
+    static bool isActivated();
+
     //! add a message to the instance (and create it if necessary)
     static void logMessage( QString message, QString tag = QString::null, MessageLevel level = WARNING );
 
@@ -54,6 +60,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
     QgsMessageLog();
 
     void emitMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
+
+    static bool activated;
 
     static QgsMessageLog *sInstance;
 };
