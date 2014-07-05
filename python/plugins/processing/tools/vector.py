@@ -260,10 +260,10 @@ def combineVectorFields(layerA, layerB):
     """Create single field map from two input field maps.
     """
     fields = []
-    fieldsA = layerA.dataProvider().fields()
+    fieldsA = layerA.pendingFields()
     fields.extend(fieldsA)
     namesA = [unicode(f.name()).lower() for f in fieldsA]
-    fieldsB = layerB.dataProvider().fields()
+    fieldsB = layerB.pendingFields()
     for field in fieldsB:
         name = unicode(field.name()).lower()
         if name in namesA:
