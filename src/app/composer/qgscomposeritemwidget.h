@@ -119,6 +119,9 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     //sets the values for all non-position related elements
     void setValuesForGuiNonPositionElements();
 
+  protected:
+    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+
   protected slots:
     /**Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();

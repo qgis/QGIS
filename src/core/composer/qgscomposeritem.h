@@ -678,6 +678,15 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Map of current data defined properties*/
     QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
+    /**Refresh item's transparency, considering data defined transparency
+      *@param updateItem set to false to prevent the item being automatically updated
+      * after the transparency is set
+     */
+    void refreshTransparency( bool updateItem = true );
+
+    /**Refresh item's blend mode, considering data defined blend mode*/
+    void refreshBlendMode();
+
     void init( bool manageZValue );
 
     friend class QgsComposerItemGroup; // to access mTemplateUuid

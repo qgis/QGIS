@@ -120,6 +120,8 @@ void QgsComposerItem::init( bool manageZValue )
   setGraphicsEffect( mEffect );
 
   // data defined strings
+  mDataDefinedNames.insert( Transparency, QString( "dataDefinedTransparency" ) );
+  mDataDefinedNames.insert( BlendMode, QString( "dataDefinedBlendMode" ) );
 
   if ( mComposition )
   {
@@ -682,14 +684,58 @@ void QgsComposerItem::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
   // Update the composer effect to use the new blend mode
-  mEffect->setCompositionMode( mBlendMode );
+  refreshBlendMode();
+}
+
+void QgsComposerItem::refreshBlendMode()
+{
+  QPainter::CompositionMode blendMode = mBlendMode;
+
+  //data defined blend mode set?
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerItem::BlendMode, exprVal ) )
+  {
+    QString blendstr = exprVal.toString().trimmed();
+    QPainter::CompositionMode blendModeD = QgsSymbolLayerV2Utils::decodeBlendMode( blendstr );
+
+    QgsDebugMsg( QString( "exprVal BlendMode:%1" ).arg( blendModeD ) );
+    blendMode = blendModeD;
+  }
+
+  // Update the composer effect to use the new blend mode
+  mEffect->setCompositionMode( blendMode );
 }
 
 void QgsComposerItem::setTransparency( int transparency )
 {
   mTransparency = transparency;
+  refreshTransparency( true );
+}
+
+void QgsComposerItem::refreshTransparency( bool updateItem )
+{
+  int transparency = mTransparency;
+
+  //data defined transparency set?
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerItem::Transparency, exprVal ) )
+  {
+    bool ok;
+    int transparencyD = exprVal.toInt( &ok );
+    QgsDebugMsg( QString( "exprVal Transparency:%1" ).arg( transparencyD ) );
+    if ( ok )
+    {
+      transparency = transparencyD;
+    }
+  }
+
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );
+
+  if ( updateItem )
+  {
+    update();
+  }
 }
 
 void QgsComposerItem::setEffectsEnabled( bool effectsEnabled )
@@ -1243,7 +1289,14 @@ void QgsComposerItem::repaint()
 void QgsComposerItem::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
 {
   //update data defined properties and redraw item to match
-
+  if ( property == QgsComposerItem::Transparency || property == QgsComposerItem::AllProperties )
+  {
+    refreshTransparency( false );
+  }
+  if ( property == QgsComposerItem::BlendMode || property == QgsComposerItem::AllProperties )
+  {
+    refreshBlendMode();
+  }
 
   update();
 }
