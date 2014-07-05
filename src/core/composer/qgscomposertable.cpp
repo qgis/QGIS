@@ -368,7 +368,10 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
   totalWidth += ( 2 * maxWidthMap.size() * mLineTextDistance );
   totalWidth += ( maxWidthMap.size() + 1 ) * mGridStrokeWidth;
 
-  QgsComposerItem::setSceneRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
+  QRectF evaluatedRect = evalItemRect( QRectF( pos().x(), pos().y(), totalWidth, totalHeight ) );
+
+  //update rect for data defined size and position
+  QgsComposerItem::setSceneRect( evaluatedRect );
 }
 
 void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )

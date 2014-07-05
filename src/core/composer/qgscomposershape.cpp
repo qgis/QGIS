@@ -415,7 +415,11 @@ void QgsComposerShape::updateBoundingRect()
 void QgsComposerShape::setSceneRect( const QRectF& rectangle )
 {
   // Reimplemented from QgsComposerItem as we need to call updateBoundingRect after the shape's size changes
-  QgsComposerItem::setSceneRect( rectangle );
+
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( rectangle );
+  QgsComposerItem::setSceneRect( evaluatedRect );
+
   updateBoundingRect();
   update();
 }

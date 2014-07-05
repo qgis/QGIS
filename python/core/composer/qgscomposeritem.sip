@@ -660,6 +660,9 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     */
     bool dataDefinedEvaluate( QgsComposerItem::DataDefinedProperty property, QVariant &expressionValue );
 
+    /**Update an item rect to consider data defined position and size of item*/
+    QRectF evalItemRect( const QRectF &newRect );
+
   signals:
     /**Is emitted on item rotation change*/
     void itemRotationChanged( double newRotation );

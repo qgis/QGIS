@@ -113,11 +113,14 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
 
 void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
 {
-  if ( rectangle.width() < 0 )
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( rectangle );
+
+  if ( evaluatedRect.width() < 0 )
   {
     mStartXIdx = 1 - mStartXIdx;
   }
-  if ( rectangle.height() < 0 )
+  if ( evaluatedRect.height() < 0 )
   {
     mStartYIdx = 1 - mStartYIdx;
   }
@@ -125,7 +128,7 @@ void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
   double margin = computeMarkerMargin();
 
   // Ensure the rectangle is at least as large as needed to include the markers
-  QRectF rect = rectangle.united( QRectF( rectangle.x(), rectangle.y(), 2. * margin, 2. * margin ) );
+  QRectF rect = rectangle.united( QRectF( evaluatedRect.x(), evaluatedRect.y(), 2. * margin, 2. * margin ) );
 
   // Compute new start and stop positions
   double x[2] = {rect.x(), rect.x() + rect.width()};

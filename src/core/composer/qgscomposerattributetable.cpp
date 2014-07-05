@@ -481,17 +481,20 @@ void QgsComposerAttributeTable::removeLayer( QString layerId )
 
 void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
 {
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( rectangle );
+
   double titleHeight =  2 * mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mHeaderFont );
   double attributeHeight = mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mContentFont );
-  if (( rectangle.height() - titleHeight ) > 0 )
+  if (( evaluatedRect.height() - titleHeight ) > 0 )
   {
-    mMaximumNumberOfFeatures = ( rectangle.height() - titleHeight ) / attributeHeight;
+    mMaximumNumberOfFeatures = ( evaluatedRect.height() - titleHeight ) / attributeHeight;
   }
   else
   {
     mMaximumNumberOfFeatures = 0;
   }
-  QgsComposerItem::setSceneRect( rectangle );
+  QgsComposerItem::setSceneRect( evaluatedRect );
 
   //refresh table attributes, since number of features has likely changed
   refreshAttributes();
