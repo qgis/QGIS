@@ -1476,23 +1476,38 @@ columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="32"/>
         <source>Select by location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="40"/>
         <source>Select features in:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="54"/>
         <source>that intersect features in:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Modify current selection by:</source>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="66"/>
+        <source>Include input features that touch the selection features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use selected features only</source>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="76"/>
+        <source>Include input features that overlap/cross the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="86"/>
+        <source>Include input features completely within the selection features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSelectByLocation.ui" line="96"/>
+        <source>Only selected features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7488,6 +7503,11 @@ Platí na práve aktívne editovateľné vrstvy</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>The selected model could not be loaded.
+See the log for more information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7509,11 +7529,6 @@ Platí na práve aktívne editovateľné vrstvy</translation>
     </message>
     <message>
         <source>Could not open model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The selected model could not be loaded.
-Wrong line: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11830,14 +11845,14 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="328"/>
+        <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="325"/>
         <source>Fetching features failed.
 SQL:%1
 Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="331"/>
+        <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="328"/>
         <source>Oracle</source>
         <translation type="unfinished">Oracle</translation>
     </message>
@@ -12039,6 +12054,11 @@ Odpoveď bola:
         <location filename="../src/gui/editorwidgets/qgsuuidwidgetfactory.cpp" line="34"/>
         <source>Read-only field that generates a UUID if empty.</source>
         <translation type="unfinished">Pole určené iba na čítanie, ktoré vygeneruje UUID, ak je prázdne.</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgslegendsettings.cpp" line="4"/>
+        <source>Legend</source>
+        <translation type="unfinished">Legenda</translation>
     </message>
 </context>
 <context>
@@ -15057,7 +15077,7 @@ Cesta používateľskej DB	%9</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="206"/>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="741"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="747"/>
         <source>Composer</source>
         <translation type="unfinished">Tlačový výstup</translation>
     </message>
@@ -15072,7 +15092,7 @@ Cesta používateľskej DB	%9</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="741"/>
+        <location filename="../src/core/composer/qgsatlascomposition.cpp" line="747"/>
         <source>Atlas filename evaluation error: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17045,17 +17065,17 @@ Databáza:%2</translation>
 <context>
     <name>QgsCategorizedSymbolRendererV2Model</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="186"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="200"/>
         <source>Symbol</source>
         <translation>Symbol</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="186"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="200"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="186"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="200"/>
         <source>Label</source>
         <translation>Popisok</translation>
     </message>
@@ -17071,48 +17091,48 @@ Databáza:%2</translation>
         <translation type="obsolete">Popis</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="382"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="396"/>
         <source>Random colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="427"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="441"/>
         <source>Symbol levels...</source>
         <translation>Úrovne symbolu...</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="637"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="651"/>
         <source>High number of classes!</source>
         <translation>Vysoký počet tried!</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="638"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="652"/>
         <source>Classification would yield %1 entries which might not be expected. Continue?</source>
         <translation>Klasifikácia by priniesla záznamy %1, ktoré nie sú očakávané. Pokračovať?</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="658"/>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="660"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="672"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="674"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="658"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="672"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
         <translation>Nie sú dostupné farebné škály. Pridať ich môžete cez Správcu štýlov.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="660"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="674"/>
         <source>The selected color ramp is not available.</source>
         <translation>Vybraná farebná škála nie je dostupná.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="674"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="688"/>
         <source>Confirm Delete</source>
         <translation>Potvrdiť odstránenie</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="675"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="689"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
         <translation>Klasifikačné pole sa zmenilo z %1 na %2.
@@ -17315,7 +17335,7 @@ Majú byť pred klasifikáciou odstránené doposiaľ existujúce triedy?</trans
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1988"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3289"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3293"/>
         <source>Don&apos;t show this message again</source>
         <translation>Nabudúce už túto správu nezobrazovať</translation>
     </message>
@@ -17490,12 +17510,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3302"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3306"/>
         <source>Project contains composition effects</source>
         <translation>Projekt obsahuje efekty kompozície</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3303"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3307"/>
         <source>Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
         <translation>Pokročilé efekty kompozície ako režimy prelínania a priehľadnosť vektorovej vrstvy sú povolené v tomto projekte a nie je ich možné použiť pri vektorovej tlači. Odporúča sa použitie tlače do rastrového formátu.</translation>
     </message>
@@ -17537,12 +17557,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation>Načitávanie šablóny do tlačového výstupu...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3287"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3291"/>
         <source>Project contains WMS layers</source>
         <translation>Projekt obsahuje vrstvy WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3288"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3292"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Niektoré WMS servery (napr. UMN mapserver) obsahujú obmedzenia na parametre WIDTH a HEIGHT. Tlač vrstiev z takýchto serverov môže presiahnuť tieto obmedzenia. V takomto prípade nebude vrstva WMS vytlačená</translation>
     </message>
@@ -17666,8 +17686,8 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="784"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3539"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3584"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3543"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3588"/>
         <source>Set as atlas feature for %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17815,12 +17835,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation>Chyba, nie je možné čítať súbor</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3304"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3308"/>
         <source>Print as raster</source>
         <translation>Vytlačiť ako raster</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3547"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3551"/>
         <source>Landscape</source>
         <translation type="unfinished">Na šírku</translation>
     </message>
@@ -19000,67 +19020,67 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
 <context>
     <name>QgsComposerItemWidget</name>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="93"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="202"/>
         <source>Frame color changed</source>
         <translation>Farba orámovania zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="116"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="225"/>
         <source>Background color changed</source>
         <translation>Farba pozadia zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="201"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="310"/>
         <source>Item outline width</source>
         <translation>Hrúbka obrysu položky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="226"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="335"/>
         <source>Item frame toggled</source>
         <translation>Orámovanie položky povolené/zakázané</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="132"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="241"/>
         <source>Item position changed</source>
         <translation>Poloha položky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="214"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="323"/>
         <source>Item frame join style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="239"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="348"/>
         <source>Item background toggled</source>
         <translation>Pozadie položky povolené/zakázané</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="414"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="570"/>
         <source>Select background color</source>
         <translation>Vyberte farbu pozadia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="416"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="572"/>
         <source>Select frame color</source>
         <translation>Vyberte farbu orámovania</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="428"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="585"/>
         <source>Item blend mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="438"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="595"/>
         <source>Item transparency changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="448"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="605"/>
         <source>Item id changed</source>
         <translation>ID položky zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="566"/>
+        <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="723"/>
         <source>Item rotation changed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19077,84 +19097,91 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation>Všeobecné možnosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="32"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="23"/>
         <source>Position and size</source>
         <translation>Poloha a veľkosť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="176"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="167"/>
         <source>Reference point</source>
         <translation>Referenčný bod</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="208"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="199"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="194"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="185"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="201"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="192"/>
         <source>Width</source>
         <translation>Šírka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="215"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="206"/>
         <source>Height</source>
         <translation>Výška</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="225"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="216"/>
         <source>Page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="246"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="258"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="237"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="249"/>
         <source>Rotation</source>
         <translation type="unfinished">Otočenie</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="271"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="264"/>
         <source> °</source>
         <translation type="unfinished"> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="284"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="274"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="449"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="484"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="286"/>
         <source>Frame</source>
         <translation>Orámovanie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="312"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="314"/>
         <source>Thickness</source>
         <translation>Hrúbka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="305"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="382"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="307"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="384"/>
         <source>Color...</source>
         <translation>Farba...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="331"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="333"/>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="338"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="340"/>
         <source>Join style</source>
         <translation type="unfinished">Štýl spoja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="358"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="360"/>
         <source>Background</source>
         <translation>Pozadie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="392"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="394"/>
         <source>Item ID</source>
         <translation>ID položky</translation>
     </message>
@@ -19163,22 +19190,22 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">UUID (iba na čítanie)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="410"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="412"/>
         <source>Id</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="423"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="425"/>
         <source>Rendering</source>
         <translation>Vykresľovanie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="441"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="437"/>
         <source>Blending mode</source>
         <translation>Režim prelínania</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="451"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="458"/>
         <source>Transparency</source>
         <translation>Priehľadnosť</translation>
     </message>
@@ -19211,18 +19238,18 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="148"/>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="154"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="144"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="150"/>
         <source>Insert expression</source>
         <translation>Vložiť výraz</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="165"/>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="176"/>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="187"/>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="198"/>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="209"/>
-        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="220"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="161"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="172"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="183"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="194"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="205"/>
+        <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="216"/>
         <source>Label alignment changed</source>
         <translation>Zarovnanie popisku zmenené</translation>
     </message>
@@ -19340,9 +19367,8 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="36"/>
         <source>Legend</source>
-        <translation>Legenda</translation>
+        <translation type="obsolete">Legenda</translation>
     </message>
 </context>
 <context>
@@ -19507,12 +19533,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation>Skupina legendy pridaná</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="968"/>
+        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="966"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="970"/>
+        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="968"/>
         <source>None</source>
         <translation>Žiadna</translation>
     </message>
@@ -19990,13 +20016,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="97"/>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="130"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="189"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="318"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="385"/>
         <source>Map will be printed here</source>
         <translation>Tu bude vytlačená mapa</translation>
     </message>
@@ -20005,28 +20030,28 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     <name>QgsComposerMapWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="274"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="450"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="375"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="556"/>
         <source>Cache</source>
         <translation>Vyrovnávacia pamäť</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="58"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="284"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="460"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="385"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="566"/>
         <source>Rectangle</source>
         <translation>Obdĺžnik</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="60"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="529"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="635"/>
         <source>Solid</source>
         <translation>Plná</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="61"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="525"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="994"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="631"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1093"/>
         <source>Cross</source>
         <translation>Kríž</translation>
     </message>
@@ -20047,57 +20072,57 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="80"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="548"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1182"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="654"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1281"/>
         <source>No frame</source>
         <translation>Bez rámu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="81"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="543"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1190"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="649"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1289"/>
         <source>Zebra</source>
         <translation>Zebra</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1278"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1297"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1345"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1377"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1396"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1444"/>
         <source>Inside frame</source>
         <translation>Vo vnútri rámu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1279"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1349"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1378"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1448"/>
         <source>Outside frame</source>
         <translation>Mimo rámu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1285"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1323"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1370"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1384"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1422"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1469"/>
         <source>Horizontal</source>
         <translation>Vodorovne</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1286"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1366"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1385"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1465"/>
         <source>Vertical</source>
         <translation>Zvisle</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="312"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="413"/>
         <source>Map scale changed</source>
         <translation>Mierka mapy zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="324"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="425"/>
         <source>Map rotation changed</source>
         <translation>Otočenie mapy zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="366"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="676"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="470"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="775"/>
         <source>Map extent changed</source>
         <translation>Rozsah mapy zmenený</translation>
     </message>
@@ -20118,145 +20143,145 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="780"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="879"/>
         <source>Canvas items toggled</source>
         <translation>Položky mapového okna povolené/zakázané</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="797"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1405"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1429"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="896"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1504"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1528"/>
         <source>None</source>
         <translation>Žiadna</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="849"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="948"/>
         <source>Overview frame style changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="883"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="982"/>
         <source>Overview centering mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="896"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="995"/>
         <source>Grid checkbox toggled</source>
         <translation>Zaškrtávacie políčko mriežky povolené/zakázané</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="917"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="930"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1016"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1029"/>
         <source>Grid interval changed</source>
         <translation>Interval mriežky zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="943"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="956"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1042"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1055"/>
         <source>Grid offset changed</source>
         <translation>Odsadenie mriežky zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="975"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1074"/>
         <source>Grid line style changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1002"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1101"/>
         <source>Grid type changed</source>
         <translation>Typ mriežky zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1014"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1113"/>
         <source>Grid cross width changed</source>
         <translation>Šírka kríža mriežky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1046"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1145"/>
         <source>Annotation font changed</source>
         <translation>Písmo anotácie zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1060"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1159"/>
         <source>Label font changed</source>
         <translation>Písmo popisku zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1072"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1171"/>
         <source>Annotation distance changed</source>
         <translation>Vzdialenosť anotácie zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1086"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1185"/>
         <source>Annotation format changed</source>
         <translation>Formát anotácie zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1189"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1288"/>
         <source>Changed grid frame style</source>
         <translation>Štýl rámu mriežky zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1207"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1306"/>
         <source>Changed grid frame width</source>
         <translation>Šírka rámu mriežky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1219"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1318"/>
         <source>Changed grid frame line thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1233"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1332"/>
         <source>Grid frame color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1245"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1344"/>
         <source>Grid frame first fill color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1257"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1356"/>
         <source>Grid frame second fill color changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1280"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1301"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1353"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1379"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1400"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1452"/>
         <source>Disabled</source>
         <translation>Zablokované</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1296"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1395"/>
         <source>Annotation position changed</source>
         <translation>Poloha anotácie zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1418"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1517"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1120"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1219"/>
         <source>Annotation toggled</source>
         <translation>Anotácia povolená/zakázaná</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1322"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1421"/>
         <source>Changed annotation direction</source>
         <translation>Smer anotácie zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1160"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="1259"/>
         <source>Changed annotation precision</source>
         <translation>Presnosť anotácie zmenená</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="279"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="455"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="380"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="561"/>
         <source>Render</source>
         <translation>Vykresľovať</translation>
     </message>
@@ -20268,7 +20293,7 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Možnosti mapy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="50"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
@@ -20281,7 +20306,7 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Výška</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="120"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="105"/>
         <source>Scale</source>
         <translation>Mierka</translation>
     </message>
@@ -20294,217 +20319,227 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete"> stupne</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="154"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="161"/>
         <source>Draw map canvas items</source>
         <translation>Zobraziť položky mapového okna</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="343"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="394"/>
         <source>Show grid</source>
         <translation>Zobraziť mriežku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="514"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="565"/>
         <source>Interval</source>
         <translation>Interval</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="393"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="436"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="444"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="487"/>
         <source>X </source>
         <translation>X</translation>
     </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="124"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="152"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="217"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="244"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="271"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="298"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="144"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="142"/>
         <source> °</source>
         <translation type="unfinished"> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="263"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="314"/>
         <source>View extent in map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="273"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="324"/>
         <source>Controlled by atlas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="291"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="342"/>
         <source>Margin around feature</source>
         <translation type="unfinished">Okraj okolo objektu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="307"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="358"/>
         <source>%</source>
         <translation type="unfinished">%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="323"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="374"/>
         <source>Fixed scale</source>
         <translation type="unfinished">Pevná mierka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="330"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="381"/>
         <source>Use one of the predefined scales of the project where the atlas feature best fits.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="333"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="384"/>
         <source>Predefined scale (best fit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="406"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="449"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="457"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="500"/>
         <source>Y </source>
         <translation>Y </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="421"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="472"/>
         <source>Offset</source>
         <translation>Odsadenie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="477"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="567"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="581"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="765"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="528"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="618"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="632"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="816"/>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="487"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="538"/>
         <source>Line style</source>
         <translation>Štýl čiary</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="497"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="548"/>
         <source>change...</source>
         <translation>zmeniť...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="507"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="558"/>
         <source>Blend mode</source>
         <translation>Režim prelínania</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="529"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="580"/>
         <source>Grid frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="557"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="608"/>
         <source>Frame size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="574"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="625"/>
         <source>Frame line thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="588"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="639"/>
         <source>Color...</source>
         <translation type="unfinished">Farba...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="595"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="646"/>
         <source>Frame fill colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="622"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="673"/>
         <source>Draw coordinates</source>
         <translation>Zobraziť súradnice</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="652"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="703"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="662"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="713"/>
         <source>Left</source>
         <translation>Vľavo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="681"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="732"/>
         <source>Right</source>
         <translation>Vpravo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="700"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="751"/>
         <source>Top</source>
         <translation>Nahor</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="719"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="770"/>
         <source>Bottom</source>
         <translation>Nadol</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="738"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="789"/>
         <source>Font</source>
         <translation>Písmo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="788"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="839"/>
         <source>Font color...</source>
         <translation>Farba písma...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="801"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="852"/>
         <source>Overview</source>
         <translation>Prehľad</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="819"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="870"/>
         <source>Overview frame</source>
         <translation>Rám prehľadu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="829"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="880"/>
         <source>Overview style</source>
         <translation>Štýl prehľadu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="836"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="887"/>
         <source>Change...</source>
         <translation>Zmeniť...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="843"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="894"/>
         <source>Overview blending mode</source>
         <translation>Režim prelínania prehľadu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="853"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="904"/>
         <source>Invert overview</source>
         <translation>Opačný prehľad</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="860"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="911"/>
         <source>Center on overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="177"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="184"/>
         <source>Extents</source>
         <translation>Rozsahy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="192"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="199"/>
         <source>X min</source>
         <translation>X min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="208"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="226"/>
         <source>Y min</source>
         <translation>Y min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="375"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="426"/>
         <source>Grid &amp;type</source>
         <translation>&amp;Typ mriežky</translation>
     </message>
@@ -20517,12 +20552,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Hrúbka čiary</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="464"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="515"/>
         <source>Cross width</source>
         <translation>Šírka kríža</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="224"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="253"/>
         <source>X max</source>
         <translation>X max</translation>
     </message>
@@ -20532,32 +20567,32 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation>Možnosti mapy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="81"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="72"/>
         <source>Main properties</source>
         <translation>Hlavné vlastnosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="133"/>
         <source>Map rotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="240"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="280"/>
         <source>Y max</source>
         <translation>Y max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="256"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="307"/>
         <source>Set to map canvas extent</source>
         <translation>Nastaviť rozsah mapového okna</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="167"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="174"/>
         <source>Lock layers for map item</source>
         <translation>Uzamknúť vrstvy pre položku mapy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="544"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="595"/>
         <source>Frame style</source>
         <translation>Štýl rámu</translation>
     </message>
@@ -20566,17 +20601,17 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Hrúbka rámu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="745"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="796"/>
         <source>Font...</source>
         <translation>Písmo...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="752"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="803"/>
         <source>Distance to map frame</source>
         <translation>Vzdialenosť od mapového rámu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="772"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="823"/>
         <source>Coordinate precision</source>
         <translation>Presnosť súradnice</translation>
     </message>
@@ -20589,7 +20624,7 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Náhľad</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="111"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="96"/>
         <source>Update preview</source>
         <translation>Aktualizovať náhľad</translation>
     </message>
@@ -20630,18 +20665,18 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
 <context>
     <name>QgsComposerPicture</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="289"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="294"/>
         <source>Picture expression parsing error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="289"/>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="325"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="294"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="330"/>
         <source>Composer</source>
         <translation type="unfinished">Tlačový výstup</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="325"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="330"/>
         <source>Picture expression eval error: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20656,64 +20691,64 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="104"/>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="120"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="178"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="169"/>
         <source>Picture changed</source>
         <translation>Obrázok zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="147"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="138"/>
         <source>Expression based image path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="163"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="154"/>
         <source>Picture rotation changed</source>
         <translation>Otočenie obrázka zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="188"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="179"/>
         <source>Select new preview directory</source>
         <translation>Vybrať adresár pre uloženie náhľadov</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="243"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="234"/>
         <source>Picture resize mode changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="269"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="260"/>
         <source>Picture placement changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="281"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="298"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="272"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="289"/>
         <source>Picture source changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="315"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="306"/>
         <source>Picture source expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="327"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="318"/>
         <source>Rotation synchronisation toggled</source>
         <translation>Synchronizácia otočenia povolená/zakázaná</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="387"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="378"/>
         <source>Rotation map changed</source>
         <translation>Otočenie mapy zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="411"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="464"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="402"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="455"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="535"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="526"/>
         <source>Creating icon for file %1</source>
         <translation>Vytváranie ikony pre súbor %1</translation>
     </message>
@@ -20896,32 +20931,32 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
 <context>
     <name>QgsComposerScaleBar</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="311"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="317"/>
         <source>units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="319"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="325"/>
         <source>km</source>
         <translation>km</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="324"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="330"/>
         <source>m</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="333"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="339"/>
         <source>miles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="338"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="344"/>
         <source>ft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="345"/>
+        <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="351"/>
         <source>Nm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20930,38 +20965,38 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     <name>QgsComposerScaleBarWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="395"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="424"/>
         <source>Single Box</source>
         <translation>Jednoduchý rámček</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="39"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="399"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="428"/>
         <source>Double Box</source>
         <translation>Dvojitý rámček</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="40"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="403"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="407"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="432"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="436"/>
         <source>Line Ticks Middle</source>
         <translation>Lišta s dielikom v strede</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="41"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="411"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="440"/>
         <source>Line Ticks Down</source>
         <translation>Lišta s dielikom dole</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="42"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="415"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="444"/>
         <source>Line Ticks Up</source>
         <translation>Lišta s dielikom hore</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="43"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="419"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="448"/>
         <source>Numeric</source>
         <translation>Číselná mierka</translation>
     </message>
@@ -21001,64 +21036,89 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="81"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="89"/>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="181"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="56"/>
+        <source>Select fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="58"/>
+        <source>Select alternate fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="60"/>
+        <source>Select font color</source>
+        <translation type="unfinished">Vyberte farbu písma</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="62"/>
+        <source>Select stroke color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="91"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="99"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="192"/>
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="147"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="157"/>
         <source>Scalebar map changed</source>
         <translation>Mapa mierky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="212"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="223"/>
         <source>Scalebar line width</source>
         <translation>Hrúbka lišty mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="229"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="240"/>
         <source>Scalebar segment size</source>
         <translation>Veľkosť dielika mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="244"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="255"/>
         <source>Scalebar segments left</source>
         <translation>Dieliky mierky vľavo</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="259"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="270"/>
         <source>Number of scalebar segments changed</source>
         <translation>Počet dielikov mierky zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="535"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="357"/>
+        <source>Scalebar secondary color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="566"/>
         <source>Scalebar changed to map units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="541"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="572"/>
         <source>Scalebar changed to feet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="547"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="578"/>
         <source>Scalebar changed to nautical miles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="554"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="585"/>
         <source>Scalebar changed to meters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="611"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="643"/>
         <source>Scalebar line join style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="624"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="656"/>
         <source>Scalebar line cap style</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21067,57 +21127,57 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Dieliky mierky vpravo</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="273"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="284"/>
         <source>Scalebar height changed</source>
         <translation>Výška dielika mierky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="298"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="309"/>
         <source>Scalebar font changed</source>
         <translation>Písmo mierky zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="314"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="325"/>
         <source>Scalebar font color changed</source>
         <translation>Farba písma mierky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="329"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="340"/>
         <source>Scalebar color changed</source>
         <translation>Farba mierky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="345"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="374"/>
         <source>Scalebar stroke color changed</source>
         <translation>Farba obrysu mierky zmenená</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="362"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="391"/>
         <source>Scalebar unit text</source>
         <translation>Textová jednotka mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="377"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="406"/>
         <source>Scalebar map units per segment</source>
         <translation>Mapové jednotky mierky na dielik</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="392"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="421"/>
         <source>Scalebar style changed</source>
         <translation>Štýl mierky zmenený</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="479"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="510"/>
         <source>Scalebar label bar space</source>
         <translation>Rozostup popisnej lišty mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="494"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="525"/>
         <source>Scalebar box content space</source>
         <translation>Rozostup rámčeka mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="509"/>
+        <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="540"/>
         <source>Scalebar alignment</source>
         <translation>Zarovnanie grafickej mierky</translation>
     </message>
@@ -21234,6 +21294,11 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="443"/>
+        <source>Secondary fill color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="450"/>
         <source>Stroke color...</source>
         <translation>Farba obrysu...</translation>
     </message>
@@ -21281,32 +21346,32 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="43"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="83"/>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="159"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="155"/>
         <source>Ellipse</source>
         <translation>Elipsa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="44"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="88"/>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="163"/>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="178"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="159"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="174"/>
         <source>Rectangle</source>
         <translation>Obdĺžnik</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="45"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="93"/>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="167"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="163"/>
         <source>Triangle</source>
         <translation>Trojuholník</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="119"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="115"/>
         <source>Shape style changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="144"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="140"/>
         <source>Shape radius changed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21315,7 +21380,7 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Otočenie tvaru zmenené</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="158"/>
+        <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="154"/>
         <source>Shape type changed</source>
         <translation>Typ tvaru zmenený</translation>
     </message>
@@ -21746,57 +21811,57 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
 <context>
     <name>QgsComposition</name>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="931"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="962"/>
         <source>Label added</source>
         <translation>Popisok pridaný</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="974"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1005"/>
         <source>Map added</source>
         <translation>Mapa pridaná</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1017"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1048"/>
         <source>Arrow added</source>
         <translation>Smerová ružica pridaná</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1045"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1076"/>
         <source>Scale bar added</source>
         <translation>Grafická mierka pridaná</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1075"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1106"/>
         <source>Shape added</source>
         <translation>Tvar pridaný</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1103"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1134"/>
         <source>Picture added</source>
         <translation>Obrázok pridaný</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1131"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1162"/>
         <source>Legend added</source>
         <translation>Legenda pridaná</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1159"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1190"/>
         <source>Table added</source>
         <translation>Tabuľka pridaná</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1437"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1468"/>
         <source>Aligned items left</source>
         <translation>Položky zarovnané vľavo</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1467"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1498"/>
         <source>Aligned items horizontal center</source>
         <translation>Položky zarovnané na stred vodorovne</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1554"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1585"/>
         <source>Aligned items vertical center</source>
         <translation>Položky zarovnané na stred zvisle</translation>
     </message>
@@ -21805,12 +21870,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Položky zarovnané na stred vodorovne</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1497"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1528"/>
         <source>Aligned items right</source>
         <translation>Položky zarovnané vpravo</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1526"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1557"/>
         <source>Aligned items top</source>
         <translation>Položky zarovnané nahor</translation>
     </message>
@@ -21819,42 +21884,42 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Položky zarovnané na stred zvisle</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1582"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1613"/>
         <source>Aligned items bottom</source>
         <translation>Položky zarovnané nadol</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1597"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1628"/>
         <source>Items locked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1617"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1648"/>
         <source>Items unlocked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1651"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1682"/>
         <source>Item z-order changed</source>
         <translation>Z-index položky zmenený</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2229"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2259"/>
         <source>Remove item group</source>
         <translation>Skupina položky odobraná</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2253"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2283"/>
         <source>Frame deleted</source>
         <translation>Rám odstránený</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2260"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2290"/>
         <source>Item deleted</source>
         <translation>Položka odstránená</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2277"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2307"/>
         <source>Multiframe removed</source>
         <translation>Multirám odobraný</translation>
     </message>
@@ -21901,27 +21966,27 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     <name>QgsCompositionWidget</name>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="40"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="236"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="353"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="234"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="351"/>
         <source>Landscape</source>
         <translation>Na šírku</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="41"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="357"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="355"/>
         <source>Portrait</source>
         <translation>Na výšku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="136"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="149"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="168"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="203"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="134"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="147"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="166"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="201"/>
         <source>Custom</source>
         <translation>Vlastné</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="110"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="108"/>
         <source>A5 (148x210 mm)</source>
         <translation>A5 (148x210 mm)</translation>
     </message>
@@ -21937,7 +22002,7 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="69"/>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="492"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="490"/>
         <source>Map %1</source>
         <translation type="unfinished">Mapa %1</translation>
     </message>
@@ -21946,117 +22011,117 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Vyberte farbu mriežky</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="111"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="109"/>
         <source>A4 (210x297 mm)</source>
         <translation>A4 (210x297 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="112"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="110"/>
         <source>A3 (297x420 mm)</source>
         <translation>A3 (297x420 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="113"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="111"/>
         <source>A2 (420x594 mm)</source>
         <translation>A2 (420x594 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="114"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="112"/>
         <source>A1 (594x841 mm)</source>
         <translation>A1 (594x841 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="115"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="113"/>
         <source>A0 (841x1189 mm)</source>
         <translation>A0 (841x1189 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="116"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="114"/>
         <source>B5 (176 x 250 mm)</source>
         <translation>B5 (176 x 250 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="117"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="115"/>
         <source>B4 (250 x 353 mm)</source>
         <translation>B4 (250 x 353 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="118"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="116"/>
         <source>B3 (353 x 500 mm)</source>
         <translation>B3 (353 x 500 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="119"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="117"/>
         <source>B2 (500 x 707 mm)</source>
         <translation>B2 (500 x 707 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="120"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="118"/>
         <source>B1 (707 x 1000 mm)</source>
         <translation>B1 (707 x 1000 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="121"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="119"/>
         <source>B0 (1000 x 1414 mm)</source>
         <translation>B0 (1000 x 1414 mm)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="123"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="121"/>
         <source>Legal (8.5x14 in)</source>
         <translation>Legal (8.5x14 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="124"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="122"/>
         <source>ANSI A (Letter; 8.5x11 in)</source>
         <translation>ANSI A (Letter; 8.5x11 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="125"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="123"/>
         <source>ANSI B (Tabloid; 11x17 in)</source>
         <translation>ANSI B (Tabloid; 11x17 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="126"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="124"/>
         <source>ANSI C (17x22 in)</source>
         <translation>ANSI C (17x22 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="127"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="125"/>
         <source>ANSI D (22x34 in)</source>
         <translation>ANSI D (22x34 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="128"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="126"/>
         <source>ANSI E (34x44 in)</source>
         <translation>ANSI E (34x44 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="129"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="127"/>
         <source>Arch A (9x12 in)</source>
         <translation>Arch A (9x12 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="130"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="128"/>
         <source>Arch B (12x18 in)</source>
         <translation>Arch B (12x18 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="131"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="129"/>
         <source>Arch C (18x24 in)</source>
         <translation>Arch C (18x24 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="132"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="130"/>
         <source>Arch D (24x36 in)</source>
         <translation>Arch D (24x36 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="133"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="131"/>
         <source>Arch E (36x48 in)</source>
         <translation>Arch E (36x48 in)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="134"/>
+        <location filename="../src/app/composer/qgscompositionwidget.cpp" line="132"/>
         <source>Arch E1 (30x42 in)</source>
         <translation>Arch E1 (30x42 in)</translation>
     </message>
@@ -22121,20 +22186,36 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="300"/>
-        <source>Grid</source>
-        <translation type="unfinished">Mriežka</translation>
+        <source>Guides and Grid</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="324"/>
+        <source>Grid spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="387"/>
+        <source>Snap tolerance</source>
+        <translation type="unfinished">Tolerancia prichytávania</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="394"/>
+        <source> px</source>
+        <translation type="unfinished"> px</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="obsolete">Mriežka</translation>
+    </message>
+    <message>
         <source>Spacing</source>
-        <translation>Rozostupy</translation>
+        <translation type="obsolete">Rozostupy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="337"/>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="365"/>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="378"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="400"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="444"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
@@ -22166,15 +22247,12 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation type="obsolete">Farba...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="413"/>
         <source>Snap to alignments</source>
-        <translation>Prichytiť na zarovnania</translation>
+        <translation type="obsolete">Prichytiť na zarovnania</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="387"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="434"/>
         <source>Tolerance</source>
-        <translation>Tolerancia</translation>
+        <translation type="obsolete">Tolerancia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="161"/>
@@ -35119,12 +35197,12 @@ Môže byť problém vo Vašom sieťovom pripojení alebo na strane WMS servera.
 <context>
     <name>QgsLayerTreeModel</name>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="681"/>
+        <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="732"/>
         <source>Double-click to view legend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="706"/>
+        <location filename="../src/gui/layertree/qgslayertreemodel.cpp" line="757"/>
         <source>following %1 items
 not displayed</source>
         <translation type="unfinished">nasledujúce %1 položky
@@ -35358,12 +35436,12 @@ nie sú zobrazené</translation>
 <context>
     <name>QgsLegendModel</name>
     <message>
-        <location filename="../src/core/composer/qgslegendmodel.cpp" line="121"/>
+        <location filename="../src/core/composer/qgslegendmodel.cpp" line="147"/>
         <source>Group</source>
         <translation>Skupina</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgslegendmodel.cpp" line="253"/>
+        <location filename="../src/core/composer/qgslegendmodel.cpp" line="282"/>
         <source>No Legend Available</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35614,12 +35692,12 @@ nie sú zobrazené</translation>
 <context>
     <name>QgsMapCanvas</name>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="632"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="634"/>
         <source>canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="691"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="693"/>
         <source>Canvas refresh: %1 ms</source>
         <translation type="unfinished">Obnova mapového okna: %1 ms</translation>
     </message>
@@ -35628,8 +35706,8 @@ nie sú zobrazené</translation>
         <translation type="obsolete">, odosielateľ &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="672"/>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="692"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="674"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="694"/>
         <source>Rendering</source>
         <translation>Vykresľovanie</translation>
     </message>
@@ -39780,21 +39858,21 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="795"/>
-        <location filename="../src/app/qgsoptions.cpp" line="810"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1252"/>
+        <location filename="../src/app/qgsoptions.cpp" line="792"/>
+        <location filename="../src/app/qgsoptions.cpp" line="807"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1249"/>
         <source>Semi transparent circle</source>
         <translation>Polopriehľadný kruh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="796"/>
-        <location filename="../src/app/qgsoptions.cpp" line="814"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1256"/>
+        <location filename="../src/app/qgsoptions.cpp" line="793"/>
+        <location filename="../src/app/qgsoptions.cpp" line="811"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1253"/>
         <source>Cross</source>
         <translation>Kríž</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="739"/>
+        <location filename="../src/app/qgsoptions.cpp" line="736"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Zistené aktívne miestne nastavenie Vášho systému: %1</translation>
     </message>
@@ -39886,24 +39964,24 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="709"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1301"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1298"/>
         <source>Solid</source>
         <translation type="unfinished">Plná</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="710"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1305"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1302"/>
         <source>Dots</source>
         <translation type="unfinished">Bodkovaná</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="711"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1309"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1306"/>
         <source>Crosses</source>
         <translation type="unfinished">Krížiková</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="943"/>
+        <location filename="../src/app/qgsoptions.cpp" line="940"/>
         <source>Choose project file to open at launch</source>
         <translation>Vyberte súbor projektu, ktorý sa otvorí pri spustení</translation>
     </message>
@@ -39912,78 +39990,78 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Súbory QGISu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1568"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1562"/>
         <source>Overwrite</source>
         <translation>Prepísať</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1569"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1563"/>
         <source>If Undefined</source>
         <translation>Pokiaľ nie je definované</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1570"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1564"/>
         <source>Unset</source>
         <translation>Vypnúť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1571"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1565"/>
         <source>Prepend</source>
         <translation>Predradiť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1572"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1566"/>
         <source>Append</source>
         <translation>Pripojiť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1872"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1866"/>
         <source>Enter scale</source>
         <translation>Zadajte mierku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1873"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1867"/>
         <source>Scale denominator</source>
         <translation>Menovateľ mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1912"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1906"/>
         <source>Load scales</source>
         <translation>Načítať mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1913"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1939"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1907"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1933"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>Súbory XML (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1938"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1932"/>
         <source>Save scales</source>
         <translation>Uložiť mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1969"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1963"/>
         <source>No Stretch</source>
         <translation>Bez úprav</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1970"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1964"/>
         <source>Stretch To MinMax</source>
         <translation>Natiahnuť na interval MinMax</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1971"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1965"/>
         <source>Stretch And Clip To MinMax</source>
         <translation>Zúžiť rozsah a natiahnuť na MinMax</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1972"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1966"/>
         <source>Clip To MinMax</source>
         <translation>Zúžiť rozsah na MinMax</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="765"/>
+        <location filename="../src/app/qgsoptions.cpp" line="762"/>
         <source>To vertex</source>
         <translation>Na uzol</translation>
     </message>
@@ -40019,77 +40097,77 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Stredná +/- hodnota smerodajnej odchýlky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="766"/>
+        <location filename="../src/app/qgsoptions.cpp" line="763"/>
         <source>To segment</source>
         <translation>Na úsek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="767"/>
+        <location filename="../src/app/qgsoptions.cpp" line="764"/>
         <source>To vertex and segment</source>
         <translation>Na uzol a úsek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="797"/>
-        <location filename="../src/app/qgsoptions.cpp" line="818"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1260"/>
+        <location filename="../src/app/qgsoptions.cpp" line="794"/>
+        <location filename="../src/app/qgsoptions.cpp" line="815"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1257"/>
         <source>None</source>
         <translation>Žiadny</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="768"/>
-        <location filename="../src/app/qgsoptions.cpp" line="800"/>
+        <location filename="../src/app/qgsoptions.cpp" line="765"/>
+        <location filename="../src/app/qgsoptions.cpp" line="797"/>
         <source>Off</source>
         <translation>Vypnuté</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="801"/>
+        <location filename="../src/app/qgsoptions.cpp" line="798"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="804"/>
+        <location filename="../src/app/qgsoptions.cpp" line="801"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="826"/>
+        <location filename="../src/app/qgsoptions.cpp" line="823"/>
         <source>Round</source>
         <translation>Guľatý</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="827"/>
+        <location filename="../src/app/qgsoptions.cpp" line="824"/>
         <source>Mitre</source>
         <translation>Skosený</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="828"/>
+        <location filename="../src/app/qgsoptions.cpp" line="825"/>
         <source>Bevel</source>
         <translation>Zaoblený</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="875"/>
-        <location filename="../src/app/qgsoptions.cpp" line="886"/>
-        <location filename="../src/app/qgsoptions.cpp" line="890"/>
+        <location filename="../src/app/qgsoptions.cpp" line="872"/>
+        <location filename="../src/app/qgsoptions.cpp" line="883"/>
+        <location filename="../src/app/qgsoptions.cpp" line="887"/>
         <source>Save default project</source>
         <translation>Uložiť predvolený projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="875"/>
+        <location filename="../src/app/qgsoptions.cpp" line="872"/>
         <source>You must set a default project</source>
         <translation>Musíte nastaviť predvolený projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="886"/>
+        <location filename="../src/app/qgsoptions.cpp" line="883"/>
         <source>Current project saved as default</source>
         <translation>Aktuálny projekt uložený ako predvolený</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="890"/>
+        <location filename="../src/app/qgsoptions.cpp" line="887"/>
         <source>Error saving current project as default</source>
         <translation>Chyba pri ukladaní aktuálneho projektu ako predvoleného</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="906"/>
+        <location filename="../src/app/qgsoptions.cpp" line="903"/>
         <source>Choose a directory to store project template files</source>
         <translation>Vyberte adresár na uloženie šablóny súborov projektu</translation>
     </message>
@@ -40099,46 +40177,46 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Farba výberu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="945"/>
+        <location filename="../src/app/qgsoptions.cpp" line="942"/>
         <source>QGIS files</source>
         <translation>Súbory QGISu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1490"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1484"/>
         <source>Create Options - %1 Driver</source>
         <translation>Možnosti vytvárania - %1 ovládač</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1492"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1486"/>
         <source>Create Options - pyramids</source>
         <translation>Možnosti vytvárania - pyramídy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1550"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1544"/>
         <source>Restore UI defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1550"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1544"/>
         <source>Are you sure to reset the UI to default (needs restart)?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="1634"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1660"/>
-        <location filename="../src/app/qgsoptions.cpp" line="1702"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1628"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1654"/>
+        <location filename="../src/app/qgsoptions.cpp" line="1696"/>
         <source>Choose a directory</source>
         <translation>Vyberte adresár</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="775"/>
-        <location filename="../src/app/qgsoptions.cpp" line="784"/>
+        <location filename="../src/app/qgsoptions.cpp" line="772"/>
+        <location filename="../src/app/qgsoptions.cpp" line="781"/>
         <source>map units</source>
         <translation>mapové jednotky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="779"/>
-        <location filename="../src/app/qgsoptions.cpp" line="788"/>
+        <location filename="../src/app/qgsoptions.cpp" line="776"/>
+        <location filename="../src/app/qgsoptions.cpp" line="785"/>
         <source>pixels</source>
         <translation>pixely</translation>
     </message>
@@ -40613,22 +40691,37 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Export do súboru</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4031"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3153"/>
+        <source>Grid and guide defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3159"/>
+        <source>Grid spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3220"/>
+        <source> px</source>
+        <translation type="unfinished"> px</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3998"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
         <translation>Povoliť automatickú transformáciu medzi súradnicovými systémami (&apos;on the fly&apos; reprojekcia) , ak je súradnicový systém novopridanej vrstvy/vrstiev odlišný od práve používaného. Použitý bude súradnicový systém tejto vrstvy (vrstiev).</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3969"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3936"/>
         <source>Prompt for &amp;CRS</source>
         <translation>Opýtať sa na &amp;súradnicový systém</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3962"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3929"/>
         <source>Use &amp;project CRS</source>
         <translation>Použiť súradnicový systém &amp;projektu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3976"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3943"/>
         <source>Use default CRS displa&amp;yed below</source>
         <translation>Použiť predvolený súradnicový systém &amp;uvedený nižšie</translation>
     </message>
@@ -40639,17 +40732,17 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Miestne</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4192"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4159"/>
         <source>Locale to use instead</source>
         <translation>Namiesto miestneho nastavenia použiť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4215"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4182"/>
         <source>Additional Info</source>
         <translation>Doplňujúce informácie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4221"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4188"/>
         <source>Detected active locale on your system:</source>
         <translation>Zistené aktívne miestne nastavenie Vášho systému:</translation>
     </message>
@@ -40658,17 +40751,17 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Výberom tohto zašrtávacieho políča sa zruší výber voľby &apos;Vyhladiť čiary&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3370"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3337"/>
         <source>Rubberband</source>
         <translation type="unfinished">Rubberband</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3389"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3356"/>
         <source>Line width in pixels</source>
         <translation>Hrúbka línie v pixeloch</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3453"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3420"/>
         <source>Snapping</source>
         <translation>Prichytávanie</translation>
     </message>
@@ -40811,37 +40904,37 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Nástroje GDAL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3857"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3824"/>
         <source>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</source>
         <translation>V niektorých prípadoch je možné použiť viac než jeden ovládač GDAL na načítanie rovnakého rastrového formátu. Použite nižšie uvedený zoznam na presné určenie, ktorý ovládač sa má použiť.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3874"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3841"/>
         <source>Name</source>
         <translation>Názov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3879"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3846"/>
         <source>ext</source>
         <translation>ext</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3884"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3851"/>
         <source>Flags</source>
         <translation>Vlajky</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3889"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3856"/>
         <source>Description</source>
         <translation>Popis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3821"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3788"/>
         <source>Edit Pyramids Options</source>
         <translation>Upraviť možnosti pyramíd</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3841"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3808"/>
         <source>Edit Create Options</source>
         <translation>Upraviť možnosti vytvárania</translation>
     </message>
@@ -40900,7 +40993,7 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Modrý kanál</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4313"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4280"/>
         <source>Default expiration period for WMS-C/WMTS tiles (hours)</source>
         <translation>Predvolená expiračná doba pre mapové štvorce WMS-C/WMTS (v hodinách)</translation>
     </message>
@@ -40949,33 +41042,33 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Algoritmus umiestnenia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3382"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3349"/>
         <source>Line color</source>
         <translation>Farba línie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3357"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3324"/>
         <source>Reuse last entered attribute values</source>
         <translation>Znova použije posledné zadané hodnoty atribútov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3327"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3294"/>
         <source>Validate geometries</source>
         <translation>Overiť platnosť geometrií</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4024"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3991"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
         <translation>Povoliť automatickú trans&amp;formáciu medzi súradnicovými systémami v predvolenom nastavení</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3955"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4055"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3922"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4022"/>
         <source>Select...</source>
         <translation>Vybrať...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4062"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4029"/>
         <source>Always start new projects with this CRS</source>
         <translation>Vždy spustiť nové projekty s týmto súradnicovým systémom</translation>
     </message>
@@ -40986,17 +41079,17 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Sieť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4499"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4466"/>
         <source>Exclude URLs (starting with)</source>
         <translation>Vylúčiť URL adresy (začínajúce na)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4364"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4331"/>
         <source>Cache settings</source>
         <translation>Pamäťové nastavenia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4370"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4337"/>
         <source>Directory</source>
         <translation>Adresár</translation>
     </message>
@@ -41007,7 +41100,7 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <location filename="../src/ui/qgsoptionsbase.ui" line="2995"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3022"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3036"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4380"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4347"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -41017,17 +41110,17 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Veľkosť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4397"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4364"/>
         <source>Clear</source>
         <translation>Vyčistiť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4281"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4248"/>
         <source>WMS search address</source>
         <translation>Vyhľadávač adresy WMS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4295"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4262"/>
         <source>Timeout for network requests (ms)</source>
         <translation>Časový limit pre sieťové požiadavky (ms)</translation>
     </message>
@@ -41061,27 +41154,27 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation>Polomer vyhľadávania pri identifikácii objektov a zobrazovaní mapových tipov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3405"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3372"/>
         <source>Line width</source>
         <translation>Hrúbka línie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3459"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3426"/>
         <source>Default snap mode</source>
         <translation>Predvolený režim prichytávania</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3593"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3560"/>
         <source>Vertex markers</source>
         <translation>Značky uzlov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3599"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3566"/>
         <source>Marker style</source>
         <translation>Štýl značky</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4183"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4150"/>
         <source>Override system locale</source>
         <translation>Ignorovať miestne nastavenie systému</translation>
     </message>
@@ -41175,22 +41268,22 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Otvoriť formulár objektu, ak je identifikovaný jediný objekt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3476"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3443"/>
         <source>Default snapping tolerance</source>
         <translation>Predvolená tolerancia prichytávania</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3493"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3460"/>
         <source>Search radius for vertex edits</source>
         <translation>Vyhľadávací polomer na editáciu uzlov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3662"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3629"/>
         <source>Show markers only for selected features</source>
         <translation>Zobraziť značky len u vybraných objektov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3642"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3609"/>
         <source>Marker size</source>
         <translation>Veľkosť značky</translation>
     </message>
@@ -41280,22 +41373,14 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="unfinished">Farba...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3153"/>
-        <source>Grid defaults</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3159"/>
         <source>Spacing</source>
-        <translation type="unfinished">Rozostupy</translation>
+        <translation type="obsolete">Rozostupy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2613"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2704"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2724"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3166"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3223"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3254"/>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
@@ -41326,57 +41411,51 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3213"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3244"/>
         <source>Snap tolerance</source>
         <translation type="unfinished">Tolerancia prichytávania</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3236"/>
-        <source>Guide defaults</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3311"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3278"/>
         <source>Feature creation</source>
         <translation>Vytváranie objektu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3334"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3301"/>
         <source>Suppress attribute form pop-up after feature creation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3583"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3550"/>
         <source>Open snapping options in a dock window (QGIS restart required)</source>
         <translation>Otvoriť možností prichytávania v ukotviteľnom okne (vyžaduje reštart QGISu)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3672"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3639"/>
         <source>Curve offset tool</source>
         <translation>Nástroj na odsadenie krivky</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3681"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3648"/>
         <source>Miter limit</source>
         <translation>Limit úkosu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3688"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3655"/>
         <source>Join style</source>
         <translation>Štýl spoja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3705"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3672"/>
         <source>Quadrant segments</source>
         <translation>Segmenty kvadrantu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3799"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3766"/>
         <source>GDAL driver options</source>
         <translation>Možnosti ovládača GDAL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3851"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3818"/>
         <source>GDAL drivers</source>
         <translation>Ovládače GDAL</translation>
     </message>
@@ -41385,108 +41464,108 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Súradnicový systém (CRS)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3942"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3909"/>
         <source>CRS for new layers</source>
         <translation>Súradnicový systém pre nové vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4005"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3972"/>
         <source>When a new layer is created, or when a layer is loaded that has no CRS</source>
         <translation>Vrstva po vytvorení alebo načítaní nemá žiadny súradnicový systém</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4018"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3985"/>
         <source>Default CRS for new projects</source>
         <translation>Predvolený súradnicový systém pre nové projekty</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4034"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4001"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if layers have different CRS</source>
         <translation>Povoliť automatickú transformáciu medzi súradnicovými systémami (&apos;on the fly&apos; reprojekcia), ak majú vrstvy odlišné súradnicové systémy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4048"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4015"/>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4075"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4042"/>
         <source>Default datum transformations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4121"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4088"/>
         <source>Source CRS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4126"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4093"/>
         <source>Destination CRS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4131"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4098"/>
         <source>Source datum transform</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4136"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4103"/>
         <source>Destination datum transform</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4144"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4111"/>
         <source>Ask for datum transformation when no default is defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4202"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4169"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>&lt;b&gt;Poznámka:&lt;/b&gt; Zmena miestneho nastavenia vyžaduje reštart aplikácie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4331"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4298"/>
         <source>Max retry in case of tile request errors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4349"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4316"/>
         <source>User-Agent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4387"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4354"/>
         <source>Size [KiB]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4407"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4374"/>
         <source>Use proxy for web access</source>
         <translation>Použiť proxy server pre webový prístup</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4425"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4392"/>
         <source>Host</source>
         <translation>Hostiteľ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4435"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4402"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4445"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4412"/>
         <source>User</source>
         <translation>Používateľ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4452"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4466"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4419"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4433"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation>Pokiaľ nie je potrebné meno používateľa / heslo k proxy, nechajte toto pole prázdne</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4459"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4426"/>
         <source>Password</source>
         <translation>Heslo</translation>
     </message>
@@ -41517,7 +41596,7 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Skryje vyskakujúce okná pre zápis atribútov po každom vytvorenom objekte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4476"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4443"/>
         <source>Proxy type</source>
         <translation>Typ proxy</translation>
     </message>
@@ -41525,7 +41604,7 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <location filename="../src/ui/qgsoptionsbase.ui" line="971"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1024"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1118"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4515"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4482"/>
         <source>Add</source>
         <translation>Pridať</translation>
     </message>
@@ -41533,14 +41612,14 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <location filename="../src/ui/qgsoptionsbase.ui" line="978"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1031"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1105"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4508"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4475"/>
         <source>Remove</source>
         <translation>Odobrať</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="88"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="91"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="4273"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="4240"/>
         <source>General</source>
         <translation>Všeobecné </translation>
     </message>
@@ -41554,15 +41633,15 @@ Vždy použiť sieť: vždy načítavať zo siete a nekontrolovať, či vyrovná
         <translation type="obsolete">Umiestnenie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3517"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3531"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3484"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3498"/>
         <source>map units</source>
         <translation>mapové jednotky</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1782"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3522"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="3536"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3489"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="3503"/>
         <source>pixels</source>
         <translation>pixely</translation>
     </message>
@@ -45592,128 +45671,128 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="197"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="198"/>
         <source>Layer</source>
         <translation>Vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="198"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="199"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="199"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="200"/>
         <source>Identifiable</source>
         <translation>Identifikovateľná</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="219"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="220"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="227"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="228"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="231"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="232"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="728"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1090"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="729"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1091"/>
         <source>Coordinate System Restriction</source>
         <translation>Obmedzenie súradnicového systému</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="728"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="729"/>
         <source>No coordinate systems selected. Disabling restriction.</source>
         <translation>Nie je vybraný žiadny súradnicový systém. Zablokovanie obmedzenia.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="150"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="151"/>
         <source>Selection color</source>
         <translation>Výber farby</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="894"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="895"/>
         <source>Measure tool (CRS transformation: %1)</source>
         <translation>Nástroj na meranie (transformácia súr. systému: %1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="895"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="896"/>
         <source>Canvas units (CRS transformation: %1)</source>
         <translation>Jednotky mapového okna (transformácia súr. systému: %1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="928"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="929"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="930"/>
         <source>OFF</source>
         <translation>Vypnúť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="939"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="940"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="941"/>
         <source>ON</source>
         <translation>Zapnúť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1090"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1091"/>
         <source>CRS %1 was already selected</source>
         <translation>Súradnicový systém %1 bol už vybraný</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1110"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1111"/>
         <source>Coordinate System Restrictions</source>
         <translation>Obmedzenia súradnicového systému</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1111"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1112"/>
         <source>The current selection of coordinate systems will be lost.
 Proceed?</source>
         <translation>Aktuálny výber súradnicových systémov bude stratený.
 Pokračovať?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1144"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1145"/>
         <source>Select print composer</source>
         <translation>Vyberte tlačový výstup</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1144"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1145"/>
         <source>Composer Title</source>
         <translation>Názov tlačového výstupu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1166"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1167"/>
         <source>Select restricted layers and groups</source>
         <translation>Vyberte obmedzené vrstvy a skupiny</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1240"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1241"/>
         <source>Enter scale</source>
         <translation>Zadajte mierku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1241"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1242"/>
         <source>Scale denominator</source>
         <translation>Menovateľ mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1265"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1266"/>
         <source>Load scales</source>
         <translation>Načítať mierky</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1266"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1292"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1267"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1293"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>Súbory XML (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1291"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1292"/>
         <source>Save scales</source>
         <translation>Uložiť mierky</translation>
     </message>
@@ -45722,30 +45801,30 @@ Pokračovať?</translation>
         <translation type="obsolete">Parametre :</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1492"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1493"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1597"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1598"/>
         <source>Parameters:</source>
         <translation>Parametre:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1597"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1598"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1608"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1609"/>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
         <translation>Výpočty na elipsoide sú možné, len ak je povolená transformácia súradnicového systému</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1440"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1441"/>
         <source>Select a valid symbol</source>
         <translation>Vyberte platný symbol</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1446"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1447"/>
         <source>Invalid symbol : </source>
         <translation>Neplatný symbol :</translation>
     </message>
@@ -45763,12 +45842,12 @@ Pokračovať?</translation>
         <translation>Všeobecné nastavenia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="517"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="549"/>
         <source>Meters</source>
         <translation>Metre</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="504"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="536"/>
         <source>Feet</source>
         <translation>Stopy</translation>
     </message>
@@ -45805,131 +45884,136 @@ Pokračovať?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="396"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="399"/>
+        <source>Project file</source>
+        <translation type="unfinished">Súbor projektu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="428"/>
         <source>Measure tool</source>
         <translation>Nástroj na meranie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="405"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="437"/>
         <source>Ellipsoid
 (for distance calculations)</source>
         <translation>Elipsoid
 (pre výpočty vzdialenosti)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="413"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="445"/>
         <source>Semi-major</source>
         <translation>Hlavná poloos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="426"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="458"/>
         <source>Semi-minor</source>
         <translation>Vedľajšia poloos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="478"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="510"/>
         <source>Degree</source>
         <translation>Stupeň</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="491"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="523"/>
         <source>Nautical miles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="530"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="562"/>
         <source>Degree display</source>
         <translation>Zobrazenie stupňov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="536"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="568"/>
         <source>Decimal degrees</source>
         <translation>Desatinné stupne</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="543"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="575"/>
         <source>Degrees, Minutes</source>
         <translation>Stupne, minúty</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="550"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="582"/>
         <source>Degrees, Minutes, Seconds</source>
         <translation>Stupne, minúty, sekundy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="653"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="685"/>
         <source>Project scales</source>
         <translation>Mierky projektu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="673"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="684"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="695"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="706"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="917"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="970"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1059"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1106"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="705"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="716"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="727"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="738"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="949"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1002"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1091"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1138"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1049"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1081"/>
         <source>Marker</source>
         <translation>Značka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="928"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="960"/>
         <source>Line</source>
         <translation>Línia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1070"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1102"/>
         <source>Fill</source>
         <translation>Výplň</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1010"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1042"/>
         <source>Color Ramp</source>
         <translation>Farebná škála</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1203"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1235"/>
         <source>Style Manager</source>
         <translation>Správca štýlov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1120"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1152"/>
         <source>Options</source>
         <translation>Možnosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1191"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1223"/>
         <source>Assign random colors to symbols</source>
         <translation>Priradiť symbolom náhodné farby</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1304"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1336"/>
         <source>Title</source>
         <translation>Názov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1294"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1326"/>
         <source>Person</source>
         <translation>Osoba</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="905"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="937"/>
         <source>Default symbols</source>
         <translation>Predvolené symboly</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1131"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1163"/>
         <source>Transparency</source>
         <translation>Priehľadnosť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1166"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1198"/>
         <source> %</source>
         <translation> %</translation>
     </message>
@@ -45938,62 +46022,62 @@ Pokračovať?</translation>
         <translation type="obsolete">Možnosti služby</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1353"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1385"/>
         <source>Phone</source>
         <translation>Telefón</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1366"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1398"/>
         <source>Abstract</source>
         <translation>Abstrakt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1343"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1375"/>
         <source>E-Mail</source>
         <translation>E-mail</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1273"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1305"/>
         <source>Service capabilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1317"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1349"/>
         <source>Organization</source>
         <translation>Organizácia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1330"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1362"/>
         <source>Online resource</source>
         <translation>Online zdroj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1412"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1444"/>
         <source>WMS capabilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1672"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1704"/>
         <source>Min. X</source>
         <translation>Min. X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1689"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1721"/>
         <source>Min. Y</source>
         <translation>Min. Y</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1706"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1738"/>
         <source>Max. X</source>
         <translation>Max. X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1723"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1755"/>
         <source>Max. Y</source>
         <translation>Max Y</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1740"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1772"/>
         <source>Use Current Canvas Extent</source>
         <translation>Použiť rozsah aktuálneho mapového okna</translation>
     </message>
@@ -46004,17 +46088,17 @@ Pokračovať?</translation>
         <translation>Makrá</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1382"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1414"/>
         <source>Fees</source>
         <translation>Poplatky</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1392"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1424"/>
         <source>Access constraints</source>
         <translation>Obmedzenia prístupu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1402"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1434"/>
         <source>Keyword list</source>
         <translation>Zoznam kľúčových slov</translation>
     </message>
@@ -46023,49 +46107,49 @@ Pokračovať?</translation>
         <translation type="obsolete">Možnosti WMS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1527"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1559"/>
         <source>Add geometry to feature response</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1534"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1566"/>
         <source>Exclude layers</source>
         <translation>Vylúčiť vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1595"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1859"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1925"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1627"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1891"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1957"/>
         <source>Advertised URL</source>
         <translation>Uvádzaná URL adresa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1609"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1641"/>
         <source>Width</source>
         <translation>Šírka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1638"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1670"/>
         <source>Height</source>
         <translation>Výška</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1645"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1677"/>
         <source>Maximums for GetMap request</source>
         <translation>Maximá pre požiadavky GetMap</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1654"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1686"/>
         <source>Advertised extent</source>
         <translation>Uvádzaný rozsah</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1421"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1453"/>
         <source>CRS restrictions</source>
         <translation>Obmedzenia súr. systému</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1468"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1500"/>
         <source>Exclude composers</source>
         <translation>Vylúčiť tlačové výstupy</translation>
     </message>
@@ -46074,39 +46158,39 @@ Pokračovať?</translation>
         <translation type="obsolete">Možnosti WFS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1825"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1857"/>
         <source>Update</source>
         <translation>Aktualizovať</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1830"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1862"/>
         <source>Insert</source>
         <translation>Vložiť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1835"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1867"/>
         <source>Delete</source>
         <translation>Odstrániť</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1843"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1909"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1875"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1941"/>
         <source>Unselect all</source>
         <translation>Zrušiť výber</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1850"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1916"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1882"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1948"/>
         <source>Select all</source>
         <translation>Vybrať všetko</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1880"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1912"/>
         <source>WCS capabilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1988"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="2020"/>
         <source>Python macros</source>
         <translation>Makrá jazyka Python</translation>
     </message>
@@ -46119,7 +46203,7 @@ Pokračovať?</translation>
         <translation type="obsolete">Odobrať</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1450"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1482"/>
         <source>Used</source>
         <translation>Použitý</translation>
     </message>
@@ -46128,28 +46212,28 @@ Pokračovať?</translation>
         <translation type="obsolete">Pridať geometriu vo formáte WKT k odozve na informáciu o objekte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="445"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="477"/>
         <source>Used when CRS transformation is turned off</source>
         <translation>Používa sa, ak je transformácia súradnicového systému vypnutá</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="448"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="480"/>
         <source>Canvas units</source>
         <translation>Jednotky mapového okna</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1765"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1797"/>
         <source>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1799"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1831"/>
         <source>WFS capabilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1820"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1901"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1852"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1933"/>
         <source>Published</source>
         <translation>Puplikované</translation>
     </message>
@@ -46159,24 +46243,24 @@ Pokračovať?</translation>
         <translation>Identifikovateľné vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="839"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="871"/>
         <source>Project layers</source>
         <translation>Vrstvy projektu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="849"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1815"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1896"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="881"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1847"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1928"/>
         <source>Layer</source>
         <translation>Vrstva</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="854"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="886"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="859"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="891"/>
         <source>Identifiable</source>
         <translation>Identifikovateľná</translation>
     </message>
@@ -46186,39 +46270,39 @@ Pokračovať?</translation>
         <translation>Štandardný názov projektu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="634"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="666"/>
         <source>Automatic</source>
         <translation>Automaticky</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="628"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="660"/>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
         <translation>Automaticky nastaví počet počet desatinných miest v zobrazovaní polohy myši (kurzora)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="631"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="663"/>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
         <translation>Počet desatinných miest, ktoré sú použité pri zobrazovaní polohy myši je automaticky nastavený tak, aby posun myši o jeden pixel spôsobil zmenu v zobrazovanej polohe </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="621"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="653"/>
         <source>Manual</source>
         <translation>Ručne</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="615"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="618"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="647"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="650"/>
         <source>Sets the number of decimal places to use for the mouse position display</source>
         <translation>Nastaví počet desatinných miest použitých pri zobrazovaní polohy myši</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="586"/>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="589"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="618"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="621"/>
         <source>The number of decimal places for the manual option</source>
         <translation>Počet desatinných miest pre ručnú voľbu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="602"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="634"/>
         <source>decimal places</source>
         <translation>desatinné miesta</translation>
     </message>
@@ -46233,7 +46317,7 @@ Pokračovať?</translation>
         <translation type="obsolete">Digitalizácia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="565"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="597"/>
         <source>Precision</source>
         <translation>Presnosť</translation>
     </message>
@@ -46267,6 +46351,7 @@ Pokračovať?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="383"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="415"/>
         <source>Project title</source>
         <translation>Názov projektu</translation>
     </message>
@@ -46285,7 +46370,7 @@ Pokračovať?</translation>
         <translation type="obsolete">Súradnicový systém (CRS)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="783"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="815"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
         <translation>Povoliť automatickú transformáciu medzi súradnicovými systémami (&apos;on the fly&apos; transformácia)</translation>
     </message>
@@ -59868,18 +59953,6 @@ Description: %3</source>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="140"/>
         <source>Search in columns</source>
         <translation type="unfinished">Vyhľadávanie v stĺpcoch</translation>
-    </message>
-</context>
-<context>
-    <name>SaveAsPythonScriptAction</name>
-    <message>
-        <source>I/O error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save edits. Reason:
- %s</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
