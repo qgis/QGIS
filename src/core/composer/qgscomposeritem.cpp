@@ -122,6 +122,11 @@ void QgsComposerItem::init( bool manageZValue )
   setGraphicsEffect( mEffect );
 
   // data defined strings
+  mDataDefinedNames.insert( PageNumber, QString( "dataDefinedPageNumber" ) );
+  mDataDefinedNames.insert( PositionX, QString( "dataDefinedPositionX" ) );
+  mDataDefinedNames.insert( PositionY, QString( "dataDefinedPositionY" ) );
+  mDataDefinedNames.insert( ItemWidth, QString( "dataDefinedWidth" ) );
+  mDataDefinedNames.insert( ItemHeight, QString( "dataDefinedHeight" ) );
   mDataDefinedNames.insert( ItemRotation, QString( "dataDefinedRotation" ) );
   mDataDefinedNames.insert( Transparency, QString( "dataDefinedTransparency" ) );
   mDataDefinedNames.insert( BlendMode, QString( "dataDefinedBlendMode" ) );
@@ -351,7 +356,6 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   mLastValidViewScaleFactor = itemElem.attribute( "lastValidViewScaleFactor", "-1" ).toDouble();
 
-  setSceneRect( QRectF( x, y, width, height ) );
   setZValue( itemElem.attribute( "zValue" ).toDouble() );
 
   //pen
@@ -408,6 +412,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   {
     mComposition->readDataDefinedPropertyMap( itemElem, &mDataDefinedNames, &mDataDefinedProperties );
   }
+
+  QRectF evaluatedRect = evalItemRect( QRectF( x, y, width, height ) );
+  setSceneRect( evaluatedRect );
 
   return true;
 }
@@ -542,7 +549,7 @@ double QgsComposerItem::itemRotation( PropertyValueType valueType ) const
 void QgsComposerItem::move( double dx, double dy )
 {
   QRectF newSceneRect( pos().x() + dx, pos().y() + dy, rect().width(), rect().height() );
-  setSceneRect( newSceneRect );
+  setSceneRect( evalItemRect( newSceneRect ) );
 }
 
 int QgsComposerItem::page() const
@@ -571,7 +578,11 @@ void QgsComposerItem::updatePagePos( double newPageWidth, double newPageHeight )
   Q_UNUSED( newPageWidth )
   QPointF curPagePos = pagePos();
   int curPage = page() - 1;
-  setY( curPage * ( newPageHeight + composition()->spaceBetweenPages() ) + curPagePos.y() );
+
+  double y = curPage * ( newPageHeight + composition()->spaceBetweenPages() ) + curPagePos.y();
+  QRectF newSceneRect( pos().x(), y, rect().width(), rect().height() );
+
+  setSceneRect( evalItemRect( newSceneRect ) );
   emit sizeChanged();
 }
 
@@ -638,7 +649,10 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
     height -= 2 * estimatedFrameBleed();
   }
 
-  setSceneRect( QRectF( upperLeftX, upperLeftY, width, height ) );
+  //consider data defined item size and position before finalising rect
+  QRectF newRect = evalItemRect( QRectF( upperLeftX, upperLeftY, width, height ) );
+
+  setSceneRect( newRect );
 }
 
 void QgsComposerItem::setSceneRect( const QRectF& rectangle )
@@ -662,11 +676,107 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
     yTranslation -= newHeight;
   }
 
-  QRectF newRect( 0, 0, newWidth, newHeight );
-  QGraphicsRectItem::setRect( newRect );
-  setPos( xTranslation, yTranslation );
+  QGraphicsRectItem::setRect( QRectF( 0, 0, newWidth, newHeight ) );
+  setPos( QPointF( xTranslation, yTranslation ) );
 
   emit sizeChanged();
+}
+
+QRectF QgsComposerItem::evalItemRect( const QRectF &newRect )
+{
+  QRectF result = newRect;
+
+  //data defined position or size set? if so, update rect with data defined values
+  QVariant exprVal;
+  //evaulate width and height first, since they may affect position if non-top-left reference point set
+  if ( dataDefinedEvaluate( QgsComposerItem::ItemWidth, exprVal ) )
+  {
+    bool ok;
+    double width = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Width:%1" ).arg( width ) );
+    if ( ok )
+    {
+      result.setWidth( width );
+    }
+  }
+  if ( dataDefinedEvaluate( QgsComposerItem::ItemHeight, exprVal ) )
+  {
+    bool ok;
+    double height = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Height:%1" ).arg( height ) );
+    if ( ok )
+    {
+      result.setHeight( height );
+    }
+  }
+
+  double x = result.left();
+  //initially adjust for position mode to get top-left coordinate
+  if ( mLastUsedPositionMode == UpperMiddle || mLastUsedPositionMode == Middle || mLastUsedPositionMode == LowerMiddle )
+  {
+    x += newRect.width() / 2.0;
+  }
+  else if ( mLastUsedPositionMode == UpperRight || mLastUsedPositionMode == MiddleRight || mLastUsedPositionMode == LowerRight )
+  {
+    x += newRect.width();
+  }
+  if ( dataDefinedEvaluate( QgsComposerItem::PositionX, exprVal ) )
+  {
+    bool ok;
+    double positionX = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Position X:%1" ).arg( positionX ) );
+    if ( ok )
+    {
+      x = positionX;
+    }
+  }
+
+  double y = result.top();
+  //adjust y-coordinate if placement is not done to an upper point
+  if ( mLastUsedPositionMode == MiddleLeft || mLastUsedPositionMode == Middle || mLastUsedPositionMode == MiddleRight )
+  {
+    y += newRect.height() / 2.0;
+  }
+  else if ( mLastUsedPositionMode == LowerLeft || mLastUsedPositionMode == LowerMiddle || mLastUsedPositionMode == LowerRight )
+  {
+    y += newRect.height();
+  }
+
+  if ( dataDefinedEvaluate( QgsComposerItem::PositionY, exprVal ) )
+  {
+    bool ok;
+    double positionY = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Position Y:%1" ).arg( positionY ) );
+    if ( ok )
+    {
+      y = positionY;
+    }
+  }
+
+  //adjust x-coordinate if placement is not done to a left point
+  if ( mLastUsedPositionMode == UpperMiddle || mLastUsedPositionMode == Middle || mLastUsedPositionMode == LowerMiddle )
+  {
+    x -= result.width() / 2.0;
+  }
+  else if ( mLastUsedPositionMode == UpperRight || mLastUsedPositionMode == MiddleRight || mLastUsedPositionMode == LowerRight )
+  {
+    x -= result.width();
+  }
+
+  //adjust y-coordinate if placement is not done to an upper point
+  if ( mLastUsedPositionMode == MiddleLeft || mLastUsedPositionMode == Middle || mLastUsedPositionMode == MiddleRight )
+  {
+    y -= result.height() / 2.0;
+  }
+  else if ( mLastUsedPositionMode == LowerLeft || mLastUsedPositionMode == LowerMiddle || mLastUsedPositionMode == LowerRight )
+  {
+    y -= result.height();
+  }
+
+  result.moveLeft( x );
+  result.moveTop( y );
+
+  return result;
 }
 
 void QgsComposerItem::drawBackground( QPainter* p )
@@ -1326,6 +1436,13 @@ void QgsComposerItem::repaint()
 void QgsComposerItem::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
 {
   //update data defined properties and redraw item to match
+  if ( property == QgsComposerItem::PositionX || property == QgsComposerItem::PositionY ||
+       property == QgsComposerItem::ItemWidth || property == QgsComposerItem::ItemHeight ||
+       property == QgsComposerItem::AllProperties )
+  {
+    QRectF evaluatedRect = evalItemRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
+    setSceneRect( evaluatedRect );
+  }
   if ( property == QgsComposerItem::ItemRotation || property == QgsComposerItem::AllProperties )
   {
     refreshRotation( false, true );

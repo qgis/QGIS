@@ -697,6 +697,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Map of current data defined properties*/
     QMap< QgsComposerItem::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
+    /**Update an item rect to consider data defined position and size of item*/
+    QRectF evalItemRect( const QRectF &newRect );
+
     /**Refresh item's rotation, considering data defined rotation setting
       *@param updateItem set to false to prevent the item being automatically updated
       *@param rotateAroundCenter set to true to rotate the item around its center rather

@@ -150,6 +150,23 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   }
 
   //connect data defined buttons
+  connect( mXPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYLineEdit, SLOT( setDisabled( bool ) ) );
+  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPageSpinBox, SLOT( setDisabled( bool ) ) );
+
+  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mWidthLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mHeightDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mHeightLineEdit, SLOT( setDisabled( bool ) ) );
+
   connect( mItemRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
   connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mItemRotationSpinBox, SLOT( setDisabled( bool ) ) );
@@ -518,11 +535,23 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   QgsVectorLayer* vl = atlasCoverageLayer();
 
   //block signals from data defined buttons
+  mXPositionDDBtn->blockSignals( true );
+  mYPositionDDBtn->blockSignals( true );
+  mWidthDDBtn->blockSignals( true );
+  mHeightDDBtn->blockSignals( true );
   mItemRotationDDBtn->blockSignals( true );
   mTransparencyDDBtn->blockSignals( true );
   mBlendModeDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
+  mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::PositionX ),
+                         QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mYPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::PositionY ),
+                         QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mWidthDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemWidth ),
+                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mHeightDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemHeight ),
+                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
   mItemRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::ItemRotation ),
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
   mTransparencyDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::Transparency ),
@@ -531,12 +560,21 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
                          QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
+  mXLineEdit->setEnabled( !mXPositionDDBtn->isActive() );
+  mYLineEdit->setEnabled( !mYPositionDDBtn->isActive() );
+  mPageSpinBox->setEnabled( !mYPositionDDBtn->isActive() );
+  mWidthLineEdit->setEnabled( !mWidthDDBtn->isActive() );
+  mHeightLineEdit->setEnabled( !mHeightDDBtn->isActive() );
   mItemRotationSpinBox->setEnabled( !mItemRotationDDBtn->isActive() );
   mTransparencySlider->setEnabled( !mTransparencyDDBtn->isActive() );
   mTransparencySpnBx->setEnabled( !mTransparencyDDBtn->isActive() );
   mBlendModeCombo->setEnabled( !mBlendModeDDBtn->isActive() );
 
   //unblock signals from data defined buttons
+  mXPositionDDBtn->blockSignals( false );
+  mYPositionDDBtn->blockSignals( false );
+  mWidthDDBtn->blockSignals( false );
+  mHeightDDBtn->blockSignals( false );
   mItemRotationDDBtn->blockSignals( false );
   mTransparencyDDBtn->blockSignals( false );
   mBlendModeDDBtn->blockSignals( false );
@@ -544,7 +582,23 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
 
 QgsComposerItem::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
 {
-  if ( widget == mItemRotationDDBtn )
+  if ( widget == mXPositionDDBtn )
+  {
+    return QgsComposerItem::PositionX;
+  }
+  else if ( widget == mYPositionDDBtn )
+  {
+    return QgsComposerItem::PositionY;
+  }
+  else if ( widget == mWidthDDBtn )
+  {
+    return QgsComposerItem::ItemWidth;
+  }
+  else if ( widget == mHeightDDBtn )
+  {
+    return QgsComposerItem::ItemHeight;
+  }
+  else if ( widget == mItemRotationDDBtn )
   {
     return QgsComposerItem::ItemRotation;
   }
