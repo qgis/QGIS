@@ -821,6 +821,9 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
     mAtlasFeatureExtent = newExtent;
   }
 
+  //recalculate data defined scale and extents, since that may override extents
+  refreshMapExtents();
+
   mCacheUpdated = false;
   emit preparedForAtlas();
   updateItem();
