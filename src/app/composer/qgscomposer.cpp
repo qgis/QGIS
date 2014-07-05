@@ -1467,11 +1467,8 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       }
       else
       {
-        if ( featureI > 0 )
-        {
-          printer.newPage();
-        }
-        mComposition->doPrint( printer, painter );
+        //start print on a new page if we're not on the first feature
+        mComposition->doPrint( printer, painter, featureI > 0 );
       }
     }
     atlasMap->endRender();
@@ -1604,11 +1601,8 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
         return;
       }
 
-      if ( i > 0 )
-      {
-        mPrinter.newPage();
-      }
-      mComposition->doPrint( mPrinter, painter );
+      //start print on a new page if we're not on the first feature
+      mComposition->doPrint( mPrinter, painter, i > 0 );
     }
     atlasMap->endRender();
     painter.end();

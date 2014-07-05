@@ -91,6 +91,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ZValueAbove
     };
 
+    enum PaperOrientation
+    {
+      Portrait,
+      Landscape
+    };
+
     //! @deprecated since 2.4 - use the constructor with QgsMapSettings
     Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
     explicit QgsComposition( const QgsMapSettings& mapSettings );
@@ -464,8 +470,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void beginPrint( QPrinter& printer );
     /** Prepare the printer for printing in a PDF */
     void beginPrintAsPDF( QPrinter& printer, const QString& file );
-    /** Print on a preconfigured printer */
-    void doPrint( QPrinter& printer, QPainter& painter );
+
+    /**Print on a preconfigured printer
+     * @param printer QPrinter destination
+     * @painter QPainter source
+     * @startNewPage set to true to begin the print on a new page
+     */
+    void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
 
     /**Convenience function that prepares the printer and prints
      * @returns true if print was successful
@@ -658,6 +669,15 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView* graphicsView() const;
+
+    /*Recalculates the page size using data defined page settings*/
+    void refreshPageSize();
+
+    /*Decodes a string representing a paper orientation*/
+    QgsComposition::PaperOrientation decodePaperOrientation( QString orientationString, bool &ok );
+
+    /*Decodes a string representing a preset page size*/
+    bool decodePresetPaperSize( QString presetString, double &width, double &height );
 
     /**Evaluate a data defined property and return the calculated value
      * @returns true if data defined property could be successfully evaluated

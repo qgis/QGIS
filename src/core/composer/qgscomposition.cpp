@@ -98,6 +98,11 @@ void QgsComposition::init()
   mPreventCursorChange = false;
 
   //data defined strings
+  mDataDefinedNames.insert( QgsComposerItem::PresetPaperSize, QString( "dataDefinedPaperSize" ) );
+  mDataDefinedNames.insert( QgsComposerItem::PaperWidth, QString( "dataDefinedPaperWidth" ) );
+  mDataDefinedNames.insert( QgsComposerItem::PaperHeight, QString( "dataDefinedPaperHeight" ) );
+  mDataDefinedNames.insert( QgsComposerItem::NumPages, QString( "dataDefinedNumPages" ) );
+  mDataDefinedNames.insert( QgsComposerItem::PaperOrientation, QString( "dataDefinedPaperOrientation" ) );
 
   //connect to atlas toggling on/off and coverage layer and feature changes
   //to update data defined values
@@ -213,7 +218,16 @@ void QgsComposition::setSelectedItem( QgsComposerItem *item )
 void QgsComposition::refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
 {
   //updates data defined properties and redraws composition to match
-
+  if ( property == QgsComposerItem::NumPages || property == QgsComposerItem::AllProperties )
+  {
+    setNumPages( numPages() );
+  }
+  if ( property == QgsComposerItem::PaperWidth || property == QgsComposerItem::PaperHeight ||
+       property == QgsComposerItem::PaperOrientation || property == QgsComposerItem::PresetPaperSize ||
+       property == QgsComposerItem::AllProperties )
+  {
+    refreshPageSize();
+  }
 }
 
 QRectF QgsComposition::compositionBounds() const
@@ -303,7 +317,22 @@ double QgsComposition::paperWidth() const
 void QgsComposition::setNumPages( int pages )
 {
   int currentPages = numPages();
-  int diff = pages - currentPages;
+  int desiredPages = pages;
+
+  //data defined num pages set?
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerItem::NumPages, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok = false;
+    int pagesD = exprVal.toInt( &ok );
+    QgsDebugMsg( QString( "exprVal NumPages:%1" ).arg( pagesD ) );
+    if ( ok )
+    {
+      desiredPages = pagesD;
+    }
+  }
+
+  int diff = desiredPages - currentPages;
   if ( diff >= 0 )
   {
     for ( int i = 0; i < diff; ++i )
@@ -2466,6 +2495,8 @@ void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
   // https://bugreports.qt-project.org/browse/QTBUG-33583 - PDF output converts text to outline
   // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( file );
+  refreshPageSize();
   printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
 
   // TODO: add option for this in Composer
@@ -2482,9 +2513,13 @@ bool QgsComposition::exportAsPDF( const QString& file )
   return print( printer );
 }
 
-void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
+void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage )
 {
-//QgsComposition starts page numbering at 0
+  //set the page size again so that data defined page size takes effect
+  refreshPageSize();
+  printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+
+  //QgsComposition starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
@@ -2492,7 +2527,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > fromPage )
+      if ( i > fromPage || startNewPage )
       {
         printer.newPage();
       }
@@ -2510,7 +2545,7 @@ void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > fromPage )
+      if ( i > fromPage || startNewPage )
       {
         printer.newPage();
       }
@@ -2716,6 +2751,139 @@ bool QgsComposition::setAtlasMode( QgsComposition::AtlasMode mode )
 
   update();
   return true;
+}
+
+void QgsComposition::refreshPageSize()
+{
+  double pageWidth = mPageWidth;
+  double pageHeight = mPageHeight;
+
+  QVariant exprVal;
+  //in order of precedence - first consider predefined page size
+  if ( dataDefinedEvaluate( QgsComposerItem::PresetPaperSize, exprVal, &mDataDefinedProperties ) )
+  {
+    QString presetString = exprVal.toString().trimmed();
+    QgsDebugMsg( QString( "exprVal Paper Preset size :%1" ).arg( presetString ) );
+    double widthD = 0;
+    double heightD = 0;
+    if ( decodePresetPaperSize( presetString, widthD, heightD ) )
+    {
+      pageWidth = widthD;
+      pageHeight = heightD;
+    }
+  }
+
+  //which is overwritten by data defined width/height
+  if ( dataDefinedEvaluate( QgsComposerItem::PaperWidth, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok;
+    double widthD = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Paper Width:%1" ).arg( widthD ) );
+    if ( ok )
+    {
+      pageWidth = widthD;
+    }
+  }
+  if ( dataDefinedEvaluate( QgsComposerItem::PaperHeight, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok;
+    double heightD = exprVal.toDouble( &ok );
+    QgsDebugMsg( QString( "exprVal Paper Height:%1" ).arg( heightD ) );
+    if ( ok )
+    {
+      pageHeight = heightD;
+    }
+  }
+
+  //which is finally overwritten by data defined orientation
+  if ( dataDefinedEvaluate( QgsComposerItem::PaperOrientation, exprVal, &mDataDefinedProperties ) )
+  {
+    bool ok;
+    QString orientationString = exprVal.toString().trimmed();
+    QgsComposition::PaperOrientation orientation = decodePaperOrientation( orientationString, ok );
+    QgsDebugMsg( QString( "exprVal Paper Orientation:%1" ).arg( orientationString ) );
+    if ( ok )
+    {
+      double heightD, widthD;
+      switch ( orientation )
+      {
+        case QgsComposition::Portrait:
+        {
+          heightD = qMax( pageHeight, pageWidth );
+          widthD = qMin( pageHeight, pageWidth );
+          break;
+        }
+        case QgsComposition::Landscape:
+        {
+          heightD = qMin( pageHeight, pageWidth );
+          widthD = qMax( pageHeight, pageWidth );
+          break;
+        }
+      }
+      pageWidth = widthD;
+      pageHeight = heightD;
+    }
+  }
+
+  setPaperSize( pageWidth, pageHeight );
+}
+
+QgsComposition::PaperOrientation QgsComposition::decodePaperOrientation( QString orientationString, bool &ok )
+{
+  if ( orientationString.compare( "Portrait", Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsComposition::Portrait;
+  }
+  if ( orientationString.compare( "Landscape", Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsComposition::Landscape;
+  }
+  ok = false;
+  return QgsComposition::Landscape; // default to landscape
+}
+
+bool QgsComposition::decodePresetPaperSize( QString presetString, double &width, double &height )
+{
+  QList< QPair< QString, QSizeF > > presets;
+  presets << qMakePair( QString( "A5" ), QSizeF( 148, 210 ) );
+  presets << qMakePair( QString( "A4" ), QSizeF( 210, 297 ) );
+  presets << qMakePair( QString( "A3" ), QSizeF( 297, 420 ) );
+  presets << qMakePair( QString( "A2" ), QSizeF( 420, 594 ) );
+  presets << qMakePair( QString( "A1" ), QSizeF( 594, 841 ) );
+  presets << qMakePair( QString( "A0" ), QSizeF( 841, 1189 ) );
+  presets << qMakePair( QString( "B5" ), QSizeF( 176, 250 ) );
+  presets << qMakePair( QString( "B4" ), QSizeF( 250, 353 ) );
+  presets << qMakePair( QString( "B3" ), QSizeF( 353, 500 ) );
+  presets << qMakePair( QString( "B2" ), QSizeF( 500, 707 ) );
+  presets << qMakePair( QString( "B1" ), QSizeF( 707, 1000 ) );
+  presets << qMakePair( QString( "B0" ), QSizeF( 1000, 1414 ) );
+  // North american formats
+  presets << qMakePair( QString( "Legal" ), QSizeF( 215.9, 355.6 ) );
+  presets << qMakePair( QString( "ANSI A" ), QSizeF( 215.9, 279.4 ) );
+  presets << qMakePair( QString( "ANSI B" ), QSizeF( 279.4, 431.8 ) );
+  presets << qMakePair( QString( "ANSI C" ), QSizeF( 431.8, 558.8 ) );
+  presets << qMakePair( QString( "ANSI D" ), QSizeF( 558.8, 863.6 ) );
+  presets << qMakePair( QString( "ANSI E" ), QSizeF( 863.6, 1117.6 ) );
+  presets << qMakePair( QString( "Arch A" ), QSizeF( 228.6, 304.8 ) );
+  presets << qMakePair( QString( "Arch B" ), QSizeF( 304.8, 457.2 ) );
+  presets << qMakePair( QString( "Arch C" ), QSizeF( 457.2, 609.6 ) );
+  presets << qMakePair( QString( "Arch D" ), QSizeF( 609.6, 914.4 ) );
+  presets << qMakePair( QString( "Arch E" ), QSizeF( 914.4, 1219.2 ) );
+  presets << qMakePair( QString( "Arch E1" ), QSizeF( 762, 1066.8 ) );
+
+  QList< QPair< QString, QSizeF > >::const_iterator presetIt = presets.constBegin();
+  for ( ;presetIt != presets.constEnd(); ++presetIt )
+  {
+    if ( presetString.compare(( *presetIt ).first, Qt::CaseInsensitive ) == 0 )
+    {
+      width = ( *presetIt ).second.width();
+      height = ( *presetIt ).second.height();
+      return true;
+    }
+  }
+  return false;
 }
 
 QgsDataDefined *QgsComposition::dataDefinedProperty( QgsComposerItem::DataDefinedProperty property )
@@ -2932,6 +3100,7 @@ QVariant QgsComposition::dataDefinedValue( QgsComposerItem::DataDefinedProperty 
   {
     dd = it.value();
   }
+
   if ( !dd )
   {
     return QVariant();
@@ -3028,4 +3197,3 @@ double QgsComposition::relativePosition( double position, double beforeMin, doub
   //return linearly scaled position
   return m * position + c;
 }
-

@@ -34,6 +34,12 @@ class QgsComposition : QGraphicsScene
       ZValueAbove
     };
 
+    enum PaperOrientation
+    {
+      Portrait,
+      Landscape
+    };
+
     //! @deprecated since 2.4 - use the constructor with QgsMapSettings
     QgsComposition( QgsMapRenderer* mapRenderer ) /Deprecated/;
     explicit QgsComposition( const QgsMapSettings& mapSettings );
@@ -403,8 +409,13 @@ class QgsComposition : QGraphicsScene
     void beginPrint( QPrinter& printer );
     /** Prepare the printer for printing in a PDF */
     void beginPrintAsPDF( QPrinter& printer, const QString& file );
-    /** Print on a preconfigured printer */
-    void doPrint( QPrinter& printer, QPainter& painter );
+
+    /**Print on a preconfigured printer
+     * @param printer QPrinter destination
+     * @painter QPainter source
+     * @startNewPage set to true to begin the print on a new page
+     */
+    void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
 
     /**Convenience function that prepares the printer and prints
      * @returns true if print was successful
