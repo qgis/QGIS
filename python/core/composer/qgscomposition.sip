@@ -444,6 +444,22 @@ class QgsComposition : QGraphicsScene
      @note added in version 2.4*/
     QList< QgsPaperItem* > pages();
 
+    /**Returns a reference to the data defined settings for one of the composition's data defined properties.
+     * @param property data defined property to return
+     * @note this method was added in version 2.5
+    */
+    QgsDataDefined* dataDefinedProperty( QgsComposerItem::DataDefinedProperty property );
+
+    /**Sets parameters for a data defined property for the composition
+     * @param property data defined property to set
+     * @param active true if data defined property is active, false if it is disabled
+     * @param useExpression true if the expression should be used
+     * @param expression expression for data defined property
+     * @field field name if the data defined property should take its value from a field
+     * @note this method was added in version 2.5
+    */
+    void setDataDefinedProperty( QgsComposerItem::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -462,6 +478,15 @@ class QgsComposition : QGraphicsScene
      * @param item item to set as selected
      * @note added in version 2.3*/
     void setSelectedItem( QgsComposerItem* item );
+
+    /**Refreshes a data defined property for the composition by reevaluating the property's value
+     * and redrawing the composition with this new value.
+     * @param property data defined property to refresh. If property is set to
+     * QgsComposerItem::AllProperties then all data defined properties for the composition will be
+     * refreshed.
+     * @note this method was added in version 2.5
+    */
+    void refreshDataDefinedProperty( QgsComposerItem::DataDefinedProperty property = QgsComposerItem::AllProperties );
 
   protected:
     void init();

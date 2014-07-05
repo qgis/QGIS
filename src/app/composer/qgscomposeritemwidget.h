@@ -23,6 +23,7 @@
 
 class QgsComposerItem;
 class QgsAtlasComposition;
+class QgsDataDefinedButton;
 
 /**A base class for property widgets for composer items. All composer item widgets should inherit from
  * this base class.
@@ -34,7 +35,17 @@ class QgsComposerItemBaseWidget: public QWidget
     QgsComposerItemBaseWidget( QWidget* parent, QgsComposerItem* item );
     ~QgsComposerItemBaseWidget();
 
+  protected slots:
+    /**Must be called when a data defined button changes*/
+    void updateDataDefinedProperty();
+
   protected:
+    /**Sets a data defined property for the item from its current data defined button settings*/
+    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerItem::DataDefinedProperty p );
+
+    /**Returns the data defined property corresponding to a data defined button widget*/
+    virtual QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
+
     /**Returns the current atlas coverage layer (if set)*/
     QgsVectorLayer* atlasCoverageLayer() const;
 
@@ -107,6 +118,10 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void setValuesForGuiPositionElements();
     //sets the values for all non-position related elements
     void setValuesForGuiNonPositionElements();
+
+  protected slots:
+    /**Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
 
   private:
     QgsComposerItemWidget();
