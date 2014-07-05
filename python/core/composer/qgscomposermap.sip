@@ -127,7 +127,7 @@ class QgsComposerMap : QgsComposerItem
     double scale() const;
 
     /**Sets new scale and changes only mExtent*/
-    void setNewScale( double scaleDenominator );
+    void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
@@ -341,8 +341,14 @@ class QgsComposerMap : QgsComposerItem
       way the map is drawn within the item
       @note this function was added in version 2.1*/
     void setMapRotation( double r );
-    /**Returns the rotation used for drawing the map within the composer item*/
-    double mapRotation() const;
+
+    /**Returns the rotation used for drawing the map within the composer item
+     * @returns rotation for map
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+    */
+    double mapRotation( PropertyValueType valueType = EvaluatedValue ) const;
 
     void updateItem();
 
@@ -506,4 +512,6 @@ class QgsComposerMap : QgsComposerItem
     void renderModeUpdateCachedImage();
 
     void overviewExtentChanged();
+
+    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
 };

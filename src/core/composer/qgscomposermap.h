@@ -161,7 +161,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double scale() const;
 
     /**Sets new scale and changes only mExtent*/
-    void setNewScale( double scaleDenominator );
+    void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
@@ -376,8 +376,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       way the map is drawn within the item
       @note this function was added in version 2.1*/
     void setMapRotation( double r );
-    /**Returns the rotation used for drawing the map within the composer item*/
-    double mapRotation() const { return mMapRotation;};
+
+    /**Returns the rotation used for drawing the map within the composer item
+     * @returns rotation for map
+     * @param valueType controls whether the returned value is the user specified rotation,
+     * or the current evaluated rotation (which may be affected by data driven rotation
+     * settings).
+    */
+    double mapRotation( PropertyValueType valueType = EvaluatedValue ) const;
 
     void updateItem();
 
@@ -455,7 +461,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see atlasDriven
      * @see setAtlasScalingMode
     */
-    void setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
+    void setAtlasDriven( bool enabled );
 
     /**Returns true if the map uses a fixed scale when in atlas mode
      * @deprecated since 2.4 Use atlasScalingMode() instead
@@ -542,6 +548,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void overviewExtentChanged();
 
+    virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
+
   private:
 
     enum AnnotationCoordinate
@@ -585,6 +593,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Map rotation*/
     double mMapRotation;
+    /**Temporary evaluated map rotation. Data defined rotation may mean this value
+     * differs from mMapRotation*/
+    double mEvaluatedMapRotation;
 
     /**Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)*/
     bool mKeepLayerSet;
@@ -684,6 +695,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode*/
     double mAtlasMargin;
 
+    void init();
+
     /**Returns a list of the layers to render for this map item*/
     QStringList layersToRender() const;
 
@@ -719,7 +732,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
 
     /**Calculates the extent to request and the yShift of the top-left point in case of rotation.*/
-    void requestedExtent( QgsRectangle& extent ) const;
+    void requestedExtent( QgsRectangle& extent );
     /**Scales a composer map shift (in MM) and rotates it by mRotation
         @param xShift in: shift in x direction (in item units), out: xShift in map units
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
@@ -753,6 +766,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer*/
     bool shouldDrawPart( PartType part ) const;
+
+    /**Refresh the map's extents, considering data defined extent, scale and rotation
+     * @note this method was added in version 2.5
+     */
+    void refreshMapExtents();
 };
 
 #endif

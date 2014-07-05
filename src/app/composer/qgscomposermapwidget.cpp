@@ -103,8 +103,38 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
       connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
                this, SLOT( atlasLayerChanged( QgsVectorLayer* ) ) );
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( compositionAtlasToggled( bool ) ) );
+
+      // repopulate data defined buttons if atlas layer changes
+      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+               this, SLOT( populateDataDefinedButtons() ) );
+      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
     }
   }
+
+  //connections for data defined buttons
+  connect( mScaleDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mScaleLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mMapRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mMapRotationSpinBox, SLOT( setDisabled( bool ) ) );
+
+  connect( mXMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXMinLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mYMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMinLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mXMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mXMaxLineEdit, SLOT( setDisabled( bool ) ) );
+
+  connect( mYMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mYMaxLineEdit, SLOT( setDisabled( bool ) ) );
 
   updateOverviewSymbolMarker();
   updateLineSymbolMarker();
@@ -115,6 +145,79 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
 
 QgsComposerMapWidget::~QgsComposerMapWidget()
 {
+}
+
+void QgsComposerMapWidget::populateDataDefinedButtons()
+{
+  QgsVectorLayer* vl = atlasCoverageLayer();
+
+  //block signals from data defined buttons
+  mScaleDDBtn->blockSignals( true );
+  mMapRotationDDBtn->blockSignals( true );
+  mXMinDDBtn->blockSignals( true );
+  mYMinDDBtn->blockSignals( true );
+  mXMaxDDBtn->blockSignals( true );
+  mYMaxDDBtn->blockSignals( true );
+
+  //initialise buttons to use atlas coverage layer
+  mScaleDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapScale ),
+                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mMapRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapRotation ),
+                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mXMinDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapXMin ),
+                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mYMinDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapYMin ),
+                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mXMaxDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapXMax ),
+                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mYMaxDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerItem::MapYMax ),
+                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+
+  //initial state of controls - disable related controls when dd buttons are active
+  mScaleLineEdit->setEnabled( !mScaleDDBtn->isActive() );
+  mMapRotationSpinBox->setEnabled( !mMapRotationDDBtn->isActive() );
+  mXMinLineEdit->setEnabled( !mXMinDDBtn->isActive() );
+  mYMinLineEdit->setEnabled( !mYMinDDBtn->isActive() );
+  mXMaxLineEdit->setEnabled( !mXMaxDDBtn->isActive() );
+  mYMaxLineEdit->setEnabled( !mYMaxDDBtn->isActive() );
+
+  //unblock signals from data defined buttons
+  mScaleDDBtn->blockSignals( false );
+  mMapRotationDDBtn->blockSignals( false );
+  mXMinDDBtn->blockSignals( false );
+  mYMinDDBtn->blockSignals( false );
+  mXMaxDDBtn->blockSignals( false );
+  mYMaxDDBtn->blockSignals( false );
+}
+
+QgsComposerItem::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
+{
+  if ( widget == mScaleDDBtn )
+  {
+    return QgsComposerItem::MapScale;
+  }
+  else if ( widget == mMapRotationDDBtn )
+  {
+    return QgsComposerItem::MapRotation;
+  }
+  else if ( widget == mXMinDDBtn )
+  {
+    return QgsComposerItem::MapXMin;
+  }
+  else if ( widget == mYMinDDBtn )
+  {
+    return QgsComposerItem::MapYMin;
+  }
+  else if ( widget == mXMaxDDBtn )
+  {
+    return QgsComposerItem::MapXMax;
+  }
+  else if ( widget == mYMaxDDBtn )
+  {
+    return QgsComposerItem::MapYMax;
+  }
+
+  return QgsComposerItem::NoProperty;
 }
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
@@ -328,43 +431,45 @@ void QgsComposerMapWidget::on_mMapRotationSpinBox_valueChanged( double value )
 
 void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
 {
-  if ( mComposerMap )
+  if ( !mComposerMap )
   {
-    QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
-
-    //Make sure the width/height ratio is the same as in current composer map extent.
-    //This is to keep the map item frame and the page layout fixed
-    QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
-    double currentWidthHeightRatio = currentMapExtent.width() / currentMapExtent.height();
-    double newWidthHeightRatio = newExtent.width() / newExtent.height();
-
-    if ( currentWidthHeightRatio < newWidthHeightRatio )
-    {
-      //enlarge height of new extent, ensuring the map center stays the same
-      double newHeight = newExtent.width() / currentWidthHeightRatio;
-      double deltaHeight = newHeight - newExtent.height();
-      newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
-      newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
-    }
-    else
-    {
-      //enlarge width of new extent, ensuring the map center stays the same
-      double newWidth = currentWidthHeightRatio * newExtent.height();
-      double deltaWidth = newWidth - newExtent.width();
-      newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
-      newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
-    }
-
-    //fill text into line edits
-    mXMinLineEdit->setText( QString::number( newExtent.xMinimum() ) );
-    mXMaxLineEdit->setText( QString::number( newExtent.xMaximum() ) );
-    mYMinLineEdit->setText( QString::number( newExtent.yMinimum() ) );
-    mYMaxLineEdit->setText( QString::number( newExtent.yMaximum() ) );
-
-    mComposerMap->beginCommand( tr( "Map extent changed" ) );
-    mComposerMap->setNewExtent( newExtent );
-    mComposerMap->endCommand();
+    return;
   }
+
+  QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
+
+  //Make sure the width/height ratio is the same as in current composer map extent.
+  //This is to keep the map item frame and the page layout fixed
+  QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
+  double currentWidthHeightRatio = currentMapExtent.width() / currentMapExtent.height();
+  double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+  if ( currentWidthHeightRatio < newWidthHeightRatio )
+  {
+    //enlarge height of new extent, ensuring the map center stays the same
+    double newHeight = newExtent.width() / currentWidthHeightRatio;
+    double deltaHeight = newHeight - newExtent.height();
+    newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
+    newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
+  }
+  else
+  {
+    //enlarge width of new extent, ensuring the map center stays the same
+    double newWidth = currentWidthHeightRatio * newExtent.height();
+    double deltaWidth = newWidth - newExtent.width();
+    newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
+    newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+  }
+
+  //fill text into line edits
+  mXMinLineEdit->setText( QString::number( newExtent.xMinimum() ) );
+  mXMaxLineEdit->setText( QString::number( newExtent.xMaximum() ) );
+  mYMinLineEdit->setText( QString::number( newExtent.yMinimum() ) );
+  mYMaxLineEdit->setText( QString::number( newExtent.yMaximum() ) );
+
+  mComposerMap->beginCommand( tr( "Map extent changed" ) );
+  mComposerMap->setNewExtent( newExtent );
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
@@ -473,7 +578,7 @@ void QgsComposerMapWidget::updateGuiElements()
   mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
   mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
-  mMapRotationSpinBox->setValue( mComposerMap->mapRotation() );
+  mMapRotationSpinBox->setValue( mComposerMap->mapRotation( QgsComposerItem::OriginalValue ) );
 
   //keep layer list check box
   if ( mComposerMap->keepLayerSet() )
@@ -606,8 +711,9 @@ void QgsComposerMapWidget::updateGuiElements()
     mAtlasPredefinedScaleRadio->setEnabled( false );
   }
 
-  blockAllSignals( false );
+  populateDataDefinedButtons();
 
+  blockAllSignals( false );
 }
 
 void QgsComposerMapWidget::toggleAtlasScalingOptionsByLayerType()
