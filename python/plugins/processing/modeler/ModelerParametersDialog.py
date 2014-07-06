@@ -319,15 +319,16 @@ class ModelerParametersDialog(QtGui.QDialog):
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterString):
             strings = self.getAvailableValuesOfType(ParameterString, OutputString)
+            options = [(self.resolveValueDescription(s), s) for s in strings]
             if param.multiline:
-                item = MultilineTextPanel(strings, self.model)
-                item.setText(str(param.default))
+                item = MultilineTextPanel(options)
+                item.setText(unicode(param.default))
             else:
                 item = QtGui.QComboBox()
                 item.setEditable(True)
-                for s in strings:
-                    item.addItem(self.resolveValueDescription(s), s)
-                item.setEditText(str(param.default))
+                for desc, val in options:
+                    item.addItem(desc, val)
+                item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterTableField):
             item = QtGui.QComboBox()
             item.setEditable(True)
