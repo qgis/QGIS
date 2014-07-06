@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscursors.h"
 
 #include <QPainter>
 #include <QSettings>
@@ -26,6 +27,7 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
+#include <QDesktopWidget>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -70,6 +72,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::Colo
     , mAcceptLiveUpdates( true )
     , mTempPNG( NULL )
     , mColorSet( false )
+    , mPickingColor( false )
 {
   setAcceptDrops( true );
   connect( this, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
@@ -114,6 +117,13 @@ void QgsColorButton::onButtonClicked()
 
 void QgsColorButton::mousePressEvent( QMouseEvent *e )
 {
+  if ( mPickingColor )
+  {
+    //don't show dialog if in color picker mode
+    e->accept();
+    return;
+  }
+
   if ( e->button() == Qt::RightButton )
   {
     showContextMenu( e );
@@ -174,6 +184,23 @@ bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resu
 
 void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 {
+  if ( mPickingColor )
+  {
+    //currently in color picker mode
+    if ( e->buttons() & Qt::LeftButton )
+    {
+      //if left button depressed, sample color under cursor and temporarily update button color
+      //to give feedback to user
+      QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), e->globalPos().x(), e->globalPos().y(), 1, 1 );
+      QImage snappedImage = snappedPixmap.toImage();
+      QColor hoverColor = snappedImage.pixel( 0, 0 );
+      setButtonBackground( hoverColor );
+    }
+    e->accept();
+    return;
+  }
+
+  //handle dragging colors from button
   if ( !( e->buttons() & Qt::LeftButton ) )
   {
     QPushButton::mouseMoveEvent( e );
@@ -209,6 +236,52 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
   setDown( false );
 }
 
+void QgsColorButton::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( mPickingColor )
+  {
+    //end color picking operation by sampling the color under cursor
+    stopPicking( e->globalPos() );
+    e->accept();
+    return;
+  }
+
+  QPushButton::mouseReleaseEvent( e );
+}
+
+void QgsColorButton::stopPicking( QPointF eventPos, bool sampleColor )
+{
+  //release mouse and reset cursor
+  releaseMouse();
+  unsetCursor();
+  mPickingColor = false;
+
+  if ( !sampleColor )
+  {
+    //not sampling color, nothing more to do
+    return;
+  }
+
+  //grab snapshot of pixel under mouse cursor
+  QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), eventPos.x(), eventPos.y(), 1, 1 );
+  QImage snappedImage = snappedPixmap.toImage();
+  //extract color from pixel and set color
+  setColor( snappedImage.pixel( 0, 0 ) );
+}
+
+void QgsColorButton::keyPressEvent( QKeyEvent *e )
+{
+  if ( !mPickingColor )
+  {
+    //if not picking a color, use default push button behaviour
+    QPushButton::keyPressEvent( e );
+    return;
+  }
+
+  //cancel picking, sampling the color if space was pressed
+  stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
+}
+
 void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
 {
   //is dragged data valid color data?
@@ -238,8 +311,10 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
   colorContextMenu.addAction( copyColorAction );
   QAction* pasteColorAction = new QAction( tr( "Paste color" ), 0 );
   pasteColorAction->setEnabled( false );
-  colorContextMenu.addSeparator();
   colorContextMenu.addAction( pasteColorAction );
+  QAction* pickColorAction = new QAction( tr( "Pick color" ), 0 );
+  colorContextMenu.addSeparator();
+  colorContextMenu.addAction( pickColorAction );
 
   QColor clipColor;
   if ( colorFromMimeData( QApplication::clipboard()->mimeData(), clipColor ) )
@@ -258,9 +333,18 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
     //paste color
     setColor( clipColor );
   }
+  else if ( selectedAction == pickColorAction )
+  {
+    //pick color
+    QPixmap samplerPixmap = QPixmap(( const char ** ) sampler_cursor );
+    setCursor( QCursor( samplerPixmap, 0, 0 ) );
+    grabMouse();
+    mPickingColor = true;
+  }
 
   delete copyColorAction;
   delete pasteColorAction;
+  delete pickColorAction;
 }
 
 void QgsColorButton::setValidColor( const QColor& newColor )
@@ -321,8 +405,12 @@ void QgsColorButton::setColor( const QColor &color )
   mColorSet = true;
 }
 
-void QgsColorButton::setButtonBackground()
+void QgsColorButton::setButtonBackground( QColor color )
 {
+  if ( !color.isValid() )
+  {
+    color = mColor;
+  }
   if ( !text().isEmpty() )
   {
     // generate icon pixmap for regular pushbutton
@@ -355,11 +443,11 @@ void QgsColorButton::setButtonBackground()
     p.setRenderHint( QPainter::Antialiasing );
     p.setClipPath( roundRect );
     p.setPen( Qt::NoPen );
-    if ( mColor.alpha() < 255 )
+    if ( color.alpha() < 255 )
     {
       p.drawTiledPixmap( rect, transpBkgrd() );
     }
-    p.setBrush( mColor );
+    p.setBrush( color );
     p.drawRect( rect );
     p.end();
 
@@ -381,12 +469,12 @@ void QgsColorButton::setButtonBackground()
     //QgsDebugMsg( QString( "%1 margin: %2" ).arg( objectName() ).arg( margin ) );
 
     QString bkgrd = QString( " background-color: rgba(%1,%2,%3,%4);" )
-                    .arg( mColor.red() )
-                    .arg( mColor.green() )
-                    .arg( mColor.blue() )
-                    .arg( useAlpha ? mColor.alpha() : 255 );
+                    .arg( color.red() )
+                    .arg( color.green() )
+                    .arg( color.blue() )
+                    .arg( useAlpha ? color.alpha() : 255 );
 
-    if ( useAlpha && mColor.alpha() < 255 )
+    if ( useAlpha && color.alpha() < 255 )
     {
       QPixmap pixmap = transpBkgrd();
       QRect rect( 0, 0, pixmap.width(), pixmap.height() );
