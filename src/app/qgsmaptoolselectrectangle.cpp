@@ -29,7 +29,7 @@
 #include <QRect>
 
 
-QgsMapToolSelectRectangle::QgsMapToolSelectRectangle( QgsMapCanvas* canvas )
+QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
     : QgsMapTool( canvas ), mDragging( false )
 {
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
@@ -40,7 +40,7 @@ QgsMapToolSelectRectangle::QgsMapToolSelectRectangle( QgsMapCanvas* canvas )
 }
 
 
-void QgsMapToolSelectRectangle::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasPressEvent( QMouseEvent *e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
@@ -50,7 +50,7 @@ void QgsMapToolSelectRectangle::canvasPressEvent( QMouseEvent *e )
 }
 
 
-void QgsMapToolSelectRectangle::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasMoveEvent( QMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -65,7 +65,7 @@ void QgsMapToolSelectRectangle::canvasMoveEvent( QMouseEvent *e )
 }
 
 
-void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasReleaseEvent( QMouseEvent *e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( vlayer == NULL )
@@ -105,7 +105,14 @@ void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent *e )
     QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 
     QgsGeometry* selectGeom = mRubberBand->asGeometry();
-    QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, e );
+    if ( !mDragging )
+    {
+      bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+      QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
+    }
+    else
+      QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, e );
+
     delete selectGeom;
 
     mRubberBand->reset( QGis::Polygon );

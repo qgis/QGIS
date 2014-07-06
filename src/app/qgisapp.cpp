@@ -916,11 +916,10 @@ QgisApp::~QgisApp()
   delete mMapTools.mRotateFeature;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mRotatePointSymbolsTool;
-  delete mMapTools.mSelect;
   delete mMapTools.mSelectFreehand;
   delete mMapTools.mSelectPolygon;
   delete mMapTools.mSelectRadius;
-  delete mMapTools.mSelectRectangle;
+  delete mMapTools.mSelectFeatures;
   delete mMapTools.mShowHideLabels;
   delete mMapTools.mSimplifyFeature;
   delete mMapTools.mSplitFeatures;
@@ -1108,8 +1107,7 @@ void QgisApp::createActions()
   connect( mActionPanToSelected, SIGNAL( triggered() ), this, SLOT( panToSelected() ) );
   connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
   connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
-  connect( mActionSelect, SIGNAL( triggered() ), this, SLOT( select() ) );
-  connect( mActionSelectRectangle, SIGNAL( triggered() ), this, SLOT( selectByRectangle() ) );
+  connect( mActionSelectFeatures, SIGNAL( triggered() ), this, SLOT( selectFeatures() ) );
   connect( mActionSelectPolygon, SIGNAL( triggered() ), this, SLOT( selectByPolygon() ) );
   connect( mActionSelectFreehand, SIGNAL( triggered() ), this, SLOT( selectByFreehand() ) );
   connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
@@ -1340,8 +1338,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionZoomOut );
   mMapToolGroup->addAction( mActionIdentify );
   mMapToolGroup->addAction( mActionFeatureAction );
-  mMapToolGroup->addAction( mActionSelect );
-  mMapToolGroup->addAction( mActionSelectRectangle );
+  mMapToolGroup->addAction( mActionSelectFeatures );
   mMapToolGroup->addAction( mActionSelectPolygon );
   mMapToolGroup->addAction( mActionSelectFreehand );
   mMapToolGroup->addAction( mActionSelectRadius );
@@ -1553,15 +1550,15 @@ void QgisApp::createToolBars()
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
-  selectActions << mActionSelect << mActionSelectRectangle << mActionSelectPolygon
+  selectActions << mActionSelectFeatures << mActionSelectPolygon
   << mActionSelectFreehand << mActionSelectRadius;
   bt->addActions( selectActions );
 
-  QAction* defSelectAction = mActionSelect;
+  QAction* defSelectAction = mActionSelectFeatures;
   switch ( settings.value( "/UI/selectTool", 0 ).toInt() )
   {
-    case 0: defSelectAction = mActionSelect; break;
-    case 1: defSelectAction = mActionSelectRectangle; break;
+    case 0: defSelectAction = mActionSelectFeatures; break;
+    case 1: defSelectAction = mActionSelectFeatures; break;
     case 2: defSelectAction = mActionSelectRadius; break;
     case 3: defSelectAction = mActionSelectPolygon; break;
     case 4: defSelectAction = mActionSelectFreehand; break;
@@ -1939,8 +1936,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ) );
   mActionIdentify->setIcon( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ) );
   mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.svg" ) );
-  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
-  mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.svg" ) );
+  mActionSelectFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.svg" ) );
   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPolygon.svg" ) );
   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.svg" ) );
   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.svg" ) );
@@ -2148,10 +2144,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
   mMapTools.mSplitParts = new QgsMapToolSplitParts( mMapCanvas );
   mMapTools.mSplitParts->setAction( mActionSplitParts );
-  mMapTools.mSelect = new QgsMapToolSelect( mMapCanvas );
-  mMapTools.mSelect->setAction( mActionSelect );
-  mMapTools.mSelectRectangle = new QgsMapToolSelectRectangle( mMapCanvas );
-  mMapTools.mSelectRectangle->setAction( mActionSelectRectangle );
+  mMapTools.mSelectFeatures = new QgsMapToolSelectFeatures( mMapCanvas );
+  mMapTools.mSelectFeatures->setAction( mActionSelectFeatures );
   mMapTools.mSelectPolygon = new QgsMapToolSelectPolygon( mMapCanvas );
   mMapTools.mSelectPolygon->setAction( mActionSelectPolygon );
   mMapTools.mSelectFreehand = new QgsMapToolSelectFreehand( mMapCanvas );
@@ -5703,14 +5697,9 @@ void QgisApp::addFeature()
   mMapCanvas->setMapTool( mMapTools.mAddFeature );
 }
 
-void QgisApp::select()
+void QgisApp::selectFeatures()
 {
-  mMapCanvas->setMapTool( mMapTools.mSelect );
-}
-
-void QgisApp::selectByRectangle()
-{
-  mMapCanvas->setMapTool( mMapTools.mSelectRectangle );
+  mMapCanvas->setMapTool( mMapTools.mSelectFeatures );
 }
 
 void QgisApp::selectByPolygon()
@@ -8800,8 +8789,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
   if ( !layer )
   {
-    mActionSelect->setEnabled( false );
-    mActionSelectRectangle->setEnabled( false );
+    mActionSelectFeatures->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
@@ -8902,8 +8890,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionZoomActualSize->setEnabled( false );
     mActionLabeling->setEnabled( true );
 
-    mActionSelect->setEnabled( true );
-    mActionSelectRectangle->setEnabled( true );
+    mActionSelectFeatures->setEnabled( true );
     mActionSelectPolygon->setEnabled( true );
     mActionSelectFreehand->setEnabled( true );
     mActionSelectRadius->setEnabled( true );
@@ -9065,8 +9052,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLayerSubsetString->setEnabled( false );
     mActionFeatureAction->setEnabled( false );
-    mActionSelect->setEnabled( false );
-    mActionSelectRectangle->setEnabled( false );
+    mActionSelectFeatures->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
@@ -9939,9 +9925,7 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     return;
 
   QSettings settings;
-  if ( action == mActionSelect )
-    settings.setValue( "/UI/selectTool", 0 );
-  else if ( action == mActionSelectRectangle )
+  if ( action == mActionSelectFeatures )
     settings.setValue( "/UI/selectTool", 1 );
   else if ( action == mActionSelectRadius )
     settings.setValue( "/UI/selectTool", 2 );
