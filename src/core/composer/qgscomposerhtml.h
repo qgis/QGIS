@@ -155,7 +155,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void loadHtml();
 
   private slots:
-    void frameLoaded( bool ok );
+    void frameLoaded( bool ok = true );
 
   private:
     ContentMode mContentMode;
@@ -173,6 +173,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     //renders a snapshot of the page to a cached image
     void renderCachedImage();
+
+    //fetches html content from a url and returns it as a string
+    QString fetchHtml( QUrl url );
 };
 
 #endif // QGSCOMPOSERHTML_H

@@ -18,12 +18,14 @@
 #include "qgscomposition.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
 
 #include <QCoreApplication>
 #include <QPainter>
 #include <QWebFrame>
 #include <QWebPage>
 #include <QImage>
+#include <QNetworkReply>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): QgsComposerMultiFrame( c, createUndoCommands ),
     mContentMode( QgsComposerHtml::Url ),
@@ -78,6 +80,57 @@ void QgsComposerHtml::setHtml( const QString html )
   mHtml = html;
 }
 
+QString QgsComposerHtml::fetchHtml( QUrl url )
+{
+  QUrl nextUrlToFetch = url;
+  QNetworkReply* reply = 0;
+
+  //loop until fetched valid html
+  while ( 1 )
+  {
+    //set contents
+    QNetworkRequest request( nextUrlToFetch );
+    reply = QgsNetworkAccessManager::instance()->get( request );
+    connect( reply, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+    //pause until HTML fetch
+    mLoaded = false;
+    while ( !mLoaded )
+    {
+      qApp->processEvents();
+    }
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsMessageLog::logMessage( tr( "HTML fetch %1 failed with error %2" ).arg( reply->url().toString() ).arg( reply->errorString() ) );
+      reply->deleteLater();
+      return QString();
+    }
+
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( redirect.isNull() )
+    {
+      //no error or redirect, got target
+      break;
+    }
+
+    //redirect, so fetch redirect target
+    nextUrlToFetch = redirect.toUrl();
+    reply->deleteLater();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    QgsMessageLog::logMessage( tr( "HTML fetch %1 failed with error %2" ).arg( reply->url().toString() ).arg( status.toString() ) );
+    reply->deleteLater();
+    return QString();
+  }
+
+  QByteArray array = reply->readAll();
+  reply->deleteLater();
+  return QString( array );
+}
+
 void QgsComposerHtml::loadHtml()
 {
   if ( !mWebPage || ( mContentMode == QgsComposerHtml::Url && mUrl.isEmpty() ) )
@@ -85,19 +138,23 @@ void QgsComposerHtml::loadHtml()
     return;
   }
 
-  mLoaded = false;
-  //set contents
+  QString loadedHtml;
   switch ( mContentMode )
   {
     case QgsComposerHtml::Url:
-      mWebPage->mainFrame()->load( mUrl );
+    {
+      loadedHtml = fetchHtml( mUrl );
       break;
+    }
     case QgsComposerHtml::ManualHtml:
-      mWebPage->mainFrame()->setHtml( mHtml );
+      loadedHtml = mHtml;
       break;
   }
 
-  //pause until HTML loaded
+  mLoaded = false;
+  //set html, using the specified url as base if in Url mode
+  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mUrl ) : QUrl() );
+
   while ( !mLoaded )
   {
     qApp->processEvents();
