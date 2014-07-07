@@ -46,8 +46,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>391</width>
-        <height>519</height>
+        <width>407</width>
+        <height>360</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -62,15 +62,15 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="1" column="0">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
            <widget class="QRadioButton" name="mRadioUrlSource">
             <property name="text">
              <string>URL</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLineEdit" name="mUrlLineEdit"/>
@@ -84,7 +84,7 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="1" column="0" colspan="2">
            <widget class="QRadioButton" name="mRadioManualSource">
             <property name="text">
              <string>Source:</string>
@@ -92,14 +92,14 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
-           <widget class="QPlainTextEdit" name="mHtmlTextEdit"/>
-          </item>
-          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mReloadPushButton">
             <property name="text">
              <string>Refresh HTML</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <layout class="QVBoxLayout" name="htmlEditorLayout"/>
           </item>
          </layout>
         </widget>

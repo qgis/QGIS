@@ -20,6 +20,7 @@
 
 class QgsComposerHtml;
 class QgsComposerFrame;
+class QsciScintilla;
 
 class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerHtmlWidgetBase
 {
@@ -34,7 +35,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mUseSmartBreaksCheckBox_toggled( bool checked );
     void on_mMaxDistanceSpinBox_valueChanged( double val );
-    void on_mHtmlTextEdit_textChanged();
+    void htmlEditorChanged();
     void on_mRadioManualSource_clicked( bool checked );
     void on_mRadioUrlSource_clicked( bool checked );
 
@@ -50,6 +51,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
     QgsComposerHtml* mHtml;
     QgsComposerFrame* mFrame;
+    QsciScintilla *mHtmlEditor;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

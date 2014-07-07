@@ -391,7 +391,11 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )
   {
-    setUrl( QUrl( urlString ) );
+    mUrl = urlString;
   }
+  loadHtml();
+
+  //since frames had to be created before, we need to emit a changed signal to refresh the widget
+  emit changed();
   return true;
 }

@@ -20,10 +20,22 @@
 #include "qgscomposition.h"
 #include <QFileDialog>
 #include <QSettings>
+#include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexerhtml.h>
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): QgsComposerItemBaseWidget( 0, html ), mHtml( html ), mFrame( frame )
 {
   setupUi( this );
+
+  //setup html editor
+  mHtmlEditor = new QsciScintilla( this );
+  mHtmlEditor->setLexer( new QsciLexerHTML );
+  mHtmlEditor->setFolding( QsciScintilla::BoxedFoldStyle );
+  //hide the line numbers
+  mHtmlEditor->setMarginWidth( 1, 0 );
+
+  connect( mHtmlEditor, SIGNAL( textChanged() ), this, SLOT( htmlEditorChanged() ) );
+  htmlEditorLayout->addWidget( mHtmlEditor );
 
   blockSignals( true );
   mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsComposerMultiFrame::UseExistingFrames );
@@ -62,7 +74,7 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mResizeModeComboBox->blockSignals( block );
   mUseSmartBreaksCheckBox->blockSignals( block );
   mMaxDistanceSpinBox->blockSignals( block );
-  mHtmlTextEdit->blockSignals( block );
+  mHtmlEditor->blockSignals( block );
   mRadioManualSource->blockSignals( block );
   mRadioUrlSource->blockSignals( block );
 }
@@ -149,14 +161,14 @@ void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
   mHtml->setMaxBreakDistance( val );
 }
 
-void QgsComposerHtmlWidget::on_mHtmlTextEdit_textChanged()
+void QgsComposerHtmlWidget::htmlEditorChanged()
 {
   if ( !mHtml )
   {
     return;
   }
 
-  mHtml->setHtml( mHtmlTextEdit->toPlainText() );
+  mHtml->setHtml( mHtmlEditor->text() );
 }
 
 void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
@@ -167,7 +179,7 @@ void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
   }
 
   mHtml->setContentMode( checked ? QgsComposerHtml::ManualHtml : QgsComposerHtml::Url );
-  mHtmlTextEdit->setEnabled( checked );
+  mHtmlEditor->setEnabled( checked );
   mUrlLineEdit->setEnabled( !checked );
   mFileToolButton->setEnabled( !checked );
 
@@ -182,7 +194,7 @@ void QgsComposerHtmlWidget::on_mRadioUrlSource_clicked( bool checked )
   }
 
   mHtml->setContentMode( checked ? QgsComposerHtml::Url : QgsComposerHtml::ManualHtml );
-  mHtmlTextEdit->setEnabled( !checked );
+  mHtmlEditor->setEnabled( !checked );
   mUrlLineEdit->setEnabled( checked );
   mFileToolButton->setEnabled( checked );
 
@@ -236,12 +248,12 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mMaxDistanceSpinBox->setValue( mHtml->maxBreakDistance() );
 
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
-  mHtmlTextEdit->setPlainText( mHtml->html() );
+  mHtmlEditor->setText( mHtml->html() );
 
   mRadioUrlSource->setChecked( mHtml->contentMode() == QgsComposerHtml::Url );
   mUrlLineEdit->setEnabled( mHtml->contentMode() == QgsComposerHtml::Url );
   mFileToolButton->setEnabled( mHtml->contentMode() == QgsComposerHtml::Url );
   mRadioManualSource->setChecked( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
-  mHtmlTextEdit->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
+  mHtmlEditor->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   blockSignals( false );
 }
