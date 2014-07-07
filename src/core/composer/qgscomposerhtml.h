@@ -21,6 +21,8 @@
 
 class QWebPage;
 class QImage;
+class QgsFeature;
+class QgsVectorLayer;
 
 class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
@@ -95,6 +97,26 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     QString html() const { return mHtml; }
 
+    /**Returns whether html item will evaluate QGIS expressions prior to rendering
+     * the HTML content. If set, any content inside [% %] tags will be
+     * treated as a QGIS expression and evaluated against the current atlas
+     * feature.
+     * @returns true if html item will evaluate expressions in the content
+     * @see setEvaluateExpressions
+     * @note added in QGIS 2.5
+     */
+    bool evaluateExpressions() const { return mEvaluateExpressions; }
+
+    /**Sets whether the html item will evaluate QGIS expressions prior to rendering
+     * the HTML content. If set, any content inside [% %] tags will be
+     * treated as a QGIS expression and evaluated against the current atlas
+     * feature.
+     * @param evaluateExpressions set to true to evaluate expressions in the HTML content
+     * @see evaluateExpressions
+     * @note added in QGIS 2.5
+     */
+    void setEvaluateExpressions( bool evaluateExpressions );
+
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );
 
@@ -154,6 +176,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     void loadHtml();
 
+    void refreshExpressionContext();
+
   private slots:
     void frameLoaded( bool ok = true );
 
@@ -166,8 +190,12 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;
     QImage* mRenderedPage;
+    bool mEvaluateExpressions;
     bool mUseSmartBreaks;
     double mMaxBreakDistance;
+
+    QgsFeature* mExpressionFeature;
+    QgsVectorLayer* mExpressionLayer;
 
     double htmlUnitsToMM(); //calculate scale factor
 
@@ -176,6 +204,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     //fetches html content from a url and returns it as a string
     QString fetchHtml( QUrl url );
+
+    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
+    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer );
 };
 
 #endif // QGSCOMPOSERHTML_H

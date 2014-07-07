@@ -73,6 +73,26 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @note added in 2.5
      */
     QString html() const;
+    
+    /**Returns whether html item will evaluate QGIS expressions prior to rendering
+     * the HTML content. If set, any content inside [% %] tags will be
+     * treated as a QGIS expression and evaluated against the current atlas
+     * feature.
+     * @returns true if html item will evaluate expressions in the content
+     * @see setEvaluateExpressions
+     * @note added in QGIS 2.5
+     */
+    bool evaluateExpressions() const;
+
+    /**Sets whether the html item will evaluate QGIS expressions prior to rendering
+     * the HTML content. If set, any content inside [% %] tags will be
+     * treated as a QGIS expression and evaluated against the current atlas
+     * feature.
+     * @param evaluateExpressions set to true to evaluate expressions in the HTML content
+     * @see evaluateExpressions
+     * @note added in QGIS 2.5
+     */
+    void setEvaluateExpressions( bool evaluateExpressions );    
 
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );

@@ -18,6 +18,7 @@
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposition.h"
+#include "qgsexpressionbuilderdialog.h"
 #include <QFileDialog>
 #include <QSettings>
 #include <Qsci/qsciscintilla.h>
@@ -77,6 +78,7 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mHtmlEditor->blockSignals( block );
   mRadioManualSource->blockSignals( block );
   mRadioUrlSource->blockSignals( block );
+  mEvaluateExpressionsCheckbox->blockSignals( block );
 }
 
 void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
@@ -133,6 +135,24 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 }
 
+void QgsComposerHtmlWidget::on_mEvaluateExpressionsCheckbox_toggled( bool checked )
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "Evaluate expressions changed" ) );
+    mHtml->setEvaluateExpressions( checked );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
+}
+
 void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_toggled( bool checked )
 {
   if ( !mHtml )
@@ -158,7 +178,15 @@ void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
     return;
   }
 
-  mHtml->setMaxBreakDistance( val );
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "Page break distance changed" ) );
+    mHtml->setMaxBreakDistance( val );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
 }
 
 void QgsComposerHtmlWidget::htmlEditorChanged()
@@ -168,7 +196,16 @@ void QgsComposerHtmlWidget::htmlEditorChanged()
     return;
   }
 
-  mHtml->setHtml( mHtmlEditor->text() );
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "HTML changed" ) );
+    mHtml->setHtml( mHtmlEditor->text() );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
+
 }
 
 void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
@@ -178,8 +215,17 @@ void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
     return;
   }
 
-  mHtml->setContentMode( checked ? QgsComposerHtml::ManualHtml : QgsComposerHtml::Url );
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "HTML source changed" ) );
+    mHtml->setContentMode( checked ? QgsComposerHtml::ManualHtml : QgsComposerHtml::Url );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
   mHtmlEditor->setEnabled( checked );
+  mInsertExpressionButton->setEnabled( checked );
   mUrlLineEdit->setEnabled( !checked );
   mFileToolButton->setEnabled( !checked );
 
@@ -193,12 +239,71 @@ void QgsComposerHtmlWidget::on_mRadioUrlSource_clicked( bool checked )
     return;
   }
 
-  mHtml->setContentMode( checked ? QgsComposerHtml::Url : QgsComposerHtml::ManualHtml );
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    blockSignals( true );
+    composition->beginMultiFrameCommand( mHtml, tr( "HTML source changed" ) );
+    mHtml->setContentMode( checked ? QgsComposerHtml::Url : QgsComposerHtml::ManualHtml );
+    composition->endMultiFrameCommand();
+    blockSignals( false );
+  }
   mHtmlEditor->setEnabled( !checked );
+  mInsertExpressionButton->setEnabled( !checked );
   mUrlLineEdit->setEnabled( checked );
   mFileToolButton->setEnabled( checked );
 
   mHtml->loadHtml();
+}
+
+void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
+{
+  if ( !mHtml )
+  {
+    return;
+  }
+
+  int line = 0;
+  int index = 0;
+  QString selText;
+  if ( mHtmlEditor->hasSelectedText() )
+  {
+    selText = mHtmlEditor->selectedText();
+
+    // edit the selected expression if there's one
+    if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+      selText = selText.mid( 2, selText.size() - 4 );
+  }
+  else
+  {
+    mHtmlEditor->getCursorPosition( &line, &index );
+  }
+
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
+  exprDlg.setWindowTitle( tr( "Insert expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  exprDlg.expressionText();
+    QgsComposition* composition = mHtml->composition();
+    if ( !expression.isEmpty() && composition )
+    {
+      blockSignals( true );
+      composition->beginMultiFrameCommand( mHtml, tr( "HTML source changed" ) );
+      if ( mHtmlEditor->hasSelectedText() )
+      {
+        mHtmlEditor->replaceSelectedText( "[%" + expression + "%]" );
+      }
+      else
+      {
+        mHtmlEditor->insertAt( "[%" + expression + "%]", line, index );
+      }
+      composition->endMultiFrameCommand();
+      blockSignals( false );
+    }
+  }
+
 }
 
 void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
@@ -244,6 +349,7 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   blockSignals( true );
   mUrlLineEdit->setText( mHtml->url().toString() );
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mHtml->resizeMode() ) );
+  mEvaluateExpressionsCheckbox->setChecked( mHtml->evaluateExpressions() );
   mUseSmartBreaksCheckBox->setChecked( mHtml->useSmartBreaks() );
   mMaxDistanceSpinBox->setValue( mHtml->maxBreakDistance() );
 
@@ -255,5 +361,6 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   mFileToolButton->setEnabled( mHtml->contentMode() == QgsComposerHtml::Url );
   mRadioManualSource->setChecked( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   mHtmlEditor->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
+  mInsertExpressionButton->setEnabled( mHtml->contentMode() == QgsComposerHtml::ManualHtml );
   blockSignals( false );
 }

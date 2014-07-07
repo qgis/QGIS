@@ -33,11 +33,13 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mUrlLineEdit_editingFinished();
     void on_mFileToolButton_clicked();
     void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void on_mEvaluateExpressionsCheckbox_toggled( bool checked );
     void on_mUseSmartBreaksCheckBox_toggled( bool checked );
     void on_mMaxDistanceSpinBox_valueChanged( double val );
     void htmlEditorChanged();
     void on_mRadioManualSource_clicked( bool checked );
     void on_mRadioUrlSource_clicked( bool checked );
+    void on_mInsertExpressionButton_clicked();
 
     void on_mReloadPushButton_clicked();
     void on_mAddFramePushButton_clicked();

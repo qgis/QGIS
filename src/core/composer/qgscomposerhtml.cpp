@@ -19,6 +19,7 @@
 #include "qgsaddremovemultiframecommand.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
+#include "qgsexpression.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -33,8 +34,11 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
     mLoaded( false ),
     mHtmlUnitsToMM( 1.0 ),
     mRenderedPage( 0 ),
+    mEvaluateExpressions( true ),
     mUseSmartBreaks( true ),
-    mMaxBreakDistance( 10 )
+    mMaxBreakDistance( 10 ),
+    mExpressionFeature( 0 ),
+    mExpressionLayer( 0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
@@ -45,6 +49,18 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands ): 
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
     connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( loadHtml() ) );
   }
+
+  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    //a html item added while atlas preview is enabled needs to have the expression context set,
+    //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
+    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+  }
+
+  //connect to atlas feature changes
+  //to update the expression context
+  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
+
 }
 
 QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ),
@@ -54,7 +70,9 @@ QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ),
     mHtmlUnitsToMM( 1.0 ),
     mRenderedPage( 0 ),
     mUseSmartBreaks( true ),
-    mMaxBreakDistance( 10 )
+    mMaxBreakDistance( 10 ),
+    mExpressionFeature( 0 ),
+    mExpressionLayer( 0 )
 {
 }
 
@@ -78,6 +96,12 @@ void QgsComposerHtml::setUrl( const QUrl& url )
 void QgsComposerHtml::setHtml( const QString html )
 {
   mHtml = html;
+}
+
+void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
+{
+  mEvaluateExpressions = evaluateExpressions;
+  loadHtml();
 }
 
 QString QgsComposerHtml::fetchHtml( QUrl url )
@@ -149,6 +173,12 @@ void QgsComposerHtml::loadHtml()
     case QgsComposerHtml::ManualHtml:
       loadedHtml = mHtml;
       break;
+  }
+
+  //evaluate expressions
+  if ( mEvaluateExpressions )
+  {
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, mExpressionFeature, mExpressionLayer );
   }
 
   mLoaded = false;
@@ -360,6 +390,7 @@ bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool igno
   htmlElem.setAttribute( "contentMode",  QString::number(( int ) mContentMode ) );
   htmlElem.setAttribute( "url", mUrl.toString() );
   htmlElem.setAttribute( "html", mHtml );
+  htmlElem.setAttribute( "evaluateExpressions", mEvaluateExpressions ? "true" : "false" );
   htmlElem.setAttribute( "useSmartBreaks", mUseSmartBreaks ? "true" : "false" );
   htmlElem.setAttribute( "maxBreakDistance", QString::number( mMaxBreakDistance ) );
 
@@ -384,6 +415,7 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   {
     mContentMode = QgsComposerHtml::Url;
   }
+  mEvaluateExpressions = itemElem.attribute( "evaluateExpressions", "true" ) == "true" ? true : false;
   mUseSmartBreaks = itemElem.attribute( "useSmartBreaks", "true" ) == "true" ? true : false;
   mMaxBreakDistance = itemElem.attribute( "maxBreakDistance", "10" ).toDouble();
   mHtml = itemElem.attribute( "html" );
@@ -398,4 +430,28 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   //since frames had to be created before, we need to emit a changed signal to refresh the widget
   emit changed();
   return true;
+}
+
+void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer )
+{
+  mExpressionFeature = feature;
+  mExpressionLayer = layer;
+}
+
+void QgsComposerHtml::refreshExpressionContext()
+{
+  QgsVectorLayer * vl = 0;
+  QgsFeature* feature = 0;
+
+  if ( mComposition->atlasComposition().enabled() )
+  {
+    vl = mComposition->atlasComposition().coverageLayer();
+  }
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
+    feature = mComposition->atlasComposition().currentFeature();
+  }
+
+  setExpressionContext( feature, vl );
+  loadHtml();
 }
