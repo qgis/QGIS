@@ -169,7 +169,7 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
   for ( int i = 0; i < mCategories.count(); ++i )
   {
     QgsRendererCategoryV2& cat = mCategories[i];
-    mSymbolHash.insert( cat.value().toString(), cat.renderState() ? cat.symbol() : 0 );
+    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : &sSkipRender );
   }
 }
 
@@ -208,7 +208,10 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   }
 
   // find the right symbol for the category
-  QgsSymbolV2* symbol = symbolForValue( value );
+  QgsSymbolV2 *symbol = symbolForValue( value );
+  if ( symbol == &sSkipRender )
+    return 0;
+
   if ( !symbol )
   {
     // if no symbol found use default one
@@ -376,6 +379,8 @@ void QgsCategorizedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
 
 void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  mCounting = context.rendererScale() == 0.0;
+
   // make sure that the hash table is up to date
   rebuildHash();
 
@@ -401,7 +406,6 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
       mTempSymbols[ it->value().toString()] = tempSymbol;
     }
   }
-
 }
 
 void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
@@ -752,7 +756,7 @@ bool QgsCategorizedSymbolRendererV2::legendSymbolItemsCheckable() const
 
 bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( int index )
 {
-  if( index >= 0 && index < mCategories.size() )
+  if ( index >= 0 && index < mCategories.size() )
     return mCategories[ index ].renderState();
   else
     return true;
@@ -762,3 +766,5 @@ void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( int index, bool stat
 {
   updateCategoryRenderState( index, state );
 }
+
+QgsMarkerSymbolV2 QgsCategorizedSymbolRendererV2::sSkipRender;

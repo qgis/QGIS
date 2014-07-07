@@ -211,6 +211,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QScopedPointer<QgsExpression> mExpression;
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
+    bool mCounting;
 
     //! temporary symbols, used for data-defined rotation and scaling
     QHash<QgsSymbolV2*, QgsSymbolV2*> mTempSymbols;

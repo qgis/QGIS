@@ -193,6 +193,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbolV2*> mSymbolHash;
+    bool mCounting;
 
     //! temporary symbols, used for data-defined rotation and scaling
     QHash<QString, QgsSymbolV2*> mTempSymbols;
@@ -200,6 +201,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void rebuildHash();
 
     QgsSymbolV2* symbolForValue( QVariant value );
+
+    static QgsMarkerSymbolV2 sSkipRender;
 };
 
 

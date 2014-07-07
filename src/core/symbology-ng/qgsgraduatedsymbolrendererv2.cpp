@@ -177,7 +177,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
   {
     if ( it->lowerValue() <= value && it->upperValue() >= value )
     {
-      if ( it->renderState() )
+      if ( it->renderState() || mCounting )
         return it->symbol();
       else
         return NULL;
@@ -237,6 +237,8 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
 
 void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  mCounting = context.rendererScale() == 0.0;
+
   // find out classification attribute index from name
   mAttrNum = fields.fieldNameIndex( mAttrName );
 
