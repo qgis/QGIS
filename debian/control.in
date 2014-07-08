@@ -41,6 +41,7 @@ Build-Depends:
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
  libopenscenegraph-dev,
+ libqscintilla2-dev,
  git,
  doxygen,
  graphviz,

@@ -1,8 +1,9 @@
 qgis (2.5.0) UNRELEASED; urgency=medium
 
   * New development version 2.5 after branch of 2.4
+  * add libqscintilla2-dev as build dependency
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 27 Jun 2014 14:00:54 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 08 Jul 2014 08:04:52 +0200
 
 qgis (2.4.0) unstable; urgency=medium
 
