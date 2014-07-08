@@ -24,6 +24,7 @@
 #include <QGraphicsRectItem>
 
 class QgsComposition;
+class QgsComposerMapGrid;
 class QgsMapRenderer;
 class QgsMapToPixel;
 class QDomNode;
@@ -102,6 +103,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Right,
       Bottom,
       Top
+    };
+
+    enum AnnotationCoordinate
+    {
+      Longitude = 0,
+      Latitude
     };
 
     /** Scaling modes used for the serial rendering (atlas)
@@ -530,6 +537,23 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     */
     QPolygonF visibleExtentPolygon() const;
 
+    /**Adds new map grid (takes ownership)*/
+    void addGrid( QgsComposerMapGrid* grid );
+    void removeGrid( const QString& name );
+    void moveGridUp( const QString& name );
+    void moveGridDown( const QString& name );
+    const QgsComposerMapGrid* constMapGrid( const QString& id ) const;
+    QgsComposerMapGrid* mapGrid( const QString& id ) const;
+    QList< const QgsComposerMapGrid* > mapGrids() const;
+
+    int gridCount() const { return mGrids.size(); }
+
+    /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
+    QPolygonF transformedMapPolygon() const;
+
+    /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
+    QPointF mapToItemCoords( const QPointF& mapCoords ) const;
+
   signals:
     void extentChanged();
 
@@ -551,12 +575,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     virtual void refreshDataDefinedProperty( DataDefinedProperty property = AllProperties );
 
   private:
-
-    enum AnnotationCoordinate
-    {
-      Longitude = 0,
-      Latitude
-    };
 
     /**Unique identifier*/
     int mId;
@@ -623,6 +641,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Removes layer ids from mLayerSet that are no longer present in the qgis main map*/
     void syncLayerSet();
 
+    void removeGrids();
+    void drawGrids( QPainter* p );
+
     /**True if coordinate grid has to be displayed*/
     bool mGridEnabled;
     /**Solid or crosses*/
@@ -683,6 +704,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QGraphicsView* mMapCanvas;
     /**True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
+    QList< QgsComposerMapGrid* > mGrids;
 
     /**Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
@@ -724,8 +746,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
     /**Returns extent that considers mOffsetX / mOffsetY (during content move)*/
     QgsRectangle transformedExtent() const;
-    /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
-    QPolygonF transformedMapPolygon() const;
     double maxExtension() const;
 
     /** mapPolygon variant using a given extent */
@@ -737,8 +757,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param xShift in: shift in x direction (in item units), out: xShift in map units
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double& xShift, double& yShift ) const;
-    /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
-    QPointF mapToItemCoords( const QPointF& mapCoords ) const;
     /**Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( const QPointF& p ) const;
 

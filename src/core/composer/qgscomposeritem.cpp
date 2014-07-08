@@ -863,12 +863,13 @@ void QgsComposerItem::setEffectsEnabled( bool effectsEnabled )
   mEffect->setEnabled( effectsEnabled );
 }
 
-void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const
+void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
   p->save();
   p->setFont( textFont );
+  p->setPen( c );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
