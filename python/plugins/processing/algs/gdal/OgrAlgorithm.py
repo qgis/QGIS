@@ -44,8 +44,6 @@ from processing.tools import dataobjects
 
 class OgrAlgorithm(GdalAlgorithm):
 
-    DB = 'DB'
-
     def ogrConnectionString(self, uri):
         ogrstr = None
 
